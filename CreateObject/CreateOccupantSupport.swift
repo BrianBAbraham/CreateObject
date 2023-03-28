@@ -208,12 +208,16 @@ struct CreateOccupantSupport {
             
 
             if baseType.rawValue.contains(BaseObjectGroups.caster.rawValue) {
+                
+                let initialOccupantBodySupportFromPrimaryOrigin =
+                    getAllSitOnFromPrimaryOriginAccountForTwoSitOn(
+                        supportIndex,
+                        halfLength)
+                
                 switch baseType {
                     case .allCasterChair:
                         occupantBodySupportFromPrimaryOrigin =
-                        getAllSitOnFromPrimaryOriginAccountForTwoSitOn(
-                            supportIndex,
-                            halfLength)
+                            initialOccupantBodySupportFromPrimaryOrigin
                     
                     case .allCasterStretcher:
                         occupantBodySupportFromPrimaryOrigin =
@@ -225,9 +229,7 @@ struct CreateOccupantSupport {
                     
                     default:
                         occupantBodySupportFromPrimaryOrigin =
-                        getAllSitOnFromPrimaryOriginAccountForTwoSitOn (
-                            supportIndex,
-                            halfLength)
+                            initialOccupantBodySupportFromPrimaryOrigin
                     }
             }
             
