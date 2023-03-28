@@ -16,20 +16,16 @@ struct CreateOccupantBodySupport {
         _ oneBodySupportFromPrimaryOrigin: PositionAsIosAxes,
         _ bodySupportCorners: [PositionAsIosAxes],
         _ supportIndex: Int,
-        _ baseType: BaseObjectTypes,
-        _ numberOfOccupantSupport: OccupantSupportNumber ) {
+        _ baseType: BaseObjectTypes) {
             
         self.oneBodySupportFromPrimaryOrigin = oneBodySupportFromPrimaryOrigin
             
-            
         dictionary += DimensionsBetweenPrimaryAndOccupantSupport.getDictionary( .sitOn, [oneBodySupportFromPrimaryOrigin])
 
-            
         dictionary +=
             getOneBodySupportCornerDictionary(
-            bodySupportCorners,
-            supportIndex
-            )
+                bodySupportCorners,
+                supportIndex)
             
             func getOneBodySupportCornerDictionary (
                 _ bodySupportCorners: [PositionAsIosAxes],

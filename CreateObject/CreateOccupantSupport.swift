@@ -51,7 +51,7 @@ struct CreateOccupantSupport {
     let occupantSupportTypes: [OccupantSupportTypes]
     var occupantSupportMeasure: Dimension
     let occupantSupportMeasures: InitialOccupantBodySupportMeasure =
-    InitialOccupantBodySupportMeasure()
+        InitialOccupantBodySupportMeasure()
     let allBodySupportCorners: [[PositionAsIosAxes]]
     
     init(
@@ -177,8 +177,7 @@ struct CreateOccupantSupport {
                 allBodySupportFromPrimaryOrigin[supportIndex],
                 allBodySupportCorners [supportIndex],
                 supportIndex,
-                baseType,
-                numberOfOccupantSupport
+                baseType
                 ).dictionary
                 
             dictionary += bodySupportDictionary
@@ -256,8 +255,8 @@ struct CreateOccupantSupport {
                 let bodySupportDimension = initialOccupantBodySupportMeasure.sitOn
                 switch numberOfOccupantSupport {
                 case .one:
-
                     location = (x: 0.0, y: bodySupportLengthFromPrimaryOrigin, z: 0.0)
+
                 case .twoSideBySide:
                     
                     if supportIndex == 0 {
@@ -265,6 +264,7 @@ struct CreateOccupantSupport {
                     } else {
                         location.x = bodySupportDimension.width
                     }
+                    
                 case .twoFrontAndBack:
                     if supportIndex == 0 {
                         location.y = bodySupportLengthFromPrimaryOrigin + bodySupportDimension.length
