@@ -38,7 +38,7 @@ struct ForFixedWheelBaseObject {
         
         self.wheelBaseType = wheelBaseType
         
-        self.allSitOnFromPrimaryOrigin = occupantSupport.allSitOnFromPrimaryOrigin
+        self.allSitOnFromPrimaryOrigin = occupantSupport.allBodySupportFromPrimaryOrigin
         
         occupantSupportTypes = occupantSupport.occupantSupportTypes
             

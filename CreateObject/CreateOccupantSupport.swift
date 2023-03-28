@@ -37,7 +37,7 @@ struct InitialOccupantBodySupportMeasure {
 
 
 struct CreateOccupantSupport {
-    let allSitOnFromPrimaryOrigin: [PositionAsIosAxes]
+    let allBodySupportFromPrimaryOrigin: [PositionAsIosAxes]
     var armSupportRequired: Bool
     let baseType: BaseObjectTypes
     let baseToOccupantSupportJoint: [JointType]
@@ -52,7 +52,7 @@ struct CreateOccupantSupport {
     var occupantSupportMeasure: Dimension
     let occupantSupportMeasures: InitialOccupantBodySupportMeasure =
     InitialOccupantBodySupportMeasure()
-    let oneOrTwoBodySupportCorners: [[PositionAsIosAxes]]
+    let allBodySupportCorners: [[PositionAsIosAxes]]
     
     init(
         _ baseType: BaseObjectTypes,
@@ -87,49 +87,58 @@ struct CreateOccupantSupport {
                 armSupportRequired = true
         }
         
+        ///allSitIOnFromPrimaryOrigin
+        ///AllBodySupportCorners
+        ///
 
         
-        allSitOnFromPrimaryOrigin =
-        getAllSitOnFromPrimaryOrigin(
+        allBodySupportFromPrimaryOrigin =
+        getAllBodySuppportFromPrimaryOrigin(
             occupantSupportTypes,
             initialOccupantBodySupportMeasure
         )
 
-        func getAllSitOnFromPrimaryOrigin(
+        func getAllBodySuppportFromPrimaryOrigin(
             _ occupantSupportTypes: [OccupantSupportTypes],
-            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure
-        
-        ) -> [PositionAsIosAxes] {
+            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
+        -> [PositionAsIosAxes] {
             var fromPrimaryToSitOnOrigins: [PositionAsIosAxes] = []
             for supportIndex in 0..<occupantSupportTypes.count {
                 fromPrimaryToSitOnOrigins.append(
-                    getOneBodySupportFromPrimaryOrigin(supportIndex, initialOccupantBodySupportMeasure)
-                )
-            }
+                    getOneBodySupportFromPrimaryOrigin(
+                        supportIndex,
+                        initialOccupantBodySupportMeasure)
+                    )
+                }
             return
                 fromPrimaryToSitOnOrigins
         }
         
         
-        oneOrTwoBodySupportCorners =
+        allBodySupportCorners =
         getAllBodySupportFromPrimaryOriginCorners(
-            allSitOnFromPrimaryOrigin,
+            allBodySupportFromPrimaryOrigin,
             occupantSupportMeasure.length,
             occupantSupportMeasure.width)
 
-        func getAllBodySupportFromPrimaryOriginCorners(_ fromPrimaryToSitOnOrigins: [PositionAsIosAxes], _ length: Double, _ width: Double )
+        func getAllBodySupportFromPrimaryOriginCorners(
+            _ fromPrimaryToSitOnOrigins: [PositionAsIosAxes],
+            _ length: Double,
+            _ width: Double )
         -> [[PositionAsIosAxes]] {
             var oneOrTwoSitOnPartCorners:[[PositionAsIosAxes]]  = []
             for supportIndex in 0..<occupantSupportTypes.count {
-                oneOrTwoSitOnPartCorners.append(
-                PartCornerLocationFrom(
-                   length,
-                    fromPrimaryToSitOnOrigins[supportIndex],
-                    width).primaryOrigin
-                )
-            }
+                    oneOrTwoSitOnPartCorners.append(
+                    PartCornerLocationFrom(
+                       length,
+                        fromPrimaryToSitOnOrigins[supportIndex],
+                        width).primaryOrigin
+                    )
+                }
             return oneOrTwoSitOnPartCorners
         }
+        
+        
         
         
         for supportIndex in 0..<occupantSupportTypes.count {
@@ -143,7 +152,7 @@ struct CreateOccupantSupport {
             if footSupportRequired {
                 let occupantFootSupport =
                     CreateOccupantFootSupport(
-                        allSitOnFromPrimaryOrigin,
+                        allBodySupportFromPrimaryOrigin,
                         supportIndex,
                         initialOccupantBodySupportMeasure
                     )
@@ -155,7 +164,7 @@ struct CreateOccupantSupport {
             if armSupportRequired {
                 let occupantSideSuppport =
                 CreateOccupantSideSupport(
-                    allSitOnFromPrimaryOrigin,
+                    allBodySupportFromPrimaryOrigin,
                     supportIndex
                 )
                 
@@ -165,20 +174,21 @@ struct CreateOccupantSupport {
                 
             let bodySupportDictionary =
             CreateOccupantBodySupport (
-                allSitOnFromPrimaryOrigin[supportIndex],
-            oneOrTwoBodySupportCorners [supportIndex],
-            supportIndex,
-            baseType,
-            numberOfOccupantSupport
-            ).dictionary
+                allBodySupportFromPrimaryOrigin[supportIndex],
+                allBodySupportCorners [supportIndex],
+                supportIndex,
+                baseType,
+                numberOfOccupantSupport
+                ).dictionary
                 
             dictionary += bodySupportDictionary
         }
 
         
         
-        func getOneBodySupportFromPrimaryOrigin( _ supportIndex: Int,
-                                                 _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
+        func getOneBodySupportFromPrimaryOrigin(
+            _ supportIndex: Int,
+            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
         -> PositionAsIosAxes {
 
             var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
@@ -201,7 +211,7 @@ struct CreateOccupantSupport {
                         bodySupportlengthFromPrimaryOrigin = halfLength
                 }
                 occupantBodySupportFromPrimaryOrigin =
-                    getAllSitOnFromPrimaryOriginAccountForTwoSitOn(
+                    getAllBodySupportFromPrimaryOriginAccountForAllSitOn(
                         supportIndex,
                         bodySupportlengthFromPrimaryOrigin)
             }
@@ -211,7 +221,7 @@ struct CreateOccupantSupport {
             if baseType.rawValue.contains(BaseObjectGroups.caster.rawValue) {
                 
                 let initialOccupantBodySupportFromPrimaryOrigin =
-                    getAllSitOnFromPrimaryOriginAccountForTwoSitOn(
+                    getAllBodySupportFromPrimaryOriginAccountForAllSitOn(
                         supportIndex,
                         halfLength)
                 
@@ -238,29 +248,31 @@ struct CreateOccupantSupport {
         }
         
         
-        func getAllSitOnFromPrimaryOriginAccountForTwoSitOn (
+        func getAllBodySupportFromPrimaryOriginAccountForAllSitOn (
             _ supportIndex: Int,
-            _ dimensionForSingleSeat: Double) -> PositionAsIosAxes {
+            _ bodySupportLengthFromPrimaryOrigin: Double)
+        -> PositionAsIosAxes {
                 var location = Globalx.iosLocation
+                let bodySupportDimension = initialOccupantBodySupportMeasure.sitOn
                 switch numberOfOccupantSupport {
                 case .one:
 
-                    location = (x: 0.0, y: dimensionForSingleSeat, z: 0.0)
+                    location = (x: 0.0, y: bodySupportLengthFromPrimaryOrigin, z: 0.0)
                 case .twoSideBySide:
                     
                     if supportIndex == 0 {
-                        location.x = -initialOccupantBodySupportMeasure.sitOn.width
+                        location.x = -bodySupportDimension.width
                     } else {
-                        location.x = initialOccupantBodySupportMeasure.sitOn.width
+                        location.x = bodySupportDimension.width
                     }
                 case .twoFrontAndBack:
                     if supportIndex == 0 {
-                        location.y = dimensionForSingleSeat + initialOccupantBodySupportMeasure.sitOn.length
+                        location.y = bodySupportLengthFromPrimaryOrigin + bodySupportDimension.length
                     } else {
-                        location.y = dimensionForSingleSeat - initialOccupantBodySupportMeasure.sitOn.length
+                        location.y = bodySupportLengthFromPrimaryOrigin - bodySupportDimension.length
                     }
                 }
-                return location
+            return location
         }
     }
     
