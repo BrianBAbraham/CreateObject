@@ -7,7 +7,6 @@
 
 import Foundation
 struct InitialOccupantFootSupportMeasure {
-    let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
     
     static let jointLength = 20.0
     
@@ -44,7 +43,7 @@ struct InitialOccupantFootSupportMeasure {
     
     let rightFootSupportFromFromSitOnOrigin: PositionAsIosAxes
     
-    init() {
+    init(_ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure) {
         sitOnLengthAndOffset =
         initialOccupantBodySupportMeasure.sitOn.length/2 - 10
         sitOnWidthAndOffset =
@@ -74,7 +73,7 @@ struct InitialOccupantFootSupportMeasure {
 struct CreateOccupantFootSupport {
     // INPUT FROM SEAT
     
-    let initialOccupantFootSupportMeasure = InitialOccupantFootSupportMeasure ()
+    let initialOccupantFootSupportMeasure: InitialOccupantFootSupportMeasure
     
     var dictionary: [String: PositionAsIosAxes ] = [:]
     
@@ -82,10 +81,12 @@ struct CreateOccupantFootSupport {
   
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
-        _ supportIndex: Int
+        _ supportIndex: Int,
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure
     ){
         
         self.supportIndex = supportIndex
+        self.initialOccupantFootSupportMeasure = InitialOccupantFootSupportMeasure (initialOccupantBodySupportMeasure)
         
         getDictionary(
             supportIndex,

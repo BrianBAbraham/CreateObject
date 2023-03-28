@@ -6,15 +6,13 @@
 //
 
 import Foundation
-///SAT anything related to deciding what to do belongs in the CreateOccupantSupport
-///anything related to creating occupant body support belongs here
+
 
 struct CreateOccupantBodySupport {
     let oneBodySupportFromPrimaryOrigin: PositionAsIosAxes
     var dictionary: PositionDictionary = [:]
 
     init(
-        //_ oneBodySupportFromPrimaryOrigin: PositionAsIosAxes,
         _ oneBodySupportFromPrimaryOrigin: PositionAsIosAxes,
         _ bodySupportCorners: [PositionAsIosAxes],
         _ supportIndex: Int,

@@ -144,7 +144,8 @@ struct CreateOccupantSupport {
                 let occupantFootSupport =
                     CreateOccupantFootSupport(
                         allSitOnFromPrimaryOrigin,
-                        supportIndex
+                        supportIndex,
+                        initialOccupantBodySupportMeasure
                     )
                 
                     dictionary +=
