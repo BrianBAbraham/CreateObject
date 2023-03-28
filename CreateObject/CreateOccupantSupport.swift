@@ -111,9 +111,6 @@ struct CreateOccupantSupport {
         }
         
         
-        
-        
-        
         oneOrTwoBodySupportCorners =
         getAllBodySupportFromPrimaryOriginCorners(
             allSitOnFromPrimaryOrigin,
@@ -133,11 +130,6 @@ struct CreateOccupantSupport {
             }
             return oneOrTwoSitOnPartCorners
         }
-        
-        
-        
-        
-        
         
         
         for supportIndex in 0..<occupantSupportTypes.count {
@@ -190,36 +182,30 @@ struct CreateOccupantSupport {
 
             var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
             let halfLength = initialOccupantBodySupportMeasure.sitOn.length/2
-            
+            var bodySupportlengthFromPrimaryOrigin: Double = 0
 
             if baseType.rawValue.contains(BaseObjectGroups.fixedWheel.rawValue) {
 
                 switch baseType {
                     case .fixedWheelFrontDrive:
-                        occupantBodySupportFromPrimaryOrigin =
-                        getAllSitOnFromPrimaryOriginAccountForTwoSitOn (
-                            supportIndex,
-                            -halfLength)
+                        bodySupportlengthFromPrimaryOrigin = -halfLength
 
                     case .fixedWheelMidDrive:
-                        occupantBodySupportFromPrimaryOrigin =
-                        getAllSitOnFromPrimaryOriginAccountForTwoSitOn(
-                            supportIndex,
-                            0.0)
+                        bodySupportlengthFromPrimaryOrigin = 0
 
                     case .fixedWheelRearDrive:
-                    occupantBodySupportFromPrimaryOrigin =
-                        getAllSitOnFromPrimaryOriginAccountForTwoSitOn (
-                            supportIndex,
-                            halfLength)
+                        bodySupportlengthFromPrimaryOrigin = halfLength
 
                     default:
-                        occupantBodySupportFromPrimaryOrigin =
-                        getAllSitOnFromPrimaryOriginAccountForTwoSitOn (
-                            supportIndex,
-                            halfLength)
+                        bodySupportlengthFromPrimaryOrigin = halfLength
                 }
+                occupantBodySupportFromPrimaryOrigin =
+                    getAllSitOnFromPrimaryOriginAccountForTwoSitOn(
+                        supportIndex,
+                        bodySupportlengthFromPrimaryOrigin)
             }
+            
+            
 
             if baseType.rawValue.contains(BaseObjectGroups.caster.rawValue) {
                 switch baseType {
