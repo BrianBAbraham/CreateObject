@@ -261,15 +261,15 @@ struct DimensionsForCaster{
     }
 }
 
-struct DimensionsBetweenPrimaryAndOccupantSupport {
-    static func getDictionary (
-        _ occupantSupportType: Part,
-        _ occupantSupportLocations: [PositionAsIosAxes]
-    )  -> [String: PositionAsIosAxes ]  {    //CHANGE
-        DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-            .primaryOrigin,
-            occupantSupportType,
-            occupantSupportLocations,
-            firstOriginId: 0)
-    }
-}
+//struct DimensionsBetweenPrimaryAndOccupantSupport {
+//    static func getDictionary (
+//        _ occupantSupportType: Part,
+//        _ occupantSupportLocations: [PositionAsIosAxes]
+//    )  -> [String: PositionAsIosAxes ]  {    //CHANGE
+//        DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
+//            .primaryOrigin,
+//            occupantSupportType,
+//            occupantSupportLocations,
+//            firstOriginId: 0)
+//    }
+//}
