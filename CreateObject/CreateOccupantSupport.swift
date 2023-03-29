@@ -43,6 +43,7 @@ struct CreateOccupantSupport {
     let allBodySupportFromPrimaryOrigin: [PositionAsIosAxes]
     var armSupportRequired: Bool
     let baseType: BaseObjectTypes
+    let baseMeasurement: InitialBaseMeasureFor
     let baseToOccupantSupportJoint: [JointType]
     var bodySupportRequired = true
     var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
@@ -64,14 +65,15 @@ struct CreateOccupantSupport {
         _ baseToOccupantSupportJoint: [JointType],
         _ numberOfOccupantSupport: OccupantSupportNumber = .one,
         _ occupantSupportTypes: [OccupantSupportTypes],
-        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
+        _ baseMeasurement: InitialBaseMeasureFor
     ) {
         self.baseType = baseType
         self.baseToOccupantSupportJoint = baseToOccupantSupportJoint
         self.numberOfOccupantSupport = numberOfOccupantSupport
         self.occupantSupportTypes = occupantSupportTypes
         self.initialOccupantBodySupportMeasure = initialOccupantBodySupportMeasure
-        
+        self.baseMeasurement = baseMeasurement
         
         switch baseType {
             case .allCasterChair:
@@ -191,15 +193,12 @@ struct CreateOccupantSupport {
                 
             if overheadSupportRequired {
                 let allOverHeadSupportCorners =
-                getAllBodySupportFromPrimaryOriginCorners(
-                    allBodySupportFromPrimaryOrigin,
-                    occupantSupportMeasures.overHead.length,
-                    occupantSupportMeasures.overHead.width)
+                getAllOverHeadSupportFromPrimaryOriginCorners()
                 
                 let overHeadSupportDictionary =
                 CreateOccupantBodySupport (
                     allBodySupportFromPrimaryOrigin[supportIndex],
-                    allBodySupportCorners [supportIndex],
+                    allOverHeadSupportCorners,
                     supportIndex,
                     baseType
                     ).dictionary
@@ -209,11 +208,17 @@ struct CreateOccupantSupport {
 
         }
 
-//        func getAllOverHeadSupportFromPrimaryOriginCorners(
-//            _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
-//            _ overHeadSupportMeasure: Dimension) {
-//
-//            }
+        func getAllOverHeadSupportFromPrimaryOriginCorners()
+        -> [PositionAsIosAxes] {
+            let overHeadSupportFromPrimaryOrigin: PositionAsIosAxes =
+            (x: 0, y: baseMeasurement.rearToFrontLength/2, z: 1200)
+            
+            return
+                PartCornerLocationFrom(
+                    initialOccupantBodySupportMeasure.overHead.length,
+                    overHeadSupportFromPrimaryOrigin,
+                    initialOccupantBodySupportMeasure.overHead.width).primaryOrigin
+            }
         
         
         func getOneBodySupportFromPrimaryOrigin(

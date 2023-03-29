@@ -35,19 +35,19 @@ struct CreateAllPartsForObject {
             let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
             
             
-            var measurement = InitialBaseMeasureFor()
+            var baseMeasurement = InitialBaseMeasureFor()
 
           switch baseType {
             case .allCasterBed:
-                measurement = InitialBaseMeasureFor(rearToFrontLength: 2200, halfWidth: 450)
+                baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 2200, halfWidth: 450)
             case .allCasterChair:
-                measurement = InitialBaseMeasureFor(rearToFrontLength: 500, halfWidth: 200)
+                baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 500, halfWidth: 200)
             case .allCasterHoist:
-                measurement = InitialBaseMeasureFor(rearToFrontLength: 1200, halfWidth: 300)
+                baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 1200, halfWidth: 300)
             case .allCasterStandAid:
                 break
             case .allCasterStretcher:
-                measurement = InitialBaseMeasureFor(rearToFrontLength: initialOccupantBodySupportMeasure.lieOn.length/2, halfWidth: initialOccupantBodySupportMeasure.lieOn.width/2)
+                baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: initialOccupantBodySupportMeasure.lieOn.length/2, halfWidth: initialOccupantBodySupportMeasure.lieOn.width/2)
 
             default:
                  break
@@ -63,14 +63,15 @@ struct CreateAllPartsForObject {
                     occupantSupportJoints,
                     oneOrMultipleSeats,
                     occupantSupportTypes,
-                    initialOccupantBodySupportMeasure
+                    initialOccupantBodySupportMeasure,
+                    baseMeasurement
                 )
 
             dictionary +=
               CreateBase(
                   baseType,
                   occupantSupport,
-                  measurement
+                  baseMeasurement
               ).dictionary
 
             dictionary += occupantSupport.dictionary
