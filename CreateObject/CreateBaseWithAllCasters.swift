@@ -23,36 +23,33 @@ struct ForAllCasterBaseObject{
         supportTypes = occupantSupport.occupantSupportTypes
     }
     
-  func getDictionary()  -> [String: PositionAsIosAxes ] {
+  func getDictionary()
+    -> [String: PositionAsIosAxes ] {
         
         var dictionary: [String: PositionAsIosAxes ] = [:]
         var measurement = InitialBaseMeasureFor()
 
       switch baseObjectType {
-          
         case .allCasterBed:
             measurement = InitialBaseMeasureFor(rearToFrontLength: 2200, halfWidth: 450)
-       
-          let casterAtFrontDictionary =
-          CreateCaster(
-              .casterWheelAtFront,
-              (x: measurement.halfWidth, y: measurement.rearToFrontLength/2, z: 0.0 )
-          ).dictionary
-          
-          dictionary += casterAtFrontDictionary
-          
-          let casterAtRearDictionary = CreateCaster(
-              .casterWheelAtRear,
-              (x: measurement.halfWidth, y: -measurement.rearToFrontLength/2, z: 0.0 )
-          ).dictionary
-          
-          dictionary += casterAtRearDictionary
-          
         case .allCasterChair:
-          measurement = InitialBaseMeasureFor(rearToFrontLength: 500, halfWidth: 200)
-          
+            measurement = InitialBaseMeasureFor(rearToFrontLength: 500, halfWidth: 200)
+        case .allCasterHoist:
+            measurement = InitialBaseMeasureFor(rearToFrontLength: 1200, halfWidth: 300)
+        case .allCasterStandAid:
+            break
+        case .allCasterStretcher:
+            measurement = InitialBaseMeasureFor(rearToFrontLength: initialOccupantBodySupportMeasure.lieOn.length/2, halfWidth: initialOccupantBodySupportMeasure.lieOn.width/2)
+
+        default:
+             break
+   
+        }
+      fourCasterBase(measurement)
+      
+      func fourCasterBase(_ measure: InitialBaseMeasureFor) {
           let casterAtFrontDictionary = CreateCaster(
-              .casterWheelAtRear,
+              .casterWheelAtFront,
               measurement.baseCornerFromPrimaryOriginForWidthAxisAt.rear.front
           ).dictionary
           
@@ -64,38 +61,7 @@ struct ForAllCasterBaseObject{
           ).dictionary
           
           dictionary += casterAtRearDictionary
-          
-        case .allCasterHoist:
-            break
-//        case .allCaster6Hoist:
-//            break
-        case .allCasterStandAid:
-            break
-        case .allCasterStretcher:
-          
-          measurement = InitialBaseMeasureFor(rearToFrontLength: initialOccupantBodySupportMeasure.lieOn.length/2, halfWidth: initialOccupantBodySupportMeasure.lieOn.width/2)
-          
-          let casterAtFrontDictionary =
-          CreateCaster(
-              .casterWheelAtFront,
-              (x: measurement.halfWidth, y: measurement.rearToFrontLength/3, z: 0.0 )
-          ).dictionary
-          
-          dictionary += casterAtFrontDictionary
-          
-          let casterAtRearDictionary = CreateCaster(
-              .casterWheelAtRear,
-              (x: measurement.halfWidth, y: -measurement.rearToFrontLength/3, z: 0.0 )
-          ).dictionary
-          
-          dictionary += casterAtRearDictionary
-
-            //dictionary = usingUnique(measurement)
-        default:
-             break
-   
-        }
-        
+      }
         
         return dictionary
     }
