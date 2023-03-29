@@ -18,7 +18,6 @@ struct CreateBothSidesFromRight {
     
     var partFromPrimaryOriginBothSidesOneSupport: LeftRightPositionAsIosAxis
     
-    //var dimension: Dimension = InitialOccupantSideSupportMeasurement.sitOnArm
     
     init(
         _ dimension: Dimension,
@@ -261,15 +260,4 @@ struct DimensionsForCaster{
     }
 }
 
-//struct DimensionsBetweenPrimaryAndOccupantSupport {
-//    static func getDictionary (
-//        _ occupantSupportType: Part,
-//        _ occupantSupportLocations: [PositionAsIosAxes]
-//    )  -> [String: PositionAsIosAxes ]  {    //CHANGE
-//        DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-//            .primaryOrigin,
-//            occupantSupportType,
-//            occupantSupportLocations,
-//            firstOriginId: 0)
-//    }
-//}
+

@@ -52,35 +52,11 @@ struct ForFixedWheelBaseObject {
             fixedWheelOriginLocations,
             firstOriginId:0)
     }
-
-    
-//    func convertCornerArrayToLeftRightTouple(_ corners: [PositionAsIosAxes])
-//    -> LeftRightPositionAsIosAxis {
-//        (left: corners[0], right: corners[1])
-//    }
-    
     
     func getDictionary() -> [String: PositionAsIosAxes ]{    //CHANGE
         
         var casterDictionary: PositionDictionary = [:]
-        
-//        let positionOfCasterAtRear =
-//        (itsSpindleFromPrimaryOrigin:
-//            measurement.baseCornerFromPrimaryOriginForWidthAxisAt.front.rear,
-//         wheelFromItsCasterSpindleOrigin:
-//            positionOfAllCasterWheelOriginFromCasterSpindleOrigin.rear)
-        
 
-        
-//        let casterAtRearDictionary = CreateCaster(
-//            .casterWheelAtRear,
-//            positionOfCasterAtFront.itsSpindleFromPrimaryOrigin,
-//            positionOfCasterAtFront.wheelFromItsCasterSpindleOrigin
-//        ).dictionary
-        
-
-        
-        
         if wheelBaseType == .fixedWheelFrontDrive {
             
             let casterAtRearDictionary =
@@ -124,9 +100,7 @@ struct ForFixedWheelBaseObject {
     Merge.these.dictionaries([
         casterDictionary,
         CreateFixedWheel(measurement.baseCornerFromPrimaryOriginForWidthAxisAt.centre.centre).dictionary,
-        //fixedWheelsFromPrimaryOriginsDictionary,
-//        spindleAndItsWheelWithSameIndexDictionary.spindleFromPrimaryOrigin,
-//        spindleAndItsWheelWithSameIndexDictionary.wheelFromSpindleOrigin,
+
 
 
         ])

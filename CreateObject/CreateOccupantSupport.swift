@@ -52,6 +52,7 @@ struct CreateOccupantSupport {
     var occupantSupportMeasure: Dimension
     let occupantSupportMeasures: InitialOccupantBodySupportMeasure =
         InitialOccupantBodySupportMeasure()
+    var overheadSupportRequired = false
     let allBodySupportCorners: [[PositionAsIosAxes]]
     
     init(
@@ -81,15 +82,17 @@ struct CreateOccupantSupport {
                 occupantSupportMeasure = occupantSupportMeasures.lieOn
                 footSupportRequired = false
                 armSupportRequired = false
+            case .allCasterHoist:
+                occupantSupportMeasure = occupantSupportMeasures.sitOn
+                overheadSupportRequired = true
+                footSupportRequired = false
+                armSupportRequired = false
             default:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
                 footSupportRequired = true
                 armSupportRequired = true
         }
         
-        ///allSitIOnFromPrimaryOrigin
-        ///AllBodySupportCorners
-        ///
 
         
         allBodySupportFromPrimaryOrigin =
@@ -234,6 +237,10 @@ struct CreateOccupantSupport {
                         Globalx.iosLocation
                     
                     case .allCasterBed:
+                        occupantBodySupportFromPrimaryOrigin =
+                        Globalx.iosLocation
+                    
+                    case .allCasterHoist:
                         occupantBodySupportFromPrimaryOrigin =
                         Globalx.iosLocation
                     

@@ -65,10 +65,10 @@ struct ForAllCasterBaseObject{
           
           dictionary += casterAtRearDictionary
           
-        case .allCaster4Hoist:
+        case .allCasterHoist:
             break
-        case .allCaster6Hoist:
-            break
+//        case .allCaster6Hoist:
+//            break
         case .allCasterStandAid:
             break
         case .allCasterStretcher:

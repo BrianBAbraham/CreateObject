@@ -18,14 +18,15 @@ struct CreateOccupantBodySupport {
         _ supportIndex: Int,
         _ baseType: BaseObjectTypes) {
             
-        self.oneBodySupportFromPrimaryOrigin = oneBodySupportFromPrimaryOrigin
+        self.oneBodySupportFromPrimaryOrigin =
+            oneBodySupportFromPrimaryOrigin
             
-        //dictionary += DimensionsBetweenPrimaryAndOccupantSupport.getDictionary( .sitOn, [oneBodySupportFromPrimaryOrigin])
-            dictionary += DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-                .primaryOrigin,
-                .sitOn,
-                [oneBodySupportFromPrimaryOrigin],
-                firstOriginId: 0) 
+        dictionary +=
+            DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
+            .primaryOrigin,
+            .sitOn,
+            [oneBodySupportFromPrimaryOrigin],
+            firstOriginId: 0)
 
         dictionary +=
             getOneBodySupportCornerDictionary(
