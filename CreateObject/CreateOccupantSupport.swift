@@ -41,6 +41,7 @@ struct CreateOccupantSupport {
     var armSupportRequired: Bool
     let baseType: BaseObjectTypes
     let baseToOccupantSupportJoint: [JointType]
+    var bodySupportRequired = true
     var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
 
     
@@ -85,6 +86,7 @@ struct CreateOccupantSupport {
             case .allCasterHoist:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
                 overheadSupportRequired = true
+                bodySupportRequired = false
                 footSupportRequired = false
                 armSupportRequired = false
             default:
@@ -141,9 +143,6 @@ struct CreateOccupantSupport {
             return oneOrTwoSitOnPartCorners
         }
         
-        
-        
-        
         for supportIndex in 0..<occupantSupportTypes.count {
             getDictionary(supportIndex)
         }
@@ -174,16 +173,19 @@ struct CreateOccupantSupport {
                 dictionary +=
                 occupantSideSuppport.dictionary
             }
-                
-            let bodySupportDictionary =
-            CreateOccupantBodySupport (
-                allBodySupportFromPrimaryOrigin[supportIndex],
-                allBodySupportCorners [supportIndex],
-                supportIndex,
-                baseType
-                ).dictionary
-                
-            dictionary += bodySupportDictionary
+            
+            if bodySupportRequired {
+                let bodySupportDictionary =
+                CreateOccupantBodySupport (
+                    allBodySupportFromPrimaryOrigin[supportIndex],
+                    allBodySupportCorners [supportIndex],
+                    supportIndex,
+                    baseType
+                    ).dictionary
+                    
+                dictionary += bodySupportDictionary
+            }
+
         }
 
         
