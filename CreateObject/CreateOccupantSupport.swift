@@ -18,6 +18,7 @@ struct InitialCasterChairMeasure {
 struct InitialOccupantBodySupportMeasure {
 
     let lieOn: Dimension
+    let overHead: Dimension
     let sitOn: Dimension
     let sleepOn: Dimension
     let standOn: Dimension
@@ -25,9 +26,11 @@ struct InitialOccupantBodySupportMeasure {
     init(
         lieOn: Dimension = (length: 1600 ,width: 600),
         sitOn: Dimension = (length: 500 ,width: 400),
+        overHead: Dimension = (length: 40 ,width: 600),
         sleepOn: Dimension = (length: 1800 ,width: 900),
         standOn: Dimension = (length: 300 ,width: 500)) {
         self.lieOn = lieOn
+        self.overHead = overHead
         self.sitOn = sitOn
         self.sleepOn = sleepOn
         self.standOn = standOn
@@ -185,9 +188,32 @@ struct CreateOccupantSupport {
                     
                 dictionary += bodySupportDictionary
             }
+                
+            if overheadSupportRequired {
+                let allOverHeadSupportCorners =
+                getAllBodySupportFromPrimaryOriginCorners(
+                    allBodySupportFromPrimaryOrigin,
+                    occupantSupportMeasures.overHead.length,
+                    occupantSupportMeasures.overHead.width)
+                
+                let overHeadSupportDictionary =
+                CreateOccupantBodySupport (
+                    allBodySupportFromPrimaryOrigin[supportIndex],
+                    allBodySupportCorners [supportIndex],
+                    supportIndex,
+                    baseType
+                    ).dictionary
+                    
+                dictionary += overHeadSupportDictionary
+            }
 
         }
 
+//        func getAllOverHeadSupportFromPrimaryOriginCorners(
+//            _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
+//            _ overHeadSupportMeasure: Dimension) {
+//
+//            }
         
         
         func getOneBodySupportFromPrimaryOrigin(
@@ -243,8 +269,9 @@ struct CreateOccupantSupport {
                         Globalx.iosLocation
                     
                     case .allCasterHoist:
-                        occupantBodySupportFromPrimaryOrigin =
-                        Globalx.iosLocation
+                    break
+//                        occupantBodySupportFromPrimaryOrigin =
+//                    (x: 0, y: initialOccupantBodySupportMeasure.rearToFrontLength/2, z: 0)
                     
                     default:
                         occupantBodySupportFromPrimaryOrigin =

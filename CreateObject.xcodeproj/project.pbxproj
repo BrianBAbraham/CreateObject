@@ -19,6 +19,7 @@
 		FD9CF76E29A65AC4006B5B40 /* PartCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */; };
 		FD9E02F32975613B00ACAA70 /* Joints.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9E02F22975613B00ACAA70 /* Joints.swift */; };
 		FD9E02F72975966600ACAA70 /* CreateAllPartsForObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9E02F62975966600ACAA70 /* CreateAllPartsForObject.swift */; };
+		FDA1B72D29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */; };
 		FDA3352E29AA5DF200409A61 /* CreateObjectRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */; };
 		FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */; };
 		FDB96BC929BA491A0011FAFF /* CreateFixedWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */; };
@@ -52,6 +53,7 @@
 		FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartCreation.swift; sourceTree = "<group>"; };
 		FD9E02F22975613B00ACAA70 /* Joints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Joints.swift; sourceTree = "<group>"; };
 		FD9E02F62975966600ACAA70 /* CreateAllPartsForObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAllPartsForObject.swift; sourceTree = "<group>"; };
+		FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantOverHeadSupport.swift; sourceTree = "<group>"; };
 		FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateObjectRectangle.swift; sourceTree = "<group>"; };
 		FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantBodySupport.swift; sourceTree = "<group>"; };
 		FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFixedWheel.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				FDCE3F0A299A8B5B00C19F2A /* Save.swift */,
 				FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */,
 				FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */,
+				FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */,
 				FDBD6EFB29C4B40500144603 /* CreateOccupantSideSupport.swift */,
 				FD9A5428298BF1FB00B903C3 /* CreateOccupantFootSupport.swift */,
 				FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */,
@@ -240,6 +243,7 @@
 				FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */,
 				FDC71F13296C91E400B68427 /* BaseObjectEnum.swift in Sources */,
 				FD8C21C129C0ABCD0034E293 /* DictionaryCreation.swift in Sources */,
+				FDA1B72D29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift in Sources */,
 				FDC71F0F296C916200B68427 /* Enum.swift in Sources */,
 				FD91AF90296DBBB0005DEA51 /* OccupantSupportTypes.swift in Sources */,
 				FDD7247D29B0DD1000B50259 /* Development.swift in Sources */,

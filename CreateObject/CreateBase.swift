@@ -12,20 +12,25 @@ struct CreateBase {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ occupantSupport: CreateOccupantSupport
+        _ occupantSupport: CreateOccupantSupport,
+        _ measurement: InitialBaseMeasureFor
         ) {
-            makeBase(baseType, occupantSupport)
+            makeBase(
+                baseType,
+                occupantSupport,
+                measurement)
             }
     
     mutating func makeBase(
         _ baseType: BaseObjectTypes,
-        _ occupantSupport: CreateOccupantSupport )  {
+        _ occupantSupport: CreateOccupantSupport,
+        _ measurement: InitialBaseMeasureFor)  {
         if baseType.rawValue.contains(BaseObjectGroups.caster.rawValue){
             dictionary =
             ForAllCasterBaseObject(
                 baseType,
-                occupantSupport
-                
+                occupantSupport,
+                measurement
             ).getDictionary()
         }
             
