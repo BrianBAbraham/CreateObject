@@ -8,6 +8,89 @@
 import Foundation
 
 
+
+
+struct CreateNonSymmetrical {
+
+    var originDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
+    
+    var cornerDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
+    
+    var partCorners: [[PositionAsIosAxes]] = []
+    
+    let partFromPrimaryOriginForOneSupport: PositionAsIosAxes
+    
+    
+    init(
+        _ dimension: Dimension,
+        _ part: Part,
+        _ parentPartFromPrimaryOrigin: PositionAsIosAxes,
+        _ partFromParentOrigin: PositionAsIosAxes,
+        _ supportIndex: Int)
+        {
+            
+            partFromPrimaryOriginForOneSupport = CreateIosPosition.addTwoTouples(
+                parentPartFromPrimaryOrigin,
+                partFromParentOrigin
+            )
+
+        originDictionary =
+                AsymmetricalParts(
+                    part,
+                    partFromPrimaryOriginForOneSupport,
+                    supportIndex).dictionary
+            
+            for position in [partFromPrimaryOriginForOneSupport] {
+                partCorners.append(
+                    PartCornerLocationFrom(
+                        dimension.length,
+                        position,
+                        dimension.width).primaryOrigin
+                    )
+            }
+            
+            cornerDictionary =
+            CreateCornerDictionaryForBothSides (
+              partCorners,
+              supportIndex,
+              part).dictionary
+
+    }
+}
+
+struct AsymmetricalParts {
+    var dictionary: [String: PositionAsIosAxes]
+    
+    init(
+        _ part: Part,
+        _ partFromPrimaryOrigin: PositionAsIosAxes,
+        _ supportIndex: Int) {
+        
+        dictionary = getPartFromPrimaryOriginForOneSupport(
+                part,
+                partFromPrimaryOrigin,
+                supportIndex)
+        
+        func getPartFromPrimaryOriginForOneSupport (
+            _ part: Part,
+            _ partFromPrimaryOrigin: PositionAsIosAxes,
+            _ supportIndex: Int)
+            -> [String: PositionAsIosAxes] {
+            
+            let supportName = Part.stringLink.rawValue + Part.sitOn.rawValue + Part.id.rawValue
+            let supportIdName = supportName + String(supportIndex)
+            
+            return
+                DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
+                         .primaryOrigin,
+                         part,
+                         [partFromPrimaryOrigin] ,
+                         supportId: supportIdName)
+        }
+    }
+
+}
+
 struct CreateBothSidesFromRight {
 
     var originDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE

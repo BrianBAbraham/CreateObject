@@ -70,9 +70,6 @@ struct CreateOccupantSideSupport {
         let partFromParentOrigin =
             measurementFor.rightSideSupportFromSitOnOrigin
             
-        let partJointFromParentOrigin =
-            measurementFor.rightSideSupportFromSitOnOrigin
-            
         let sideSupportDictionary =
             CreateBothSidesFromRight(
                 measurementFor.sitOnArm,
@@ -84,7 +81,7 @@ struct CreateOccupantSideSupport {
        let sideSupportJointDictionary =
             CreateBothSidesFromRight(
                 measurementFor.sideSupportJoint,
-                .armJoint,
+                .armVerticalJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 measurementFor.rightSideSupportJointFromSitOnOrigin,
                 supportIndex)

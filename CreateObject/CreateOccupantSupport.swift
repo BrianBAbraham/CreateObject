@@ -19,6 +19,7 @@ struct InitialOccupantBodySupportMeasure {
 
     let lieOn: Dimension
     let overHead: Dimension
+    let overHeadJoint: Dimension
     let sitOn: Dimension
     let sleepOn: Dimension
     let standOn: Dimension
@@ -27,10 +28,12 @@ struct InitialOccupantBodySupportMeasure {
         lieOn: Dimension = (length: 1600 ,width: 600),
         sitOn: Dimension = (length: 500 ,width: 400),
         overHead: Dimension = (length: 40 ,width: 600),
+        overHeadJoint: Dimension = (length: 40 ,width: 40),
         sleepOn: Dimension = (length: 1800 ,width: 900),
         standOn: Dimension = (length: 300 ,width: 500)) {
         self.lieOn = lieOn
         self.overHead = overHead
+        self.overHeadJoint = overHeadJoint
         self.sitOn = sitOn
         self.sleepOn = sleepOn
         self.standOn = standOn
@@ -192,33 +195,20 @@ struct CreateOccupantSupport {
             }
                 
             if overheadSupportRequired {
-                let allOverHeadSupportCorners =
-                getAllOverHeadSupportFromPrimaryOriginCorners()
+                let overHeadSupportFromPrimaryOrigin: PositionAsIosAxes =
+                (x: 0, y: baseMeasurement.rearToFrontLength/3*2, z: 1200)
                 
                 let overHeadSupportDictionary =
-                CreateOccupantBodySupport (
-                    allBodySupportFromPrimaryOrigin[supportIndex],
-                    allOverHeadSupportCorners,
-                    supportIndex,
-                    baseType
+                CreateOccupantOverHeadSupport (
+                    overHeadSupportFromPrimaryOrigin
                     ).dictionary
+
                     
                 dictionary += overHeadSupportDictionary
             }
 
         }
 
-        func getAllOverHeadSupportFromPrimaryOriginCorners()
-        -> [PositionAsIosAxes] {
-            let overHeadSupportFromPrimaryOrigin: PositionAsIosAxes =
-            (x: 0, y: baseMeasurement.rearToFrontLength/2, z: 1200)
-            
-            return
-                PartCornerLocationFrom(
-                    initialOccupantBodySupportMeasure.overHead.length,
-                    overHeadSupportFromPrimaryOrigin,
-                    initialOccupantBodySupportMeasure.overHead.width).primaryOrigin
-            }
         
         
         func getOneBodySupportFromPrimaryOrigin(
@@ -267,16 +257,23 @@ struct CreateOccupantSupport {
                     
                     case .allCasterStretcher:
                         occupantBodySupportFromPrimaryOrigin =
-                        Globalx.iosLocation
+                    (x: 0,
+                     y: baseMeasurement.rearToFrontLength/2,
+                     z: 0)
                     
                     case .allCasterBed:
+let headEndPartWidth = 100.0
                         occupantBodySupportFromPrimaryOrigin =
-                        Globalx.iosLocation
+
+                    (x: 0,
+                     y: initialOccupantBodySupportMeasure.sleepOn.length/2 +
+                     headEndPartWidth,
+                     z: 0)
                     
                     case .allCasterHoist:
-                    break
-//                        occupantBodySupportFromPrimaryOrigin =
-//                    (x: 0, y: initialOccupantBodySupportMeasure.rearToFrontLength/2, z: 0)
+                    //break
+                        occupantBodySupportFromPrimaryOrigin =
+                    (x: 0, y: 0, z: 0)
                     
                     default:
                         occupantBodySupportFromPrimaryOrigin =

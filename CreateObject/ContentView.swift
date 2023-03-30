@@ -68,11 +68,19 @@ struct PartView: View {
             color = .blue
         }
         
+        if partName == Part.overHeadSupport.rawValue {
+            color = .green
+        }
+        
         if partName.contains("caster") {
             color = .orange
         }
-        if partName.contains("Joint") {
+        if partName.contains("VerticalJoint") {
             color = .red
+        }
+        
+        if partName.contains("HorizontalJoint") {
+            color = .black
         }
 
         return color
@@ -315,7 +323,7 @@ print("INITATE CONTENT VIEW")
             MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
         }
         .position(x: 1000, y: 500)
-        .scaleEffect(0.2)
+        .scaleEffect(0.3)
 
         VStack {
             HStack {

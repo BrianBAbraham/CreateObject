@@ -82,8 +82,7 @@ struct CreateOccupantFootSupport {
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
-        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure
-    ){
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure){
         
         self.supportIndex = supportIndex
         self.initialOccupantFootSupportMeasure = InitialOccupantFootSupportMeasure (initialOccupantBodySupportMeasure)
@@ -114,7 +113,7 @@ struct CreateOccupantFootSupport {
         let footSupportHangerJointDictionary =
             CreateBothSidesFromRight(
                 InitialOccupantFootSupportMeasure.footSupportHangerJoint,
-                .footSupportHangerSeatJoint,
+                .footSupportHangerSitOnVerticalJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 initialOccupantFootSupportMeasure.rightFootSupportHangerJointFromSitOnOrigin,
                 supportIndex)
@@ -122,7 +121,7 @@ struct CreateOccupantFootSupport {
         let footSupportJointDictionary =
             CreateBothSidesFromRight(
                 InitialOccupantFootSupportMeasure.footSupportJoint,
-                .footSupportJoint,
+                .footSupportHorizontalJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 initialOccupantFootSupportMeasure.rightFootSupportJointFromSitOnOrigin,
                 supportIndex)

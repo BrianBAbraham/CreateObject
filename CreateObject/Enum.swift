@@ -13,12 +13,13 @@ import Foundation
 
 enum Part: String {
     case arm = "arm"
-    case armJoint = "armJoint"
+    case armVerticalJoint = "armVerticalJoint"
     case backrest = "backrest"
 
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 
     case overHeadSupport = "overHeadSupport"
+    case overHeadSupportVerticalJoint = "overHeadSupportVerticalJoint"
     case casterFork = "casterFork"
     case casterSpindleJointAtCenter = "casterSpindleJointAtCenter"
     case casterSpindleJointAtFront = "casterSpindleJointAtFront"
@@ -35,9 +36,9 @@ enum Part: String {
     case fixedWheelPropeller = "fixedWheelPropeller"
     
     case footSupport = "footSupport"
-    case footSupportJoint = "footSupportJoint"
+    case footSupportHorizontalJoint = "footSupportHorizontalJoint"
     case footSupportHanger = "footSupportHanger"
-    case footSupportHangerSeatJoint = "footSupportHangerSeatJoint"
+    case footSupportHangerSitOnVerticalJoint = "footSupportHangerSitOnVerticalJoint"
     case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
     //case footSupportJoint = "footSupportHangerSupportJoint"
 

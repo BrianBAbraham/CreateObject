@@ -34,6 +34,7 @@ struct CreateAllPartsForObject {
             
             let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
             
+            let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
             
             var baseMeasurement = InitialBaseMeasureFor()
 
@@ -47,15 +48,14 @@ struct CreateAllPartsForObject {
             case .allCasterStandAid:
                 break
             case .allCasterStretcher:
-                baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: initialOccupantBodySupportMeasure.lieOn.length/2, halfWidth: initialOccupantBodySupportMeasure.lieOn.width/2)
+                baseMeasurement = InitialBaseMeasureFor(
+                    rearToFrontLength: lieOnDimension.length/2,
+                    halfWidth: lieOnDimension.width/2)
 
             default:
                  break
 
             }
-            
-            
-            
             
             occupantSupport =
                 CreateOccupantSupport(

@@ -32,36 +32,73 @@ struct CreateOccupantOverHeadSupport {
     var dictionary: PositionDictionary = [:]
     
     init(
-        _ overHeadSupportCorners: [PositionAsIosAxes]) {
-            dictionary +=
-            DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-                .primaryOrigin,
-                .overHeadSupport,
-                [Globalx.iosLocation],
-                firstOriginId: 0)
+        _ fromPrimaryOrigin: PositionAsIosAxes
+    ) {
+        getDictionary(
+            fromPrimaryOrigin
+        )
             
-            dictionary +=
-            getOneOverHeadSupportCornerDictionary (
-                overHeadSupportCorners)
+           func getDictionary(
+            _ fromPrimaryOrigin: PositionAsIosAxes
+           ) {
+               
+               
+               let partFromParentOrigin =
+               Globalx.iosLocation
+               
+               let supportIndexIsAlways = 0
+                   
+               let overHeadSupportDictionary =
+                   CreateNonSymmetrical(
+                       InitialOccupantBodySupportMeasure().overHead,
+                       .overHeadSupport,
+                       fromPrimaryOrigin,
+                       partFromParentOrigin,
+                       supportIndexIsAlways)
+               
+               let overHeadSupportJointDictionary =
+                   CreateNonSymmetrical(
+                       InitialOccupantBodySupportMeasure().overHeadJoint,
+                       .overHeadSupportVerticalJoint,
+                       fromPrimaryOrigin,
+                       partFromParentOrigin,
+                       supportIndexIsAlways)
+
+                   
+//               let footSupportHangerJointDictionary =
+//                   CreateBothSidesFromRight(
+//                       InitialOccupantFootSupportMeasure.footSupportHangerJoint,
+//                       .footSupportHangerSitOnVerticalJoint,
+//                       parentFromPrimaryOrigin[supportIndex],
+//                       initialOccupantFootSupportMeasure.rightFootSupportHangerJointFromSitOnOrigin,
+//                       supportIndex)
+//
+//               let footSupportJointDictionary =
+//                   CreateBothSidesFromRight(
+//                       InitialOccupantFootSupportMeasure.footSupportJoint,
+//                       .footSupportHorizontalJoint,
+//                       parentFromPrimaryOrigin[supportIndex],
+//                       initialOccupantFootSupportMeasure.rightFootSupportJointFromSitOnOrigin,
+//                       supportIndex)
+
+               dictionary =
+                   Merge.these.dictionaries([
+                       overHeadSupportDictionary.cornerDictionary,
+                       overHeadSupportJointDictionary.cornerDictionary,
+//                       footSupportHangerJointDictionary.cornerDictionary,
+//                       footSupportJointDictionary.cornerDictionary
+                   ])
+
+               
+           }
             
-            func getOneOverHeadSupportCornerDictionary (
-                _ bodySupportCorners: [PositionAsIosAxes])
-            -> [String: PositionAsIosAxes] {
-                let supportIndexAlways = 0
-                let corners = bodySupportCorners
-                var dictionary: [String: PositionAsIosAxes] = [:]
-                for index in 0..<corners.count {
-                    let name =
-                    Part.overHeadSupport.rawValue + Part.id.rawValue +
-                    String(supportIndexAlways) + Part.stringLink.rawValue +
-                    Part.corner.rawValue + String(index)
-                    dictionary += [name: corners[index]]
-                }
-                return dictionary
-            }
+        
+            
+            
+            
+            
+            
         }
-    
-    
 }
 
 
