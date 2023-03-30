@@ -47,7 +47,7 @@ struct CreateFixedWheel {
     ) {
 
         let fixedWheelDictionary =
-            CreateBothSidesFromRight(
+            CreateOnePartOrSideSymmetricParts(
                 measurmentFor.electric,
                 .fixedWheel,
                 (x: 0.0, y:0.0, z: 0.0),
@@ -56,7 +56,7 @@ struct CreateFixedWheel {
                 0)
         
         let wheelPropellerDictionary =
-            CreateBothSidesFromRight(
+            CreateOnePartOrSideSymmetricParts(
                 measurmentFor.selfPropeller,
                 .fixedWheelPropeller,
  

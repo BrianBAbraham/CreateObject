@@ -7,24 +7,6 @@
 
 import Foundation
 
-//struct InitialOccupantOverHeadSupportMeasure {
-//
-//    let lieOn: Dimension
-//    let sitOn: Dimension
-//    let sleepOn: Dimension
-//    let standOn: Dimension
-//
-//    init(
-//        lieOn: Dimension = (length: 1600 ,width: 600),
-//        sitOn: Dimension = (length: 500 ,width: 400),
-//        sleepOn: Dimension = (length: 1800 ,width: 900),
-//        standOn: Dimension = (length: 300 ,width: 500)) {
-//        self.lieOn = lieOn
-//        self.sitOn = sitOn
-//        self.sleepOn = sleepOn
-//        self.standOn = standOn
-//    }
-//}
 
 
 
@@ -34,7 +16,6 @@ struct CreateOccupantOverHeadSupport {
     init(
         _ fromPrimaryOrigin: PositionAsIosAxes,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure) {
-            
             
         getDictionary(
             fromPrimaryOrigin,
@@ -46,7 +27,6 @@ struct CreateOccupantOverHeadSupport {
             _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure
            ) {
                
-               
                let partFromParentOrigin =
                Globalx.iosLocation
                
@@ -55,7 +35,7 @@ struct CreateOccupantOverHeadSupport {
                let jointAboveSupport = fromPrimaryOrigin.z + 50
                    
                let overHeadSupportDictionary =
-                   CreateNonSymmetrical(
+               CreateOnePartOrSideSymmetricParts(
                        initialOccupantBodySupportMeasure.overHead,
                        .overHeadSupport,
                        fromPrimaryOrigin,
@@ -63,7 +43,7 @@ struct CreateOccupantOverHeadSupport {
                        supportIndexIsAlways)
                
                let overHeadSupportJointDictionary =
-                   CreateNonSymmetrical(
+               CreateOnePartOrSideSymmetricParts(
                        initialOccupantBodySupportMeasure.overHeadJoint,
                        .overHeadSupportVerticalJoint,
                        fromPrimaryOrigin,
@@ -71,7 +51,7 @@ struct CreateOccupantOverHeadSupport {
                        supportIndexIsAlways)
 
                let overHeadSupportHookDictionary =
-                   CreateBothSidesFromRight(
+                   CreateOnePartOrSideSymmetricParts(
                     InitialOccupantBodySupportMeasure().overHeadHook,
                         .overHeadHookSupport,
                     fromPrimaryOrigin,

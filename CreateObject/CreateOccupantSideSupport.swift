@@ -35,9 +35,6 @@ struct InitialOccupantSideSupportMeasurement {
         (x:  initialOccupantBodySupportMeasure.sitOn.width/2 + sitOnArm.width/2,
          y: -sitOnArm.length/2 , z: 0.0)
     }
-    
-    
-    
 }
 
 struct CreateOccupantSideSupport {
@@ -71,7 +68,7 @@ struct CreateOccupantSideSupport {
             measurementFor.rightSideSupportFromSitOnOrigin
             
         let sideSupportDictionary =
-            CreateBothSidesFromRight(
+            CreateOnePartOrSideSymmetricParts(
                 measurementFor.sitOnArm,
                 .arm,
                 parentFromPrimaryOrigin[supportIndex],
@@ -79,7 +76,7 @@ struct CreateOccupantSideSupport {
                 supportIndex)
             
        let sideSupportJointDictionary =
-            CreateBothSidesFromRight(
+            CreateOnePartOrSideSymmetricParts(
                 measurementFor.sideSupportJoint,
                 .armVerticalJoint,
                 parentFromPrimaryOrigin[supportIndex],

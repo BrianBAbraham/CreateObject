@@ -10,98 +10,63 @@ import Foundation
 
 
 
-struct CreateNonSymmetrical {
+//struct CreateNonSymmetrical {
+//
+//    var originDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
+//
+//    var cornerDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
+//
+//    var partCorners: [[PositionAsIosAxes]] = []
+//
+//    let partFromPrimaryOriginForOneSupport: PositionAsIosAxes
+//
+//
+//    init(
+//        _ dimension: Dimension,
+//        _ part: Part,
+//        _ parentPartFromPrimaryOrigin: PositionAsIosAxes,
+//        _ partFromParentOrigin: PositionAsIosAxes,
+//        _ supportIndex: Int)
+//        {
+//
+//            partFromPrimaryOriginForOneSupport = CreateIosPosition.addTwoTouples(
+//                parentPartFromPrimaryOrigin,
+//                partFromParentOrigin
+//            )
+//
+//        originDictionary =
+//            SymmetricalOrSingleParts(
+//                    part,
+//                    [partFromPrimaryOriginForOneSupport],
+//                    supportIndex).dictionary
+//
+//            for position in [partFromPrimaryOriginForOneSupport] {
+//                partCorners.append(
+//                    PartCornerLocationFrom(
+//                        dimension.length,
+//                        position,
+//                        dimension.width).primaryOrigin
+//                    )
+//            }
+//
+//            cornerDictionary =
+//            CreateCornerDictionaryForBothSides (
+//              partCorners,
+//              supportIndex,
+//              part).dictionary
+//
+//    }
+//}
 
-    var originDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
-    
-    var cornerDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
-    
-    var partCorners: [[PositionAsIosAxes]] = []
-    
-    let partFromPrimaryOriginForOneSupport: PositionAsIosAxes
-    
-    
-    init(
-        _ dimension: Dimension,
-        _ part: Part,
-        _ parentPartFromPrimaryOrigin: PositionAsIosAxes,
-        _ partFromParentOrigin: PositionAsIosAxes,
-        _ supportIndex: Int)
-        {
-            
-            partFromPrimaryOriginForOneSupport = CreateIosPosition.addTwoTouples(
-                parentPartFromPrimaryOrigin,
-                partFromParentOrigin
-            )
 
-        originDictionary =
-                AsymmetricalParts(
-                    part,
-                    partFromPrimaryOriginForOneSupport,
-                    supportIndex).dictionary
-            
-            for position in [partFromPrimaryOriginForOneSupport] {
-                partCorners.append(
-                    PartCornerLocationFrom(
-                        dimension.length,
-                        position,
-                        dimension.width).primaryOrigin
-                    )
-            }
-            
-            cornerDictionary =
-            CreateCornerDictionaryForBothSides (
-              partCorners,
-              supportIndex,
-              part).dictionary
+struct CreateOnePartOrSideSymmetricParts {
 
-    }
-}
-
-struct AsymmetricalParts {
-    var dictionary: [String: PositionAsIosAxes]
+    var originDictionary: [String: PositionAsIosAxes ] = [:]
     
-    init(
-        _ part: Part,
-        _ partFromPrimaryOrigin: PositionAsIosAxes,
-        _ supportIndex: Int) {
-        
-        dictionary = getPartFromPrimaryOriginForOneSupport(
-                part,
-                partFromPrimaryOrigin,
-                supportIndex)
-        
-        func getPartFromPrimaryOriginForOneSupport (
-            _ part: Part,
-            _ partFromPrimaryOrigin: PositionAsIosAxes,
-            _ supportIndex: Int)
-            -> [String: PositionAsIosAxes] {
-            
-            let supportName = Part.stringLink.rawValue + Part.sitOn.rawValue + Part.id.rawValue
-            let supportIdName = supportName + String(supportIndex)
-            
-            return
-                DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-                         .primaryOrigin,
-                         part,
-                         [partFromPrimaryOrigin] ,
-                         supportId: supportIdName)
-        }
-    }
-
-}
-
-struct CreateBothSidesFromRight {
-
-    var originDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
-    
-    var cornerDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
+    var cornerDictionary: [String: PositionAsIosAxes ] = [:]
     
     var partCornersBothSides: [[PositionAsIosAxes]] = []
     
-    var partFromPrimaryOriginBothSidesOneSupport: LeftRightPositionAsIosAxis
-    
-    
     init(
         _ dimension: Dimension,
         _ part: Part,
@@ -109,21 +74,22 @@ struct CreateBothSidesFromRight {
         _ partFromParentOrigin: PositionAsIosAxes,
         _ supportIndex: Int)
         {
-            partFromPrimaryOriginBothSidesOneSupport =
-                CreateIosPosition.addToupleToLeftRightTouple(
+            
+            
+            let partFromPrimaryOriginForBothSidesOrSingleForOneSupport =
+                CreateIosPosition.addToupleToArrayOfTouples(
                     parentPartFromPrimaryOrigin,
-                    CreateIosPosition.forLeftRightFromPosition(
+                    CreateIosPosition.forLeftRightAsArrayFromPosition (
                         partFromParentOrigin)
                     )
             
             originDictionary =
-                SymmetricalParts(
+                SymmetricalOrSingleParts(
                     part,
-                    partFromPrimaryOriginBothSidesOneSupport,
+                    partFromPrimaryOriginForBothSidesOrSingleForOneSupport,
                     supportIndex).dictionary
             
-            for position in CreateIosPosition.byExtractingLeftRightOfAsArray(
-                partFromPrimaryOriginBothSidesOneSupport) {
+            for position in partFromPrimaryOriginForBothSidesOrSingleForOneSupport {
                 partCornersBothSides.append(
                     PartCornerLocationFrom(
                         dimension.length,
@@ -139,6 +105,40 @@ struct CreateBothSidesFromRight {
               part).dictionary
 
     }
+}
+
+
+struct SymmetricalOrSingleParts {
+    var dictionary: [String: PositionAsIosAxes]
+    
+    init(
+        _ part: Part,
+        _ partOnBothSidesFromPrimaryOrigin: [PositionAsIosAxes],
+        _ supportIndex: Int) {
+        
+        dictionary = getPartForBothSidesFromPrimaryOriginForOneSitOn(
+                part,
+                partOnBothSidesFromPrimaryOrigin,
+                supportIndex)
+        
+        func getPartForBothSidesFromPrimaryOriginForOneSitOn (
+            _ part: Part,
+            _ partOnBothSidesFromPrimaryOrigin: [PositionAsIosAxes],
+            _ supportIndex: Int)
+            -> [String: PositionAsIosAxes] {
+            
+            let supportName = Part.stringLink.rawValue + Part.sitOn.rawValue + Part.id.rawValue
+            let supportIdName = supportName + String(supportIndex)
+            
+            return
+                DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
+                         .primaryOrigin,
+                         part,
+                         partOnBothSidesFromPrimaryOrigin ,
+                         supportId: supportIdName)
+        }
+    }
+
 }
 
 struct CreateCornerDictionaryForBothSides {
@@ -178,67 +178,35 @@ struct CreateCornerDictionaryForBothSides {
     }
 }
 
-struct SymmetricalParts {
-    var dictionary: [String: PositionAsIosAxes]
-    
-    init(
-        _ part: Part,
-        _ partOnBothSidesFromPrimaryOrigin: LeftRightPositionAsIosAxis,
-        _ supportIndex: Int) {
-        
-        dictionary = getPartForBothSidesFromPrimaryOriginForOneSitOn(
-                part,
-                partOnBothSidesFromPrimaryOrigin,
-                supportIndex)
-        
-        func getPartForBothSidesFromPrimaryOriginForOneSitOn (
-            _ part: Part,
-            _ partOnBothSidesFromPrimaryOrigin: LeftRightPositionAsIosAxis,
-            _ supportIndex: Int)
-            -> [String: PositionAsIosAxes] {
-            
-            let supportName = Part.stringLink.rawValue + Part.sitOn.rawValue + Part.id.rawValue
-            let supportIdName = supportName + String(supportIndex)
-            
-            return
-                DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-                         .primaryOrigin,
-                         part,
-                         [partOnBothSidesFromPrimaryOrigin.left, partOnBothSidesFromPrimaryOrigin.right] ,
-                         supportId: supportIdName)
-        }
-    }
-
-}
 
 struct DimensionsBetweenFirstAndSecondOrigin{
-    static func dictionaryForManyToMany (
-        _ firstOrigin: Part,
-        _ secondOrigin: Part,
-        _ secondOriginLocations: [PositionAsIosAxes],
-        count firstOriginCount: Int)
-    -> [String: PositionAsIosAxes] {    //CHANGE
-        var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
-        
-        for firstOriginId in 0..<firstOriginCount {
-            let firstOriginName = CreateOriginName(firstOrigin, identifierForThisPartType: firstOriginId).firstName
-            
-            get(firstOriginName)
-        }
-        
-        func get(_ firstOriginName: String) {
-           
-            for index in 0..<secondOriginLocations.count {
-                dictionary +=
-                newDictionary(
-                    firstOriginName,
-                    secondOrigin,
-                    secondOriginLocations[index],
-                    index)
-                }
-        }
-        return dictionary
-    }
+//    static func dictionaryForManyToMany (
+//        _ firstOrigin: Part,
+//        _ secondOrigin: Part,
+//        _ secondOriginLocations: [PositionAsIosAxes],
+//        count firstOriginCount: Int)
+//    -> [String: PositionAsIosAxes] {    //CHANGE
+//        var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
+//
+//        for firstOriginId in 0..<firstOriginCount {
+//            let firstOriginName = CreateOriginName(firstOrigin, identifierForThisPartType: firstOriginId).firstName
+//
+//            get(firstOriginName)
+//        }
+//
+//        func get(_ firstOriginName: String) {
+//
+//            for index in 0..<secondOriginLocations.count {
+//                dictionary +=
+//                newDictionary(
+//                    firstOriginName,
+//                    secondOrigin,
+//                    secondOriginLocations[index],
+//                    index)
+//                }
+//        }
+//        return dictionary
+//    }
     
     static func dictionaryForOneToMany(
         _ firstOrigin: Part,
@@ -316,8 +284,8 @@ struct DimensionsForCaster{
             wheelFromItsCasterSpindleOrigin: [PositionAsIosAxes] ),
     firstOriginId: Int)
     ->
-    (spindleFromPrimaryOrigin: [String: PositionAsIosAxes ],    //CHANGE
-     wheelFromSpindleOrigin: [String: PositionAsIosAxes ] ) {    //CHANGE
+    (spindleFromPrimaryOrigin: [String: PositionAsIosAxes ],
+     wheelFromSpindleOrigin: [String: PositionAsIosAxes ] ) {
     
         let casterSpindleOriginLocations = positionOfCaster.itsSpindleFromPrimaryOrigin
         

@@ -58,7 +58,7 @@ struct CreateCaster {
         let supportIdIsAlwaysZero = 0
             
         let casterWheelDictionary =
-            CreateBothSidesFromRight(
+            CreateOnePartOrSideSymmetricParts(
                 measurementFor.wheel,
                 part,
                 (x:0, y: -measurementFor.trail, z: 0),
@@ -68,7 +68,7 @@ struct CreateCaster {
 
             
         let casterSpindleJointDictionary =
-        CreateBothSidesFromRight(
+        CreateOnePartOrSideSymmetricParts(
             (length: 20.0, width: 20.0),
             getCasterSpindleJoint(part),
             (x:0, y:0, z: 0),
@@ -90,7 +90,7 @@ struct CreateCaster {
         }
 
             let casterForkDictionary =
-            CreateBothSidesFromRight(
+            CreateOnePartOrSideSymmetricParts(
                 measurementFor.casterFork,
                 getCasterSpindleJoint(part),
                 measurementFor.casterForkFromParent,
