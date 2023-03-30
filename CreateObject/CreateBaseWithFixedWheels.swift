@@ -45,12 +45,14 @@ struct ForFixedWheelBaseObject {
         let fixedWheelOriginLocations =
         CreateIosPosition.forLeftRightAsArray(x:  centreHalfWidth)
 
+        let fixedWheelOriginIdIsAlways = 0
+        
         fixedWheelsFromPrimaryOriginsDictionary =
         DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
             .primaryOrigin,
             .fixedWheel,
             fixedWheelOriginLocations,
-            firstOriginId:0)
+            firstOriginId: fixedWheelOriginIdIsAlways)
     }
     
     func getDictionary() -> [String: PositionAsIosAxes ]{    //CHANGE
@@ -100,11 +102,8 @@ struct ForFixedWheelBaseObject {
     Merge.these.dictionaries([
         casterDictionary,
         CreateFixedWheel(measurement.baseCornerFromPrimaryOriginForWidthAxisAt.centre.centre).dictionary,
-
-
-
         ])
-//
+
     return dictionary
     }
 }

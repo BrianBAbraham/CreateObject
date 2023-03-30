@@ -232,6 +232,9 @@ struct CreateOccupantSupport {
 
                     case .fixedWheelMidDrive:
                         bodySupportlengthFromPrimaryOrigin = 0
+                    
+                    case .fixedWheelSolo:
+                        bodySupportlengthFromPrimaryOrigin = 0
 
                     case .fixedWheelRearDrive:
                         bodySupportlengthFromPrimaryOrigin = halfLength
