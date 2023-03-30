@@ -203,7 +203,8 @@ struct CreateOccupantSupport {
                 
                 let overHeadSupportDictionary =
                 CreateOccupantOverHeadSupport (
-                    overHeadSupportFromPrimaryOrigin
+                    overHeadSupportFromPrimaryOrigin,
+                    initialOccupantBodySupportMeasure
                     ).dictionary
 
                     

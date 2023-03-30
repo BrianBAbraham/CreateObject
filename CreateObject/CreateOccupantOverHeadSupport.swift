@@ -32,14 +32,18 @@ struct CreateOccupantOverHeadSupport {
     var dictionary: PositionDictionary = [:]
     
     init(
-        _ fromPrimaryOrigin: PositionAsIosAxes
-    ) {
+        _ fromPrimaryOrigin: PositionAsIosAxes,
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure) {
+            
+            
         getDictionary(
-            fromPrimaryOrigin
+            fromPrimaryOrigin,
+            initialOccupantBodySupportMeasure
         )
             
            func getDictionary(
-            _ fromPrimaryOrigin: PositionAsIosAxes
+            _ fromPrimaryOrigin: PositionAsIosAxes,
+            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure
            ) {
                
                
@@ -47,10 +51,12 @@ struct CreateOccupantOverHeadSupport {
                Globalx.iosLocation
                
                let supportIndexIsAlways = 0
+               
+               let jointAboveSupport = fromPrimaryOrigin.z + 50
                    
                let overHeadSupportDictionary =
                    CreateNonSymmetrical(
-                       InitialOccupantBodySupportMeasure().overHead,
+                       initialOccupantBodySupportMeasure.overHead,
                        .overHeadSupport,
                        fromPrimaryOrigin,
                        partFromParentOrigin,
@@ -58,40 +64,30 @@ struct CreateOccupantOverHeadSupport {
                
                let overHeadSupportJointDictionary =
                    CreateNonSymmetrical(
-                       InitialOccupantBodySupportMeasure().overHeadJoint,
+                       initialOccupantBodySupportMeasure.overHeadJoint,
                        .overHeadSupportVerticalJoint,
                        fromPrimaryOrigin,
                        partFromParentOrigin,
                        supportIndexIsAlways)
 
-             let overHeadSupportHookDictionary =
-               CreateBothSidesFromRight(
-                InitialOccupantBodySupportMeasure().overHeadHook,
-                    .overHeadHookSupport,
-                fromPrimaryOrigin,
-                (x: InitialOccupantBodySupportMeasure().overHead.width/2,
-                 y: 0,
-                 z: 0),
-                supportIndexIsAlways)
+               let overHeadSupportHookDictionary =
+                   CreateBothSidesFromRight(
+                    InitialOccupantBodySupportMeasure().overHeadHook,
+                        .overHeadHookSupport,
+                    fromPrimaryOrigin,
+                    (x: initialOccupantBodySupportMeasure.overHead.width/2,
+                     y: 0,
+                     z: jointAboveSupport),
+                    supportIndexIsAlways)
 
                dictionary =
                    Merge.these.dictionaries([
                        overHeadSupportDictionary.cornerDictionary,
                        overHeadSupportJointDictionary.cornerDictionary,
                        overHeadSupportHookDictionary.cornerDictionary
-//                       footSupportHangerJointDictionary.cornerDictionary,
-//                       footSupportJointDictionary.cornerDictionary
                    ])
 
-               
            }
-            
-        
-            
-            
-            
-            
-            
         }
 }
 
