@@ -19,6 +19,7 @@ struct InitialOccupantBodySupportMeasure {
 
     let lieOn: Dimension
     let overHead: Dimension
+    let overHeadHook: Dimension
     let overHeadJoint: Dimension
     let sitOn: Dimension
     let sleepOn: Dimension
@@ -28,11 +29,13 @@ struct InitialOccupantBodySupportMeasure {
         lieOn: Dimension = (length: 1600 ,width: 600),
         sitOn: Dimension = (length: 500 ,width: 400),
         overHead: Dimension = (length: 40 ,width: 600),
+        overHeadHook: Dimension = (length: 100 ,width: 10),
         overHeadJoint: Dimension = (length: 40 ,width: 40),
         sleepOn: Dimension = (length: 1800 ,width: 900),
         standOn: Dimension = (length: 300 ,width: 500)) {
         self.lieOn = lieOn
         self.overHead = overHead
+        self.overHeadHook = overHeadHook
         self.overHeadJoint = overHeadJoint
         self.sitOn = sitOn
         self.sleepOn = sleepOn

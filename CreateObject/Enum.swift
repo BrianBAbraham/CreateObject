@@ -19,6 +19,7 @@ enum Part: String {
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 
     case overHeadSupport = "overHeadSupport"
+    case overHeadHookSupport = "overHeadHookSupport"
     case overHeadSupportVerticalJoint = "overHeadSupportVerticalJoint"
     case casterFork = "casterFork"
     case casterSpindleJointAtCenter = "casterSpindleJointAtCenter"

@@ -64,27 +64,21 @@ struct CreateOccupantOverHeadSupport {
                        partFromParentOrigin,
                        supportIndexIsAlways)
 
-                   
-//               let footSupportHangerJointDictionary =
-//                   CreateBothSidesFromRight(
-//                       InitialOccupantFootSupportMeasure.footSupportHangerJoint,
-//                       .footSupportHangerSitOnVerticalJoint,
-//                       parentFromPrimaryOrigin[supportIndex],
-//                       initialOccupantFootSupportMeasure.rightFootSupportHangerJointFromSitOnOrigin,
-//                       supportIndex)
-//
-//               let footSupportJointDictionary =
-//                   CreateBothSidesFromRight(
-//                       InitialOccupantFootSupportMeasure.footSupportJoint,
-//                       .footSupportHorizontalJoint,
-//                       parentFromPrimaryOrigin[supportIndex],
-//                       initialOccupantFootSupportMeasure.rightFootSupportJointFromSitOnOrigin,
-//                       supportIndex)
+             let overHeadSupportHookDictionary =
+               CreateBothSidesFromRight(
+                InitialOccupantBodySupportMeasure().overHeadHook,
+                    .overHeadHookSupport,
+                fromPrimaryOrigin,
+                (x: InitialOccupantBodySupportMeasure().overHead.width/2,
+                 y: 0,
+                 z: 0),
+                supportIndexIsAlways)
 
                dictionary =
                    Merge.these.dictionaries([
                        overHeadSupportDictionary.cornerDictionary,
                        overHeadSupportJointDictionary.cornerDictionary,
+                       overHeadSupportHookDictionary.cornerDictionary
 //                       footSupportHangerJointDictionary.cornerDictionary,
 //                       footSupportJointDictionary.cornerDictionary
                    ])
