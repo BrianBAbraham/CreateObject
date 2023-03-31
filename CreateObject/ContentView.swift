@@ -229,6 +229,63 @@ struct PickEquipmentView: View {
 }
 
 
+struct DefaultDictionaryAsList {
+    @EnvironmentObject var vm: ObjectPickViewModel
+    @State var defaultDictionaryAsList = [""]
+    
+   func getDefaultDictionaryAsList ()
+    -> [String] {
+        vm.getList()
+    }
+}
+
+struct Object: View {
+    
+    @EnvironmentObject var vm: ObjectPickViewModel
+    @State var defaultDictionaryAsList = [""]
+    
+    var uniquePartNames: [String] {
+        vm.getUniquePartNamesFromObjectDictionary()
+    }
+    
+        var addDefaultDictionaryButtonView: some View {
+                Button(action: {
+                    defaultDictionaryAsList =
+                    vm.getList()
+                }, label: {
+                    Text("add")
+                        .foregroundColor(.blue)
+                } )
+        }
+    
+    var body: some View {
+        
+        VStack {
+        
+            ZStack {
+                ForEach(uniquePartNames, id: \.self) { name in
+                    PartView(partCornersDictionary: vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(name))
+                    
+                }
+                OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
+                MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
+            }
+            .position(x: 1000, y: 500)
+            .scaleEffect(0.2)
+            
+            
+            PickEquipmentView()
+                .padding()
+            
+//            addDefaultDictionaryButtonView
+//                .padding()
+        
+        
+        }
+    }
+}
+
+
 
 
 struct ContentView: View {
@@ -236,7 +293,11 @@ struct ContentView: View {
     @StateObject var cdVM = CoreDataViewModel()
     @State var objectName = "RearDriveWheelchair"
     @State var savedDictionaryAsList =  [""]
-    @State var defaultDictionaryAsList = [""]
+    //@State var defaultDictionaryAsList = [""]
+    var defaultDictionaryAsList: [String] {
+        vm.getList()
+    }
+
     let equipmentName: String
 
     init(_ equipmentName: String) {
@@ -254,14 +315,7 @@ print("INITATE CONTENT VIEW")
             } )
     }
 
-    var loadButtonView: some View {
-            Button(action: {
-                defaultDictionaryAsList = vm.getList()
-            }, label: {
-                Text("add default")
-                    .foregroundColor(.blue)
-            } )
-    }
+
     
     var deleteAllButtonView: some View {
             Button(action: {
@@ -272,29 +326,48 @@ print("INITATE CONTENT VIEW")
             } )
     }
     
-    var addSavedButtonView: some View {
-        List {
-            ForEach(cdVM.savedEntities) {entity in
-
-                Button {
-                   savedDictionaryAsList  =
-                    vm.getPartCornersFromPrimaryOriginDictionary(entity)
-                    vm.setCurrentObjectType(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
-                } label: {
-                    HStack{
-                        Text(entity.objectType ?? "")
-                        Text(entity.objectName ?? "")
+    var savedObjectDictionaryAsListButtonView: some View {
+        VStack {
+            Text ("Saved equipment")
+            deleteAllButtonView
+            List {
+                ForEach(cdVM.savedEntities) {entity in
+                    Button {
+                       savedDictionaryAsList  =
+                        vm.getPartCornersFromPrimaryOriginDictionary(entity)
+                        vm.setCurrentObjectType(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
+                    } label: {
+                        HStack{
+                            Text(entity.objectType ?? "")
+                            Text(entity.objectName ?? "")
+                        }
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .foregroundColor(.primary)
                 }
-                .buttonStyle(PlainButtonStyle())
-                .foregroundColor(.primary)
+                .onDelete(perform: cdVM.deleteObject)
             }
-            .onDelete(perform: cdVM.deleteObject)
+
         }
+
     }
     
     var uniquePartNames: [String] {
         vm.getUniquePartNamesFromObjectDictionary()
+    }
+    
+    var uniquePartNamesAsListView: some View {
+        VStack{
+            Text(equipmentName)
+            List{
+                Section(header: Text("Dictionary")) {
+                    ForEach (0..<uniquePartNames.count, id: \.self) { index in
+                        Text("\( uniquePartNames[index])")
+                    }
+                }
+            }
+        }
+
     }
     
     var originDictionary: [String] {
@@ -311,61 +384,86 @@ print("INITATE CONTENT VIEW")
                 objectName: objectName)
                 cdVM.fetchNames()
     }
+    
 
-    var body: some View {
 
-        ZStack {
-            ForEach(uniquePartNames, id: \.self) { name in
-                PartView(partCornersDictionary: vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(name))
-                
+    
+    var defaultDictionaryAsListView: some View {
+        VStack{
+            Text(equipmentName)
+            List{
+                Section(header: Text("Dictionary")) {
+                    ForEach (0..<defaultDictionaryAsList.count, id: \.self) { index in
+                        Text("\(defaultDictionaryAsList[index])")
+                    }
+                }
             }
-            OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
-            MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
         }
-        .position(x: 1000, y: 500)
-        .scaleEffect(0.3)
 
-        VStack {
-            HStack {
-                saveButtonView
-                    .padding()
-                deleteAllButtonView
-            }
-      
+    }
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                
+                NavigationLink(destination:  Object()) {
+                    Text("Default equipment")
+                }
+ 
+                
+                NavigationLink(destination: savedObjectDictionaryAsListButtonView ) {
+                    Text("Saved equipment")
+                }
+                
+                NavigationLink(destination: saveButtonView) {
+                    Text("Edit equipment")
+                }
+                
+                NavigationLink(destination: defaultDictionaryAsListView ) {
+                 Text("View dictionary")
+                }
 
-
-            addSavedButtonView
-            HStack{
-                PickEquipmentView()
-                loadButtonView
+                NavigationLink(destination: uniquePartNamesAsListView ) {
+                    Text("View dictionary parts")
+                }
                 
             }
+            .padding()
+            
+            
 
-            HStack {
-                List{
-                    Section(header: Text("Dictionary")) {
-                        ForEach (0..<defaultDictionaryAsList.count, id: \.self) { index in
-                            Text("\(defaultDictionaryAsList[index])")
-                        }
-                    }
-                }
-                List{
-                    Section(header: Text("Origins") ) {
-                        ForEach (0..<originDictionary.count, id: \.self) { index in
-                            Text("\(originDictionary [index])")
-                        }
-                    }
-                }
-//                List{
-//                    Section(header: Text("Corners") ) {
-//                        ForEach (0..<savedDictionaryAsList.count, id: \.self) { index in
-//                            Text("\(savedDictionaryAsList [index])")
+//
+//                VStack {
+//                    HStack {
+//                        saveButtonView
+//                            .padding()
+//                        deleteAllButtonView
+//                    }
+//                    addSavedButtonView
+//                    HStack{
+//                        loadButtonView
+//
+//                    }
+//
+//                    HStack {
+  
+//                        List{
+//                            Section(header: Text("Origins") ) {
+//                                ForEach (0..<originDictionary.count, id: \.self) { index in
+//                                    Text("\(originDictionary [index])")
+//                                }
+//                            }
 //                        }
 //                    }
 //                }
-            }
+            
+
+                
+                
+           // }
+            //.environmentObject(vm)
+            .navigationBarTitle("Equipment")
         }
-        .environmentObject(vm)
     }
 }
 

@@ -64,6 +64,7 @@ struct CreateOccupantOverHeadSupport {
                    Merge.these.dictionaries([
                        overHeadSupportDictionary.cornerDictionary,
                        overHeadSupportJointDictionary.cornerDictionary,
+                       overHeadSupportJointDictionary.originDictionary,
                        overHeadSupportHookDictionary.cornerDictionary
                    ])
 
