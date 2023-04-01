@@ -30,8 +30,17 @@ struct PartView: View {
   
     
     var body: some View {
-        LocalOutlineRectangle.path(corners: partCorners, color)
+        //HStack{
+            LocalOutlineRectangle.path(corners: partCorners, color)
+
+            //.position(x: 0, y: 0)
+            .onTapGesture {
+                print(partName)
+                }
+
+            
     }
+
     //CGPoint(x: cornerLocation.x , y: cornerLocation.y)//    func localRectangle(_ manoeuvre: ChairManoeuvre.Movement, _ part: ChairManoeuvre.Part) -> some View {
 //        ZStack{
 //            LocalFilledRectangle.path(part.xLocal * scale
@@ -161,22 +170,73 @@ struct CircleModifier: ViewModifier {
 
 struct LocalOutlineRectangle {
     static func path(corners: [CGPoint], _ color: Color = .black) -> some View {
-       Path { path in
-           path.move(to: corners[0])
-           path.addLine(to: corners[1])
-           path.addLine(to: corners[2])
-           path.addLine(to: corners[3])
-           path.closeSubpath()
-       }
-//       .stroke(color)
-    
-       .fill(color)
-       .opacity(0.9)
+        
+        ZStack {
+            Path { path in
+                path.move(to: corners[0])
+                path.addLine(to: corners[1])
+                path.addLine(to: corners[2])
+                path.addLine(to: corners[3])
+                path.closeSubpath()
+            }
+            .fill(color)
+            .opacity(0.9)
+            
+            
+            
+            Path { path in
+                path.move(to: corners[0])
+                path.addLine(to: corners[1])
+                path.addLine(to: corners[2])
+                path.addLine(to: corners[3])
+                path.closeSubpath()
+            }
+            .stroke(.black)
+            
+        }
+        
+//        func myPath(corners: [CGPoint], _ color: Color = .black)
+//        -> some View { path in
+//            path.move(to: corners[0])
+//            path.addLine(to: corners[1])
+//            path.addLine(to: corners[2])
+//            path.addLine(to: corners[3])
+//            path.closeSubpath()        }
    }
 }
 
 
-
+struct TestRectangles {
+    static func first() -> some View {
+        let x = 500.0
+        let y = 700.0
+        let corners = [CGPoint(x: 0.0, y: 0.0), CGPoint(x: x, y: 0.0),  CGPoint(x: x, y: y)  ]
+        
+        return myPath(corners, .red)
+    }
+    
+    static func second() -> some View {
+        let oX = 800.0
+        let oY = -300.0
+        let x = 500.0
+        let y = 700.0
+        let corners = [CGPoint(x: oX , y: oY), CGPoint(x: oX + x, y: oY),  CGPoint(x: oX + x, y: oY + y) ]
+        
+        return  myPath(corners, .green)
+    }
+    
+   static func myPath(_ corners: [CGPoint], _ color: Color)
+    -> _ShapeView<Path, Color> {
+        return
+            Path { path in
+                path.move(to: corners[0])
+                path.addLine(to: corners[1])
+                path.addLine(to: corners[2])
+                path.closeSubpath()
+            }
+            .fill(color) as! _ShapeView<Path, Color>
+    }
+}
 
 
 /// add default to scene
@@ -259,40 +319,44 @@ struct Object: View {
         }
     
     var body: some View {
-        
         VStack {
-        
             ZStack {
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(partCornersDictionary: vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(name))
-                    
                 }
                 OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
                 MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
-            .position(x: 1000, y: 500)
+            .border(.red, width: 10)
+            .offset(x: 500, y: 500)
             .scaleEffect(0.2)
-            
+
             
             PickEquipmentView()
                 .padding()
-            
-//            addDefaultDictionaryButtonView
-//                .padding()
-        
-        
         }
     }
 }
 
+struct EnterTextView: View {
+    @State private var name: String = ""
 
-
+    var body: some View {
+        VStack(alignment: .leading) {
+            TextField("", text: $name)
+            //Text("Hello, \(name)!")
+        }
+    }
+}
 
 struct ContentView: View {
     @EnvironmentObject var vm: ObjectPickViewModel
     @StateObject var cdVM = CoreDataViewModel()
     @State var objectName = "RearDriveWheelchair"
     @State var savedDictionaryAsList =  [""]
+    @State private var savedAsName: String = ""
+    
+    
     //@State var defaultDictionaryAsList = [""]
     var defaultDictionaryAsList: [String] {
         vm.getList()
@@ -302,17 +366,30 @@ struct ContentView: View {
 
     init(_ equipmentName: String) {
         self.equipmentName = equipmentName
-print("INITATE CONTENT VIEW")
+//print("INITATE CONTENT VIEW")
         }
+    
+    var enterTextView: some View {
+        VStack(alignment: .leading) {
+            TextField("", text: $savedAsName)
+                .textFieldStyle(.roundedBorder)
+        }
+    }
 
     var saveButtonView: some View {
+        HStack{
             Button(action: {
-                saveData(equipmentName)
+                saveData(savedAsName)
                // vm.getUniquePartNames(vm.getLoadedDictionary())
             }, label: {
                 Text("save")
                     .foregroundColor(.blue)
             } )
+            
+            enterTextView
+        }
+        .padding()
+
     }
 
 
@@ -328,7 +405,7 @@ print("INITATE CONTENT VIEW")
     
     var savedObjectDictionaryAsListButtonView: some View {
         VStack {
-            Text ("Saved equipment")
+            //Text ("Saved equipment")
             deleteAllButtonView
             List {
                 ForEach(cdVM.savedEntities) {entity in
@@ -402,68 +479,64 @@ print("INITATE CONTENT VIEW")
 
     }
     
+    //@State var isPresented = true
+    @State var isActive = true
     var body: some View {
-        NavigationView {
-            VStack {
-                
-                NavigationLink(destination:  Object()) {
-                    Text("Default equipment")
-                }
- 
-                
-                NavigationLink(destination: savedObjectDictionaryAsListButtonView ) {
-                    Text("Saved equipment")
-                }
-                
-                NavigationLink(destination: saveButtonView) {
-                    Text("Edit equipment")
-                }
-                
-                NavigationLink(destination: defaultDictionaryAsListView ) {
-                 Text("View dictionary")
-                }
-
-                NavigationLink(destination: uniquePartNamesAsListView ) {
-                    Text("View dictionary parts")
-                }
-                
-            }
-            .padding()
-            
-            
-
+        
+        
+                                       ZStack {
+                            TestRectangles.first()
+                                .onTapGesture {
+                                    print("first")
+                                    }
+                            TestRectangles.second()
+                                .onTapGesture {
+                                    print("second")
+                                    }
+                        }
+                            .border(.black, width: 10)
+                            //.scaleEffect(0.2)
+        
+//        NavigationView {
+//            VStack {
 //
-//                VStack {
-//                    HStack {
-//                        saveButtonView
-//                            .padding()
-//                        deleteAllButtonView
-//                    }
-//                    addSavedButtonView
-//                    HStack{
-//                        loadButtonView
 //
-//                    }
+//                NavigationLink(destination:
+//                                Object()
 //
-//                    HStack {
-  
-//                        List{
-//                            Section(header: Text("Origins") ) {
-//                                ForEach (0..<originDictionary.count, id: \.self) { index in
-//                                    Text("\(originDictionary [index])")
-//                                }
-//                            }
-//                        }
-//                    }
+//
+//                ) {
+//                    Text("Default equipment")
 //                }
-            
-
-                
-                
-           // }
-            //.environmentObject(vm)
-            .navigationBarTitle("Equipment")
-        }
+//
+//
+//
+//                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
+//                    Text("Saved equipment")
+//                        .font(isActive ? .headline:.body)
+//                }
+//
+//                NavigationLink(destination:
+//                                VStack {
+//                    Text("EDIT")
+//                                    Object()
+//                                    saveButtonView}) {
+//                    Text("Edit equipment")
+//                }
+//
+//                NavigationLink(destination: defaultDictionaryAsListView ) {
+//                 Text("View dictionary")
+//                }
+//
+//                NavigationLink(destination: uniquePartNamesAsListView ) {
+//                    Text("View dictionary parts")
+//                }
+//
+//            }
+//            .padding()
+//
+//            .navigationBarTitle("Equipment manager")
+//        }
     }
 }
 
