@@ -54,7 +54,13 @@ extension ObjectPickViewModel {
     
     
     func getRelevantDictionary() -> [String: PositionAsIosAxes] {
+        var relevantDictionary =
         getLoadedDictionary().keys.count == 0 ? getObjectDictionary(): getLoadedDictionary()
+        
+        relevantDictionary = ForScreen(relevantDictionary).dictionary
+//print(relevantDictionary)
+        return
+         relevantDictionary
     }
     
     func getPartNameAndItsCornerLocationsFromPrimaryOrigin(_ uniquePartName: String) -> [String: [PositionAsIosAxes]] {

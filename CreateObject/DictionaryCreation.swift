@@ -25,10 +25,13 @@ struct ForScreen {
         let offset = CreateIosPosition.minus(minThenMax[0])
         let objectDimensions = findObjectDimensions(minThenMax)
         let scale = findScale(objectDimensions)
+        dictionary = createDictionaryForScreen(actualSize, scale, offset)
+
     }
     
     func findMinThenMax (_ actualSize: PositionDictionary) -> [PositionAsIosAxes] {
         let values = actualSize.map { $0.value }
+//        print(values)
         var minX = 0.0
         var minY = 0.0
         var maxX = 0.0
@@ -36,9 +39,11 @@ struct ForScreen {
         for value in values {
             minX = value.x < minX ? value.x: minX
             minY = value.y < minY ? value.y: minY
-            maxX = value.x < maxX ? value.x: maxX
-            maxY = value.y < maxY ? value.y: maxY
+            maxX = value.x > maxX ? value.x: maxX
+            maxY = value.y > maxY ? value.y: maxY
         }
+//print([(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
+//              )
         return
             [(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
     }
@@ -49,7 +54,20 @@ struct ForScreen {
     }
     
     func findScale(_ objectDimensions: PositionAsIosAxes) -> Double {
-        return 1.0
+        let maxDimension = [objectDimensions.x,objectDimensions.y].max() ?? objectDimensions.x
+        //print("\(objectDimensions) \(Screen.smallestDimension) ")
+        let scale = Screen.smallestDimension / maxDimension
+        return scale
+    }
+    
+    func createDictionaryForScreen(_ actualSize: PositionDictionary, _ scale: Double, _ offset: PositionAsIosAxes)
+    -> PositionDictionary {
+        var dictionaryForScreen: PositionDictionary = [:]
+        for item in actualSize {
+            dictionaryForScreen[item.key] =
+            (x: (item.value.x + offset.x) * scale, y: (item.value.y + offset.y) * scale, z: item.value.z)
+        }
+        return dictionaryForScreen
     }
     
     

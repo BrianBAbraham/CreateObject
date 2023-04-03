@@ -298,7 +298,7 @@ struct Object: View {
             }
             .border(.red, width: 10)
             //.offset(x: 500, y: 500)
-            //.scaleEffect(0.2)
+            .scaleEffect(0.6)
 
 
             
