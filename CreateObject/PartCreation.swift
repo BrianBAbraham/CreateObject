@@ -42,6 +42,7 @@ struct PartCornerLocationFrom {
                
         
         func getForPrimaryOrigin() -> [PositionAsIosAxes] {
+            let offsetOriginLocation = CreateIosPosition.addTwoTouples((x: 500, y:200, z: 0 ), originLocation)
             var cornersFromPrimaryOrigin: [PositionAsIosAxes] = []
             let positionFromPartOrigin = getForItsOrigin()
             for item in positionFromPartOrigin{

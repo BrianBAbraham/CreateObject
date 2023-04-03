@@ -10,54 +10,50 @@ import Foundation
 
 
 
-//struct CreateNonSymmetrical {
-//
-//    var originDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
-//
-//    var cornerDictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
-//
-//    var partCorners: [[PositionAsIosAxes]] = []
-//
-//    let partFromPrimaryOriginForOneSupport: PositionAsIosAxes
-//
-//
-//    init(
-//        _ dimension: Dimension,
-//        _ part: Part,
-//        _ parentPartFromPrimaryOrigin: PositionAsIosAxes,
-//        _ partFromParentOrigin: PositionAsIosAxes,
-//        _ supportIndex: Int)
-//        {
-//
-//            partFromPrimaryOriginForOneSupport = CreateIosPosition.addTwoTouples(
-//                parentPartFromPrimaryOrigin,
-//                partFromParentOrigin
-//            )
-//
-//        originDictionary =
-//            SymmetricalOrSingleParts(
-//                    part,
-//                    [partFromPrimaryOriginForOneSupport],
-//                    supportIndex).dictionary
-//
-//            for position in [partFromPrimaryOriginForOneSupport] {
-//                partCorners.append(
-//                    PartCornerLocationFrom(
-//                        dimension.length,
-//                        position,
-//                        dimension.width).primaryOrigin
-//                    )
-//            }
-//
-//            cornerDictionary =
-//            CreateCornerDictionaryForBothSides (
-//              partCorners,
-//              supportIndex,
-//              part).dictionary
-//
-//    }
-//}
+///transfsrorm dictiionary into a forScreenDictionary
+///find maximum -vs and trasnform to +
+///find max dimesnsions and scale to fit screen
+///
+///{
 
+struct ForScreen {
+    var dictionary: PositionDictionary = [:]
+    
+    init( _ actualSize: PositionDictionary ) {
+        
+        let minThenMax = findMinThenMax(actualSize)
+        let offset = CreateIosPosition.minus(minThenMax[0])
+        let objectDimensions = findObjectDimensions(minThenMax)
+        let scale = findScale(objectDimensions)
+    }
+    
+    func findMinThenMax (_ actualSize: PositionDictionary) -> [PositionAsIosAxes] {
+        let values = actualSize.map { $0.value }
+        var minX = 0.0
+        var minY = 0.0
+        var maxX = 0.0
+        var maxY = 0.0
+        for value in values {
+            minX = value.x < minX ? value.x: minX
+            minY = value.y < minY ? value.y: minY
+            maxX = value.x < maxX ? value.x: maxX
+            maxY = value.y < maxY ? value.y: maxY
+        }
+        return
+            [(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
+    }
+    
+    func findObjectDimensions( _ minMax: [PositionAsIosAxes])
+    -> PositionAsIosAxes {
+        (x: minMax[1].x - minMax[0].x, y: minMax[1].y - minMax[0].y, z: 0)
+    }
+    
+    func findScale(_ objectDimensions: PositionAsIosAxes) -> Double {
+        return 1.0
+    }
+    
+    
+}
 
 struct CreateOnePartOrSideSymmetricParts {
 

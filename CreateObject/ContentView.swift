@@ -33,7 +33,7 @@ struct PartView: View {
         //HStack{
             LocalOutlineRectangle.path(corners: partCorners, color)
 
-            //.position(x: 0, y: 0)
+        //.offset(x: 300, y: 200)
             .onTapGesture {
                 print(partName)
                 }
@@ -206,37 +206,6 @@ struct LocalOutlineRectangle {
 }
 
 
-struct TestRectangles {
-    static func first() -> some View {
-        let x = 500.0
-        let y = 700.0
-        let corners = [CGPoint(x: 0.0, y: 0.0), CGPoint(x: x, y: 0.0),  CGPoint(x: x, y: y)  ]
-        
-        return myPath(corners, .red)
-    }
-    
-    static func second() -> some View {
-        let oX = 800.0
-        let oY = -300.0
-        let x = 500.0
-        let y = 700.0
-        let corners = [CGPoint(x: oX , y: oY), CGPoint(x: oX + x, y: oY),  CGPoint(x: oX + x, y: oY + y) ]
-        
-        return  myPath(corners, .green)
-    }
-    
-   static func myPath(_ corners: [CGPoint], _ color: Color)
-    -> _ShapeView<Path, Color> {
-        return
-            Path { path in
-                path.move(to: corners[0])
-                path.addLine(to: corners[1])
-                path.addLine(to: corners[2])
-                path.closeSubpath()
-            }
-            .fill(color) as! _ShapeView<Path, Color>
-    }
-}
 
 
 /// add default to scene
@@ -324,12 +293,13 @@ struct Object: View {
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(partCornersDictionary: vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(name))
                 }
-                OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
-                MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
+                //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
+                //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
             .border(.red, width: 10)
-            .offset(x: 500, y: 500)
-            .scaleEffect(0.2)
+            //.offset(x: 500, y: 500)
+            //.scaleEffect(0.2)
+
 
             
             PickEquipmentView()
@@ -484,59 +454,46 @@ struct ContentView: View {
     var body: some View {
         
         
-                                       ZStack {
-                            TestRectangles.first()
-                                .onTapGesture {
-                                    print("first")
-                                    }
-                            TestRectangles.second()
-                                .onTapGesture {
-                                    print("second")
-                                    }
-                        }
-                            .border(.black, width: 10)
-                            //.scaleEffect(0.2)
-        
-//        NavigationView {
-//            VStack {
-//
-//
-//                NavigationLink(destination:
-//                                Object()
-//
-//
-//                ) {
-//                    Text("Default equipment")
-//                }
-//
-//
-//
-//                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
-//                    Text("Saved equipment")
-//                        .font(isActive ? .headline:.body)
-//                }
-//
-//                NavigationLink(destination:
-//                                VStack {
-//                    Text("EDIT")
-//                                    Object()
-//                                    saveButtonView}) {
-//                    Text("Edit equipment")
-//                }
-//
-//                NavigationLink(destination: defaultDictionaryAsListView ) {
-//                 Text("View dictionary")
-//                }
-//
-//                NavigationLink(destination: uniquePartNamesAsListView ) {
-//                    Text("View dictionary parts")
-//                }
-//
-//            }
-//            .padding()
-//
-//            .navigationBarTitle("Equipment manager")
-//        }
+        NavigationView {
+            VStack {
+
+
+                NavigationLink(destination:
+                                Object()
+
+
+                ) {
+                    Text("Default equipment")
+                }
+
+
+
+                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
+                    Text("Saved equipment")
+                        .font(isActive ? .headline:.body)
+                }
+
+                NavigationLink(destination:
+                                VStack {
+                    Text("EDIT")
+                                    Object()
+                                    saveButtonView}) {
+                    Text("Edit equipment")
+                }
+
+                NavigationLink(destination: defaultDictionaryAsListView ) {
+                 Text("View dictionary")
+                }
+
+                NavigationLink(destination: uniquePartNamesAsListView ) {
+                    Text("View dictionary parts")
+                }
+
+            }
+            .padding()
+
+            .navigationBarTitle("Equipment manager")
+        }
     }
 }
 

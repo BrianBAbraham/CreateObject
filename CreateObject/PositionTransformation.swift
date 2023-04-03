@@ -85,32 +85,12 @@ struct CreateIosPosition {
         ]
     }
     
-//    static func addToupleToArrayOfTouplesReturnAsLeftRight(
-//        _ touple: PositionAsIosAxes,
-//        _ toupleArray: [PositionAsIosAxes])
-//            -> LeftRightPositionAsIosAxis {
-//
-//            let newToupleArray =
-//            CreateIosPosition.addToupleToArrayOfTouples( touple,
-//               toupleArray)
-//
-//            return
-//                convertArrayToLeftRightTouple(newToupleArray)
-//    }
-    
-    
-    
-//    static func forLeftFromStartPositionAndDisplacement(_ startPosition: PositionAsIosAxes, _ displacement: PositionAsIosAxes) -> PositionAsIosAxes {
-//            CreateIosPosition.addTwoTouples(
-//                startPosition,
-//                (x: -displacement.x, y: displacement.y, z: displacement.z) )
-//    }
-    
-//    static func forRightFromStartPositionAndDisplacement(_ startPosition: PositionAsIosAxes, _ displacement: PositionAsIosAxes) -> PositionAsIosAxes {
-//            CreateIosPosition.addTwoTouples(
-//                startPosition,
-//                displacement)
-//    }
+
+    static func minus(_ touple:
+    PositionAsIosAxes)
+    -> PositionAsIosAxes {
+        (x: -touple.x, y: -touple.y, z: touple.z)
+    }
     
     static func forLeftRight(
         x: Double = 0.0,
