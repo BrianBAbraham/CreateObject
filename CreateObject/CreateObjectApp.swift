@@ -10,11 +10,13 @@ import SwiftUI
 @main
 struct CreateObjectApp: App {
     @StateObject var epVM = ObjectPickViewModel()
+    @StateObject var partEditVM = PartEditViewModel()
     var body: some Scene {
         WindowGroup {
             ContentView(epVM.getCurrentObjectType())
             //ContentView()
                 .environmentObject(epVM)
+                .environmentObject(partEditVM)
         }
     }
 }

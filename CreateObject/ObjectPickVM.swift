@@ -68,7 +68,11 @@ extension ObjectPickViewModel {
 //print(uniquePartName)
         let cornerNames = Corner.names
         var uniqueCornerLocations: [PositionAsIosAxes] = []
-        let uniquePartNameInSplitForm: [Substring] = uniquePartName.split(separator: ConnectStrings.symbol)//[]
+        //let uniquePartNameInSplitForm: [Substring] =
+        let uniquePartNameInSplitForm: [String] =
+        uniquePartName.components(separatedBy:  ConnectStrings.symbol)
+        //uniquePartName.split(separator: ConnectStrings.symbol)// requires IOS 16
+        
         let generalPartNameIsFirst = 0
         let generalPartName = String(uniquePartNameInSplitForm[generalPartNameIsFirst])
 //Print.this(#function,generalPartName)

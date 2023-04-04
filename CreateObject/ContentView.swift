@@ -9,8 +9,10 @@ import SwiftUI
 
 
 
+
 struct PartView: View {
-    
+ 
+    @EnvironmentObject var partEditVM: PartEditViewModel
     let partCornersDictionary: [String: [PositionAsIosAxes]]
     let onlyOneDictionaryMember = 0
     
@@ -25,20 +27,19 @@ struct PartView: View {
     }
     
     var color: Color {
-        getColor()
+        
+        partEditVM.getColorForPart(partName)
+        //CurrenPartToEditName() == partName ? .red: getColor()
+       // getColor()
     }
   
     
     var body: some View {
-        //HStack{
-            LocalOutlineRectangle.path(corners: partCorners, color)
-
-        //.offset(x: 300, y: 200)
-            .onTapGesture {
-                print(partName)
-                }
-
+      LocalOutlineRectangle.path(corners: partCorners, color)
+        .onTapGesture {
+            partEditVM.setCurrentPartToEditName(partName)
             
+        }
     }
 
     //CGPoint(x: cornerLocation.x , y: cornerLocation.y)//    func localRectangle(_ manoeuvre: ChairManoeuvre.Movement, _ part: ChairManoeuvre.Part) -> some View {
@@ -59,41 +60,7 @@ struct PartView: View {
 //    }
     
     
-    func getColor() -> Color {
-        var color: Color = .black
-        
-        
-        if partName == Part.arm.rawValue {
-            color = .green
-        }
-        if partName == Part.fixedWheel.rawValue {
-            color = .orange
-        }
-        
-        if partName == Part.footSupport.rawValue {
-            color = .green
-        }
-        if partName == Part.sitOn.rawValue {
-            color = .blue
-        }
-        
-        if partName == Part.overHeadSupport.rawValue {
-            color = .green
-        }
-        
-        if partName.contains("caster") {
-            color = .orange
-        }
-        if partName.contains("VerticalJoint") {
-            color = .red
-        }
-        
-        if partName.contains("HorizontalJoint") {
-            color = .black
-        }
 
-        return color
-    }
 }
 
 
@@ -224,14 +191,13 @@ struct PickEquipmentView: View {
     }
     
     
-    @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue//FixedWheelBase.Subtype.midDrive.rawValue
+    @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue
     
     var currentEqipmentType: String {
         getCurrentEquipmentType()
     }
 
     func getCurrentEquipmentType() -> String {
-        //FixedWheelBase.Subtype.midDrive.rawValue
         BaseObjectTypes.fixedWheelRearDrive.rawValue
     }
     
@@ -292,13 +258,16 @@ struct Object: View {
             ZStack {
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(partCornersDictionary: vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(name))
+                        //.contentShape(Rectangle()) //tap does not work on areas that were with this
                 }
-                //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
+                .scaledToFit()
+                           //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
                 //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
-            .border(.red, width: 10)
+            .border(.red, width: 1)
             //.offset(x: 500, y: 500)
-            .scaleEffect(0.6)
+           //.scaleEffect(0.6)
+            .scaledToFit()
 
 
             
@@ -320,7 +289,8 @@ struct EnterTextView: View {
 }
 
 struct ContentView: View {
-    @EnvironmentObject var vm: ObjectPickViewModel
+
+    @EnvironmentObject var epVM: ObjectPickViewModel
     @StateObject var cdVM = CoreDataViewModel()
     @State var objectName = "RearDriveWheelchair"
     @State var savedDictionaryAsList =  [""]
@@ -329,7 +299,7 @@ struct ContentView: View {
     
     //@State var defaultDictionaryAsList = [""]
     var defaultDictionaryAsList: [String] {
-        vm.getList()
+        epVM.getList()
     }
 
     let equipmentName: String
@@ -381,8 +351,8 @@ struct ContentView: View {
                 ForEach(cdVM.savedEntities) {entity in
                     Button {
                        savedDictionaryAsList  =
-                        vm.getPartCornersFromPrimaryOriginDictionary(entity)
-                        vm.setCurrentObjectType(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
+                        epVM.getPartCornersFromPrimaryOriginDictionary(entity)
+                        epVM.setCurrentObjectType(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
                     } label: {
                         HStack{
                             Text(entity.objectType ?? "")
@@ -400,7 +370,7 @@ struct ContentView: View {
     }
     
     var uniquePartNames: [String] {
-        vm.getUniquePartNamesFromObjectDictionary()
+        epVM.getUniquePartNamesFromObjectDictionary()
     }
     
     var uniquePartNamesAsListView: some View {
@@ -419,15 +389,15 @@ struct ContentView: View {
     
     var originDictionary: [String] {
         
-        DictionaryInArrayOut().getNameValue( vm.getAllPartFromPrimaryOriginDictionary(),"test")
+        DictionaryInArrayOut().getNameValue( epVM.getAllPartFromPrimaryOriginDictionary(),"test")
        
     }
 
     func saveData (_ objectName: String) {
                 cdVM.addObject(
-                    names: vm.getAllOriginNames(),
-                    values: vm.getAllOriginValues(),
-                    objectType: vm.getCurrentObjectType(),
+                    names: epVM.getAllOriginNames(),
+                    values: epVM.getAllOriginValues(),
+                    objectType: epVM.getCurrentObjectType(),
                 objectName: objectName)
                 cdVM.fetchNames()
     }
@@ -452,8 +422,7 @@ struct ContentView: View {
     //@State var isPresented = true
     @State var isActive = true
     var body: some View {
-        
-        
+      //  Object()
         NavigationView {
             VStack {
 
@@ -475,7 +444,7 @@ struct ContentView: View {
 
                 NavigationLink(destination:
                                 VStack {
-                    Text("EDIT")
+                    //Text("EDIT")
                                     Object()
                                     saveButtonView}) {
                     Text("Edit equipment")
@@ -490,12 +459,15 @@ struct ContentView: View {
                 }
 
             }
-            .padding()
+
 
             .navigationBarTitle("Equipment manager")
         }
+        
     }
+       
 }
+   
 
    
 //
