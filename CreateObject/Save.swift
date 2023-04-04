@@ -47,8 +47,8 @@ class CoreDataViewModel: ObservableObject {
         new.interOriginValues = values
         new.objectType = objectType
         new.objectName = objectName
-//objectType
-//objectName
+//objectTypeP)
+print(objectName)
         saveData()
     }
     

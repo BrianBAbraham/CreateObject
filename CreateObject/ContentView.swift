@@ -11,9 +11,13 @@ import SwiftUI
 
 
 struct PartView: View {
- 
+    @EnvironmentObject var vm: ObjectPickViewModel
     @EnvironmentObject var partEditVM: PartEditViewModel
-    let partCornersDictionary: [String: [PositionAsIosAxes]]
+    let uniquePartName: String
+    var partCornersDictionary: [String: [PositionAsIosAxes]] {
+        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(uniquePartName)
+        
+    }
     let onlyOneDictionaryMember = 0
     
     var partCorners: [CGPoint] {
@@ -28,7 +32,7 @@ struct PartView: View {
     
     var color: Color {
         
-        partEditVM.getColorForPart(partName)
+        partEditVM.getColorForPart(uniquePartName)
         //CurrenPartToEditName() == partName ? .red: getColor()
        // getColor()
     }
@@ -37,7 +41,7 @@ struct PartView: View {
     var body: some View {
       LocalOutlineRectangle.path(corners: partCorners, color)
         .onTapGesture {
-            partEditVM.setCurrentPartToEditName(partName)
+            partEditVM.setCurrentPartToEditName(uniquePartName)
             
         }
     }
@@ -257,17 +261,17 @@ struct Object: View {
         VStack {
             ZStack {
                 ForEach(uniquePartNames, id: \.self) { name in
-                    PartView(partCornersDictionary: vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(name))
+                    PartView(uniquePartName: name)
                         //.contentShape(Rectangle()) //tap does not work on areas that were with this
                 }
                 .scaledToFit()
                            //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
                 //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
-            .border(.red, width: 1)
+            //.border(.red, width: 1)
             //.offset(x: 500, y: 500)
            //.scaleEffect(0.6)
-            .scaledToFit()
+            //.scaledToFit()
 
 
             
@@ -311,7 +315,7 @@ struct ContentView: View {
     
     var enterTextView: some View {
         VStack(alignment: .leading) {
-            TextField("", text: $savedAsName)
+            TextField(equipmentName, text: $savedAsName)
                 .textFieldStyle(.roundedBorder)
         }
     }
@@ -319,7 +323,7 @@ struct ContentView: View {
     var saveButtonView: some View {
         HStack{
             Button(action: {
-                saveData(savedAsName)
+                saveData(equipmentName + "_" + savedAsName)
                // vm.getUniquePartNames(vm.getLoadedDictionary())
             }, label: {
                 Text("save")

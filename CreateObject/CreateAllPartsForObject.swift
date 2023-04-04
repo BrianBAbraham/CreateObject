@@ -30,7 +30,11 @@ struct CreateAllPartsForObject {
             let occupantSupportTypes: [OccupantSupportTypes] =
                 [.seatedStandard]
             
-            let baseType = BaseObjectTypes(rawValue: baseObjectName)!
+            //let : [String] =
+            let systemObjectName = baseObjectName.components(separatedBy: "_")[0]
+print(systemObjectName)
+            let baseType = BaseObjectTypes(rawValue: baseObjectName) ?? BaseObjectTypes(rawValue: systemObjectName)!
+            
             
             let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
             

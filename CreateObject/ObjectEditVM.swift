@@ -31,28 +31,28 @@ extension PartEditViewModel {
     }
     
     func getColorForPart(_ partName: String)-> Color {
-        var color: Color = .black
+        var color: Color = .blue
         let partNameBeingEdited = getCurrenPartToEditName()
         
         if partName == partNameBeingEdited {
             color = .white
         } else {
         
-            if partName == Part.arm.rawValue {
+            if partName.contains(Part.arm.rawValue) {
                 color = .green
             }
-            if partName == Part.fixedWheel.rawValue {
+            if partName.contains(Part.fixedWheel.rawValue) {
                 color = .orange
             }
             
-            if partName == Part.footSupport.rawValue {
+            if partName.contains(Part.footSupport.rawValue) {
                 color = .green
             }
-            if partName == Part.sitOn.rawValue {
-                color = .blue
-            }
+//            if partName.contains(Part.sitOn.rawValue) {
+//                color = .blue
+//            }
             
-            if partName == Part.overHeadSupport.rawValue {
+            if partName.contains(Part.overHeadSupport.rawValue) {
                 color = .green
             }
             
