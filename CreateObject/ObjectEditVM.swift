@@ -30,40 +30,71 @@ extension PartEditViewModel {
 
     }
     
-    func getColorForPart(_ partName: String)-> Color {
+    func getEditPermissionsForPart(_ uniquePartName: String)
+    -> Edit {
+        let cornerEdit = false
+        let originEdit = false
+        let sideEdit = false
+        let lengthOnlyEdit = false
+        let widthOnlyEdit = false
+        let maintainWidthSymmetry = false
+        
+        var permissions: Edit =
+        (corner: false, origin: false, side: false, lengthOnly: false, widthOnly: false, widthSymmetry: false)
+        
+        if uniquePartName.contains(Part.arm.rawValue) {
+            permissions =
+            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: true)
+        }
+        
+        if uniquePartName.contains(Part.sitOn.rawValue) {
+            permissions =
+            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: false)
+        }
+        
+        if uniquePartName.contains(Part.fixedWheel.rawValue) {
+            permissions =
+            (corner: false, origin: true, side: false, lengthOnly: true, widthOnly: true, widthSymmetry: true)
+        }
+        
+        return permissions
+    }
+    
+    
+    func getColorForPart(_ uniquePartName: String)-> Color {
         var color: Color = .blue
         let partNameBeingEdited = getCurrenPartToEditName()
         
-        if partName == partNameBeingEdited {
+        if uniquePartName == partNameBeingEdited {
             color = .white
         } else {
         
-            if partName.contains(Part.arm.rawValue) {
+            if uniquePartName.contains(Part.arm.rawValue) {
                 color = .green
             }
-            if partName.contains(Part.fixedWheel.rawValue) {
+            if uniquePartName.contains(Part.fixedWheel.rawValue) {
                 color = .orange
             }
             
-            if partName.contains(Part.footSupport.rawValue) {
+            if uniquePartName.contains(Part.footSupport.rawValue) {
                 color = .green
             }
 //            if partName.contains(Part.sitOn.rawValue) {
 //                color = .blue
 //            }
             
-            if partName.contains(Part.overHeadSupport.rawValue) {
+            if uniquePartName.contains(Part.overHeadSupport.rawValue) {
                 color = .green
             }
             
-            if partName.contains("caster") {
+            if uniquePartName.contains("caster") {
                 color = .orange
             }
-            if partName.contains("VerticalJoint") {
+            if uniquePartName.contains("VerticalJoint") {
                 color = .red
             }
             
-            if partName.contains("HorizontalJoint") {
+            if uniquePartName.contains("HorizontalJoint") {
                 color = .black
             }
         }
@@ -77,3 +108,4 @@ extension PartEditViewModel {
             partEditModel.part = partName
     }
 }
+

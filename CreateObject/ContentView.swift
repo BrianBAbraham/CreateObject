@@ -289,6 +289,52 @@ struct EnterTextView: View {
     }
 }
 
+
+struct MenusView: View {
+    @State private var applySymmetry = false
+    @State private var affectOtherParts = false
+    
+    var body: some View {
+        
+        VStack {
+            Menu("Edit Options") {
+                Button("origin", action: placeOrder)
+                Button("corners", action: adjustOrder)
+                Menu("wheelchair") {
+                    Menu("independent electric") {
+                        Button("mid drive", action: rename)
+                        Button("front drive", action: delay)
+                        Button("rear drive", action: delay)
+                    }
+                    Menu("manual") {
+                        Button("front drive", action: delay)
+                        Button("rear drive", action: delay)
+                    }
+                    Menu("assisted electric") {
+                        Button("front drive", action: delay)
+                        Button("rear drive", action: delay)
+                    }
+                }
+                Button("sides", action: cancelOrder)
+            }
+            VStack {
+                Toggle("apply symmmetry", isOn: $applySymmetry )
+                Toggle("affect other parts", isOn: $affectOtherParts)
+            }
+                .padding()
+        }
+        
+        
+    }
+
+    func placeOrder() { }
+    func adjustOrder() { }
+    func rename() { }
+    func delay() { }
+    func cancelOrder() { }
+}
+
+
 struct ContentView: View {
 
     @EnvironmentObject var epVM: ObjectPickViewModel
@@ -444,10 +490,13 @@ struct ContentView: View {
                 }
 
                 NavigationLink(destination:
-                                VStack {
-                    //Text("EDIT")
-                                    Object()
-                                    saveButtonView}) {
+                    VStack {
+                            HStack{
+                                Object()
+                                MenusView()
+                            }
+                   
+                    saveButtonView}) {
                     Text("Edit equipment")
                 }
 

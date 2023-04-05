@@ -20,3 +20,5 @@ rear: PositionAsIosAxes)
 typealias PositionDictionary = [String: PositionAsIosAxes]
 
 typealias Dimension = (length: Double, width: Double)
+
+typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
