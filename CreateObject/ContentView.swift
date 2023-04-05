@@ -21,8 +21,6 @@ struct PartView: View {
     let onlyOneDictionaryMember = 0
     
     var partCorners: [CGPoint] {
-        //getCornerLocations()
-        
         DictionaryElementIn(partCornersDictionary).cgPointsOut()
     }
     
@@ -33,8 +31,7 @@ struct PartView: View {
     var color: Color {
         
         partEditVM.getColorForPart(uniquePartName)
-        //CurrenPartToEditName() == partName ? .red: getColor()
-       // getColor()
+
     }
   
     
