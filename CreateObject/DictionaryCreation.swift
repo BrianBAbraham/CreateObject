@@ -55,9 +55,9 @@ struct ForScreen {
     
     func findScale(_ objectDimensions: PositionAsIosAxes) -> Double {
         let maxDimension = [objectDimensions.x,objectDimensions.y].max() ?? objectDimensions.x
-        let hackToKeepObjectInTappableAreaInNavigation = 0.5
+        let hackToKeepObjectInTappableAreaInNavigation = 1.0
         
-//print("\(objectDimensions) \(Screen.smallestDimension)")
+//print("\( maxDimension) \(Screen.smallestDimension)")
         
         let scale = Screen.smallestDimension / maxDimension * hackToKeepObjectInTappableAreaInNavigation
         return scale

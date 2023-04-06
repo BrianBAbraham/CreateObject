@@ -261,19 +261,20 @@ struct Object: View {
                     PartView(uniquePartName: name)
                         //.contentShape(Rectangle()) //tap does not work on areas that were with this
                 }
-                .scaledToFit()
+
                            //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
                 //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
-            //.border(.red, width: 1)
-            //.offset(x: 500, y: 500)
-           //.scaleEffect(0.6)
-            //.scaledToFit()
+//            .border(.red, width: 1)
+            //.offset(x: 100, y: 0)
+          //.fixedSize(horizontal: true, vertical: true)
+            //.scaleEffect(0.5)
+
 
 
             
-            PickEquipmentView()
-                .padding()
+//            PickEquipmentView()
+//                .padding()
         }
     }
 }
@@ -293,33 +294,47 @@ struct EnterTextView: View {
 struct MenusView: View {
     @State private var applySymmetry = false
     @State private var affectOtherParts = false
+    @State private var imperial = false
     
     var body: some View {
         
         VStack {
-            Menu("Edit Options") {
-                Button("origin", action: placeOrder)
-                Button("corners", action: adjustOrder)
-                Menu("wheelchair") {
-                    Menu("independent electric") {
-                        Button("mid drive", action: rename)
-                        Button("front drive", action: delay)
-                        Button("rear drive", action: delay)
-                    }
-                    Menu("manual") {
-                        Button("front drive", action: delay)
-                        Button("rear drive", action: delay)
-                    }
-                    Menu("assisted electric") {
-                        Button("front drive", action: delay)
-                        Button("rear drive", action: delay)
-                    }
-                }
-                Button("sides", action: cancelOrder)
-            }
             VStack {
-                Toggle("apply symmmetry", isOn: $applySymmetry )
-                Toggle("affect other parts", isOn: $affectOtherParts)
+                Menu("Measurement Location") {
+                    Button("External", action: cancelOrder)
+                    Button("Internal", action: cancelOrder)
+                    Button("Center", action: cancelOrder)
+                }
+                
+                Menu("Edit Options") {
+                    Button("origin", action: placeOrder)
+                    Button("corners", action: adjustOrder)
+//                    Menu("wheelchair") {
+//                        Menu("independent electric") {
+//                            Button("mid drive", action: rename)
+//                            Button("front drive", action: delay)
+//                            Button("rear drive", action: delay)
+//                        }
+//                        Menu("manual") {
+//                            Button("front drive", action: delay)
+//                            Button("rear drive", action: delay)
+//                        }
+//                        Menu("assisted electric") {
+//                            Button("front drive", action: delay)
+//                            Button("rear drive", action: delay)
+//                        }
+//                    }
+                    Button("sides", action: cancelOrder)
+                    Button("length", action: cancelOrder)
+                    Button("width", action: cancelOrder)
+                }
+            }
+//            .padding()
+            
+            VStack {
+                Toggle("apply symmmetry", isOn: $applySymmetry ).frame(width: 200)
+                Toggle("affect other parts", isOn: $affectOtherParts).frame(width: 200)
+                Toggle("Imperial", isOn: $imperial).frame(width: 200)
             }
                 .padding()
         }
@@ -469,60 +484,90 @@ struct ContentView: View {
     //@State var isPresented = true
     @State var isActive = true
     var body: some View {
-      //  Object()
         NavigationView {
-            VStack {
+
+                            NavigationLink(destination:
+                                            Object()
+                                .border(.red, width: 10)
+                                .frame(width:840, height:1024)
+                                .offset(x: 0, y: -50)
+            
 
 
-                NavigationLink(destination:
-                                Object()
-
-
-                ) {
-                    Text("Default equipment")
-                }
-
-
-
-                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
-                    Text("Saved equipment")
-                        .font(isActive ? .headline:.body)
-                }
-
-                NavigationLink(destination:
-                    VStack {
-                            HStack{
-                                Object()
-                                MenusView()
+                            ) {
+                                Text("test")
                             }
-                   
-                    saveButtonView}) {
-                    Text("Edit equipment")
-                }
-
-                NavigationLink(destination: defaultDictionaryAsListView ) {
-                 Text("View dictionary")
-                }
-
-                NavigationLink(destination: uniquePartNamesAsListView ) {
-                    Text("View dictionary parts")
-                }
-
-            }
-
-
-            .navigationBarTitle("Equipment manager")
         }
+
+//        NavigationView {
+//            VStack {
+//
+//
+//                NavigationLink(destination:
+//                                Object()
+//                    .border(.red, width: 1)
+//
+//
+//
+//                ) {
+//                    Text("Default equipment")
+//                }
+//
+//
+//
+//                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
+//                    Text("Saved equipment")
+//                        .font(isActive ? .headline:.body)
+//                }
+//
+//                NavigationLink(destination:
+//                    VStack {
+//                            HStack{
+//                                Spacer()
+//                                Object()
+//                                MenusView()
+//                            }
+//
+//                    saveButtonView}) {
+//                    Text("Edit equipment")
+//                }
+//
+//                NavigationLink(destination: defaultDictionaryAsListView ) {
+//                 Text("View dictionary")
+//                }
+//
+//                NavigationLink(destination: uniquePartNamesAsListView ) {
+//                    Text("View dictionary parts")
+//                }
+//
+//            }
+//
+//
+//            .navigationBarTitle("Equipment manager")
+//        }
+
         
     }
+      
        
 }
    
 
    
 //
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
+struct ContentView_Previews: PreviewProvider {
+   // @StateObject var epVM: ObjectPickViewModel
+//    @StateObject var partEditVM = PartEditViewModel()
+
+    
+    static var previews: some View {
+       // VStack {
+            ContentView("RearDriveWheelchair")
+                .previewLayout(.fixed(width:1000, height: 1000))
+                .environmentObject(ObjectPickViewModel())
+                .environmentObject(PartEditViewModel())
+           
+        //}
+        
+    }
+}
