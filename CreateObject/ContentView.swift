@@ -239,6 +239,7 @@ struct Object: View {
     
     @EnvironmentObject var vm: ObjectPickViewModel
     @State var defaultDictionaryAsList = [""]
+    let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
     
     var uniquePartNames: [String] {
         vm.getUniquePartNamesFromObjectDictionary()
@@ -255,7 +256,7 @@ struct Object: View {
         }
     
     var body: some View {
-        VStack {
+        //VStack {
             ZStack {
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(uniquePartName: name)
@@ -265,17 +266,14 @@ struct Object: View {
                            //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
                 //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
-//            .border(.red, width: 1)
-            //.offset(x: 100, y: 0)
-          //.fixedSize(horizontal: true, vertical: true)
-            //.scaleEffect(0.5)
-
-
+            
+            .border(.red, width: 1)
+            .frame(width: sizeToEnsureObjectRemainsOnScreen , height: sizeToEnsureObjectRemainsOnScreen )
 
             
-//            PickEquipmentView()
-//                .padding()
-        }
+
+        //}
+        .scaleEffect(0.6)
     }
 }
 
@@ -481,75 +479,58 @@ struct ContentView: View {
 
     }
     
+    //let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
+    
     //@State var isPresented = true
     @State var isActive = true
     var body: some View {
-        NavigationView {
-
-                            NavigationLink(destination:
-                                            Object()
-                                .border(.red, width: 10)
-                                .frame(width:840, height:1024)
-                                .offset(x: 0, y: -50)
-            
-
-
-                            ) {
-                                Text("test")
-                            }
-        }
-
-//        NavigationView {
-//            VStack {
-//
-//
-//                NavigationLink(destination:
-//                                Object()
-//                    .border(.red, width: 1)
-//
-//
-//
-//                ) {
-//                    Text("Default equipment")
-//                }
-//
-//
-//
-//                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
-//                    Text("Saved equipment")
-//                        .font(isActive ? .headline:.body)
-//                }
-//
-//                NavigationLink(destination:
-//                    VStack {
-//                            HStack{
-//                                Spacer()
-//                                Object()
-//                                MenusView()
-//                            }
-//
-//                    saveButtonView}) {
-//                    Text("Edit equipment")
-//                }
-//
-//                NavigationLink(destination: defaultDictionaryAsListView ) {
-//                 Text("View dictionary")
-//                }
-//
-//                NavigationLink(destination: uniquePartNamesAsListView ) {
-//                    Text("View dictionary parts")
-//                }
-//
-//            }
-//
-//
-//            .navigationBarTitle("Equipment manager")
-//        }
+        
 
         
+        NavigationView {
+            VStack {
+                NavigationLink(destination:
+                    VStack() {
+//                        Spacer()
+//                            .frame(minHeight: 200, idealHeight: 200, maxHeight: 200)
+//                            .fixedSize()
+                                        PickEquipmentView()
+                                        Spacer(minLength: -1000)
+                                        Object()
+//                        Spacer()
+//                            .frame(minHeight: 200, idealHeight: 200, maxHeight: 200)
+//                            .fixedSize()
+                    }
+                                    //.border(.blue, width: 10)
+                ) {
+                        Text("Default equipment")
+                    }
+                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
+                    Text("Saved equipment")
+                        .font(isActive ? .headline:.body)
+                }
+                NavigationLink(destination:
+                    VStack {
+                            HStack{
+                                Spacer()
+                                Object()
+                                MenusView()
+                            }
+
+                    saveButtonView}) {
+                    Text("Edit equipment")
+                }
+                NavigationLink(destination: defaultDictionaryAsListView ) {
+                 Text("View dictionary")
+                }
+                NavigationLink(destination: uniquePartNamesAsListView ) {
+                    Text("View dictionary parts")
+                }
+            }
+            .navigationBarTitle("Equipment manager")
+            //.navigationViewStyle(StackNavigationViewStyle())
+        }
     }
-      
-       
 }
    
 

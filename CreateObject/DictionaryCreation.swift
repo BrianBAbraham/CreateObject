@@ -19,62 +19,38 @@ import Foundation
 struct ForScreen {
     var dictionary: PositionDictionary = [:]
     
-    init( _ actualSize: PositionDictionary ) {
+    init( _ actualSize: PositionDictionary,
+          _ minThenMaxPositionOfObject: [PositionAsIosAxes],
+          _ maxDimension: Double
+    ) {
         
-        let minThenMax = findMinThenMax(actualSize)
+        let minThenMax = minThenMaxPositionOfObject
         let offset = CreateIosPosition.minus(minThenMax[0])
-        let objectDimensions = findObjectDimensions(minThenMax)
-        let scale = findScale(objectDimensions)
+       
+        let scale = Screen.smallestDimension / maxDimension
         dictionary = createDictionaryForScreen(actualSize, scale, offset)
 
     }
     
-    func findMinThenMax (_ actualSize: PositionDictionary) -> [PositionAsIosAxes] {
-        let values = actualSize.map { $0.value }
-//        print(values)
-        var minX = 0.0
-        var minY = 0.0
-        var maxX = 0.0
-        var maxY = 0.0
-        for value in values {
-            minX = value.x < minX ? value.x: minX
-            minY = value.y < minY ? value.y: minY
-            maxX = value.x > maxX ? value.x: maxX
-            maxY = value.y > maxY ? value.y: maxY
-        }
-//print([(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
-//              )
-        return
-            [(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
-    }
     
-    func findObjectDimensions( _ minMax: [PositionAsIosAxes])
-    -> PositionAsIosAxes {
-        (x: minMax[1].x - minMax[0].x, y: minMax[1].y - minMax[0].y, z: 0)
-    }
-    
-    func findScale(_ objectDimensions: PositionAsIosAxes) -> Double {
-        let maxDimension = [objectDimensions.x,objectDimensions.y].max() ?? objectDimensions.x
-        let hackToKeepObjectInTappableAreaInNavigation = 1.0
-        
-//print("\( maxDimension) \(Screen.smallestDimension)")
-        
-        let scale = Screen.smallestDimension / maxDimension * hackToKeepObjectInTappableAreaInNavigation
-        return scale
-    }
-    
-    func createDictionaryForScreen(_ actualSize: PositionDictionary, _ scale: Double, _ offset: PositionAsIosAxes)
+    func createDictionaryForScreen(
+        _ actualSize: PositionDictionary,
+        _ scale: Double,
+        _ offset: PositionAsIosAxes)
     -> PositionDictionary {
         var dictionaryForScreen: PositionDictionary = [:]
         for item in actualSize {
             dictionaryForScreen[item.key] =
-            (x: (item.value.x + offset.x) * scale, y: (item.value.y + offset.y) * scale, z: item.value.z)
+            (x: (item.value.x + offset.x) * scale,
+             y: (item.value.y + offset.y) * scale,
+             z: item.value.z)
         }
         return dictionaryForScreen
     }
-    
-    
 }
+
+
+
 
 struct CreateOnePartOrSideSymmetricParts {
 

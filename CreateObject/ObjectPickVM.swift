@@ -50,14 +50,52 @@ extension ObjectPickViewModel {
         return originDictionary
     }
 
+    func getMinThenMaxPositionOfObject( _ actualSize: PositionDictionary )
+    ->  [PositionAsIosAxes] {
+        let values = actualSize.map { $0.value }
+        var minX = 0.0
+        var minY = 0.0
+        var maxX = 0.0
+        var maxY = 0.0
+        for value in values {
+            minX = value.x < minX ? value.x: minX
+            minY = value.y < minY ? value.y: minY
+            maxX = value.x > maxX ? value.x: maxX
+            maxY = value.y > maxY ? value.y: maxY
+        }
+        
+        return
+            [(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
+    }
     
     
+    func getMaxObjectDimension(_ minThenMaxPositionOfObject: [PositionAsIosAxes])
+    -> Dimension {
+        let minMax = minThenMaxPositionOfObject
+        
+        let maxObjectDimension =
+        (length: minMax[1].y - minMax[0].y, width: minMax[1].x - minMax[0].x)
+        
+        return
+            maxObjectDimension
+    }
     
     func getRelevantDictionary() -> [String: PositionAsIosAxes] {
         var relevantDictionary =
         getLoadedDictionary().keys.count == 0 ? getObjectDictionary(): getLoadedDictionary()
         
-        relevantDictionary = ForScreen(relevantDictionary).dictionary
+        let minThenMaxPositionOfObject =
+        getMinThenMaxPositionOfObject(relevantDictionary)
+        
+        let maxDimensions =
+        getMaxObjectDimension(minThenMaxPositionOfObject)
+        
+        let maxDimension = [maxDimensions.length, maxDimensions.width].max() ?? maxDimensions.length
+        
+        relevantDictionary = ForScreen(
+            relevantDictionary,
+            minThenMaxPositionOfObject,
+            maxDimension).dictionary
 //print(relevantDictionary)
         return
          relevantDictionary
