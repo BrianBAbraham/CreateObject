@@ -15,7 +15,9 @@ struct PartView: View {
     @EnvironmentObject var partEditVM: PartEditViewModel
     let uniquePartName: String
     var partCornersDictionary: [String: [PositionAsIosAxes]] {
-        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(uniquePartName)
+        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+            uniquePartName,
+            .forScreen)
         
     }
     let onlyOneDictionaryMember = 0
@@ -29,9 +31,7 @@ struct PartView: View {
     }
     
     var color: Color {
-        
         partEditVM.getColorForPart(uniquePartName)
-
     }
   
     
@@ -42,26 +42,6 @@ struct PartView: View {
             
         }
     }
-
-    //CGPoint(x: cornerLocation.x , y: cornerLocation.y)//    func localRectangle(_ manoeuvre: ChairManoeuvre.Movement, _ part: ChairManoeuvre.Part) -> some View {
-//        ZStack{
-//            LocalFilledRectangle.path(part.xLocal * scale
-//                                ,part.yLocal * scale ,part.width * scale ,part.length * scale, partColor(), partOpacity())
-//            LocalOutlineRectangle.path(part.xLocal * scale
-//                                ,part.yLocal * scale,part.width * scale ,part.length * scale , partColor(), partOpacity())
-//        }
-//    }
-//    func getCornerLocations() -> [CGPoint] {
-//        var points: [CGPoint] = []
-//        let cornerLocationsFromPrimaryOrigin = partCornersDictionary.map {$0.1}[onlyOneDictionaryMember]
-//        for location in cornerLocationsFromPrimaryOrigin {
-//            points.append(CGPoint(x: location.x , y: location.y))
-//        }
-//        return points
-//    }
-    
-    
-
 }
 
 

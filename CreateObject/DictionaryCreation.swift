@@ -10,44 +10,7 @@ import Foundation
 
 
 
-///transfsrorm dictiionary into a forScreenDictionary
-///find maximum -vs and trasnform to +
-///find max dimesnsions and scale to fit screen
-///
-///{
 
-struct ForScreen {
-    var dictionary: PositionDictionary = [:]
-    
-    init( _ actualSize: PositionDictionary,
-          _ minThenMaxPositionOfObject: [PositionAsIosAxes],
-          _ maxDimension: Double
-    ) {
-        
-        let minThenMax = minThenMaxPositionOfObject
-        let offset = CreateIosPosition.minus(minThenMax[0])
-       
-        let scale = Screen.smallestDimension / maxDimension
-        dictionary = createDictionaryForScreen(actualSize, scale, offset)
-
-    }
-    
-    
-    func createDictionaryForScreen(
-        _ actualSize: PositionDictionary,
-        _ scale: Double,
-        _ offset: PositionAsIosAxes)
-    -> PositionDictionary {
-        var dictionaryForScreen: PositionDictionary = [:]
-        for item in actualSize {
-            dictionaryForScreen[item.key] =
-            (x: (item.value.x + offset.x) * scale,
-             y: (item.value.y + offset.y) * scale,
-             z: item.value.z)
-        }
-        return dictionaryForScreen
-    }
-}
 
 
 

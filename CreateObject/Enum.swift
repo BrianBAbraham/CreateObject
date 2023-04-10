@@ -8,7 +8,10 @@
 import Foundation
 
 
-
+enum DictionaryTypes  {
+    case forScreen
+    case forMeasurement
+}
 
 
 enum Part: String {

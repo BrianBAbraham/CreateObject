@@ -39,7 +39,7 @@ extension ObjectPickViewModel {
     func getAllPartFromPrimaryOriginDictionary() -> [String: PositionAsIosAxes] {
         let allUniquePartNames = getUniquePartNamesFromObjectDictionary()
 //print(allUniquePartNames)
-        let dictionary = getRelevantDictionary()
+        let dictionary = getRelevantDictionary(.forScreen)
         var originDictionary: [String: PositionAsIosAxes] = [:]
         for uniqueName in allUniquePartNames {
             let entryName = "primaryOrigin_id0_" + uniqueName
@@ -80,7 +80,9 @@ extension ObjectPickViewModel {
             maxObjectDimension
     }
     
-    func getRelevantDictionary() -> [String: PositionAsIosAxes] {
+    func getRelevantDictionary(
+        _ forScreenOrMeasurment: DictionaryTypes)
+    -> [String: PositionAsIosAxes] {
         var relevantDictionary =
         getLoadedDictionary().keys.count == 0 ? getObjectDictionary(): getLoadedDictionary()
         
@@ -91,18 +93,26 @@ extension ObjectPickViewModel {
         getMaxObjectDimension(minThenMaxPositionOfObject)
         
         let maxDimension = [maxDimensions.length, maxDimensions.width].max() ?? maxDimensions.length
-        
-        relevantDictionary = ForScreen(
-            relevantDictionary,
-            minThenMaxPositionOfObject,
-            maxDimension).dictionary
+        switch forScreenOrMeasurment {
+        case .forScreen:
+            relevantDictionary = ForScreen(
+                relevantDictionary,
+                minThenMaxPositionOfObject,
+                maxDimension).dictionary
+            
+        default: break
+        }
+
 //print(relevantDictionary)
         return
          relevantDictionary
     }
     
-    func getPartNameAndItsCornerLocationsFromPrimaryOrigin(_ uniquePartName: String) -> [String: [PositionAsIosAxes]] {
-        let dictionary = getRelevantDictionary()
+    func getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+        _ uniquePartName: String,
+        _ forScreenOrMeasurment: DictionaryTypes)
+    -> [String: [PositionAsIosAxes]] {
+        let dictionary = getRelevantDictionary(forScreenOrMeasurment)
 //print(uniquePartName)
         let cornerNames = Corner.names
         var uniqueCornerLocations: [PositionAsIosAxes] = []

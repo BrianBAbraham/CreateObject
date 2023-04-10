@@ -10,6 +10,40 @@ import SwiftUI
 
 
 
+struct ForScreen {
+    var dictionary: PositionDictionary = [:]
+    
+    init( _ actualSize: PositionDictionary,
+          _ minThenMaxPositionOfObject: [PositionAsIosAxes],
+          _ maxDimension: Double
+    ) {
+        
+        let minThenMax = minThenMaxPositionOfObject
+        let offset = CreateIosPosition.minus(minThenMax[0])
+       
+        let scale = Screen.smallestDimension / maxDimension
+        dictionary = createDictionaryForScreen(actualSize, scale, offset)
+
+    }
+    
+    
+    func createDictionaryForScreen(
+        _ actualSize: PositionDictionary,
+        _ scale: Double,
+        _ offset: PositionAsIosAxes)
+    -> PositionDictionary {
+        var dictionaryForScreen: PositionDictionary = [:]
+        for item in actualSize {
+            dictionaryForScreen[item.key] =
+            (x: (item.value.x + offset.x) * scale,
+             y: (item.value.y + offset.y) * scale,
+             z: item.value.z)
+        }
+        return dictionaryForScreen
+    }
+}
+
+
 struct DictionaryElementIn {
     //let pointOut: [CGPoint]
     let singleElementDictionary: [String: [PositionAsIosAxes]]
