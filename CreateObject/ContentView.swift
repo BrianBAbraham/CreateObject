@@ -191,7 +191,6 @@ struct PickEquipmentView: View {
         BaseObjectTypes.allCases.map{$0.rawValue}
     }
     
-    
     @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue
     
     var currentEqipmentType: String {
@@ -213,14 +212,16 @@ struct PickEquipmentView: View {
                     { equipment in
                 Text(equipment)
             }
-           
         }
         .onChange(of: equipmentType) {tag in
             self.equipmentType = tag
 //            modifyEquipmentType(tag.rawValue)
             vm.setCurrentObjectType(tag)
         }
+        .padding(.top)
+        .border(.blue)
     }
+
 
 }
 
@@ -491,17 +492,10 @@ struct ContentView: View {
             VStack {
                 NavigationLink(destination:
                     VStack() {
-//                        Spacer()
-//                            .frame(minHeight: 200, idealHeight: 200, maxHeight: 200)
-//                            .fixedSize()
-                                        PickEquipmentView()
-                                        Spacer(minLength: -1000)
-                                        Object()
-//                        Spacer()
-//                            .frame(minHeight: 200, idealHeight: 200, maxHeight: 200)
-//                            .fixedSize()
+                                PickEquipmentView()
+
+                                Object()
                     }
-                                    //.border(.blue, width: 10)
                 ) {
                         Text("Default equipment")
                     }
