@@ -45,18 +45,13 @@ struct EditObjectMenuView: View {
                     Button("width", action: cancelOrder)
                 }
             }
-//            .padding()
-            
+
             VStack {
                 Toggle("apply symmmetry", isOn: $applySymmetry ).frame(width: 200)
                 Toggle("affect other parts", isOn: $affectOtherParts).frame(width: 200)
                 Toggle("Imperial", isOn: $imperial).frame(width: 200)
             }
-                //.padding()
         }
-        .border(.blue)
-        
-        
     }
 
     func placeOrder() { }

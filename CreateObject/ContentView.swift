@@ -197,87 +197,7 @@ struct DefaultDictionaryAsList {
     }
 }
 
-struct Object: View {
-    @GestureState private var startLocation: CGPoint? = nil
-    @GestureState private var fingerLocation: CGPoint? = nil
-    @State private var location = CGPoint (x: 300, y: 300)
-    
-    @State var currentZoom: CGFloat = 0.0
-    @State var lastCurrentZoom: CGFloat = 0.0
-    private var  minimumZoom: Double {
-        0.1
-    }
-    private var maximimumZoom = 3.0
-    var zoom: CGFloat {
-        limitZoom( 0.6 + currentZoom + lastCurrentZoom)
-    }
-    func limitZoom (_ zoom: CGFloat) -> CGFloat {
-       return max(min(zoom, maximimumZoom),minimumZoom)
-    }
-    
-    var objectDrag: some Gesture {
-        DragGesture()
-            .onChanged { value in
-                var newLocation = startLocation ?? location // 3
-                newLocation.x += value.translation.width
-                newLocation.y += value.translation.height
-                self.location = newLocation
-            }.updating($startLocation) { (value, startLocation, transaction) in
-                startLocation = startLocation ?? location // 2
-            }
-    }
-    
-    @EnvironmentObject var vm: ObjectPickViewModel
-    @State var defaultDictionaryAsList = [""]
-    let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
-    
-    var uniquePartNames: [String] {
-        vm.getUniquePartNamesFromObjectDictionary()
-    }
-    
-        var addDefaultDictionaryButtonView: some View {
-                Button(action: {
-                    defaultDictionaryAsList =
-                    vm.getList()
-                }, label: {
-                    Text("add")
-                        .foregroundColor(.blue)
-                } )
-        }
-    
-    var body: some View {
 
-            ZStack {
-                ForEach(uniquePartNames, id: \.self) { name in
-                    PartView(uniquePartName: name)
-                }
-            //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
-            //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
-            }
-
-            //.border(.red, width: 1)
-            .frame(width: sizeToEnsureObjectRemainsOnScreen , height: sizeToEnsureObjectRemainsOnScreen )
-            .background(Color.white)
- 
-            .position(location)
-            .gesture(
-                objectDrag
-            )
-            .scaleEffect(zoom)
-            .gesture(MagnificationGesture()
-                .onChanged { value in
-                    currentZoom = value - 1
-                }
-                .onEnded { value in
-                    lastCurrentZoom += currentZoom
-                    currentZoom = 0.0
-                }
-             )
-
-
-
-    }
-}
 
 struct EnterTextView: View {
     @State private var name: String = ""
@@ -433,41 +353,37 @@ struct ContentView: View {
         
 
         NavigationView {
-            
-            //Text("TEST")
             VStack {
-//                NavigationLink(destination:
-//                                VStack( spacing: -150) {
-//                                PickObjectView()
-//                                Object()
-//                    }
-//                ) {
-//                        Text("Default equipment")
-//                    }
-//
-//                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
-//                    Text("Saved equipment")
-//                        .font(isActive ? .headline:.body)
-//                }
+                NavigationLink(destination:
+                                VStack( spacing: -150) {
+                                PickObjectView()
+                                ObjectView()
+                    }
+                ) {
+                        Text("Default equipment")
+                    }
 
-//                NavigationLink(destination:
-//                    VStack {
-//                    HStack {
-//                            Object()
-//                            EditObjectMenuView()
-//                        Spacer()
-//                        }
-//                        saveButtonView
-//                    }
-//                ) {
-//                    Text("Edit equipment")
-//                }
-//
-//
-//
-//                NavigationLink(destination: defaultDictionaryAsListView ) {
-//                 Text("View dictionary")
-//                }
+                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
+                    Text("Saved equipment")
+                        .font(isActive ? .headline:.body)
+                }
+
+                NavigationLink(destination:
+                    VStack {
+                    HStack {
+                            ObjectView()
+                            EditObjectMenuView()
+                        Spacer()
+                        }
+                        saveButtonView
+                    }
+                ) {
+                    Text("Edit equipment")
+                }
+
+                NavigationLink(destination: defaultDictionaryAsListView ) {
+                 Text("View dictionary")
+                }
                 NavigationLink(destination: uniquePartNamesAsListView ) {
                     Text("View dictionary parts")
                 }

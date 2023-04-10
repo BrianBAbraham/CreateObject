@@ -43,7 +43,7 @@ struct PickObjectView: View {
         }
         .pickerStyle(.inline)
         //.padding(.top)
-        .border(.blue)
+//        .border(.blue)
     }
 }
 
