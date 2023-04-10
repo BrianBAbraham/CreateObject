@@ -39,6 +39,7 @@ struct PartView: View {
       LocalOutlineRectangle.path(corners: partCorners, color)
         .onTapGesture {
             partEditVM.setCurrentPartToEditName(uniquePartName)
+            vm.getDimensionOfPart(uniquePartName)
             
         }
     }

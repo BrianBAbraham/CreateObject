@@ -108,6 +108,25 @@ extension ObjectPickViewModel {
          relevantDictionary
     }
     
+    func getDimensionOfPart (_ uniqueName: String)
+    -> Dimension
+    {
+        let relevantDictionary = getRelevantDictionary(.forMeasurement)
+        let dictionaryForPart =
+        getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+                uniqueName,
+                .forMeasurement)
+        let onlyOneDictionaryValue = 0
+        let values = dictionaryForPart.map { $0.value }[onlyOneDictionaryValue]
+//        let minMaxPositionOfPart =  getMinThenMaxPositionOfObject(dictionaryForPart)
+//
+        let dimension = CreateIosPosition.dimensionFromIosPositions(values)
+//print(dimension )
+print(uniqueName)
+print(dimension)
+        return dimension
+    }
+    
     func getPartNameAndItsCornerLocationsFromPrimaryOrigin(
         _ uniquePartName: String,
         _ forScreenOrMeasurment: DictionaryTypes)

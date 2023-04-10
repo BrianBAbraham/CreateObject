@@ -11,15 +11,13 @@ import CoreData
 
 
 class CoreDataViewModel: ObservableObject {
-    //static let instance = CoreDataViewModel()
-    
+
     let container: NSPersistentContainer
-//       var vm: RectangleVM
+
     
     @Published var savedEntities: [LocationEntity] = []
 //
     init() {
-        //vm = rectangleVM
         container = NSPersistentContainer(name: "ObjectContainer")
         container.loadPersistentStores { [self] (description, error) in
             if let error = error {

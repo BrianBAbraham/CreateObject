@@ -20,12 +20,10 @@ struct ForScreen {
         
         let minThenMax = minThenMaxPositionOfObject
         let offset = CreateIosPosition.minus(minThenMax[0])
-       
         let scale = Screen.smallestDimension / maxDimension
         dictionary = createDictionaryForScreen(actualSize, scale, offset)
 
     }
-    
     
     func createDictionaryForScreen(
         _ actualSize: PositionDictionary,
@@ -43,6 +41,19 @@ struct ForScreen {
     }
 }
 
+
+
+///input unique name
+///get four cornefor unique name
+///get min and max x
+///get min and max y
+///find width and length
+///return width and length
+
+
+struct MeasurementsFrom {
+    
+}
 
 struct DictionaryElementIn {
     //let pointOut: [CGPoint]
