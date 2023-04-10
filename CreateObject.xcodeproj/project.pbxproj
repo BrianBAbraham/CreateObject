@@ -13,6 +13,8 @@
 		FD91AF8E296DBB13005DEA51 /* CreateOccupantSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */; };
 		FD91AF90296DBBB0005DEA51 /* OccupantSupportTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD91AF8F296DBBB0005DEA51 /* OccupantSupportTypes.swift */; };
 		FD93EFBC29DC7EB900456380 /* ObjectEditVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */; };
+		FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */; };
+		FD95DA2C29E40F1B009A9500 /* EditObjectMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD95DA2B29E40F1B009A9500 /* EditObjectMenuView.swift */; };
 		FD9A5429298BF1FB00B903C3 /* CreateOccupantFootSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9A5428298BF1FB00B903C3 /* CreateOccupantFootSupport.swift */; };
 		FD9B4B4029A0DF7800E408AA /* CreateBaseWithFixedWheels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B3F29A0DF7800E408AA /* CreateBaseWithFixedWheels.swift */; };
 		FD9B4B4229A0E01000E408AA /* CreateBaseWithAllCasters.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B4129A0E01000E408AA /* CreateBaseWithAllCasters.swift */; };
@@ -49,6 +51,8 @@
 		FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantSupport.swift; sourceTree = "<group>"; };
 		FD91AF8F296DBBB0005DEA51 /* OccupantSupportTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OccupantSupportTypes.swift; sourceTree = "<group>"; };
 		FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectEditVM.swift; sourceTree = "<group>"; };
+		FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerView.swift; sourceTree = "<group>"; };
+		FD95DA2B29E40F1B009A9500 /* EditObjectMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditObjectMenuView.swift; sourceTree = "<group>"; };
 		FD9A5428298BF1FB00B903C3 /* CreateOccupantFootSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantFootSupport.swift; sourceTree = "<group>"; };
 		FD9B4B3F29A0DF7800E408AA /* CreateBaseWithFixedWheels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBaseWithFixedWheels.swift; sourceTree = "<group>"; };
 		FD9B4B4129A0E01000E408AA /* CreateBaseWithAllCasters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBaseWithAllCasters.swift; sourceTree = "<group>"; };
@@ -139,6 +143,8 @@
 				FDC71F14296C921C00B68427 /* CreateBase.swift */,
 				FD9E02F62975966600ACAA70 /* CreateAllPartsForObject.swift */,
 				FDC71F02296C911200B68427 /* ContentView.swift */,
+				FD95DA2B29E40F1B009A9500 /* EditObjectMenuView.swift */,
+				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
 				FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */,
 				FDC71F04296C911300B68427 /* Assets.xcassets */,
 				FDC71F06296C911300B68427 /* Preview Content */,
@@ -225,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */,
+				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
 				FDBD6EFC29C4B40500144603 /* CreateOccupantSideSupport.swift in Sources */,
 				FDA3352E29AA5DF200409A61 /* CreateObjectRectangle.swift in Sources */,
 				FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */,
@@ -236,6 +243,7 @@
 				FD9CF76E29A65AC4006B5B40 /* PartCreation.swift in Sources */,
 				FDCE3F0E299A8F9600C19F2A /* ObjectContainer.xcdatamodeld in Sources */,
 				FD9A5429298BF1FB00B903C3 /* CreateOccupantFootSupport.swift in Sources */,
+				FD95DA2C29E40F1B009A9500 /* EditObjectMenuView.swift in Sources */,
 				FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
 				FD9B4B4229A0E01000E408AA /* CreateBaseWithAllCasters.swift in Sources */,

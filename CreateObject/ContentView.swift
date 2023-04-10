@@ -184,46 +184,7 @@ struct LocalOutlineRectangle {
 
 
 
-struct PickEquipmentView: View {
-    @EnvironmentObject var vm: ObjectPickViewModel
-    
-    var objectNames: [String] {
-        BaseObjectTypes.allCases.map{$0.rawValue}
-    }
-    
-    @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue
-    
-    var currentEqipmentType: String {
-        getCurrentEquipmentType()
-    }
 
-    func getCurrentEquipmentType() -> String {
-        BaseObjectTypes.fixedWheelRearDrive.rawValue
-    }
-    
-    var body: some View {
-        let boundEquipmentType = Binding(
-            get: {vm.getCurrentObjectType()},
-            set: {self.equipmentType = $0}
-        )
-        
-        Picker("movements",selection: boundEquipmentType ) {
-            ForEach(objectNames, id:  \.self)
-                    { equipment in
-                Text(equipment)
-            }
-        }
-        .onChange(of: equipmentType) {tag in
-            self.equipmentType = tag
-//            modifyEquipmentType(tag.rawValue)
-            vm.setCurrentObjectType(tag)
-        }
-        .padding(.top)
-        .border(.blue)
-    }
-
-
-}
 
 
 struct DefaultDictionaryAsList {
@@ -290,63 +251,7 @@ struct EnterTextView: View {
 }
 
 
-struct MenusView: View {
-    @State private var applySymmetry = false
-    @State private var affectOtherParts = false
-    @State private var imperial = false
-    
-    var body: some View {
-        
-        VStack {
-            VStack {
-                Menu("Measurement Location") {
-                    Button("External", action: cancelOrder)
-                    Button("Internal", action: cancelOrder)
-                    Button("Center", action: cancelOrder)
-                }
-                
-                Menu("Edit Options") {
-                    Button("origin", action: placeOrder)
-                    Button("corners", action: adjustOrder)
-//                    Menu("wheelchair") {
-//                        Menu("independent electric") {
-//                            Button("mid drive", action: rename)
-//                            Button("front drive", action: delay)
-//                            Button("rear drive", action: delay)
-//                        }
-//                        Menu("manual") {
-//                            Button("front drive", action: delay)
-//                            Button("rear drive", action: delay)
-//                        }
-//                        Menu("assisted electric") {
-//                            Button("front drive", action: delay)
-//                            Button("rear drive", action: delay)
-//                        }
-//                    }
-                    Button("sides", action: cancelOrder)
-                    Button("length", action: cancelOrder)
-                    Button("width", action: cancelOrder)
-                }
-            }
-//            .padding()
-            
-            VStack {
-                Toggle("apply symmmetry", isOn: $applySymmetry ).frame(width: 200)
-                Toggle("affect other parts", isOn: $affectOtherParts).frame(width: 200)
-                Toggle("Imperial", isOn: $imperial).frame(width: 200)
-            }
-                .padding()
-        }
-        
-        
-    }
 
-    func placeOrder() { }
-    func adjustOrder() { }
-    func rename() { }
-    func delay() { }
-    func cancelOrder() { }
-}
 
 
 struct ContentView: View {
@@ -486,34 +391,42 @@ struct ContentView: View {
     @State var isActive = true
     var body: some View {
         
-
-        
+//        VStack(spacing: -100) {
+//                    PickObjectView()
+//
+//                    Object()
+//        }
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                    VStack() {
-                                PickEquipmentView()
-
+                                VStack(spacing: -150) {
+                                PickObjectView()
                                 Object()
                     }
                 ) {
                         Text("Default equipment")
                     }
+                
                 NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
                     Text("Saved equipment")
                         .font(isActive ? .headline:.body)
                 }
+
                 NavigationLink(destination:
                     VStack {
-                            HStack{
-                                Spacer()
-                                Object()
-                                MenusView()
-                            }
-
-                    saveButtonView}) {
+                    HStack (spacing: -150){
+                            Object()
+                            EditObjectMenuView()
+                        Spacer()
+                        }
+                        saveButtonView
+                    }
+                ) {
                     Text("Edit equipment")
                 }
+
+
+
                 NavigationLink(destination: defaultDictionaryAsListView ) {
                  Text("View dictionary")
                 }
@@ -522,7 +435,7 @@ struct ContentView: View {
                 }
             }
             .navigationBarTitle("Equipment manager")
-            //.navigationViewStyle(StackNavigationViewStyle())
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }
