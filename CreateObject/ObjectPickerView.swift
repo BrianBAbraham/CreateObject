@@ -38,10 +38,10 @@ struct PickObjectView: View {
         }
         .onChange(of: equipmentType) {tag in
             self.equipmentType = tag
-            print("TAP")
 //            modifyEquipmentType(tag.rawValue)
             vm.setCurrentObjectType(tag)
         }
+        .pickerStyle(.inline)
         //.padding(.top)
         .border(.blue)
     }
