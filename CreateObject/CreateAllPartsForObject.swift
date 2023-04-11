@@ -37,6 +37,7 @@ struct CreateAllPartsForObject {
                 let usableBaseObjectName =
                 baseObjectName.components(separatedBy: "_")[
                 theFirstItemIsBaseObjectName]
+print(usableBaseObjectName)
                 baseType = BaseObjectTypes(rawValue: usableBaseObjectName)!
             } else {
                 baseType = BaseObjectTypes(rawValue: baseObjectName)!

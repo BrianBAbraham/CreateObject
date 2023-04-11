@@ -30,35 +30,54 @@ extension PartEditViewModel {
 
     }
     
-    func getEditPermissionsForPart(_ uniquePartName: String)
-    -> Edit {
-        let cornerEdit = false
-        let originEdit = false
-        let sideEdit = false
-        let lengthOnlyEdit = false
-        let widthOnlyEdit = false
-        let maintainWidthSymmetry = false
+    func getObjectWidth (_ objectType: BaseObjectTypes)
+    -> Double {
+        var width = 0.0
         
-        var permissions: Edit =
-        (corner: false, origin: false, side: false, lengthOnly: false, widthOnly: false, widthSymmetry: false)
-        
-        if uniquePartName.contains(Part.arm.rawValue) {
-            permissions =
-            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: true)
+        if objectType.rawValue.contains ("caster") {
+            width = 100
         }
         
-        if uniquePartName.contains(Part.sitOn.rawValue) {
-            permissions =
-            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: false)
+        if objectType.rawValue.contains ("wheel") {
+            width = 200
         }
         
-        if uniquePartName.contains(Part.fixedWheel.rawValue) {
-            permissions =
-            (corner: false, origin: true, side: false, lengthOnly: true, widthOnly: true, widthSymmetry: true)
+        if objectType.rawValue.contains ("wheel") {
+            width = 300
         }
-        
-        return permissions
+
+            return width
     }
+    
+//    func getEditPermissionsForPart(_ uniquePartName: String)
+//    -> Edit {
+//        let cornerEdit = false
+//        let originEdit = false
+//        let sideEdit = false
+//        let lengthOnlyEdit = false
+//        let widthOnlyEdit = false
+//        let maintainWidthSymmetry = false
+//
+//        var permissions: Edit =
+//        (corner: false, origin: false, side: false, lengthOnly: false, widthOnly: false, widthSymmetry: false)
+//
+//        if uniquePartName.contains(Part.arm.rawValue) {
+//            permissions =
+//            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: true)
+//        }
+//
+//        if uniquePartName.contains(Part.sitOn.rawValue) {
+//            permissions =
+//            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: false)
+//        }
+//
+//        if uniquePartName.contains(Part.fixedWheel.rawValue) {
+//            permissions =
+//            (corner: false, origin: true, side: false, lengthOnly: true, widthOnly: true, widthSymmetry: true)
+//        }
+//
+//        return permissions
+//    }
     
     
     func getColorForPart(_ uniquePartName: String)-> Color {

@@ -26,7 +26,7 @@ enum BaseObjectTypes: String, CaseIterable {
     case fixedWheelRearDrive = "Power wheelchair with rear drive"
     case fixedWheelManualRearDrive = "Self-propelling wheelchair with rear drive"
     case fixedWheelSolo = "Power wheelchair with active balance"
-    case fixedWheelTransfer = "Fixed wheeled transfer device"
+    case fixedWheelTransfer = "Fixed wheel transfer device"
     
 //    case hingedDoorSingle = "Door"
 //    case hingedDoorDouble = "Bi-FoldDoor"
@@ -38,6 +38,12 @@ enum BaseObjectTypes: String, CaseIterable {
     case scooterRearDrive3Wheeler = "Scooter 3 wheel rear drive"
     
     case showerTray = "Shower tray"
+    
+    case stairLiftStraight = "Straight stair-lift"
+    case stairLiftInternalRadius = "Internal radius stair-lift"
+    case stairLiftExternalRaidus = "External radius stair-lift"
+    
+    case verticalLift = "Vertical Lift"
 }
 
 enum GroupsDerivedFromRawValueOfBaseObjectTypes: String {
@@ -48,7 +54,7 @@ enum GroupsDerivedFromRawValueOfBaseObjectTypes: String {
     case power = "Power"
     case selfPropelling = "Self-propelling"
     case scooter = "Scooter"
-    case stairLift = "StairLift"
+    case stairLift = "stairLift"
     case verticalLift = "VerticaLift"
 }
 
