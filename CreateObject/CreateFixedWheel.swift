@@ -33,22 +33,31 @@ struct CreateFixedWheel {
     var dictionary: PositionDictionary = [:]
 
     init(
-            _ parentFromPrimaryOrigin: PositionAsIosAxes
+            _ parentFromPrimaryOrigin: PositionAsIosAxes,
+            _ wheelBaseType: BaseObjectTypes
     ) {
         measurmentFor = InitialFixedWheelMeasurement()
                 
         getDictionary (
-            parentFromPrimaryOrigin
+            parentFromPrimaryOrigin,
+            wheelBaseType
         )
     }
 
     mutating func getDictionary(
-        _ parentFromPrimaryOrigin: PositionAsIosAxes//,
+        _ parentFromPrimaryOrigin: PositionAsIosAxes,
+        _ wheelBaseType: BaseObjectTypes
     ) {
 
+        var measurement = measurmentFor.electric
+
+        if wheelBaseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.selfPropelling.rawValue) {
+            measurement = measurmentFor.independence
+        }
+        
         let fixedWheelDictionary =
             CreateOnePartOrSideSymmetricParts(
-                measurmentFor.electric,
+                measurement,
                 .fixedWheel,
                 (x: 0.0, y:0.0, z: 0.0),
                 parentFromPrimaryOrigin,

@@ -9,38 +9,44 @@ import Foundation
 
 enum BaseObjectTypes: String, CaseIterable {
     
-    case allCasterBed = "FourCasterBed"
-    case allCasterChair = "FourCasterChair"
-    case allCasterHoist = "AllCasterHoist"
+    case allCasterBed = "Bed with caster base"
+    case allCasterChair = "Chair with caster base"
+    case allCasterHoist = "Hoist with caster base"
     //case allCaster6Hoist  = "SixCasterHoist"
-    case allCasterStandAid = "FourCasterStandAid"
-    case allCasterStretcher = "FourCasterStretcher"
+    case allCasterStandAid = "Stand aid with caster base"
+    case allCasterStretcher = "Stretcher with caster Base "
     
 //    case bathIntegralHoist = "IntegralBathHoist"
 //    case bathFloorFixedHoistOneRotationPoint = "SingleRotationPointBathHoist"
 //    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
     
-    case fixedWheelFrontDrive = "FrontDriveWheelchair"
-    case fixedWheelMidDrive  = "MidDriveWheelchair"
-    case fixedWheelRearDrive = "RearDriveWheelchair"
-    case fixedWheelSolo = "BalancingDriveWheelchair"
-    case fixedWheelTransfer = "TransferFixedWheelDriveDevice"
+    
+    case fixedWheelFrontDrive = "Power wheelchair with front drive"
+    case fixedWheelMidDrive  = "Power wheelchair with mid-drive"
+    case fixedWheelRearDrive = "Power wheelchair with rear drive"
+    case fixedWheelManualRearDrive = "Self-propelling wheelchair with rear drive"
+    case fixedWheelSolo = "Power wheelchair with active balance"
+    case fixedWheelTransfer = "Fixed wheeled transfer device"
     
 //    case hingedDoorSingle = "Door"
 //    case hingedDoorDouble = "Bi-FoldDoor"
 //    case hingedDoortripple = "Tri-FoldDoor"
 //    
-//    case scooterFrontDrive4Wheeler = "FrontDriveFourWheelScooter"
-//    case scooterFrontDrive3Wheeler =  "FrontDriveThreeWheelScooter"
-//    case scooterRearDrive4Wheeler  = "RearDriveFourWheelScooter"
-//    case scooterRearDrive3Wheeler = "RearDriveThreeWheelScooter"
+    case scooterFrontDrive4Wheeler = "Scooter 4 wheel front drive"
+    case scooterFrontDrive3Wheeler =  "Scooter 3 wheel front drive"
+    case scooterRearDrive4Wheeler  = "Scooter 4 wheel rear drive"
+    case scooterRearDrive3Wheeler = "Scooter 3 wheel rear drive"
+    
+    case showerTray = "Shower tray"
 }
 
-enum BaseObjectGroups: String {
-    case caster = "Caster"
+enum GroupsDerivedFromRawValueOfBaseObjectTypes: String {
+    case caster = "caster"
     case bath = "Bath"
-    case fixedWheel = "Wheel"
+    case fixedWheel = "wheel"
     case door = "Door"
+    case power = "Power"
+    case selfPropelling = "Self-propelling"
     case scooter = "Scooter"
     case stairLift = "StairLift"
     case verticalLift = "VerticaLift"

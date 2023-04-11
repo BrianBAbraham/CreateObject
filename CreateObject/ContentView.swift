@@ -327,7 +327,8 @@ struct ContentView: View {
     }
     
     //let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
-    
+    @Environment(\.managedObjectContext) private var viewContext
+      @Environment(\.undoManager) private var undoManager
     //@State var isPresented = true
     @State var isActive = true
     var body: some View {
@@ -361,6 +362,10 @@ struct ContentView: View {
                 ) {
                     Text("Edit equipment")
                 }
+                
+                .onAppear{
+                    viewContext.undoManager = undoManager
+                 }
 
                 NavigationLink(destination: defaultDictionaryAsListView ) {
                  Text("View dictionary")

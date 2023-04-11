@@ -15,7 +15,7 @@ struct CreateObjectApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(epVM.getCurrentObjectType())
-//                .environment(\.managedObjectContext,CoreDataViewModel().container.viewContext)
+                .environment(\.managedObjectContext,CoreDataViewModel().container.viewContext)
                 .environmentObject(epVM)
                 .environmentObject(partEditVM)
         }

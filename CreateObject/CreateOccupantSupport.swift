@@ -100,6 +100,11 @@ struct CreateOccupantSupport {
                 bodySupportRequired = false
                 footSupportRequired = false
                 armSupportRequired = false
+            case .showerTray:
+            occupantSupportMeasure = occupantSupportMeasures.sitOn
+                footSupportRequired = false
+                armSupportRequired = false
+            
             default:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
                 footSupportRequired = true
@@ -224,7 +229,7 @@ struct CreateOccupantSupport {
             let halfLength = initialOccupantBodySupportMeasure.sitOn.length/2
             var bodySupportlengthFromPrimaryOrigin: Double = 0
 
-            if baseType.rawValue.contains(BaseObjectGroups.fixedWheel.rawValue) {
+            if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.fixedWheel.rawValue) {
 
                 switch baseType {
                     case .fixedWheelFrontDrive:
@@ -250,7 +255,7 @@ struct CreateOccupantSupport {
             
             
 
-            if baseType.rawValue.contains(BaseObjectGroups.caster.rawValue) {
+            if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.caster.rawValue) {
                 
                 let initialOccupantBodySupportFromPrimaryOrigin =
                     getAllBodySupportFromPrimaryOriginAccountForAllSitOn(

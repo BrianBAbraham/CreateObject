@@ -80,6 +80,16 @@ struct ForFixedWheelBaseObject {
             casterDictionary += casterAtFrontDictionary
         }
         
+        if wheelBaseType == .fixedWheelManualRearDrive {
+            
+            let casterAtFrontDictionary = CreateCaster(
+                .casterWheelAtFront,
+                measurement.baseCornerFromPrimaryOriginForWidthAxisAt.rear.front
+            ).dictionary
+            
+            casterDictionary += casterAtFrontDictionary
+        }
+        
         
         if wheelBaseType == .fixedWheelMidDrive {
             
@@ -101,7 +111,10 @@ struct ForFixedWheelBaseObject {
     let dictionary =
     Merge.these.dictionaries([
         casterDictionary,
-        CreateFixedWheel(measurement.baseCornerFromPrimaryOriginForWidthAxisAt.centre.centre).dictionary,
+        CreateFixedWheel(
+            measurement.baseCornerFromPrimaryOriginForWidthAxisAt.centre.centre,
+            wheelBaseType
+        ).dictionary,
         ])
 
     return dictionary

@@ -25,7 +25,7 @@ struct CreateBase {
         _ baseType: BaseObjectTypes,
         _ occupantSupport: CreateOccupantSupport,
         _ measurement: InitialBaseMeasureFor)  {
-        if baseType.rawValue.contains(BaseObjectGroups.caster.rawValue){
+        if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.caster.rawValue){
             dictionary =
             ForAllCasterBaseObject(
                 baseType,
@@ -34,13 +34,17 @@ struct CreateBase {
             ).getDictionary()
         }
             
-        if baseType.rawValue.contains(BaseObjectGroups.fixedWheel.rawValue) {
+        if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.fixedWheel.rawValue) {
            dictionary =
            ForFixedWheelBaseObject(
                 baseType,
                 occupantSupport
             ).getDictionary()
         }
+            
+            if baseType.rawValue == BaseObjectTypes.showerTray.rawValue {
+                dictionary = [:]
+            }
             
 
     }

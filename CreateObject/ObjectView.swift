@@ -65,7 +65,7 @@ struct ObjectView: View {
             //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
             .frame(width: sizeToEnsureObjectRemainsOnScreen , height: sizeToEnsureObjectRemainsOnScreen )
-            .background(Color.white)
+            .background(Color.white.opacity(0.0001) )
  
             .position(location)
             .gesture(

@@ -62,6 +62,11 @@ struct CreateAllPartsForObject {
                 baseMeasurement = InitialBaseMeasureFor(
                     rearToFrontLength: lieOnDimension.length/2,
                     halfWidth: lieOnDimension.width/2)
+              
+          case .showerTray:
+              baseMeasurement = InitialBaseMeasureFor(
+                rearToFrontLength: 1200,
+                halfWidth: 450)
 
             default:
                  break

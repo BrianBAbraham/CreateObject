@@ -87,7 +87,7 @@ extension PartEditViewModel {
                 color = .green
             }
             
-            if uniquePartName.contains("caster") {
+            if uniquePartName.contains("aster") {
                 color = .orange
             }
             if uniquePartName.contains("VerticalJoint") {
