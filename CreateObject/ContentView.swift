@@ -204,6 +204,8 @@ struct ContentView: View {
     @State private var savedAsName: String = ""
     
     
+    
+    
     //@State var defaultDictionaryAsList = [""]
     var defaultDictionaryAsList: [String] {
         epVM.getList()
@@ -213,7 +215,12 @@ struct ContentView: View {
 
     init(_ equipmentName: String) {
         self.equipmentName = equipmentName
-//print("INITATE CONTENT VIEW")
+        UISegmentedControl.appearance().backgroundColor = .purple        //This will change the font size
+//        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .caption2)], for: .highlighted)
+//
+//        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .footnote)], for: .normal)
+        
+        //print("INITATE CONTENT VIEW")
         }
     
     var enterTextView: some View {

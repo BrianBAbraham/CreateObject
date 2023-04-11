@@ -30,7 +30,7 @@ struct PickObjectView: View {
             set: {self.equipmentType = $0}
         )
         
-        Picker("movements",selection: boundEquipmentType ) {
+        Picker("Equipment",selection: boundEquipmentType ) {
             ForEach(objectNames, id:  \.self)
                     { equipment in
                 Text(equipment)
@@ -41,9 +41,8 @@ struct PickObjectView: View {
 //            modifyEquipmentType(tag.rawValue)
             vm.setCurrentObjectType(tag)
         }
-        .pickerStyle(.inline)
-        //.padding(.top)
-//        .border(.blue)
+        .pickerStyle(.wheel)
+        .scaleEffect(0.8)
     }
 }
 

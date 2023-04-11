@@ -73,7 +73,7 @@ extension PartEditViewModel {
                 color = .green
             }
             if uniquePartName.contains(Part.fixedWheel.rawValue) {
-                color = .orange
+                color = .black
             }
             
             if uniquePartName.contains(Part.footSupport.rawValue) {
@@ -87,8 +87,8 @@ extension PartEditViewModel {
                 color = .green
             }
             
-            if uniquePartName.contains("aster") {
-                color = .orange
+            if uniquePartName.contains("asterWheel") {
+                color = .black
             }
             if uniquePartName.contains("VerticalJoint") {
                 color = .red
@@ -108,4 +108,6 @@ extension PartEditViewModel {
             partEditModel.part = partName
     }
 }
+
+
 
