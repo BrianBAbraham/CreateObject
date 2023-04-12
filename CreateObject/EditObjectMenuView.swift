@@ -19,46 +19,28 @@ import SwiftUI
 //}
 
 struct EditObjectMenuView: View {
+    var dictionary: PositionDictionary = [:]
     @State private var applySymmetry = false
     @State private var affectOtherParts = false
     @State private var imperial = false
-    @State private var proposedWidth = 100
-    @State private var proposedLength = 200
-    @EnvironmentObject var vm: ObjectPickViewModel
+
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     
     init(){
-        //let dictionary = vm.getRelevantDictionary(.forMeasurement)
+        //self.dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
     }
     
     
-    
+
     
     var body: some View {
-        let boundLength = Binding(
-            get: {0},
-            set: {self.proposedWidth = $0}
-        )
-        let boundWidth = Binding(
-            get: {0},
-            set: {self.proposedLength = $0}
-        )
         
-        
-        VStack{
-            HStack {
-                //sliderChairLength(boundLength)
-                Text("length  mm")
-                
-            }
-            
-            .padding([.leading, .trailing])
-            HStack {
-                //sliderChairWidth(boundWidth)
-                Text("width: mm")
-                
-            }
-            
-        }
+        let dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
+    EditFootSupportPosition(dictionary)
+          
+
+    }
+       
         //        VStack {
         //            VStack {
         //                Menu("Measurement Location") {
@@ -105,26 +87,28 @@ struct EditObjectMenuView: View {
         //                }
         //        }
         
-        //        func sliderChairLength(_ boundLength: Binding<Double>) -> some View {
-        //            Slider(value: boundLength, in: 500.0...2500.0, step: 10
-        //            )
-        //                .onChange(of: proposedChairLengthMeasurement) { value in
-        //                    vm.replacePartsInExistingChairManoeuvre(proposedChairLengthMeasurement, .chairLength)
-        
-        //    }
+//                func sliderChairLength(_ boundLength: Binding<Double>) -> some View {
+//                    Slider(value: boundLength, in: 500.0...2500.0, step: 10
+//                    )
+//                    .onChange(of: proposedLength) { value in
+//                        print(value)
+//                    }
+//                }
         
         //    func placeOrder() { }
         //    func adjustOrder() { }
         //    func rename() { }
         //    func delay() { }
         //    func cancelOrder() { }
-    }
+    
 }
 
 struct EditObjectMenuView_Previews: PreviewProvider {
     static var previews: some View {
         EditObjectMenuView()
+            .environmentObject(ObjectPickViewModel())
     }
+        
 }
 
 /// 

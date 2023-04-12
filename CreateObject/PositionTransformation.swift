@@ -70,13 +70,10 @@ struct CreateIosPosition {
     
     static func dimensionFromIosPositions(_ positions: [PositionAsIosAxes])
     -> Dimension {
-        var xArray: [Double] = []
-        var yArray: [Double] = []
         
-        for position in positions {
-            xArray.append(position.x)
-            yArray.append(position.y)
-        }
+        let arrayTouple = getArrayFromPositions(positions)
+        let xArray = arrayTouple.x
+        let yArray = arrayTouple.z
         
         func getDimension(_ measurements :[Double]) -> Double {
             let defaultMeasurement = measurements[0]
@@ -88,6 +85,25 @@ struct CreateIosPosition {
             (length: getDimension(yArray),
             width: getDimension(xArray))
     }
+    
+    static func getArrayFromPositions( _ positions: [PositionAsIosAxes])
+    -> (x:[Double], y: [Double], z: [Double]) {
+        var xArray: [Double] = []
+        var yArray: [Double] = []
+        var zArray: [Double] = []
+        
+        for position in positions {
+            xArray.append(position.x)
+            yArray.append(position.y)
+            zArray.append(position.z)
+        }
+        
+        return (x: xArray, y: yArray, z: zArray)
+    }
+    
+//    static func maximumPosition( _ positions: [PositionAsIosAxes]) {
+//        let arrayTouple = getArrayFromPositions(positions)
+//    }
     
     static func subtractSecondFromFirstLeftAndRightTouple(_ first: LeftRightPositionAsIosAxis, _ second: LeftRightPositionAsIosAxis) -> LeftRightPositionAsIosAxis {
         

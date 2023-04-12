@@ -69,15 +69,15 @@ extension ObjectPickViewModel {
     }
     
     
-    func getMaxObjectDimension(_ minThenMaxPositionOfObject: [PositionAsIosAxes])
+    func getObjectDimension(_ minThenMaxPositionOfObject: [PositionAsIosAxes])
     -> Dimension {
         let minMax = minThenMaxPositionOfObject
         
-        let maxObjectDimension =
+        let objectDimension =
         (length: minMax[1].y - minMax[0].y, width: minMax[1].x - minMax[0].x)
         
         return
-            maxObjectDimension
+            objectDimension
     }
     
     func getRelevantDictionary(
@@ -89,10 +89,12 @@ extension ObjectPickViewModel {
         let minThenMaxPositionOfObject =
         getMinThenMaxPositionOfObject(relevantDictionary)
         
-        let maxDimensions =
-        getMaxObjectDimension(minThenMaxPositionOfObject)
+//print(minThenMaxPositionOfObject)
         
-        let maxDimension = [maxDimensions.length, maxDimensions.width].max() ?? maxDimensions.length
+        let objectDimensions =
+        getObjectDimension(minThenMaxPositionOfObject)
+        
+        let maxDimension = [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
         switch forScreenOrMeasurment {
         case .forScreen:
             relevantDictionary = ForScreen(
@@ -174,7 +176,33 @@ print(dimension)
         return [generalPartName: uniqueCornerLocations]
     }
     
-    
+    func getFootSupportHangerLength ()
+    -> Double {
+        let startPartName = Part.footSupportHangerSitOnVerticalJoint.rawValue
+        let endPartName = Part.footSupportHorizontalJoint.rawValue
+        let uniquePartNames = getUniquePartNamesFromObjectDictionary()
+        let relevantStartNames = uniquePartNames.filter{ $0.contains(startPartName)}
+        let relevantEndNames = uniquePartNames.filter{ $0.contains(endPartName)}
+        let cornerStartPartDictionary =
+        getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+            relevantStartNames[0],
+            .forMeasurement)
+        let cornerEndPartDictionary =
+        getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+            relevantEndNames[0],
+            .forMeasurement)
+        
+        let startPositions = DictionaryElementIn(cornerStartPartDictionary).locationsFromPrimaryOrigin
+        let endPositions = DictionaryElementIn(cornerEndPartDictionary).locationsFromPrimaryOrigin
+
+        let startPositionsAsArrays = CreateIosPosition.getArrayFromPositions(startPositions)
+        let endPositionsAsArrays = CreateIosPosition.getArrayFromPositions(endPositions)
+        let length =
+        (endPositionsAsArrays.y.min() ?? endPositionsAsArrays.y[0]) -
+        (startPositionsAsArrays.y.max() ?? startPositionsAsArrays.y[0])
+        
+        return length
+    }
     
     func getList() -> [String] {
 let sender = #function

@@ -384,7 +384,9 @@ struct ContentView: View {
             .navigationBarTitle("Equipment manager")
             //.navigationViewStyle(StackNavigationViewStyle())
         }
+        
     }
+  
 }
    
 

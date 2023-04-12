@@ -30,6 +30,19 @@ extension PartEditViewModel {
 
     }
     
+//    func getFootSupportHangerLength( _ dictionary: PositionDictionary )
+//    -> Double {
+//        let partName = Part.footSupportHangerSitOnVerticalJoint.rawValue
+//        let onlyOneDictionaryMember = 0
+//        let dictionaryWithNames = dictionary.filter({$0.key.contains(partName)})
+//        let dictionaryWithName = dictionaryWithNames.filter({$0.key.contains(Part.primaryOrigin.rawValue)})
+//        let value = dictionaryWithName.map{$0.1}[onlyOneDictionaryMember]
+//
+//        let currentLength = value.y
+//        return currentLength
+//
+//    }
+    
     func getObjectWidth (_ objectType: BaseObjectTypes)
     -> Double {
         var width = 0.0

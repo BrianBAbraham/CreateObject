@@ -27,7 +27,7 @@ struct InitialOccupantFootSupportMeasure {
     let rightFootSupportHangerJointFromSitOnOrigin: PositionAsIosAxes
     
     static let footSupportHanger =
-    (length: 200.0, width: 20.0)
+    (length: 300.0, width: 20.0)
     
   let rightFootSupportJointFromHangerJointOrigin =
         (x: 0.0,
@@ -130,6 +130,7 @@ struct CreateOccupantFootSupport {
             Merge.these.dictionaries([
                 footSupportDictionary.cornerDictionary,
                 footSupportDictionary.originDictionary,
+                footSupportHangerJointDictionary.originDictionary,
                 footSupportHangerJointDictionary.cornerDictionary,
                 footSupportJointDictionary.cornerDictionary
             ])

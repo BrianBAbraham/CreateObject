@@ -58,25 +58,25 @@ struct MeasurementsFrom {
 struct DictionaryElementIn {
     //let pointOut: [CGPoint]
     let singleElementDictionary: [String: [PositionAsIosAxes]]
+    let onlyOneDictionaryMember = 0
+    let locationsFromPrimaryOrigin: [PositionAsIosAxes]
     
     init (_ element: [String: [PositionAsIosAxes]]) {
         self.singleElementDictionary = element
+       locationsFromPrimaryOrigin = singleElementDictionary.map{$0.1}[onlyOneDictionaryMember]
         //pointOut = cgPointsOut()
    // }
 
     }
     func cgPointsOut() -> [CGPoint] {
-        let onlyOneDictionaryMember = 0
+
         var points: [CGPoint] = []
-        let locationsFromPrimaryOrigin = singleElementDictionary.map{$0.1}[onlyOneDictionaryMember]
-        
         for location in locationsFromPrimaryOrigin {
             points.append(CGPoint(x: location.x , y: location.y))
         }
         
         return points
     }
-    
 
 }
 
