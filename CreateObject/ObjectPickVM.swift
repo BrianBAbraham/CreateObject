@@ -124,8 +124,8 @@ extension ObjectPickViewModel {
 //
         let dimension = CreateIosPosition.dimensionFromIosPositions(values)
 //print(dimension )
-print(uniqueName)
-print(dimension)
+//print(uniqueName)
+//print(dimension)
         return dimension
     }
     
@@ -176,6 +176,97 @@ print(dimension)
         return [generalPartName: uniqueCornerLocations]
     }
     
+    
+    
+    func getCornersJoiningTwoPartsPossiblyOnTwoSides(
+        _ startPart: Part,
+        _ endPart: Part) {
+
+            let uniquePartNames = getUniquePartNamesFromObjectDictionary()
+            let startPartPositions = getCornersOfOnePartPossiblyOnTwoSides(startPart)
+            let endPartPositions = getCornersOfOnePartPossiblyOnTwoSides(endPart)
+
+            let minPositions =
+            getExtremaOfPartPossiblyOnTwoSides(
+                "min",
+                 endPartPositions,
+                endPart)
+            let maxPositions =
+            getExtremaOfPartPossiblyOnTwoSides(
+                "max",
+                 startPartPositions,
+                startPart)
+            var inBetweenPartOnOneSide: [PositionAsIosAxes] = []
+            var inBetweenPartPossiblyOnBothSides: [[PositionAsIosAxes]] = []
+            
+            for sideIndex in 0..<minPositions.count {
+
+                for cornerIndex in 0..<minPositions[sideIndex].count {
+                    inBetweenPartOnOneSide.append( minPositions[sideIndex][cornerIndex])
+                    inBetweenPartOnOneSide.append( maxPositions[sideIndex][cornerIndex])
+                }
+                
+                inBetweenPartPossiblyOnBothSides.append(inBetweenPartOnOneSide)
+            }
+            
+            func getCornersOfOnePartPossiblyOnTwoSides(
+                _ partName: Part )
+            -> [[PositionAsIosAxes]] {
+            
+                let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}
+                var cornerPartDictionary:[String: [PositionAsIosAxes]]  = [:]
+             
+                var positionsPossiblyForTwoSides: [[PositionAsIosAxes]] = []
+                
+                for index in 0..<relevantNames.count {
+                    
+                    cornerPartDictionary =                         getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+                        relevantNames[index],
+                        .forMeasurement)
+                    
+                    positionsPossiblyForTwoSides.append(
+                    DictionaryElementIn(cornerPartDictionary).locationsFromPrimaryOrigin)
+                }
+                    
+                    return positionsPossiblyForTwoSides
+                }
+            
+            
+            func getExtremaOfPartPossiblyOnTwoSides(
+                _ minOrMax: String,
+                _ partPositions: [[PositionAsIosAxes]],
+                _ partName: Part)
+            -> [[PositionAsIosAxes]] {
+                let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}
+                var yFirstExtrema: Double
+                var ySecondExtrema: Double
+                var indexOfFirstExtrema: Int = 0
+                var indexOfSecondExtrema: Int = 0
+                var oneSide: [PositionAsIosAxes] = []
+                var bothSidesIfPresent: [[PositionAsIosAxes]] = []
+                
+                for index in 0..<relevantNames.count {
+                    oneSide = partPositions[index]
+                    var yArray =
+                    CreateIosPosition.getArrayFromPositions(oneSide).y
+                    
+                    yFirstExtrema =  minOrMax == "max" ? yArray.max() ?? yArray[0]: yArray.min() ?? yArray[0]
+                    
+                    indexOfFirstExtrema = yArray.firstIndex(of: yFirstExtrema) ?? 0
+                        yArray.remove(at: indexOfFirstExtrema)
+                      
+                    ySecondExtrema = minOrMax == "max" ? yArray.max() ?? yArray[0]: yArray.min() ?? yArray[0]
+                    
+                    indexOfSecondExtrema = yArray.firstIndex(of: ySecondExtrema) ?? 1
+                    
+                    bothSidesIfPresent.append([oneSide[indexOfFirstExtrema], oneSide[indexOfSecondExtrema] ])
+                   
+                }
+                return bothSidesIfPresent
+            }
+        }
+    
+    
     func getFootSupportHangerLength ()
     -> Double {
         let startPartName = Part.footSupportHangerSitOnVerticalJoint.rawValue
@@ -183,6 +274,7 @@ print(dimension)
         let uniquePartNames = getUniquePartNamesFromObjectDictionary()
         let relevantStartNames = uniquePartNames.filter{ $0.contains(startPartName)}
         let relevantEndNames = uniquePartNames.filter{ $0.contains(endPartName)}
+//print(relevantEndNames)
         let cornerStartPartDictionary =
         getPartNameAndItsCornerLocationsFromPrimaryOrigin(
             relevantStartNames[0],
@@ -194,7 +286,9 @@ print(dimension)
         
         let startPositions = DictionaryElementIn(cornerStartPartDictionary).locationsFromPrimaryOrigin
         let endPositions = DictionaryElementIn(cornerEndPartDictionary).locationsFromPrimaryOrigin
-
+//CHANGE
+//one func to code both start and end elements
+// think about getting positions for drawing the part
         let startPositionsAsArrays = CreateIosPosition.getArrayFromPositions(startPositions)
         let endPositionsAsArrays = CreateIosPosition.getArrayFromPositions(endPositions)
         let length =
@@ -203,6 +297,8 @@ print(dimension)
         
         return length
     }
+    
+    
     
     func getList() -> [String] {
 let sender = #function

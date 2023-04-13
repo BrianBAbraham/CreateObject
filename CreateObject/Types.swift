@@ -8,6 +8,7 @@
 import Foundation
 
 typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
+typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
 typealias LeftRightPositionAsIosAxis = (
     left: PositionAsIosAxes, right: PositionAsIosAxes)

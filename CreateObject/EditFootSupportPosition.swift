@@ -41,7 +41,10 @@ struct EditFootSupportPosition: View {
                 Slider(value: boundLength, in: 500.0...2500.0, step: 10
                 )
                 .onChange(of: proposedLength) { value in
-                   //print(value)
+                    vm.getCornersJoiningTwoPartsPossiblyOnTwoSides(
+                        .footSupportHangerSitOnVerticalJoint,
+                        .footSupportHorizontalJoint
+                    ) //print(value)
                 }
                 Text("\(Int(objectLength))")
                 

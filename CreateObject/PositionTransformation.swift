@@ -87,7 +87,7 @@ struct CreateIosPosition {
     }
     
     static func getArrayFromPositions( _ positions: [PositionAsIosAxes])
-    -> (x:[Double], y: [Double], z: [Double]) {
+    -> PositionArrayAsIosAxes {
         var xArray: [Double] = []
         var yArray: [Double] = []
         var zArray: [Double] = []

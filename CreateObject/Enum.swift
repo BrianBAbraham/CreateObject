@@ -42,6 +42,7 @@ enum Part: String {
     case footSupport = "footSupport"
     case footSupportHorizontalJoint = "footSupportHorizontalJoint"
     case footSupportHanger = "footSupportHanger"
+    case footSupportHangerLink = "footSupportHangerLink"
     case footSupportHangerSitOnVerticalJoint = "footSupportHangerSitOnVerticalJoint"
     case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
     //case footSupportJoint = "footSupportHangerSupportJoint"
