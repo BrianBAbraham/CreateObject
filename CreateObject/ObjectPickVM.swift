@@ -180,9 +180,10 @@ extension ObjectPickViewModel {
     
     func getCornersJoiningTwoPartsPossiblyOnTwoSides(
         _ startPart: Part,
-        _ endPart: Part) {
+        _ endPart: Part)
+        -> [[PositionAsIosAxes]]{
 
-            let uniquePartNames = getUniquePartNamesFromObjectDictionary()
+
             let startPartPositions = getCornersOfOnePartPossiblyOnTwoSides(startPart)
             let endPartPositions = getCornersOfOnePartPossiblyOnTwoSides(endPart)
 
@@ -196,24 +197,26 @@ extension ObjectPickViewModel {
                 "max",
                  startPartPositions,
                 startPart)
+            
             var inBetweenPartOnOneSide: [PositionAsIosAxes] = []
+            
             var inBetweenPartPossiblyOnBothSides: [[PositionAsIosAxes]] = []
             
             for sideIndex in 0..<minPositions.count {
-
                 for cornerIndex in 0..<minPositions[sideIndex].count {
                     inBetweenPartOnOneSide.append( minPositions[sideIndex][cornerIndex])
                     inBetweenPartOnOneSide.append( maxPositions[sideIndex][cornerIndex])
                 }
-                
                 inBetweenPartPossiblyOnBothSides.append(inBetweenPartOnOneSide)
             }
             
             func getCornersOfOnePartPossiblyOnTwoSides(
                 _ partName: Part )
             -> [[PositionAsIosAxes]] {
-            
-                let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}
+                
+                //let uniquePartNames = getUniquePartNamesFromObjectDictionary()
+                let relevantNames = getRelevantNames(partName)
+//print(relevantNames)
                 var cornerPartDictionary:[String: [PositionAsIosAxes]]  = [:]
              
                 var positionsPossiblyForTwoSides: [[PositionAsIosAxes]] = []
@@ -237,7 +240,7 @@ extension ObjectPickViewModel {
                 _ partPositions: [[PositionAsIosAxes]],
                 _ partName: Part)
             -> [[PositionAsIosAxes]] {
-                let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}
+                //let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}
                 var yFirstExtrema: Double
                 var ySecondExtrema: Double
                 var indexOfFirstExtrema: Int = 0
@@ -245,7 +248,7 @@ extension ObjectPickViewModel {
                 var oneSide: [PositionAsIosAxes] = []
                 var bothSidesIfPresent: [[PositionAsIosAxes]] = []
                 
-                for index in 0..<relevantNames.count {
+                for index in 0..<partPositions.count {
                     oneSide = partPositions[index]
                     var yArray =
                     CreateIosPosition.getArrayFromPositions(oneSide).y
@@ -260,12 +263,47 @@ extension ObjectPickViewModel {
                     indexOfSecondExtrema = yArray.firstIndex(of: ySecondExtrema) ?? 1
                     
                     bothSidesIfPresent.append([oneSide[indexOfFirstExtrema], oneSide[indexOfSecondExtrema] ])
-                   
                 }
                 return bothSidesIfPresent
             }
+            return inBetweenPartPossiblyOnBothSides
         }
     
+    func getCornerDictionaryForPartDerivedFromTwoParts (
+        _ startPart: Part,
+        _ endPart: Part,
+        _ newPart: Part) {
+            
+            let corners =
+            getCornersJoiningTwoPartsPossiblyOnTwoSides(
+                startPart,
+                endPart)
+            var dictionary: PositionDictionary = [:]
+            let relevantNames = getRelevantNames(startPart)
+print(relevantNames)
+            let sitOnIdName = Part.sitOn.rawValue + Part.stringLink.rawValue + "id"
+            let sitOnIdNames = [sitOnIdName + "0", sitOnIdName + "1"]
+            
+            for index in 0..<relevantNames.count/2 {
+                if relevantNames[index].contains(sitOnIdNames[index]) {
+               dictionary +=
+                    CreateCornerDictionaryForBothSides (
+                        [corners[index]],
+                        index,
+                        newPart).dictionary
+                }
+            }
+            
+print(dictionary)
+            
+
+    }
+    
+    func getRelevantNames(_ partName: Part) -> [String] {
+        let uniquePartNames = getUniquePartNamesFromObjectDictionary()
+        return
+            uniquePartNames.filter{ $0.contains(partName.rawValue)}
+    }
     
     func getFootSupportHangerLength ()
     -> Double {

@@ -28,7 +28,7 @@ struct CreateAllPartsForObject {
                 .one
             
             let occupantSupportTypes: [OccupantSupportTypes] =
-                [.seatedStandard]
+            [.seatedStandard]
             
             let baseObjectName_savedNameFlag = "_"
             let theFirstItemIsBaseObjectName = 0
