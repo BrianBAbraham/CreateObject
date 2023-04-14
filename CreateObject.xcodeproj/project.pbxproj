@@ -27,6 +27,7 @@
 		FDA3352E29AA5DF200409A61 /* CreateObjectRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */; };
 		FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA4743C29E46925003F1202 /* ObjectView.swift */; };
 		FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */; };
+		FDAB603829E98C2500BE56FA /* DictionaryInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */; };
 		FDB96BC929BA491A0011FAFF /* CreateFixedWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */; };
 		FDBD6EF829C4A6F700144603 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBD6EF729C4A6F700144603 /* Types.swift */; };
 		FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */; };
@@ -67,6 +68,7 @@
 		FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateObjectRectangle.swift; sourceTree = "<group>"; };
 		FDA4743C29E46925003F1202 /* ObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectView.swift; sourceTree = "<group>"; };
 		FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantBodySupport.swift; sourceTree = "<group>"; };
+		FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryInformation.swift; sourceTree = "<group>"; };
 		FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFixedWheel.swift; sourceTree = "<group>"; };
 		FDBD6EF729C4A6F700144603 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionTransformation.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				FDBD6EF729C4A6F700144603 /* Types.swift */,
 				FD9B4B4329A1265600E408AA /* DictionaryTransformation.swift */,
 				FD8C21C029C0ABCD0034E293 /* DictionaryCreation.swift */,
+				FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */,
 				FDD0CAEE29DB393600203BE5 /* Screen.swift */,
 				FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */,
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
@@ -262,6 +265,7 @@
 				FD9E02F72975966600ACAA70 /* CreateAllPartsForObject.swift in Sources */,
 				FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */,
 				FDC71F15296C921C00B68427 /* CreateBase.swift in Sources */,
+				FDAB603829E98C2500BE56FA /* DictionaryInformation.swift in Sources */,
 				FDB96BC929BA491A0011FAFF /* CreateFixedWheel.swift in Sources */,
 				FDD74B0F29CB3E2B001BBF51 /* CreateCaster.swift in Sources */,
 				FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */,

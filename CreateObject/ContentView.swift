@@ -14,10 +14,17 @@ struct PartView: View {
     @EnvironmentObject var vm: ObjectPickViewModel
     @EnvironmentObject var partEditVM: PartEditViewModel
     let uniquePartName: String
+    var dictionary: PositionDictionary {
+        vm.getRelevantDictionary(.forScreen)
+    }
     var partCornersDictionary: [String: [PositionAsIosAxes]] {
-        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+//        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(
+//            uniquePartName,
+//            .forScreen)
+        PartNameAndItsCornerLocations(
             uniquePartName,
-            .forScreen)
+                .forScreen,
+            dictionary).dictionaryFromPrimaryOrigin
         
     }
     let onlyOneDictionaryMember = 0
@@ -39,7 +46,7 @@ struct PartView: View {
       LocalOutlineRectangle.path(corners: partCorners, color)
         .onTapGesture {
             partEditVM.setCurrentPartToEditName(uniquePartName)
-            vm.getDimensionOfPart(uniquePartName)
+            //vm.getDimensionOfPart(uniquePartName)
             
         }
     }

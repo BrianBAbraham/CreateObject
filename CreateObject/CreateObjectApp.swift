@@ -9,14 +9,14 @@ import SwiftUI
 
 @main
 struct CreateObjectApp: App {
-    @StateObject var epVM = ObjectPickViewModel()
+    @StateObject var objectPickVM = ObjectPickViewModel()
     @StateObject var partEditVM = PartEditViewModel()
     //@StateObject var  corerDataViewModel = CoreDataViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView(epVM.getCurrentObjectType())
+            ContentView(objectPickVM.getCurrentObjectType())
                 //.environment(\.managedObjectContext,CoreDataViewModel().container.viewContext)
-                .environmentObject(epVM)
+                .environmentObject(objectPickVM)
                 .environmentObject(partEditVM)
         }
     }

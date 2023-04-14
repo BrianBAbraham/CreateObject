@@ -22,7 +22,7 @@ struct EditFootSupportPosition: View {
     
     var body: some View {
         
-        let objectLength = vm.getFootSupportHangerLength()
+        let objectLength = 300.0//vm.getFootSupportHangerLength()
         
         
         let boundWidth = Binding(
@@ -45,11 +45,11 @@ struct EditFootSupportPosition: View {
 //                        .footSupportHangerSitOnVerticalJoint,
 //                        .footSupportHorizontalJoint
                         
-                        vm.getCornerDictionaryForPartDerivedFromTwoParts(
-                            .footSupportHangerSitOnVerticalJoint,
-                            .footSupportHorizontalJoint,
-                            .footSupportHangerLink
-                        )
+//                        vm.getCornerDictionaryForPartDerivedFromTwoParts(
+//                            .footSupportHangerSitOnVerticalJoint,
+//                            .footSupportHorizontalJoint,
+//                            .footSupportHangerLink
+//                        )
                      //print(value)
                 }
                 Text("\(Int(objectLength))")

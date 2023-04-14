@@ -102,6 +102,35 @@ struct CreateOriginName {
     }
 }
 
+struct GetUniqueNames {
+    let uniqueCornerNames: [String]
+    
+    init(_ dictionary: PositionDictionary) {
+        uniqueCornerNames = getUniquePartNamesOfCornerItems(dictionary)
+        
+        func getUniquePartNamesOfCornerItems(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
+
+            let relevantKeys = dictionary.filter({$0.key.contains(Part.corner.rawValue)}).keys
+            var uniqueNames: [String] = []
+            var removedName = ""
+            var newName = ""
+            let commonName = Part.stringLink.rawValue + Part.corner.rawValue
+            for relevantKey in relevantKeys {
+                for index in 0...3 {
+                    removedName = commonName + String(index)
+                    newName = String(relevantKey.replacingOccurrences(of: removedName, with: ""))
+                    
+                    if newName != relevantKey {
+                        uniqueNames.append(newName)
+                    }
+                }
+            }
+
+            return uniqueNames.removingDuplicates()
+        }
+    }
+}
+
 
 
 
