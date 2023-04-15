@@ -135,140 +135,143 @@ struct CreateCornerDictionaryForBothSides {
 }
 
 
-//struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
-//
-//    let newCornerDictionary: PositionDictionary
-//    let uniquePartNames: [String]
-//
-//    init (
-//        _ startPart: Part,
-//        _ endPart: Part,
-//        _ newPart: Part,
-//        _ dictionary: PositionDictionary) {
-//
-//            uniquePartNames = GetUniqueNames(dictionary).uniqueCornerNames
-//
-//            getCornerDictionaryForPartDerivedFromTwoParts (
-//            startPart,
-//            endPart,
-//            newPart)
-//    }
-//
-//    func getCornerDictionaryForPartDerivedFromTwoParts (
-//        _ startPart: Part,
-//        _ endPart: Part,
-//        _ newPart: Part) {
-//
-//            let corners =
-//            getCornersJoiningTwoPartsPossiblyOnTwoSides(
-//                startPart,
-//                endPart)
-//            var dictionary: PositionDictionary = [:]
-//            let relevantNames = uniquePartNames.filter{ $0.contains(startPart.rawValue)}
-//
-//            //getRelevantNames(startPart)
-//            let sitOnIdName = Part.sitOn.rawValue + Part.stringLink.rawValue + "id"
-//            let sitOnIdNames = [sitOnIdName + "0", sitOnIdName + "1"]
-//
-//            for index in 0..<relevantNames.count/2 {
-//                if relevantNames[index].contains(sitOnIdNames[index]) {
-//               dictionary +=
-//                    CreateCornerDictionaryForBothSides (
-//                        [corners[index]],
-//                        index,
-//                        newPart).dictionary
-//                }
-//        }
-//    }
-//
-//
-//    func getCornersJoiningTwoPartsPossiblyOnTwoSides(
-//        _ startPart: Part,
-//        _ endPart: Part)
-//        -> [[PositionAsIosAxes]]{
-//            let startPartPositions = getCornersOfOnePartPossiblyOnTwoSides(startPart)
-//            let endPartPositions = getCornersOfOnePartPossiblyOnTwoSides(endPart)
-//
-//            let minPositions =
-//            getExtremaOfPartPossiblyOnTwoSides(
-//                "min",
-//                 endPartPositions,
-//                endPart)
-//            let maxPositions =
-//            getExtremaOfPartPossiblyOnTwoSides(
-//                "max",
-//                 startPartPositions,
-//                startPart)
-//
-//            var inBetweenPartOnOneSide: [PositionAsIosAxes] = []
-//
-//            var inBetweenPartPossiblyOnBothSides: [[PositionAsIosAxes]] = []
-//
-//            for sideIndex in 0..<minPositions.count {
-//                for cornerIndex in 0..<minPositions[sideIndex].count {
-//                    inBetweenPartOnOneSide.append( minPositions[sideIndex][cornerIndex])
-//                    inBetweenPartOnOneSide.append( maxPositions[sideIndex][cornerIndex])
-//                }
-//                inBetweenPartPossiblyOnBothSides.append(inBetweenPartOnOneSide)
-//            }
-//
-//            func getCornersOfOnePartPossiblyOnTwoSides(
-//                _ partName: Part )
-//            -> [[PositionAsIosAxes]] {
-//                let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}//getRelevantNames(partName)
-//                var cornerPartDictionary:[String: [PositionAsIosAxes]]  = [:]
-//
-//                var positionsPossiblyForTwoSides: [[PositionAsIosAxes]] = []
-//
-//                for index in 0..<relevantNames.count {
-//                    cornerPartDictionary =
-//                    getPartNameAndItsCornerLocationsFromPrimaryOrigin(
-//                        relevantNames[index],
-//                        .forMeasurement)
-//
-//                    positionsPossiblyForTwoSides.append(
-//                    DictionaryElementIn(cornerPartDictionary).locationsFromPrimaryOrigin)
-//                }
-//                return positionsPossiblyForTwoSides
-//            }
-//
-//
-//            func getExtremaOfPartPossiblyOnTwoSides(
-//                _ minOrMax: String,
-//                _ partPositions: [[PositionAsIosAxes]],
-//                _ partName: Part)
-//            -> [[PositionAsIosAxes]] {
-//                var yFirstExtrema: Double
-//                var ySecondExtrema: Double
-//                var indexOfFirstExtrema: Int = 0
-//                var indexOfSecondExtrema: Int = 0
-//                var oneSide: [PositionAsIosAxes] = []
-//                var bothSidesIfPresent: [[PositionAsIosAxes]] = []
-//
-//                for index in 0..<partPositions.count {
-//                    oneSide = partPositions[index]
-//                    var yArray =
-//                    CreateIosPosition.getArrayFromPositions(oneSide).y
-//
-//                    yFirstExtrema =  minOrMax == "max" ? yArray.max() ?? yArray[0]: yArray.min() ?? yArray[0]
-//
-//                    indexOfFirstExtrema = yArray.firstIndex(of: yFirstExtrema) ?? 0
-//                        yArray.remove(at: indexOfFirstExtrema)
-//
-//                    ySecondExtrema = minOrMax == "max" ? yArray.max() ?? yArray[0]: yArray.min() ?? yArray[0]
-//
-//                    indexOfSecondExtrema = yArray.firstIndex(of: ySecondExtrema) ?? 1
-//
-//                    bothSidesIfPresent.append([oneSide[indexOfFirstExtrema], oneSide[indexOfSecondExtrema] ])
-//                }
-//                return bothSidesIfPresent
-//            }
-//
-//        return inBetweenPartPossiblyOnBothSides
-//    }
-//}
+struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
+    var newCornerDictionary: PositionDictionary = [:]
+    let uniquePartNames: [String]
+    let dictionary: PositionDictionary
+    init (
+        _ startPart: Part,
+        _ endPart: Part,
+        _ newPart: Part,
+        _ dictionary: PositionDictionary) {
+            self.dictionary = dictionary
+            uniquePartNames = GetUniqueNames(dictionary).uniqueCornerNames
+            
+            newCornerDictionary =
+            getCornerDictionaryForPartDerivedFromTwoParts (
+                startPart,
+                endPart,
+                newPart)
+        }
+    
+    func getCornerDictionaryForPartDerivedFromTwoParts (
+        _ startPart: Part,
+        _ endPart: Part,
+        _ newPart: Part)
+    -> PositionDictionary{
+        
+        let startPartCorners = getCornersOfOnePartPossiblyOnTwoSides(startPart)
+        let endPartCorners = getCornersOfOnePartPossiblyOnTwoSides(endPart)
+        
+        let corners =
+        leftThenRightNewPartCorners(
+            startPartCorners,
+            endPartCorners)
+        var dictionary: PositionDictionary = [:]
+        let relevantNames = uniquePartNames.filter{ $0.contains(startPart.rawValue)}
+        
+        //getRelevantNames(startPart)
+        let sitOnIdName = Part.sitOn.rawValue + Part.stringLink.rawValue + "id"
+        let sitOnIdNames = [sitOnIdName + "0", sitOnIdName + "1"]
+        
+        for index in 0..<relevantNames.count/2 {
+            if relevantNames[index].contains(sitOnIdNames[index]) {
+                dictionary +=
+                CreateCornerDictionaryForBothSides (
+                    [corners[index]],
+                    index,
+                    newPart).dictionary
+            }
+        }
+        return dictionary
+    }
+    
 
-struct DimensionsBetweenFirstAndSecondOrigin{
+    func getCornersOfOnePartPossiblyOnTwoSides(
+        _ partName: Part )
+    -> [[PositionAsIosAxes]] {
+        let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}//getRelevantNames(partName)
+        var cornerPartDictionary:[String: [PositionAsIosAxes]]  = [:]
+        
+        var positionsPossiblyForTwoSides: [[PositionAsIosAxes]] = []
+        
+        for index in 0..<relevantNames.count {
+            cornerPartDictionary =
+            PartNameAndItsCornerLocations(
+                relevantNames[index],
+                .forMeasurement,
+                dictionary).dictionaryFromPrimaryOrigin
+            
+            positionsPossiblyForTwoSides.append(
+                DictionaryElementIn(cornerPartDictionary).locationsFromPrimaryOrigin)
+        }
+        return positionsPossiblyForTwoSides
+    }
+    
+    func leftThenRightNewPartCorners (
+        _ startPartPositions: [[PositionAsIosAxes]],
+        _ endPartPositions: [[PositionAsIosAxes]])
+    -> [[PositionAsIosAxes]] {
+        
+        let firstSide = 0
+        let secondSide = 1
+        let youCanUseAnyX = 0
+        let leftThenRightStartPartPositions = reverseOrderIfRequired(startPartPositions)
+        let leftThenRightEndPartPositions = reverseOrderIfRequired(endPartPositions)
+        
+        func reverseOrderIfRequired(_ positions: [[PositionAsIosAxes]])
+        -> [[PositionAsIosAxes]] {
+            var positionsCopy = positions
+            positionsCopy =
+            CreateIosPosition.getArrayFromPositions(positions[firstSide]).x[youCanUseAnyX] >
+            CreateIosPosition.getArrayFromPositions(positions[secondSide]).x[youCanUseAnyX] ?
+            positionsCopy.reversed(): positionsCopy
+            
+            return positionsCopy
+        }
+        
+        let leftPartCorners =
+        getRelevantCorners(
+            leftThenRightStartPartPositions[firstSide],
+            leftThenRightEndPartPositions[firstSide] )
+        
+        let rightPartCorners =
+        getRelevantCorners(
+            leftThenRightStartPartPositions[secondSide],
+            leftThenRightEndPartPositions[secondSide] )
+        
+        
+        
+        func getRelevantCorners (
+            _ startPartCorners: [PositionAsIosAxes],
+            _ endPartCorners: [PositionAsIosAxes])
+        -> [PositionAsIosAxes] {
+            
+    
+            let rightTopCorner = 0
+            let rightBottomCorner = 1
+            let leftBottomCorner = 2
+            let leftTopCorner = 3
+            
+            let newPartCornersInDrawingOrder =
+            [startPartCorners[rightBottomCorner],
+             
+             endPartCorners[rightTopCorner],
+             endPartCorners[leftTopCorner],
+             startPartCorners[leftBottomCorner]]
+            
+            return newPartCornersInDrawingOrder
+        }
+        
+        return [leftPartCorners,rightPartCorners]
+        
+    }
+    
+}
+                
+
+
+struct DimensionsBetweenFirstAndSecondOrigin {
 //    static func dictionaryForManyToMany (
 //        _ firstOrigin: Part,
 //        _ secondOrigin: Part,

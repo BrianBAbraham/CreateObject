@@ -126,52 +126,7 @@ extension ObjectPickViewModel {
 //        return dimension
 //    }
     
-    func getPartNameAndItsCornerLocationsFromPrimaryOrigin(
-        _ uniquePartName: String,
-        _ forScreenOrMeasurment: DictionaryTypes)
-    -> [String: [PositionAsIosAxes]] {
-        let dictionary = getRelevantDictionary(forScreenOrMeasurment)
-//print(uniquePartName)
-        let cornerNames = Corner.names
-        var uniqueCornerLocations: [PositionAsIosAxes] = []
-        //let uniquePartNameInSplitForm: [Substring] =
-        let uniquePartNameInSplitForm: [String] =
-        uniquePartName.components(separatedBy:  ConnectStrings.symbol)
-        //uniquePartName.split(separator: ConnectStrings.symbol)// requires IOS 16
-        
-        let generalPartNameIsFirst = 0
-        let generalPartName = String(uniquePartNameInSplitForm[generalPartNameIsFirst])
-//Print.this(#function,generalPartName)
-        var uniqueCornerLocation: PositionAsIosAxes
-        var assembledUniquePartCornerName: String
-        let numberOfConnectStringSymbols = uniquePartName.filter({ $0 == Character(ConnectStrings.symbol) }).count
-        
-//        if numberOfConnectStringSymbols == 5 {
-//            for cornerName in cornerNames {
-//                assembledName = dictionaryNameInSplitForm[0] + ConnectStrings.symbol + dictionaryNameInSplitForm[1] + cornerName + ConnectStrings.symbol + dictionaryNameInSplitForm[2] + ConnectStrings.symbol + dictionaryNameInSplitForm[3]
-//
-//                cornerLocation = dictionary[ String(assembledName)] ?? Global.iosLocation
-//                cornerLocations.append(cornerLocation)
-//            }
-//        }
-        
-        if numberOfConnectStringSymbols == 3 { //related to possibly two sitOn elements
-            for cornerName in cornerNames {
-                assembledUniquePartCornerName = uniquePartNameInSplitForm[0] + ConnectStrings.symbol + uniquePartNameInSplitForm[1] + cornerName + ConnectStrings.symbol + uniquePartNameInSplitForm[2] + ConnectStrings.symbol + uniquePartNameInSplitForm[3]
 
-                uniqueCornerLocation = dictionary[ String(assembledUniquePartCornerName)] ?? Globalx.iosLocation
-                uniqueCornerLocations.append(uniqueCornerLocation)
-            }
-        }
-        if numberOfConnectStringSymbols == 1 { // not related to possibly two sitOn elements
-            for cornerName in cornerNames {
-                let newName = uniquePartName + cornerName
-                uniqueCornerLocation = dictionary[newName] ?? Globalx.iosLocation
-                uniqueCornerLocations.append(uniqueCornerLocation)
-            }
-        }
-        return [generalPartName: uniqueCornerLocations]
-    }
     
     
     
@@ -306,7 +261,7 @@ extension ObjectPickViewModel {
 //        getPartNameAndItsCornerLocationsFromPrimaryOrigin(
 //            relevantEndNames[0],
 //            .forMeasurement)
-//        
+//
 //        let startPositions = DictionaryElementIn(cornerStartPartDictionary).locationsFromPrimaryOrigin
 //        let endPositions = DictionaryElementIn(cornerEndPartDictionary).locationsFromPrimaryOrigin
 //        let startPositionsAsArrays = CreateIosPosition.getArrayFromPositions(startPositions)
@@ -314,7 +269,7 @@ extension ObjectPickViewModel {
 //        let length =
 //        (endPositionsAsArrays.y.min() ?? endPositionsAsArrays.y[0]) -
 //        (startPositionsAsArrays.y.max() ?? startPositionsAsArrays.y[0])
-//        
+//
 //        return length
 //    }
     

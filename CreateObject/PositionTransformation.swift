@@ -181,4 +181,16 @@ struct CreateIosPosition {
         
         return newPositions
     }
+    
+    static func orderLeftThenRightmost(
+        _ positions: [PositionAsIosAxes])
+    -> [PositionAsIosAxes] {
+        var leftThenRightmost = positions
+        
+        if positions[1].x < positions[0].x {
+            leftThenRightmost.reverse()
+        }
+            
+            return leftThenRightmost
+    }
 }

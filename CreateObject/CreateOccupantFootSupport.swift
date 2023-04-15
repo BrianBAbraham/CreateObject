@@ -134,7 +134,14 @@ struct CreateOccupantFootSupport {
                 footSupportHangerJointDictionary.cornerDictionary,
                 footSupportJointDictionary.cornerDictionary
             ])
-
+        let hangerLinkDictionary =
+            CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(.footSupportHangerSitOnVerticalJoint,
+                .footSupportHorizontalJoint,
+                .footSupportHangerLink,
+                dictionary).newCornerDictionary
+//print(hangerLinkDictionary)
+       dictionary += hangerLinkDictionary
+            
     }
 }
 
