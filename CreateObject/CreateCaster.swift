@@ -67,46 +67,51 @@ struct CreateCaster {
             
 
             
-        let casterSpindleJointDictionary =
+        let casterVerticalJointDictionary =
         CreateOnePartOrSideSymmetricParts(
             (length: 20.0, width: 20.0),
-            getCasterSpindleJoint(part),
+            getCasterVerticalJoint(part),
             (x:0, y:0, z: 0),
             parentFromPrimaryOrigin,
 
             supportIdIsAlwaysZero)
                                  
-        func getCasterSpindleJoint(_ part: Part) -> Part {
-            var casterSpindleJoint = Part.casterSpindleJointAtFront
+        func getCasterVerticalJoint(_ part: Part) -> Part {
+            var casterVerticalJoint = Part.casterVerticalJointAtFront
             switch part{
             case .casterWheelAtCenter:
-                casterSpindleJoint = Part.casterSpindleJointAtCenter
+                casterVerticalJoint = Part.casterVerticalJointAtCenter
             case .casterWheelAtRear:
-                casterSpindleJoint = Part.casterSpindleJointAtRear
+                casterVerticalJoint = Part.casterVerticalJointAtRear
             default:
                 break
             }
-            return casterSpindleJoint
+            return casterVerticalJoint
         }
 
             let casterForkDictionary =
             CreateOnePartOrSideSymmetricParts(
                 measurementFor.casterFork,
-                getCasterSpindleJoint(part),
+                getCasterVerticalJoint(part),
                 measurementFor.casterForkFromParent,
                 parentFromPrimaryOrigin,
 
                 supportIdIsAlwaysZero)
             
 
+
         dictionary =
             Merge.these.dictionaries([
+
+                
                 //casterSpindleJointDictionary.originDictionary,
                 casterForkDictionary.cornerDictionary,
-                casterSpindleJointDictionary.cornerDictionary,
+                casterVerticalJointDictionary.cornerDictionary,
                 casterWheelDictionary.cornerDictionary,
-                casterWheelDictionary.originDictionary,
+                //casterWheelDictionary.originDictionary,
                 
             ])
+        
+
     }
 }

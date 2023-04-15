@@ -143,7 +143,8 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         _ startPart: Part,
         _ endPart: Part,
         _ newPart: Part,
-        _ dictionary: PositionDictionary) {
+        _ dictionary: PositionDictionary,
+        _ supportIndex: Int = 0) {
             self.dictionary = dictionary
             uniquePartNames = GetUniqueNames(dictionary).uniqueCornerNames
             
@@ -151,38 +152,36 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
             getCornerDictionaryForPartDerivedFromTwoParts (
                 startPart,
                 endPart,
-                newPart)
+                newPart,
+                supportIndex)
         }
     
     func getCornerDictionaryForPartDerivedFromTwoParts (
         _ startPart: Part,
         _ endPart: Part,
-        _ newPart: Part)
+        _ newPart: Part,
+        _ supportIndex: Int)
     -> PositionDictionary{
         
         let startPartCorners = getCornersOfOnePartPossiblyOnTwoSides(startPart)
         let endPartCorners = getCornersOfOnePartPossiblyOnTwoSides(endPart)
         
         let corners =
-        leftThenRightNewPartCorners(
-            startPartCorners,
-            endPartCorners)
+            leftThenRightNewPartCorners(
+                startPartCorners,
+                endPartCorners)
+        
+
         var dictionary: PositionDictionary = [:]
-        let relevantNames = uniquePartNames.filter{ $0.contains(startPart.rawValue)}
-        
-        //getRelevantNames(startPart)
-        let sitOnIdName = Part.sitOn.rawValue + Part.stringLink.rawValue + "id"
-        let sitOnIdNames = [sitOnIdName + "0", sitOnIdName + "1"]
-        
-        for index in 0..<relevantNames.count/2 {
-            if relevantNames[index].contains(sitOnIdNames[index]) {
+
+
                 dictionary +=
                 CreateCornerDictionaryForBothSides (
-                    [corners[index]],
-                    index,
+                    corners,
+                    supportIndex,
                     newPart).dictionary
-            }
-        }
+
+        
         return dictionary
     }
     
@@ -217,11 +216,14 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         let secondSide = 1
         let youCanUseAnyX = 0
         let leftThenRightStartPartPositions = reverseOrderIfRequired(startPartPositions)
+
         let leftThenRightEndPartPositions = reverseOrderIfRequired(endPartPositions)
         
         func reverseOrderIfRequired(_ positions: [[PositionAsIosAxes]])
         -> [[PositionAsIosAxes]] {
             var positionsCopy = positions
+            
+
             positionsCopy =
             CreateIosPosition.getArrayFromPositions(positions[firstSide]).x[youCanUseAnyX] >
             CreateIosPosition.getArrayFromPositions(positions[secondSide]).x[youCanUseAnyX] ?
@@ -386,13 +388,13 @@ struct DimensionsForCaster{
     let primaryToCasterSpindleDictionary =
     DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
         .primaryOrigin,
-        .casterSpindleJointAtRear,
+        .casterVerticalJointAtRear,
         casterSpindleOriginLocations,
         firstOriginId: 0)
         
     let casterSpindleToWheelDictionary =
     DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToOne(
-        .casterSpindleJointAtRear,
+        .casterVerticalJointAtRear,
         .casterWheelAtRear,
         casterWheelOriginLocations)
         

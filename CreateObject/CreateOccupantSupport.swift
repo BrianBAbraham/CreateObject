@@ -28,9 +28,9 @@ struct InitialOccupantBodySupportMeasure {
     init(
         lieOn: Dimension = (length: 1600 ,width: 600),
         sitOn: Dimension = (length: 500 ,width: 400),
-        overHead: Dimension = (length: 40 ,width: 600),
+        overHead: Dimension = (length: 40 ,width: 550),
         overHeadHook: Dimension = (length: 100 ,width: 10),
-        overHeadJoint: Dimension = (length: 40 ,width: 40),
+        overHeadJoint: Dimension = Joint.dimension,
         sleepOn: Dimension = (length: 1800 ,width: 900),
         standOn: Dimension = (length: 300 ,width: 500)) {
         self.lieOn = lieOn

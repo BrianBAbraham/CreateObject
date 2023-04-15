@@ -34,6 +34,17 @@ struct CreateBase {
             ).getDictionary()
         }
             
+            if baseType == .allCasterHoist {
+                let casterLinkDictionary =
+                    CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
+                        .casterVerticalJointAtRear,
+                        .casterVerticalJointAtFront,
+                        .casterFrontToRearLink,
+                        dictionary).newCornerDictionary
+                
+             dictionary += casterLinkDictionary
+            }
+            
         if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.fixedWheel.rawValue) {
            dictionary =
            ForFixedWheelBaseObject(

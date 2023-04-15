@@ -55,7 +55,7 @@ struct CreateOccupantOverHeadSupport {
                     InitialOccupantBodySupportMeasure().overHeadHook,
                         .overHeadHookSupport,
                     fromPrimaryOrigin,
-                    (x: initialOccupantBodySupportMeasure.overHead.width/2,
+                    (x: initialOccupantBodySupportMeasure.overHead.width/2 - 50,
                      y: 0,
                      z: jointAboveSupport),
                     supportIndexIsAlways)

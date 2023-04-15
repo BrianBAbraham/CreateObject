@@ -39,7 +39,7 @@ extension ObjectPickViewModel {
     
     func getAllPartFromPrimaryOriginDictionary() -> [String: PositionAsIosAxes] {
         let allUniquePartNames = getUniquePartNamesFromObjectDictionary()
-//print(allUniquePartNames)
+
         let dictionary = getRelevantDictionary(.forScreen)
         var originDictionary: [String: PositionAsIosAxes] = [:]
         for uniqueName in allUniquePartNames {

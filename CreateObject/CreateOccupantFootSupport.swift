@@ -8,17 +8,17 @@
 import Foundation
 struct InitialOccupantFootSupportMeasure {
     
-    static let jointLength = 20.0
+
     
-    static let jointWidth = 20.0
     
-    static let footSupportHangerJoint =
-    (length: jointLength , width: jointWidth)
+    
+    
+    static let footSupportHangerJoint = Joint.dimension
     
     static let footSupport = (length: 100.0, width: 150.0 )
     
     static let footSupportJoint =
-    (length: footSupport.length , width: jointWidth )
+    (length: footSupport.length , width: Joint.dimension.width )
 
     let sitOnLengthAndOffset: Double// =
     
@@ -47,7 +47,7 @@ struct InitialOccupantFootSupportMeasure {
         sitOnLengthAndOffset =
         initialOccupantBodySupportMeasure.sitOn.length/2 - 10
         sitOnWidthAndOffset =
-        initialOccupantBodySupportMeasure.sitOn.width/2 - 50
+        initialOccupantBodySupportMeasure.sitOn.width/2 + 30
         
         rightFootSupportHangerJointFromSitOnOrigin =
             (x: sitOnWidthAndOffset,
@@ -135,10 +135,12 @@ struct CreateOccupantFootSupport {
                 footSupportJointDictionary.cornerDictionary
             ])
         let hangerLinkDictionary =
-            CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(.footSupportHangerSitOnVerticalJoint,
+            CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
+                .footSupportHangerSitOnVerticalJoint,
                 .footSupportHorizontalJoint,
                 .footSupportHangerLink,
-                dictionary).newCornerDictionary
+                dictionary,
+                supportIndex).newCornerDictionary
 //print(hangerLinkDictionary)
        dictionary += hangerLinkDictionary
             
