@@ -12,7 +12,10 @@ struct EditFootSupportPosition: View {
     //var objectLength: Double = 0.0
     let dictionary: PositionDictionary
     @State private var proposedWidth = 100.0
-    @State private var proposedLength = 200.0
+    @State private var proposedLeftLength = 200.0
+    @State private var proposedRightLength = 200.0
+    @State private var showLeftLength = true
+    @State private var showRightLength = true
     @EnvironmentObject var vm: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     
@@ -30,31 +33,49 @@ struct EditFootSupportPosition: View {
             get: {0},
             set: {self.proposedWidth = $0}
         )
-        let boundLength = Binding(
+        let boundLeftLength = Binding(
             get: {objectLength},
-            set: {self.proposedLength = $0}
+            set: {self.proposedLeftLength = $0}
+        )
+        let boundRightLength = Binding(
+            get: {objectLength},
+            set: {self.proposedRightLength = $0}
         )
         
         
         VStack{
-            HStack {
-                //sliderChairLength(boundLength)
-                Slider(value: boundLength, in: 500.0...2500.0, step: 10
-                )
-                .onChange(of: proposedLength) { value in
-
-
+            Spacer()
+            VStack {
+                Toggle(isOn: $showLeftLength)
+                    { Text("L")}
+                    .padding([.leading, .trailing])
+                if showLeftLength {
+                    HStack {
+                        Slider(value: boundLeftLength, in: 500.0...2500.0, step: 10
+                        )
+                        .onChange(of: proposedLeftLength) { value in
+                        }
+                     Text("\(Int(objectLength))")
+                    }
+                    .padding([.leading, .trailing])
                 }
-                Text("\(Int(objectLength))")
-                
             }
             
             .padding([.leading, .trailing])
             HStack {
-                //sliderChairWidth(boundWidth)
-                Text("width")
                 
+                Slider(value: boundRightLength, in: 500.0...2500.0, step: 10
+                )
+                .onChange(of: proposedRightLength) { value in
+                }
+                Text("\(Int(objectLength))")
             }
+            .padding([.leading, .trailing])
+//            HStack {
+//                //sliderChairWidth(boundWidth)
+//                Text("width")
+//
+//            }
             
         }
 
