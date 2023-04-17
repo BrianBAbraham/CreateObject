@@ -352,7 +352,9 @@ let sender = #function
         objectPickModel.defaultDictionary = dictionary
     }
     
-
+    func setEditedObjectDictionary(_ editedDictionary: PositionDictionary) {
+        objectPickModel.defaultDictionary = editedDictionary
+    }
     
 
     

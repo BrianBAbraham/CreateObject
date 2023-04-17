@@ -101,6 +101,9 @@ struct CreateIosPosition {
         return (x: xArray, y: yArray, z: zArray)
     }
     
+ 
+    
+    
 //    static func maximumPosition( _ positions: [PositionAsIosAxes]) {
 //        let arrayTouple = getArrayFromPositions(positions)
 //    }

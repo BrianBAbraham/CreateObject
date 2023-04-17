@@ -14,6 +14,7 @@ struct EditFootSupportPosition: View {
     @State private var proposedWidth = 100.0
     @State private var proposedLength = 200.0
     @EnvironmentObject var vm: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     
     init(_ dictionary: PositionDictionary){
         self.dictionary = dictionary
@@ -22,7 +23,7 @@ struct EditFootSupportPosition: View {
     
     var body: some View {
         
-        let objectLength = 300.0//vm.getFootSupportHangerLength()
+        let objectLength = objectEditVM.getPrimaryAxisToFootPlateEndLength(dictionary)[0]
         
         
         let boundWidth = Binding(
@@ -41,16 +42,8 @@ struct EditFootSupportPosition: View {
                 Slider(value: boundLength, in: 500.0...2500.0, step: 10
                 )
                 .onChange(of: proposedLength) { value in
-//                    vm.getCornersJoiningTwoPartsPossiblyOnTwoSides(
-//                        .footSupportHangerSitOnVerticalJoint,
-//                        .footSupportHorizontalJoint
-                        
-//                        vm.getCornerDictionaryForPartDerivedFromTwoParts(
-//                            .footSupportHangerSitOnVerticalJoint,
-//                            .footSupportHorizontalJoint,
-//                            .footSupportHangerLink
-//                        )
-                     //print(value)
+
+
                 }
                 Text("\(Int(objectLength))")
                 

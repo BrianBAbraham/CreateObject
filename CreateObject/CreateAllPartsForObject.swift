@@ -24,13 +24,13 @@ struct CreateAllPartsForObject {
             let occupantSupport: CreateOccupantSupport
             
             let occupantSupportJoints: [JointType] =
-            [.fixed, .fixed]
+            [.fixed]
             
             let oneOrMultipleSeats: OccupantSupportNumber =
-                .twoFrontAndBack
+                .one
             
             let occupantSupportTypes: [OccupantSupportTypes] =
-            [.seatedStandard, .seatedStandard]
+            [.seatedStandard]
             
             let baseObjectName_savedNameFlag = "_"
             let theFirstItemIsBaseObjectName = 0

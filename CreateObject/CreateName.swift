@@ -40,6 +40,16 @@ struct ConnectStrings {
     }
 }
 
+struct CreateSupportPartName {
+    let index: Int
+    var name: String {
+        
+        String(
+        Part.sitOn.rawValue + Part.id.rawValue + String(index)
+        )
+    }
+}
+
 //struct CreateFootPlateName {
 //    let indexForSide: Int
 //    let indexForCorner: Int
@@ -70,7 +80,7 @@ struct CreateSymmetricPartName {
     let indexForCorner: Int
     let indexForSitOn: Int
     let part: Part
-    var name:String {
+    var name: String {
         part.rawValue + Part.id.rawValue +
         String(indexForSide) + Part.stringLink.rawValue +
         Part.corner.rawValue + String(indexForCorner) + Part.stringLink.rawValue +

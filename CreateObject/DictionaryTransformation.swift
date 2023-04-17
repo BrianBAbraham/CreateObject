@@ -250,10 +250,24 @@ struct Merge {
 }
 
 extension Dictionary {
-
     static func += (left: inout Dictionary, right: Dictionary) {
         for (key, value) in right {
             left[key] = value
+        }
+    }
+}
+
+    
+extension Dictionary {
+    static func -= (left: inout Dictionary, right: Dictionary) {
+        var reducedDictionary: [String: PositionAsIosAxes] = [:]
+        
+        for (key,value) in left {
+            if right[key] == nil {
+                let name = key as! String
+                let position = value as! PositionAsIosAxes
+                reducedDictionary[name] = position
+            }
         }
     }
 }

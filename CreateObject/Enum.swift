@@ -62,7 +62,13 @@ enum Part: String {
 
 
 
-
+struct PartGroupsFor {
+    
+    var foot: [String] {
+        [Part.footSupport.rawValue, Part.footSupportHorizontalJoint.rawValue]
+    }
+    
+}
 
 
 

@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct CreateObjectApp: App {
     @StateObject var objectPickVM = ObjectPickViewModel()
-    @StateObject var partEditVM = PartEditViewModel()
+    @StateObject var partEditVM = ObjectEditViewModel()
     //@StateObject var  corerDataViewModel = CoreDataViewModel()
     var body: some Scene {
         WindowGroup {

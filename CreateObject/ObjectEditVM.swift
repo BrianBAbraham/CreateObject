@@ -13,7 +13,7 @@ struct PartEditModel {
     
 }
 
-class PartEditViewModel: ObservableObject {
+class ObjectEditViewModel: ObservableObject {
     static let initialPart = Part.primaryOrigin.rawValue
     
     
@@ -22,7 +22,7 @@ class PartEditViewModel: ObservableObject {
 }
 
 
-extension PartEditViewModel {
+extension ObjectEditViewModel {
     func getCurrenPartToEditName() -> String {
         let partName = partEditModel.part
 //print("get " + partName)
@@ -42,6 +42,88 @@ extension PartEditViewModel {
 //        return currentLength
 //
 //    }
+    
+    
+    /// removing a part
+    /// changing parts position
+    /// getting the names
+    
+//    func changePrimaryAxisToFootPlateEndLength(
+//        _ dictionary: PositionDictionary,
+//        _ lengthChange: Double,
+//        _ partIds: [Int]
+//        _ supportIndex: Int) {
+//
+//            for partId in partIds {
+//                for
+//                let partName =
+//                    CreateSymmetricPartName(
+//                    indexForSide: partId,
+//                    indexForCorner: <#T##Int#>,
+//                    indexForSitOn: supportIndex,
+//                    part: <#T##Part#>)
+//            }
+//
+//    }
+    
+    func getNames () {
+        //create name
+        //or get names from dictionary using unique value
+    }
+    
+    func getPrimaryAxisToFootPlateEndLength(
+        _ dictionary: PositionDictionary,
+        _ supportIndex: Int = 0)
+        -> [Double] {
+            var lengths: [Double] = []
+            let partName  = Part.footSupportHorizontalJoint.rawValue
+            var onePartDictionary = dictionary
+            let supportName = CreateSupportPartName(index: supportIndex).name
+            
+            onePartDictionary =
+            onePartDictionary
+                .filter({$0.key.contains(partName)})
+            
+            onePartDictionary =
+            onePartDictionary
+                .filter({$0.key.contains(supportName)})
+            
+            if onePartDictionary.count == 8 {
+                for index in 0..<1 {
+                    let partIdName = Part.id.rawValue + String(index) + Part.stringLink.rawValue
+                    onePartDictionary =
+                    onePartDictionary.filter({$0.key.contains(partIdName)})
+                    lengths.append(getMaximumLength(onePartDictionary))
+                }
+            }
+            
+           if onePartDictionary.count == 4 {
+               lengths = [getMaximumLength(onePartDictionary)]
+            }
+
+            func getMaximumLength (_ dictionary: PositionDictionary)
+                -> Double {
+                let ifAllEqualUseFirst = 0
+                let values = dictionary.map{$0.1}
+                let yValues = CreateIosPosition.getArrayFromPositions(values).y
+                let maxValue = yValues.max() ?? yValues[ifAllEqualUseFirst]
+                return maxValue
+            }
+
+         return lengths
+    }
+    
+    
+    func removePartFromDictionary (
+    _ dictionary: PositionDictionary,
+    _ part: Part,
+    _ supportIndex: Int = 0)
+    -> PositionDictionary {
+        
+        dictionary.filter ({!$0.key.contains("id0") })
+        
+    }
+    
     
     func getObjectWidth (_ objectType: BaseObjectTypes)
     -> Double {

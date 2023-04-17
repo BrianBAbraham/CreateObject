@@ -10,47 +10,7 @@ import SwiftUI
 
 
 
-struct PartView: View {
-    @EnvironmentObject var vm: ObjectPickViewModel
-    @EnvironmentObject var partEditVM: PartEditViewModel
-    let uniquePartName: String
-    var dictionary: PositionDictionary {
-        vm.getRelevantDictionary(.forScreen)
-    }
-    var partCornersDictionary: [String: [PositionAsIosAxes]] {
-//        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(
-//            uniquePartName,
-//            .forScreen)
-        PartNameAndItsCornerLocations(
-            uniquePartName,
-                .forScreen,
-            dictionary).dictionaryFromPrimaryOrigin
-        
-    }
-    let onlyOneDictionaryMember = 0
-    
-    var partCorners: [CGPoint] {
-        DictionaryElementIn(partCornersDictionary).cgPointsOut()
-    }
-    
-    var partName: String {
-        partCornersDictionary.map {$0.0}[onlyOneDictionaryMember]
-    }
-    
-    var color: Color {
-        partEditVM.getColorForPart(uniquePartName)
-    }
-  
-    
-    var body: some View {
-      LocalOutlineRectangle.path(corners: partCorners, color)
-        .onTapGesture {
-            partEditVM.setCurrentPartToEditName(uniquePartName)
-            //vm.getDimensionOfPart(uniquePartName)
-            
-        }
-    }
-}
+
 
 
 struct OriginView: View {
@@ -124,42 +84,7 @@ struct CircleModifier: ViewModifier {
 }
 
 
-struct LocalOutlineRectangle {
-    static func path(corners: [CGPoint], _ color: Color = .black) -> some View {
-        
-        ZStack {
-            Path { path in
-                path.move(to: corners[0])
-                path.addLine(to: corners[1])
-                path.addLine(to: corners[2])
-                path.addLine(to: corners[3])
-                path.closeSubpath()
-            }
-            .fill(color)
-            .opacity(0.9)
-            
-            
-            
-            Path { path in
-                path.move(to: corners[0])
-                path.addLine(to: corners[1])
-                path.addLine(to: corners[2])
-                path.addLine(to: corners[3])
-                path.closeSubpath()
-            }
-            .stroke(.black)
-            
-        }
-        
-//        func myPath(corners: [CGPoint], _ color: Color = .black)
-//        -> some View { path in
-//            path.move(to: corners[0])
-//            path.addLine(to: corners[1])
-//            path.addLine(to: corners[2])
-//            path.addLine(to: corners[3])
-//            path.closeSubpath()        }
-   }
-}
+
 
 
 
@@ -409,7 +334,7 @@ struct ContentView_Previews: PreviewProvider {
             ContentView("RearDriveWheelchair")
                 .previewLayout(.fixed(width:1000, height: 1000))
                 .environmentObject(ObjectPickViewModel())
-                .environmentObject(PartEditViewModel())
+                .environmentObject(ObjectEditViewModel())
            
         //}
         
