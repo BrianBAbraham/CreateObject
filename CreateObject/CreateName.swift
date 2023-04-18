@@ -122,10 +122,10 @@ struct CreateOriginName {
 }
 
 struct GetUniqueNames {
-    let uniqueCornerNames: [String]
+    let forPart: [String]
     
     init(_ dictionary: PositionDictionary) {
-        uniqueCornerNames = getUniquePartNamesOfCornerItems(dictionary)
+        forPart = getUniquePartNamesOfCornerItems(dictionary)
         
         func getUniquePartNamesOfCornerItems(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
 
@@ -150,11 +150,11 @@ struct GetUniqueNames {
     }
 }
 
-struct CommonName {
-    let fromUniqueName: String
+struct GetGeneralName {
+    let fromUniquePartName: String
     
     init(_ uniqueName: String) {
-        fromUniqueName = getName(uniqueName)
+        fromUniquePartName = getName(uniqueName)
         
         func getName(_ uniqueName: String)
             -> String {

@@ -325,12 +325,12 @@ let sender = #function
     
     func getUniquePartNamesFromLoadedDictionary() -> [String] {
         //getUniquePartNamesOfCornerItems(getLoadedDictionary())
-        GetUniqueNames(getLoadedDictionary()).uniqueCornerNames
+        GetUniqueNames(getLoadedDictionary()).forPart
     }
     
     func getUniquePartNamesFromObjectDictionary() -> [String] {
        // getUniquePartNamesOfCornerItems(getObjectDictionary())
-        GetUniqueNames(getObjectDictionary()).uniqueCornerNames
+        GetUniqueNames(getObjectDictionary()).forPart
     }
     
 

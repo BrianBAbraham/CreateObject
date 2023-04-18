@@ -146,7 +146,7 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         _ dictionary: PositionDictionary,
         _ supportIndex: Int = 0) {
             self.dictionary = dictionary
-            uniquePartNames = GetUniqueNames(dictionary).uniqueCornerNames
+            uniquePartNames = GetUniqueNames(dictionary).forPart
             
             newCornerDictionary =
             getCornerDictionaryForPartDerivedFromTwoParts (

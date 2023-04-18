@@ -31,8 +31,9 @@ struct PartNameAndItsCornerLocations {
             uniquePartName.components(separatedBy:  ConnectStrings.symbol)
             //uniquePartName.split(separator: ConnectStrings.symbol)// requires IOS 16
             
-            let generalPartNameIsFirst = 0
-            let generalPartName = String(uniquePartNameInSplitForm[generalPartNameIsFirst])
+            //let generalPartNameIsFirst = 0
+            let generalPartName = GetGeneralName(uniquePartName).fromUniquePartName
+            
             var uniqueCornerLocation: PositionAsIosAxes
             var assembledUniquePartCornerName: String
             let numberOfConnectStringSymbols = uniquePartName.filter({ $0 == Character(ConnectStrings.symbol) }).count
@@ -64,6 +65,7 @@ struct PartNameAndItsCornerLocations {
             }
 
             return [generalPartName: uniqueCornerLocations]
+//            return [uniquePartName: uniqueCornerLocations]
         }
     }
 }
