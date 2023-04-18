@@ -203,6 +203,8 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
             
             positionsPossiblyForTwoSides.append(
                 DictionaryElementIn(cornerPartDictionary).locationsFromPrimaryOrigin)
+            
+//print(cornerPartDictionary)
         }
         return positionsPossiblyForTwoSides
     }

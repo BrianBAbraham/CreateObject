@@ -88,6 +88,15 @@ struct CreateSymmetricPartName {
       }
 }
 
+//raw dictionary
+//part_id*_corner*_sitOn_id*
+//primaryOrigin_id*_part_id*_sitOn_id*
+//sitOn_id*_corner*
+
+//unique name = raw dictionry - _corner*
+//part_id*_sitOn_id*
+// sitOn_id*
+
 struct CreateOriginName {
     let part: Part
     let identifierForThisPartType: Int
@@ -120,18 +129,18 @@ struct GetUniqueNames {
         
         func getUniquePartNamesOfCornerItems(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
 
-            let relevantKeys = dictionary.filter({$0.key.contains(Part.corner.rawValue)}).keys
+            let cornerKeys = dictionary.filter({$0.key.contains(Part.corner.rawValue)}).keys
             var uniqueNames: [String] = []
             var removedName = ""
-            var newName = ""
-            let commonName = Part.stringLink.rawValue + Part.corner.rawValue
-            for relevantKey in relevantKeys {
+            var nameWithoutCornerString = ""
+            let cornerName = Part.stringLink.rawValue + Part.corner.rawValue
+            for cornerKey in cornerKeys {
                 for index in 0...3 {
-                    removedName = commonName + String(index)
-                    newName = String(relevantKey.replacingOccurrences(of: removedName, with: ""))
+                    removedName = cornerName + String(index)
+                    nameWithoutCornerString = String(cornerKey.replacingOccurrences(of: removedName, with: ""))
                     
-                    if newName != relevantKey {
-                        uniqueNames.append(newName)
+                    if nameWithoutCornerString != cornerKey {
+                        uniqueNames.append(nameWithoutCornerString)
                     }
                 }
             }
@@ -141,6 +150,21 @@ struct GetUniqueNames {
     }
 }
 
+struct CommonName {
+    let fromUniqueName: String
+    
+    init(_ uniqueName: String) {
+        fromUniqueName = getName(uniqueName)
+        
+        func getName(_ uniqueName: String)
+            -> String {
+           let firstItemIsTheCommonName: Int = 0
+           let nameInSplitForm: [String] =
+            uniqueName.components(separatedBy: ConnectStrings.symbol)
+            return nameInSplitForm[firstItemIsTheCommonName]
+        }
+    }
+}
 
 
 
