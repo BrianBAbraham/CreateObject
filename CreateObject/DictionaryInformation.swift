@@ -24,7 +24,8 @@ struct PartNameAndItsCornerLocations {
             _ uniquePartName: String,
             _ forScreenOrMeasurment: DictionaryTypes,
             _ dictionary: PositionDictionary)
-        -> [String: [PositionAsIosAxes]] {
+            -> [String: [PositionAsIosAxes]] {
+            
             let cornerNames = Corner.names
             var uniqueCornerLocations: [PositionAsIosAxes] = []
             let uniquePartNameInSplitForm: [String] =
@@ -38,19 +39,16 @@ struct PartNameAndItsCornerLocations {
             var assembledUniquePartCornerName: String
             let numberOfConnectStringSymbols = uniquePartName.filter({ $0 == Character(ConnectStrings.symbol) }).count
                 
-        //        if numberOfConnectStringSymbols == 5 {
-        //            for cornerName in cornerNames {
-        //                assembledName = dictionaryNameInSplitForm[0] + ConnectStrings.symbol + dictionaryNameInSplitForm[1] + cornerName + ConnectStrings.symbol + dictionaryNameInSplitForm[2] + ConnectStrings.symbol + dictionaryNameInSplitForm[3]
-        //
-        //                cornerLocation = dictionary[ String(assembledName)] ?? Global.iosLocation
-        //                cornerLocations.append(cornerLocation)
-        //            }
-        //        }
-            
+
+ 
             if numberOfConnectStringSymbols == 3 { //related to possibly two sitOn elements
                 for cornerName in cornerNames {
+print(uniquePartName)
                     assembledUniquePartCornerName = uniquePartNameInSplitForm[0] + ConnectStrings.symbol + uniquePartNameInSplitForm[1] + cornerName + ConnectStrings.symbol + uniquePartNameInSplitForm[2] + ConnectStrings.symbol + uniquePartNameInSplitForm[3]
-
+                    
+                    
+                    
+print(assembledUniquePartCornerName)
                     uniqueCornerLocation = dictionary[ String(assembledUniquePartCornerName)] ?? Globalx.iosLocation
                     uniqueCornerLocations.append(uniqueCornerLocation)
                 }

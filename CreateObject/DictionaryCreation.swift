@@ -224,8 +224,6 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         func reverseOrderIfRequired(_ positions: [[PositionAsIosAxes]])
         -> [[PositionAsIosAxes]] {
             var positionsCopy = positions
-            
-
             positionsCopy =
             CreateIosPosition.getArrayFromPositions(positions[firstSide]).x[youCanUseAnyX] >
             CreateIosPosition.getArrayFromPositions(positions[secondSide]).x[youCanUseAnyX] ?
