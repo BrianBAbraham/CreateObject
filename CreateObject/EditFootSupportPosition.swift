@@ -42,6 +42,7 @@ struct EditFootSupportPosition: View {
             set: {self.proposedRightLength = $0}
         )
         
+        var editedDictionary: PositionDictionary = [:]
         
         VStack{
             Spacer()
@@ -51,9 +52,20 @@ struct EditFootSupportPosition: View {
                     .padding([.leading, .trailing])
                 if showLeftLength {
                     HStack {
-                        Slider(value: boundLeftLength, in: 500.0...2500.0, step: 10
+                        Slider(value: boundLeftLength, in: 500.0...1500.0, step: 1
                         )
                         .onChange(of: proposedLeftLength) { value in
+                            
+                            editedDictionary =
+                            objectEditVM.primaryToFootPlateFrontLength(
+                                dictionary,
+                                [Part.footSupport.rawValue],
+                                proposedLeftLength-objectLength)
+                            
+                            vm.setObjectDictionary(
+                                vm.getCurrentObjectType(),
+                                editedDictionary)
+                            
                         }
                      Text("\(Int(objectLength))")
                     }

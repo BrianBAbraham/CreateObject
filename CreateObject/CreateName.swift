@@ -80,19 +80,19 @@ struct CreateSymmetricPartName {
     let indexForCorner: Int
     let indexForSitOn: Int
     let part: Part
-//    var name: String {
-//        part.rawValue + Part.id.rawValue +
-//        String(indexForSide) + String(indexForCorner) + Part.stringLink.rawValue +
-//    Part.sitOn.rawValue + Part.id.rawValue + String(indexForSitOn) + Part.stringLink.rawValue +
-//        Part.corner.rawValue
-//      }
-    
     var name: String {
         part.rawValue + Part.id.rawValue +
         String(indexForSide) + Part.stringLink.rawValue +
-        Part.corner.rawValue + String(indexForCorner) + Part.stringLink.rawValue +
-        Part.sitOn.rawValue + Part.id.rawValue + String(indexForSitOn)
+    Part.sitOn.rawValue + Part.id.rawValue + String(indexForSitOn) + Part.stringLink.rawValue +
+        Part.corner.rawValue + String(indexForCorner)
       }
+    
+//    var name: String {
+//        part.rawValue + Part.id.rawValue +
+//        String(indexForSide) + Part.stringLink.rawValue +
+//        Part.corner.rawValue + String(indexForCorner) + Part.stringLink.rawValue +
+//        Part.sitOn.rawValue + Part.id.rawValue + String(indexForSitOn)
+//      }
 }
 
 //raw dictionary

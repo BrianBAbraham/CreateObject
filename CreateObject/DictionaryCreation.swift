@@ -147,7 +147,7 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         _ supportIndex: Int = 0) {
             self.dictionary = dictionary
             uniquePartNames = GetUniqueNames(dictionary).forPart
-            
+//print(dictionary)
             newCornerDictionary =
             getCornerDictionaryForPartDerivedFromTwoParts (
                 startPart,
@@ -193,14 +193,16 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         var cornerPartDictionary:[String: [PositionAsIosAxes]]  = [:]
         
         var positionsPossiblyForTwoSides: [[PositionAsIosAxes]] = []
-        
+//print(partName)
+
         for index in 0..<relevantNames.count {
+//print(relevantNames[index])
             cornerPartDictionary =
             PartNameAndItsCornerLocations(
                 relevantNames[index],
                 .forMeasurement,
                 dictionary).dictionaryFromPrimaryOrigin
-            
+//print(cornerPartDictionary)
             positionsPossiblyForTwoSides.append(
                 DictionaryElementIn(cornerPartDictionary).locationsFromPrimaryOrigin)
             
@@ -213,7 +215,7 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         _ startPartPositions: [[PositionAsIosAxes]],
         _ endPartPositions: [[PositionAsIosAxes]])
     -> [[PositionAsIosAxes]] {
-        
+
         let firstSide = 0
         let secondSide = 1
         let youCanUseAnyX = 0

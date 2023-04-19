@@ -27,6 +27,7 @@ struct PartNameAndItsCornerLocations {
             -> [String: [PositionAsIosAxes]] {
             
             let cornerNames = Corner.names
+//print(cornerNames)
             var uniqueCornerLocations: [PositionAsIosAxes] = []
             let uniquePartNameInSplitForm: [String] =
             uniquePartName.components(separatedBy:  ConnectStrings.symbol)
@@ -43,12 +44,12 @@ struct PartNameAndItsCornerLocations {
  
             if numberOfConnectStringSymbols == 3 { //related to possibly two sitOn elements
                 for cornerName in cornerNames {
-print(uniquePartName)
-                    assembledUniquePartCornerName = uniquePartNameInSplitForm[0] + ConnectStrings.symbol + uniquePartNameInSplitForm[1] + cornerName + ConnectStrings.symbol + uniquePartNameInSplitForm[2] + ConnectStrings.symbol + uniquePartNameInSplitForm[3]
+//print(uniquePartName)
+                    assembledUniquePartCornerName = uniquePartNameInSplitForm[0] + ConnectStrings.symbol + uniquePartNameInSplitForm[1] + ConnectStrings.symbol + uniquePartNameInSplitForm[2] + ConnectStrings.symbol + uniquePartNameInSplitForm[3] + cornerName
                     
                     
                     
-print(assembledUniquePartCornerName)
+//print(assembledUniquePartCornerName)
                     uniqueCornerLocation = dictionary[ String(assembledUniquePartCornerName)] ?? Globalx.iosLocation
                     uniqueCornerLocations.append(uniqueCornerLocation)
                 }

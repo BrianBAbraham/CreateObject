@@ -32,10 +32,29 @@ extension ObjectEditViewModel {
     
     func primaryToFootPlateFrontLength(
         _ dictionary: PositionDictionary,
-        _ uniqueName: String,
-        _ length: Double) {
-        var editedDictionary = dictionary
+        _ uniqueNames: [String],
+        _ lengthChange:Double)
+        -> PositionDictionary {
+            //var uniqueKeys: [String] = []
+            var filteredDictionary: PositionDictionary = [:]
+            for uniqueName in uniqueNames {
+                filteredDictionary  +=
+                dictionary.filter({$0.key.contains(uniqueName)}).filter({$0.key.contains(Part.corner.rawValue)})
+            }
             
+            var editedDictionary = dictionary
+            
+            for (key, value) in filteredDictionary {
+                
+                filteredDictionary[key] = (x:value.x, y: value.y + (lengthChange), z: value.z)
+                editedDictionary[key] = filteredDictionary[key]
+            }
+            
+            
+            
+print(filteredDictionary)
+            
+            return editedDictionary
     }
     
     

@@ -86,6 +86,7 @@ print(usableBaseObjectName)
                     initialOccupantBodySupportMeasure,
                     baseMeasurement
                 )
+//print(dictionary)
 
             dictionary +=
               CreateBase(

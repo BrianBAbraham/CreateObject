@@ -187,12 +187,18 @@ let sender = #function
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation]) {
             
-            let existingDictionary = CreateAllPartsForObject(baseName: objectName).dictionary
+            var currentDictionary = CreateAllPartsForObject(baseName: objectName).dictionary
             
-            let dictionary: PositionDictionary = editedDictionary[""]! ==
-            Globalx.iosLocation ? existingDictionary: editedDictionary
+//            var dictionary: PositionDictionary = [:]
+            if editedDictionary[""] != nil {
+                
+            } else {
+                currentDictionary = editedDictionary
+                
+            }
+
         
-        objectPickModel.currentDictionary = dictionary
+        objectPickModel.currentDictionary = currentDictionary
     }
     
     func setEditedObjectDictionary(_ editedDictionary: PositionDictionary) {
