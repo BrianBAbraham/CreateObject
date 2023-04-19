@@ -38,9 +38,9 @@ struct PartView: View {
     @EnvironmentObject var vm: ObjectPickViewModel
     @EnvironmentObject var partEditVM: ObjectEditViewModel
     let uniquePartName: String
-    var dictionary: PositionDictionary {
-        vm.getRelevantDictionary(.forScreen)
-    }
+    var dictionary: PositionDictionary //{
+//        vm.getRelevantDictionary(.forScreen)
+//    }
     var partCornersDictionary: [String: [PositionAsIosAxes]] {
 //        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(
 //            uniquePartName,
@@ -97,6 +97,17 @@ struct ObjectView: View {
     var zoom: CGFloat {
         limitZoom( 0.6 + currentZoom + lastCurrentZoom)
     }
+    
+    var uniquePartNames: [String]
+    
+    init( _ names: [String] ) {
+        uniquePartNames = names
+    }
+    
+    var dictionary: PositionDictionary {
+        objectPickVM.getRelevantDictionary(.forScreen)
+    }
+    
     func limitZoom (_ zoom: CGFloat) -> CGFloat {
        return max(min(zoom, maximimumZoom),minimumZoom)
     }
@@ -116,9 +127,8 @@ struct ObjectView: View {
  
     let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
     
-    var uniquePartNames: [String] {
-        objectPickVM.getUniquePartNamesFromObjectDictionary()
-    }
+
+
     
 //        var addDefaultDictionaryButtonView: some View {
 //                Button(action: {
@@ -134,7 +144,10 @@ struct ObjectView: View {
 
             ZStack {
                 ForEach(uniquePartNames, id: \.self) { name in
-                    PartView(uniquePartName: name)
+                    PartView(
+                        uniquePartName: name,
+                        dictionary: dictionary
+                    )
                 }
             //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
             //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
@@ -163,7 +176,17 @@ struct ObjectView: View {
 }
 
 struct ObjectView_Previews: PreviewProvider {
+    
+//    let uniquePartNames: [String]
+//    
+//    init() {
+//        let uniquePartNames = ["footSupportHangerSitOnVerticalJoint_id0_sitOn_id0", "footSupport_id1_sitOn_id0", "fixedWheel_id1_sitOn_id0", "footSupportHangerLink_id0_sitOn_id0", "armVerticalJoint_id0_sitOn_id0", "footSupportHorizontalJoint_id0_sitOn_id0", "arm_id1_sitOn_id0", "casterVerticalJointAtFront_id0_sitOn_id0", "footSupportHangerLink_id1_sitOn_id0", "fixedWheel_id0_sitOn_id0", "arm_id0_sitOn_id0", "sitOn_id0", "casterWheelAtFront_id0_sitOn_id0", "casterWheelAtFront_id1_sitOn_id0", "footSupportHangerSitOnVerticalJoint_id1_sitOn_id0", "footSupport_id0_sitOn_id0", "footSupportHorizontalJoint_id1_sitOn_id0", "armVerticalJoint_id1_sitOn_id0", "casterVerticalJointAtFront_id1_sitOn_id0"]
+//    }
     static var previews: some View {
-        ObjectView()
+        ObjectView(
+     
+            [""]
+
+            )
     }
 }

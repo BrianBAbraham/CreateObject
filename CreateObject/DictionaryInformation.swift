@@ -32,7 +32,7 @@ struct PartNameAndItsCornerLocations {
             //uniquePartName.split(separator: ConnectStrings.symbol)// requires IOS 16
             
             //let generalPartNameIsFirst = 0
-            let generalPartName = GetGeneralName(uniquePartName).fromUniquePartName
+//            let generalPartName = GetGeneralName(uniquePartName).fromUniquePartName
             
             var uniqueCornerLocation: PositionAsIosAxes
             var assembledUniquePartCornerName: String
@@ -64,8 +64,8 @@ struct PartNameAndItsCornerLocations {
                 }
             }
 
-            return [generalPartName: uniqueCornerLocations]
-//            return [uniquePartName: uniqueCornerLocations]
+           // return [generalPartName: uniqueCornerLocations]
+            return [uniquePartName: uniqueCornerLocations]
         }
     }
 }

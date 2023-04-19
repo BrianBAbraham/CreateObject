@@ -30,41 +30,14 @@ extension ObjectEditViewModel {
 
     }
     
-//    func getFootSupportHangerLength( _ dictionary: PositionDictionary )
-//    -> Double {
-//        let partName = Part.footSupportHangerSitOnVerticalJoint.rawValue
-//        let onlyOneDictionaryMember = 0
-//        let dictionaryWithNames = dictionary.filter({$0.key.contains(partName)})
-//        let dictionaryWithName = dictionaryWithNames.filter({$0.key.contains(Part.primaryOrigin.rawValue)})
-//        let value = dictionaryWithName.map{$0.1}[onlyOneDictionaryMember]
-//
-//        let currentLength = value.y
-//        return currentLength
-//
-//    }
+    func primaryToFootPlateFrontLength(
+        _ dictionary: PositionDictionary,
+        _ uniqueName: String,
+        _ length: Double) {
+        var editedDictionary = dictionary
+            
+    }
     
-    
-    /// removing a part
-    /// changing parts position
-    /// getting the names
-    
-//    func changePrimaryAxisToFootPlateEndLength(
-//        _ dictionary: PositionDictionary,
-//        _ lengthChange: Double,
-//        _ partIds: [Int]
-//        _ supportIndex: Int) {
-//
-//            for partId in partIds {
-//                for
-//                let partName =
-//                    CreateSymmetricPartName(
-//                    indexForSide: partId,
-//                    indexForCorner: <#T##Int#>,
-//                    indexForSitOn: supportIndex,
-//                    part: <#T##Part#>)
-//            }
-//
-//    }
     
     func getNames () {
         //create name

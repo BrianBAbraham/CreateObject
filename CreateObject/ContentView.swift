@@ -129,18 +129,14 @@ struct EnterTextView: View {
 
 struct ContentView: View {
 
-    @EnvironmentObject var epVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @StateObject var cdVM = CoreDataViewModel()
     @State var objectName = "RearDriveWheelchair"
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
     
-    
-    
-    
-    //@State var defaultDictionaryAsList = [""]
     var defaultDictionaryAsList: [String] {
-        epVM.getList()
+        objectPickVM.getList()
     }
 
     let equipmentName: String
@@ -189,6 +185,7 @@ struct ContentView: View {
             } )
     }
     
+    
     var savedObjectDictionaryAsListButtonView: some View {
         VStack {
             //Text ("Saved equipment")
@@ -197,8 +194,8 @@ struct ContentView: View {
                 ForEach(cdVM.savedEntities) {entity in
                     Button {
                        savedDictionaryAsList  =
-                        epVM.getPartCornersFromPrimaryOriginDictionary(entity)
-                        epVM.setCurrentObjectType(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
+                        objectPickVM.getPartCornersFromPrimaryOriginDictionary(entity)
+                        objectPickVM.setCurrentObjectType(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
                     } label: {
                         HStack{
                             Text(entity.objectType ?? "")
@@ -216,7 +213,7 @@ struct ContentView: View {
     }
     
     var uniquePartNames: [String] {
-        epVM.getUniquePartNamesFromObjectDictionary()
+        objectPickVM.getUniquePartNamesFromObjectDictionary()
     }
     
     var uniquePartNamesAsListView: some View {
@@ -235,15 +232,15 @@ struct ContentView: View {
     
     var originDictionary: [String] {
         
-        DictionaryInArrayOut().getNameValue( epVM.getAllPartFromPrimaryOriginDictionary(),"test")
+        DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary(),"test")
        
     }
 
     func saveData (_ objectName: String) {
                 cdVM.addObject(
-                    names: epVM.getAllOriginNames(),
-                    values: epVM.getAllOriginValues(),
-                    objectType: epVM.getCurrentObjectType(),
+                    names: objectPickVM.getAllOriginNames(),
+                    values: objectPickVM.getAllOriginValues(),
+                    objectType: objectPickVM.getCurrentObjectType(),
                 objectName: objectName)
                 cdVM.fetchNames()
     }
@@ -278,7 +275,7 @@ struct ContentView: View {
                 NavigationLink(destination:
                                 VStack( spacing: -150) {
                                 PickObjectView()
-                                ObjectView()
+                                ObjectView(uniquePartNames)
                     }
                 ) {
                         Text("Default equipment")
@@ -292,7 +289,7 @@ struct ContentView: View {
                 NavigationLink(destination:
                     VStack {
                     HStack {
-                            ObjectView()
+                            ObjectView(uniquePartNames)
                             EditObjectMenuView()
                         Spacer()
                         }
