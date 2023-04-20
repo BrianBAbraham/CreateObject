@@ -25,6 +25,8 @@ struct EditObjectMenuView: View {
     @State private var imperial = false
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    
     
     init(){
         //self.dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
@@ -36,10 +38,18 @@ struct EditObjectMenuView: View {
     var body: some View {
         
         let dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
-    EditFootSupportPosition(dictionary)
-          
+    
+        
+        EditFootSupportPosition(dictionary)
+//            .onAppear{objectPickVM.toggleEditOccuring()
+//                print("TOBBLE")
+//            }
+//            .onDisappear{objectPickVM.toggleEditOccuring()
+//                print("FOBBLE")
+//            }
 
     }
+
        
         //        VStack {
         //            VStack {

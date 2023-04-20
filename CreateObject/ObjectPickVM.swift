@@ -8,9 +8,12 @@
 import Foundation
 
 struct ObjectPickModel {
-    var equipment: String  //FixedWheelBase.Subtype.midDrive.rawValue
-    var currentDictionary: [String: PositionAsIosAxes]
-    var loadedDictionary: [String: PositionAsIosAxes] = [:]
+    var equipment: String  //FixedWheelBase.Subtype.midDrive.rawValu
+    
+    var currentDictionary: PositionDictionary
+    var defaultDictionary: PositionDictionary
+    var loadedDictionary: PositionDictionary = [:]
+    //var editOccuring = true
 }
 
 
@@ -20,7 +23,9 @@ class ObjectPickViewModel: ObservableObject {
     CreateAllPartsForObject(baseName: initialObjectName).dictionary
     
     @Published private var objectPickModel:ObjectPickModel =
-    ObjectPickModel(equipment: BaseObjectTypes.fixedWheelRearDrive.rawValue, currentDictionary: dictionary)
+    ObjectPickModel(equipment: BaseObjectTypes.fixedWheelRearDrive.rawValue,
+                    currentDictionary: dictionary,
+                    defaultDictionary: dictionary)
 }
 
 extension ObjectPickViewModel {
@@ -81,34 +86,50 @@ extension ObjectPickViewModel {
             objectDimension
     }
     
+    
+   // func toggleEditOccuring() {
+       // print("Tpbb")
+      //  objectPickModel.editOccuring.toggle()
+   // }
+    
+//    func getEditOccuringState()
+//     -> Bool {
+//
+//
+//    }
+    
     func getRelevantDictionary(
         _ forScreenOrMeasurment: DictionaryTypes)
     -> [String: PositionAsIosAxes] {
+        
         var relevantDictionary =
         getLoadedDictionary().keys.count == 0 ? getObjectDictionary(): getLoadedDictionary()
         
-// getLoadedDictionary().keys.count == 0 ? print("Object Dictionary"): print("Loaded Dictionary")
+        let defaultDictionary = objectPickModel.defaultDictionary
+        
+//print(defaultDictionary)
         
         let minThenMaxPositionOfObject =
-        getMinThenMaxPositionOfObject(relevantDictionary)
-        
-//print(minThenMaxPositionOfObject)
-        
+        getMinThenMaxPositionOfObject(defaultDictionary)
+
         let objectDimensions =
         getObjectDimension(minThenMaxPositionOfObject)
         
         let maxDimension = [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
+        
+
         switch forScreenOrMeasurment {
         case .forScreen:
-            relevantDictionary = ForScreen(
+            relevantDictionary =
+            ForScreen(
                 relevantDictionary,
                 minThenMaxPositionOfObject,
-                maxDimension).dictionary
+                maxDimension//,
+                 //objectPickModel.editOccuring
+            ).dictionary
             
         default: break
         }
-
-//print(relevantDictionary)
         return
          relevantDictionary
     }
@@ -188,6 +209,8 @@ let sender = #function
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation]) {
             
             var currentDictionary = CreateAllPartsForObject(baseName: objectName).dictionary
+            
+            //objectPickModel.defaultDictionary = currentDictionary
             
 //            var dictionary: PositionDictionary = [:]
             if editedDictionary[""] != nil {

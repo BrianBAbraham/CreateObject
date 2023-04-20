@@ -15,11 +15,13 @@ struct ForScreen {
     
     init( _ actualSize: PositionDictionary,
           _ minThenMaxPositionOfObject: [PositionAsIosAxes],
-          _ maxDimension: Double
+          _ maxDimension: Double//,
+          //_ scalingRequired: Bool
     ) {
-        
+//print(scalingRequired)
         let minThenMax = minThenMaxPositionOfObject
         let offset = CreateIosPosition.minus(minThenMax[0])
+        //let scale = scalingRequired ? Screen.smallestDimension / maxDimension: 1.0
         let scale = Screen.smallestDimension / maxDimension
         dictionary = createDictionaryForScreen(actualSize, scale, offset)
 
@@ -30,6 +32,7 @@ struct ForScreen {
         _ scale: Double,
         _ offset: PositionAsIosAxes)
     -> PositionDictionary {
+//print("ForScreen CALLED")
         var dictionaryForScreen: PositionDictionary = [:]
         for item in actualSize {
             dictionaryForScreen[item.key] =

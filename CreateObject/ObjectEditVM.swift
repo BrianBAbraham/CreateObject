@@ -10,6 +10,7 @@ import SwiftUI
 
 struct PartEditModel {
     var part: String  //FixedWheelBase.Subtype.midDrive.rawValue
+
     
 }
 
@@ -30,12 +31,14 @@ extension ObjectEditViewModel {
 
     }
     
-    func primaryToFootPlateFrontLength(
+
+    
+    func setPrimaryToFootPlateFrontLength(
         _ dictionary: PositionDictionary,
         _ uniqueNames: [String],
         _ lengthChange:Double)
         -> PositionDictionary {
-            //var uniqueKeys: [String] = []
+
             var filteredDictionary: PositionDictionary = [:]
             for uniqueName in uniqueNames {
                 filteredDictionary  +=
@@ -46,13 +49,32 @@ extension ObjectEditViewModel {
             
             for (key, value) in filteredDictionary {
                 
-                filteredDictionary[key] = (x:value.x, y: value.y + (lengthChange), z: value.z)
+                filteredDictionary[key] = (x:value.x, y: value.y + lengthChange, z: value.z)
                 editedDictionary[key] = filteredDictionary[key]
+                
+                if key.contains(Part.footSupportHangerLink.rawValue) {
+                    editedDictionary[key] = nil
+                }
             }
+            let firstItem = filteredDictionary.first!
+
+            let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
             
+
+            let supportIndex =
+            firstItem.key.contains(supportIndexName) ? 0 : 1
             
+
+            let hangerLinkDictionary =
+                CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
+                    .footSupportHangerSitOnVerticalJoint,
+                    .footSupportHorizontalJoint,
+                    .footSupportHangerLink,
+                    editedDictionary,
+                    supportIndex).newCornerDictionary
             
-print(filteredDictionary)
+            editedDictionary += hangerLinkDictionary
+            
             
             return editedDictionary
     }
@@ -101,7 +123,7 @@ print(filteredDictionary)
                 let maxValue = yValues.max() ?? yValues[ifAllEqualUseFirst]
                 return maxValue
             }
-
+//print("getPrimaryAxisToFootPlateEndLength")
          return lengths
     }
     

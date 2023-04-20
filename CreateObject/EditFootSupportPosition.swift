@@ -16,7 +16,7 @@ struct EditFootSupportPosition: View {
     @State private var proposedRightLength = 200.0
     @State private var showLeftLength = true
     @State private var showRightLength = true
-    @EnvironmentObject var vm: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     
     init(_ dictionary: PositionDictionary){
@@ -57,13 +57,14 @@ struct EditFootSupportPosition: View {
                         .onChange(of: proposedLeftLength) { value in
                             
                             editedDictionary =
-                            objectEditVM.primaryToFootPlateFrontLength(
+                            objectEditVM.setPrimaryToFootPlateFrontLength(
                                 dictionary,
-                                [Part.footSupport.rawValue],
-                                proposedLeftLength-objectLength)
+                                [Part.footSupport.rawValue + Part.stringLink.rawValue,
+                                 Part.footSupportHorizontalJoint.rawValue],
+                                proposedLeftLength - objectLength)
                             
-                            vm.setObjectDictionary(
-                                vm.getCurrentObjectType(),
+                            objectPickVM.setObjectDictionary(
+                                objectPickVM.getCurrentObjectType(),
                                 editedDictionary)
                             
                         }
