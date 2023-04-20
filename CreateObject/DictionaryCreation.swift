@@ -170,22 +170,17 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
             leftThenRightNewPartCorners(
                 startPartCorners,
                 endPartCorners)
-        
-
         var dictionary: PositionDictionary = [:]
-
-
                 dictionary +=
                 CreateCornerDictionaryForBothSides (
                     corners,
                     supportIndex,
                     newPart).dictionary
-
-        
         return dictionary
     }
     
 
+    
     func getCornersOfOnePartPossiblyOnTwoSides(
         _ partName: Part )
     -> [[PositionAsIosAxes]] {

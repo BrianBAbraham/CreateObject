@@ -26,7 +26,10 @@ struct EditFootSupportPosition: View {
     
     var body: some View {
         
-        let objectLength = objectEditVM.getPrimaryAxisToFootPlateEndLength(dictionary)[0]
+        let objectLength = objectEditVM.getPrimaryAxisToFootPlateEndLength(
+            dictionary
+//            objectPickVM.getDefaultDictionary()
+        )[0]
         
         
         let boundWidth = Binding(
@@ -61,7 +64,8 @@ struct EditFootSupportPosition: View {
                                 dictionary,
                                 [Part.footSupport.rawValue + Part.stringLink.rawValue,
                                  Part.footSupportHorizontalJoint.rawValue],
-                                proposedLeftLength - objectLength)
+                                proposedLeftLength //- objectLength
+                            )
                             
                             objectPickVM.setObjectDictionary(
                                 objectPickVM.getCurrentObjectType(),

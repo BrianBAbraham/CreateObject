@@ -39,28 +39,44 @@ extension ObjectEditViewModel {
         _ lengthChange:Double)
         -> PositionDictionary {
 
+            print("FILTERED")
+            print(dictionary.filter({$0.key.contains(Part.footSupport.rawValue + Part.id.rawValue + "0")}))
+            print("FILTERED")
+            print("")
+            
             var filteredDictionary: PositionDictionary = [:]
             for uniqueName in uniqueNames {
                 filteredDictionary  +=
-                dictionary.filter({$0.key.contains(uniqueName)}).filter({$0.key.contains(Part.corner.rawValue)})
+                dictionary.filter({$0.key.contains(uniqueName )}).filter({$0.key.contains(Part.corner.rawValue)})
             }
+            
+            filteredDictionary = filteredDictionary.filter({$0.key.contains(Part.id.rawValue + "0" +
+                                                                      Part.stringLink.rawValue + Part.sitOn.rawValue)})
+
+            
+            
             
             var editedDictionary = dictionary
             
+
+            
             for (key, value) in filteredDictionary {
                 
-                filteredDictionary[key] = (x:value.x, y: value.y + lengthChange, z: value.z)
+                let newValue = value.y + lengthChange //> 500.0 ? value.y + lengthChange: 500.0
+                filteredDictionary[key] = (x:value.x, y: lengthChange, z: value.z)
                 editedDictionary[key] = filteredDictionary[key]
                 
                 if key.contains(Part.footSupportHangerLink.rawValue) {
                     editedDictionary[key] = nil
                 }
             }
-            let firstItem = filteredDictionary.first!
-
-            let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
+            print("EDITED")
+            print(editedDictionary.filter({$0.key.contains(Part.footSupport.rawValue + Part.id.rawValue + "0")}))
+            print("EDITED")
+            print("")
             
-
+            let firstItem = filteredDictionary.first!
+            let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
             let supportIndex =
             firstItem.key.contains(supportIndexName) ? 0 : 1
             

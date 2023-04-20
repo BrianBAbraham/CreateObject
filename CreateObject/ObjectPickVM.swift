@@ -98,6 +98,11 @@ extension ObjectPickViewModel {
 //
 //    }
     
+    func getDefaultDictionary()
+    -> PositionDictionary {
+        objectPickModel.defaultDictionary
+    }
+    
     func getRelevantDictionary(
         _ forScreenOrMeasurment: DictionaryTypes)
     -> [String: PositionAsIosAxes] {
