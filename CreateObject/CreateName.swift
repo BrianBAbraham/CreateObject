@@ -50,6 +50,23 @@ struct CreateSupportPartName {
     }
 }
 
+
+struct CreateFromParts {
+    let name: String
+    init(_ parts: [Part]) {
+       
+        name = getNameFromParts(parts)
+        
+        func getNameFromParts(_ parts: [Part])
+            -> String {
+            var name = ""
+            for item in parts {
+                name += item.rawValue
+                }
+            return name
+        }
+    }
+}
 //struct CreateFootPlateName {
 //    let indexForSide: Int
 //    let indexForCorner: Int

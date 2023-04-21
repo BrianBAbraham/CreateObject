@@ -39,12 +39,13 @@ extension ObjectEditViewModel {
         _ lengthChange:Double)
         -> PositionDictionary {
 
-            print("FILTERED")
-            print(dictionary.filter({$0.key.contains(Part.footSupport.rawValue + Part.id.rawValue + "0")}))
-            print("FILTERED")
-            print("")
+//            print("ORIGINAL")
+//            print(dictionary.filter({$0.key.contains(Part.footSupport.rawValue + Part.id.rawValue + "0")}))
+//            print("ORIGINAL")
+//            print("")
             
             var filteredDictionary: PositionDictionary = [:]
+            
             for uniqueName in uniqueNames {
                 filteredDictionary  +=
                 dictionary.filter({$0.key.contains(uniqueName )}).filter({$0.key.contains(Part.corner.rawValue)})
@@ -52,28 +53,32 @@ extension ObjectEditViewModel {
             
             filteredDictionary = filteredDictionary.filter({$0.key.contains(Part.id.rawValue + "0" +
                                                                       Part.stringLink.rawValue + Part.sitOn.rawValue)})
-
+           
             
+//            print("FILTERED")
+//            print(filteredDictionary.filter({$0.key.contains(Part.footSupport.rawValue + Part.id.rawValue + "0")}))
+//            print("FILTERED")
+//            print("")
             
             
             var editedDictionary = dictionary
             
-
-            
             for (key, value) in filteredDictionary {
                 
-                let newValue = value.y + lengthChange //> 500.0 ? value.y + lengthChange: 500.0
-                filteredDictionary[key] = (x:value.x, y: lengthChange, z: value.z)
+                let newValue = value.y + lengthChange //> 500.0 ? value.y + lengthChange: value.y - 500.0
+                filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
                 editedDictionary[key] = filteredDictionary[key]
                 
                 if key.contains(Part.footSupportHangerLink.rawValue) {
                     editedDictionary[key] = nil
                 }
             }
-            print("EDITED")
-            print(editedDictionary.filter({$0.key.contains(Part.footSupport.rawValue + Part.id.rawValue + "0")}))
-            print("EDITED")
-            print("")
+            
+            
+//            print("EDITED")
+//            print(editedDictionary.filter({$0.key.contains(Part.footSupport.rawValue + Part.id.rawValue + "0")}))
+//            print("EDITED")
+//            print("")
             
             let firstItem = filteredDictionary.first!
             let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
@@ -106,7 +111,7 @@ extension ObjectEditViewModel {
         _ supportIndex: Int = 0)
         -> [Double] {
             var lengths: [Double] = []
-            let partName  = Part.footSupportHorizontalJoint.rawValue
+            let partName  = Part.footSupportHorizontalJoint.rawValue //+ Part.stringLink.rawValue
             var onePartDictionary = dictionary
             let supportName = CreateSupportPartName(index: supportIndex).name
             
@@ -118,7 +123,10 @@ extension ObjectEditViewModel {
             onePartDictionary
                 .filter({$0.key.contains(supportName)})
             
-            if onePartDictionary.count == 8 {
+            
+            let twoFootSupportPresent = 8
+print(onePartDictionary.count)
+            if onePartDictionary.count == twoFootSupportPresent {
                 for index in 0..<1 {
                     let partIdName = Part.id.rawValue + String(index) + Part.stringLink.rawValue
                     onePartDictionary =

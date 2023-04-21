@@ -86,17 +86,10 @@ extension ObjectPickViewModel {
             objectDimension
     }
     
+    func getCurrentDictionary()->[String: PositionAsIosAxes] {
+        objectPickModel.currentDictionary
+    }
     
-   // func toggleEditOccuring() {
-       // print("Tpbb")
-      //  objectPickModel.editOccuring.toggle()
-   // }
-    
-//    func getEditOccuringState()
-//     -> Bool {
-//
-//
-//    }
     
     func getDefaultDictionary()
     -> PositionDictionary {

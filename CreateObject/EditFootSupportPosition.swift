@@ -15,7 +15,7 @@ struct EditFootSupportPosition: View {
     @State private var proposedLeftLength = 200.0
     @State private var proposedRightLength = 200.0
     @State private var showLeftLength = true
-    @State private var showRightLength = true
+    @State private var leftAndRight = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     
@@ -26,22 +26,28 @@ struct EditFootSupportPosition: View {
     
     var body: some View {
         
-        let objectLength = objectEditVM.getPrimaryAxisToFootPlateEndLength(
-            dictionary
-//            objectPickVM.getDefaultDictionary()
+        let currentLength =
+        objectEditVM.getPrimaryAxisToFootPlateEndLength(
+            objectPickVM.getCurrentDictionary()
         )[0]
         
         
-        let boundWidth = Binding(
-            get: {0},
-            set: {self.proposedWidth = $0}
-        )
+//        let boundWidth = Binding(
+//            get: {0},
+//            set: {self.proposedWidth = $0}
+//        )
+        
+        
+        /// leftAndRight
+        /// if both one slider
+        /// if not both left and right
+        
         let boundLeftLength = Binding(
-            get: {objectLength},
+            get: {currentLength},
             set: {self.proposedLeftLength = $0}
         )
         let boundRightLength = Binding(
-            get: {objectLength},
+            get: {currentLength},
             set: {self.proposedRightLength = $0}
         )
         
@@ -50,10 +56,10 @@ struct EditFootSupportPosition: View {
         VStack{
             Spacer()
             VStack {
-                Toggle(isOn: $showLeftLength)
-                    { Text("L")}
+                Toggle(isOn: $leftAndRight)
+                    { Text("Both")}
                     .padding([.leading, .trailing])
-                if showLeftLength {
+                //if showLeftLength {
                     HStack {
                         Slider(value: boundLeftLength, in: 500.0...1500.0, step: 1
                         )
@@ -64,18 +70,18 @@ struct EditFootSupportPosition: View {
                                 dictionary,
                                 [Part.footSupport.rawValue + Part.stringLink.rawValue,
                                  Part.footSupportHorizontalJoint.rawValue],
-                                proposedLeftLength //- objectLength
+                                proposedLeftLength - currentLength
                             )
-                            
+//print("\(proposedLeftLength) - \(currentLength)   =  \(proposedLeftLength - currentLength )")
                             objectPickVM.setObjectDictionary(
                                 objectPickVM.getCurrentObjectType(),
                                 editedDictionary)
                             
                         }
-                     Text("\(Int(objectLength))")
+                     Text("\(Int(currentLength))")
                     }
-                    .padding([.leading, .trailing])
-                }
+                    //.padding([.leading, .trailing])
+               //}
             }
             
             .padding([.leading, .trailing])
@@ -85,7 +91,7 @@ struct EditFootSupportPosition: View {
                 )
                 .onChange(of: proposedRightLength) { value in
                 }
-                Text("\(Int(objectLength))")
+                Text("\(Int(currentLength))")
             }
             .padding([.leading, .trailing])
 //            HStack {
