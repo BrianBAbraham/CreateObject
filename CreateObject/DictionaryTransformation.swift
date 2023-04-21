@@ -194,6 +194,29 @@ struct DictionaryInArrayOut {
 }
 
 
+struct SuccessivelyFilteredDictionary {
+    let dictionary: PositionDictionary
+    
+    init (_ names: [String], _ dictionary: PositionDictionary) {
+        self.dictionary = getFilteredDictionary(names, dictionary)
+        
+        
+        
+        func getFilteredDictionary(
+            _ names: [String],
+            _ dictionary: PositionDictionary)
+        -> PositionDictionary {
+            var filteredDictionary: PositionDictionary = dictionary
+            
+            for name in names {
+                filteredDictionary = filteredDictionary.filter({$0.key.contains(name)})
+            }
+            
+            return filteredDictionary
+        }
+    }
+}
+
 struct OriginStringInDictionaryOut {
     var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
     let namesAsString: String

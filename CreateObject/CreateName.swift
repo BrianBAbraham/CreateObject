@@ -40,21 +40,21 @@ struct ConnectStrings {
     }
 }
 
-struct CreateSupportPartName {
-    let index: Int
-    var name: String {
-        
-        String(
-        Part.sitOn.rawValue + Part.id.rawValue + String(index)
-        )
-    }
-}
+//struct CreateSupportPartName {
+//    let index: Int
+//    var name: String {
+//        
+//        String(
+//        Part.sitOn.rawValue + Part.id.rawValue + String(index)
+//        )
+//    }
+//}
 
 
-struct CreateFromParts {
+struct CreateNameFromParts {
     let name: String
     init(_ parts: [Part]) {
-       
+      
         name = getNameFromParts(parts)
         
         func getNameFromParts(_ parts: [Part])

@@ -36,8 +36,8 @@ enum Part: String {
 //    case centreLine = "centreLine"
     case corner = "corner"
     case id = "_id"
-    case id0 = "id0"
-    case id1 = "id1"
+    case id0 = "_id0"
+    case id1 = "_id1"
     case fixedWheel = "fixedWheel"
     case fixedWheelPropeller = "fixedWheelPropeller"
     

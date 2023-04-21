@@ -29,7 +29,7 @@ struct EditFootSupportPosition: View {
         let currentLength =
         objectEditVM.getPrimaryAxisToFootPlateEndLength(
             objectPickVM.getCurrentDictionary()
-        )[0]
+        )
         
         
 //        let boundWidth = Binding(
@@ -43,11 +43,11 @@ struct EditFootSupportPosition: View {
         /// if not both left and right
         
         let boundLeftLength = Binding(
-            get: {currentLength},
+            get: {currentLength[0]},
             set: {self.proposedLeftLength = $0}
         )
         let boundRightLength = Binding(
-            get: {currentLength},
+            get: {currentLength[1]},
             set: {self.proposedRightLength = $0}
         )
         
@@ -59,47 +59,45 @@ struct EditFootSupportPosition: View {
                 Toggle(isOn: $leftAndRight)
                     { Text("Both")}
                     .padding([.leading, .trailing])
-                //if showLeftLength {
+                
                     HStack {
+                        Text("L")
                         Slider(value: boundLeftLength, in: 500.0...1500.0, step: 1
                         )
                         .onChange(of: proposedLeftLength) { value in
-                            
                             editedDictionary =
                             objectEditVM.setPrimaryToFootPlateFrontLength(
                                 dictionary,
-                                [Part.footSupport.rawValue + Part.stringLink.rawValue,
-                                 Part.footSupportHorizontalJoint.rawValue],
-                                proposedLeftLength - currentLength
+                                .id0,
+                                proposedLeftLength - currentLength[0]
                             )
-//print("\(proposedLeftLength) - \(currentLength)   =  \(proposedLeftLength - currentLength )")
                             objectPickVM.setObjectDictionary(
                                 objectPickVM.getCurrentObjectType(),
                                 editedDictionary)
-                            
                         }
-                     Text("\(Int(currentLength))")
+                     Text("\(Int(currentLength[0]))")
                     }
-                    //.padding([.leading, .trailing])
-               //}
             }
             
             .padding([.leading, .trailing])
             HStack {
-                
-                Slider(value: boundRightLength, in: 500.0...2500.0, step: 10
+                Text("R")
+                Slider(value: boundRightLength, in: 500.0...1500.0, step: 1
                 )
                 .onChange(of: proposedRightLength) { value in
+                    editedDictionary =
+                    objectEditVM.setPrimaryToFootPlateFrontLength(
+                        dictionary,
+                        .id1,
+                        proposedRightLength - currentLength[1]
+                        )
+                    objectPickVM.setObjectDictionary(
+                        objectPickVM.getCurrentObjectType(),
+                        editedDictionary)
                 }
-                Text("\(Int(currentLength))")
+                Text("\(Int(currentLength[1]))")
             }
             .padding([.leading, .trailing])
-//            HStack {
-//                //sliderChairWidth(boundWidth)
-//                Text("width")
-//
-//            }
-            
         }
 
     }
