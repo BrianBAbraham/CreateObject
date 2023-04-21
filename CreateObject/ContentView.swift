@@ -306,9 +306,15 @@ struct ContentView: View {
                 NavigationLink(destination: defaultDictionaryAsListView ) {
                  Text("View dictionary")
                 }
+                
                 NavigationLink(destination: uniquePartNamesAsListView ) {
                     Text("View dictionary parts")
                 }
+                
+                NavigationLink(destination: uniquePartNamesAsListView ) {
+                    Text("Settings")
+                }
+                
             }
             .navigationBarTitle("Equipment manager")
             //.navigationViewStyle(StackNavigationViewStyle())

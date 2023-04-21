@@ -31,7 +31,12 @@ extension ObjectEditViewModel {
 
     }
     
-
+    func setBothSidesToSameLength (
+        _ part: Part,
+        _ dictionary: PositionDictionary ) {
+            
+            
+        }
     
     func setPrimaryToFootPlateFrontLength(
         _ dictionary: PositionDictionary,
@@ -50,12 +55,16 @@ extension ObjectEditViewModel {
                 filteredDictionary  +=
                 dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
             }
-            
-            
-            
-            filteredDictionary = filteredDictionary.filter({$0.key.contains(partId.rawValue +
-                                                                      Part.stringLink.rawValue + Part.sitOn.rawValue)})
 
+
+            
+            if partId != .id {
+                let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
+                
+                filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
+            }
+            
+            
             var editedDictionary = dictionary
             
             for (key, value) in filteredDictionary {
