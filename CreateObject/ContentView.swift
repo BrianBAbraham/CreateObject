@@ -290,7 +290,8 @@ struct ContentView: View {
                     VStack {
                     HStack {
                             ObjectView(uniquePartNames)
-                            EditObjectMenuView()
+
+                                EditObjectMenuView()
                         Spacer()
                         }
                         saveButtonView

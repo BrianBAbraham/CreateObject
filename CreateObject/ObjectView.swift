@@ -152,8 +152,9 @@ struct ObjectView: View {
             //OriginView(originDictionary:  vm.getAllPartFromPrimaryOriginDictionary())
             //MyCircle(fillColor: .red, strokeColor: .black, 40, CGPoint(x: 0, y:0))
             }
+            .border(.red, width: 5)
             .frame(width: sizeToEnsureObjectRemainsOnScreen , height: sizeToEnsureObjectRemainsOnScreen )
-            .background(Color.white.opacity(0.0001) )
+            .background(Color.red.opacity(0.1) )
  
             .position(location)
             .gesture(
