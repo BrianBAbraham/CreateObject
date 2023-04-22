@@ -39,8 +39,12 @@ struct EditObjectMenuView: View {
         
         let dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
     
-        
-        EditFootSupportPosition(dictionary)
+        if objectPickVM.getCurrentObjectType().contains("hair") {
+            EditFootSupportPosition(dictionary)
+        } else {
+            EmptyView()
+        }
+  
 //            .onAppear{objectPickVM.toggleEditOccuring()
 //                print("TOBBLE")
 //            }

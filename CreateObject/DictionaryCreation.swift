@@ -83,8 +83,8 @@ struct SymmetricalOrSingleParts {
             _ supportIndex: Int)
             -> [String: PositionAsIosAxes] {
             
-            let supportName = Part.stringLink.rawValue + Part.sitOn.rawValue + Part.id.rawValue
-            let supportIdName = supportName + String(supportIndex)
+                let supportName = CreateNameFromParts([.stringLink, .sitOn, .id]).name
+                let supportIdName = supportName + String(supportIndex)
             
             return
                 DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(

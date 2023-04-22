@@ -101,8 +101,9 @@ struct CreateOccupantSupport {
                 footSupportRequired = false
                 armSupportRequired = false
             case .showerTray:
-            occupantSupportMeasure = occupantSupportMeasures.sitOn
-                footSupportRequired = false
+                occupantSupportMeasure = occupantSupportMeasures.sitOn
+                bodySupportRequired = false
+                footSupportRequired = true
                 armSupportRequired = false
             
             default:
@@ -172,7 +173,8 @@ struct CreateOccupantSupport {
                     CreateOccupantFootSupport(
                         allBodySupportFromPrimaryOrigin,
                         supportIndex,
-                        initialOccupantBodySupportMeasure
+                        initialOccupantBodySupportMeasure,
+                        baseType
                     )
                 
                     dictionary +=
@@ -196,7 +198,8 @@ struct CreateOccupantSupport {
                     allBodySupportFromPrimaryOrigin[supportIndex],
                     allBodySupportCorners [supportIndex],
                     supportIndex,
-                    baseType
+                    baseType,
+                    occupantSupportMeasure
                     ).dictionary
                     
                 dictionary += bodySupportDictionary

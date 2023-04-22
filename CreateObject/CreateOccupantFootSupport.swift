@@ -72,8 +72,12 @@ struct InitialOccupantFootSupportMeasure {
 
 struct CreateOccupantFootSupport {
     // INPUT FROM SEAT
-    
+
     let initialOccupantFootSupportMeasure: InitialOccupantFootSupportMeasure
+    var separateFootSupportRequired = true
+    var hangerLinkRequired = true
+    var footSupportJointRequired = true
+    var footSupportHangerSitOnVerticalJointRequired = true
     
     var dictionary: [String: PositionAsIosAxes ] = [:]
     
@@ -82,11 +86,24 @@ struct CreateOccupantFootSupport {
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
-        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure){
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
+        _ baseType: BaseObjectTypes){
         
         self.supportIndex = supportIndex
         self.initialOccupantFootSupportMeasure = InitialOccupantFootSupportMeasure (initialOccupantBodySupportMeasure)
         
+            
+            switch baseType {
+            case .showerTray:
+                separateFootSupportRequired = false
+                hangerLinkRequired = false
+                footSupportJointRequired = false
+                footSupportHangerSitOnVerticalJointRequired = false
+            default:
+                break
+            }
+            
+            
         getDictionary(
             supportIndex,
             parentFromPrimaryOrigin
@@ -98,54 +115,54 @@ struct CreateOccupantFootSupport {
         _ supportIndex: Int,
         _ parentFromPrimaryOrigin: [PositionAsIosAxes]
         ) {
-        
-        let partFromParentOrigin =
-            initialOccupantFootSupportMeasure.rightFootSupportFromFromSitOnOrigin
             
-        let footSupportDictionary =
-            CreateOnePartOrSideSymmetricParts(
+            footDictionary(
                 InitialOccupantFootSupportMeasure.footSupport,
                 .footSupport,
-                parentFromPrimaryOrigin[supportIndex],
-                partFromParentOrigin,
-                supportIndex)
+                initialOccupantFootSupportMeasure.rightFootSupportFromFromSitOnOrigin)
             
-        let footSupportHangerJointDictionary =
-            CreateOnePartOrSideSymmetricParts(
-                InitialOccupantFootSupportMeasure.footSupportHangerJoint,
-                .footSupportHangerSitOnVerticalJoint,
-                parentFromPrimaryOrigin[supportIndex],
-                initialOccupantFootSupportMeasure.rightFootSupportHangerJointFromSitOnOrigin,
-                supportIndex)
+            if footSupportHangerSitOnVerticalJointRequired {
+                footDictionary(
+                    InitialOccupantFootSupportMeasure.footSupportHangerJoint,
+                    .footSupportHangerSitOnVerticalJoint,
+                    initialOccupantFootSupportMeasure.rightFootSupportHangerJointFromSitOnOrigin)
+            }
             
-        let footSupportJointDictionary =
-            CreateOnePartOrSideSymmetricParts(
-                InitialOccupantFootSupportMeasure.footSupportJoint,
-                .footSupportHorizontalJoint,
-                parentFromPrimaryOrigin[supportIndex],
-                initialOccupantFootSupportMeasure.rightFootSupportJointFromSitOnOrigin,
-                supportIndex)
+            if footSupportJointRequired {
+                footDictionary(
+                    InitialOccupantFootSupportMeasure.footSupportJoint,
+                    .footSupportHorizontalJoint,
+                    initialOccupantFootSupportMeasure.rightFootSupportJointFromSitOnOrigin)
+            }
+            
+            
+            if hangerLinkRequired {
+                let hangerLinkDictionary =
+                    CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
+                        .footSupportHangerSitOnVerticalJoint,
+                        .footSupportHorizontalJoint,
+                        .footSupportHangerLink,
+                        dictionary,
+                        supportIndex)
 
-        dictionary =
-            Merge.these.dictionaries([
-                footSupportDictionary.cornerDictionary,
-                footSupportDictionary.originDictionary,
-                footSupportHangerJointDictionary.originDictionary,
-                footSupportHangerJointDictionary.cornerDictionary,
-                footSupportJointDictionary.cornerDictionary
-            ])
-            
-//print(dictionary)
-        let hangerLinkDictionary =
-            CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
-                .footSupportHangerSitOnVerticalJoint,
-                .footSupportHorizontalJoint,
-                .footSupportHangerLink,
-                dictionary,
-                supportIndex).newCornerDictionary
-//print(hangerLinkDictionary)
-       dictionary += hangerLinkDictionary
-            
+                dictionary += hangerLinkDictionary.newCornerDictionary
+            }
+
+            func footDictionary(
+                _ dimension: Dimension,
+                _ part: Part,
+                _ partFromParentOrigin: PositionAsIosAxes) {
+                    let dictionary =
+                    CreateOnePartOrSideSymmetricParts(
+                        dimension,
+                        part,
+                        parentFromPrimaryOrigin[supportIndex],
+                        partFromParentOrigin,
+                        supportIndex)
+                    
+                    self.dictionary += dictionary.cornerDictionary
+                    self.dictionary += dictionary.originDictionary
+            }
     }
 }
 

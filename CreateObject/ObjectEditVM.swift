@@ -56,20 +56,17 @@ extension ObjectEditViewModel {
                 dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
             }
 
-
-            
             if partId != .id {
                 let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
                 
                 filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
             }
             
-            
             var editedDictionary = dictionary
             
             for (key, value) in filteredDictionary {
                 
-                let newValue = value.y + lengthChange //> 500.0 ? value.y + lengthChange: value.y - 500.0
+                let newValue = value.y + lengthChange
                 filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
                 editedDictionary[key] = filteredDictionary[key]
                 
@@ -84,7 +81,6 @@ extension ObjectEditViewModel {
             let supportIndex =
             firstItem.key.contains(supportIndexName) ? 0 : 1
             
-
             let hangerLinkDictionary =
                 CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
                     .footSupportHangerSitOnVerticalJoint,
@@ -94,7 +90,6 @@ extension ObjectEditViewModel {
                     supportIndex).newCornerDictionary
             
             editedDictionary += hangerLinkDictionary
-            
             
             return editedDictionary
     }
@@ -120,15 +115,13 @@ extension ObjectEditViewModel {
             onePartDictionary =
             SuccessivelyFilteredDictionary([Part.corner.rawValue, partName, supportName],dictionary).dictionary
             
-//print(onePartDictionary.count)
-            
             let twoFootSupportPresent = 8
             let oneFootSupportPresent = 4
 
             if onePartDictionary.count == twoFootSupportPresent {
-//print(onePartDictionary)
+
             let leftFootSupportName = CreateNameFromParts([.footSupport,.id0]).name
-//print(leftFootSupportName)
+
             let rightSupportName = CreateNameFromParts([.footSupport,.id1]).name
 
                 for name in [leftFootSupportName, rightSupportName] {
@@ -137,7 +130,7 @@ extension ObjectEditViewModel {
             }
             
            if onePartDictionary.count == oneFootSupportPresent {
-//print("oneFootSupportPresent")
+
                lengths = [getMaximumLength(onePartDictionary)]
             }
 
@@ -146,11 +139,10 @@ extension ObjectEditViewModel {
                 let ifAllEqualUseFirst = 0
                 let values = dictionary.map{$0.1}
                 let yValues = CreateIosPosition.getArrayFromPositions(values).y
-//print(yValues)
+
                 let maxValue = yValues.max() ?? yValues[ifAllEqualUseFirst]
                 return maxValue
             }
-//print(lengths)
          return lengths
     }
     
@@ -166,24 +158,24 @@ extension ObjectEditViewModel {
     }
     
     
-    func getObjectWidth (_ objectType: BaseObjectTypes)
-    -> Double {
-        var width = 0.0
-        
-        if objectType.rawValue.contains ("caster") {
-            width = 100
-        }
-        
-        if objectType.rawValue.contains ("wheel") {
-            width = 200
-        }
-        
-        if objectType.rawValue.contains ("wheel") {
-            width = 300
-        }
-
-            return width
-    }
+//    func getObjectWidth (_ objectType: BaseObjectTypes)
+//    -> Double {
+//        var width = 0.0
+//
+//        if objectType.rawValue.contains ("caster") {
+//            width = 100
+//        }
+//
+//        if objectType.rawValue.contains ("wheel") {
+//            width = 200
+//        }
+//
+//        if objectType.rawValue.contains ("wheel") {
+//            width = 300
+//        }
+//
+//            return width
+//    }
     
 //    func getEditPermissionsForPart(_ uniquePartName: String)
 //    -> Edit {
