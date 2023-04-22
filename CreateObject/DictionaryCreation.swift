@@ -32,11 +32,19 @@ struct CreateOnePartOrSideSymmetricParts {
         {
             
             
+            
+//            var singleOrLeftAndRightPosition: [PositionAsIosAxes]
+//            
+//            if partFromParentOrigin.x != 0.0 {
+//                singleOrLeftAndRightPosition = CreateIosPosition.forLeftRightAsArrayFromPosition(partFromParentOrigin)
+//            } else {
+//                singleOrLeftAndRightPosition = [partFromParentOrigin]
+//            }
+            
             let partFromPrimaryOriginForBothSidesOrSingleForOneSupport =
                 CreateIosPosition.addToupleToArrayOfTouples(
                     parentPartFromPrimaryOrigin,
-                    CreateIosPosition.forLeftRightAsArrayFromPosition (
-                        partFromParentOrigin)
+                    CreateIosPosition.forLeftRightAsArrayFromPosition(partFromParentOrigin)
                     )
             
             originDictionary =
@@ -44,7 +52,10 @@ struct CreateOnePartOrSideSymmetricParts {
                     part,
                     partFromPrimaryOriginForBothSidesOrSingleForOneSupport,
                     supportIndex).dictionary
-            
+//    print(part.rawValue)
+//    print(partFromPrimaryOriginForBothSidesOrSingleForOneSupport)
+//    print(supportIndex)
+//    print("")
             for position in partFromPrimaryOriginForBothSidesOrSingleForOneSupport {
                 partCornersBothSides.append(
                     PartCornerLocationFrom(

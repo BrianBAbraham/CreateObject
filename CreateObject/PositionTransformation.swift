@@ -164,9 +164,8 @@ struct CreateIosPosition {
     static func forLeftRightAsArrayFromPosition(
         _ p: PositionAsIosAxes )
     -> [PositionAsIosAxes]{
-        [(x: -p.x, y: p.y, z: p.z ),
-         (x: p.x, y: p.y, z: p.z)
-            ]
+            [(x: -p.x, y: p.y, z: p.z ),
+             (x: p.x, y: p.y, z: p.z)]
         }
     
     static func byExtractingLeftRightOfAsArray(_ position: LeftRightPositionAsIosAxis  ) -> [PositionAsIosAxes] {

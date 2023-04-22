@@ -7,15 +7,11 @@
 
 import Foundation
 struct InitialOccupantFootSupportMeasure {
-    
 
-    
-    
-    
-    
     static let footSupportHangerJoint = Joint.dimension
     
     static let footSupport = (length: 100.0, width: 150.0 )
+    static let footShowerSupport = (length: 900.0, width: 1200.0 )
     
     static let footSupportJoint =
     (length: footSupport.length , width: Joint.dimension.width )
@@ -76,15 +72,17 @@ struct CreateOccupantFootSupport {
     let initialOccupantFootSupportMeasure: InitialOccupantFootSupportMeasure
     var separateFootSupportRequired = true
     var hangerLinkRequired = true
+    var footSupportDimension: Dimension
     var footSupportJointRequired = true
     var footSupportHangerSitOnVerticalJointRequired = true
+    var footSupportFromParent: PositionAsIosAxes
     
     var dictionary: [String: PositionAsIosAxes ] = [:]
     
     let supportIndex: Int
   
     init(
-        _ parentFromPrimaryOrigin: [PositionAsIosAxes],
+        _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
         _ baseType: BaseObjectTypes){
@@ -99,31 +97,38 @@ struct CreateOccupantFootSupport {
                 hangerLinkRequired = false
                 footSupportJointRequired = false
                 footSupportHangerSitOnVerticalJointRequired = false
+                footSupportFromParent = Globalx.iosLocation
+                footSupportDimension =
+                InitialOccupantFootSupportMeasure.footShowerSupport
             default:
+                footSupportFromParent =
+                initialOccupantFootSupportMeasure.rightFootSupportFromFromSitOnOrigin
+                footSupportDimension =
+                InitialOccupantFootSupportMeasure.footSupport
                 break
             }
             
             
         getDictionary(
             supportIndex,
-            parentFromPrimaryOrigin
+            allBodySupportFromPrimaryOrigin
         )
     }
     
 
     mutating func getDictionary(
         _ supportIndex: Int,
-        _ parentFromPrimaryOrigin: [PositionAsIosAxes]
+        _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes]
         ) {
             
             footDictionary(
-                InitialOccupantFootSupportMeasure.footSupport,
+                footSupportDimension,
                 .footSupport,
-                initialOccupantFootSupportMeasure.rightFootSupportFromFromSitOnOrigin)
+                footSupportFromParent)
             
             if footSupportHangerSitOnVerticalJointRequired {
                 footDictionary(
-                    InitialOccupantFootSupportMeasure.footSupportHangerJoint,
+                    Joint.dimension,
                     .footSupportHangerSitOnVerticalJoint,
                     initialOccupantFootSupportMeasure.rightFootSupportHangerJointFromSitOnOrigin)
             }
@@ -156,7 +161,7 @@ struct CreateOccupantFootSupport {
                     CreateOnePartOrSideSymmetricParts(
                         dimension,
                         part,
-                        parentFromPrimaryOrigin[supportIndex],
+                        allBodySupportFromPrimaryOrigin[supportIndex],
                         partFromParentOrigin,
                         supportIndex)
                     
