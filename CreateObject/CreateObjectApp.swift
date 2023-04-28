@@ -14,7 +14,7 @@ struct CreateObjectApp: App {
     //@StateObject var  corerDataViewModel = CoreDataViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView(objectPickVM.getCurrentObjectType())
+            ContentView(objectPickVM.getCurrentObjectName())
                 //.environment(\.managedObjectContext,CoreDataViewModel().container.viewContext)
                 .environmentObject(objectPickVM)
                 .environmentObject(partEditVM)

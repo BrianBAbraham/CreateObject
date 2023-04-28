@@ -10,7 +10,15 @@ import Foundation
 
 
 
-
+//struct CreateObjectFromViewOrigin {
+//    var dictionary: PositionDictionary
+//    var name = CreateNameFromParts([.viewOrigin, .id0,.objectOrigin,.id0])
+//    
+//    init(
+//        _ offset: PositionDictionary) {
+//            dictionary = [name: offset]
+//        }
+//}
 
 
 
@@ -99,7 +107,7 @@ struct SymmetricalOrSingleParts {
             
             return
                 DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-                         .primaryOrigin,
+                         .objectOrigin,
                          part,
                          partOnBothSidesFromPrimaryOrigin ,
                          supportId: supportIdName)
@@ -395,7 +403,7 @@ struct DimensionsForCaster{
         
     let primaryToCasterSpindleDictionary =
     DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-        .primaryOrigin,
+        .objectOrigin,
         .casterVerticalJointAtRear,
         casterSpindleOriginLocations,
         firstOriginId: 0)

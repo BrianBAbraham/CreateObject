@@ -15,7 +15,7 @@ struct PartEditModel {
 }
 
 class ObjectEditViewModel: ObservableObject {
-    static let initialPart = Part.primaryOrigin.rawValue
+    static let initialPart = Part.objectOrigin.rawValue
     
     
     @Published private var partEditModel: PartEditModel =
@@ -101,8 +101,10 @@ extension ObjectEditViewModel {
     }
     
     func getPrimaryAxisToFootPlateEndLength(
-        _ dictionary: PositionDictionary,
-        _ supportIndex: Int = 0)
+        dictionary: PositionDictionary,
+        name: String,
+        _ supportIndex: Int = 0
+  )
         -> [Double] {
             var lengths: [Double] = []
             let partName  = CreateNameFromParts([.footSupport,.stringLink]).name
@@ -114,7 +116,9 @@ extension ObjectEditViewModel {
             
             onePartDictionary =
             SuccessivelyFilteredDictionary([Part.corner.rawValue, partName, supportName],dictionary).dictionary
-            
+//print(name)
+//print(onePartDictionary)
+//print("")
             let twoFootSupportPresent = 8
             let oneFootSupportPresent = 4
 
@@ -145,6 +149,46 @@ extension ObjectEditViewModel {
             }
          return lengths
     }
+    
+    
+    
+    func getPrimaryAxisToFootPlateEndLengthMaximum ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
+    -> Double {
+        
+        let defaultMinimumLength = getPrimaryAxisToFootPlateEndLengthMinimum(dictionaryForMeasurement)//objectPickVM)
+        let defaultMaximumLength = getPrimaryAxisToFootPlateEndLength( dictionary: dictionaryForMeasurement, name: "maximum")
+//print(defaultMaximumLength)
+       let maximumLength =
+        InitialOccupantFootSupportMeasure.footSupportHangerMaximumLength +
+        InitialOccupantFootSupportMeasure.footSupport.length/2 +
+        defaultMinimumLength
+        
+//print(maximumLength)
+        return maximumLength
+    }
+    
+    
+    
+    func getPrimaryAxisToFootPlateEndLengthMinimum ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
+    -> Double {
+        
+        let defaultDictionary = dictionaryForMeasurement//objectPickVM.getDefaultDictionary()
+//print(defaultDictionary)
+        let hangerVerticalJointFromObjectOriginName =
+        CreateNameFromParts([.objectOrigin, .id0,.stringLink,.footSupportHangerSitOnVerticalJoint] ).name
+        let itemFromFilteredDictionary =
+        SuccessivelyFilteredDictionary([hangerVerticalJointFromObjectOriginName],defaultDictionary).dictionary.first
+//print(itemFromFilteredDictionary)
+        
+        let defaultLength = itemFromFilteredDictionary?.value.y ?? 0.0
+  //print(defaultLength)
+        return
+          defaultLength
+    }
+    
+    
+
+    
     
     
     func removePartFromDictionary (

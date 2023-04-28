@@ -9,9 +9,29 @@ import SwiftUI
 
 
 
-
-
-
+//struct ObjectNameKey: EnvironmentKey {
+//    static var defaultValue: String = "RearDriveWheelchair"
+//}
+//
+//extension EnvironmentValues {
+//    var objectName: String {
+//        get {
+//            self[ObjectNameKey.self]
+//        }
+//        set {
+//            self[ObjectNameKey.self] = newValue
+//        }
+//    }
+//}
+//
+//
+//extension View {
+//    func objectName( _ name: String) -> some View {
+//
+//        environment(\.objectName, name)
+//
+//    }
+//}
 
 struct OriginView: View {
     let originDictionary: [String: PositionAsIosAxes]
@@ -131,7 +151,7 @@ struct ContentView: View {
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @StateObject var cdVM = CoreDataViewModel()
-    @State var objectName = "RearDriveWheelchair"
+    //@State var objectName = ObjectNameKey.defaultValue//"RearDriveWheelchair"
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
     
@@ -143,7 +163,7 @@ struct ContentView: View {
 
     init(_ equipmentName: String) {
         self.equipmentName = equipmentName
-        UISegmentedControl.appearance().backgroundColor = .purple        //This will change the font size
+        //UISegmentedControl.appearance().backgroundColor = .purple        //This will change the font size
 //        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .caption2)], for: .highlighted)
 //
 //        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .footnote)], for: .normal)
@@ -195,7 +215,7 @@ struct ContentView: View {
                     Button {
                        savedDictionaryAsList  =
                         objectPickVM.getPartCornersFromPrimaryOriginDictionary(entity)
-                        objectPickVM.setCurrentObjectType(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
+                        objectPickVM.setCurrentObjectName(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
                     } label: {
                         HStack{
                             Text(entity.objectType ?? "")
@@ -240,7 +260,7 @@ struct ContentView: View {
                 cdVM.addObject(
                     names: objectPickVM.getAllOriginNames(),
                     values: objectPickVM.getAllOriginValues(),
-                    objectType: objectPickVM.getCurrentObjectType(),
+                    objectType: objectPickVM.getCurrentObjectName(),
                 objectName: objectName)
                 cdVM.fetchNames()
     }
@@ -267,9 +287,31 @@ struct ContentView: View {
       @Environment(\.undoManager) private var undoManager
     //@State var isPresented = true
     @State var isActive = true
+    @State var globalPosition: CGPoint? // = CGPoint(x: 0, y: 0)
+    @State var position: CGPoint = .zero
+    //let initialObjectPosition = globalPosition
+    
     var body: some View {
-        
 
+ 
+//        ZStack{
+//
+//            ObjectView(uniquePartNames)
+//
+//            .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
+//                self.globalPosition = value
+//            })
+//
+//                .border(.green, width: 2)
+//        }
+//
+//
+//        VStack {
+//            Text("x: \(Int(globalPosition?.x ?? 0))   y:\(Int(globalPosition?.y ?? 0))  ")
+//
+//            EditObjectMenuView()
+//        }
+    
         NavigationView {
             VStack {
                 NavigationLink(destination:
@@ -288,18 +330,18 @@ struct ContentView: View {
 
                 NavigationLink(destination:
                     VStack {
-                    HStack {
                             ObjectView(uniquePartNames)
-
-                                EditObjectMenuView()
-                        Spacer()
-                        }
+                                .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
+                                    self.globalPosition = value
+                                })
+                    //Text("x: \(Int(globalPosition.x))   y:\(Int(globalPosition.y))  ")
+                    EditObjectMenuView()
                         saveButtonView
                     }
                 ) {
                     Text("Edit equipment")
                 }
-                
+
                 .onAppear{
                     viewContext.undoManager = undoManager
                  }
@@ -307,25 +349,29 @@ struct ContentView: View {
                 NavigationLink(destination: defaultDictionaryAsListView ) {
                  Text("View dictionary")
                 }
-                
+
                 NavigationLink(destination: uniquePartNamesAsListView ) {
                     Text("View dictionary parts")
                 }
-                
+
                 NavigationLink(destination: uniquePartNamesAsListView ) {
                     Text("Settings")
                 }
-                
+
             }
             .navigationBarTitle("Equipment manager")
-            //.navigationViewStyle(StackNavigationViewStyle())
         }
         
     }
   
 }
    
-
+struct CustomPreferenceKey: PreferenceKey {
+    static var defaultValue: CGPoint = .zero
+    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
+        value = nextValue()
+    }
+}
    
 //
 struct ContentView_Previews: PreviewProvider {

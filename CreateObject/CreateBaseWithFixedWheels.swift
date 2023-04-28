@@ -49,7 +49,7 @@ struct ForFixedWheelBaseObject {
         
         fixedWheelsFromPrimaryOriginsDictionary =
         DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-            .primaryOrigin,
+            .objectOrigin,
             .fixedWheel,
             fixedWheelOriginLocations,
             firstOriginId: fixedWheelOriginIdIsAlways)

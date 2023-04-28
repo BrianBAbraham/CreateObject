@@ -9,7 +9,6 @@ import SwiftUI
 
 struct EditFootSupportPosition: View {
   
-    //var objectLength: Double = 0.0
     let dictionary: PositionDictionary
     @State private var proposedWidth = 100.0
     @State private var proposedLeftLength = 200.0
@@ -18,47 +17,25 @@ struct EditFootSupportPosition: View {
     @State private var leftAndRight = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//    @Environment(\.objectName) var objectName
     
-    init(_ dictionary: PositionDictionary){
-        self.dictionary = dictionary
+    init(
+        _ dictionaryForMeasurement: PositionDictionary){
+        dictionary = dictionaryForMeasurement
     }
-    
     
     var body: some View {
         
-        let currentLength =
-        objectEditVM.getPrimaryAxisToFootPlateEndLength(
-            objectPickVM.getCurrentDictionary()
-        )
-        
-        
-//        let boundWidth = Binding(
-//            get: {0},
-//            set: {self.proposedWidth = $0}
-//        )
- 
-        
-//        let boundLeftLength = Binding(
-//            get: {currentLength[0]},
-//            set: {self.proposedLeftLength = $0}
-//        )
-//        let boundRightLength = Binding(
-//            get: {currentLength[1]},
-//            set: {self.proposedRightLength = $0}
-//        )
-        
-//var editedDictionary: PositionDictionary = [:]
-        var toggleLabel =  leftAndRight ? "R = L": "R ≠ L"
-        
+        let toggleLabel =  leftAndRight ? "R = L": "R ≠ L"
+       
         VStack{
+            Text( objectPickVM.getCurrentObjectName())
             Spacer()
-           // VStack {
+        
             Toggle(toggleLabel,isOn: $leftAndRight)
                 .onChange(of: leftAndRight) { value in
-                    // set both footplate to the foot plate with maximum length
+                    
                 }
-            //{}
-                
 
             if leftAndRight {
                 FootLengthSlider(dictionary,"L",.id)
@@ -88,23 +65,36 @@ struct FootLengthSlider: View {
     //id 0
     
     init(
-        _ dictionary: PositionDictionary,
+        _ dictionaryForMeasurement: PositionDictionary,
         _ leftOrRight: String,
         _ id: Part){
-        self.dictionary = dictionary
+        dictionary = dictionaryForMeasurement
         self.leftOrRight = leftOrRight
         self.id = id
         self.idInt = idToIdIntDictionary[id]!
     }
     
+
+    
     var body: some View {
         var editedDictionary: PositionDictionary = [:]
         
         let currentLength =
-        Measurement(value:
-        objectEditVM.getPrimaryAxisToFootPlateEndLength(
-            objectPickVM.getCurrentDictionary()
+        Measurement(
+            value: objectEditVM.getPrimaryAxisToFootPlateEndLength(
+                dictionary: objectPickVM.getCurrentDictionary(),
+            name: "slider"
         ) [idInt], unit: UnitLength.millimeters)
+        
+        let defaultDictionary = objectPickVM.getDefaultDictionary()
+        
+        let maximumPrimaryOriginToFootPlateLength =
+            objectEditVM.getPrimaryAxisToFootPlateEndLengthMaximum( defaultDictionary)//objectPickVM )
+     
+        let minimumPrimaryOriginFootPlateLength =
+            objectEditVM.getPrimaryAxisToFootPlateEndLengthMinimum(dictionary)//objectPickVM)
+        
+        let minToMax = minimumPrimaryOriginFootPlateLength...maximumPrimaryOriginToFootPlateLength
         
         let displayLength = String(format: "%.0f",currentLength.value)
         //String(format: "%.1f", currentLength.converted(to: UnitLength.inches).value) + "\""
@@ -116,7 +106,7 @@ struct FootLengthSlider: View {
         
         HStack {
             Text(leftOrRight)
-            Slider(value: boundLength, in: 500.0...1500.0, step: 1
+            Slider(value: boundLength, in: minToMax, step: 1
             )
             .onChange(of: proposedLength) { value in
                 editedDictionary =
@@ -126,7 +116,7 @@ struct FootLengthSlider: View {
                     proposedLength - currentLength.value
                 )
                 objectPickVM.setObjectDictionary(
-                    objectPickVM.getCurrentObjectType(),
+                    objectPickVM.getCurrentObjectName(),
                     editedDictionary)
             }
             Text(displayLength)

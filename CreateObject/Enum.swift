@@ -53,7 +53,8 @@ enum Part: String {
     
     case leftToRightDimension = "xIos"
 
-    case primaryOrigin = "primaryOrigin"
+    case objectOrigin = "objectOrigin"
+    case viewOrigin = "viewOrigin"
 
     case sitOn = "sitOn"
     case stringLink = "_"

@@ -14,17 +14,10 @@ struct ForScreen {
     var dictionary: PositionDictionary = [:]
     
     init( _ actualSize: PositionDictionary,
-          _ minThenMaxPositionOfObject: [PositionAsIosAxes],
-          _ maxDimension: Double//,
-          //_ scalingRequired: Bool
+          _ offset: PositionAsIosAxes,
+          _ scale: Double
     ) {
-//print(scalingRequired)
-        let minThenMax = minThenMaxPositionOfObject
-        let offset = CreateIosPosition.minus(minThenMax[0])
-        //let scale = scalingRequired ? Screen.smallestDimension / maxDimension: 1.0
-        let scale = Screen.smallestDimension / maxDimension
         dictionary = createDictionaryForScreen(actualSize, scale, offset)
-
     }
     
     func createDictionaryForScreen(
@@ -32,12 +25,12 @@ struct ForScreen {
         _ scale: Double,
         _ offset: PositionAsIosAxes)
     -> PositionDictionary {
-//print("ForScreen CALLED")
+        let scaleFactor = scale/scale
         var dictionaryForScreen: PositionDictionary = [:]
         for item in actualSize {
             dictionaryForScreen[item.key] =
-            (x: (item.value.x + offset.x) * scale,
-             y: (item.value.y + offset.y) * scale,
+            (x: (item.value.x + offset.x) * scaleFactor,
+             y: (item.value.y + offset.y) * scaleFactor,
              z: item.value.z)
         }
         return dictionaryForScreen
@@ -59,7 +52,7 @@ struct MeasurementsFrom {
 }
 
 struct DictionaryElementIn {
-    //let pointOut: [CGPoint]
+
     let singleElementDictionary: [String: [PositionAsIosAxes]]
     let onlyOneDictionaryMember = 0
     let locationsFromPrimaryOrigin: [PositionAsIosAxes]
@@ -67,8 +60,7 @@ struct DictionaryElementIn {
     init (_ element: [String: [PositionAsIosAxes]]) {
         self.singleElementDictionary = element
        locationsFromPrimaryOrigin = singleElementDictionary.map{$0.1}[onlyOneDictionaryMember]
-        //pointOut = cgPointsOut()
-   // }
+  
 
     }
     func cgPointsOut() -> [CGPoint] {

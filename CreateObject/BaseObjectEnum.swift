@@ -12,7 +12,7 @@ enum BaseObjectTypes: String, CaseIterable {
     case allCasterBed = "Bed with caster base"
     case allCasterChair = "Chair with caster base"
     case allCasterHoist = "Hoist with caster base"
-    //case allCaster6Hoist  = "SixCasterHoist"
+
     case allCasterStandAid = "Stand aid with caster base"
     case allCasterStretcher = "Stretcher with caster Base "
     

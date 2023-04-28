@@ -25,10 +25,16 @@ struct InitialOccupantFootSupportMeasure {
     static let footSupportHanger =
     (length: 300.0, width: 20.0)
     
-  let rightFootSupportJointFromHangerJointOrigin =
-        (x: 0.0,
-         y: footSupportHanger.length ,
-         z: 0.0 )
+    static let footSupportHangerMaximumLength =
+    footSupportHanger.length * 3.0
+   
+    static let footSupportHangerMaximumLengthIncrease =
+    footSupportHangerMaximumLength - footSupportHanger.length
+    
+    let rightFootSupportJointFromHangerJointOrigin =
+    (x: 0.0,
+     y: footSupportHanger.length ,
+     z: 0.0 )
     
     let rightFootSupportFromFootSupportJointOrigin =
         (x: -footSupport.width/2 ,

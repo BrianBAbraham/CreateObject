@@ -23,6 +23,7 @@ struct EditObjectMenuView: View {
     @State private var applySymmetry = false
     @State private var affectOtherParts = false
     @State private var imperial = false
+    //let equipmentName: String
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -30,6 +31,7 @@ struct EditObjectMenuView: View {
     
     init(){
         //self.dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
+     //   self.equipmentName = equipmentName
     }
     
     
@@ -39,7 +41,7 @@ struct EditObjectMenuView: View {
         
         let dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
     
-        if objectPickVM.getCurrentObjectType().contains("hair") {
+        if objectPickVM.getCurrentObjectName().contains("hair") {
             EditFootSupportPosition(dictionary)
         } else {
             EmptyView()

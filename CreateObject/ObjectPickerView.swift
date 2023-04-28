@@ -13,7 +13,8 @@ struct PickObjectView: View {
     var objectNames: [String] {
         BaseObjectTypes.allCases.map{$0.rawValue}
     }
-    
+    //@Environment(\.objectName) var objectName
+    //@State private var newObjectName = ObjectNameKey.defaultValue
     @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue
     
     var currentEqipmentType: String {
@@ -26,7 +27,7 @@ struct PickObjectView: View {
     
     var body: some View {
         let boundEquipmentType = Binding(
-            get: {objectPickVM.getCurrentObjectType()},
+            get: {objectPickVM.getCurrentObjectName()},
             set: {self.equipmentType = $0}
         )
         
@@ -38,9 +39,10 @@ struct PickObjectView: View {
         }
         .onChange(of: equipmentType) {tag in
             self.equipmentType = tag
-//            modifyEquipmentType(tag.rawValue)
-            objectPickVM.setCurrentObjectType(tag)
+            objectPickVM.setDefaultDictionary(tag)
+            objectPickVM.setCurrentObjectName(tag)
         }
+        
         .pickerStyle(.wheel)
         .scaleEffect(0.8)
     }
@@ -52,3 +54,4 @@ struct ObjectPickerView_Previews: PreviewProvider {
             .environmentObject(ObjectPickViewModel())
     }
 }
+
