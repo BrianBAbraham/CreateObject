@@ -156,8 +156,8 @@ extension ObjectEditViewModel {
     -> Double {
         
         let defaultMinimumLength = getPrimaryAxisToFootPlateEndLengthMinimum(dictionaryForMeasurement)//objectPickVM)
-        let defaultMaximumLength = getPrimaryAxisToFootPlateEndLength( dictionary: dictionaryForMeasurement, name: "maximum")
-//print(defaultMaximumLength)
+//        let defaultMaximumLength = getPrimaryAxisToFootPlateEndLength( dictionary: dictionaryForMeasurement, name: "maximum")
+
        let maximumLength =
         InitialOccupantFootSupportMeasure.footSupportHangerMaximumLength +
         InitialOccupantFootSupportMeasure.footSupport.length/2 +
@@ -172,22 +172,26 @@ extension ObjectEditViewModel {
     func getPrimaryAxisToFootPlateEndLengthMinimum ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
     -> Double {
         
-        let defaultDictionary = dictionaryForMeasurement//objectPickVM.getDefaultDictionary()
-//print(defaultDictionary)
+        let defaultDictionary = dictionaryForMeasurement
         let hangerVerticalJointFromObjectOriginName =
         CreateNameFromParts([.objectOrigin, .id0,.stringLink,.footSupportHangerSitOnVerticalJoint] ).name
         let itemFromFilteredDictionary =
         SuccessivelyFilteredDictionary([hangerVerticalJointFromObjectOriginName],defaultDictionary).dictionary.first
-//print(itemFromFilteredDictionary)
+
         
         let defaultLength = itemFromFilteredDictionary?.value.y ?? 0.0
-  //print(defaultLength)
+  
         return
           defaultLength
     }
     
     
-
+    func getPrimaryAxisToFootPlateEndExtrema(
+        _ currentObjectDictionary: PositionDictionary,
+        _ defaultDictionary: PositionDictionary)
+        -> ClosedRange<Double> {
+            getPrimaryAxisToFootPlateEndLengthMinimum(currentObjectDictionary)...getPrimaryAxisToFootPlateEndLengthMaximum(defaultDictionary)
+    }
     
     
     

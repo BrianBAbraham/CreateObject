@@ -159,7 +159,7 @@ struct DictionaryInStringOut {
 
 
 struct DictionaryInArrayOut {
-    func getNameValue(_ dictionary: [String: PositionAsIosAxes ], _ sender: String) -> [String]{    //CHANGE
+    func getNameValue(_ dictionary: [String: PositionAsIosAxes ], _ sender: String = "") -> [String]{    //CHANGE
 //print(dictionary)
         var namesAndMeasurements: [String] = []
         var values: PositionAsIosAxes    //CHANGE

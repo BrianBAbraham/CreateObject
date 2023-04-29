@@ -121,9 +121,11 @@ struct CreateIosPosition {
     }
     
     static func addToupleToArrayOfTouples(_ touple: PositionAsIosAxes, _ toupleArray: [PositionAsIosAxes]) -> [PositionAsIosAxes] {
-        [addTwoTouples(touple, toupleArray[0]),
-         addTwoTouples(touple, toupleArray[1]),
-        ]
+        var newArrayOfTouple: [PositionAsIosAxes] = []
+        for array in toupleArray {
+            newArrayOfTouple.append(addTwoTouples(touple, array))
+        }
+        return newArrayOfTouple
     }
     
 
@@ -161,6 +163,13 @@ struct CreateIosPosition {
              (x: x, y: y, z: 0.0 )
             ]
         }
+    
+//    static func forSinglePartAsArrayFromPosition(
+//        _ p: PositionAsIosAxes )
+//    -> [PositionAsIosAxes]{
+//            [(x: p.x, y: p.y, z: p.z)]
+//        }
+    
     static func forLeftRightAsArrayFromPosition(
         _ p: PositionAsIosAxes )
     -> [PositionAsIosAxes]{

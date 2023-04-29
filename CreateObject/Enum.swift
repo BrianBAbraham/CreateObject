@@ -17,7 +17,7 @@ enum DictionaryTypes  {
 enum Part: String {
     case arm = "arm"
     case armVerticalJoint = "armVerticalJoint"
-    case backrest = "backrest"
+    case backSupport = "backSupport"
 
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 
@@ -33,7 +33,7 @@ enum Part: String {
     case casterWheelAtFront = "casterWheelAtFront"
     case casterWheelAtRear = "casterWheelAtRear"
     case ceiling = "ceiling"
-//    case centreLine = "centreLine"
+
     case corner = "corner"
     case id = "_id"
     case id0 = "_id0"
@@ -47,8 +47,8 @@ enum Part: String {
     case footSupportHangerLink = "footSupportHangerLink"
     case footSupportHangerSitOnVerticalJoint = "footSupportHangerSitOnVerticalJoint"
     case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
-    //case footSupportJoint = "footSupportHangerSupportJoint"
 
+    case headSupport = "headSupport"
     case joint = "Joint"
     
     case leftToRightDimension = "xIos"

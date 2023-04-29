@@ -10,7 +10,7 @@ import Foundation
 struct ObjectPickModel {
     var currentObjectName: String  //FixedWheelBase.Subtype.midDrive.rawValu
     
-    var currentDictionary: PositionDictionary
+    var currentObjectDictionary: PositionDictionary
     var defaultDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
     //var editOccuring = true
@@ -24,18 +24,19 @@ class ObjectPickViewModel: ObservableObject {
     
     @Published private var objectPickModel:ObjectPickModel =
     ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
-                    currentDictionary: dictionary,
+                    currentObjectDictionary: dictionary,
                     defaultDictionary: dictionary)
 }
+
 
 extension ObjectPickViewModel {
     
     func getAllOriginNames()-> String{
-        DictionaryInArrayOut().getAllOriginNamesAsString(objectPickModel.currentDictionary)
+        DictionaryInArrayOut().getAllOriginNamesAsString(objectPickModel.currentObjectDictionary)
     }
     
     func getAllOriginValues()-> String{
-        DictionaryInArrayOut().getAllOriginValuesAsString(objectPickModel.currentDictionary)
+        DictionaryInArrayOut().getAllOriginValuesAsString(objectPickModel.currentObjectDictionary)
     }
     
     func getAllPartFromPrimaryOriginDictionary() -> [String: PositionAsIosAxes] {
@@ -48,13 +49,13 @@ extension ObjectPickViewModel {
             let found = dictionary[entryName] ?? Globalx.iosLocation
             originDictionary += [uniqueName: found]
         }
-        //print(originDictionary)
+
         return originDictionary
     }
     
     
-    func getCurrentDictionary()->[String: PositionAsIosAxes] {
-        objectPickModel.currentDictionary
+    func getCurrentObjectDictionary()->[String: PositionAsIosAxes] {
+        objectPickModel.currentObjectDictionary
     }
     
     
@@ -63,53 +64,30 @@ extension ObjectPickViewModel {
     }
     
 
-    func getDefaultDictionary()
+    func getDefaultObjectDictionary()
     -> PositionDictionary {
         objectPickModel.defaultDictionary
     }
     
-    func getDictionaryForScreen (
-        _ measurementDictionary: PositionDictionary)
-        -> PositionDictionary {
-            let offset = getOffset()
-            
-            let objectDimension = getDimensionOfObject(getCurrentDictionary())
-//print(objectDimension)
-            let maximumObjectDimension = getMaximumOfObject(objectDimension)
-            
-            let scale = Screen.smallestDimension / maximumObjectDimension
-  //print(scale)
-            let screenDictionary =
-                ForScreen(
-                    measurementDictionary,
-                    offset,
-                    scale
-                ).dictionary
-            
-//print(screenDictionary.sorted{$0.key > $1.key})
-            
-            return screenDictionary
-    }
     
-    func getDimensionOfObject (
-        _ dictionary: PositionDictionary)
-        -> Dimension {
-            let minThenMaxPositionOfObject =
-            getMinThenMaxPositionOfObject(dictionary)
-            
-           return
-            getObjectDimension(minThenMaxPositionOfObject)
-    }
-    
-    
-    
-    
-    
-    func getList() -> [String] {
-let sender = #function
+    func getList(_  version: DictionaryVersion) -> [String] {
+        
+        let dictionary: PositionDictionary = getVersion()
+        
+        func getVersion() -> PositionDictionary {
+            switch version  {
+            case .useCurrent:
+              return  objectPickModel.currentObjectDictionary
+            case .useDefault:
+              return  objectPickModel.defaultDictionary
+            case .useLoaded:
+              return  objectPickModel.loadedDictionary
+            }
+        }
         return
-            DictionaryInArrayOut().getNameValue(objectPickModel.currentDictionary, sender)
+            DictionaryInArrayOut().getNameValue(dictionary)
     }
+    
     
     func getLoadedDictionary()->[String: PositionAsIosAxes] {
         objectPickModel.loadedDictionary
@@ -148,7 +126,7 @@ let sender = #function
         }
         
         return
-        [(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
+            [(x: minX, y: minY, z: 0), (x: maxX, y: maxY, z: 0)]
     }
     
     
@@ -163,19 +141,50 @@ let sender = #function
             objectDimension
     }
     
+    func getObjectDimension (
+        _ dictionary: PositionDictionary)
+        -> Dimension {
+            let minThenMaxPositionOfObject =
+            getMinThenMaxPositionOfObject(dictionary)
+            
+           return
+            getObjectDimension(minThenMaxPositionOfObject)
+    }
     
 
     
     func getObjectDictionary() -> [String: PositionAsIosAxes] {
-        objectPickModel.currentDictionary
+        objectPickModel.currentObjectDictionary
     }
+    
+    func getObjectDictionaryForScreen (
+        _ measurementDictionary: PositionDictionary)
+        -> PositionDictionary {
+            let offset = getOffset()
+            
+            let objectDimension = getObjectDimension(getCurrentObjectDictionary())
+
+            let maximumObjectDimension = getMaximumOfObject(objectDimension)
+            
+            let scale = Screen.smallestDimension / maximumObjectDimension
+
+            let screenDictionary =
+                ForScreen(
+                    measurementDictionary,
+                    offset,
+                    scale
+                ).dictionary
+            
+            return screenDictionary
+    }
+    
 
     
     func getOffset ()
         -> PositionAsIosAxes {
             
         let minThenMaxPositionOfObjectForOffset =
-        getMinThenMaxPositionOfObject(getCurrentDictionary())
+        getMinThenMaxPositionOfObject(getCurrentObjectDictionary())
 //print(minThenMaxPositionOfObjectForOffset)
         let offset = CreateIosPosition.minus(minThenMaxPositionOfObjectForOffset[0])
 //print(offset)
@@ -192,7 +201,6 @@ let sender = #function
             DictionaryInArrayOut().getNameValue(
                 OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary.filter({$0.key.contains(Part.corner.rawValue)}), sender
                 )
-//print(array)
         return array
     }
     
@@ -208,7 +216,7 @@ let sender = #function
         -> [String: PositionAsIosAxes] {
         
         var relevantDictionary =
-        getLoadedDictionary().keys.count == 0 ? getCurrentDictionary(): getLoadedDictionary()
+        getLoadedDictionary().keys.count == 0 ? getCurrentObjectDictionary(): getLoadedDictionary()
         
         let originDictionary =
         DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
@@ -216,42 +224,32 @@ let sender = #function
             .objectOrigin,
             [getOffset()])
             relevantDictionary += originDictionary
-//print(relevantDictionary)
-        
+
         switch forScreenOrMeasurment {
         case .forScreen:
             relevantDictionary =
-            getDictionaryForScreen(relevantDictionary)
+            getObjectDictionaryForScreen(relevantDictionary)
            
         default: break
         }
-
-      
-//print(relevantDictionary.sorted{$0.key > $1.key})
-        
         return relevantDictionary
     }
     
     
-    
-//    func getObjectMaximumLengthIncrease()
-//        -> Double {
-//
-//            - InitialOccupantFootSupportMeasure.footSupportHanger.length
-//        }
-//
-    
     func getScreenFrameSize ()
         -> Dimension{
         
+        let objectName = getCurrentObjectName()
+        let maximumLengthIncrease =
+            objectName.contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) ?
+            InitialOccupantFootSupportMeasure.footSupportHangerMaximumLengthIncrease: 0
             
-        let objectDimension = getDimensionOfObject(getDefaultDictionary())
+        let objectDefaultDimension = getObjectDimension(getDefaultObjectDictionary())
             
-      
         let objectDimensionWithLengthIncrease =
-            (length: objectDimension.length +
-             InitialOccupantFootSupportMeasure.footSupportHangerMaximumLengthIncrease,
-            width: objectDimension.width)
+            (length: objectDefaultDimension.length +
+             maximumLengthIncrease,
+            width: objectDefaultDimension.width)
 
         var frameSize: Dimension =
             (length: Screen.smallestDimension,
@@ -261,7 +259,6 @@ let sender = #function
             frameSize =
             (length: objectDimensionWithLengthIncrease.length,
              width: Screen.smallestDimension)
-            
         }
     
         if objectDimensionWithLengthIncrease.length > objectDimensionWithLengthIncrease.width {
@@ -269,27 +266,19 @@ let sender = #function
                          width: objectDimensionWithLengthIncrease.width)
         }
 
-            
-            frameSize = objectDimensionWithLengthIncrease //(length: 1600.0, width: 700.0)
+            frameSize = objectDimensionWithLengthIncrease
         return frameSize
-     
     }
     
 
-    
-
-    
-    
     func getUniquePartNamesFromLoadedDictionary() -> [String] {
-        //getUniquePartNamesOfCornerItems(getLoadedDictionary())
-        let uniquePartNames =  GetUniqueNames(getCurrentDictionary()).forPart
-//print(uniquePartNames)
+   
+        let uniquePartNames =  GetUniqueNames(getCurrentObjectDictionary()).forPart
+
         return  uniquePartNames
     }
     
     func getUniquePartNamesFromObjectDictionary() -> [String] {
-       // getUniquePartNamesOfCornerItems(getObjectDictionary())
-
         
         let uniquePartNames = GetUniqueNames(getObjectDictionary()).forPart
 
@@ -300,12 +289,12 @@ let sender = #function
     
     func setCurrentObjectName(_ objectName: String){
         objectPickModel.currentObjectName = objectName
-        setObjectDictionary(objectName)
+        setCurrentObjectDictionary(objectName)
     }
     
     
     func setEditedObjectDictionary(_ editedDictionary: PositionDictionary) {
-        objectPickModel.currentDictionary = editedDictionary
+        objectPickModel.currentObjectDictionary = editedDictionary
     }
     
     func setDefaultDictionary(_ objectName: String) {
@@ -322,7 +311,7 @@ let sender = #function
     }
     
 
-    func setObjectDictionary(
+    func setCurrentObjectDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation]) {
 
@@ -332,11 +321,9 @@ let sender = #function
                 
             } else {
                 currentDictionary = editedDictionary
-                
             }
-
-        
-        objectPickModel.currentDictionary = currentDictionary
+            
+        objectPickModel.currentObjectDictionary = currentDictionary
     }
     
 

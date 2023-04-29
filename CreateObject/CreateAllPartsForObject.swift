@@ -60,6 +60,8 @@ struct CreateAllPartsForObject {
                     baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 500, halfWidth: 200)
                 case .allCasterHoist:
                     baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 1200, halfWidth: 300)
+                case .allCasterTiltInSpaceShowerChair:
+                    baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 600, halfWidth: 300)
                 case .allCasterStandAid:
                     break
                 case .allCasterStretcher:

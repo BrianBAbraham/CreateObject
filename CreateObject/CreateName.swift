@@ -11,7 +11,6 @@ import Foundation
 
 
 
-
 struct ConnectStrings {
     static let symbol = Part.stringLink.rawValue
 

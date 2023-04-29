@@ -121,12 +121,12 @@ struct CircleModifier: ViewModifier {
 
 
 struct DefaultDictionaryAsList {
-    @EnvironmentObject var vm: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @State var defaultDictionaryAsList = [""]
     
    func getDefaultDictionaryAsList ()
     -> [String] {
-        vm.getList()
+        objectPickVM.getList(.useDefault)
     }
 }
 
@@ -144,21 +144,54 @@ struct EnterTextView: View {
 }
 
 
-
+struct ListView: View {
+    
+    let equipmentName: String
+    let list: [String]
+    
+    init(
+        _ equipmentName: String,
+        _ list: [String]) {
+            self.equipmentName = equipmentName
+            self.list = list
+        }
+    
+    var body: some View {
+        VStack{
+            Text(equipmentName)
+            List{
+                Section(header: Text("Dictionary")) {
+                    ForEach (0..<list.count, id: \.self) { index in
+                        Text("\(list[index])")
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 struct ContentView: View {
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @StateObject var cdVM = CoreDataViewModel()
-    //@State var objectName = ObjectNameKey.defaultValue//"RearDriveWheelchair"
+   
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
     
-    var defaultDictionaryAsList: [String] {
-        objectPickVM.getList()
+    var currentObjectDictionaryAsList: [String] {
+        objectPickVM.getList(.useCurrent)
     }
 
+    var defaultObjectDictionaryAsList: [String] {
+        objectPickVM.getList(.useDefault)
+    }
+    
+    var loadedObjectDictionaryAsList: [String] {
+        objectPickVM.getList(.useLoaded)
+    }
+    
+    
     let equipmentName: String
 
     init(_ equipmentName: String) {
@@ -193,8 +226,6 @@ struct ContentView: View {
         .padding()
 
     }
-
-
     
     var deleteAllButtonView: some View {
             Button(action: {
@@ -208,7 +239,6 @@ struct ContentView: View {
     
     var savedObjectDictionaryAsListButtonView: some View {
         VStack {
-            //Text ("Saved equipment")
             deleteAllButtonView
             List {
                 ForEach(cdVM.savedEntities) {entity in
@@ -265,24 +295,6 @@ struct ContentView: View {
                 cdVM.fetchNames()
     }
     
-
-
-    
-    var defaultDictionaryAsListView: some View {
-        VStack{
-            Text(equipmentName)
-            List{
-                Section(header: Text("Dictionary")) {
-                    ForEach (0..<defaultDictionaryAsList.count, id: \.self) { index in
-                        Text("\(defaultDictionaryAsList[index])")
-                    }
-                }
-            }
-        }
-
-    }
-    
-    //let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
     @Environment(\.managedObjectContext) private var viewContext
       @Environment(\.undoManager) private var undoManager
     //@State var isPresented = true
@@ -292,35 +304,18 @@ struct ContentView: View {
     //let initialObjectPosition = globalPosition
     
     var body: some View {
-
- 
-//        ZStack{
-//
-//            ObjectView(uniquePartNames)
-//
-//            .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
-//                self.globalPosition = value
-//            })
-//
-//                .border(.green, width: 2)
-//        }
-//
-//
-//        VStack {
-//            Text("x: \(Int(globalPosition?.x ?? 0))   y:\(Int(globalPosition?.y ?? 0))  ")
-//
-//            EditObjectMenuView()
-//        }
     
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                                VStack( spacing: -150) {
-                                PickObjectView()
-                                ObjectView(uniquePartNames)
+                    VStack( spacing: -150) {
+                    PickObjectView()
+                    ObjectView(uniquePartNames)
+                        .scaleEffect(0.5)
+                    
                     }
                 ) {
-                        Text("Default equipment")
+                    Text("Default equipment")
                     }
 
                 NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
@@ -330,6 +325,7 @@ struct ContentView: View {
 
                 NavigationLink(destination:
                     VStack {
+                    DemoExclusiveToggles()
                             ObjectView(uniquePartNames)
                                 .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
                                     self.globalPosition = value
@@ -346,10 +342,14 @@ struct ContentView: View {
                     viewContext.undoManager = undoManager
                  }
 
-                NavigationLink(destination: defaultDictionaryAsListView ) {
-                 Text("View dictionary")
+                NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
+                 Text("View current dictionary")
                 }
 
+                NavigationLink(destination: ListView(equipmentName, defaultObjectDictionaryAsList)){
+                 Text("View default dictionary")
+                }
+                
                 NavigationLink(destination: uniquePartNamesAsListView ) {
                     Text("View dictionary parts")
                 }
@@ -388,5 +388,35 @@ struct ContentView_Previews: PreviewProvider {
            
         //}
         
+    }
+}
+struct DemoExclusiveToggles: View {
+    let toggleNames = ["foot support distance", "overall width", "rear distance"]
+   
+    @State var flags = Array(repeating: false, count: 3)
+    
+    var body: some View {
+        ScrollView {
+            ForEach(flags.indices, id: \.self) { i in
+                ToggleItem(storage: self.$flags, tag: i, label: toggleNames[i] + " edit")
+                    .padding(.horizontal)
+            }
+        }
+    }
+}
+
+struct ToggleItem: View {
+    @Binding var storage: [Bool]
+    var tag: Int
+    var label: String = ""
+
+    var body: some View {
+        let isOn = Binding (get: { self.storage[self.tag] },
+            set: { value in
+                withAnimation {
+                    self.storage = self.storage.enumerated().map { $0.0 == self.tag }
+                }
+            })
+        return Toggle(label, isOn: isOn)
     }
 }

@@ -10,14 +10,11 @@ import SwiftUI
 struct EditFootSupportPosition: View {
   
     let dictionary: PositionDictionary
-    @State private var proposedWidth = 100.0
-    @State private var proposedLeftLength = 200.0
-    @State private var proposedRightLength = 200.0
-    @State private var showLeftLength = true
+
     @State private var leftAndRight = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-//    @Environment(\.objectName) var objectName
+
     
     init(
         _ dictionaryForMeasurement: PositionDictionary){
@@ -34,8 +31,8 @@ struct EditFootSupportPosition: View {
         
             Toggle(toggleLabel,isOn: $leftAndRight)
                 .onChange(of: leftAndRight) { value in
-                    
                 }
+                .padding(.horizontal)
 
             if leftAndRight {
                 FootLengthSlider(dictionary,"L",.id)
@@ -43,16 +40,13 @@ struct EditFootSupportPosition: View {
                 FootLengthSlider(dictionary,"L",.id0)
                 FootLengthSlider(dictionary,"R",.id1)
             }
-          
         }
-
     }
-       
 }
 
 
 struct FootLengthSlider: View {
-    let dictionary: PositionDictionary
+    let curentDictionary: PositionDictionary
     @State private var proposedLength = 200.0
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -60,21 +54,17 @@ struct FootLengthSlider: View {
     let leftOrRight: String
     let idInt: Int
     let id: Part
-    let idToIdIntDictionary = [Part.id: 0, Part.id0: 0, Part.id1: 1]    // id0 0
-// id1 1
-    //id 0
+    let idToIdIntDictionary = [Part.id: 0, Part.id0: 0, Part.id1: 1]
     
     init(
         _ dictionaryForMeasurement: PositionDictionary,
         _ leftOrRight: String,
         _ id: Part){
-        dictionary = dictionaryForMeasurement
+        curentDictionary = dictionaryForMeasurement
         self.leftOrRight = leftOrRight
         self.id = id
         self.idInt = idToIdIntDictionary[id]!
     }
-    
-
     
     var body: some View {
         var editedDictionary: PositionDictionary = [:]
@@ -82,19 +72,13 @@ struct FootLengthSlider: View {
         let currentLength =
         Measurement(
             value: objectEditVM.getPrimaryAxisToFootPlateEndLength(
-                dictionary: objectPickVM.getCurrentDictionary(),
+                dictionary: objectPickVM.getCurrentObjectDictionary(),
             name: "slider"
         ) [idInt], unit: UnitLength.millimeters)
         
-        let defaultDictionary = objectPickVM.getDefaultDictionary()
+        let defaultDictionary = objectPickVM.getDefaultObjectDictionary()
         
-        let maximumPrimaryOriginToFootPlateLength =
-            objectEditVM.getPrimaryAxisToFootPlateEndLengthMaximum( defaultDictionary)//objectPickVM )
-     
-        let minimumPrimaryOriginFootPlateLength =
-            objectEditVM.getPrimaryAxisToFootPlateEndLengthMinimum(dictionary)//objectPickVM)
-        
-        let minToMax = minimumPrimaryOriginFootPlateLength...maximumPrimaryOriginToFootPlateLength
+        let minToMax = objectEditVM.getPrimaryAxisToFootPlateEndExtrema(defaultDictionary, curentDictionary)
         
         let displayLength = String(format: "%.0f",currentLength.value)
         //String(format: "%.1f", currentLength.converted(to: UnitLength.inches).value) + "\""
@@ -111,76 +95,22 @@ struct FootLengthSlider: View {
             .onChange(of: proposedLength) { value in
                 editedDictionary =
                 objectEditVM.setPrimaryToFootPlateFrontLength(
-                    dictionary,
+                    curentDictionary,
                    id,
                     proposedLength - currentLength.value
                 )
-                objectPickVM.setObjectDictionary(
+                objectPickVM.setCurrentObjectDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary)
             }
             Text(displayLength)
         }
+        .padding(.horizontal)
     }
-        //.padding([.leading, .trailing])
 }
 
 
 
-
-//struct FeetLengthSlider: View {
-//    let dictionary: PositionDictionary
-//    @State private var proposedLength = 200.0
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-//
-//    let leftOrRight: String
-//    let id: Int
-//
-//
-//    init(
-//        _ dictionary: PositionDictionary,
-//        _ leftOrRight: String,
-//        _ id: Int){
-//        self.dictionary = dictionary
-//        self.leftOrRight = leftOrRight
-//        self.id = id
-//    }
-//
-//    var body: some View {
-//       var editedDictionary: PositionDictionary = [:]
-//
-//        let currentLength =
-//        objectEditVM.getPrimaryAxisToFootPlateEndLength(
-//            objectPickVM.getCurrentDictionary()
-//        )
-//
-//        let boundLength = Binding(
-//            get: {currentLength[id]},
-//            set: {self.proposedLength = $0}
-//        )
-//
-//        HStack {
-//            Text(leftOrRight)
-//            Slider(value: boundLength, in: 500.0...1500.0, step: 1
-//            )
-//            .onChange(of: proposedLength) { value in
-//                editedDictionary =
-//                objectEditVM.setPrimaryToFootPlateFrontLength(
-//                    dictionary,
-//                    .id,//[.id0, .id1][id],
-//                    proposedLength - currentLength[id]
-//                )
-//                objectPickVM.setObjectDictionary(
-//                    objectPickVM.getCurrentObjectType(),
-//                    editedDictionary)
-//            }
-//         Text("\(Int(currentLength[id]))")
-//        }
-//        //.padding([.leading, .trailing])
-//
-//    }
-//}
 
 
 //struct EditFootSupportPosition_Previews: PreviewProvider {

@@ -20,7 +20,11 @@ import Foundation
 //        }
 //}
 
-
+enum DictionaryVersion {
+    case useCurrent
+    case useDefault
+    case useLoaded
+}
 
 
 struct CreateOnePartOrSideSymmetricParts {
@@ -38,21 +42,15 @@ struct CreateOnePartOrSideSymmetricParts {
         _ partFromParentOrigin: PositionAsIosAxes,
         _ supportIndex: Int)
         {
+            let partsNotOnLeftRight: [Part] = [.sitOn, .backSupport, .headSupport ]
             
+            let leftRightOrSinglePartAsArrayFromPosition: [PositionAsIosAxes] =
+            partsNotOnLeftRight.contains (part) ? [partFromParentOrigin]: CreateIosPosition.forLeftRightAsArrayFromPosition(partFromParentOrigin)
             
-            
-//            var singleOrLeftAndRightPosition: [PositionAsIosAxes]
-//            
-//            if partFromParentOrigin.x != 0.0 {
-//                singleOrLeftAndRightPosition = CreateIosPosition.forLeftRightAsArrayFromPosition(partFromParentOrigin)
-//            } else {
-//                singleOrLeftAndRightPosition = [partFromParentOrigin]
-//            }
-            
-            let partFromPrimaryOriginForBothSidesOrSingleForOneSupport =
+            let partFromPrimaryOriginForBothSidesOrSingleForOneSupport: [PositionAsIosAxes] =
                 CreateIosPosition.addToupleToArrayOfTouples(
                     parentPartFromPrimaryOrigin,
-                    CreateIosPosition.forLeftRightAsArrayFromPosition(partFromParentOrigin)
+                    leftRightOrSinglePartAsArrayFromPosition
                     )
             
             originDictionary =
@@ -60,10 +58,7 @@ struct CreateOnePartOrSideSymmetricParts {
                     part,
                     partFromPrimaryOriginForBothSidesOrSingleForOneSupport,
                     supportIndex).dictionary
-//    print(part.rawValue)
-//    print(partFromPrimaryOriginForBothSidesOrSingleForOneSupport)
-//    print(supportIndex)
-//    print("")
+
             for position in partFromPrimaryOriginForBothSidesOrSingleForOneSupport {
                 partCornersBothSides.append(
                     PartCornerLocationFrom(
@@ -91,7 +86,8 @@ struct SymmetricalOrSingleParts {
         _ partOnBothSidesFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int) {
         
-        dictionary = getPartForBothSidesFromPrimaryOriginForOneSitOn(
+        dictionary =
+            getPartForBothSidesFromPrimaryOriginForOneSitOn(
                 part,
                 partOnBothSidesFromPrimaryOrigin,
                 supportIndex)
@@ -100,7 +96,7 @@ struct SymmetricalOrSingleParts {
             _ part: Part,
             _ partOnBothSidesFromPrimaryOrigin: [PositionAsIosAxes],
             _ supportIndex: Int)
-            -> [String: PositionAsIosAxes] {
+                -> [String: PositionAsIosAxes] {
             
                 let supportName = CreateNameFromParts([.stringLink, .sitOn, .id]).name
                 let supportIdName = supportName + String(supportIndex)

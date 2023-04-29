@@ -39,7 +39,8 @@ struct ForAllCasterBaseObject{
           
           dictionary += casterAtFrontDictionary
           
-          let casterAtRearDictionary = CreateCaster(
+          let casterAtRearDictionary =
+            CreateCaster(
               .casterWheelAtRear,
               baseMeasurement.baseCornerFromPrimaryOriginForWidthAxisAt.rear.rear
           ).dictionary

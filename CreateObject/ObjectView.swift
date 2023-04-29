@@ -38,32 +38,16 @@ struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var partEditVM: ObjectEditViewModel
     let uniquePartName: String
-    var dictionary: PositionDictionary //{
-//        vm.getRelevantDictionary(.forScreen)
-//    }
+    var dictionary: PositionDictionary
     var partCornersDictionary: [String: [PositionAsIosAxes]] {
-//        vm.getPartNameAndItsCornerLocationsFromPrimaryOrigin(
-//            uniquePartName,
-//            .forScreen)
+
         PartNameAndItsCornerLocations(
             uniquePartName,
                 .forScreen,
             dictionary).dictionaryFromPrimaryOrigin
         
     }
-    
-//    var dictionaryForScreen: PositionDictionary {
-//        objectPickVM.getRelevantDictionary(.forScreen)
-//    }
-    
-//    var partDictionary: PositionDictionary {
-//        SuccessivelyFilteredDictionary([uniquePartName, Part.corner.rawValue], dictionaryForScreen).dictionary
-//    }
-//
-//    var partDimension: Dimension {
-//        objectPickVM.getDimensionOfObject(partDictionary)
-//    }
-    
+        
     let onlyOneDictionaryMember = 0
     
     var partCorners: [CGPoint] {
@@ -140,7 +124,7 @@ struct ObjectView: View {
     
     var zoom: CGFloat {
         getZoom()
-        //limitZoom( (0.1 + currentZoom + lastCurrentZoom) * defaultScale/measurementScale)
+      
     }
     
     var uniquePartNames: [String]
@@ -149,40 +133,24 @@ struct ObjectView: View {
         objectPickVM.getRelevantDictionary(.forScreen)
     }
     
-//    var partDictionary: PositionDictionary {
-//        SuccessivelyFilteredDictionary([uniquePartName, Part.corner.rawValue], dictionaryForScreen).dictionary
-//    }
-//
-//    var partDimension: Dimension {
-//        objectPickVM.getDimensionOfObject(partDictionary)
-//    }
-   
-    
-    
     init( _ names: [String] ) {
         uniquePartNames = names
-        
-        
     }
     
 
-    
     func limitZoom (_ zoom: CGFloat) -> CGFloat {
        return max(min(zoom, maximimumZoom),minimumZoom)
-        
-        
     }
     
     func getZoom() -> CGFloat {
         
         let zoom =
-        limitZoom( (0.1 + currentZoom + lastCurrentZoom) * defaultScale/measurementScale)
+        limitZoom( (0.2 + currentZoom + lastCurrentZoom) * defaultScale/measurementScale)
        
      return zoom
         
     }
-    
-    
+        
     var objectDrag: some Gesture {
         DragGesture()
             .onChanged { value in
@@ -195,8 +163,7 @@ struct ObjectView: View {
             }
     }
     
- 
-    let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
+    //let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
     
 
 
@@ -209,55 +176,36 @@ struct ObjectView: View {
 //                        .foregroundColor(.blue)
 //                } )
 //        }
-    ///The response to object orgin location change on edit of length is either ignore or
-    ///set the frame size to the maximum permissible dimension and nither show withh border or fill with color so that the tap area is confined to the parts
+
     
     var body: some View {
-
         let frameSize = objectPickVM.getScreenFrameSize()
         
-        
         GeometryReader { reader in
-            ZStack {
-                ForEach(uniquePartNames, id: \.self) { name in
-                    PartView(
-                        uniquePartName: name,
-                        dictionary: dictionary
-                           
-                    )
-//                .frame(
-//                        width: objectPickVM.getDimensionOfObject(SuccessivelyFilteredDictionary([name, Part.corner.rawValue], dictionaryForScreen).dictionary).width,
-//                        height: objectPickVM.getDimensionOfObject(SuccessivelyFilteredDictionary([name, Part.corner.rawValue], dictionaryForScreen).dictionary).length
-//
-//                    )
-                }
-                Spacer()
+            ForEach(uniquePartNames, id: \.self) { name in
+                PartView(
+                    uniquePartName: name,
+                    dictionary: dictionary
+                )
             }
-
-//            .ignoresSafeArea(.all, edges: .all)
-//            .preference(key: CustomPreferenceKey.self,
-//                        value: reader.frame(in: .global).midPoint)
+        }
+        .border(.red, width: 5)
+        .frame(width: frameSize.width, height: frameSize.length)
+        .background(Color.red.opacity(0.3) )
+        .position(location)
+        .gesture(
+            objectDrag
+        )
+        .scaleEffect(zoom)
+        .gesture(MagnificationGesture()
+        .onChanged { value in
+            currentZoom = value - 1
+        }
+        .onEnded { value in
+            lastCurrentZoom += currentZoom
+            currentZoom = 0.0
             }
-
-            //.border(.red, width: 5)
-            .frame(width: frameSize.width, height: frameSize.length)
-            //.background(Color.red.opacity(0.3) )
-            .position(location)
-            .gesture(
-                objectDrag
-            )
-
-            .scaleEffect(zoom)
-         
-            .gesture(MagnificationGesture()
-            .onChanged { value in
-                currentZoom = value - 1
-            }
-            .onEnded { value in
-                lastCurrentZoom += currentZoom
-                currentZoom = 0.0
-                }
-             )
+         )
 //            .border(.red, width: 5)
     }
 }

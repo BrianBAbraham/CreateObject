@@ -20,9 +20,9 @@ import SwiftUI
 
 struct EditObjectMenuView: View {
     var dictionary: PositionDictionary = [:]
-    @State private var applySymmetry = false
-    @State private var affectOtherParts = false
-    @State private var imperial = false
+//    @State private var applySymmetry = false
+//    @State private var affectOtherParts = false
+//    @State private var imperial = true
     //let equipmentName: String
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
@@ -41,7 +41,7 @@ struct EditObjectMenuView: View {
         
         let dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
     
-        if objectPickVM.getCurrentObjectName().contains("hair") {
+        if objectPickVM.getCurrentObjectName().contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) {
             EditFootSupportPosition(dictionary)
         } else {
             EmptyView()
