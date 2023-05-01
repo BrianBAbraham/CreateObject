@@ -11,7 +11,10 @@ struct InitialOccupantFootSupportMeasure {
     static let footSupportHangerJoint = Joint.dimension
     
     static let footSupport = (length: 100.0, width: 150.0 )
-    static let footShowerSupport = (length: 900.0, width: 1200.0 )
+    static let footShowerSupport = (length: 900.0, width: 600.0 )
+    
+    static let footShowerSupportMaximumIncrease =
+    (length: footShowerSupport.length, width: footShowerSupport.width * 1.5 )
     
     static let footSupportJoint =
     (length: footSupport.length , width: Joint.dimension.width )
@@ -79,6 +82,7 @@ struct CreateOccupantFootSupport {
     var separateFootSupportRequired = true
     var hangerLinkRequired = true
     var footSupportDimension: Dimension
+    var footSupportInOnePieceRequired  = false
     var footSupportJointRequired = true
     var footSupportHangerSitOnVerticalJointRequired = true
     var footSupportFromParent: PositionAsIosAxes
@@ -99,6 +103,7 @@ struct CreateOccupantFootSupport {
             
             switch baseType {
             case .showerTray:
+                footSupportInOnePieceRequired = true
                 separateFootSupportRequired = false
                 hangerLinkRequired = false
                 footSupportJointRequired = false
@@ -126,10 +131,11 @@ struct CreateOccupantFootSupport {
         _ supportIndex: Int,
         _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes]
         ) {
+            let support: Part = footSupportInOnePieceRequired ? .footSupportInOnePiece: .footSupport
             
             footDictionary(
                 footSupportDimension,
-                .footSupport,
+                support,
                 footSupportFromParent)
             
             if footSupportHangerSitOnVerticalJointRequired {

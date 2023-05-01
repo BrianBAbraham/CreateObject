@@ -7,14 +7,13 @@
 
 import SwiftUI
 
-struct PickObjectView: View {
+struct PickDefaultObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     
     var objectNames: [String] {
         BaseObjectTypes.allCases.map{$0.rawValue}
     }
-    //@Environment(\.objectName) var objectName
-    //@State private var newObjectName = ObjectNameKey.defaultValue
+
     @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue
     
     var currentEqipmentType: String {
@@ -41,6 +40,7 @@ struct PickObjectView: View {
             self.equipmentType = tag
             objectPickVM.setDefaultDictionary(tag)
             objectPickVM.setCurrentObjectName(tag)
+            objectPickVM.setCurrentObjectDictionary(tag)
         }
         
         .pickerStyle(.wheel)
@@ -50,8 +50,79 @@ struct PickObjectView: View {
 
 struct ObjectPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        PickObjectView()
+        PickDefaultObjectView()
             .environmentObject(ObjectPickViewModel())
     }
 }
 
+struct PickSavedObjectView: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var coreDataVM: CoreDataViewModel
+    var deleteAllButtonView: some View {
+            Button(action: {
+                coreDataVM.deleteAllObjects()
+            }, label: {
+                Text("delete all")
+                    .foregroundColor(.blue)
+            } )
+    }
+    
+    var addToSceneButtonView: some View {
+            Button(action: {
+                
+            }, label: {
+                Text("add to scene")
+                    .foregroundColor(.blue)
+            } )
+    }
+    
+    var uniquePartNames: [String] {
+        objectPickVM.getUniquePartNamesFromLoadedDictionary()
+    }
+    
+    var body: some View {
+        VStack {
+            HStack {
+                deleteAllButtonView
+                Spacer()
+                addToSceneButtonView
+            }
+            .padding()
+
+            List {
+                ForEach(coreDataVM.savedEntities) {entity in
+                    Button {
+                        objectPickVM.setLoadedDictionary(entity)
+
+//                        let loadedDictionary =
+//                           objectPickVM.getLoadedDictionary()
+                        let objectName = entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue
+//print(objectName)
+//                        objectPickVM.setCurrentObjectName(objectName)
+//
+//                        objectPickVM.setDefaultDictionary(objectName)
+//
+//                        objectPickVM.setCurrentObjectDictionary(
+//                            entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue,
+//                            loadedDictionary)
+
+                    } label: {
+                        HStack{
+                            Text(entity.objectType ?? "")
+                            Text(entity.objectName ?? "")
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .foregroundColor(.primary)
+                }
+                .onDelete(perform: coreDataVM.deleteObject)
+            }
+            
+            ObjectView(uniquePartNames, .useLoaded)
+                .scaleEffect(0.25)
+        }
+    }
+    
+    
+    
+}

@@ -193,13 +193,13 @@ extension ObjectPickViewModel {
 
   
     
-    func getPartCornersFromPrimaryOriginDictionary(_ entity: LocationEntity) -> [String]{
+    func getObjectDictionaryFromSaved(_ entity: LocationEntity) -> [String]{
         let allOriginNames = entity.interOriginNames ?? ""
         let allOriginValues = entity.interOriginValues ?? ""
-let sender = #function
+
         let array =
             DictionaryInArrayOut().getNameValue(
-                OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary.filter({$0.key.contains(Part.corner.rawValue)}), sender
+                OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary.filter({$0.key.contains(Part.corner.rawValue)})//, sender
                 )
         return array
     }
@@ -212,18 +212,30 @@ let sender = #function
     }
     
     func getRelevantDictionary(
-        _ forScreenOrMeasurment: DictionaryTypes)
-        -> [String: PositionAsIosAxes] {
+        _ forScreenOrMeasurment: DictionaryTypes,
+        _ dictionaryVersion: DictionaryVersion = .useCurrent)
+            -> [String: PositionAsIosAxes] {
         
-        var relevantDictionary =
-        getLoadedDictionary().keys.count == 0 ? getCurrentObjectDictionary(): getLoadedDictionary()
+                var relevantDictionary: PositionDictionary = [:]
+//        getLoadedDictionary().keys.count == 0 ? getCurrentObjectDictionary(): getLoadedDictionary()
+                switch dictionaryVersion {
+                case .useCurrent:
+                    relevantDictionary = getCurrentObjectDictionary()
+                case .useLoaded:
+                    relevantDictionary = getLoadedDictionary()
+//print("use loaded")
+                default:
+                    break
+                }
+     
         
         let originDictionary =
         DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
             .viewOrigin,
             .objectOrigin,
             [getOffset()])
-            relevantDictionary += originDictionary
+        
+        relevantDictionary += originDictionary
 
         switch forScreenOrMeasurment {
         case .forScreen:
@@ -240,9 +252,17 @@ let sender = #function
         -> Dimension{
         
         let objectName = getCurrentObjectName()
-        let maximumLengthIncrease =
+            var maximumLengthIncrease = 0.0
+            
+            maximumLengthIncrease =
             objectName.contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) ?
-            InitialOccupantFootSupportMeasure.footSupportHangerMaximumLengthIncrease: 0
+            InitialOccupantFootSupportMeasure.footSupportHangerMaximumLengthIncrease: maximumLengthIncrease
+            
+            maximumLengthIncrease =
+            objectName.contains(BaseObjectTypes.showerTray.rawValue) ?
+            InitialOccupantFootSupportMeasure.footShowerSupportMaximumIncrease.length: maximumLengthIncrease
+            
+            
             
         let objectDefaultDimension = getObjectDimension(getDefaultObjectDictionary())
             
@@ -303,9 +323,10 @@ let sender = #function
         objectPickModel.defaultDictionary = defaultDictionary
     }
     
-    func setLoadedDictionary(){
-        let allOriginNames = getAllOriginNames()
-        let allOriginValues = getAllOriginValues()
+    func setLoadedDictionary(_ entity: LocationEntity){
+        let allOriginNames = entity.interOriginNames ?? ""
+        let allOriginValues = entity.interOriginValues ?? ""
+//print("loaded dictiionary set")
         objectPickModel.loadedDictionary =
         OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary
     }
@@ -320,8 +341,11 @@ let sender = #function
             if editedDictionary[""] != nil {
                 
             } else {
+//print(editedDictionary)
                 currentDictionary = editedDictionary
             }
+            
+
             
         objectPickModel.currentObjectDictionary = currentDictionary
     }

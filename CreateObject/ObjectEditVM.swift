@@ -38,7 +38,7 @@ extension ObjectEditViewModel {
             
         }
     
-    func setPrimaryToFootPlateFrontLength(
+    func setPrimaryToFootSupportWithHangerFrontLength(
         _ dictionary: PositionDictionary,
         _ partId: Part,
         _ lengthChange:Double)
@@ -74,7 +74,7 @@ extension ObjectEditViewModel {
                     editedDictionary[key] = nil
                 }
             }
-            
+//print(filteredDictionary)
             
             let firstItem = filteredDictionary.first!
             let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
@@ -95,19 +95,81 @@ extension ObjectEditViewModel {
     }
     
     
+    func setPrimaryToFootSupportWithoutHangerFrontLength(
+        _ dictionary: PositionDictionary,
+        _ partId: Part,
+        _ lengthChange:Double)
+    -> PositionDictionary {
+        
+//print(lengthChange)
+        let namesForFilter =
+        [Part.footSupportInOnePiece.rawValue + Part.stringLink.rawValue
+         ]
+//print(namesForFilter)
+        var filteredDictionary: PositionDictionary = [:]
+        
+        for name in namesForFilter {
+            filteredDictionary  +=
+            dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
+        }
+
+        if partId != .id {
+            let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
+            
+            filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
+            
+//print(filteredDictionary)
+        }
+        
+        var editedDictionary = dictionary
+        
+        
+        for (key, value) in filteredDictionary {
+            let ignoreCornersAtLengthIsZero = value.y == 0.0
+            let newValue = ignoreCornersAtLengthIsZero ? 0.0: value.y + lengthChange
+            filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
+            editedDictionary[key] = filteredDictionary[key]
+
+//            if key.contains(Part.footSupportHangerLink.rawValue) {
+//                editedDictionary[key] = nil
+//            }
+        }
+        
+//print(editedDictionary)
+//
+//
+//        let firstItem = filteredDictionary.first!
+//        let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
+//        let supportIndex =
+//        firstItem.key.contains(supportIndexName) ? 0 : 1
+        
+//        let hangerLinkDictionary =
+//            CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
+//                .footSupportHangerSitOnVerticalJoint,
+//                .footSupportHorizontalJoint,
+//                .footSupportHangerLink,
+//                editedDictionary,
+//                supportIndex).newCornerDictionary
+//
+//        editedDictionary += hangerLinkDictionary
+        
+        return editedDictionary
+    }
+    
     func getNames () {
         //create name
         //or get names from dictionary using unique value
     }
     
-    func getPrimaryAxisToFootPlateEndLength(
+    func getPrimaryAxisToFootSupportEndLength(
         dictionary: PositionDictionary,
         name: String,
+        part: Part,
         _ supportIndex: Int = 0
   )
         -> [Double] {
             var lengths: [Double] = []
-            let partName  = CreateNameFromParts([.footSupport,.stringLink]).name
+            let partName  = CreateNameFromParts([part,.stringLink]).name
 
             var onePartDictionary = dictionary
             
@@ -116,37 +178,37 @@ extension ObjectEditViewModel {
             
             onePartDictionary =
             SuccessivelyFilteredDictionary([Part.corner.rawValue, partName, supportName],dictionary).dictionary
-//print(name)
-//print(onePartDictionary)
-//print("")
-            let twoFootSupportPresent = 8
-            let oneFootSupportPresent = 4
 
-            if onePartDictionary.count == twoFootSupportPresent {
 
-            let leftFootSupportName = CreateNameFromParts([.footSupport,.id0]).name
+            if part == .footSupport {
+                let leftFootSupportName = CreateNameFromParts([.footSupport,.id0]).name
 
-            let rightSupportName = CreateNameFromParts([.footSupport,.id1]).name
+                let rightSupportName = CreateNameFromParts([.footSupport,.id1]).name
 
-                for name in [leftFootSupportName, rightSupportName] {
-                    lengths.append(getMaximumLength(onePartDictionary.filter({$0.key.contains(name)})))
-                }
+                    for name in [leftFootSupportName, rightSupportName] {
+                        lengths.append(getLength(onePartDictionary.filter({$0.key.contains(name)})))
+                    }
             }
+
             
-           if onePartDictionary.count == oneFootSupportPresent {
-
-               lengths = [getMaximumLength(onePartDictionary)]
+            if part == .footSupportInOnePiece {
+                lengths = [getLength(onePartDictionary)]
             }
 
-            func getMaximumLength (_ dictionary: PositionDictionary)
+
+            func getLength (_ dictionary: PositionDictionary)
                 -> Double {
                 let ifAllEqualUseFirst = 0
                 let values = dictionary.map{$0.1}
                 let yValues = CreateIosPosition.getArrayFromPositions(values).y
-
+//print(yValues)
+                let minValue = yValues.min() ?? yValues[ifAllEqualUseFirst]
                 let maxValue = yValues.max() ?? yValues[ifAllEqualUseFirst]
-                return maxValue
+//print(maxValue - minValue)
+                return maxValue //- minValue
             }
+            
+//print("")
          return lengths
     }
     
@@ -155,8 +217,8 @@ extension ObjectEditViewModel {
     func getPrimaryAxisToFootPlateEndLengthMaximum ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
     -> Double {
         
-        let defaultMinimumLength = getPrimaryAxisToFootPlateEndLengthMinimum(dictionaryForMeasurement)//objectPickVM)
-//        let defaultMaximumLength = getPrimaryAxisToFootPlateEndLength( dictionary: dictionaryForMeasurement, name: "maximum")
+        let defaultMinimumLength = getPrimaryAxisToFootSupportEndLengthMinimum(dictionaryForMeasurement)//objectPickVM)
+
 
        let maximumLength =
         InitialOccupantFootSupportMeasure.footSupportHangerMaximumLength +
@@ -169,8 +231,9 @@ extension ObjectEditViewModel {
     
     
     
-    func getPrimaryAxisToFootPlateEndLengthMinimum ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
-    -> Double {
+    func getPrimaryAxisToFootSupportEndLengthMinimum
+    ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
+        -> Double {
         
         let defaultDictionary = dictionaryForMeasurement
         let hangerVerticalJointFromObjectOriginName =
@@ -186,11 +249,22 @@ extension ObjectEditViewModel {
     }
     
     
-    func getPrimaryAxisToFootPlateEndExtrema(
+    func getPrimaryAxisToFootSupportEndExtrema(
         _ currentObjectDictionary: PositionDictionary,
-        _ defaultDictionary: PositionDictionary)
+        _ defaultDictionary: PositionDictionary,
+        _ onePieceOrLeftRightFootSupport: Part)
         -> ClosedRange<Double> {
-            getPrimaryAxisToFootPlateEndLengthMinimum(currentObjectDictionary)...getPrimaryAxisToFootPlateEndLengthMaximum(defaultDictionary)
+            var range: ClosedRange<Double>
+            if onePieceOrLeftRightFootSupport == .footSupport {
+                range =
+                getPrimaryAxisToFootSupportEndLengthMinimum(currentObjectDictionary)...getPrimaryAxisToFootPlateEndLengthMaximum(defaultDictionary)
+            } else {
+                let initialLength = InitialOccupantFootSupportMeasure.footShowerSupport.length
+                range =
+                initialLength...initialLength + InitialOccupantFootSupportMeasure.footShowerSupportMaximumIncrease.length
+                
+            }
+        return range
     }
     
     
@@ -292,6 +366,10 @@ extension ObjectEditViewModel {
             if uniquePartName.contains("HorizontalJoint") {
                 color = .black
             }
+            
+//            if uniquePartName.contains(BaseObjectTypes.showerTray.rawValue) {
+//                color = .blue
+//            }
         }
 
         return color

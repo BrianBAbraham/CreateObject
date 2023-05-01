@@ -42,6 +42,7 @@ enum Part: String {
     case fixedWheelPropeller = "fixedWheelPropeller"
     
     case footSupport = "footSupport"
+    case footSupportInOnePiece = "footSupportInOnePiece"
     case footSupportHorizontalJoint = "footSupportHorizontalJoint"
     case footSupportHanger = "footSupportHanger"
     case footSupportHangerLink = "footSupportHangerLink"

@@ -45,7 +45,6 @@ struct PartView: View {
             uniquePartName,
                 .forScreen,
             dictionary).dictionaryFromPrimaryOrigin
-        
     }
         
     let onlyOneDictionaryMember = 0
@@ -63,21 +62,22 @@ struct PartView: View {
     }
   
     var zPosition: Double {
-        partName.contains("Joint") ? 10: 0
+        var z = 0.0
+      
+        if partName.contains(Part.arm.rawValue) {z = 9}
+        if partName.contains(Part.footSupport.rawValue) {z = 0}
+       if partName.contains(Part.sitOn.rawValue) {z = 3}
+        if partName.contains("Joint") {z = 10}
+    return z
     }
     
     var body: some View {
-        //let frameSize = objectPickVM.getScreenFrameSize(dictionary)
         
       LocalOutlineRectangle.path(corners: partCorners, color)
-            //.frame(width: partDimension.width, height: partDimension.length)
             .zIndex(zPosition)
 
         .onTapGesture {
             partEditVM.setCurrentPartToEditName(uniquePartName)
-            
-            //vm.getDimensionOfPart(uniquePartName)
-            
         }
     }
 }
@@ -107,7 +107,6 @@ struct ObjectView: View {
         objectPickVM.getRelevantDictionary(.forMeasurement)
     }
     
-    
     var defaultScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(dictionary)
     }
@@ -124,17 +123,25 @@ struct ObjectView: View {
     
     var zoom: CGFloat {
         getZoom()
-      
     }
     
     var uniquePartNames: [String]
     
-    var dictionaryForScreen: PositionDictionary {
-        objectPickVM.getRelevantDictionary(.forScreen)
-    }
+//    var dictionaryForScreen: PositionDictionary {
+//        objectPickVM.getRelevantDictionary(.forScreen)
+//    }
     
-    init( _ names: [String] ) {
+  //  let dictionaryForScreen: PositionDictionary
+//    {
+//        objectPickVM.getRelevantDictionary(.forScreen)
+//    }
+    let dictionaryVersion: DictionaryVersion
+    init(
+        _ names: [String],
+        _ dictionaryVersion: DictionaryVersion = .useCurrent) {
         uniquePartNames = names
+            self.dictionaryVersion = dictionaryVersion
+           // dictionaryForScreen = objectPickVM.getRelevantDictionary(.forScreen)
     }
     
 
@@ -179,19 +186,21 @@ struct ObjectView: View {
 
     
     var body: some View {
+        
+        let dictionaryForScreen = objectPickVM.getRelevantDictionary(.forScreen, dictionaryVersion)
         let frameSize = objectPickVM.getScreenFrameSize()
         
         GeometryReader { reader in
             ForEach(uniquePartNames, id: \.self) { name in
                 PartView(
                     uniquePartName: name,
-                    dictionary: dictionary
+                    dictionary: dictionaryForScreen
                 )
             }
         }
-        .border(.red, width: 5)
+        //.border(.red, width: 5)
         .frame(width: frameSize.width, height: frameSize.length)
-        .background(Color.red.opacity(0.3) )
+        //.background(Color.red.opacity(0.3) )
         .position(location)
         .gesture(
             objectDrag

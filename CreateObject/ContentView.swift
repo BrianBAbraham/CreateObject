@@ -115,11 +115,6 @@ struct CircleModifier: ViewModifier {
 ///
 
 
-
-
-
-
-
 struct DefaultDictionaryAsList {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @State var defaultDictionaryAsList = [""]
@@ -174,7 +169,9 @@ struct ListView: View {
 struct ContentView: View {
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @StateObject var cdVM = CoreDataViewModel()
+    @EnvironmentObject var objecEditVM: ObjectEditViewModel
+    @EnvironmentObject var coreDataVM: CoreDataViewModel
+   // @StateObject var coreDataVM = CoreDataViewModel()
    
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
@@ -227,40 +224,51 @@ struct ContentView: View {
 
     }
     
-    var deleteAllButtonView: some View {
-            Button(action: {
-                cdVM.deleteAllObjects()
-            }, label: {
-                Text("delete all")
-                    .foregroundColor(.blue)
-            } )
-    }
-    
-    
-    var savedObjectDictionaryAsListButtonView: some View {
-        VStack {
-            deleteAllButtonView
-            List {
-                ForEach(cdVM.savedEntities) {entity in
-                    Button {
-                       savedDictionaryAsList  =
-                        objectPickVM.getPartCornersFromPrimaryOriginDictionary(entity)
-                        objectPickVM.setCurrentObjectName(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
-                    } label: {
-                        HStack{
-                            Text(entity.objectType ?? "")
-                            Text(entity.objectName ?? "")
-                        }
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .foregroundColor(.primary)
-                }
-                .onDelete(perform: cdVM.deleteObject)
-            }
-
-        }
-
-    }
+//    var deleteAllButtonView: some View {
+//            Button(action: {
+//                coreDataVM.deleteAllObjects()
+//            }, label: {
+//                Text("delete all")
+//                    .foregroundColor(.blue)
+//            } )
+//    }
+//
+//
+//    var savedObjectDictionaryAsListButtonView: some View {
+//        VStack {
+//            deleteAllButtonView
+//            List {
+//                ForEach(coreDataVM.savedEntities) {entity in
+//                    Button {
+//
+//                        objectPickVM.setLoadedDictionary(entity)
+//
+//                        let loadedDictionary =
+//                       objectPickVM.getLoadedDictionary()
+//
+//
+//
+//                        objectPickVM.setCurrentObjectName(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
+//
+//                        objectPickVM.setCurrentObjectDictionary(
+//                            entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue,
+//                            loadedDictionary)
+//
+//                    } label: {
+//                        HStack{
+//                            Text(entity.objectType ?? "")
+//                            Text(entity.objectName ?? "")
+//                        }
+//                    }
+//                    .buttonStyle(PlainButtonStyle())
+//                    .foregroundColor(.primary)
+//                }
+//                .onDelete(perform: coreDataVM.deleteObject)
+//            }
+//
+//        }
+//
+//    }
     
     var uniquePartNames: [String] {
         objectPickVM.getUniquePartNamesFromObjectDictionary()
@@ -287,12 +295,12 @@ struct ContentView: View {
     }
 
     func saveData (_ objectName: String) {
-                cdVM.addObject(
+                coreDataVM.addObject(
                     names: objectPickVM.getAllOriginNames(),
                     values: objectPickVM.getAllOriginValues(),
                     objectType: objectPickVM.getCurrentObjectName(),
                 objectName: objectName)
-                cdVM.fetchNames()
+                coreDataVM.fetchNames()
     }
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -309,7 +317,7 @@ struct ContentView: View {
             VStack {
                 NavigationLink(destination:
                     VStack( spacing: -150) {
-                    PickObjectView()
+                    PickDefaultObjectView()
                     ObjectView(uniquePartNames)
                         .scaleEffect(0.5)
                     
@@ -317,12 +325,18 @@ struct ContentView: View {
                 ) {
                     Text("Default equipment")
                     }
-
-                NavigationLink(destination: savedObjectDictionaryAsListButtonView , isActive: self.$isActive ) {
+                
+                
+                
+                NavigationLink(destination: PickSavedObjectView() , isActive: self.$isActive ) {
                     Text("Saved equipment")
                         .font(isActive ? .headline:.body)
                 }
 
+                
+                
+                
+                
                 NavigationLink(destination:
                     VStack {
                     DemoExclusiveToggles()
@@ -348,6 +362,10 @@ struct ContentView: View {
 
                 NavigationLink(destination: ListView(equipmentName, defaultObjectDictionaryAsList)){
                  Text("View default dictionary")
+                }
+                
+                NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
+                 Text("View saved dictionary")
                 }
                 
                 NavigationLink(destination: uniquePartNamesAsListView ) {
