@@ -31,6 +31,7 @@
 		FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC054829EADEFB00FCB400 /* JointDimensions.swift */; };
 		FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931CF2A0134AE00F86B4F /* CircleView.swift */; };
 		FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931D12A014DDF00F86B4F /* SceneVM.swift */; };
+		FDB931D42A01504D00F86B4F /* SceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931D32A01504D00F86B4F /* SceneView.swift */; };
 		FDB96BC929BA491A0011FAFF /* CreateFixedWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */; };
 		FDBD6EF829C4A6F700144603 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBD6EF729C4A6F700144603 /* Types.swift */; };
 		FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */; };
@@ -75,6 +76,7 @@
 		FDAC054829EADEFB00FCB400 /* JointDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointDimensions.swift; sourceTree = "<group>"; };
 		FDB931CF2A0134AE00F86B4F /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		FDB931D12A014DDF00F86B4F /* SceneVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneVM.swift; sourceTree = "<group>"; };
+		FDB931D32A01504D00F86B4F /* SceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneView.swift; sourceTree = "<group>"; };
 		FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFixedWheel.swift; sourceTree = "<group>"; };
 		FDBD6EF729C4A6F700144603 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionTransformation.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
 				FDA4743C29E46925003F1202 /* ObjectView.swift */,
 				FDC71F02296C911200B68427 /* ContentView.swift */,
+				FDB931D32A01504D00F86B4F /* SceneView.swift */,
 				FDB931CF2A0134AE00F86B4F /* CircleView.swift */,
 				FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */,
 				FDC71F04296C911300B68427 /* Assets.xcassets */,
@@ -259,6 +262,7 @@
 				FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */,
 				FDBD6EF829C4A6F700144603 /* Types.swift in Sources */,
 				FD9B4B4429A1265600E408AA /* DictionaryTransformation.swift in Sources */,
+				FDB931D42A01504D00F86B4F /* SceneView.swift in Sources */,
 				FD93EFBC29DC7EB900456380 /* ObjectEditVM.swift in Sources */,
 				FD9CF76E29A65AC4006B5B40 /* PartCreation.swift in Sources */,
 				FDCE3F0E299A8F9600C19F2A /* ObjectContainer.xcdatamodeld in Sources */,

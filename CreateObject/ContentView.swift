@@ -124,15 +124,17 @@ struct ContentView: View {
     
         NavigationView {
             VStack {
-                NavigationLink(destination: Text("Show added objects here")){
+                NavigationLink(destination: SceneView()){
                  Text("Scene")
                 }
                 
                 NavigationLink(destination:
                     VStack( spacing: -150) {
+                 
                     PickDefaultObjectView()
                     ObjectView(uniquePartNames)
                         .scaleEffect(0.5)
+                    AddToSceneView()
                     }
                 ) {
                     Text("Default equipment")

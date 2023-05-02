@@ -10,6 +10,8 @@ import Foundation
 typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
 typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
+typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
+
 typealias LeftRightPositionAsIosAxis = (
     left: PositionAsIosAxes, right: PositionAsIosAxes)
 

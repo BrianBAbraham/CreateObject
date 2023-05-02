@@ -90,7 +90,9 @@ extension ObjectPickViewModel {
     
     
     func getLoadedDictionary()->[String: PositionAsIosAxes] {
-        objectPickModel.loadedDictionary
+        //print("getting loaded dictionary")
+        return
+            objectPickModel.loadedDictionary
     }
     
     func getMaximumOfObject(_ objectDimensions: Dimension)
@@ -331,7 +333,7 @@ extension ObjectPickViewModel {
     func setLoadedDictionary(_ entity: LocationEntity){
         let allOriginNames = entity.interOriginNames ?? ""
         let allOriginValues = entity.interOriginValues ?? ""
-//print("loaded dictiionary set")
+print("loaded dictiionary set")
         objectPickModel.loadedDictionary =
         OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary
     }

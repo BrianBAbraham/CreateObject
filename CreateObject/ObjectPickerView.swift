@@ -76,15 +76,7 @@ struct PickSavedObjectView: View {
             } )
     }
     
-    var addToSceneButtonView: some View {
-            Button(action: {
-                
-            }, label: {
-                Text("add to scene")
-                    .foregroundColor(.blue)
-            } )
-    }
-    
+
     var uniquePartNames: [String] {
         objectPickVM.getUniquePartNamesFromLoadedDictionary()
     }
@@ -96,7 +88,7 @@ struct PickSavedObjectView: View {
                 Spacer()
              addToEditButtonView
                 Spacer()
-                addToSceneButtonView
+                AddToSceneView()
             }
             .padding()
 
