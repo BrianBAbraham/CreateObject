@@ -35,9 +35,8 @@ struct SceneView: View {
         
         //let numberOfObjects = objects.count
         ZStack {
-            ForEach(allObjects) { object in
-                //object.object
-                ObjectView(GetUniqueNames(object.object).forPart)
+            ForEach(allObjects) { objectAndId in
+                ObjectView(GetUniqueNames(objectAndId.object).forPart)
             }
             .scaleEffect(0.5)
         }

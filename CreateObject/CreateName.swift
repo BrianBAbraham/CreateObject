@@ -167,7 +167,7 @@ struct GetUniqueNames {
                     }
                 }
             }
-
+            print(uniqueNames.count)
             return uniqueNames.removingDuplicates()
         }
     }
