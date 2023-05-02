@@ -29,6 +29,8 @@
 		FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */; };
 		FDAB603829E98C2500BE56FA /* DictionaryInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */; };
 		FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC054829EADEFB00FCB400 /* JointDimensions.swift */; };
+		FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931CF2A0134AE00F86B4F /* CircleView.swift */; };
+		FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931D12A014DDF00F86B4F /* SceneVM.swift */; };
 		FDB96BC929BA491A0011FAFF /* CreateFixedWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */; };
 		FDBD6EF829C4A6F700144603 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBD6EF729C4A6F700144603 /* Types.swift */; };
 		FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */; };
@@ -71,6 +73,8 @@
 		FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantBodySupport.swift; sourceTree = "<group>"; };
 		FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryInformation.swift; sourceTree = "<group>"; };
 		FDAC054829EADEFB00FCB400 /* JointDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointDimensions.swift; sourceTree = "<group>"; };
+		FDB931CF2A0134AE00F86B4F /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
+		FDB931D12A014DDF00F86B4F /* SceneVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneVM.swift; sourceTree = "<group>"; };
 		FDB96BC829BA491A0011FAFF /* CreateFixedWheel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFixedWheel.swift; sourceTree = "<group>"; };
 		FDBD6EF729C4A6F700144603 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionTransformation.swift; sourceTree = "<group>"; };
@@ -131,6 +135,7 @@
 				FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */,
 				FDD0CAEE29DB393600203BE5 /* Screen.swift */,
 				FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */,
+				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */,
 				FD91AF8F296DBBB0005DEA51 /* OccupantSupportTypes.swift */,
@@ -157,6 +162,7 @@
 				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
 				FDA4743C29E46925003F1202 /* ObjectView.swift */,
 				FDC71F02296C911200B68427 /* ContentView.swift */,
+				FDB931CF2A0134AE00F86B4F /* CircleView.swift */,
 				FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */,
 				FDC71F04296C911300B68427 /* Assets.xcassets */,
 				FDC71F06296C911300B68427 /* Preview Content */,
@@ -244,6 +250,7 @@
 			files = (
 				FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */,
 				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
+				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
 				FDBD6EFC29C4B40500144603 /* CreateOccupantSideSupport.swift in Sources */,
 				FDA3352E29AA5DF200409A61 /* CreateObjectRectangle.swift in Sources */,
 				FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */,
@@ -258,6 +265,7 @@
 				FD9A5429298BF1FB00B903C3 /* CreateOccupantFootSupport.swift in Sources */,
 				FD95DA2C29E40F1B009A9500 /* EditObjectMenuView.swift in Sources */,
 				FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */,
+				FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
 				FD9B4B4229A0E01000E408AA /* CreateBaseWithAllCasters.swift in Sources */,
 				FD9E02F32975613B00ACAA70 /* Joints.swift in Sources */,

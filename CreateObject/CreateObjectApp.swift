@@ -12,6 +12,7 @@ struct CreateObjectApp: App {
     @StateObject var objectPickVM = ObjectPickViewModel()
     @StateObject var objectEditVM = ObjectEditViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
+    @StateObject var sceneVM = SceneViewModel()
     //@StateObject var  corerDataViewModel = CoreDataViewModel()
     var body: some Scene {
         WindowGroup {
@@ -20,6 +21,7 @@ struct CreateObjectApp: App {
                 .environmentObject(objectPickVM)
                 .environmentObject(objectEditVM)
                 .environmentObject(coreDataVM)
+                .environmentObject(sceneVM)
         }
     }
 }

@@ -8,125 +8,6 @@
 import SwiftUI
 
 
-
-//struct ObjectNameKey: EnvironmentKey {
-//    static var defaultValue: String = "RearDriveWheelchair"
-//}
-//
-//extension EnvironmentValues {
-//    var objectName: String {
-//        get {
-//            self[ObjectNameKey.self]
-//        }
-//        set {
-//            self[ObjectNameKey.self] = newValue
-//        }
-//    }
-//}
-//
-//
-//extension View {
-//    func objectName( _ name: String) -> some View {
-//
-//        environment(\.objectName, name)
-//
-//    }
-//}
-
-struct OriginView: View {
-    let originDictionary: [String: PositionAsIosAxes]
-    
-//    var originDictionaryValuesAsArray: [String: [PositionAsIosAxes]] {
-//        DictionaryWithValue(originDictionary).asArray()
-//    }
-    var originDictionaryWithCGPointValues: [String: CGPoint] {
-        DictionaryWithValue(originDictionary).asCGPoint()
-    }
-    
-   var keys: [String] {
-        originDictionaryWithCGPointValues.map {$0.key}
-    }
-    var values: [CGPoint] {
-        originDictionaryWithCGPointValues.map {$0.value}
-    }
-    
-
-    
-    var body: some View {
-        ForEach(0..<keys.count, id: \.self) {index in
-            MyCircle(fillColor: .black, strokeColor: .black, 10, values[index])
-        }
-    }
-}
-
-struct MyCircle: View {
-    let strokeColor: Color
-    let fillColor: Color?
-    let dimension: Double
-    let position: CGPoint
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    init(fillColor: Color?, strokeColor: Color,  _ dimension: Double, _ position: CGPoint) {
-        self.fillColor = fillColor
-        self.strokeColor = strokeColor
-        self.dimension = dimension
-        self.position = position
-    }
-    var body: some View {
-        ZStack{
-            if let fillColorUnwrapped = fillColor {
-                ZStack{
-                    Circle()
-                        .fill(fillColorUnwrapped)
-                        .modifier(CircleModifier( dimension: dimension, position: position))
-                    Circle()
-                        .fill(.black)
-//                        .modifier(CircleModifier( dimension: dimension * (horizontalSizeClass == .compact ? 2:2), position: position))
-                        .modifier(CircleModifier( dimension: 10, position: position))
-                        .opacity(0.0001)
-                }
-            }
-            Circle()
-                .stroke(self.strokeColor)
-                .modifier(CircleModifier( dimension: dimension, position: position))
-        }
-    }
-}
-
-struct CircleModifier: ViewModifier {
-    let dimension: Double
-    let position: CGPoint
-    
-    func body(content: Content) -> some View {
-        content
-            .frame(width: self.dimension, height: self.dimension)
-            .position(self.position)
-    }
-}
-
-
-
-
-
-
-
-/// add default to scene
-/// add saved to scene
-/// edit added
-///
-
-
-struct DefaultDictionaryAsList {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @State var defaultDictionaryAsList = [""]
-    
-   func getDefaultDictionaryAsList ()
-    -> [String] {
-        objectPickVM.getList(.useDefault)
-    }
-}
-
-
-
 struct EnterTextView: View {
     @State private var name: String = ""
 
@@ -171,10 +52,18 @@ struct ContentView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objecEditVM: ObjectEditViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
-   // @StateObject var coreDataVM = CoreDataViewModel()
+    @EnvironmentObject var sceneVM: SceneViewModel
+    
+    @State var isActive = true
+    @State var globalPosition: CGPoint?
+    @State var position: CGPoint = .zero
    
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
+    
+    init(_ equipmentName: String) {
+        self.equipmentName = equipmentName
+        }
     
     var currentObjectDictionaryAsList: [String] {
         objectPickVM.getList(.useCurrent)
@@ -191,16 +80,6 @@ struct ContentView: View {
     
     let equipmentName: String
 
-    init(_ equipmentName: String) {
-        self.equipmentName = equipmentName
-        //UISegmentedControl.appearance().backgroundColor = .purple        //This will change the font size
-//        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .caption2)], for: .highlighted)
-//
-//        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .footnote)], for: .normal)
-        
-        //print("INITATE CONTENT VIEW")
-        }
-    
     var enterTextView: some View {
         VStack(alignment: .leading) {
             TextField(equipmentName, text: $savedAsName)
@@ -212,86 +91,21 @@ struct ContentView: View {
         HStack{
             Button(action: {
                 saveData(equipmentName + "_" + savedAsName)
-               // vm.getUniquePartNames(vm.getLoadedDictionary())
             }, label: {
                 Text("save")
                     .foregroundColor(.blue)
             } )
-            
             enterTextView
         }
         .padding()
-
     }
-    
-//    var deleteAllButtonView: some View {
-//            Button(action: {
-//                coreDataVM.deleteAllObjects()
-//            }, label: {
-//                Text("delete all")
-//                    .foregroundColor(.blue)
-//            } )
-//    }
-//
-//
-//    var savedObjectDictionaryAsListButtonView: some View {
-//        VStack {
-//            deleteAllButtonView
-//            List {
-//                ForEach(coreDataVM.savedEntities) {entity in
-//                    Button {
-//
-//                        objectPickVM.setLoadedDictionary(entity)
-//
-//                        let loadedDictionary =
-//                       objectPickVM.getLoadedDictionary()
-//
-//
-//
-//                        objectPickVM.setCurrentObjectName(entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue)
-//
-//                        objectPickVM.setCurrentObjectDictionary(
-//                            entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue,
-//                            loadedDictionary)
-//
-//                    } label: {
-//                        HStack{
-//                            Text(entity.objectType ?? "")
-//                            Text(entity.objectName ?? "")
-//                        }
-//                    }
-//                    .buttonStyle(PlainButtonStyle())
-//                    .foregroundColor(.primary)
-//                }
-//                .onDelete(perform: coreDataVM.deleteObject)
-//            }
-//
-//        }
-//
-//    }
-    
+       
     var uniquePartNames: [String] {
         objectPickVM.getUniquePartNamesFromObjectDictionary()
     }
-    
-    var uniquePartNamesAsListView: some View {
-        VStack{
-            Text(equipmentName)
-            List{
-                Section(header: Text("Dictionary")) {
-                    ForEach (0..<uniquePartNames.count, id: \.self) { index in
-                        Text("\( uniquePartNames[index])")
-                    }
-                }
-            }
-        }
 
-    }
-    
     var originDictionary: [String] {
-        
         DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary(),"test")
-       
     }
 
     func saveData (_ objectName: String) {
@@ -302,30 +116,27 @@ struct ContentView: View {
                 objectName: objectName)
                 coreDataVM.fetchNames()
     }
-    
-    @Environment(\.managedObjectContext) private var viewContext
-      @Environment(\.undoManager) private var undoManager
-    //@State var isPresented = true
-    @State var isActive = true
-    @State var globalPosition: CGPoint? // = CGPoint(x: 0, y: 0)
-    @State var position: CGPoint = .zero
-    //let initialObjectPosition = globalPosition
+
+
+   
     
     var body: some View {
     
         NavigationView {
             VStack {
+                NavigationLink(destination: Text("Show added objects here")){
+                 Text("Scene")
+                }
+                
                 NavigationLink(destination:
                     VStack( spacing: -150) {
                     PickDefaultObjectView()
                     ObjectView(uniquePartNames)
                         .scaleEffect(0.5)
-                    
                     }
                 ) {
                     Text("Default equipment")
                     }
-                
                 
                 
                 NavigationLink(destination: PickSavedObjectView() , isActive: self.$isActive ) {
@@ -334,27 +145,21 @@ struct ContentView: View {
                 }
 
                 
-                
-                
-                
                 NavigationLink(destination:
                     VStack {
-                    DemoExclusiveToggles()
-                            ObjectView(uniquePartNames)
-                                .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
-                                    self.globalPosition = value
-                                })
-                    //Text("x: \(Int(globalPosition.x))   y:\(Int(globalPosition.y))  ")
+                    Text( objectPickVM.getCurrentObjectName())
+                    //DemoExclusiveToggles()
+                    ObjectView(uniquePartNames)
+                        .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
+                            self.globalPosition = value
+                        })
+                    
                     EditObjectMenuView()
-                        saveButtonView
+                    saveButtonView
                     }
                 ) {
                     Text("Edit equipment")
                 }
-
-                .onAppear{
-                    viewContext.undoManager = undoManager
-                 }
 
                 NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
                  Text("View current dictionary")
@@ -368,11 +173,11 @@ struct ContentView: View {
                  Text("View saved dictionary")
                 }
                 
-                NavigationLink(destination: uniquePartNamesAsListView ) {
+                NavigationLink(destination: ListView(equipmentName, uniquePartNames) ) {
                     Text("View dictionary parts")
                 }
 
-                NavigationLink(destination: uniquePartNamesAsListView ) {
+                NavigationLink(destination: ListView(equipmentName, uniquePartNames)) {
                     Text("Settings")
                 }
 
@@ -391,12 +196,7 @@ struct CustomPreferenceKey: PreferenceKey {
     }
 }
    
-//
 struct ContentView_Previews: PreviewProvider {
-   // @StateObject var epVM: ObjectPickViewModel
-//    @StateObject var partEditVM = PartEditViewModel()
-
-    
     static var previews: some View {
        // VStack {
             ContentView("RearDriveWheelchair")

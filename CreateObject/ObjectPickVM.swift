@@ -9,7 +9,7 @@ import Foundation
 
 struct ObjectPickModel {
     var currentObjectName: String  //FixedWheelBase.Subtype.midDrive.rawValu
-    
+
     var currentObjectDictionary: PositionDictionary
     var defaultDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
@@ -293,7 +293,8 @@ extension ObjectPickViewModel {
 
     func getUniquePartNamesFromLoadedDictionary() -> [String] {
    
-        let uniquePartNames =  GetUniqueNames(getCurrentObjectDictionary()).forPart
+        //let uniquePartNames =  GetUniqueNames(getCurrentObjectDictionary()).forPart
+        let uniquePartNames =  GetUniqueNames(getLoadedDictionary()).forPart
 
         return  uniquePartNames
     }
@@ -305,7 +306,11 @@ extension ObjectPickViewModel {
         return  uniquePartNames
     }
     
-
+//    func setLoadedObjectName(_ objectName: String){
+//        objectPickModel.loadedObjectName = objectName
+//        setCurrentObjectDictionary(objectName)
+//    }
+    
     
     func setCurrentObjectName(_ objectName: String){
         objectPickModel.currentObjectName = objectName

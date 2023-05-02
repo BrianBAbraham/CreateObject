@@ -26,7 +26,7 @@ struct EditFootSupportLeftRightPosition: View {
         let toggleLabel =  leftAndRight ? "R = L": "R ≠ L"
        
         VStack{
-            Text( objectPickVM.getCurrentObjectName())
+           
             Spacer()
         
             Toggle(toggleLabel,isOn: $leftAndRight)
@@ -112,7 +112,7 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
             .onChange(of: proposedLength) { value in
 //print(proposedLength)
                 editedDictionary =
-                objectEditVM.setPrimaryToFootSupportWithoutHangerFrontLength(
+                objectEditVM.setPrimaryToFootSupportFrontLengthWhenNoFootHanger(
                     curentDictionary,
                     .id0,
                     proposedLength - currentLength.value

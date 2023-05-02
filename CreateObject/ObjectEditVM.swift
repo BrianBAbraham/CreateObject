@@ -24,136 +24,10 @@ class ObjectEditViewModel: ObservableObject {
 
 
 extension ObjectEditViewModel {
+    
     func getCurrenPartToEditName() -> String {
         let partName = partEditModel.part
-//print("get " + partName)
         return partName
-
-    }
-    
-    func setBothSidesToSameLength (
-        _ part: Part,
-        _ dictionary: PositionDictionary ) {
-            
-            
-        }
-    
-    func setPrimaryToFootSupportWithHangerFrontLength(
-        _ dictionary: PositionDictionary,
-        _ partId: Part,
-        _ lengthChange:Double)
-        -> PositionDictionary {
-            
-            let namesForFilter =
-            [Part.footSupport.rawValue + Part.stringLink.rawValue,
-             Part.footSupportHorizontalJoint.rawValue
-             ]
-            
-            var filteredDictionary: PositionDictionary = [:]
-            
-            for name in namesForFilter {
-                filteredDictionary  +=
-                dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
-            }
-
-            if partId != .id {
-                let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
-                
-                filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
-            }
-            
-            var editedDictionary = dictionary
-            
-            for (key, value) in filteredDictionary {
-                
-                let newValue = value.y + lengthChange
-                filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
-                editedDictionary[key] = filteredDictionary[key]
-                
-                if key.contains(Part.footSupportHangerLink.rawValue) {
-                    editedDictionary[key] = nil
-                }
-            }
-//print(filteredDictionary)
-            
-            let firstItem = filteredDictionary.first!
-            let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
-            let supportIndex =
-            firstItem.key.contains(supportIndexName) ? 0 : 1
-            
-            let hangerLinkDictionary =
-                CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
-                    .footSupportHangerSitOnVerticalJoint,
-                    .footSupportHorizontalJoint,
-                    .footSupportHangerLink,
-                    editedDictionary,
-                    supportIndex).newCornerDictionary
-            
-            editedDictionary += hangerLinkDictionary
-            
-            return editedDictionary
-    }
-    
-    
-    func setPrimaryToFootSupportWithoutHangerFrontLength(
-        _ dictionary: PositionDictionary,
-        _ partId: Part,
-        _ lengthChange:Double)
-    -> PositionDictionary {
-        
-//print(lengthChange)
-        let namesForFilter =
-        [Part.footSupportInOnePiece.rawValue + Part.stringLink.rawValue
-         ]
-//print(namesForFilter)
-        var filteredDictionary: PositionDictionary = [:]
-        
-        for name in namesForFilter {
-            filteredDictionary  +=
-            dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
-        }
-
-        if partId != .id {
-            let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
-            
-            filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
-            
-//print(filteredDictionary)
-        }
-        
-        var editedDictionary = dictionary
-        
-        
-        for (key, value) in filteredDictionary {
-            let ignoreCornersAtLengthIsZero = value.y == 0.0
-            let newValue = ignoreCornersAtLengthIsZero ? 0.0: value.y + lengthChange
-            filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
-            editedDictionary[key] = filteredDictionary[key]
-
-//            if key.contains(Part.footSupportHangerLink.rawValue) {
-//                editedDictionary[key] = nil
-//            }
-        }
-        
-//print(editedDictionary)
-//
-//
-//        let firstItem = filteredDictionary.first!
-//        let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
-//        let supportIndex =
-//        firstItem.key.contains(supportIndexName) ? 0 : 1
-        
-//        let hangerLinkDictionary =
-//            CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
-//                .footSupportHangerSitOnVerticalJoint,
-//                .footSupportHorizontalJoint,
-//                .footSupportHangerLink,
-//                editedDictionary,
-//                supportIndex).newCornerDictionary
-//
-//        editedDictionary += hangerLinkDictionary
-        
-        return editedDictionary
     }
     
     func getNames () {
@@ -161,12 +35,21 @@ extension ObjectEditViewModel {
         //or get names from dictionary using unique value
     }
     
-    func getPrimaryAxisToFootSupportEndLength(
+   
+    func getEditOptionsForObject ( _ dictionary: PositionDictionary
+    ) {
+        
+    }
+    
+    
+  
+    
+    
+    func getPrimaryAxisToFootSupportEndLength (
         dictionary: PositionDictionary,
         name: String,
         part: Part,
-        _ supportIndex: Int = 0
-  )
+        _ supportIndex: Int = 0)
         -> [Double] {
             var lengths: [Double] = []
             let partName  = CreateNameFromParts([part,.stringLink]).name
@@ -201,38 +84,32 @@ extension ObjectEditViewModel {
                 let ifAllEqualUseFirst = 0
                 let values = dictionary.map{$0.1}
                 let yValues = CreateIosPosition.getArrayFromPositions(values).y
-//print(yValues)
-                let minValue = yValues.min() ?? yValues[ifAllEqualUseFirst]
                 let maxValue = yValues.max() ?? yValues[ifAllEqualUseFirst]
-//print(maxValue - minValue)
                 return maxValue //- minValue
             }
             
-//print("")
          return lengths
     }
     
     
     
-    func getPrimaryAxisToFootPlateEndLengthMaximum ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
-    -> Double {
+    func getPrimaryAxisToFootPlateEndLengthMaximum ( _ dictionaryForMeasurement: PositionDictionary)
+        -> Double {
         
-        let defaultMinimumLength = getPrimaryAxisToFootSupportEndLengthMinimum(dictionaryForMeasurement)//objectPickVM)
-
-
-       let maximumLength =
+        let defaultMinimumLength = getPrimaryAxisToFootSupportEndLengthMinimum(dictionaryForMeasurement)
+            
+        let maximumLength =
         InitialOccupantFootSupportMeasure.footSupportHangerMaximumLength +
         InitialOccupantFootSupportMeasure.footSupport.length/2 +
         defaultMinimumLength
-        
-//print(maximumLength)
+
         return maximumLength
     }
     
     
     
-    func getPrimaryAxisToFootSupportEndLengthMinimum
-    ( _ dictionaryForMeasurement: PositionDictionary)//_ objectPickVM: ObjectPickViewModel   )
+    func getPrimaryAxisToFootSupportEndLengthMinimum (
+        _ dictionaryForMeasurement: PositionDictionary)
         -> Double {
         
         let defaultDictionary = dictionaryForMeasurement
@@ -265,18 +142,6 @@ extension ObjectEditViewModel {
                 
             }
         return range
-    }
-    
-    
-    
-    func removePartFromDictionary (
-    _ dictionary: PositionDictionary,
-    _ part: Part,
-    _ supportIndex: Int = 0)
-    -> PositionDictionary {
-        
-        dictionary.filter ({!$0.key.contains("id0") })
-        
     }
     
     
@@ -331,6 +196,8 @@ extension ObjectEditViewModel {
     
     
     func getColorForPart(_ uniquePartName: String)-> Color {
+        
+//print(uniquePartName)
         var color: Color = .blue
         let partNameBeingEdited = getCurrenPartToEditName()
         
@@ -376,10 +243,105 @@ extension ObjectEditViewModel {
         
     }
     
+    
+    
     func setCurrentPartToEditName(_ partName: String) {
 //print("set " + partName)
             partEditModel.part = partName
     }
+    
+    
+    
+    func setPrimaryToFootSupportWithHangerFrontLength(
+        _ dictionary: PositionDictionary,
+        _ partId: Part,
+        _ lengthChange:Double)
+        -> PositionDictionary {
+            
+            let namesForFilter =
+            [Part.footSupport.rawValue + Part.stringLink.rawValue,
+             Part.footSupportHorizontalJoint.rawValue
+             ]
+            
+            var filteredDictionary: PositionDictionary = [:]
+            
+            for name in namesForFilter {
+                filteredDictionary  +=
+                dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
+            }
+
+            if partId != .id {
+                let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
+                
+                filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
+            }
+            
+            var editedDictionary = dictionary
+            
+            for (key, value) in filteredDictionary {
+                
+                let newValue = value.y + lengthChange
+                filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
+                editedDictionary[key] = filteredDictionary[key]
+                
+                if key.contains(Part.footSupportHangerLink.rawValue) {
+                    editedDictionary[key] = nil
+                }
+            }
+            
+            let firstItem = filteredDictionary.first!
+            let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
+            let supportIndex =
+            firstItem.key.contains(supportIndexName) ? 0 : 1
+            
+            let hangerLinkDictionary =
+                CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
+                    .footSupportHangerSitOnVerticalJoint,
+                    .footSupportHorizontalJoint,
+                    .footSupportHangerLink,
+                    editedDictionary,
+                    supportIndex).newCornerDictionary
+            
+            editedDictionary += hangerLinkDictionary
+            
+            return editedDictionary
+    }
+    
+    
+    func setPrimaryToFootSupportFrontLengthWhenNoFootHanger(
+        _ dictionary: PositionDictionary,
+        _ partId: Part,
+        _ lengthChange:Double)
+        -> PositionDictionary {
+        
+        let namesForFilter =
+        [Part.footSupportInOnePiece.rawValue + Part.stringLink.rawValue
+         ]
+
+        var filteredDictionary: PositionDictionary = [:]
+        
+        for name in namesForFilter {
+            filteredDictionary  +=
+            dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
+        }
+
+        if partId != .id {
+            let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
+            
+            filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
+        }
+        
+        var editedDictionary = dictionary
+        
+        for (key, value) in filteredDictionary {
+            let ignoreCornersAtLengthIsZero = value.y == 0.0
+            let newValue = ignoreCornersAtLengthIsZero ? 0.0: value.y + lengthChange
+            filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
+            editedDictionary[key] = filteredDictionary[key]
+        }
+        return editedDictionary
+    }
+    
 }
 
 

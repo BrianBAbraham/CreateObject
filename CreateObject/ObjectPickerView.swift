@@ -67,6 +67,15 @@ struct PickSavedObjectView: View {
             } )
     }
     
+    var addToEditButtonView: some View {
+            Button(action: {
+                
+            }, label: {
+                Text("add to edit")
+                    .foregroundColor(.blue)
+            } )
+    }
+    
     var addToSceneButtonView: some View {
             Button(action: {
                 
@@ -85,6 +94,8 @@ struct PickSavedObjectView: View {
             HStack {
                 deleteAllButtonView
                 Spacer()
+             addToEditButtonView
+                Spacer()
                 addToSceneButtonView
             }
             .padding()
@@ -93,18 +104,9 @@ struct PickSavedObjectView: View {
                 ForEach(coreDataVM.savedEntities) {entity in
                     Button {
                         objectPickVM.setLoadedDictionary(entity)
-
-//                        let loadedDictionary =
-//                           objectPickVM.getLoadedDictionary()
-                        let objectName = entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue
-//print(objectName)
+//                        let objectName =
+//                        entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue
 //                        objectPickVM.setCurrentObjectName(objectName)
-//
-//                        objectPickVM.setDefaultDictionary(objectName)
-//
-//                        objectPickVM.setCurrentObjectDictionary(
-//                            entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue,
-//                            loadedDictionary)
 
                     } label: {
                         HStack{

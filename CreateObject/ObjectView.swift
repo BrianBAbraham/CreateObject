@@ -215,7 +215,6 @@ struct ObjectView: View {
             currentZoom = 0.0
             }
          )
-//            .border(.red, width: 5)
     }
 }
 
