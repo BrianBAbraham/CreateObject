@@ -10,13 +10,25 @@ import SwiftUI
 struct AddToSceneView: View {
     @EnvironmentObject var sceneVM: SceneViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    var dictionary: PositionDictionary{
-        objectPickVM.getCurrentObjectDictionary()
-    }
+    let dictionary: PositionDictionary
+    let name: String
+    
+    init(
+        _ dictionary: PositionDictionary,
+        _ name: String) {
+            self.dictionary = dictionary
+            self.name = name
+        }
+//    var dictionary: PositionDictionary{
+//        objectPickVM.getCurrentObjectDictionary()
+//    }
+//    var name: String {
+//        objectPickVM.getCurrentObjectName()
+//    }
     
     var body: some View {
             Button(action: {
-                sceneVM.addObject(dictionary)
+                sceneVM.addObject(dictionary, name)
 
             }, label: {
                 Text("add to scene")
@@ -33,15 +45,21 @@ struct SceneView: View {
 
     var body: some View {
         
-        //let numberOfObjects = objects.count
-        ZStack {
-            ForEach(allObjects) { objectAndId in
-                ObjectView(GetUniqueNames(objectAndId.object).forPart)
+        ScrollView (.vertical, showsIndicators: true){
+            VStack {
+                ForEach(allObjects) { objectAndId in
+                    HStack {
+                        ObjectView(GetUniqueNames(objectAndId.object).forPart, objectAndId.object, objectAndId.name)
+                        Text(objectAndId.name)
+                    }
+                   
+                }
+                .scaleEffect(0.5)
             }
-            .scaleEffect(0.5)
         }
+        .frame(height: 350)
 
-        //.position(x: 200, y: 200)
+
 
     }
 }

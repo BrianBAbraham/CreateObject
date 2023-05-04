@@ -82,9 +82,9 @@ struct PartView: View {
     }
 }
 
+
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @State var defaultDictionaryAsList = [""]
     
     @GestureState private var startLocation: CGPoint? = nil
     @GestureState private var fingerLocation: CGPoint? = nil
@@ -92,31 +92,23 @@ struct ObjectView: View {
     
     @State var currentZoom: CGFloat = 0.0
     @State var lastCurrentZoom: CGFloat = 0.0
-    
-
-    private var  minimumZoom: Double {
-        0.1
-    }
+    private var  minimumZoom = 0.1
     private var maximimumZoom = 3.0
     
-    var dictionary: PositionDictionary {
-        objectPickVM.getRelevantDictionary(.forScreen)
-    }
+    let dictionary: PositionDictionary
+    
+//    var defaultDictionary: PositionDictionary {
+//        objectPickVM.getRelevantDictionary(.forMeasurement)
+//    }
     
     var defaultDictionary: PositionDictionary {
-        objectPickVM.getRelevantDictionary(.forMeasurement)
+        CreateAllPartsForObject(baseName: objectName).dictionary
     }
     
     var defaultScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(dictionary)
     }
-    
-    var offset: PositionAsIosAxes {
-        objectPickVM.getOffset()    }
-    
-    var offsetCorrection: CGSize {
-        CGSize(width: 0, height: offset.y  )
-    }
+
     var measurementScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(defaultDictionary)
     }
@@ -127,35 +119,27 @@ struct ObjectView: View {
     
     var uniquePartNames: [String]
     
-//    var dictionaryForScreen: PositionDictionary {
-//        objectPickVM.getRelevantDictionary(.forScreen)
-//    }
+    var objectName: String
     
-  //  let dictionaryForScreen: PositionDictionary
-//    {
-//        objectPickVM.getRelevantDictionary(.forScreen)
-//    }
-    let dictionaryVersion: DictionaryVersion
     init(
         _ names: [String],
-        _ dictionaryVersion: DictionaryVersion = .useCurrent) {
+        _ dictionary: PositionDictionary,
+        _ objectName: String) {
         uniquePartNames = names
-            self.dictionaryVersion = dictionaryVersion
-           // dictionaryForScreen = objectPickVM.getRelevantDictionary(.forScreen)
+        self.dictionary = dictionary
+        self.objectName = objectName
     }
     
 
     func limitZoom (_ zoom: CGFloat) -> CGFloat {
-       return max(min(zoom, maximimumZoom),minimumZoom)
+       max(min(zoom, maximimumZoom),minimumZoom)
     }
     
     func getZoom() -> CGFloat {
-        
         let zoom =
         limitZoom( (0.2 + currentZoom + lastCurrentZoom) * defaultScale/measurementScale)
        
      return zoom
-        
     }
         
     var objectDrag: some Gesture {
@@ -170,24 +154,10 @@ struct ObjectView: View {
             }
     }
     
-    //let sizeToEnsureObjectRemainsOnScreen = Screen.smallestDimension
-    
-
-
-//        var addDefaultDictionaryButtonView: some View {
-//                Button(action: {
-//                    defaultDictionaryAsList =
-//                    vm.getList()
-//                }, label: {
-//                    Text("add")
-//                        .foregroundColor(.blue)
-//                } )
-//        }
 
     
     var body: some View {
-        
-        let dictionaryForScreen = objectPickVM.getRelevantDictionary(.forScreen, dictionaryVersion)
+        let dictionaryForScreen = objectPickVM.getObjectDictionaryForScreen(dictionary)
         let frameSize = objectPickVM.getScreenFrameSize()
         
         GeometryReader { reader in
@@ -226,18 +196,18 @@ struct ObjectView: View {
 //}
 
 ////////////////////////
-struct ObjectView_Previews: PreviewProvider {
+//struct ObjectView_Previews: PreviewProvider {
     
 //    let uniquePartNames: [String]
 //    
 //    init() {
 //        let uniquePartNames = ["footSupportHangerSitOnVerticalJoint_id0_sitOn_id0", "footSupport_id1_sitOn_id0", "fixedWheel_id1_sitOn_id0", "footSupportHangerLink_id0_sitOn_id0", "armVerticalJoint_id0_sitOn_id0", "footSupportHorizontalJoint_id0_sitOn_id0", "arm_id1_sitOn_id0", "casterVerticalJointAtFront_id0_sitOn_id0", "footSupportHangerLink_id1_sitOn_id0", "fixedWheel_id0_sitOn_id0", "arm_id0_sitOn_id0", "sitOn_id0", "casterWheelAtFront_id0_sitOn_id0", "casterWheelAtFront_id1_sitOn_id0", "footSupportHangerSitOnVerticalJoint_id1_sitOn_id0", "footSupport_id0_sitOn_id0", "footSupportHorizontalJoint_id1_sitOn_id0", "armVerticalJoint_id1_sitOn_id0", "casterVerticalJointAtFront_id1_sitOn_id0"]
 //    }
-    static var previews: some View {
-        ObjectView(
-     
-            [""]
-
-            )
-    }
-}
+//    static var previews: some View {
+//        ObjectView(
+//
+//            [""]
+//
+//            )
+//    }
+//}

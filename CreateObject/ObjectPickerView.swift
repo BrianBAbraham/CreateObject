@@ -38,7 +38,7 @@ struct PickDefaultObjectView: View {
         }
         .onChange(of: equipmentType) {tag in
             self.equipmentType = tag
-            objectPickVM.setDefaultDictionary(tag)
+            objectPickVM.setDefaultObjectDictionary(tag)
             objectPickVM.setCurrentObjectName(tag)
             objectPickVM.setCurrentObjectDictionary(tag)
         }
@@ -76,9 +76,16 @@ struct PickSavedObjectView: View {
             } )
     }
     
+    var name: String {
+        objectPickVM.getCurrentObjectName()
+    }
 
     var uniquePartNames: [String] {
         objectPickVM.getUniquePartNamesFromLoadedDictionary()
+    }
+    
+    var loadedDictionary: PositionDictionary {
+        objectPickVM.getLoadedDictionary()
     }
     
     var body: some View {
@@ -88,7 +95,7 @@ struct PickSavedObjectView: View {
                 Spacer()
              addToEditButtonView
                 Spacer()
-                AddToSceneView()
+                AddToSceneView(loadedDictionary, name)
             }
             .padding()
 
@@ -112,7 +119,7 @@ struct PickSavedObjectView: View {
                 .onDelete(perform: coreDataVM.deleteObject)
             }
             
-            ObjectView(uniquePartNames, .useLoaded)
+            ObjectView(uniquePartNames, loadedDictionary, name)
                 .scaleEffect(0.25)
         }
     }

@@ -108,6 +108,14 @@ struct ContentView: View {
         DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary(),"test")
     }
 
+    var currentDictionary: PositionDictionary {
+        objectPickVM.getCurrentObjectDictionary()
+    }
+    
+    var name: String {
+        objectPickVM.getCurrentObjectName()
+    }
+    
     func saveData (_ objectName: String) {
                 coreDataVM.addObject(
                     names: objectPickVM.getAllOriginNames(),
@@ -132,9 +140,9 @@ struct ContentView: View {
                     VStack( spacing: -150) {
                  
                     PickDefaultObjectView()
-                    ObjectView(uniquePartNames)
+                    ObjectView(uniquePartNames, currentDictionary, name)
                         .scaleEffect(0.5)
-                    AddToSceneView()
+                    AddToSceneView(currentDictionary, name)
                     }
                 ) {
                     Text("Default equipment")
@@ -151,7 +159,7 @@ struct ContentView: View {
                     VStack {
                     Text( objectPickVM.getCurrentObjectName())
                     //DemoExclusiveToggles()
-                    ObjectView(uniquePartNames)
+                    ObjectView(uniquePartNames, currentDictionary, name)
                         .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
                             self.globalPosition = value
                         })

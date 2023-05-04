@@ -250,6 +250,7 @@ extension ObjectPickViewModel {
     }
     
     
+    
     func getScreenFrameSize ()
         -> Dimension{
         
@@ -324,7 +325,7 @@ extension ObjectPickViewModel {
         objectPickModel.currentObjectDictionary = editedDictionary
     }
     
-    func setDefaultDictionary(_ objectName: String) {
+    func setDefaultObjectDictionary(_ objectName: String) {
         let defaultDictionary = CreateAllPartsForObject(baseName: objectName).dictionary
         
         objectPickModel.defaultDictionary = defaultDictionary

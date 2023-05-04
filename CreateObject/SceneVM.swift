@@ -17,39 +17,33 @@ struct SceneModel {
     private (set) var objects: [Object]
   
     
-    mutating func add(_ dictionary: PositionDictionary ) {
+    mutating func add(_ dictionary: PositionDictionary, _ name: String ) {
 //print("adding")
 //print(objects.count)
 //print("")
-        objects.append(Object( id: UUID().uuidString, object: dictionary))
+        objects.append(Object( id: UUID().uuidString, object: dictionary, name: name))
     }
     
     struct Object: Identifiable {
         var id: String
         var object: PositionDictionary
-
+        var name: String
     }
 }
 
 class SceneViewModel: ObservableObject {
-    //static let initialScene: [HashableDictionaryTouple] = []
     @Published private var sceneModel: SceneModel
     init() {
 print("scene view intialised")
-        sceneModel = SceneModel(objects: [])    }
+        sceneModel = SceneModel(objects: [] )}
 
 }
 
 
 extension SceneViewModel {
     
-    func addObject(_ dictionary: PositionDictionary ) {
-        
-//        let uuid = UUID()
-//
-//        let newObject = (id: uuid, object: dictionary)
-        
-        sceneModel.add(dictionary)
+    func addObject(_ dictionary: PositionDictionary, _ name: String ) {
+        sceneModel.add(dictionary, name)
     }
     
     func getAllObjects()
