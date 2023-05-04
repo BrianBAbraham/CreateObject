@@ -22,10 +22,10 @@ class ObjectPickViewModel: ObservableObject {
     static let dictionary =
     CreateAllPartsForObject(baseName: initialObjectName).dictionary
     
-    @Published private var objectPickModel:ObjectPickModel =
-    ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
-                    currentObjectDictionary: dictionary,
-                    defaultDictionary: dictionary)
+    @Published private var objectPickModel: ObjectPickModel =
+        ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
+                        currentObjectDictionary: dictionary,
+                        defaultDictionary: dictionary)
 }
 
 
@@ -60,6 +60,9 @@ extension ObjectPickViewModel {
     
     
     func getCurrentObjectName() -> String{
+//        print ("getting current object name")
+//        print( objectPickModel.currentObjectName)
+//        return
         objectPickModel.currentObjectName
     }
     
@@ -90,7 +93,7 @@ extension ObjectPickViewModel {
     
     
     func getLoadedDictionary()->[String: PositionAsIosAxes] {
-        //print("getting loaded dictionary")
+print("getting loaded dictionary")
         return
             objectPickModel.loadedDictionary
     }

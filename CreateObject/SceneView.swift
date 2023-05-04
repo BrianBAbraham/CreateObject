@@ -41,11 +41,13 @@ struct AddToSceneView: View {
 
 struct SceneView: View {
     @EnvironmentObject var sceneVM: SceneViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    
     var allObjects: [SceneModel.Object]  {sceneVM.getAllObjects()}
 
     var body: some View {
         
-        ScrollView (.vertical, showsIndicators: true){
+//        ScrollView (.vertical, showsIndicators: true){
             VStack {
                 ForEach(allObjects) { objectAndId in
                     HStack {
@@ -56,16 +58,17 @@ struct SceneView: View {
                 }
                 .scaleEffect(0.5)
             }
-        }
-        .frame(height: 350)
+        .environmentObject(objectPickVM)
+//        }
+//        .frame(height: 350)
 
 
 
     }
 }
 
-struct SceneView_Previews: PreviewProvider {
-    static var previews: some View {
-        SceneView()
-    }
-}
+//struct SceneView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SceneView()
+//    }
+//}

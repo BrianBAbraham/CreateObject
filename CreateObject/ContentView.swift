@@ -61,9 +61,9 @@ struct ContentView: View {
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
     
-    init(_ equipmentName: String) {
-        self.equipmentName = equipmentName
-        }
+//    init(_ equipmentName: String) {
+//        self.equipmentName = equipmentName
+//        }
     
     var currentObjectDictionaryAsList: [String] {
         objectPickVM.getList(.useCurrent)
@@ -78,7 +78,9 @@ struct ContentView: View {
     }
     
     
-    let equipmentName: String
+    var equipmentName: String  {
+        objectPickVM.getCurrentObjectName()
+    }
 
     var enterTextView: some View {
         VStack(alignment: .leading) {
@@ -129,16 +131,17 @@ struct ContentView: View {
    
     
     var body: some View {
-    
+       // PickSavedObjectView()
+
         NavigationView {
             VStack {
                 NavigationLink(destination: SceneView()){
                  Text("Scene")
                 }
-                
+
                 NavigationLink(destination:
                     VStack( spacing: -150) {
-                 
+
                     PickDefaultObjectView()
                     ObjectView(uniquePartNames, currentDictionary, name)
                         .scaleEffect(0.5)
@@ -147,23 +150,26 @@ struct ContentView: View {
                 ) {
                     Text("Default equipment")
                     }
-                
-                
-                NavigationLink(destination: PickSavedObjectView() , isActive: self.$isActive ) {
+
+                NavigationLink(destination:
+                                PickSavedObjectView()
+                                .environmentObject(objectPickVM)
+                                .environmentObject(coreDataVM)
+                               , isActive: self.$isActive ) {
                     Text("Saved equipment")
-                        .font(isActive ? .headline:.body)
+                        .font(isActive ? .largeTitle: .body)
+                    
                 }
 
-                
                 NavigationLink(destination:
                     VStack {
                     Text( objectPickVM.getCurrentObjectName())
-                    //DemoExclusiveToggles()
+
                     ObjectView(uniquePartNames, currentDictionary, name)
                         .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
                             self.globalPosition = value
                         })
-                    
+
                     EditObjectMenuView()
                     saveButtonView
                     }
@@ -178,11 +184,11 @@ struct ContentView: View {
                 NavigationLink(destination: ListView(equipmentName, defaultObjectDictionaryAsList)){
                  Text("View default dictionary")
                 }
-                
+
                 NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
                  Text("View saved dictionary")
                 }
-                
+
                 NavigationLink(destination: ListView(equipmentName, uniquePartNames) ) {
                     Text("View dictionary parts")
                 }
@@ -193,11 +199,14 @@ struct ContentView: View {
 
             }
             .navigationBarTitle("Equipment manager")
+
         }
+
         
     }
-  
-}
+
+    }
+
    
 struct CustomPreferenceKey: PreferenceKey {
     static var defaultValue: CGPoint = .zero
@@ -206,18 +215,17 @@ struct CustomPreferenceKey: PreferenceKey {
     }
 }
    
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-       // VStack {
-            ContentView("RearDriveWheelchair")
-                .previewLayout(.fixed(width:1000, height: 1000))
-                .environmentObject(ObjectPickViewModel())
-                .environmentObject(ObjectEditViewModel())
-           
-        //}
-        
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//      
+//            ContentView("RearDriveWheelchair")
+//                .previewLayout(.fixed(width:1000, height: 1000))
+//                .environmentObject(ObjectPickViewModel())
+//                .environmentObject(ObjectEditViewModel())
+//                .environmentObject(SceneViewModel())
+//        
+//    }
+//}
 struct DemoExclusiveToggles: View {
     let toggleNames = ["foot support distance", "overall width", "rear distance"]
    

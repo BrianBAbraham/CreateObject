@@ -9,6 +9,9 @@ import SwiftUI
 
 struct PickDefaultObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objecEditVM: ObjectEditViewModel
+    @EnvironmentObject var coreDataVM: CoreDataViewModel
+    @EnvironmentObject var sceneVM: SceneViewModel
     
     var objectNames: [String] {
         BaseObjectTypes.allCases.map{$0.rawValue}
@@ -48,16 +51,23 @@ struct PickDefaultObjectView: View {
     }
 }
 
-struct ObjectPickerView_Previews: PreviewProvider {
-    static var previews: some View {
-        PickDefaultObjectView()
-            .environmentObject(ObjectPickViewModel())
-    }
-}
+//struct ObjectPickerView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PickDefaultObjectView()
+//            .environmentObject(ObjectPickViewModel())
+//    }
+//}
 
 struct PickSavedObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objecEditVM: ObjectEditViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
+    @EnvironmentObject var sceneVM: SceneViewModel
+    
+//    init() {
+//        print(type(of: objectPickVM))
+//    }
+    
     var deleteAllButtonView: some View {
             Button(action: {
                 coreDataVM.deleteAllObjects()
@@ -98,15 +108,12 @@ struct PickSavedObjectView: View {
                 AddToSceneView(loadedDictionary, name)
             }
             .padding()
-
+            Text("\(objectPickVM.getCurrentObjectName())")
             List {
                 ForEach(coreDataVM.savedEntities) {entity in
                     Button {
                         objectPickVM.setLoadedDictionary(entity)
-//                        let objectName =
-//                        entity.objectName ?? BaseObjectTypes.fixedWheelRearDrive.rawValue
-//                        objectPickVM.setCurrentObjectName(objectName)
-
+                           
                     } label: {
                         HStack{
                             Text(entity.objectType ?? "")
@@ -122,7 +129,9 @@ struct PickSavedObjectView: View {
             ObjectView(uniquePartNames, loadedDictionary, name)
                 .scaleEffect(0.25)
         }
+ 
     }
+
     
     
     

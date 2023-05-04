@@ -52,12 +52,12 @@ struct EditObjectMenuView: View {
     
 }
 
-struct EditObjectMenuView_Previews: PreviewProvider {
-    static var previews: some View {
-        EditObjectMenuView()
-            .environmentObject(ObjectPickViewModel())
-    }
-        
-}
+//struct EditObjectMenuView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EditObjectMenuView()
+//            .environmentObject(ObjectPickViewModel())
+//    }
+//        
+//}
 
 /// 
