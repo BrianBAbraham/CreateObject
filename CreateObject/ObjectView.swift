@@ -86,7 +86,7 @@ struct PartView: View {
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     
-    @GestureState private var startLocation: CGPoint? = nil
+    //@GestureState private var startLocation: CGPoint? = nil
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 200, y: 200)
     
@@ -121,13 +121,17 @@ struct ObjectView: View {
     
     var objectName: String
     
+    let objectManipulationIsActive: Bool
+    
     init(
         _ names: [String],
         _ dictionary: PositionDictionary,
-        _ objectName: String) {
+        _ objectName: String,
+        _ objectManipulationIsActive: Bool = false) {
         uniquePartNames = names
         self.dictionary = dictionary
         self.objectName = objectName
+        self.objectManipulationIsActive = objectManipulationIsActive
     }
     
 
@@ -142,17 +146,17 @@ struct ObjectView: View {
      return zoom
     }
         
-    var objectDrag: some Gesture {
-        DragGesture()
-            .onChanged { value in
-                var newLocation = startLocation ?? location // 3
-                newLocation.x += value.translation.width
-                newLocation.y += value.translation.height
-                self.location = newLocation
-            }.updating($startLocation) { (value, startLocation, transaction) in
-                startLocation = startLocation ?? location // 2
-            }
-    }
+//    var objectDrag: some Gesture {
+//        DragGesture()
+//            .onChanged { value in
+//                var newLocation = startLocation ?? location // 3
+//                newLocation.x += value.translation.width
+//                newLocation.y += value.translation.height
+//                self.location = newLocation
+//            }.updating($startLocation) { (value, startLocation, transaction) in
+//                startLocation = startLocation ?? location // 2
+//            }
+//    }
     
 
     
@@ -160,7 +164,8 @@ struct ObjectView: View {
         let dictionaryForScreen = objectPickVM.getObjectDictionaryForScreen(dictionary)
         let frameSize = objectPickVM.getScreenFrameSize()
         
-        GeometryReader { reader in
+       // GeometryReader { reader in
+        ZStack{
             ForEach(uniquePartNames, id: \.self) { name in
                 PartView(
                     uniquePartName: name,
@@ -168,13 +173,27 @@ struct ObjectView: View {
                 )
             }
         }
+
+        //}
         //.border(.red, width: 5)
-        .frame(width: frameSize.width, height: frameSize.length)
+        //.frame(width: frameSize.width, height: frameSize.length)
+//        if objectManipulationIsActive {
+            .modifier(
+                ForObjectInDefaultView (
+                    frameSize: frameSize, active: objectManipulationIsActive)
+                )
+//        } else {
+//
+//        }
+
+            
         //.background(Color.red.opacity(0.3) )
-        .position(location)
-        .gesture(
-            objectDrag
-        )
+        //.position(location)
+//        .gesture(
+//            objectDrag
+//        )
+        
+        
         .scaleEffect(zoom)
         .gesture(MagnificationGesture()
         .onChanged { value in

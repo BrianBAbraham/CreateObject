@@ -132,6 +132,8 @@ struct ContentView: View {
     
     var body: some View {
        // PickSavedObjectView()
+        //let frameSize = objectPickVM.getScreenFrameSize()
+        let objectManipulationIsActive = true
 
         NavigationView {
             VStack {
@@ -144,7 +146,11 @@ struct ContentView: View {
 
                     PickDefaultObjectView()
                     ObjectView(uniquePartNames, currentDictionary, name)
-                        .scaleEffect(0.5)
+//                        .modifier(
+//                            ForObjectInDefaultView (
+//                                frameSize: frameSize)
+//                            )
+//                        .scaleEffect(0.5)
                     AddToSceneView(currentDictionary, name)
                     }
                 ) {
@@ -165,7 +171,7 @@ struct ContentView: View {
                     VStack {
                     Text( objectPickVM.getCurrentObjectName())
 
-                    ObjectView(uniquePartNames, currentDictionary, name)
+                    ObjectView(uniquePartNames, currentDictionary, name, objectManipulationIsActive)
                         .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
                             self.globalPosition = value
                         })

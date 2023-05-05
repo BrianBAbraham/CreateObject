@@ -35,13 +35,8 @@ struct CreateOccupantBodySupport {
             dictionary += bodySupportDictionary.cornerDictionary
             
     }
-    
 
-
-
-
-    
 }
-///getAllSitOnFromPrimaryOrigin
-///    getOneSitOnFromPrimaryOrigin
-///               getAllSitOnFromPrimaryOriginAccountForTwoSitOn
+
+
+

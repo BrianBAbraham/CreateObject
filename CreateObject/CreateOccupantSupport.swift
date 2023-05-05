@@ -27,7 +27,7 @@ struct InitialOccupantBodySupportMeasure {
     
     init(
         lieOn: Dimension = (length: 1600 ,width: 600),
-        sitOn: Dimension = (length: 500 ,width: 400),
+        sitOn: Dimension = (length: 450 ,width: 400),
         overHead: Dimension = (length: 40 ,width: 550),
         overHeadHook: Dimension = (length: 100 ,width: 10),
         overHeadJoint: Dimension = Joint.dimension,
@@ -48,6 +48,7 @@ struct InitialOccupantBodySupportMeasure {
 struct CreateOccupantSupport {
     let allBodySupportFromPrimaryOrigin: [PositionAsIosAxes]
     var armSupportRequired: Bool
+    var backSupportRequired = true
     let baseType: BaseObjectTypes
     let baseMeasurement: InitialBaseMeasureFor
     let baseToOccupantSupportJoint: [JointType]
@@ -94,22 +95,26 @@ struct CreateOccupantSupport {
                 occupantSupportMeasure = occupantSupportMeasures.lieOn
                 footSupportRequired = false
                 armSupportRequired = false
+                backSupportRequired = false
             case .allCasterHoist:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
                 overheadSupportRequired = true
                 bodySupportRequired = false
                 footSupportRequired = false
                 armSupportRequired = false
+                backSupportRequired = false
             case .showerTray:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
                 bodySupportRequired = false
                 footSupportRequired = true
                 armSupportRequired = false
+                backSupportRequired = false
             
             default:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
                 footSupportRequired = true
                 armSupportRequired = true
+                backSupportRequired = true
         }
         
 
@@ -167,6 +172,16 @@ struct CreateOccupantSupport {
         
         func getDictionary(
             _ supportIndex: Int){
+                
+            if backSupportRequired {
+                let occupantBackSupport =
+                CreateOccupantBackSupport (
+                    allBodySupportFromPrimaryOrigin,
+                    supportIndex
+                    )
+                dictionary +=
+                occupantBackSupport.dictionary
+            }
                 
             if footSupportRequired {
                 let occupantFootSupport =

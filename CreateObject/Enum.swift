@@ -18,6 +18,8 @@ enum Part: String {
     case arm = "arm"
     case armVerticalJoint = "armVerticalJoint"
     case backSupport = "backSupport"
+    case backSupportJoint = "backSupportJoint"
+
 
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 

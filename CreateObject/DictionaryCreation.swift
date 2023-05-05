@@ -42,7 +42,7 @@ struct CreateOnePartOrSideSymmetricParts {
         _ partFromParentOrigin: PositionAsIosAxes,
         _ supportIndex: Int)
         {
-            let partsNotOnLeftRight: [Part] = [.sitOn, .backSupport, .headSupport, .footSupportInOnePiece ]
+            let partsNotOnLeftRight: [Part] = [.sitOn, .backSupport, .headSupport, .footSupportInOnePiece, .backSupport ]
             
             let leftRightOrSinglePartAsArrayFromPosition: [PositionAsIosAxes] =
             partsNotOnLeftRight.contains (part) ? [partFromParentOrigin]: CreateIosPosition.forLeftRightAsArrayFromPosition(partFromParentOrigin)

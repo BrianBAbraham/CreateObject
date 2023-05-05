@@ -108,7 +108,7 @@ struct PickSavedObjectView: View {
                 AddToSceneView(loadedDictionary, name)
             }
             .padding()
-            Text("\(objectPickVM.getCurrentObjectName())")
+           
             List {
                 ForEach(coreDataVM.savedEntities) {entity in
                     Button {
@@ -125,7 +125,7 @@ struct PickSavedObjectView: View {
                 }
                 .onDelete(perform: coreDataVM.deleteObject)
             }
-            
+            Text("\(objectPickVM.getCurrentObjectName())")
             ObjectView(uniquePartNames, loadedDictionary, name)
                 .scaleEffect(0.25)
         }
