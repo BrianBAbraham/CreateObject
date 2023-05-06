@@ -73,7 +73,8 @@ struct CreateOccupantSupport {
         _ numberOfOccupantSupport: OccupantSupportNumber = .one,
         _ occupantSupportTypes: [OccupantSupportTypes],
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
-        _ baseMeasurement: InitialBaseMeasureFor
+        _ baseMeasurement: InitialBaseMeasureFor,
+        _ backsupportRecline: Double
     ) {
         self.baseType = baseType
         self.baseToOccupantSupportJoint = baseToOccupantSupportJoint
@@ -91,6 +92,7 @@ struct CreateOccupantSupport {
                 occupantSupportMeasure = occupantSupportMeasures.sleepOn
                 footSupportRequired = false
                 armSupportRequired = false
+                backSupportRequired = false
             case .allCasterStretcher:
                 occupantSupportMeasure = occupantSupportMeasures.lieOn
                 footSupportRequired = false
@@ -166,18 +168,20 @@ struct CreateOccupantSupport {
         }
         
         for supportIndex in 0..<occupantSupportTypes.count {
-            getDictionary(supportIndex)
+            getDictionary(supportIndex,backsupportRecline)
         }
         
         
         func getDictionary(
-            _ supportIndex: Int){
+            _ supportIndex: Int,
+            _ backSupportRecline: Double){
                 
             if backSupportRequired {
                 let occupantBackSupport =
                 CreateOccupantBackSupport (
                     allBodySupportFromPrimaryOrigin,
-                    supportIndex
+                    supportIndex,
+                    backSupportRecline
                     )
                 dictionary +=
                 occupantBackSupport.dictionary

@@ -19,6 +19,9 @@ struct PickDefaultObjectView: View {
 
     @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue
     
+    @State private var recline = false
+    //@State private var reclineToggle = false
+    
     var currentEqipmentType: String {
         getCurrentEquipmentType()
     }
@@ -33,23 +36,70 @@ struct PickDefaultObjectView: View {
             set: {self.equipmentType = $0}
         )
         
-        Picker("Equipment",selection: boundEquipmentType ) {
-            ForEach(objectNames, id:  \.self)
-                    { equipment in
-                Text(equipment)
+        VStack {
+            //Text(String(recline))
+            BackSupportRecline(objectPickVM.getCurrentObjectName())
+                .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
+                    self.recline = value
+                })
+               
+                .padding(.horizontal)
+            
+            
+            Picker("Equipment",selection: boundEquipmentType ) {
+                ForEach(objectNames, id:  \.self)
+                        { equipment in
+                    Text(equipment)
+                }
             }
+
+            .onChange(of: equipmentType) {tag in
+                self.equipmentType = tag
+                objectPickVM.setDefaultObjectDictionary(tag)
+                objectPickVM.setCurrentObjectName(tag)
+                objectPickVM.setCurrentObjectDictionary(tag)
+                print(recline)
+            }
+
+            
+            .pickerStyle(.wheel)
+            .scaleEffect(0.8)
+            
         }
-        .onChange(of: equipmentType) {tag in
-            self.equipmentType = tag
-            objectPickVM.setDefaultObjectDictionary(tag)
-            objectPickVM.setCurrentObjectName(tag)
-            objectPickVM.setCurrentObjectDictionary(tag)
-        }
-        
-        .pickerStyle(.wheel)
-        .scaleEffect(0.8)
+
+
     }
 }
+
+struct ReclinePreferenceKey: PreferenceKey {
+    static var defaultValue: Bool = false
+    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+        value = nextValue()
+    }
+}
+
+struct BackSupportRecline: View {
+    @State private var reclineToggle = false
+    let showRecline: Bool
+    
+    init(_ name: String) {
+        showRecline = name.contains("air") ? true: false
+    }
+    
+    var body: some View {
+        //if showRecline {
+            Toggle("Reclining back",isOn: $reclineToggle)
+                .onChange(of: reclineToggle) { value in
+                }
+                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
+                
+
+//        } else {
+//            EmptyView()
+//        }
+    }
+}
+
 
 //struct ObjectPickerView_Previews: PreviewProvider {
 //    static var previews: some View {

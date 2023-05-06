@@ -11,27 +11,32 @@ struct InitialOccupantBackSupportMeasurement {
     let initialOccupantBodySupportMeasure =  InitialOccupantBodySupportMeasure()
     let backSupportLength: Double
     let backSupportWidth: Double
-    var backSupportRecline = Measurement(value: 10, unit: UnitAngle.degrees)
+    var backSupportRecline: Measurement<UnitAngle>
     let backSupport: Dimension
     let backSupportFromParentOrigin: PositionAsIosAxes
     let backSupportJointFromParentOrigin: PositionAsIosAxes
+    let backSupportJoint = Joint.dimension
     static let backSupportHeight = 500.0
     
-    init() {
+    init( backSupportRecline: Double ) {
+        self.backSupportRecline = Measurement(value: backSupportRecline, unit: UnitAngle.degrees)
+        
         backSupportWidth = initialOccupantBodySupportMeasure.sitOn.width
         
         backSupportLength =
-        InitialOccupantBackSupportMeasurement.backSupportHeight * sin(backSupportRecline.converted(to: .radians).value)
+        InitialOccupantBackSupportMeasurement.backSupportHeight *
+        sin(self.backSupportRecline.converted(to: .radians).value)
+        
         backSupport = (length: backSupportLength, width: backSupportWidth)
         
         backSupportFromParentOrigin =
         (x: 0,
-         y: -(initialOccupantBodySupportMeasure.sitOn.length ),
+         y: -(initialOccupantBodySupportMeasure.sitOn.length + backSupport.length)/2,
          z: 0)
         
         backSupportJointFromParentOrigin =
         (x: 0,
-         y: -(initialOccupantBodySupportMeasure.sitOn.length
+         y: -(initialOccupantBodySupportMeasure.sitOn.length - backSupportJoint.length/2
              )/2,
          z: 0)
     }
@@ -47,11 +52,14 @@ struct CreateOccupantBackSupport {
     
     let supportIndex: Int
     
+
+    
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
-        _ supportIndex: Int
+        _ supportIndex: Int,
+        _ backSupportRecline: Double
     ){
-        measurementFor = InitialOccupantBackSupportMeasurement()
+        measurementFor = InitialOccupantBackSupportMeasurement(backSupportRecline: backSupportRecline)
         self.supportIndex = supportIndex
 
         getDictionary(
@@ -79,8 +87,8 @@ struct CreateOccupantBackSupport {
             
        let backSupportJointDictionary =
             CreateOnePartOrSideSymmetricParts(
-                measurementFor.backSupport,
-                .backSupportJoint,
+                measurementFor.backSupportJoint,
+                .backSupportHorizontalJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 measurementFor.backSupportJointFromParentOrigin,
                 supportIndex)
@@ -88,7 +96,7 @@ struct CreateOccupantBackSupport {
         dictionary =
             Merge.these.dictionaries([
                 backSupportJointDictionary.cornerDictionary,
-               // backSupportDictionary.cornerDictionary,
+                backSupportDictionary.cornerDictionary,
                 backSupportDictionary.originDictionary
             ])
 

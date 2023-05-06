@@ -9,7 +9,6 @@ import Foundation
 
 struct ObjectPickModel {
     var currentObjectName: String  //FixedWheelBase.Subtype.midDrive.rawValu
-
     var currentObjectDictionary: PositionDictionary
     var defaultDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
@@ -345,9 +344,12 @@ print("loaded dictiionary set")
 
     func setCurrentObjectDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
-        _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation]) {
+        _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
+        _ recline: Bool = false) {
 
-            var currentDictionary = CreateAllPartsForObject(baseName: objectName).dictionary
+            var currentDictionary = CreateAllPartsForObject(
+                baseName: objectName,
+                recline).dictionary
 
             if editedDictionary[""] != nil {
                 

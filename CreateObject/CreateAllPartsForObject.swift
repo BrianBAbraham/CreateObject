@@ -14,12 +14,13 @@ struct CreateAllPartsForObject {
 
     
     init(
-        baseName baseObjectName: String
+        baseName baseObjectName: String,
+        _ recline: Bool = false
     ) {
 
-            getDictionary(baseObjectName) }
+            getDictionary(baseObjectName, recline) }
     
-    mutating func getDictionary(_ baseName: String)
+    mutating func getDictionary(_ baseName: String, _ recline: Bool)
         {
             let occupantSupport: CreateOccupantSupport
             
@@ -86,7 +87,8 @@ struct CreateAllPartsForObject {
                     oneOrMultipleSeats,
                     occupantSupportTypes,
                     initialOccupantBodySupportMeasure,
-                    baseMeasurement
+                    baseMeasurement,
+                    recline ? 40: 2
                 )
 //print(dictionary)
 

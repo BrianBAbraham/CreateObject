@@ -231,7 +231,11 @@ extension ObjectEditViewModel {
             }
             
             if uniquePartName.contains("HorizontalJoint") {
-                color = .black
+                color = .red
+            }
+            
+            if uniquePartName.contains(Part.backSupport.rawValue) {
+                color = .gray
             }
             
 //            if uniquePartName.contains(BaseObjectTypes.showerTray.rawValue) {
