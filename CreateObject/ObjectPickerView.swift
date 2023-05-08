@@ -42,7 +42,6 @@ struct PickDefaultObjectView: View {
                 .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
                     self.recline = value
                 })
-               
                 .padding(.horizontal)
             
             
@@ -57,8 +56,7 @@ struct PickDefaultObjectView: View {
                 self.equipmentType = tag
                 objectPickVM.setDefaultObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
-                objectPickVM.setCurrentObjectDictionary(tag)
-                print(recline)
+                objectPickVM.setCurrentObjectDictionary(tag, recline: recline)
             }
 
             
@@ -80,6 +78,7 @@ struct ReclinePreferenceKey: PreferenceKey {
 
 struct BackSupportRecline: View {
     @State private var reclineToggle = false
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     let showRecline: Bool
     
     init(_ name: String) {
@@ -90,6 +89,9 @@ struct BackSupportRecline: View {
         //if showRecline {
             Toggle("Reclining back",isOn: $reclineToggle)
                 .onChange(of: reclineToggle) { value in
+                    let name = objectPickVM.getCurrentObjectName()
+                    objectPickVM.setCurrentObjectDictionary(name, recline: reclineToggle)
+                    
                 }
                 .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
                 

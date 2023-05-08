@@ -345,7 +345,7 @@ print("loaded dictiionary set")
     func setCurrentObjectDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
-        _ recline: Bool = false) {
+        recline: Bool = false) {
 
             var currentDictionary = CreateAllPartsForObject(
                 baseName: objectName,
