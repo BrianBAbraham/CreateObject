@@ -19,8 +19,6 @@ enum Part: String {
     case armVerticalJoint = "armVerticalJoint"
     case backSupport = "backSupport"
     case backSupportHorizontalJoint = "backSupportHorizontalJoint"
-
-
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 
     case overHeadSupport = "overHeadSupport"
@@ -65,7 +63,17 @@ enum Part: String {
 
 }
 
-
+enum ObjectOptions: CaseIterable {
+    case assistant
+    case bumper
+    case door
+    case headSupport
+    case occupant
+    case recliningBackSupport
+    case selfPropellers
+    case singleFootSupport
+    case sixCaster
+}
 
 struct PartGroupsFor {
     

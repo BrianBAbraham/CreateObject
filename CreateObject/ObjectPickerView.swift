@@ -86,19 +86,18 @@ struct BackSupportRecline: View {
     }
     
     var body: some View {
-        //if showRecline {
+        if showRecline {
             Toggle("Reclining back",isOn: $reclineToggle)
                 .onChange(of: reclineToggle) { value in
                     let name = objectPickVM.getCurrentObjectName()
+                    objectPickVM.setObjectOptionDictionary(ObjectOptions.recliningBackSupport, reclineToggle)
                     objectPickVM.setCurrentObjectDictionary(name, recline: reclineToggle)
                     
                 }
                 .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
-                
-
-//        } else {
-//            EmptyView()
-//        }
+        } else {
+            EmptyView()
+        }
     }
 }
 

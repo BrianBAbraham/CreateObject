@@ -12,19 +12,35 @@ struct ObjectPickModel {
     var currentObjectDictionary: PositionDictionary
     var defaultDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
+    var objectOptionDictionary: OptionDictionary
+        
+    
+    
+    
+    mutating func setObjectOptionDictionary(
+        _ option: ObjectOptions,
+        _ state: Bool) {
+            objectOptionDictionary[option] = state
+        }
+    }
     //var editOccuring = true
-}
+    
 
 
 class ObjectPickViewModel: ObservableObject {
     static let initialObjectName = BaseObjectTypes.fixedWheelRearDrive.rawValue
+   
     static let dictionary =
     CreateAllPartsForObject(baseName: initialObjectName).dictionary
+    
+    static let optionDictionary =
+    Dictionary(uniqueKeysWithValues: ObjectOptions.allCases.map { $0 }.map { ($0, false) })
     
     @Published private var objectPickModel: ObjectPickModel =
         ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
                         currentObjectDictionary: dictionary,
-                        defaultDictionary: dictionary)
+                        defaultDictionary: dictionary,
+                        objectOptionDictionary: optionDictionary)
 }
 
 
@@ -182,7 +198,12 @@ print("getting loaded dictionary")
             return screenDictionary
     }
     
-
+    func getObjectOptionDictionary(
+        _ option: ObjectOptions
+        )
+        -> Bool {
+            objectPickModel.objectOptionDictionary[option] ?? false
+    }
     
     func getOffset ()
         -> PositionAsIosAxes {
@@ -336,7 +357,7 @@ print("getting loaded dictionary")
     func setLoadedDictionary(_ entity: LocationEntity){
         let allOriginNames = entity.interOriginNames ?? ""
         let allOriginValues = entity.interOriginValues ?? ""
-print("loaded dictiionary set")
+//print("loaded dictiionary set")
         objectPickModel.loadedDictionary =
         OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary
     }
@@ -346,6 +367,8 @@ print("loaded dictiionary set")
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
         recline: Bool = false) {
+            
+print(objectPickModel.objectOptionDictionary)
 
             var currentDictionary = CreateAllPartsForObject(
                 baseName: objectName,
@@ -363,6 +386,11 @@ print("loaded dictiionary set")
         objectPickModel.currentObjectDictionary = currentDictionary
     }
     
+    func setObjectOptionDictionary(
+        _ option: ObjectOptions,
+        _ state: Bool) {
+            objectPickModel.setObjectOptionDictionary(option, state)
+    }
 
 
 

@@ -20,6 +20,7 @@ typealias BasePositionAsIosAxes =
 front: PositionAsIosAxes,
 rear: PositionAsIosAxes)
 
+typealias OptionDictionary = [ObjectOptions: Bool]
 typealias PositionDictionary = [String: PositionAsIosAxes]
 
 typealias Dimension = (length: Double, width: Double)
