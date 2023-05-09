@@ -49,12 +49,9 @@ struct CreateObjectInitiated {
                 baseType = BaseObjectTypes(rawValue: baseName)!
             }
             
-                    
             let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
             
-            //let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
-            
-            let addedForReclineBackSupport: Double = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? getReclinedBackSupportLengthAddition(): 0
+            let addedForReclineBackSupport: Double = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
             
             let baseMeasurement =
                 getMeasurement(
@@ -62,7 +59,6 @@ struct CreateObjectInitiated {
                     objectOptions,
                     addedForReclineBackSupport)
 
-            
             occupantSupport =
                 CreateOccupantSupport(
                     baseType,
@@ -98,30 +94,51 @@ struct CreateObjectInitiated {
         
         var baseMeasurement = InitialBaseMeasureFor()
         
-       
 
         switch baseType {
             case .allCasterBed:
                 baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 2200, halfWidth: 450)
+            
             case .allCasterChair:
                 baseMeasurement = InitialBaseMeasureFor(
                     rearToFrontLength: 500 + addedForReclineBackSupport
                 , halfWidth: 200)
+            
             case .allCasterHoist:
                 baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 1200, halfWidth: 300)
+            
             case .allCasterTiltInSpaceShowerChair:
                 baseMeasurement = InitialBaseMeasureFor(rearToFrontLength: 600, halfWidth: 300)
+            
             case .allCasterStandAid:
                 break
+            
             case .allCasterStretcher:
                 baseMeasurement = InitialBaseMeasureFor(
                     rearToFrontLength: lieOnDimension.length/2,
                     halfWidth: lieOnDimension.width/2)
-              
+            
+            case .fixedWheelRearDrive:
+                baseMeasurement = InitialBaseMeasureFor(
+                    rearToFrontLength: 500 + addedForReclineBackSupport)
+            
+            case .fixedWheelFrontDrive:
+                baseMeasurement = InitialBaseMeasureFor(
+                    rearToFrontLength: 500 + addedForReclineBackSupport)
+            
+            case .fixedWheelMidDrive:
+                baseMeasurement = InitialBaseMeasureFor(
+                    rearToCentreLength: 200 + addedForReclineBackSupport,
+                    rearToFrontLength: 600 + addedForReclineBackSupport)
+            
+            case .fixedWheelManualRearDrive:
+                baseMeasurement = InitialBaseMeasureFor(
+                    rearToFrontLength: 500 + addedForReclineBackSupport)
+            
             case .showerTray:
-              baseMeasurement = InitialBaseMeasureFor(
-                rearToFrontLength: 1200,
-                halfWidth: 450)
+                  baseMeasurement = InitialBaseMeasureFor(
+                    rearToFrontLength: 1200,
+                    halfWidth: 450)
 
             default:
                  break
@@ -130,14 +147,14 @@ struct CreateObjectInitiated {
         return baseMeasurement
     }
     
-    func getReclinedBackSupportLengthAddition()
-        -> Double {
-            let backHeight = InitialOccupantBackSupportMeasurement.backSupportHeight
-            
-            let maximumBackSupportRecline = InitialOccupantBackSupportMeasurement.maximumBackSupportRecline.converted(to: .radians).value
-            
-            return sin(maximumBackSupportRecline) * backHeight
-    }
+//    func getReclinedBackSupportLengthAddition()
+//        -> Double {
+//            let backHeight = InitialOccupantBackSupportMeasurement.backSupportHeight
+//
+//            let maximumBackSupportRecline = InitialOccupantBackSupportMeasurement.maximumBackSupportRecline.converted(to: .radians).value
+//
+//            return sin(maximumBackSupportRecline) * backHeight
+//    }
     
     
 }

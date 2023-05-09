@@ -9,28 +9,32 @@ import Foundation
 
 struct InitialOccupantBackSupportMeasurement {
     static let backSupportHeight = 500.0
+    
     static let maximumBackSupportRecline =
-    Measurement(value: 40, unit: UnitAngle.degrees)
+    Measurement(value: 60, unit: UnitAngle.degrees)
+    
+    static let minimumBackSupportRecline =
+    Measurement(value: 5, unit: UnitAngle.degrees)
+    
+    static let lengthOfMaximallyReclinedBackSupport =
+    sin(maximumBackSupportRecline.converted(to: .radians).value) * backSupportHeight
+    
+    static let lengthOfMinimillyReclinedBackSupport =
+    sin(minimumBackSupportRecline.converted(to: .radians).value) * backSupportHeight
     
     let initialOccupantBodySupportMeasure =  InitialOccupantBodySupportMeasure()
-    let backSupportLength: Double
-    let backSupportWidth: Double
-    var backSupportRecline: Measurement<UnitAngle>
+    
     let backSupport: Dimension
+
     let backSupportFromParentOrigin: PositionAsIosAxes
     let backSupportJointFromParentOrigin: PositionAsIosAxes
     let backSupportJoint = Joint.dimension
        
-    init( backSupportRecline: Double ) {
-        self.backSupportRecline = Measurement(value: backSupportRecline, unit: UnitAngle.degrees)
-        
-        backSupportWidth = initialOccupantBodySupportMeasure.sitOn.width
-        
-        backSupportLength =
-        InitialOccupantBackSupportMeasurement.backSupportHeight *
-        sin(self.backSupportRecline.converted(to: .radians).value)
-        
-        backSupport = (length: backSupportLength, width: backSupportWidth)
+    init( _ objectionOptions: OptionDictionary)
+        {
+            backSupport =
+            (length: objectionOptions[.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: InitialOccupantBackSupportMeasurement.lengthOfMinimillyReclinedBackSupport,
+             width: initialOccupantBodySupportMeasure.sitOn.width)
         
         backSupportFromParentOrigin =
         (x: 0,
@@ -60,21 +64,28 @@ struct CreateOccupantBackSupport {
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
-        _ backSupportRecline: Double
+        _ objectOptions: OptionDictionary
     ){
-        measurementFor = InitialOccupantBackSupportMeasurement(backSupportRecline: backSupportRecline)
+        measurementFor = InitialOccupantBackSupportMeasurement(objectOptions)
+        
+         let backSupportMeasurement =
+        InitialOccupantBackSupportMeasurement(objectOptions).backSupport
+            
+      
         self.supportIndex = supportIndex
 
         getDictionary(
             supportIndex,
-            parentFromPrimaryOrigin
+            parentFromPrimaryOrigin,
+            backSupportMeasurement
         )
     }
     
 
     mutating func getDictionary(
         _ supportIndex: Int,
-        _ parentFromPrimaryOrigin: [PositionAsIosAxes]
+        _ parentFromPrimaryOrigin: [PositionAsIosAxes],
+        _ backSupportMeasurement: Dimension
         ) {
         
         let partFromParentOrigin =
@@ -82,7 +93,7 @@ struct CreateOccupantBackSupport {
             
         let backSupportDictionary =
             CreateOnePartOrSideSymmetricParts(
-                measurementFor.backSupport,
+                backSupportMeasurement,
                 .backSupport,
                 parentFromPrimaryOrigin[supportIndex],
                 partFromParentOrigin,

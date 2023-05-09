@@ -113,7 +113,7 @@ extension ObjectPickViewModel {
     
     
     func getLoadedDictionary()->[String: PositionAsIosAxes] {
-print("getting loaded dictionary")
+//print("getting loaded dictionary")
         return
             objectPickModel.loadedDictionary
     }

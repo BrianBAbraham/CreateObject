@@ -50,7 +50,7 @@ struct CreateOccupantSupport {
     var armSupportRequired: Bool
     var backSupportRequired = true
     let baseType: BaseObjectTypes
-    let backSupportRecline: Double
+    //let backSupportRecline: Double
     let baseMeasurement: InitialBaseMeasureFor
     let baseToOccupantSupportJoint: [JointType]
     var bodySupportRequired = true
@@ -77,7 +77,8 @@ struct CreateOccupantSupport {
         _ baseMeasurement: InitialBaseMeasureFor,
         _ objectOptions: OptionDictionary
     ) {
-        backSupportRecline = objectOptions[ObjectOptions.recliningBackSupport]! ? 40: 2
+//        backSupportRecline = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.addedLengthOfMaximallyReclinedBackSupport: 2
+        
         self.baseType = baseType
         self.baseToOccupantSupportJoint = baseToOccupantSupportJoint
         self.numberOfOccupantSupport = numberOfOccupantSupport
@@ -134,7 +135,8 @@ struct CreateOccupantSupport {
         func getAllBodySuppportFromPrimaryOrigin(
             _ occupantSupportTypes: [OccupantSupportTypes],
             _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
-        -> [PositionAsIosAxes] {
+            -> [PositionAsIosAxes] {
+
             var fromPrimaryToSitOnOrigins: [PositionAsIosAxes] = []
             for supportIndex in 0..<occupantSupportTypes.count {
                 fromPrimaryToSitOnOrigins.append(
@@ -172,21 +174,28 @@ struct CreateOccupantSupport {
         }
         
         for supportIndex in 0..<occupantSupportTypes.count {
-            getDictionary(supportIndex,backSupportRecline)
+            getDictionary(
+                supportIndex,
+                objectOptions
+//                          ,backSupportRecline
+            )
         }
         
         
         func getDictionary(
-            _ supportIndex: Int,
-            _ backSupportRecline: Double){
+            _ supportIndex: Int
+            ,
+            _ objectOptions: OptionDictionary
+            //_ backSupportRecline: Double
+        ){
                 
             if backSupportRequired {
                 let occupantBackSupport =
                 CreateOccupantBackSupport (
                     allBodySupportFromPrimaryOrigin,
                     supportIndex,
-                    backSupportRecline
-                    )
+                    objectOptions)
+                
                 dictionary +=
                 occupantBackSupport.dictionary
             }
@@ -251,6 +260,8 @@ struct CreateOccupantSupport {
             _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
         -> PositionAsIosAxes {
 
+            let modifiedPositionForReclineBackRest = InitialOccupantBackSupportMeasurement(objectOptions).backSupport.length
+            
             var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
             
             let halfLength = initialOccupantBodySupportMeasure.sitOn.length/2
@@ -261,7 +272,7 @@ struct CreateOccupantSupport {
 
                 switch baseType {
                     case .fixedWheelFrontDrive:
-                        bodySupportlengthFromPrimaryOrigin = -halfLength
+                        bodySupportlengthFromPrimaryOrigin = -halfLength 
 
                     case .fixedWheelMidDrive:
                         bodySupportlengthFromPrimaryOrigin = 0
@@ -270,10 +281,16 @@ struct CreateOccupantSupport {
                         bodySupportlengthFromPrimaryOrigin = 0
 
                     case .fixedWheelRearDrive:
-                        bodySupportlengthFromPrimaryOrigin = halfLength
+                        bodySupportlengthFromPrimaryOrigin = halfLength +
+                    modifiedPositionForReclineBackRest
+                    
+                    case .fixedWheelManualRearDrive:
+                        bodySupportlengthFromPrimaryOrigin = halfLength +
+                    modifiedPositionForReclineBackRest
 
                     default:
-                        bodySupportlengthFromPrimaryOrigin = halfLength
+                        bodySupportlengthFromPrimaryOrigin = halfLength +
+                    modifiedPositionForReclineBackRest
                 }
                 occupantBodySupportFromPrimaryOrigin =
                     getAllBodySupportFromPrimaryOriginAccountForAllSitOn(
@@ -293,7 +310,9 @@ struct CreateOccupantSupport {
                 switch baseType {
                     case .allCasterChair:
                         occupantBodySupportFromPrimaryOrigin =
-                            initialOccupantBodySupportFromPrimaryOrigin
+                    CreateIosPosition.addTwoTouples(
+                            initialOccupantBodySupportFromPrimaryOrigin,
+                            (x:0, y: modifiedPositionForReclineBackRest, z:0) )
                     
                     case .allCasterStretcher:
                         occupantBodySupportFromPrimaryOrigin =

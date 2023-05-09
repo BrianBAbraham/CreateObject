@@ -73,7 +73,8 @@ struct ForFixedWheelBaseObject {
         
         if wheelBaseType == .fixedWheelRearDrive {
             
-            let casterAtFrontDictionary = CreateCaster(
+            let casterAtFrontDictionary =
+            CreateCaster(
                 .casterWheelAtFront,
                 measurement.baseCornerFromPrimaryOriginForWidthAxisAt.rear.front
             ).dictionary
@@ -83,7 +84,8 @@ struct ForFixedWheelBaseObject {
         
         if wheelBaseType == .fixedWheelManualRearDrive {
             
-            let casterAtFrontDictionary = CreateCaster(
+            let casterAtFrontDictionary =
+            CreateCaster(
                 .casterWheelAtFront,
                 measurement.baseCornerFromPrimaryOriginForWidthAxisAt.rear.front
             ).dictionary
