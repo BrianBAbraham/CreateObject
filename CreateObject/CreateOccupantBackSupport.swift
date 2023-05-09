@@ -8,6 +8,10 @@
 import Foundation
 
 struct InitialOccupantBackSupportMeasurement {
+    static let backSupportHeight = 500.0
+    static let maximumBackSupportRecline =
+    Measurement(value: 40, unit: UnitAngle.degrees)
+    
     let initialOccupantBodySupportMeasure =  InitialOccupantBodySupportMeasure()
     let backSupportLength: Double
     let backSupportWidth: Double
@@ -16,8 +20,7 @@ struct InitialOccupantBackSupportMeasurement {
     let backSupportFromParentOrigin: PositionAsIosAxes
     let backSupportJointFromParentOrigin: PositionAsIosAxes
     let backSupportJoint = Joint.dimension
-    static let backSupportHeight = 500.0
-    
+       
     init( backSupportRecline: Double ) {
         self.backSupportRecline = Measurement(value: backSupportRecline, unit: UnitAngle.degrees)
         

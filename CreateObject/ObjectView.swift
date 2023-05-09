@@ -100,9 +100,15 @@ struct ObjectView: View {
 //    var defaultDictionary: PositionDictionary {
 //        objectPickVM.getRelevantDictionary(.forMeasurement)
 //    }
+    var objectOptionsDictionary: OptionDictionary {
+        objectPickVM.getObjectOptionsDictionary()
+    }
     
     var defaultDictionary: PositionDictionary {
-        CreateAllPartsForObject(baseName: objectName).dictionary
+        CreateObjectInitiated(
+            baseName: objectName,
+            objectOptionsDictionary)
+        .dictionary
     }
     
     var defaultScale: Double {

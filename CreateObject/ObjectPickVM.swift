@@ -30,11 +30,16 @@ struct ObjectPickModel {
 class ObjectPickViewModel: ObservableObject {
     static let initialObjectName = BaseObjectTypes.fixedWheelRearDrive.rawValue
    
-    static let dictionary =
-    CreateAllPartsForObject(baseName: initialObjectName).dictionary
+   
     
     static let optionDictionary =
     Dictionary(uniqueKeysWithValues: ObjectOptions.allCases.map { $0 }.map { ($0, false) })
+    
+    static let dictionary =
+    CreateObjectInitiated(
+        baseName: initialObjectName,
+        optionDictionary)
+        .dictionary
     
     @Published private var objectPickModel: ObjectPickModel =
         ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
@@ -205,6 +210,13 @@ print("getting loaded dictionary")
             objectPickModel.objectOptionDictionary[option] ?? false
     }
     
+    func getObjectOptionsDictionary(
+        )
+        -> OptionDictionary {
+            objectPickModel.objectOptionDictionary
+            
+        }
+    
     func getOffset ()
         -> PositionAsIosAxes {
             
@@ -349,7 +361,11 @@ print("getting loaded dictionary")
     }
     
     func setDefaultObjectDictionary(_ objectName: String) {
-        let defaultDictionary = CreateAllPartsForObject(baseName: objectName).dictionary
+        let defaultDictionary =
+        CreateObjectInitiated(
+            baseName: objectName,
+            getObjectOptionsDictionary())
+            .dictionary
         
         objectPickModel.defaultDictionary = defaultDictionary
     }
@@ -365,14 +381,14 @@ print("getting loaded dictionary")
 
     func setCurrentObjectDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
-        _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
-        recline: Bool = false) {
+        _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation]) {
             
-print(objectPickModel.objectOptionDictionary)
+//print(objectPickModel.objectOptionDictionary)
 
-            var currentDictionary = CreateAllPartsForObject(
+            
+            var currentDictionary = CreateObjectInitiated(
                 baseName: objectName,
-                recline).dictionary
+                getObjectOptionsDictionary()).dictionary
 
             if editedDictionary[""] != nil {
                 

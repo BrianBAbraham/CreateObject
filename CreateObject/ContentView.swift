@@ -163,7 +163,7 @@ struct ContentView: View {
                                 .environmentObject(coreDataVM)
                                , isActive: self.$isActive ) {
                     Text("Saved equipment")
-                        .font(isActive ? .largeTitle: .body)
+                        //.font(isActive ? .largeTitle: .body)
                     
                 }
 

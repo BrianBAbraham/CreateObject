@@ -50,6 +50,7 @@ struct CreateOccupantSupport {
     var armSupportRequired: Bool
     var backSupportRequired = true
     let baseType: BaseObjectTypes
+    let backSupportRecline: Double
     let baseMeasurement: InitialBaseMeasureFor
     let baseToOccupantSupportJoint: [JointType]
     var bodySupportRequired = true
@@ -74,14 +75,17 @@ struct CreateOccupantSupport {
         _ occupantSupportTypes: [OccupantSupportTypes],
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
         _ baseMeasurement: InitialBaseMeasureFor,
-        _ backsupportRecline: Double
+        _ objectOptions: OptionDictionary
     ) {
+        backSupportRecline = objectOptions[ObjectOptions.recliningBackSupport]! ? 40: 2
         self.baseType = baseType
         self.baseToOccupantSupportJoint = baseToOccupantSupportJoint
         self.numberOfOccupantSupport = numberOfOccupantSupport
         self.occupantSupportTypes = occupantSupportTypes
         self.initialOccupantBodySupportMeasure = initialOccupantBodySupportMeasure
         self.baseMeasurement = baseMeasurement
+        
+        
         
         switch baseType {
             case .allCasterChair:
@@ -168,7 +172,7 @@ struct CreateOccupantSupport {
         }
         
         for supportIndex in 0..<occupantSupportTypes.count {
-            getDictionary(supportIndex,backsupportRecline)
+            getDictionary(supportIndex,backSupportRecline)
         }
         
         
@@ -248,7 +252,9 @@ struct CreateOccupantSupport {
         -> PositionAsIosAxes {
 
             var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
+            
             let halfLength = initialOccupantBodySupportMeasure.sitOn.length/2
+            
             var bodySupportlengthFromPrimaryOrigin: Double = 0
 
             if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.fixedWheel.rawValue) {

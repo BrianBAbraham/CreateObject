@@ -21,10 +21,11 @@ struct ForFixedWheelBaseObject {
 
     init(
         _ wheelBaseType: BaseObjectTypes,
-        _ occupantSupport: CreateOccupantSupport
+        _ occupantSupport: CreateOccupantSupport,
+        _ measurement: InitialBaseMeasureFor
     ) {
         
-        measurement = InitialBaseMeasureFor()
+        self.measurement = measurement
         
         centreToFrontLength = measurement.centreToFrontLength
         
