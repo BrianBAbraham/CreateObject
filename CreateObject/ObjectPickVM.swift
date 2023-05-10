@@ -406,6 +406,8 @@ extension ObjectPickViewModel {
         _ option: ObjectOptions,
         _ state: Bool) {
             objectPickModel.setObjectOptionDictionary(option, state)
+            
+//print(objectPickModel.objectOptionDictionary)
     }
 
 

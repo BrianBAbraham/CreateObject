@@ -29,8 +29,22 @@ struct CreateObjectInitiated {
             let occupantSupportJoints: [JointType] =
             [.fixed]
             
-            let oneOrMultipleSeats: OccupantSupportNumber =
-                .one
+            
+            var oneOrMultipleSeats: OccupantSupportNumber {
+                var seatChoice = OccupantSupportNumber.one
+
+                if objectOptions[ObjectOptions.doubleSeatSideBySide] ??
+                    false {
+                    seatChoice = OccupantSupportNumber.twoSideBySide
+
+                }
+                
+                if objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false {
+                    seatChoice = OccupantSupportNumber.twoFrontAndBack
+                }
+              return seatChoice
+            }
+        
             
             let occupantSupportTypes: [OccupantSupportTypes] =
             [.seatedStandard]
@@ -53,11 +67,20 @@ struct CreateObjectInitiated {
             
             let addedForReclineBackSupport: Double = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
             
+            var addedBaseDimensionForMultipleSeats: Dimension {
+                let lengthAddition = objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false ? 600.0: 0.0
+                let widthAddition = objectOptions[ObjectOptions.doubleSeatSideBySide] ?? false ? 300.0: 0.0
+                let dimension = (length: 0.0, width: widthAddition)
+                
+                return dimension
+            }
+            
             let baseMeasurement =
-                getMeasurement(
+                getMeasurementForBaseGivenOccupantSupport(
                     baseType,
                     objectOptions,
-                    addedForReclineBackSupport)
+                    addedForReclineBackSupport,
+                    addedBaseDimensionForMultipleSeats)
 
             occupantSupport =
                 CreateOccupantSupport(
@@ -74,18 +97,18 @@ struct CreateObjectInitiated {
               CreateBase(
                   baseType,
                   occupantSupport,
-                  baseMeasurement,
-                  objectOptions
+                  baseMeasurement
               ).dictionary
 
             dictionary += occupantSupport.dictionary
         }
     
     
-    func getMeasurement(
+    func getMeasurementForBaseGivenOccupantSupport(
         _ baseType: BaseObjectTypes,
         _ objectOptions: OptionDictionary,
-        _ addedForReclineBackSupport: Double)
+        _ addedForReclineBackSupport: Double,
+        _ addedBaseMeasurementForMultipleSeats: Dimension)
             -> InitialBaseMeasureFor {
         
         let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
@@ -120,20 +143,38 @@ struct CreateObjectInitiated {
             
             case .fixedWheelRearDrive:
                 baseMeasurement = InitialBaseMeasureFor(
-                    rearToFrontLength: 500 + addedForReclineBackSupport)
+                    rearToFrontLength:
+                        500 +
+                        addedForReclineBackSupport +
+                        addedBaseMeasurementForMultipleSeats.length,
+                    halfWidth:
+                        InitialBaseMeasureFor().halfWidth +
+                        addedBaseMeasurementForMultipleSeats.width)
             
             case .fixedWheelFrontDrive:
                 baseMeasurement = InitialBaseMeasureFor(
-                    rearToFrontLength: 500 + addedForReclineBackSupport)
+                    rearToFrontLength:
+                        500 +
+                        addedForReclineBackSupport +
+                        addedBaseMeasurementForMultipleSeats.length)
             
             case .fixedWheelMidDrive:
                 baseMeasurement = InitialBaseMeasureFor(
-                    rearToCentreLength: 200 + addedForReclineBackSupport,
-                    rearToFrontLength: 600 + addedForReclineBackSupport)
+                    rearToCentreLength:
+                        200 +
+                        addedForReclineBackSupport +
+                        addedBaseMeasurementForMultipleSeats.length,
+                    rearToFrontLength:
+                        600 +
+                        addedForReclineBackSupport +
+                        addedBaseMeasurementForMultipleSeats.length
+                )
             
             case .fixedWheelManualRearDrive:
                 baseMeasurement = InitialBaseMeasureFor(
-                    rearToFrontLength: 500 + addedForReclineBackSupport)
+                    rearToFrontLength: 500 +
+                    addedForReclineBackSupport +
+                    addedBaseMeasurementForMultipleSeats.length)
             
             case .showerTray:
                   baseMeasurement = InitialBaseMeasureFor(

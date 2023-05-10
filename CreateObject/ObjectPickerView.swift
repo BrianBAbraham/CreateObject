@@ -39,9 +39,15 @@ struct PickDefaultObjectView: View {
         VStack {
             //Text(String(recline))
             BackSupportRecline(objectPickVM.getCurrentObjectName())
-                .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
-                    self.recline = value
-                })
+//                .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
+//                    self.recline = value
+//                })
+                .padding(.horizontal)
+            
+            DoubleSitOnOption(objectPickVM.getCurrentObjectName())
+//                .onPreferenceChange(DoubleSitOnPreferenceKey.self, perform: {value in
+//                    self.recline = value
+//                })
                 .padding(.horizontal)
             
             
@@ -69,37 +75,7 @@ struct PickDefaultObjectView: View {
     }
 }
 
-struct ReclinePreferenceKey: PreferenceKey {
-    static var defaultValue: Bool = false
-    static func reduce(value: inout Bool, nextValue: () -> Bool) {
-        value = nextValue()
-    }
-}
 
-struct BackSupportRecline: View {
-    @State private var reclineToggle = false
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    let showRecline: Bool
-    
-    init(_ name: String) {
-        showRecline = name.contains("air") ? true: false
-    }
-    
-    var body: some View {
-        if showRecline {
-            Toggle("Reclining back",isOn: $reclineToggle)
-                .onChange(of: reclineToggle) { value in
-                    let name = objectPickVM.getCurrentObjectName()
-                    objectPickVM.setObjectOptionDictionary(ObjectOptions.recliningBackSupport, reclineToggle)
-                    objectPickVM.setCurrentObjectDictionary(name)
-                    
-                }
-                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
-        } else {
-            EmptyView()
-        }
-    }
-}
 
 
 //struct ObjectPickerView_Previews: PreviewProvider {

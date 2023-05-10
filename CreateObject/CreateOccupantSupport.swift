@@ -67,6 +67,7 @@ struct CreateOccupantSupport {
         InitialOccupantBodySupportMeasure()
     var overheadSupportRequired = false
     let allBodySupportCorners: [[PositionAsIosAxes]]
+    let objectOptions: OptionDictionary
     
     init(
         _ baseType: BaseObjectTypes,
@@ -77,14 +78,13 @@ struct CreateOccupantSupport {
         _ baseMeasurement: InitialBaseMeasureFor,
         _ objectOptions: OptionDictionary
     ) {
-//        backSupportRecline = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.addedLengthOfMaximallyReclinedBackSupport: 2
-        
         self.baseType = baseType
         self.baseToOccupantSupportJoint = baseToOccupantSupportJoint
         self.numberOfOccupantSupport = numberOfOccupantSupport
         self.occupantSupportTypes = occupantSupportTypes
         self.initialOccupantBodySupportMeasure = initialOccupantBodySupportMeasure
         self.baseMeasurement = baseMeasurement
+        self.objectOptions = objectOptions
         
         
         
@@ -177,17 +177,14 @@ struct CreateOccupantSupport {
             getDictionary(
                 supportIndex,
                 objectOptions
-//                          ,backSupportRecline
             )
         }
         
         
         func getDictionary(
-            _ supportIndex: Int
-            ,
+            _ supportIndex: Int,
             _ objectOptions: OptionDictionary
-            //_ backSupportRecline: Double
-        ){
+            ){
                 
             if backSupportRequired {
                 let occupantBackSupport =
@@ -195,7 +192,6 @@ struct CreateOccupantSupport {
                     allBodySupportFromPrimaryOrigin,
                     supportIndex,
                     objectOptions)
-                
                 dictionary +=
                 occupantBackSupport.dictionary
             }
@@ -206,9 +202,7 @@ struct CreateOccupantSupport {
                         allBodySupportFromPrimaryOrigin,
                         supportIndex,
                         initialOccupantBodySupportMeasure,
-                        baseType
-                    )
-                
+                        baseType)
                     dictionary +=
                     occupantFootSupport.dictionary
             }
@@ -219,7 +213,6 @@ struct CreateOccupantSupport {
                     allBodySupportFromPrimaryOrigin,
                     supportIndex
                 )
-                
                 dictionary +=
                 occupantSideSuppport.dictionary
             }
@@ -233,7 +226,6 @@ struct CreateOccupantSupport {
                     baseType,
                     occupantSupportMeasure
                     ).dictionary
-                    
                 dictionary += bodySupportDictionary
             }
                 
@@ -246,11 +238,8 @@ struct CreateOccupantSupport {
                     overHeadSupportFromPrimaryOrigin,
                     initialOccupantBodySupportMeasure
                     ).dictionary
-
-                    
                 dictionary += overHeadSupportDictionary
             }
-
         }
 
         
@@ -259,7 +248,17 @@ struct CreateOccupantSupport {
             _ supportIndex: Int,
             _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
         -> PositionAsIosAxes {
-
+            
+            if objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false {
+                
+            }
+            
+            if objectOptions[ObjectOptions.doubleSeatSideBySide] ?? false {
+                
+            }
+//WED WORKING ON
+            
+            
             let modifiedPositionForReclineBackRest = InitialOccupantBackSupportMeasurement(objectOptions).backSupport.length
             
             var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
@@ -281,15 +280,18 @@ struct CreateOccupantSupport {
                         bodySupportlengthFromPrimaryOrigin = 0
 
                     case .fixedWheelRearDrive:
-                        bodySupportlengthFromPrimaryOrigin = halfLength +
+                        bodySupportlengthFromPrimaryOrigin =
+                    halfLength +
                     modifiedPositionForReclineBackRest
                     
                     case .fixedWheelManualRearDrive:
-                        bodySupportlengthFromPrimaryOrigin = halfLength +
+                        bodySupportlengthFromPrimaryOrigin =
+                    halfLength +
                     modifiedPositionForReclineBackRest
 
                     default:
-                        bodySupportlengthFromPrimaryOrigin = halfLength +
+                        bodySupportlengthFromPrimaryOrigin =
+                    halfLength +
                     modifiedPositionForReclineBackRest
                 }
                 occupantBodySupportFromPrimaryOrigin =

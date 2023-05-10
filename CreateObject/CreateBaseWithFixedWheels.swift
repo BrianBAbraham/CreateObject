@@ -56,6 +56,8 @@ struct ForFixedWheelBaseObject {
             firstOriginId: fixedWheelOriginIdIsAlways)
     }
     
+    
+    
     func getDictionary() -> [String: PositionAsIosAxes ]{    //CHANGE
         
         var casterDictionary: PositionDictionary = [:]

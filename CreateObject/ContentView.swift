@@ -232,16 +232,27 @@ struct CustomPreferenceKey: PreferenceKey {
 //        
 //    }
 //}
-struct DemoExclusiveToggles: View {
-    let toggleNames = ["foot support distance", "overall width", "rear distance"]
-   
-    @State var flags = Array(repeating: false, count: 3)
+struct ExclusiveToggles: View {
+    let toggleCases: [ObjectOptions]
+    
+    @State var flags: [Bool]
+    
+    init( _ toggleCases: [ObjectOptions]) {
+        let numberOfFlag = toggleCases.count
+        
+        self.toggleCases = toggleCases
+        _flags = State(initialValue: Array(repeating: false, count: numberOfFlag))
+    }
     
     var body: some View {
         ScrollView {
             ForEach(flags.indices, id: \.self) { i in
-                ToggleItem(storage: self.$flags, tag: i, label: toggleNames[i] + " edit")
-                    .padding(.horizontal)
+                ToggleItem(
+                    storage: self.$flags,
+                    tag: i,
+                    label: toggleCases[i].rawValue,
+                    toggleCases: toggleCases)
+                        .padding(.horizontal)
             }
         }
     }
@@ -249,12 +260,22 @@ struct DemoExclusiveToggles: View {
 
 struct ToggleItem: View {
     @Binding var storage: [Bool]
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     var tag: Int
     var label: String = ""
+    let toggleCases: [ObjectOptions]
 
     var body: some View {
         let isOn = Binding (get: { self.storage[self.tag] },
             set: { value in
+            
+            for index in 0..<toggleCases.count {
+
+                let setOption = index == tag ? true: false
+
+                objectPickVM.setObjectOptionDictionary(toggleCases[index], setOption)
+            }
+
                 withAnimation {
                     self.storage = self.storage.enumerated().map { $0.0 == self.tag }
                 }

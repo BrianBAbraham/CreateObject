@@ -14,23 +14,20 @@ struct CreateBase {
     init(
         _ baseType: BaseObjectTypes,
         _ occupantSupport: CreateOccupantSupport,
-        _ measurement: InitialBaseMeasureFor,
-        _ objectOptions: OptionDictionary
+        _ measurement: InitialBaseMeasureFor
         ) {
             
             makeBase(
                 baseType,
                 occupantSupport,
-                measurement,
-                objectOptions)
+                measurement)
             }
     
     mutating func makeBase(
         _ baseType: BaseObjectTypes,
         _ occupantSupport: CreateOccupantSupport,
-        _ measurement: InitialBaseMeasureFor,
-        _ objectOptions: OptionDictionary
-    )  {
+        _ measurement: InitialBaseMeasureFor
+        )  {
         
         if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.caster.rawValue){
             

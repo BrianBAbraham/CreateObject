@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FD060BD52A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */; };
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
 		FD4B8BCD29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickVM.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerOptionsView.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFootSupportLeftRightPosition.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickVM.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */,
 				FD95DA2B29E40F1B009A9500 /* EditObjectMenuView.swift */,
 				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
+				FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */,
 				FDA4743C29E46925003F1202 /* ObjectView.swift */,
 				FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */,
 				FDB931D32A01504D00F86B4F /* SceneView.swift */,
@@ -284,6 +287,7 @@
 				FD8E998C299FD7320074196B /* DimensionsForBaseObject.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,
+				FD060BD52A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift in Sources */,
 				FD9E02F72975966600ACAA70 /* CreateObjectInitiated.swift in Sources */,
 				FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */,
 				FDC71F15296C921C00B68427 /* CreateBase.swift in Sources */,
