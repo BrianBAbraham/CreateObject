@@ -53,7 +53,7 @@ struct DoubleSitOnOption: View {
     let showDoubleSitOn: Bool
     
     init(_ name: String) {
-        showDoubleSitOn = name.contains("Power wheelchair") ? true: false
+        showDoubleSitOn = name.contains("wheelchair") ? true: false
     }
     
     var body: some View {
@@ -69,7 +69,8 @@ struct DoubleSitOnOption: View {
             
             if doubleSitOnToggle {
                 ExclusiveToggles(
-                    [ObjectOptions.doubleSeatFrontAndRear,ObjectOptions.doubleSeatSideBySide])
+                    [ObjectOptions.doubleSeatFrontAndRear,
+                     ObjectOptions.doubleSeatSideBySide])
             }
             
         } else {

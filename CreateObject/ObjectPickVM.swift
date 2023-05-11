@@ -410,6 +410,10 @@ extension ObjectPickViewModel {
 //print(objectPickModel.objectOptionDictionary)
     }
 
+    
+    func setObjectOptionDictionaryToAllFalse () {
+        objectPickModel.objectOptionDictionary = ObjectPickViewModel.optionDictionary
+    }
 
 
     

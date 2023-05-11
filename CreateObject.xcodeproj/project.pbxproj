@@ -14,7 +14,6 @@
 		FD8C21C129C0ABCD0034E293 /* DictionaryCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8C21C029C0ABCD0034E293 /* DictionaryCreation.swift */; };
 		FD8E998C299FD7320074196B /* DimensionsForBaseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */; };
 		FD91AF8E296DBB13005DEA51 /* CreateOccupantSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */; };
-		FD91AF90296DBBB0005DEA51 /* OccupantSupportTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD91AF8F296DBBB0005DEA51 /* OccupantSupportTypes.swift */; };
 		FD92B5812A055D7400C12481 /* CreateOccupantBackSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD92B5802A055D7400C12481 /* CreateOccupantBackSupport.swift */; };
 		FD93EFBC29DC7EB900456380 /* ObjectEditVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */; };
 		FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */; };
@@ -62,7 +61,6 @@
 		FD8C21C029C0ABCD0034E293 /* DictionaryCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryCreation.swift; sourceTree = "<group>"; };
 		FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionsForBaseObject.swift; sourceTree = "<group>"; };
 		FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantSupport.swift; sourceTree = "<group>"; };
-		FD91AF8F296DBBB0005DEA51 /* OccupantSupportTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OccupantSupportTypes.swift; sourceTree = "<group>"; };
 		FD92B5802A055D7400C12481 /* CreateOccupantBackSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantBackSupport.swift; sourceTree = "<group>"; };
 		FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectEditVM.swift; sourceTree = "<group>"; };
 		FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerView.swift; sourceTree = "<group>"; };
@@ -146,7 +144,6 @@
 				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */,
-				FD91AF8F296DBBB0005DEA51 /* OccupantSupportTypes.swift */,
 				FDC71F18296C936600B68427 /* CreateName.swift */,
 				FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */,
 				FDC71F12296C91E400B68427 /* BaseObjectEnum.swift */,
@@ -300,7 +297,6 @@
 				FD8C21C129C0ABCD0034E293 /* DictionaryCreation.swift in Sources */,
 				FDA1B72D29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift in Sources */,
 				FDC71F0F296C916200B68427 /* Enum.swift in Sources */,
-				FD91AF90296DBBB0005DEA51 /* OccupantSupportTypes.swift in Sources */,
 				FDD7247D29B0DD1000B50259 /* Development.swift in Sources */,
 				FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */,
 			);

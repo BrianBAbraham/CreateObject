@@ -26,28 +26,22 @@ struct CreateObjectInitiated {
         {
             let occupantSupport: CreateOccupantSupport
             
-            let occupantSupportJoints: [JointType] =
-            [.fixed]
-            
-            
-            var oneOrMultipleSeats: OccupantSupportNumber {
-                var seatChoice = OccupantSupportNumber.one
-
-                if objectOptions[ObjectOptions.doubleSeatSideBySide] ??
-                    false {
-                    seatChoice = OccupantSupportNumber.twoSideBySide
-
-                }
-                
-                if objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false {
-                    seatChoice = OccupantSupportNumber.twoFrontAndBack
-                }
-              return seatChoice
-            }
+//            var oneOrMultipleSeats: OccupantSupportNumber {
+//                var seatChoice = OccupantSupportNumber.one
+//
+//                if objectOptions[ObjectOptions.doubleSeatSideBySide] ??
+//                    false {
+//                    seatChoice = OccupantSupportNumber.twoSideBySide
+//
+//                }
+//                
+//                if objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false {
+//                    seatChoice = OccupantSupportNumber.twoFrontAndBack
+//                }
+//              return seatChoice
+//            }
         
-            
-            let occupantSupportTypes: [OccupantSupportTypes] =
-            [.seatedStandard]
+
             
             let baseObjectName_savedNameFlag = "_"
             let theFirstItemIsBaseObjectName = 0
@@ -85,9 +79,6 @@ struct CreateObjectInitiated {
             occupantSupport =
                 CreateOccupantSupport(
                     baseType,
-                    //occupantSupportJoints,
-                    //oneOrMultipleSeats,
-                    //occupantSupportTypes,
                     initialOccupantBodySupportMeasure,
                     baseMeasurement,
                     objectOptions

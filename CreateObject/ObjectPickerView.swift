@@ -63,6 +63,7 @@ struct PickDefaultObjectView: View {
                 objectPickVM.setDefaultObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
                 objectPickVM.setCurrentObjectDictionary(tag)
+                //objectPickVM.setObjectOptionDictionaryToAllFalse()
             }
 
             

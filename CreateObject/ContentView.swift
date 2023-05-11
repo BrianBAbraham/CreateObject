@@ -274,7 +274,12 @@ struct ToggleItem: View {
                 let setOption = index == tag ? true: false
 
                 objectPickVM.setObjectOptionDictionary(toggleCases[index], setOption)
+                
+                objectPickVM.setCurrentObjectDictionary(
+                    objectPickVM.getCurrentObjectName()
+                )
             }
+
 
                 withAnimation {
                     self.storage = self.storage.enumerated().map { $0.0 == self.tag }
@@ -282,4 +287,5 @@ struct ToggleItem: View {
             })
         return Toggle(label, isOn: isOn)
     }
+
 }

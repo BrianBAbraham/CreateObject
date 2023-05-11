@@ -53,18 +53,13 @@ struct CreateOccupantSupport {
     var armSupportRequired = true
     var footSupportRequired = true
     
-    
-    
     var allBodySupportFromPrimaryOrigin: [PositionAsIosAxes] = []
     
-
     let baseType: BaseObjectTypes //
 
     let baseMeasurement: InitialBaseMeasureFor //
   
     var dictionary: [String: PositionAsIosAxes ] = [:] //
-
-    
     
     let frontAndRearSeats: Bool //= false
     let initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure //
