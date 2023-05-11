@@ -85,9 +85,9 @@ struct CreateObjectInitiated {
             occupantSupport =
                 CreateOccupantSupport(
                     baseType,
-                    occupantSupportJoints,
-                    oneOrMultipleSeats,
-                    occupantSupportTypes,
+                    //occupantSupportJoints,
+                    //oneOrMultipleSeats,
+                    //occupantSupportTypes,
                     initialOccupantBodySupportMeasure,
                     baseMeasurement,
                     objectOptions

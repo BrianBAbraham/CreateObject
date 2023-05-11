@@ -34,7 +34,7 @@ struct CreateBase {
             dictionary =
             ForAllCasterBaseObject(
                 baseType,
-                occupantSupport,
+                //occupantSupport,
                 measurement
                 
             ).getDictionary()
@@ -55,7 +55,7 @@ struct CreateBase {
            dictionary =
            ForFixedWheelBaseObject(
                 baseType,
-                occupantSupport,
+                //occupantSupport,
                 measurement
             ).getDictionary()
         }

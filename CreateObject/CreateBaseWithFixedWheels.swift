@@ -14,14 +14,14 @@ struct ForFixedWheelBaseObject {
     let fixedWheelsFromPrimaryOriginsDictionary: [String: PositionAsIosAxes]    //CHANGE
     let rearToCentreLength: Double
     let rearToFrontLength: Double
-    let occupantSupportTypes: [OccupantSupportTypes]
+    //let occupantSupportTypes: [OccupantSupportTypes]
     let wheelBaseType: BaseObjectTypes
-    let allSitOnFromPrimaryOrigin: [PositionAsIosAxes]
-    let occupantSupport: CreateOccupantSupport
+   // let allSitOnFromPrimaryOrigin: [PositionAsIosAxes]
+    //let occupantSupport: CreateOccupantSupport
 
     init(
         _ wheelBaseType: BaseObjectTypes,
-        _ occupantSupport: CreateOccupantSupport,
+        //_ occupantSupport: CreateOccupantSupport,
         _ measurement: InitialBaseMeasureFor
     ) {
         
@@ -31,7 +31,7 @@ struct ForFixedWheelBaseObject {
         
         centreHalfWidth = measurement.halfWidth
         
-        self.occupantSupport = occupantSupport
+        //self.occupantSupport = occupantSupport
         
         rearToCentreLength = measurement.rearToCentreLength
         
@@ -39,9 +39,9 @@ struct ForFixedWheelBaseObject {
         
         self.wheelBaseType = wheelBaseType
         
-        self.allSitOnFromPrimaryOrigin = occupantSupport.allBodySupportFromPrimaryOrigin
+        //self.allSitOnFromPrimaryOrigin = occupantSupport.allBodySupportFromPrimaryOrigin
         
-        occupantSupportTypes = occupantSupport.occupantSupportTypes
+        //occupantSupportTypes = occupantSupport.occupantSupportTypes
             
         let fixedWheelOriginLocations =
         CreateIosPosition.forLeftRightAsArray(x:  centreHalfWidth)
