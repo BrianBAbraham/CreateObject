@@ -64,7 +64,7 @@ struct CreateOccupantSupport {
     let frontAndRearSeats: Bool //= false
     let initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure //
     
-    let numberOfSeats: Int
+    var numberOfSeats: Int
  
     var occupantSupportMeasure: Dimension //
     let occupantSupportMeasures: InitialOccupantBodySupportMeasure =
@@ -90,16 +90,17 @@ struct CreateOccupantSupport {
         self.baseMeasurement = baseMeasurement
         self.objectOptions = objectOptions
         
-        sideBySideSeats = //true
+        sideBySideSeats =
             objectOptions[ObjectOptions.doubleSeatSideBySide] ?? false
         
         frontAndRearSeats =
             objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false
         
-        numberOfSeats =
-            1 + (sideBySideSeats || frontAndRearSeats ? 1:0)
-               
-
+        
+        numberOfSeats =  1
+        if baseType.rawValue.contains("wheelchair") {
+            numberOfSeats += (sideBySideSeats || frontAndRearSeats ? 1:0)}
+       
         
         switch baseType {
             case .allCasterChair:
@@ -138,37 +139,19 @@ struct CreateOccupantSupport {
         }
         
 
-        
         allBodySupportFromPrimaryOrigin =
-        getAllBodySuppportFromPrimaryOrigin(
-            initialOccupantBodySupportMeasure
-        )
-
-        func getAllBodySuppportFromPrimaryOrigin(
-            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
-            -> [PositionAsIosAxes] {
-
-            var fromPrimaryToSitOnOrigins: [PositionAsIosAxes] = []
-            for supportIndex in 0..<numberOfSeats {
-                fromPrimaryToSitOnOrigins.append(
-                    getOneBodySupportFromPrimaryOrigin(
-                        supportIndex,
-                        initialOccupantBodySupportMeasure)
-                    )
-                }
-            return
-                fromPrimaryToSitOnOrigins
-        }
-
-        
-        
+            getAllBodySuppportFromPrimaryOrigin(
+                initialOccupantBodySupportMeasure
+            )
         
         allBodySupportCorners =
-        getAllBodySupportFromPrimaryOriginCorners(
-            allBodySupportFromPrimaryOrigin,
-            occupantSupportMeasure.length,
-            occupantSupportMeasure.width)
+            getAllBodySupportFromPrimaryOriginCorners(
+                allBodySupportFromPrimaryOrigin,
+                occupantSupportMeasure.length,
+                occupantSupportMeasure.width)
 
+        
+        
         func getAllBodySupportFromPrimaryOriginCorners(
             _ fromPrimaryToSitOnOrigins: [PositionAsIosAxes],
             _ length: Double,
@@ -194,6 +177,21 @@ struct CreateOccupantSupport {
         }
         
         
+        func getAllBodySuppportFromPrimaryOrigin(
+            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
+            -> [PositionAsIosAxes] {
+
+            var fromPrimaryToSitOnOrigins: [PositionAsIosAxes] = []
+            for supportIndex in 0..<numberOfSeats {
+                fromPrimaryToSitOnOrigins.append(
+                    getOneBodySupportFromPrimaryOrigin(
+                        supportIndex,
+                        initialOccupantBodySupportMeasure)
+                    )
+                }
+            return
+                fromPrimaryToSitOnOrigins
+        }
         
         
         func getDictionary(
@@ -263,11 +261,7 @@ struct CreateOccupantSupport {
             _ supportIndex: Int,
             _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
                 -> PositionAsIosAxes {
-            
-  
-//WED WORKING ON
-            
-            
+
             let modifiedPositionForReclineBackRest = InitialOccupantBackSupportMeasurement(objectOptions).backSupport.length
             
             var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
@@ -315,9 +309,8 @@ struct CreateOccupantSupport {
             if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.caster.rawValue) {
                 
                 let initialOccupantBodySupportFromPrimaryOrigin =
-                    getAllBodySupportFromPrimaryOriginAccountForAllSitOn(
-                        supportIndex,
-                        halfLength)
+                (x: 0.0, y: halfLength, z: 0.0 )
+
                 
                 switch baseType {
                     case .allCasterChair:
@@ -333,7 +326,7 @@ struct CreateOccupantSupport {
                      z: 0)
                     
                     case .allCasterBed:
-let headEndPartWidth = 100.0
+                        let headEndPartWidth = 100.0
                         occupantBodySupportFromPrimaryOrigin =
 
                     (x: 0,
@@ -365,22 +358,19 @@ let headEndPartWidth = 100.0
             -> PositionAsIosAxes {
                 var location = Globalx.iosLocation
                 let bodySupportDimension = initialOccupantBodySupportMeasure.sitOn
+                let supportHalfWidthDimension = InitialOccupantSideSupportMeasurement().rightSideSupportFromSitOnOrigin.x
+                + InitialOccupantSideSupportMeasurement().sitOnArm.width/2
                 
- 
-                
-
                 if !sideBySideSeats && !frontAndRearSeats {
                     location = (x: 0.0, y: bodySupportLengthFromPrimaryOrigin, z: 0.0)
-//print("one")
                 }
 
                 if sideBySideSeats {
                     if supportIndex == 0 {
-                        location.x = -bodySupportDimension.width
+                        location.x = -supportHalfWidthDimension
                     } else {
-                        location.x = bodySupportDimension.width
+                        location.x = supportHalfWidthDimension
                     }
-//print("sidebyside")
                 }
 
                 if frontAndRearSeats {
@@ -389,9 +379,9 @@ let headEndPartWidth = 100.0
                     } else {
                         location.y = bodySupportLengthFromPrimaryOrigin - bodySupportDimension.length
                     }
-//print("frontback")
                 }
-            return location
+                
+                return location
         }
     }
     

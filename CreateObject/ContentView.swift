@@ -233,15 +233,21 @@ struct CustomPreferenceKey: PreferenceKey {
 //    }
 //}
 struct ExclusiveToggles: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     let toggleCases: [ObjectOptions]
+
     
     @State var flags: [Bool]
     
-    init( _ toggleCases: [ObjectOptions]) {
-        let numberOfFlag = toggleCases.count
+    init(_ optionStates: [Bool], _ toggleCases: [ObjectOptions]) {
+        
+      
+        
+        //let numberOfFlag = toggleCases.count
         
         self.toggleCases = toggleCases
-        _flags = State(initialValue: Array(repeating: false, count: numberOfFlag))
+        //_flags = State(initialValue: Array(repeating: false, count: numberOfFlag))
+        _flags = State(initialValue: optionStates)
     }
     
     var body: some View {
@@ -256,6 +262,8 @@ struct ExclusiveToggles: View {
             }
         }
     }
+    
+
 }
 
 struct ToggleItem: View {

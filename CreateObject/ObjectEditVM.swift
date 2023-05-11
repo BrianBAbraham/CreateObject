@@ -260,7 +260,7 @@ extension ObjectEditViewModel {
         _ dictionary: PositionDictionary,
         _ partId: Part,
         _ lengthChange:Double)
-        -> PositionDictionary {
+            -> PositionDictionary {
             
             let namesForFilter =
             [Part.footSupport.rawValue + Part.stringLink.rawValue,
@@ -273,6 +273,12 @@ extension ObjectEditViewModel {
                 filteredDictionary  +=
                 dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
             }
+                let sitOnName = CreateNameFromParts([.sitOn, .id0]).name
+                filteredDictionary = filteredDictionary.filter({
+                    $0.key.contains(
+                        sitOnName
+                     )
+                })
 
             if partId != .id {
                 let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name

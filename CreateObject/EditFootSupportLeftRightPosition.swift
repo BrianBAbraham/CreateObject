@@ -74,7 +74,6 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
         self.curentDictionary = currentDictionary
     }
     
-    
     var body: some View {
         
         
@@ -110,15 +109,14 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
             Slider(value: boundLength, in: minToMax, step: 100
             )
             .onChange(of: proposedLength) { value in
-//print(proposedLength)
+
                 editedDictionary =
                 objectEditVM.setPrimaryToFootSupportFrontLengthWhenNoFootHanger(
                     curentDictionary,
                     .id0,
                     proposedLength - currentLength.value
                 )
-//print(editedDictionary)
-                
+
                 objectPickVM.setCurrentObjectDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary)

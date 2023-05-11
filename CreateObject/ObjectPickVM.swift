@@ -86,6 +86,16 @@ extension ObjectPickViewModel {
         objectPickModel.currentObjectName
     }
     
+    func getCurrentOptionState(_ options: [ObjectOptions])
+        -> [Bool] {
+        let optionDictionary = getObjectOptionsDictionary()
+            var optionStates: [Bool] = []
+            for option in options {
+                optionStates
+                    .append(optionDictionary[option] ?? false)
+            }
+            return optionStates
+    }
 
     func getDefaultObjectDictionary()
     -> PositionDictionary {

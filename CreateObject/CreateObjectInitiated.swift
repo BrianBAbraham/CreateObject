@@ -25,24 +25,7 @@ struct CreateObjectInitiated {
         _ objectOptions: OptionDictionary)
         {
             let occupantSupport: CreateOccupantSupport
-            
-//            var oneOrMultipleSeats: OccupantSupportNumber {
-//                var seatChoice = OccupantSupportNumber.one
-//
-//                if objectOptions[ObjectOptions.doubleSeatSideBySide] ??
-//                    false {
-//                    seatChoice = OccupantSupportNumber.twoSideBySide
-//
-//                }
-//                
-//                if objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false {
-//                    seatChoice = OccupantSupportNumber.twoFrontAndBack
-//                }
-//              return seatChoice
-//            }
-        
 
-            
             let baseObjectName_savedNameFlag = "_"
             let theFirstItemIsBaseObjectName = 0
             var baseType: BaseObjectTypes
