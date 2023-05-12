@@ -96,6 +96,20 @@ extension ObjectPickViewModel {
             }
             return optionStates
     }
+    
+    func getCurrentOptionThereAreDoubleSitOn()
+        -> Bool {
+            let state =
+            getCurrentOptionState(
+                [ObjectOptions.doubleSeatFrontAndRear,
+                 ObjectOptions.doubleSeatSideBySide])
+           // print(state)
+            return
+                state.contains(true) ? true: false
+    }
+    
+    
+    
 
     func getDefaultObjectDictionary()
     -> PositionDictionary {
@@ -302,21 +316,22 @@ extension ObjectPickViewModel {
         let objectName = getCurrentObjectName()
             var maximumLengthIncrease = 0.0
             
-            maximumLengthIncrease =
-            objectName.contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) ?
-            InitialOccupantFootSupportMeasure.footSupportHangerMaximumLengthIncrease: maximumLengthIncrease
+//            maximumLengthIncrease =
+//            objectName.contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) ?
+//            InitialOccupantFootSupportMeasure.footSupportHangerMaximumLengthIncrease: maximumLengthIncrease
+//
+//            maximumLengthIncrease =
+//            objectName.contains(BaseObjectTypes.showerTray.rawValue) ?
+//            InitialOccupantFootSupportMeasure.footShowerSupportMaximumIncrease.length: maximumLengthIncrease
             
-            maximumLengthIncrease =
-            objectName.contains(BaseObjectTypes.showerTray.rawValue) ?
-            InitialOccupantFootSupportMeasure.footShowerSupportMaximumIncrease.length: maximumLengthIncrease
             
             
-            
-        let objectDefaultDimension = getObjectDimension(getDefaultObjectDictionary())
+        let objectDefaultDimension = getObjectDimension(getCurrentObjectDictionary())
             
         let objectDimensionWithLengthIncrease =
-            (length: objectDefaultDimension.length +
-             maximumLengthIncrease,
+            (length: objectDefaultDimension.length //+
+             //maximumLengthIncrease * 0
+             ,
             width: objectDefaultDimension.width)
 
         var frameSize: Dimension =
@@ -335,6 +350,8 @@ extension ObjectPickViewModel {
         }
 
             frameSize = objectDimensionWithLengthIncrease
+            
+//print(frameSize)
         return frameSize
     }
     
@@ -416,10 +433,12 @@ extension ObjectPickViewModel {
         _ option: ObjectOptions,
         _ state: Bool) {
             objectPickModel.setObjectOptionDictionary(option, state)
-            
-//print(objectPickModel.objectOptionDictionary)
     }
 
+    func setObjectOptionWithDoubleSitOn(_ state: Bool) {
+        setObjectOptionDictionary(ObjectOptions.doubleSeatFrontAndRear, state)
+        setObjectOptionDictionary(ObjectOptions.doubleSeatSideBySide, state)
+    }
     
     func setObjectOptionDictionaryToAllFalse () {
         objectPickModel.objectOptionDictionary = ObjectPickViewModel.optionDictionary

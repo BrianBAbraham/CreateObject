@@ -264,8 +264,9 @@ extension ObjectEditViewModel {
             
             let namesForFilter =
             [Part.footSupport.rawValue + Part.stringLink.rawValue,
-             Part.footSupportHorizontalJoint.rawValue
-             ]
+             Part.footSupportHorizontalJoint.rawValue,
+             //CreateNameFromParts([Part.sitOn, Part.id0]).name
+            ]
             
             var filteredDictionary: PositionDictionary = [:]
             

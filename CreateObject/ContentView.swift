@@ -137,10 +137,11 @@ struct ContentView: View {
 
         NavigationView {
             VStack {
-                NavigationLink(destination: SceneView()){
-                 Text("Scene")
-                }
+                
+                NavigationLink(destination: SceneView() )
+                    { Text("Scene") }
 
+                
                 NavigationLink(destination:
                     VStack( spacing: -150) {
 
@@ -152,21 +153,18 @@ struct ContentView: View {
 //                            )
 //                        .scaleEffect(0.5)
                     AddToSceneView(currentDictionary, name)
-                    }
-                ) {
-                    Text("Default equipment")
-                    }
+                    } )
+                    { Text("Default equipment") }
 
+                
                 NavigationLink(destination:
                                 PickSavedObjectView()
                                 .environmentObject(objectPickVM)
                                 .environmentObject(coreDataVM)
-                               , isActive: self.$isActive ) {
-                    Text("Saved equipment")
-                        //.font(isActive ? .largeTitle: .body)
-                    
-                }
-
+                               , isActive: self.$isActive )
+                    { Text("Saved equipment") }
+                
+                
                 NavigationLink(destination:
                     VStack {
                     Text( objectPickVM.getCurrentObjectName())
@@ -179,10 +177,11 @@ struct ContentView: View {
                     EditObjectMenuView()
                     saveButtonView
                     }
-                ) {
-                    Text("Edit equipment")
-                }
+                )
+                { Text("Edit equipment") }
 
+                
+                
                 NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
                  Text("View current dictionary")
                 }

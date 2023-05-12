@@ -167,8 +167,13 @@ struct ObjectView: View {
 
     
     var body: some View {
-        let dictionaryForScreen = objectPickVM.getObjectDictionaryForScreen(dictionary)
-        let frameSize = objectPickVM.getScreenFrameSize()
+        let currentDictionary = objectPickVM.getCurrentObjectDictionary()
+        
+        let dictionaryForScreen =
+            objectPickVM.getObjectDictionaryForScreen(currentDictionary)
+        
+        let frameSize =
+            objectPickVM.getScreenFrameSize()
         
        // GeometryReader { reader in
         ZStack{
@@ -181,7 +186,7 @@ struct ObjectView: View {
         }
 
         //}
-        //.border(.red, width: 5)
+        .border(.red, width: 5)
         //.frame(width: frameSize.width, height: frameSize.length)
 //        if objectManipulationIsActive {
             .modifier(

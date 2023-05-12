@@ -31,6 +31,8 @@ struct PickDefaultObjectView: View {
     }
     
     var body: some View {
+        
+        let doubleSitOnState = objectPickVM.getCurrentOptionThereAreDoubleSitOn()
         let boundEquipmentType = Binding(
             get: {objectPickVM.getCurrentObjectName()},
             set: {self.equipmentType = $0}
@@ -44,7 +46,7 @@ struct PickDefaultObjectView: View {
 //                })
                 .padding(.horizontal)
             
-            DoubleSitOnOption(objectPickVM.getCurrentObjectName())
+            DoubleSitOnOption(doubleSitOnState, objectPickVM.getCurrentObjectName())
 //                .onPreferenceChange(DoubleSitOnPreferenceKey.self, perform: {value in
 //                    self.recline = value
 //                })

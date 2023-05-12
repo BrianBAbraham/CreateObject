@@ -28,7 +28,7 @@ struct EditFootSupportLeftRightPosition: View {
         VStack{
            
             Spacer()
-        
+            DoubleSeat()
             Toggle(toggleLabel,isOn: $leftAndRight)
                 .onChange(of: leftAndRight) { value in
                 }
@@ -40,6 +40,21 @@ struct EditFootSupportLeftRightPosition: View {
                 FootSupportWithHangerLinkLengthSlider(dictionary,"L",.id0, .footSupport)
                 FootSupportWithHangerLinkLengthSlider(dictionary,"R",.id1, .footSupport)
             }
+        }
+    }
+}
+
+struct DoubleSeat: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    var name: String {
+        objectPickVM.getCurrentObjectName()
+    }
+    
+    var body: some View {
+        if name.contains("wheelchair") ? true: false && objectPickVM.getCurrentOptionThereAreDoubleSitOn() {
+            Text("select seat")
+        } else {
+            EmptyView()
         }
     }
 }
@@ -165,10 +180,11 @@ struct FootSupportWithHangerLinkLengthSlider: View {
         
         let defaultDictionary = objectPickVM.getDefaultObjectDictionary()
         
-        let minToMax = objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
-            defaultDictionary,
-            curentDictionary,
-            onePieceOrLeftRightFootSupport)
+        let minToMax =
+            objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
+                defaultDictionary,
+                curentDictionary,
+                onePieceOrLeftRightFootSupport)
         
         let displayLength = String(format: "%.0f",currentLength.value)
         //String(format: "%.1f", currentLength.converted(to: UnitLength.inches).value) + "\""
@@ -180,15 +196,15 @@ struct FootSupportWithHangerLinkLengthSlider: View {
         
         HStack {
             Text(leftOrRight)
-            Slider(value: boundLength, in: minToMax, step: 1
+            Slider(value: boundLength, in: minToMax, step: 5
             )
             .onChange(of: proposedLength) { value in
                 editedDictionary =
-                objectEditVM.setPrimaryToFootSupportWithHangerFrontLength(
-                    curentDictionary,
-                   id,
-                    proposedLength - currentLength.value
-                )
+                    objectEditVM.setPrimaryToFootSupportWithHangerFrontLength(
+                        curentDictionary,
+                        id,
+                        proposedLength - currentLength.value)
+                
                 objectPickVM.setCurrentObjectDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary)

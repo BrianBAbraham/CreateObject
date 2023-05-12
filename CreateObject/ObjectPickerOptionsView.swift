@@ -48,30 +48,39 @@ struct DoubleSitOnPreferenceKey: PreferenceKey {
 }
 
 struct DoubleSitOnOption: View {
-    @State private var doubleSitOnToggle = false
+    @State private var doubleSitOnToggle: Bool
+    
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    
     let showDoubleSitOn: Bool
     
-    init(_ name: String) {
-        showDoubleSitOn = name.contains("wheelchair") ? true: false
+    init(_ doubleSitOnState: Bool, _ name: String) {
+        
+        showDoubleSitOn =
+            name.contains("wheelchair") ? true: false
+        
+        _doubleSitOnToggle
+            = State(initialValue: doubleSitOnState)
     }
     
     var body: some View {
         if showDoubleSitOn {
             Toggle("Two seats",isOn: $doubleSitOnToggle)
                 .onChange(of: doubleSitOnToggle) { value in
-//                    let name = objectPickVM.getCurrentObjectName()
-//                    objectPickVM.setObjectOptionDictionary(ObjectOptions.recliningBackSupport, reclineToggle)
-//                    objectPickVM.setCurrentObjectDictionary(name)
-                    
+                   
+                    if !doubleSitOnToggle {
+                        objectPickVM.setObjectOptionWithDoubleSitOn(false)
+                        
+                        let name = objectPickVM.getCurrentObjectName()
+                        
+                        objectPickVM.setCurrentObjectDictionary(name)
+                    }
                 }
-//                .preference(key: DoubleSitOnPreferenceKey.self, value: doubleSitOnToggle)
             
-            if doubleSitOnToggle {
                 let options =
-                [ObjectOptions.doubleSeatFrontAndRear,
-                 ObjectOptions.doubleSeatSideBySide]
-                
+                [ObjectOptions.doubleSeatSideBySide, ObjectOptions.doubleSeatFrontAndRear]
+                        
+            if doubleSitOnToggle {
                 ExclusiveToggles(
                     objectPickVM.getCurrentOptionState(options),
                     options)
