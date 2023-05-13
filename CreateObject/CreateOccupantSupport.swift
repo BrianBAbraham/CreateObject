@@ -91,10 +91,10 @@ struct CreateOccupantSupport {
         self.objectOptions = objectOptions
         
         sideBySideSeats =
-            objectOptions[ObjectOptions.doubleSeatSideBySide] ?? false
+            objectOptions[ObjectOptions.doubleSitOnLeftAndRight] ?? false
         
         frontAndRearSeats =
-            objectOptions[ObjectOptions.doubleSeatFrontAndRear] ?? false
+            objectOptions[ObjectOptions.doubleSitOnFrontAndRear] ?? false
         
         
         numberOfSeats =  1

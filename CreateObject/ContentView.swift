@@ -143,17 +143,29 @@ struct ContentView: View {
 
                 
                 NavigationLink(destination:
-                    VStack( spacing: -150) {
+                    ZStack{
+                        VStack {
+                        
+                            PickDefaultObjectView()
 
-                    PickDefaultObjectView()
-                    ObjectView(uniquePartNames, currentDictionary, name)
-//                        .modifier(
-//                            ForObjectInDefaultView (
-//                                frameSize: frameSize)
-//                            )
-//                        .scaleEffect(0.5)
-                    AddToSceneView(currentDictionary, name)
-                    } )
+
+                            AddToSceneView(currentDictionary, name)
+                            Spacer()
+                        }
+                    HStack(alignment: .center) {
+                   
+                        ObjectView(uniquePartNames, currentDictionary, name)
+    //                        .modifier(
+    //                            ForObjectInDefaultView (
+    //                                frameSize: frameSize)
+    //                            )
+    //                        .scaleEffect(0.5)
+                      
+                    }
+
+                    }
+  
+                )
                     { Text("Default equipment") }
 
                 
@@ -233,20 +245,19 @@ struct CustomPreferenceKey: PreferenceKey {
 //}
 struct ExclusiveToggles: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    let toggleCases: [ObjectOptions]
 
+    let toggleCases: [ObjectOptions]
+    
+    let toggleFor: Toggles
     
     @State var flags: [Bool]
     
-    init(_ optionStates: [Bool], _ toggleCases: [ObjectOptions]) {
-        
-      
-        
-        //let numberOfFlag = toggleCases.count
-        
+    
+    init(_ optionStates: [Bool], _ toggleCases: [ObjectOptions], _ toggleFor: Toggles) {
+
         self.toggleCases = toggleCases
-        //_flags = State(initialValue: Array(repeating: false, count: numberOfFlag))
         _flags = State(initialValue: optionStates)
+        self.toggleFor = toggleFor
     }
     
     var body: some View {
@@ -256,13 +267,12 @@ struct ExclusiveToggles: View {
                     storage: self.$flags,
                     tag: i,
                     label: toggleCases[i].rawValue,
-                    toggleCases: toggleCases)
+                    toggleCases: toggleCases,
+                    toggleFor: toggleFor)
                         .padding(.horizontal)
             }
         }
     }
-    
-
 }
 
 struct ToggleItem: View {
@@ -271,6 +281,7 @@ struct ToggleItem: View {
     var tag: Int
     var label: String = ""
     let toggleCases: [ObjectOptions]
+    let toggleFor: Toggles
 
     var body: some View {
         let isOn = Binding (get: { self.storage[self.tag] },
@@ -280,13 +291,17 @@ struct ToggleItem: View {
 
                 let setOption = index == tag ? true: false
 
-                objectPickVM.setObjectOptionDictionary(toggleCases[index], setOption)
-                
-                objectPickVM.setCurrentObjectDictionary(
-                    objectPickVM.getCurrentObjectName()
-                )
+                switch toggleFor {
+                case .doubleSitOn:
+                    objectPickVM.setObjectOptionDictionaryForDoubleSitOn(toggleCases[index], setOption)
+                    
+                    objectPickVM.setCurrentObjectDictionary(
+                        objectPickVM.getCurrentObjectName () )
+                    
+                case .sitOnChoice:
+                    objectPickVM.setObjectOptionDictionary(toggleCases[index], setOption)
+                }
             }
-
 
                 withAnimation {
                     self.storage = self.storage.enumerated().map { $0.0 == self.tag }

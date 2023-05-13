@@ -78,12 +78,13 @@ struct DoubleSitOnOption: View {
                 }
             
                 let options =
-                [ObjectOptions.doubleSeatSideBySide, ObjectOptions.doubleSeatFrontAndRear]
+                [ObjectOptions.doubleSitOnLeftAndRight, ObjectOptions.doubleSitOnFrontAndRear]
                         
             if doubleSitOnToggle {
                 ExclusiveToggles(
                     objectPickVM.getCurrentOptionState(options),
-                    options)
+                    options,
+                    .doubleSitOn)
             }
             
         } else {

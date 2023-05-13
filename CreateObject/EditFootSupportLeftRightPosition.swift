@@ -28,7 +28,9 @@ struct EditFootSupportLeftRightPosition: View {
         VStack{
            
             Spacer()
+            
             DoubleSeat()
+            
             Toggle(toggleLabel,isOn: $leftAndRight)
                 .onChange(of: leftAndRight) { value in
                 }
@@ -50,9 +52,32 @@ struct DoubleSeat: View {
         objectPickVM.getCurrentObjectName()
     }
     
+    var options: [ObjectOptions] {
+        getDoubleSeatLayoutOptions()
+    }
+  
+    func getDoubleSeatLayoutOptions()
+    -> [ObjectOptions] {
+        
+        var options:[ObjectOptions] = []
+        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear) {
+            options =
+            [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear]
+        }
+        
+        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight) {
+            options =
+            [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight]
+        }
+        return options
+    }
+    
     var body: some View {
-        if name.contains("wheelchair") ? true: false && objectPickVM.getCurrentOptionThereAreDoubleSitOn() {
-            Text("select seat")
+        if (name.contains("wheelchair") ? true: false) && objectPickVM.getCurrentOptionThereAreDoubleSitOn() {
+            ExclusiveToggles(
+                objectPickVM.getCurrentOptionState(options),
+                options,
+                .sitOnChoice)
         } else {
             EmptyView()
         }

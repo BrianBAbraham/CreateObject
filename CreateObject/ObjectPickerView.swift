@@ -39,7 +39,24 @@ struct PickDefaultObjectView: View {
         )
         
         VStack {
-            //Text(String(recline))
+
+            Picker("Equipment",selection: boundEquipmentType ) {
+                ForEach(objectNames, id:  \.self)
+                        { equipment in
+                    Text(equipment)
+                }
+            }
+            .onChange(of: equipmentType) {tag in
+                self.equipmentType = tag
+                objectPickVM.setDefaultObjectDictionary(tag)
+                objectPickVM.setCurrentObjectName(tag)
+                objectPickVM.setCurrentObjectDictionary(tag)
+                //objectPickVM.setObjectOptionDictionaryToAllFalse()
+            }
+            //.pickerStyle(.wheel)
+            .scaleEffect(0.8)
+            
+            
             BackSupportRecline(objectPickVM.getCurrentObjectName())
 //                .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
 //                    self.recline = value
@@ -53,25 +70,7 @@ struct PickDefaultObjectView: View {
                 .padding(.horizontal)
             
             
-            Picker("Equipment",selection: boundEquipmentType ) {
-                ForEach(objectNames, id:  \.self)
-                        { equipment in
-                    Text(equipment)
-                }
-            }
 
-            .onChange(of: equipmentType) {tag in
-                self.equipmentType = tag
-                objectPickVM.setDefaultObjectDictionary(tag)
-                objectPickVM.setCurrentObjectName(tag)
-                objectPickVM.setCurrentObjectDictionary(tag)
-                //objectPickVM.setObjectOptionDictionaryToAllFalse()
-            }
-
-            
-            .pickerStyle(.wheel)
-            .scaleEffect(0.8)
-            
         }
 
 

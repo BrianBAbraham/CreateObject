@@ -101,9 +101,9 @@ extension ObjectPickViewModel {
         -> Bool {
             let state =
             getCurrentOptionState(
-                [ObjectOptions.doubleSeatFrontAndRear,
-                 ObjectOptions.doubleSeatSideBySide])
-           // print(state)
+                [ObjectOptions.doubleSitOnFrontAndRear,
+                 ObjectOptions.doubleSitOnLeftAndRight])
+//print(state)
             return
                 state.contains(true) ? true: false
     }
@@ -433,17 +433,51 @@ extension ObjectPickViewModel {
         _ option: ObjectOptions,
         _ state: Bool) {
             objectPickModel.setObjectOptionDictionary(option, state)
+//print(getObjectOptionsDictionary())
     }
 
+    func setObjectOptionDictionaryForDoubleSitOn(
+            _ option: ObjectOptions,
+            _ state: Bool) {
+            setObjectOptionDictionary(
+                option,
+                state)
+            
+            if option == ObjectOptions.doubleSitOnFrontAndRear && !state {
+                
+                for seat in [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear] {
+                    setObjectOptionDictionary(
+                        seat,
+                        state)
+                }
+            }
+            
+            if option == ObjectOptions.doubleSitOnLeftAndRight && !state {
+                for seat in [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight] {
+                    setObjectOptionDictionary(
+                        seat,
+                        state)
+                }
+            }
+        }
+    
     func setObjectOptionWithDoubleSitOn(_ state: Bool) {
-        setObjectOptionDictionary(ObjectOptions.doubleSeatFrontAndRear, state)
-        setObjectOptionDictionary(ObjectOptions.doubleSeatSideBySide, state)
+        setObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear, state)
+        setObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight, state)
     }
     
     func setObjectOptionDictionaryToAllFalse () {
         objectPickModel.objectOptionDictionary = ObjectPickViewModel.optionDictionary
     }
 
-
+    func setObjectOptionDictionarySetThenUnset( _ setThenUnset: [ObjectOptions]) {
+        setObjectOptionDictionary(setThenUnset[0], true)
+        setObjectOptionDictionary(setThenUnset[1], false)
+    }
     
+    func unsetObjectOptionDictionary(_ options: [ObjectOptions]) {
+        for option in options {
+            setObjectOptionDictionary(option, false)
+        }
+    }
 }
