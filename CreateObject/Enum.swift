@@ -67,12 +67,12 @@ enum ObjectOptions: String, CaseIterable  {
     case assistant = "assistant"
     case bumper = "bumper"
     case door = "door"
-    case doubleSitOnFrontAndRear = "rear-front"
-    case doubleSitOnFront = "front seat"
-    case doubleSitOnRear = "rear seat"
-    case doubleSitOnLeftAndRight = "side-by-side"
-    case doubleSitOnLeft = "left seat"
-    case doubleSitOnRight = "right seat"
+//    case doubleSitOnFrontAndRear = "rear-front"
+//    case doubleSitOnFront = "front seat"
+//    case doubleSitOnRear = "rear seat"
+//    case doubleSitOnLeftAndRight = "side-by-side"
+//    case doubleSitOnLeft = "left seat"
+//    case doubleSitOnRight = "right seat"
     case headSupport = "head support"
     case occupant = "occupant"
     case recliningBackSupport = "reclining back support"
@@ -84,7 +84,7 @@ enum ObjectOptions: String, CaseIterable  {
 
 enum Toggles {
     case doubleSitOn
-    case sitOnChoice
+    case sitOnPosition
 }
 
 struct PartGroupsFor {

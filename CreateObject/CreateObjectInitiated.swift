@@ -11,18 +11,20 @@ import Foundation
 
 struct CreateObjectInitiated {
     var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
+    //let twinSitOnOptions: TwinSitOnOptions
 
     
     init(
         baseName baseObjectName: String,
-        _ objectOptions: OptionDictionary
+        _ objectOptions: OptionDictionary,
+        _ twinSitOnOptions: TwinSitOnOptions = [:]
     ) {
-
-            getDictionary(baseObjectName, objectOptions) }
+            getDictionary(baseObjectName, objectOptions, twinSitOnOptions) }
     
     mutating func getDictionary(
         _ baseName: String,
-        _ objectOptions: OptionDictionary)
+        _ objectOptions: OptionDictionary,
+        _ twinSitOnOptions: TwinSitOnOptions)
         {
             let occupantSupport: CreateOccupantSupport
 
@@ -45,8 +47,8 @@ struct CreateObjectInitiated {
             let addedForReclineBackSupport: Double = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
             
             var addedBaseDimensionForMultipleSeats: Dimension {
-                let lengthAddition = objectOptions[ObjectOptions.doubleSitOnFrontAndRear] ?? false ? 600.0: 0.0
-                let widthAddition = objectOptions[ObjectOptions.doubleSitOnLeftAndRight] ?? false ? 300.0: 0.0
+                let lengthAddition = twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false ? 600.0: 0.0
+                let widthAddition = twinSitOnOptions[TwinSitOnOption.leftAndRight] ?? false ? 300.0: 0.0
                 let dimension = (length: 0.0, width: widthAddition)
                 
                 return dimension
@@ -64,7 +66,8 @@ struct CreateObjectInitiated {
                     baseType,
                     initialOccupantBodySupportMeasure,
                     baseMeasurement,
-                    objectOptions
+                    objectOptions,
+                    twinSitOnOptions
                 )
 
             dictionary +=

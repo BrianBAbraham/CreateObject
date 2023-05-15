@@ -28,6 +28,7 @@
 		FDA1B72D29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */; };
 		FDA3352E29AA5DF200409A61 /* CreateObjectRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */; };
 		FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA4743C29E46925003F1202 /* ObjectView.swift */; };
+		FDA8D6162A121D5D0017CAB5 /* TwinSitOnVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */; };
 		FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */; };
 		FDAB603829E98C2500BE56FA /* DictionaryInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */; };
 		FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC054829EADEFB00FCB400 /* JointDimensions.swift */; };
@@ -75,6 +76,7 @@
 		FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantOverHeadSupport.swift; sourceTree = "<group>"; };
 		FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateObjectRectangle.swift; sourceTree = "<group>"; };
 		FDA4743C29E46925003F1202 /* ObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectView.swift; sourceTree = "<group>"; };
+		FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinSitOnVM.swift; sourceTree = "<group>"; };
 		FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantBodySupport.swift; sourceTree = "<group>"; };
 		FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryInformation.swift; sourceTree = "<group>"; };
 		FDAC054829EADEFB00FCB400 /* JointDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointDimensions.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				FDD0CAEE29DB393600203BE5 /* Screen.swift */,
 				FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */,
 				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
+				FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */,
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */,
 				FDC71F18296C936600B68427 /* CreateName.swift */,
@@ -276,6 +279,7 @@
 				FD95DA2C29E40F1B009A9500 /* EditObjectMenuView.swift in Sources */,
 				FD92B5812A055D7400C12481 /* CreateOccupantBackSupport.swift in Sources */,
 				FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */,
+				FDA8D6162A121D5D0017CAB5 /* TwinSitOnVM.swift in Sources */,
 				FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
 				FD9B4B4229A0E01000E408AA /* CreateBaseWithAllCasters.swift in Sources */,

@@ -35,10 +35,13 @@ class ObjectPickViewModel: ObservableObject {
     static let optionDictionary =
     Dictionary(uniqueKeysWithValues: ObjectOptions.allCases.map { $0 }.map { ($0, false) })
     
+    static let twinSitOnDictionary: TwinSitOnOptions = [:]
+    
     static let dictionary =
     CreateObjectInitiated(
         baseName: initialObjectName,
-        optionDictionary)
+        optionDictionary,
+        twinSitOnDictionary)
         .dictionary
     
     @Published private var objectPickModel: ObjectPickModel =
@@ -97,16 +100,16 @@ extension ObjectPickViewModel {
             return optionStates
     }
     
-    func getCurrentOptionThereAreDoubleSitOn()
-        -> Bool {
-            let state =
-            getCurrentOptionState(
-                [ObjectOptions.doubleSitOnFrontAndRear,
-                 ObjectOptions.doubleSitOnLeftAndRight])
-//print(state)
-            return
-                state.contains(true) ? true: false
-    }
+//    func getCurrentOptionThereAreDoubleSitOn()
+//        -> Bool {
+//            let state =
+//            getCurrentOptionState(
+//                [ObjectOptions.doubleSitOnFrontAndRear,
+//                 ObjectOptions.doubleSitOnLeftAndRight])
+//
+//            return
+//                state.contains(true) ? true: false
+//    }
     
     
     
@@ -408,15 +411,17 @@ extension ObjectPickViewModel {
 
     func setCurrentObjectDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
-        _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation]) {
+        _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
+        twinSitOnOptions: TwinSitOnOptions = [:]) {
             
 //print(objectPickModel.objectOptionDictionary)
 
             
             var currentDictionary = CreateObjectInitiated(
                 baseName: objectName,
-                getObjectOptionsDictionary()).dictionary
-
+                getObjectOptionsDictionary(),
+                twinSitOnOptions).dictionary
+            
             if editedDictionary[""] != nil {
                 
             } else {
@@ -436,48 +441,5 @@ extension ObjectPickViewModel {
 //print(getObjectOptionsDictionary())
     }
 
-    func setObjectOptionDictionaryForDoubleSitOn(
-            _ option: ObjectOptions,
-            _ state: Bool) {
-            setObjectOptionDictionary(
-                option,
-                state)
-            
-            if option == ObjectOptions.doubleSitOnFrontAndRear && !state {
-                
-                for seat in [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear] {
-                    setObjectOptionDictionary(
-                        seat,
-                        state)
-                }
-            }
-            
-            if option == ObjectOptions.doubleSitOnLeftAndRight && !state {
-                for seat in [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight] {
-                    setObjectOptionDictionary(
-                        seat,
-                        state)
-                }
-            }
-        }
-    
-    func setObjectOptionWithDoubleSitOn(_ state: Bool) {
-        setObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear, state)
-        setObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight, state)
-    }
-    
-    func setObjectOptionDictionaryToAllFalse () {
-        objectPickModel.objectOptionDictionary = ObjectPickViewModel.optionDictionary
-    }
 
-    func setObjectOptionDictionarySetThenUnset( _ setThenUnset: [ObjectOptions]) {
-        setObjectOptionDictionary(setThenUnset[0], true)
-        setObjectOptionDictionary(setThenUnset[1], false)
-    }
-    
-    func unsetObjectOptionDictionary(_ options: [ObjectOptions]) {
-        for option in options {
-            setObjectOptionDictionary(option, false)
-        }
-    }
 }

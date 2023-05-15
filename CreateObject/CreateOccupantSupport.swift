@@ -83,7 +83,8 @@ struct CreateOccupantSupport {
         _ baseType: BaseObjectTypes,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
         _ baseMeasurement: InitialBaseMeasureFor,
-        _ objectOptions: OptionDictionary
+        _ objectOptions: OptionDictionary,
+        _ twinSitOnOptions: TwinSitOnOptions
     ) {
         self.baseType = baseType
         self.initialOccupantBodySupportMeasure = initialOccupantBodySupportMeasure
@@ -91,10 +92,10 @@ struct CreateOccupantSupport {
         self.objectOptions = objectOptions
         
         sideBySideSeats =
-            objectOptions[ObjectOptions.doubleSitOnLeftAndRight] ?? false
+        twinSitOnOptions[TwinSitOnOption.leftAndRight] ?? false
         
         frontAndRearSeats =
-            objectOptions[ObjectOptions.doubleSitOnFrontAndRear] ?? false
+        twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false
         
         
         numberOfSeats =  1

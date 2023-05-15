@@ -29,7 +29,7 @@ struct BackSupportRecline: View {
             Toggle("Reclining back",isOn: $reclineToggle)
                 .onChange(of: reclineToggle) { value in
                     let name = objectPickVM.getCurrentObjectName()
-                    objectPickVM.setObjectOptionDictionary(ObjectOptions.recliningBackSupport, reclineToggle)
+                    objectPickVM.setObjectOptionDictionary(ObjectOptions.recliningBackSupport, reclineToggle) //RECLINE
                     objectPickVM.setCurrentObjectDictionary(name)
                     
                 }
@@ -47,29 +47,34 @@ struct DoubleSitOnPreferenceKey: PreferenceKey {
     }
 }
 
-struct DoubleSitOnOption: View {
-    @State private var doubleSitOnToggle: Bool
+
+
+
+struct TwinSitOn: View {
+    @State private var twinSitOnToggle: Bool
     
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     
-    let showDoubleSitOn: Bool
+    let showTwinSitOn: Bool
     
-    init(_ doubleSitOnState: Bool, _ name: String) {
+    init(_ twinSitOnState: Bool, _ name: String) {
         
-        showDoubleSitOn =
+        showTwinSitOn =
             name.contains("wheelchair") ? true: false
         
-        _doubleSitOnToggle
-            = State(initialValue: doubleSitOnState)
+        _twinSitOnToggle
+            = State(initialValue: twinSitOnState)
     }
     
     var body: some View {
-        if showDoubleSitOn {
-            Toggle("Two seats",isOn: $doubleSitOnToggle)
-                .onChange(of: doubleSitOnToggle) { value in
+        if showTwinSitOn {
+            Toggle("Two seats",isOn: $twinSitOnToggle)
+                .onChange(of: twinSitOnToggle) { value in
                    
-                    if !doubleSitOnToggle {
-                        objectPickVM.setObjectOptionWithDoubleSitOn(false)
+                    if !twinSitOnToggle {
+                        
+                        twinSitOnVM.setAllConfigurationFalse()
                         
                         let name = objectPickVM.getCurrentObjectName()
                         
@@ -77,12 +82,11 @@ struct DoubleSitOnOption: View {
                     }
                 }
             
-                let options =
-                [ObjectOptions.doubleSitOnLeftAndRight, ObjectOptions.doubleSitOnFrontAndRear]
+            let options = [TwinSitOnOption.leftAndRight, TwinSitOnOption.frontAndRear]
                         
-            if doubleSitOnToggle {
+            if twinSitOnToggle {
                 ExclusiveToggles(
-                    objectPickVM.getCurrentOptionState(options),
+                    twinSitOnVM.getManyState(options), 
                     options,
                     .doubleSitOn)
             }

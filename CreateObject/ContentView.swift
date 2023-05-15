@@ -243,17 +243,51 @@ struct CustomPreferenceKey: PreferenceKey {
 //        
 //    }
 //}
+
+
+//struct ExclusiveToggles: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//
+//    let toggleCases: [ObjectOptions]
+//
+//    let toggleFor: Toggles
+//
+//    @State var flags: [Bool]
+//
+//
+//    init(_ optionStates: [Bool], _ toggleCases: [ObjectOptions], _ toggleFor: Toggles) {
+//
+//        self.toggleCases = toggleCases
+//        _flags = State(initialValue: optionStates)
+//        self.toggleFor = toggleFor
+//    }
+//
+//    var body: some View {
+//        ScrollView {
+//            ForEach(flags.indices, id: \.self) { i in
+//                ToggleItem(
+//                    storage: self.$flags,
+//                    tag: i,
+//                    label: toggleCases[i].rawValue,
+//                    toggleCases: toggleCases,
+//                    toggleFor: toggleFor)
+//                        .padding(.horizontal)
+//            }
+//        }
+//    }
+//}
+
 struct ExclusiveToggles: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
 
-    let toggleCases: [ObjectOptions]
+    let toggleCases: [TwinSitOnOption]
     
     let toggleFor: Toggles
     
     @State var flags: [Bool]
     
     
-    init(_ optionStates: [Bool], _ toggleCases: [ObjectOptions], _ toggleFor: Toggles) {
+    init(_ optionStates: [Bool], _ toggleCases: [TwinSitOnOption], _ toggleFor: Toggles) {
 
         self.toggleCases = toggleCases
         _flags = State(initialValue: optionStates)
@@ -261,7 +295,7 @@ struct ExclusiveToggles: View {
     }
     
     var body: some View {
-        ScrollView {
+        HStack {
             ForEach(flags.indices, id: \.self) { i in
                 ToggleItem(
                     storage: self.$flags,
@@ -275,12 +309,14 @@ struct ExclusiveToggles: View {
     }
 }
 
+
 struct ToggleItem: View {
     @Binding var storage: [Bool]
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     var tag: Int
     var label: String = ""
-    let toggleCases: [ObjectOptions]
+    let toggleCases: [TwinSitOnOption]
     let toggleFor: Toggles
 
     var body: some View {
@@ -293,13 +329,19 @@ struct ToggleItem: View {
 
                 switch toggleFor {
                 case .doubleSitOn:
-                    objectPickVM.setObjectOptionDictionaryForDoubleSitOn(toggleCases[index], setOption)
-                    
+                    twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
+                     let dictionary = twinSitOnVM.getTwinSitOnOptions()
+  
                     objectPickVM.setCurrentObjectDictionary(
-                        objectPickVM.getCurrentObjectName () )
+                        objectPickVM.getCurrentObjectName (),
+                        twinSitOnOptions: dictionary)
                     
-                case .sitOnChoice:
-                    objectPickVM.setObjectOptionDictionary(toggleCases[index], setOption)
+                case .sitOnPosition:
+                    twinSitOnVM.setTwinSitOnOption(
+                        toggleCases[index],
+                        setOption
+                        
+                    )
                 }
             }
 
@@ -311,3 +353,46 @@ struct ToggleItem: View {
     }
 
 }
+
+//struct ToggleItem: View {
+//    @Binding var storage: [Bool]
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+//    var tag: Int
+//    var label: String = ""
+//    let toggleCases: [ObjectOptions]
+//    let toggleFor: Toggles
+//
+//    var body: some View {
+//        let isOn = Binding (get: { self.storage[self.tag] },
+//            set: { value in
+//
+//            for index in 0..<toggleCases.count {
+//
+//                let setOption = index == tag ? true: false
+//
+//                switch toggleFor {
+//                case .doubleSitOn:
+//                    objectPickVM.setObjectOptionDictionaryForDoubleSitOn(toggleCases[index], setOption)
+//
+//                    objectPickVM.setCurrentObjectDictionary(
+//                        objectPickVM.getCurrentObjectName (),
+//                        twinSitOnOptions: twinSitOnVM.getTwinSitOnOptions())
+//
+//                case .sitOnChoice:
+//                    objectPickVM.setObjectOptionDictionary(
+//                        toggleCases[index],
+//                        setOption
+//
+//                    )
+//                }
+//            }
+//
+//                withAnimation {
+//                    self.storage = self.storage.enumerated().map { $0.0 == self.tag }
+//                }
+//            })
+//        return Toggle(label, isOn: isOn)
+//    }
+//
+//}

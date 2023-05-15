@@ -29,7 +29,8 @@ struct EditFootSupportLeftRightPosition: View {
            
             Spacer()
             
-            DoubleSeat()
+           // DoubleSeatSelection()
+            TwinSitOnSelection()
             
             Toggle(toggleLabel,isOn: $leftAndRight)
                 .onChange(of: leftAndRight) { value in
@@ -46,38 +47,108 @@ struct EditFootSupportLeftRightPosition: View {
     }
 }
 
-struct DoubleSeat: View {
+//struct DoubleSeatSelection: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+//    
+//    var name: String {
+//        objectPickVM.getCurrentObjectName()
+//    }
+//    
+//    var options: [ObjectOptions] {
+//        getDoubleSeatLayoutOptions() //TWIN
+//    }
+//    
+//    var options2: [TwinSitOnOption] {
+//        twinSitOnVM.getTwinSitOnConfiguration()  //TWIN
+//    }
+//    var options2states: [Bool] {
+//        twinSitOnVM.getManyState(options2) //TWIN
+//    }
+//  
+//    func getDoubleSeatLayoutOptions() //TWIN
+//    -> [ObjectOptions] {
+//        
+//        var options:[ObjectOptions] = []
+//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear) {
+//            options =
+//            [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear]
+//        }
+//        
+//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight) {
+//            options =
+//            [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight]
+//        }
+//        return options
+//    }
+//    
+//    var body: some View {
+//        // && twinSitOnVM.getState  //TWIN
+//        
+//        // option2states // TWIN
+//        //option2 //TWIN
+//        if (name.contains("wheelchair") ? true: false) &&
+//            objectPickVM.getCurrentOptionThereAreDoubleSitOn() {
+//            ExclusiveToggles(
+//                objectPickVM.getCurrentOptionState(options),
+//                options,
+//                .sitOnChoice)
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//}
+
+
+struct TwinSitOnSelection: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+
     var name: String {
         objectPickVM.getCurrentObjectName()
     }
-    
-    var options: [ObjectOptions] {
-        getDoubleSeatLayoutOptions()
+
+//    var options: [ObjectOptions] {
+//        getDoubleSeatLayoutOptions() //TWIN
+//    }
+
+    var options2: [TwinSitOnOption] {
+        twinSitOnVM.getTwinSitOnConfiguration()  //TWIN
     }
-  
-    func getDoubleSeatLayoutOptions()
-    -> [ObjectOptions] {
-        
-        var options:[ObjectOptions] = []
-        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear) {
-            options =
-            [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear]
-        }
-        
-        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight) {
-            options =
-            [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight]
-        }
-        return options
+    var options2states: [Bool] {
+        twinSitOnVM.getManyState(options2) //TWIN
     }
-    
+
+//    func getDoubleSeatLayoutOptions() //TWIN
+//    -> [ObjectOptions] {
+//
+//        var options:[ObjectOptions] = []
+//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear) {
+//            options =
+//            [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear]
+//        }
+//
+//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight) {
+//            options =
+//            [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight]
+//        }
+//        return options
+//    }
+
     var body: some View {
-        if (name.contains("wheelchair") ? true: false) && objectPickVM.getCurrentOptionThereAreDoubleSitOn() {
+        // && twinSitOnVM.getState  //TWIN
+
+        // option2states // TWIN
+        //option2 //TWIN
+        if (name.contains("wheelchair") ? true: false) &&
+            twinSitOnVM.getState("TwinSitOnSelectiion calling")
+            //objectPickVM.getCurrentOptionThereAreDoubleSitOn()
+        {
             ExclusiveToggles(
-                objectPickVM.getCurrentOptionState(options),
-                options,
-                .sitOnChoice)
+                twinSitOnVM.getManyState(options2),
+                //objectPickVM.getCurrentOptionState(options2),
+                options2,
+                .sitOnPosition)
         } else {
             EmptyView()
         }

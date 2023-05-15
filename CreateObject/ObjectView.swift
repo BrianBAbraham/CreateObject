@@ -85,6 +85,7 @@ struct PartView: View {
 
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     
     //@GestureState private var startLocation: CGPoint? = nil
     @GestureState private var fingerLocation: CGPoint? = nil
@@ -104,10 +105,16 @@ struct ObjectView: View {
         objectPickVM.getObjectOptionsDictionary()
     }
     
+    
+    var twinSitOnOptionsDictionary: TwinSitOnOptions {
+        twinSitOnVM.getTwinSitOnOptions()  //TWIN
+    }
+    
     var defaultDictionary: PositionDictionary {
         CreateObjectInitiated(
             baseName: objectName,
-            objectOptionsDictionary)
+            objectOptionsDictionary,
+            twinSitOnOptionsDictionary)  //TWIN
         .dictionary
     }
     

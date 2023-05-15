@@ -12,6 +12,7 @@ struct PickDefaultObjectView: View {
     @EnvironmentObject var objecEditVM: ObjectEditViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
+    @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
     
     var objectNames: [String] {
         BaseObjectTypes.allCases.map{$0.rawValue}
@@ -31,8 +32,8 @@ struct PickDefaultObjectView: View {
     }
     
     var body: some View {
-        
-        let doubleSitOnState = objectPickVM.getCurrentOptionThereAreDoubleSitOn()
+        let twinSitOnState = twinSitOnVM.getState() //TWIN
+        //let doubleSitOnState = objectPickVM.getCurrentOptionThereAreDoubleSitOn()  //TWIN
         let boundEquipmentType = Binding(
             get: {objectPickVM.getCurrentObjectName()},
             set: {self.equipmentType = $0}
@@ -51,7 +52,7 @@ struct PickDefaultObjectView: View {
                 objectPickVM.setDefaultObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
                 objectPickVM.setCurrentObjectDictionary(tag)
-                //objectPickVM.setObjectOptionDictionaryToAllFalse()
+               
             }
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)
@@ -63,7 +64,8 @@ struct PickDefaultObjectView: View {
 //                })
                 .padding(.horizontal)
             
-            DoubleSitOnOption(doubleSitOnState, objectPickVM.getCurrentObjectName())
+            TwinSitOn(twinSitOnState, objectPickVM.getCurrentObjectName())
+//            DoubleSitOnOption(doubleSitOnState, objectPickVM.getCurrentObjectName())
 //                .onPreferenceChange(DoubleSitOnPreferenceKey.self, perform: {value in
 //                    self.recline = value
 //                })
