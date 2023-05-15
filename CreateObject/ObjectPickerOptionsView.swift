@@ -88,7 +88,7 @@ struct TwinSitOn: View {
                 ExclusiveToggles(
                     twinSitOnVM.getManyState(options), 
                     options,
-                    .doubleSitOn)
+                    .twinSitOn)
             }
             
         } else {

@@ -328,10 +328,10 @@ struct ToggleItem: View {
                 let setOption = index == tag ? true: false
 
                 switch toggleFor {
-                case .doubleSitOn:
+                case .twinSitOn:
                     twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
-                     let dictionary = twinSitOnVM.getTwinSitOnOptions()
-  
+                    let dictionary = twinSitOnVM.getTwinSitOnOptions()
+
                     objectPickVM.setCurrentObjectDictionary(
                         objectPickVM.getCurrentObjectName (),
                         twinSitOnOptions: dictionary)
@@ -340,7 +340,6 @@ struct ToggleItem: View {
                     twinSitOnVM.setTwinSitOnOption(
                         toggleCases[index],
                         setOption
-                        
                     )
                 }
             }

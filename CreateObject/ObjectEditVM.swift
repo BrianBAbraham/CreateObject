@@ -49,15 +49,15 @@ extension ObjectEditViewModel {
         dictionary: PositionDictionary,
         name: String,
         part: Part,
-        _ supportIndex: Int = 0)
+        _ supportIndex: Part)
         -> [Double] {
             var lengths: [Double] = []
             let partName  = CreateNameFromParts([part,.stringLink]).name
 
             var onePartDictionary = dictionary
             
-            let sitOnPartId = supportIndex == 0 ? Part.id0: Part.id1
-            let supportName = CreateNameFromParts([.sitOn, sitOnPartId]).name
+            //let sitOnPartId = supportIndex == 0 ? Part.id0: Part.id1
+            let supportName = CreateNameFromParts([.sitOn, supportIndex]).name
             
             onePartDictionary =
             SuccessivelyFilteredDictionary([Part.corner.rawValue, partName, supportName],dictionary).dictionary
@@ -145,54 +145,7 @@ extension ObjectEditViewModel {
     }
     
     
-//    func getObjectWidth (_ objectType: BaseObjectTypes)
-//    -> Double {
-//        var width = 0.0
-//
-//        if objectType.rawValue.contains ("caster") {
-//            width = 100
-//        }
-//
-//        if objectType.rawValue.contains ("wheel") {
-//            width = 200
-//        }
-//
-//        if objectType.rawValue.contains ("wheel") {
-//            width = 300
-//        }
-//
-//            return width
-//    }
-    
-//    func getEditPermissionsForPart(_ uniquePartName: String)
-//    -> Edit {
-//        let cornerEdit = false
-//        let originEdit = false
-//        let sideEdit = false
-//        let lengthOnlyEdit = false
-//        let widthOnlyEdit = false
-//        let maintainWidthSymmetry = false
-//
-//        var permissions: Edit =
-//        (corner: false, origin: false, side: false, lengthOnly: false, widthOnly: false, widthSymmetry: false)
-//
-//        if uniquePartName.contains(Part.arm.rawValue) {
-//            permissions =
-//            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: true)
-//        }
-//
-//        if uniquePartName.contains(Part.sitOn.rawValue) {
-//            permissions =
-//            (corner: true, origin: true, side: true, lengthOnly: true, widthOnly: true, widthSymmetry: false)
-//        }
-//
-//        if uniquePartName.contains(Part.fixedWheel.rawValue) {
-//            permissions =
-//            (corner: false, origin: true, side: false, lengthOnly: true, widthOnly: true, widthSymmetry: true)
-//        }
-//
-//        return permissions
-//    }
+
     
     
     func getColorForPart(_ uniquePartName: String)-> Color {
@@ -259,13 +212,14 @@ extension ObjectEditViewModel {
     func setPrimaryToFootSupportWithHangerFrontLength(
         _ dictionary: PositionDictionary,
         _ partId: Part,
-        _ lengthChange:Double)
+        _ lengthChange: Double,
+        _ sitOnId: Part)
             -> PositionDictionary {
             
+
             let namesForFilter =
             [Part.footSupport.rawValue + Part.stringLink.rawValue,
-             Part.footSupportHorizontalJoint.rawValue,
-             //CreateNameFromParts([Part.sitOn, Part.id0]).name
+             Part.footSupportHorizontalJoint.rawValue
             ]
             
             var filteredDictionary: PositionDictionary = [:]
@@ -274,37 +228,55 @@ extension ObjectEditViewModel {
                 filteredDictionary  +=
                 dictionary.filter({$0.key.contains(name )}).filter({$0.key.contains(Part.corner.rawValue)})
             }
-                let sitOnName = CreateNameFromParts([.sitOn, .id0]).name
-                filteredDictionary = filteredDictionary.filter({
-                    $0.key.contains(
-                        sitOnName
-                     )
-                })
-
-            if partId != .id {
-                let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
                 
+            let sitOnName = CreateNameFromParts([.sitOn, sitOnId]).name
+            filteredDictionary = filteredDictionary.filter({
+                $0.key.contains(
+                    sitOnName
+                 )
+            })
+
+
+            let soloFootSupportPresent = Part.id
+                
+            if partId != soloFootSupportPresent {
+                let partWithSupportName = CreateNameFromParts([partId,.stringLink,.sitOn]).name
                 filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
             }
-            
+   
+
+                
             var editedDictionary = dictionary
             
             for (key, value) in filteredDictionary {
-                
                 let newValue = value.y + lengthChange
                 filteredDictionary[key] = (x:value.x, y: newValue, z: value.z)
                 editedDictionary[key] = filteredDictionary[key]
                 
-                if key.contains(Part.footSupportHangerLink.rawValue) {
-                    editedDictionary[key] = nil
+              
                 }
-            }
+            //}
+                
+                for (key, _) in editedDictionary {
+                    let linkPresent = key.contains(Part.footSupportHangerLink.rawValue) &&
+                    key.contains(Part.sitOn.rawValue + sitOnId.rawValue)
+                    //print(key)
+                    
+                    if linkPresent {
+                        editedDictionary[key] = nil
+                        //print("link detected")
+                    }
+                }
             
-            let firstItem = filteredDictionary.first!
-            let supportIndexName = Part.sitOn.rawValue + Part.id.rawValue + "0"
-            let supportIndex =
-            firstItem.key.contains(supportIndexName) ? 0 : 1
-            
+                 //.forEach{print($0)}
+//print("" )
+//print(DictionaryInStringOut(editedDictionary).stringOfNamesOut.contains("link"))
+                
+           // let firstItem = filteredDictionary.first!
+         //   let supportIndexName = Part.sitOn.rawValue + sitOnId.rawValue
+                let supportIndex = sitOnId == .id0 ?  0 : 1
+            //firstItem.key.contains(supportIndexName) ? 0 : 1
+//print(supportIndex)
             let hangerLinkDictionary =
                 CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
                     .footSupportHangerSitOnVerticalJoint,
@@ -314,6 +286,8 @@ extension ObjectEditViewModel {
                     supportIndex).newCornerDictionary
             
             editedDictionary += hangerLinkDictionary
+                
+
             
             return editedDictionary
     }

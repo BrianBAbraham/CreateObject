@@ -39,12 +39,14 @@ struct CreateBase {
         }
             
         if baseType == .allCasterHoist {
+            let onlyOneSupportIndex = 0
             let casterLinkDictionary =
                 CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
                     .casterVerticalJointAtRear,
                     .casterVerticalJointAtFront,
                     .casterFrontToRearLink,
-                    dictionary).newCornerDictionary
+                    dictionary,
+                    onlyOneSupportIndex).newCornerDictionary
             
          dictionary += casterLinkDictionary
         }

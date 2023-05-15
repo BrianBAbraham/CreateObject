@@ -28,8 +28,7 @@ struct EditFootSupportLeftRightPosition: View {
         VStack{
            
             Spacer()
-            
-           // DoubleSeatSelection()
+
             TwinSitOnSelection()
             
             Toggle(toggleLabel,isOn: $leftAndRight)
@@ -47,57 +46,7 @@ struct EditFootSupportLeftRightPosition: View {
     }
 }
 
-//struct DoubleSeatSelection: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-//    
-//    var name: String {
-//        objectPickVM.getCurrentObjectName()
-//    }
-//    
-//    var options: [ObjectOptions] {
-//        getDoubleSeatLayoutOptions() //TWIN
-//    }
-//    
-//    var options2: [TwinSitOnOption] {
-//        twinSitOnVM.getTwinSitOnConfiguration()  //TWIN
-//    }
-//    var options2states: [Bool] {
-//        twinSitOnVM.getManyState(options2) //TWIN
-//    }
-//  
-//    func getDoubleSeatLayoutOptions() //TWIN
-//    -> [ObjectOptions] {
-//        
-//        var options:[ObjectOptions] = []
-//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear) {
-//            options =
-//            [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear]
-//        }
-//        
-//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight) {
-//            options =
-//            [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight]
-//        }
-//        return options
-//    }
-//    
-//    var body: some View {
-//        // && twinSitOnVM.getState  //TWIN
-//        
-//        // option2states // TWIN
-//        //option2 //TWIN
-//        if (name.contains("wheelchair") ? true: false) &&
-//            objectPickVM.getCurrentOptionThereAreDoubleSitOn() {
-//            ExclusiveToggles(
-//                objectPickVM.getCurrentOptionState(options),
-//                options,
-//                .sitOnChoice)
-//        } else {
-//            EmptyView()
-//        }
-//    }
-//}
+
 
 
 struct TwinSitOnSelection: View {
@@ -108,10 +57,6 @@ struct TwinSitOnSelection: View {
         objectPickVM.getCurrentObjectName()
     }
 
-//    var options: [ObjectOptions] {
-//        getDoubleSeatLayoutOptions() //TWIN
-//    }
-
     var options2: [TwinSitOnOption] {
         twinSitOnVM.getTwinSitOnConfiguration()  //TWIN
     }
@@ -119,34 +64,12 @@ struct TwinSitOnSelection: View {
         twinSitOnVM.getManyState(options2) //TWIN
     }
 
-//    func getDoubleSeatLayoutOptions() //TWIN
-//    -> [ObjectOptions] {
-//
-//        var options:[ObjectOptions] = []
-//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnFrontAndRear) {
-//            options =
-//            [ObjectOptions.doubleSitOnFront, ObjectOptions.doubleSitOnRear]
-//        }
-//
-//        if objectPickVM.getObjectOptionDictionary(ObjectOptions.doubleSitOnLeftAndRight) {
-//            options =
-//            [ObjectOptions.doubleSitOnLeft, ObjectOptions.doubleSitOnRight]
-//        }
-//        return options
-//    }
-
     var body: some View {
-        // && twinSitOnVM.getState  //TWIN
 
-        // option2states // TWIN
-        //option2 //TWIN
         if (name.contains("wheelchair") ? true: false) &&
-            twinSitOnVM.getState("TwinSitOnSelectiion calling")
-            //objectPickVM.getCurrentOptionThereAreDoubleSitOn()
-        {
+            twinSitOnVM.getState("TwinSitOnSelectiion calling") {
             ExclusiveToggles(
                 twinSitOnVM.getManyState(options2),
-                //objectPickVM.getCurrentOptionState(options2),
                 options2,
                 .sitOnPosition)
         } else {
@@ -193,7 +116,8 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
                 value: objectEditVM.getPrimaryAxisToFootSupportEndLength(
                     dictionary: self.curentDictionary,
                     name: "slider",
-                    part: .footSupportInOnePiece
+                    part: .footSupportInOnePiece,
+                    Part.id0
             ) [0], unit: UnitLength.millimeters)
    
         
@@ -244,6 +168,7 @@ struct FootSupportWithHangerLinkLengthSlider: View {
     @State private var proposedLength = 200.0
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
     
     let leftOrRight: String
     let idInt: Int
@@ -265,13 +190,14 @@ struct FootSupportWithHangerLinkLengthSlider: View {
     
     var body: some View {
         var editedDictionary: PositionDictionary = [:]
-        
+        let sitOnId: Part = twinSitOnVM.getSitOnId()
         let currentLength =
         Measurement(
             value: objectEditVM.getPrimaryAxisToFootSupportEndLength(
                 dictionary: objectPickVM.getCurrentObjectDictionary(),
                 name: "slider",
-                part: onePieceOrLeftRightFootSupport
+                part: onePieceOrLeftRightFootSupport,
+                sitOnId
         ) [idInt], unit: UnitLength.millimeters)
         
         let defaultDictionary = objectPickVM.getDefaultObjectDictionary()
@@ -290,16 +216,23 @@ struct FootSupportWithHangerLinkLengthSlider: View {
             set: {self.proposedLength = $0}
         )
         
+
+        
         HStack {
             Text(leftOrRight)
             Slider(value: boundLength, in: minToMax, step: 5
             )
             .onChange(of: proposedLength) { value in
+
+                
                 editedDictionary =
                     objectEditVM.setPrimaryToFootSupportWithHangerFrontLength(
                         curentDictionary,
                         id,
-                        proposedLength - currentLength.value)
+                        proposedLength - currentLength.value,
+                        sitOnId)
+                
+               
                 
                 objectPickVM.setCurrentObjectDictionary(
                     objectPickVM.getCurrentObjectName(),

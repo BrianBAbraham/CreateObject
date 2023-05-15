@@ -159,7 +159,7 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         _ endPart: Part,
         _ newPart: Part,
         _ dictionary: PositionDictionary,
-        _ supportIndex: Int = 0) {
+        _ supportIndex: Int) {
             self.dictionary = dictionary
             uniquePartNames = GetUniqueNames(dictionary).forPart
 //print(dictionary)
@@ -178,8 +178,8 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
         _ supportIndex: Int)
     -> PositionDictionary{
         
-        let startPartCorners = getCornersOfOnePartPossiblyOnTwoSides(startPart)
-        let endPartCorners = getCornersOfOnePartPossiblyOnTwoSides(endPart)
+        let startPartCorners = getCornersOfOnePartPossiblyOnTwoSides(startPart, supportIndex)
+        let endPartCorners = getCornersOfOnePartPossiblyOnTwoSides(endPart, supportIndex)
         
         let corners =
             leftThenRightNewPartCorners(
@@ -197,9 +197,13 @@ struct CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides {
 
     
     func getCornersOfOnePartPossiblyOnTwoSides(
-        _ partName: Part )
+        _ partName: Part, _ supportIndex: Int )
     -> [[PositionAsIosAxes]] {
-        let relevantNames = uniquePartNames.filter{ $0.contains(partName.rawValue)}//getRelevantNames(partName)
+        var relevantNames =
+        uniquePartNames.filter{ $0.contains(partName.rawValue)}
+        
+        let supportIndexName = CreateNameFromParts([Part.sitOn, [Part.id0,Part.id1][supportIndex]]).name
+        relevantNames = relevantNames.filter{ $0.contains(supportIndexName) }
         var cornerPartDictionary:[String: [PositionAsIosAxes]]  = [:]
         
         var positionsPossiblyForTwoSides: [[PositionAsIosAxes]] = []

@@ -75,12 +75,6 @@ extension TwinSitOnViewModel {
             twinSitOnModel.options
     }
     
-    
- 
-    
-
-    
-    
     func getTwinSitOnConfiguration()
     -> [TwinSitOnOption] {
         
@@ -97,6 +91,21 @@ extension TwinSitOnViewModel {
         
         return options
     }
+    
+    func getSitOnId()
+    -> Part {
+        var sitOnId = Part.id0
+        
+        let dictionary = getTwinSitOnOptions()
+        
+        if dictionary[.front] ?? false ||
+            dictionary[.right] ?? false {
+            sitOnId  = Part.id1
+        }
+        
+        return sitOnId
+    }
+    
     
     
     func setAllToFalse (_ options: [TwinSitOnOption]) {
@@ -144,6 +153,7 @@ extension TwinSitOnViewModel {
             
             dictionary[option] = state
             
+//print(dictionary)
             setTwinSitOnOptions(dictionary)
             
     }
