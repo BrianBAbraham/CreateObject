@@ -62,13 +62,16 @@ extension ObjectEditViewModel {
             onePartDictionary =
             SuccessivelyFilteredDictionary([Part.corner.rawValue, partName, supportName],dictionary).dictionary
 
+//DictionaryInArrayOut().getNameValue(onePartDictionary).forEach{print($0)}
+//print("")
 
             if part == .footSupport {
-                let leftFootSupportName = CreateNameFromParts([.footSupport,.id0]).name
-
-                let rightSupportName = CreateNameFromParts([.footSupport,.id1]).name
-
-                    for name in [leftFootSupportName, rightSupportName] {
+                let leftFootSupportName = CreateNameFromParts([.footSupport,.id0,.stringLink, .sitOn, supportIndex]).name
+//print(leftFootSupportName)
+                let rightFootSupportName = CreateNameFromParts([.footSupport,.id1, .stringLink, .sitOn, supportIndex]).name
+//print(rightFootSupportName)
+//print("")
+                for name in [leftFootSupportName, rightFootSupportName] {
                         lengths.append(getLength(onePartDictionary.filter({$0.key.contains(name)})))
                     }
             }
@@ -87,17 +90,23 @@ extension ObjectEditViewModel {
                 let maxValue = yValues.max() ?? yValues[ifAllEqualUseFirst]
                 return maxValue //- minValue
             }
-            
+//print("current length: \(lengths)  \(supportIndex)")
          return lengths
     }
     
     
     
-    func getPrimaryAxisToFootPlateEndLengthMaximum ( _ dictionaryForMeasurement: PositionDictionary)
+    func getPrimaryAxisToFootPlateEndLengthMaximum (
+        _ dictionaryForMeasurement: PositionDictionary,
+        _ sitOnId: Part)
         -> Double {
         
-        let defaultMinimumLength = getPrimaryAxisToFootSupportEndLengthMinimum(dictionaryForMeasurement)
+        let defaultMinimumLength =
+            getPrimaryAxisToFootSupportEndLengthMinimum(
+                dictionaryForMeasurement,
+                sitOnId)
             
+//print("min \(Int(defaultMinimumLength))")
         let maximumLength =
         InitialOccupantFootSupportMeasure.footSupportHangerMaximumLength +
         InitialOccupantFootSupportMeasure.footSupport.length/2 +
@@ -109,32 +118,45 @@ extension ObjectEditViewModel {
     
     
     func getPrimaryAxisToFootSupportEndLengthMinimum (
-        _ dictionaryForMeasurement: PositionDictionary)
+        _ dictionaryForMeasurement: PositionDictionary,
+        _ sitOnId: Part)
         -> Double {
         
         let defaultDictionary = dictionaryForMeasurement
+        let partFromAnySide = Part.id0
         let hangerVerticalJointFromObjectOriginName =
-        CreateNameFromParts([.objectOrigin, .id0,.stringLink,.footSupportHangerSitOnVerticalJoint] ).name
+            CreateNameFromParts([.objectOrigin, .id0,.stringLink,.footSupportHangerSitOnVerticalJoint,partFromAnySide,.stringLink, .sitOn, sitOnId] ).name
         let itemFromFilteredDictionary =
         SuccessivelyFilteredDictionary([hangerVerticalJointFromObjectOriginName],defaultDictionary).dictionary.first
 
-        
-        let defaultLength = itemFromFilteredDictionary?.value.y ?? 0.0
-  
+
+        let defaultMinimumLength =
+            (itemFromFilteredDictionary?.value.y ?? 0.0 +
+             InitialOccupantFootSupportMeasure.footSupportHangerMinimumLength)
+
         return
-          defaultLength
+          defaultMinimumLength
     }
     
     
     func getPrimaryAxisToFootSupportEndExtrema(
         _ currentObjectDictionary: PositionDictionary,
         _ defaultDictionary: PositionDictionary,
-        _ onePieceOrLeftRightFootSupport: Part)
+        _ onePieceOrLeftRightFootSupport: Part,
+        _ sitOnId: Part)
         -> ClosedRange<Double> {
             var range: ClosedRange<Double>
             if onePieceOrLeftRightFootSupport == .footSupport {
-                range =
-                getPrimaryAxisToFootSupportEndLengthMinimum(currentObjectDictionary)...getPrimaryAxisToFootPlateEndLengthMaximum(defaultDictionary)
+                let rangeStart =
+                getPrimaryAxisToFootSupportEndLengthMinimum(
+                    currentObjectDictionary,
+                    sitOnId)
+                let rangeEnd =
+                getPrimaryAxisToFootPlateEndLengthMaximum(
+                    defaultDictionary,
+                    sitOnId)
+                range = rangeStart...rangeEnd
+                
             } else {
                 let initialLength = InitialOccupantFootSupportMeasure.footShowerSupport.length
                 range =
@@ -216,7 +238,7 @@ extension ObjectEditViewModel {
         _ sitOnId: Part)
             -> PositionDictionary {
             
-
+//print("length change: \(lengthChange)")
             let namesForFilter =
             [Part.footSupport.rawValue + Part.stringLink.rawValue,
              Part.footSupportHorizontalJoint.rawValue
@@ -244,7 +266,7 @@ extension ObjectEditViewModel {
                 filteredDictionary = filteredDictionary.filter({$0.key.contains(partWithSupportName)})
             }
    
-
+//DictionaryInArrayOut().getNameValue(filteredDictionary).forEach{print($0)}
                 
             var editedDictionary = dictionary
             

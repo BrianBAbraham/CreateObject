@@ -47,9 +47,9 @@ struct CreateObjectInitiated {
             let addedForReclineBackSupport: Double = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
             
             var addedBaseDimensionForMultipleSeats: Dimension {
-                let lengthAddition = twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false ? 600.0: 0.0
+                let lengthAddition = twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false ? 0.0: 0.0
                 let widthAddition = twinSitOnOptions[TwinSitOnOption.leftAndRight] ?? false ? 300.0: 0.0
-                let dimension = (length: 0.0, width: widthAddition)
+                let dimension = (length: lengthAddition, width: widthAddition)
                 
                 return dimension
             }

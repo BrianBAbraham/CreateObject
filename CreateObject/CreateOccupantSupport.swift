@@ -152,6 +152,14 @@ struct CreateOccupantSupport {
                 occupantSupportMeasure.width)
 
         
+        for supportIndex in 0..<numberOfSeats {
+            getDictionary(
+                supportIndex,
+                objectOptions
+            )
+        }
+        
+        
         
         func getAllBodySupportFromPrimaryOriginCorners(
             _ fromPrimaryToSitOnOrigins: [PositionAsIosAxes],
@@ -170,12 +178,7 @@ struct CreateOccupantSupport {
             return oneOrTwoSitOnPartCorners
         }
         
-        for supportIndex in 0..<numberOfSeats {
-            getDictionary(
-                supportIndex,
-                objectOptions
-            )
-        }
+
         
         
         func getAllBodySuppportFromPrimaryOrigin(
@@ -369,6 +372,7 @@ struct CreateOccupantSupport {
                 if sideBySideSeats {
                     if supportIndex == 0 {
                         location.x = -supportHalfWidthDimension
+
                     } else {
                         location.x = supportHalfWidthDimension
                     }
@@ -380,8 +384,10 @@ struct CreateOccupantSupport {
                     } else {
                         location.y = bodySupportLengthFromPrimaryOrigin - bodySupportDimension.length
                     }
+                    
                 }
                 
+
                 return location
         }
     }

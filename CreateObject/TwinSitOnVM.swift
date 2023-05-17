@@ -98,7 +98,7 @@ extension TwinSitOnViewModel {
         
         let dictionary = getTwinSitOnOptions()
         
-        if dictionary[.front] ?? false ||
+        if dictionary[.rear] ?? false ||
             dictionary[.right] ?? false {
             sitOnId  = Part.id1
         }

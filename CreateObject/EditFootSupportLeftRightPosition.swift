@@ -13,7 +13,7 @@ struct EditFootSupportLeftRightPosition: View {
 
     @State private var leftAndRight = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-   // @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
 
     
     init(
@@ -22,7 +22,7 @@ struct EditFootSupportLeftRightPosition: View {
     }
     
     var body: some View {
-        
+       
         let toggleLabel =  leftAndRight ? "R = L": "R ≠ L"
        
         VStack{
@@ -57,20 +57,18 @@ struct TwinSitOnSelection: View {
         objectPickVM.getCurrentObjectName()
     }
 
-    var options2: [TwinSitOnOption] {
+    var options: [TwinSitOnOption] {
         twinSitOnVM.getTwinSitOnConfiguration()  //TWIN
     }
-    var options2states: [Bool] {
-        twinSitOnVM.getManyState(options2) //TWIN
-    }
+
 
     var body: some View {
 
         if (name.contains("wheelchair") ? true: false) &&
-            twinSitOnVM.getState("TwinSitOnSelectiion calling") {
+            twinSitOnVM.getState() {
             ExclusiveToggles(
-                twinSitOnVM.getManyState(options2),
-                options2,
+                twinSitOnVM.getManyState(options),
+                options,
                 .sitOnPosition)
         } else {
             EmptyView()
@@ -100,6 +98,7 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
    // let displayLength: String
     @State private var proposedLength = 0.0
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
     let curentDictionary: PositionDictionary
 
     
@@ -109,7 +108,7 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
     }
     
     var body: some View {
-        
+        let sitOnId = twinSitOnVM.getSitOnId()
         
         let currentLength =
             Measurement(
@@ -132,7 +131,8 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
         let minToMax = objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
             defaultDictionary,
             curentDictionary,
-            .footSupportInOnePiece)
+            .footSupportInOnePiece,
+            sitOnId)
         
         let boundLength = Binding(
             get: {currentLength.value},
@@ -165,32 +165,36 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
 
 struct FootSupportWithHangerLinkLengthSlider: View {
     let curentDictionary: PositionDictionary
-    @State private var proposedLength = 200.0
+    @State private var proposedLength = 0.0
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
     
     let leftOrRight: String
-    let idInt: Int
-    let id: Part
+    let idIntForSide: Int
+    let idForSide: Part
     let idToIdIntDictionary = [Part.id: 0, Part.id0: 0, Part.id1: 1]
     let onePieceOrLeftRightFootSupport: Part
+ 
     
     init(
         _ dictionaryForMeasurement: PositionDictionary,
         _ leftOrRight: String,
         _ id: Part,
         _ part: Part){
+            
         curentDictionary = dictionaryForMeasurement
         self.leftOrRight = leftOrRight
-        self.id = id
-        self.idInt = idToIdIntDictionary[id]!
+        self.idForSide = id
+        self.idIntForSide = idToIdIntDictionary[id]!
         onePieceOrLeftRightFootSupport = part
+       
     }
     
     var body: some View {
+       // let curentDictionary = objectPickVM.getCurrentObjectDictionary()
         var editedDictionary: PositionDictionary = [:]
-        let sitOnId: Part = twinSitOnVM.getSitOnId()
+        let sitOnId = twinSitOnVM.getSitOnId()
         let currentLength =
         Measurement(
             value: objectEditVM.getPrimaryAxisToFootSupportEndLength(
@@ -198,7 +202,8 @@ struct FootSupportWithHangerLinkLengthSlider: View {
                 name: "slider",
                 part: onePieceOrLeftRightFootSupport,
                 sitOnId
-        ) [idInt], unit: UnitLength.millimeters)
+                ) [idIntForSide],
+            unit: UnitLength.millimeters)
         
         let defaultDictionary = objectPickVM.getDefaultObjectDictionary()
         
@@ -206,7 +211,8 @@ struct FootSupportWithHangerLinkLengthSlider: View {
             objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
                 defaultDictionary,
                 curentDictionary,
-                onePieceOrLeftRightFootSupport)
+                onePieceOrLeftRightFootSupport,
+                sitOnId)
         
         let displayLength = String(format: "%.0f",currentLength.value)
         //String(format: "%.1f", currentLength.converted(to: UnitLength.inches).value) + "\""
@@ -220,15 +226,15 @@ struct FootSupportWithHangerLinkLengthSlider: View {
         
         HStack {
             Text(leftOrRight)
-            Slider(value: boundLength, in: minToMax, step: 5
+            Slider(value: boundLength, in: minToMax, step: 1
             )
             .onChange(of: proposedLength) { value in
 
-                
+                //print("proposed: \(Int(proposedLength)) current: \(Int(currentLength.value))  \(idForSide.rawValue)")
                 editedDictionary =
                     objectEditVM.setPrimaryToFootSupportWithHangerFrontLength(
                         curentDictionary,
-                        id,
+                        idForSide,
                         proposedLength - currentLength.value,
                         sitOnId)
                 

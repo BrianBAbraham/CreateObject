@@ -30,7 +30,10 @@ struct InitialOccupantFootSupportMeasure {
     
     static let footSupportHangerMaximumLength =
     footSupportHanger.length * 3.0
-   
+    
+    static let footSupportHangerMinimumLength =
+    -(footSupport.length + footSupportHangerJoint.length/2)
+    
     static let footSupportHangerMaximumLengthIncrease =
     footSupportHangerMaximumLength - footSupportHanger.length
     
@@ -51,6 +54,7 @@ struct InitialOccupantFootSupportMeasure {
     init(_ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure) {
         sitOnLengthAndOffset =
         initialOccupantBodySupportMeasure.sitOn.length/2 - 10
+        
         sitOnWidthAndOffset =
         initialOccupantBodySupportMeasure.sitOn.width/2 + 30
         
