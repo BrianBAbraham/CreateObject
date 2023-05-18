@@ -23,7 +23,7 @@ struct InitialBaseMeasureFor {
     init(
         frameTubeWidth: Double = 20,
         rearToCentreLength: Double = 200,
-        rearToFrontLength: Double = 600,
+        rearToFrontLength: Double = 500,
         halfWidth: Double = 300) {
         
         self.frameTubeWidth = frameTubeWidth

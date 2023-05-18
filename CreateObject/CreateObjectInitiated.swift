@@ -46,8 +46,16 @@ struct CreateObjectInitiated {
             
             let addedForReclineBackSupport: Double = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
             
+        
             var addedBaseDimensionForMultipleSeats: Dimension {
-                let lengthAddition = twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false ? 0.0: 0.0
+                var lengthAddition =
+                InitialOccupantFootSupportMeasure.footSupportHanger.length +
+                InitialOccupantFootSupportMeasure.footSupport.length +
+                initialOccupantBodySupportMeasure.sitOn.length
+                
+                lengthAddition =
+                    twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false ? lengthAddition: 0.0
+                
                 let widthAddition = twinSitOnOptions[TwinSitOnOption.leftAndRight] ?? false ? 300.0: 0.0
                 let dimension = (length: lengthAddition, width: widthAddition)
                 
@@ -76,7 +84,8 @@ struct CreateObjectInitiated {
                   occupantSupport,
                   baseMeasurement
               ).dictionary
-
+            
+            
             dictionary += occupantSupport.dictionary
         }
     
@@ -121,7 +130,7 @@ struct CreateObjectInitiated {
             case .fixedWheelRearDrive:
                 baseMeasurement = InitialBaseMeasureFor(
                     rearToFrontLength:
-                        500 +
+                        InitialBaseMeasureFor().rearToFrontLength +
                         addedForReclineBackSupport +
                         addedBaseMeasurementForMultipleSeats.length,
                     halfWidth:
@@ -131,20 +140,20 @@ struct CreateObjectInitiated {
             case .fixedWheelFrontDrive:
                 baseMeasurement = InitialBaseMeasureFor(
                     rearToFrontLength:
-                        500 +
-                        addedForReclineBackSupport +
-                        addedBaseMeasurementForMultipleSeats.length)
+                        InitialBaseMeasureFor().rearToFrontLength +
+                        addedForReclineBackSupport * 0  +
+                        addedBaseMeasurementForMultipleSeats.length  )
             
             case .fixedWheelMidDrive:
                 baseMeasurement = InitialBaseMeasureFor(
                     rearToCentreLength:
-                        200 +
+                        InitialBaseMeasureFor().rearToCentreLength +
                         addedForReclineBackSupport +
-                        addedBaseMeasurementForMultipleSeats.length,
+                        addedBaseMeasurementForMultipleSeats.length/2,
                     rearToFrontLength:
-                        600 +
+                        InitialBaseMeasureFor().rearToFrontLength +
                         addedForReclineBackSupport +
-                        addedBaseMeasurementForMultipleSeats.length
+                        addedBaseMeasurementForMultipleSeats.length/2
                 )
             
             case .fixedWheelManualRearDrive:

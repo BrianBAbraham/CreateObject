@@ -69,7 +69,7 @@ struct ForFixedWheelBaseObject {
                 .casterWheelAtRear,
                 measurement.baseCornerFromPrimaryOriginForWidthAxisAt.front.rear
             ).dictionary
-            
+//print(casterAtRearDictionary.filter({$0.key.contains("Vertical")}))
             casterDictionary += casterAtRearDictionary
         }
         
@@ -80,7 +80,13 @@ struct ForFixedWheelBaseObject {
                 .casterWheelAtFront,
                 measurement.baseCornerFromPrimaryOriginForWidthAxisAt.rear.front
             ).dictionary
+//print(casterAtFrontDictionary.filter({$0.key.contains("Vertical")}))
             
+//    print("")
+//    print("createBase")
+//            DictionaryInArrayOut().getNameValue(casterAtFrontDictionary).forEach{print($0)}
+//    print("createBase")
+//    print("")
             casterDictionary += casterAtFrontDictionary
         }
         

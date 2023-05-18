@@ -275,26 +275,39 @@ struct CreateOccupantSupport {
             var bodySupportlengthFromPrimaryOrigin: Double = 0
 
             if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.fixedWheel.rawValue) {
-
-                switch baseType {
+            
+            let hangerStartToFootSupportEndLength =
+                InitialOccupantFootSupportMeasure.footSupportHanger.length +
+                InitialOccupantFootSupportMeasure.footSupport.length
+                
+            switch baseType {
+                    
                     case .fixedWheelFrontDrive:
-                        bodySupportlengthFromPrimaryOrigin = -halfLength 
+                        if !frontAndRearSeats {
+                            bodySupportlengthFromPrimaryOrigin += -halfLength
+                        }
+                
+                        if frontAndRearSeats && supportIndex == 0 {
+                            bodySupportlengthFromPrimaryOrigin +=
+                            -halfLength +
+                            -hangerStartToFootSupportEndLength
+                        }
 
                     case .fixedWheelMidDrive:
-                        bodySupportlengthFromPrimaryOrigin = 0
+                            bodySupportlengthFromPrimaryOrigin =
+                            soloAndMidDriveCase()
                     
                     case .fixedWheelSolo:
-                        bodySupportlengthFromPrimaryOrigin = 0
-
+                            bodySupportlengthFromPrimaryOrigin =
+                            soloAndMidDriveCase()
+                
                     case .fixedWheelRearDrive:
                         bodySupportlengthFromPrimaryOrigin =
-                    halfLength +
-                    modifiedPositionForReclineBackRest
+                            allRearDriveCase()
                     
                     case .fixedWheelManualRearDrive:
                         bodySupportlengthFromPrimaryOrigin =
-                    halfLength +
-                    modifiedPositionForReclineBackRest
+                            allRearDriveCase()
 
                     default:
                         bodySupportlengthFromPrimaryOrigin =
@@ -302,10 +315,46 @@ struct CreateOccupantSupport {
                     modifiedPositionForReclineBackRest
                 }
                 
-                occupantBodySupportFromPrimaryOrigin =
-                    getAllBodySupportFromPrimaryOriginAccountForAllSitOn(
-                        supportIndex,
-                        bodySupportlengthFromPrimaryOrigin)
+                
+                func soloAndMidDriveCase() -> Double {
+                    
+                    var bodySupportlengthFromPrimaryOrigin = 0.0
+                    
+                    if frontAndRearSeats  {
+                        bodySupportlengthFromPrimaryOrigin =
+                        supportIndex == 0 ?
+                        -halfLength: -(hangerStartToFootSupportEndLength + halfLength)
+                    }
+                    
+                    return bodySupportlengthFromPrimaryOrigin
+                }
+                
+                func allRearDriveCase() -> Double {
+                    var bodySupportlengthFromPrimaryOrigin =
+                    halfLength
+                    if !frontAndRearSeats {
+                        bodySupportlengthFromPrimaryOrigin +=
+                        modifiedPositionForReclineBackRest
+                    } else {
+                        if supportIndex == 1 {
+                            bodySupportlengthFromPrimaryOrigin +=
+                            (halfLength +
+                            hangerStartToFootSupportEndLength)
+                        }
+                    }
+                    
+//print(supportIndex)
+//print(bodySupportlengthFromPrimaryOrigin)
+//print("")
+                    return bodySupportlengthFromPrimaryOrigin
+                }
+                
+//                occupantBodySupportFromPrimaryOrigin =
+//                    getAllBodySupportFromPrimaryOriginAccountForAllSitOn(
+//                        supportIndex,
+//                        bodySupportlengthFromPrimaryOrigin)
+                
+                return (x: 0.0, y: bodySupportlengthFromPrimaryOrigin, z: 0)
             }
             
             
@@ -362,7 +411,8 @@ struct CreateOccupantSupport {
             -> PositionAsIosAxes {
                 var location = Globalx.iosLocation
                 let bodySupportDimension = initialOccupantBodySupportMeasure.sitOn
-                let supportHalfWidthDimension = InitialOccupantSideSupportMeasurement().rightSideSupportFromSitOnOrigin.x
+                let supportHalfWidthDimension =
+                InitialOccupantSideSupportMeasurement().rightSideSupportFromSitOnOrigin.x
                 + InitialOccupantSideSupportMeasurement().sitOnArm.width/2
                 
                 if !sideBySideSeats && !frontAndRearSeats {

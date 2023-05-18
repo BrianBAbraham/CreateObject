@@ -69,37 +69,43 @@ struct CreateCaster {
             
         let casterVerticalJointDictionary =
         CreateOnePartOrSideSymmetricParts(
-            (length: 20.0, width: 20.0),
-            getCasterVerticalJoint(part),
+            Joint.dimension,
+            getCasterVerticalJoint(part)[0],
             (x:0, y:0, z: 0),
             parentFromPrimaryOrigin,
-
+            supportIdIsAlwaysZero)
+        
+        let casterForkDictionary =
+        CreateOnePartOrSideSymmetricParts(
+            measurementFor.casterFork,
+            getCasterVerticalJoint(part)[1],
+            measurementFor.casterForkFromParent,
+            parentFromPrimaryOrigin,
             supportIdIsAlwaysZero)
                                  
-        func getCasterVerticalJoint(_ part: Part) -> Part {
+        func getCasterVerticalJoint(_ part: Part) -> [Part] {
             var casterVerticalJoint = Part.casterVerticalJointAtFront
+            var casterFork = Part.casterForkAtFront
             switch part{
             case .casterWheelAtCenter:
                 casterVerticalJoint = Part.casterVerticalJointAtCenter
+                casterFork = Part.casterForkAtCenter
             case .casterWheelAtRear:
                 casterVerticalJoint = Part.casterVerticalJointAtRear
+                casterFork = Part.casterForkAtRear
             default:
                 break
             }
-            return casterVerticalJoint
+            return [casterVerticalJoint, casterFork]
         }
 
-            let casterForkDictionary =
-            CreateOnePartOrSideSymmetricParts(
-                measurementFor.casterFork,
-                getCasterVerticalJoint(part),
-                measurementFor.casterForkFromParent,
-                parentFromPrimaryOrigin,
 
-                supportIdIsAlwaysZero)
-            
-
-
+//print("")
+//print("createCaster")
+//        DictionaryInArrayOut().getNameValue(casterVerticalJointDictionary.cornerDictionary).forEach{print($0)}
+//        DictionaryInArrayOut().getNameValue(casterForkDictionary.cornerDictionary).forEach{print($0)}
+//print("createCaster")
+//print("")
         dictionary =
             Merge.these.dictionaries([
 
@@ -107,7 +113,7 @@ struct CreateCaster {
                 //casterSpindleJointDictionary.originDictionary,
                 casterForkDictionary.cornerDictionary,
                 casterVerticalJointDictionary.cornerDictionary,
-                casterWheelDictionary.cornerDictionary,
+                   casterWheelDictionary.cornerDictionary,
                 //casterWheelDictionary.originDictionary,
                 
             ])

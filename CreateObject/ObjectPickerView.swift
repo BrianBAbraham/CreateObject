@@ -51,7 +51,9 @@ struct PickDefaultObjectView: View {
                 self.equipmentType = tag
                 objectPickVM.setDefaultObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
-                objectPickVM.setCurrentObjectDictionary(tag)
+                objectPickVM.setCurrentObjectDictionary(
+                    tag,
+                    twinSitOnOptions: twinSitOnVM.getTwinSitOnOptions())
                
             }
             //.pickerStyle(.wheel)
