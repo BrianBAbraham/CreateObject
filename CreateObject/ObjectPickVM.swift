@@ -38,7 +38,7 @@ class ObjectPickViewModel: ObservableObject {
     static let twinSitOnDictionary: TwinSitOnOptions = [:]
     
     static let dictionary =
-    CreateObjectInitiated(
+    CreateDefaultObjectInitiated(
         baseName: initialObjectName,
         optionDictionary,
         twinSitOnDictionary)
@@ -374,15 +374,9 @@ extension ObjectPickViewModel {
         return  uniquePartNames
     }
     
-//    func setLoadedObjectName(_ objectName: String){
-//        objectPickModel.loadedObjectName = objectName
-//        setCurrentObjectDictionary(objectName)
-//    }
-    
-    
     func setCurrentObjectName(_ objectName: String){
         objectPickModel.currentObjectName = objectName
-        setCurrentObjectDictionary(objectName)
+        setCurrentObjectWithDefaultOrEditedDictionary(objectName)
     }
     
     
@@ -392,7 +386,7 @@ extension ObjectPickViewModel {
     
     func setDefaultObjectDictionary(_ objectName: String) {
         let defaultDictionary =
-        CreateObjectInitiated(
+        CreateDefaultObjectInitiated(
             baseName: objectName,
             getObjectOptionsDictionary())
             .dictionary
@@ -408,31 +402,43 @@ extension ObjectPickViewModel {
         OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary
     }
     
+    
+    
 
-    func setCurrentObjectDictionary(
+    func setCurrentObjectWithDefaultOrEditedDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
         twinSitOnOptions: TwinSitOnOptions = [:]) {
-            
-//print(objectPickModel.objectOptionDictionary)
-
-            
-            var currentDictionary = CreateObjectInitiated(
+        
+            //dictionary for passed name
+//            var dictionaryForPassedName = CreateObjectInitiated(
+//                baseName: objectName,
+//                getObjectOptionsDictionary(),
+//                twinSitOnOptions).dictionary
+//
+            let nonNilWhenEditedDictionaryPassed = ""
+//
+//            if editedDictionary[ stringIndicatingEditedDictionaryNotPassed] != nil {
+//
+//            } else {
+//
+//                dictionaryForPassedName = editedDictionary
+//            }
+            objectPickModel.currentObjectDictionary =
+            editedDictionary[ nonNilWhenEditedDictionaryPassed] != nil ?
+            CreateDefaultObjectInitiated(
                 baseName: objectName,
                 getObjectOptionsDictionary(),
-                twinSitOnOptions).dictionary
+                twinSitOnOptions).dictionary:
+                editedDictionary
             
-            if editedDictionary[""] != nil {
-                
-            } else {
-//print(editedDictionary)
-                currentDictionary = editedDictionary
-            }
-            
-
-            
-        objectPickModel.currentObjectDictionary = currentDictionary
+        //objectPickModel.currentObjectDictionary = dictionaryForPassedName
     }
+    
+    
+    
+    
+    
     
     func setObjectOptionDictionary(
         _ option: ObjectOptions,

@@ -24,7 +24,7 @@
 		FD9B4B4429A1265600E408AA /* DictionaryTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B4329A1265600E408AA /* DictionaryTransformation.swift */; };
 		FD9CF76E29A65AC4006B5B40 /* PartCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */; };
 		FD9E02F32975613B00ACAA70 /* Joints.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9E02F22975613B00ACAA70 /* Joints.swift */; };
-		FD9E02F72975966600ACAA70 /* CreateObjectInitiated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9E02F62975966600ACAA70 /* CreateObjectInitiated.swift */; };
+		FD9E02F72975966600ACAA70 /* CreateDefaultObjectInitiated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9E02F62975966600ACAA70 /* CreateDefaultObjectInitiated.swift */; };
 		FDA1B72D29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */; };
 		FDA3352E29AA5DF200409A61 /* CreateObjectRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */; };
 		FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA4743C29E46925003F1202 /* ObjectView.swift */; };
@@ -72,7 +72,7 @@
 		FD9B4B4329A1265600E408AA /* DictionaryTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTransformation.swift; sourceTree = "<group>"; };
 		FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartCreation.swift; sourceTree = "<group>"; };
 		FD9E02F22975613B00ACAA70 /* Joints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Joints.swift; sourceTree = "<group>"; };
-		FD9E02F62975966600ACAA70 /* CreateObjectInitiated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateObjectInitiated.swift; sourceTree = "<group>"; };
+		FD9E02F62975966600ACAA70 /* CreateDefaultObjectInitiated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDefaultObjectInitiated.swift; sourceTree = "<group>"; };
 		FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantOverHeadSupport.swift; sourceTree = "<group>"; };
 		FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateObjectRectangle.swift; sourceTree = "<group>"; };
 		FDA4743C29E46925003F1202 /* ObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectView.swift; sourceTree = "<group>"; };
@@ -165,7 +165,7 @@
 				FD9B4B3F29A0DF7800E408AA /* CreateBaseWithFixedWheels.swift */,
 				FD9B4B4129A0E01000E408AA /* CreateBaseWithAllCasters.swift */,
 				FDC71F14296C921C00B68427 /* CreateBase.swift */,
-				FD9E02F62975966600ACAA70 /* CreateObjectInitiated.swift */,
+				FD9E02F62975966600ACAA70 /* CreateDefaultObjectInitiated.swift */,
 				FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */,
 				FD95DA2B29E40F1B009A9500 /* EditObjectMenuView.swift */,
 				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
@@ -289,7 +289,7 @@
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,
 				FD060BD52A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift in Sources */,
-				FD9E02F72975966600ACAA70 /* CreateObjectInitiated.swift in Sources */,
+				FD9E02F72975966600ACAA70 /* CreateDefaultObjectInitiated.swift in Sources */,
 				FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */,
 				FDC71F15296C921C00B68427 /* CreateBase.swift in Sources */,
 				FDAB603829E98C2500BE56FA /* DictionaryInformation.swift in Sources */,

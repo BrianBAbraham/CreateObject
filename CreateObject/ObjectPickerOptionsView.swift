@@ -30,7 +30,7 @@ struct BackSupportRecline: View {
                 .onChange(of: reclineToggle) { value in
                     let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(ObjectOptions.recliningBackSupport, reclineToggle) //RECLINE
-                    objectPickVM.setCurrentObjectDictionary(name)
+                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(name)
                     
                 }
 //                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
@@ -78,7 +78,7 @@ struct TwinSitOn: View {
                         
                         let name = objectPickVM.getCurrentObjectName()
                         
-                        objectPickVM.setCurrentObjectDictionary(name)
+                        objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(name)
                     }
                 }
             

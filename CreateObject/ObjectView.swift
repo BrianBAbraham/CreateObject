@@ -111,7 +111,7 @@ struct ObjectView: View {
     }
     
     var defaultDictionary: PositionDictionary {
-        CreateObjectInitiated(
+        CreateDefaultObjectInitiated(
             baseName: objectName,
             objectOptionsDictionary,
             twinSitOnOptionsDictionary)  //TWIN

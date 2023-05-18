@@ -9,7 +9,7 @@ import Foundation
 
 
 
-struct CreateObjectInitiated {
+struct CreateDefaultObjectInitiated {
     var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
     //let twinSitOnOptions: TwinSitOnOptions
 
@@ -44,7 +44,8 @@ struct CreateObjectInitiated {
             
             let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
             
-            let addedForReclineBackSupport: Double = objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
+            let addedForReclineBackSupport: Double =
+                objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
             
         
             var addedBaseDimensionForMultipleSeats: Dimension {
@@ -61,6 +62,32 @@ struct CreateObjectInitiated {
                 
                 return dimension
             }
+            
+            func getOccupantSupportMaximumLength()
+                -> Double {
+                    var maximumLength =
+                        initialOccupantBodySupportMeasure.sitOn.length +
+                    
+                        (objectOptions[ObjectOptions.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0) +
+                    
+                        (twinSitOnOptions[.frontAndRear] ?? false ? (InitialOccupantFootSupportMeasure.footSupportHanger.length + initialOccupantBodySupportMeasure.sitOn.length): 0)
+                    // seat0 length +
+                //recline +
+                      
+                //tilt-in-space +
+                  
+                //check for twinSitOn
+                    //if frontRear
+
+                    //rear seat leg room +
+                   
+                    // front seat length +
+                    //maximumLength += initialOccupantBodySupportMeasure.sitOn.length
+                    
+                    
+                    return 0.0
+            }
+            
             
             let baseMeasurement =
                 getMeasurementForBaseGivenOccupantSupport(

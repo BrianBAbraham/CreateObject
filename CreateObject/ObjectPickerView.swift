@@ -51,7 +51,7 @@ struct PickDefaultObjectView: View {
                 self.equipmentType = tag
                 objectPickVM.setDefaultObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
-                objectPickVM.setCurrentObjectDictionary(
+                objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
                     tag,
                     twinSitOnOptions: twinSitOnVM.getTwinSitOnOptions())
                

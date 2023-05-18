@@ -48,6 +48,7 @@ struct SceneView: View {
     var body: some View {
         
 //        ScrollView (.vertical, showsIndicators: true){
+        if allObjects.count != 0 {
             VStack {
                 ForEach(allObjects) { objectAndId in
                     HStack {
@@ -58,7 +59,10 @@ struct SceneView: View {
                 }
                 .scaleEffect(0.5)
             }
-        .environmentObject(objectPickVM)
+        } else {
+            Text("no equipment added")
+        }
+
 //        }
 //        .frame(height: 350)
 

@@ -152,7 +152,7 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
                     proposedLength - currentLength.value
                 )
 
-                objectPickVM.setCurrentObjectDictionary(
+                objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary)
             }
@@ -240,7 +240,7 @@ struct FootSupportWithHangerLinkLengthSlider: View {
                 
                
                 
-                objectPickVM.setCurrentObjectDictionary(
+                objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary)
             }

@@ -173,7 +173,8 @@ struct ContentView: View {
                                 PickSavedObjectView()
                                 .environmentObject(objectPickVM)
                                 .environmentObject(coreDataVM)
-                               , isActive: self.$isActive )
+                              // , isActive: self.$isActive
+                )
                     { Text("Saved equipment") }
                 
                 
@@ -332,7 +333,7 @@ struct ToggleItem: View {
                     twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
                     let dictionary = twinSitOnVM.getTwinSitOnOptions()
 
-                    objectPickVM.setCurrentObjectDictionary(
+                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
                         objectPickVM.getCurrentObjectName (),
                         twinSitOnOptions: dictionary)
                     
