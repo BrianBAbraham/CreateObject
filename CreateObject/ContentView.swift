@@ -149,7 +149,7 @@ struct ContentView: View {
                             PickDefaultObjectView()
 
 
-                            AddToSceneView(currentDictionary, name)
+                            AddToSceneView(objectPickVM.getCurrentObjectDictionary(), name)
                             Spacer()
                         }
                     HStack(alignment: .center) {

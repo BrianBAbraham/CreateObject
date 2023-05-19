@@ -26,7 +26,7 @@ struct InitialOccupantFootSupportMeasure {
     let rightFootSupportHangerJointFromSitOnOrigin: PositionAsIosAxes
     
     static let footSupportHanger =
-    (length: 300.0, width: 20.0)
+    (length: 200.0, width: 20.0)
     
     static let footSupportHangerMaximumLength =
     footSupportHanger.length * 3.0

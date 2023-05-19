@@ -28,7 +28,7 @@ struct AddToSceneView: View {
     
     var body: some View {
             Button(action: {
-                sceneVM.addObject(dictionary, name)
+                sceneVM.addObject(objectPickVM.getCurrentObjectDictionary(), name)
 
             }, label: {
                 Text("add to scene")
@@ -47,23 +47,26 @@ struct SceneView: View {
 
     var body: some View {
         
-//        ScrollView (.vertical, showsIndicators: true){
-        if allObjects.count != 0 {
+        ScrollView (.vertical, showsIndicators: true){
+//        if allObjects.count != 0 {
             VStack {
                 ForEach(allObjects) { objectAndId in
                     HStack {
-                        ObjectView(GetUniqueNames(objectAndId.object).forPart, objectAndId.object, objectAndId.name)
+                        ObjectView(
+                            GetUniqueNames(objectAndId.object).forPart,
+                            objectAndId.object,
+                            objectAndId.name)
                         Text(objectAndId.name)
                     }
                    
                 }
                 .scaleEffect(0.5)
             }
-        } else {
-            Text("no equipment added")
-        }
-
+//        } else {
+//            Text("no equipment added")
 //        }
+
+        }
 //        .frame(height: 350)
 
 

@@ -27,7 +27,7 @@ struct InitialOccupantBodySupportMeasure {
     
     init(
         lieOn: Dimension = (length: 1600 ,width: 600),
-        sitOn: Dimension = (length: 450 ,width: 400),
+        sitOn: Dimension = (length: 400 ,width: 400),
         overHead: Dimension = (length: 40 ,width: 550),
         overHeadHook: Dimension = (length: 100 ,width: 10),
         overHeadJoint: Dimension = Joint.dimension,
@@ -333,8 +333,8 @@ struct CreateOccupantSupport {
                     var bodySupportlengthFromPrimaryOrigin =
                     halfLength
                     if !frontAndRearSeats {
-                        bodySupportlengthFromPrimaryOrigin +=
-                        modifiedPositionForReclineBackRest
+                        bodySupportlengthFromPrimaryOrigin += 0
+                        //modifiedPositionForReclineBackRest
                     } else {
                         if supportIndex == 1 {
                             bodySupportlengthFromPrimaryOrigin +=
