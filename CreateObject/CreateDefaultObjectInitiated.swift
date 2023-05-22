@@ -62,12 +62,16 @@ struct CreateDefaultObjectInitiated {
                     baseType,
                     addedDimensionForTwinSitOn
                 )
+            
+            let measurementForBaseGivenOccupantSupport =
+                    getMeasurementForBaseGivenOccupantSupport2(baseType)
 
             occupantSupport =
                 CreateOccupantSupport(
                     baseType,
                     initialOccupantBodySupportMeasure,
-                    baseMeasurement,
+                    //baseMeasurement,
+                    measurementForBaseGivenOccupantSupport.baseMeasurement,
                     objectOptions,
                     twinSitOnOptions
                 )
@@ -76,7 +80,7 @@ struct CreateDefaultObjectInitiated {
               CreateBase(
                   baseType,
                   occupantSupport,
-                  baseMeasurement
+                  measurementForBaseGivenOccupantSupport.baseMeasurement
               ).dictionary
             
             
@@ -112,6 +116,174 @@ struct CreateDefaultObjectInitiated {
             }
         }
     
+    func getMeasurementForBaseGivenOccupantSupport2(
+        _ baseType: BaseObjectTypes
+//        ,
+//        _ addedDimensionForTwinSitOn: Dimension
+    )
+        -> (baseMeasurement: InitialBaseMeasureFor,
+            fromPrimaryToSitOnOrigin: [Double] ) {
+        
+        var baseMeasurementAndSitOnOrigin =
+        (baseMeasurement: InitialBaseMeasureFor(),
+         fromPrimaryToSitOnOrigin: [0.0])
+                
+        let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
+        
+        let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
+                
+        let addedForReclineBackSupport: Double =
+            objectOptions[ObjectOptions.recliningBackSupport] ?? false ?
+                InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
+                
+        var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
+                
+        let intialBaseMeasureFor = InitialBaseMeasureFor()
+
+        let halfWidthAllowingForTwinSeatSideBySide =
+                //addedDimensionForTwinSitOn.width/2 +
+                intialBaseMeasureFor.halfWidth
+                
+        let oneSitOnLength = initialOccupantBodySupportMeasure.sitOn.length
+        let frontAndRear = twinSitOnOptions[.frontAndRear] ?? false
+        let sitOnLength =
+            frontAndRear ?
+            [oneSitOnLength, oneSitOnLength]: [oneSitOnLength]
+                
+        let stabilityChoices = [50.0, addedForReclineBackSupport]
+        let stability = stabilityChoices.max() ?? stabilityChoices[0]
+        let footSupportHangerLength =
+                InitialOccupantFootSupportMeasure.footSupportHanger.length
+                
+        switch baseType {
+            case .allCasterBed:
+                baseMeasurement =
+                InitialBaseMeasureFor(rearToFrontLength: 2200, halfWidth: 450)
+            
+            case .allCasterChair:
+                baseMeasurement = InitialBaseMeasureFor(
+                    rearToFrontLength: 500 + addedForReclineBackSupport
+                , halfWidth: 200)
+            
+            case .allCasterHoist:
+                baseMeasurement =
+                InitialBaseMeasureFor(rearToFrontLength: 1200, halfWidth: 300)
+            
+            case .allCasterTiltInSpaceShowerChair:
+                baseMeasurement =
+                InitialBaseMeasureFor(rearToFrontLength: 600, halfWidth: 300)
+            
+            case .allCasterStandAid:
+                break
+            
+            case .allCasterStretcher:
+                baseMeasurement =
+                InitialBaseMeasureFor(
+                    rearToFrontLength: lieOnDimension.length/2,
+                    halfWidth: lieOnDimension.width/2)
+            
+
+            
+            case .fixedWheelFrontDrive:
+                let baseSupport =
+                    BaseAndSupport(
+                        stability,
+                        sitOnLength,
+                        footSupportHangerLength ,
+                        .fixedWheelFrontDrive)
+                
+                    baseMeasurement =
+                        InitialBaseMeasureFor(
+                        rearToFrontLength:
+                            baseSupport.rearToFront,
+                        halfWidth:
+                            halfWidthAllowingForTwinSeatSideBySide )
+
+                baseMeasurementAndSitOnOrigin =
+                    (baseMeasurement: baseMeasurement,
+                     fromPrimaryToSitOnOrigin: baseSupport.fromPrimaryToSitOnOrign)
+            
+            
+            case .fixedWheelMidDrive:
+                let baseSupport =
+                    BaseAndSupport(
+                        stability,
+                        sitOnLength,
+                        footSupportHangerLength ,
+                        .fixedWheelMidDrive)
+
+                    baseMeasurement = InitialBaseMeasureFor(
+                        rearToCentreLength: baseSupport.rearToCentre,
+                        rearToFrontLength:
+                            baseSupport.rearToFront,
+                        halfWidth:
+                            halfWidthAllowingForTwinSeatSideBySide
+                    )
+            
+                    baseMeasurementAndSitOnOrigin =
+                        (baseMeasurement: baseMeasurement,
+                         fromPrimaryToSitOnOrigin: baseSupport.fromPrimaryToSitOnOrign)
+            
+            case .fixedWheelRearDrive:
+                let baseSupport =
+                        BaseAndSupport(
+                            stability,
+                            sitOnLength,
+                            footSupportHangerLength ,
+                           .fixedWheelRearDrive)
+                
+                    baseMeasurement =
+                    InitialBaseMeasureFor(
+                        rearToFrontLength:
+                            baseSupport.rearToFront,
+                        halfWidth:
+                            halfWidthAllowingForTwinSeatSideBySide )
+                    
+                    baseMeasurementAndSitOnOrigin =
+                        (baseMeasurement: baseMeasurement,
+                         fromPrimaryToSitOnOrigin: baseSupport.fromPrimaryToSitOnOrign)
+        
+        
+            
+            case .fixedWheelManualRearDrive:
+                let baseSupport =
+                        BaseAndSupport(
+                            stability,
+                            sitOnLength,
+                            footSupportHangerLength ,
+                           .fixedWheelRearDrive)
+                baseMeasurement =
+                    InitialBaseMeasureFor(
+                        rearToFrontLength:
+                            baseSupport.rearToFront,
+                        halfWidth:
+                            halfWidthAllowingForTwinSeatSideBySide )
+            
+                baseMeasurementAndSitOnOrigin =
+                    (baseMeasurement: baseMeasurement,
+                     fromPrimaryToSitOnOrigin: baseSupport.fromPrimaryToSitOnOrign)
+            
+            case .showerTray:
+            
+                  baseMeasurement = InitialBaseMeasureFor(
+                    rearToFrontLength: 1200,
+                    halfWidth: 450)
+            
+//                baseMeasurementAndSitOnOrigin =
+//                    (baseMeasurement: baseMeasurement,
+//                     fromPrimaryToSitOnOrigin: [0.0])
+
+            default:
+            baseMeasurementAndSitOnOrigin =
+                (baseMeasurement: InitialBaseMeasureFor(),
+                 fromPrimaryToSitOnOrigin: [0.0])
+        }
+        
+        return baseMeasurementAndSitOnOrigin
+                
+                
+
+    }
     
     func getMeasurementForBaseGivenOccupantSupport(
         _ baseType: BaseObjectTypes,
@@ -122,9 +294,7 @@ struct CreateDefaultObjectInitiated {
         
         let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
                 
-        //let sitOnLength = initialOccupantBodySupportMeasure.sitOn.width
-                
-         let addedForReclineBackSupport: Double =
+        let addedForReclineBackSupport: Double =
             objectOptions[ObjectOptions.recliningBackSupport] ?? false ?
                 InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
                 
@@ -166,11 +336,27 @@ struct CreateDefaultObjectInitiated {
 
             
             case .fixedWheelFrontDrive:
+            let stabilityChoices = [50.0, addedForReclineBackSupport]
+            let stability = stabilityChoices.max() ?? stabilityChoices[0]
+
+            let oneSitOnLength = initialOccupantBodySupportMeasure.sitOn.length
+            let frontAndRear = twinSitOnOptions[.frontAndRear] ?? false
+            let sitOnLength =
+                frontAndRear ?
+                [oneSitOnLength, oneSitOnLength]: [oneSitOnLength]
+
+            let baseSupport =
+            BaseAndSupport(
+                stability,
+                sitOnLength,
+                InitialOccupantFootSupportMeasure.footSupportHanger.length,
+                .fixedWheelFrontDrive)
+            
                 baseMeasurement = InitialBaseMeasureFor(
+                    rearToCentreLength: baseSupport.rearToCentre,
                     rearToFrontLength:
-                        InitialBaseMeasureFor().rearToFrontLength +
-                        addedForReclineBackSupport  +
-                        addedDimensionForTwinSitOn.length,
+                        baseSupport.rearToFront,
+                    
                     halfWidth:
                         halfWidthAllowingForTwinSeatSideBySide )
             
@@ -192,8 +378,6 @@ struct CreateDefaultObjectInitiated {
                 )
             
         case .fixedWheelRearDrive:
-//print(" \(initialOccupantBodySupportMeasure.sitOn.length) \(addedDimensionForTwinSitOn.length) ")
-            
             baseMeasurement =
             InitialBaseMeasureFor(
                 rearToFrontLength:
