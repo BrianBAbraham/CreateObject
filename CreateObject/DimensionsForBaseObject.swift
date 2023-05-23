@@ -7,81 +7,163 @@
 
 import Foundation
 
+//struct BaseAndSupportWidth {
+//    var fromPrimaryToSitOnOrigin: [PositionAsIosAxes]
+//    let width: Double
+//
+//
+//    init (
+//        _ sitOnWidth: [Double],
+//        _ armSupportWidth: [Double]
+//    ) {
+//
+//        let sitOnWidth = sitOnWidth
+//        let armSupportWidth = armSupportWidth
+//        let left = 0
+//        let right = 1
+//
+//        width = getBaseWidth()
+//
+//        fromPrimaryToSitOnOrigin =
+//            getOriginPosition()
+//
+//
+//
+//
+//        func getOriginPosition()
+//            -> [PositionAsIosAxes] {
+//
+//                ()
+//        }
+//
+//        func getBaseWidth()
+//            -> Double {
+//            sitOnWidth[left] +
+//            sitOnWidth[right] +
+//            armSupportWidth[left] +
+//            armSupportWidth[right]
+//        }
+//
+//    }
+//}
 
 
 
+struct BaseDimensionAndSupportPosition {
 
-struct BaseAndSupport {
-
-    let fromPrimaryToSitOnOrign: [Double]
+    var fromPrimaryToSitOnOrign: [PositionAsIosAxes]
     let rearToFront: Double
     let rearToCentre: Double
+    let baseWidth: Double
 
     init (
         _ stability: Double,
         _ sitOnLength: [Double],
+        _ sitOnWidth: [Double],
+        _ armSupportWidth: [Double],
         _ hangerLength: Double,
-      //  _ recline: Double,
         _ baseType: BaseObjectTypes) {
             
-        rearToFront = baseLength()
+        rearToFront = getBaseLength()
         rearToCentre = 0.5 * rearToFront
+        baseWidth = getBaseWidth()
             
         fromPrimaryToSitOnOrign =
-            getOriginLength(
+            getOriginPosition(
                 baseType,
-                rearToFront)
+                rearToFront,
+                baseWidth)
 
-        func getOriginLength(
+        func getOriginPosition(
             _ baseType: BaseObjectTypes,
-            _ baseLength: Double
-        )
-            -> [Double ]{
+            _ baseLength: Double,
+            _ baseWidth: Double)
+            -> [PositionAsIosAxes ] {
             let rear = 0
             let front = 1
-
-            let onlyOneSitOn = sitOnLength.count == 1
-                var fromPrimaryToSitOnOrigin: [Double] = [0.0]
+  
+            let onlyOneSitOnFrontToRear = sitOnLength.count == 1
+            let onlyOneSitOnLeftToRight = sitOnWidth.count == 1
+            var fromPrimaryToSitOnLength: [Double] = [0.0]
                             
             switch baseType {
                 
             case .fixedWheelFrontDrive:
-                if onlyOneSitOn {
-                    fromPrimaryToSitOnOrigin =
+                if onlyOneSitOnFrontToRear {
+                    fromPrimaryToSitOnLength =
                     [ -0.5 * sitOnLength[rear]]
                 } else {
-                    fromPrimaryToSitOnOrigin =
+                    fromPrimaryToSitOnLength =
                     [ -0.5 * sitOnLength[rear] - sitOnLength[front] - hangerLength,
                       -0.5 * sitOnLength[front]
                     ]
                 }
                 
             case .fixedWheelRearDrive:
-                if onlyOneSitOn {
-                    fromPrimaryToSitOnOrigin =
-                    [ -0.5 * sitOnLength[rear]]
-                } else {
-                    fromPrimaryToSitOnOrigin =
-                    [-0.5 * sitOnLength[front],
-                    -stability - sitOnLength[rear] - hangerLength - sitOnLength[front]]
-                }
+                fromPrimaryToSitOnLength = fixedWheelRearDrive()
+
             case .fixedWheelMidDrive:
-                if onlyOneSitOn {
-                    fromPrimaryToSitOnOrigin =
+                if onlyOneSitOnFrontToRear {
+                    fromPrimaryToSitOnLength =
                     [0.5 * (baseLength - sitOnLength[rear])]
                 } else {
-                    fromPrimaryToSitOnOrigin =
+                    fromPrimaryToSitOnLength =
                     [ 0.5 * (baseLength - sitOnLength[rear]) - sitOnLength[front] - hangerLength,
                       0.5 * (baseLength - sitOnLength[front])
                     ]
                 }
+                
+            case .fixedWheelManualRearDrive:
+                fromPrimaryToSitOnLength = fixedWheelRearDrive()
+                
             default:
                 break
             }
-            return fromPrimaryToSitOnOrigin
+                
+            let potentiallyOneSitOn = 0
+            var fromPrimaryToSitOnOriginPosition: [PositionAsIosAxes] = []
+                
+            if onlyOneSitOnFrontToRear && onlyOneSitOnLeftToRight {
+                fromPrimaryToSitOnOriginPosition.append(
+                    (x: 0.0, y: fromPrimaryToSitOnLength[potentiallyOneSitOn], z: 0.0 ))
+            }
+            
+            if !onlyOneSitOnFrontToRear {
+                for length in fromPrimaryToSitOnLength {
+                    fromPrimaryToSitOnOriginPosition.append( (x: 0.0, y: length, z: 0.0) )
+                }
+            }
+
+            if !onlyOneSitOnLeftToRight {
+                let widths = getWidth()
+                for width in widths {
+                    fromPrimaryToSitOnOriginPosition.append( (x: width, y: fromPrimaryToSitOnLength[0], z: 0.0) )
+                }
+            }
+            
+            return fromPrimaryToSitOnOriginPosition
+                
+                func getWidth()
+                    -> [Double] {
+                        [-(baseWidth - sitOnWidth[0])/2, (baseWidth - sitOnWidth[1])/2]
+                }
+                
+                func fixedWheelRearDrive()
+                    -> [Double] {
+                    if onlyOneSitOnFrontToRear {
+                        fromPrimaryToSitOnLength =
+                        [ baseLength - 0.5 * sitOnLength[rear]]
+                    } else {
+                        fromPrimaryToSitOnLength =
+                        [ baseLength - 0.5 * sitOnLength[rear] - sitOnLength[front] - hangerLength,
+                          baseLength - 0.5 * sitOnLength[front]
+                        ]
+                    }
+                    return fromPrimaryToSitOnLength
+                }
         }
             
-        func baseLength()
+        func getBaseLength()
             -> Double {
             let rear = 0
             let front = 1
@@ -91,12 +173,30 @@ struct BaseAndSupport {
             rearToFront +=
                 sitOnLength.count == 2 ?
                 (hangerLength + sitOnLength[front]) : 0.0
-            
-//print(rearToFront)
             return rearToFront
+        }
+            
+        func getBaseWidth()
+            -> Double {
+                let rightArmOfLeftSitOn = 0
+                let leftArmOfRightSitOn = 1
+                let potentiallyOneSitOn = 0
+                let right = 1
+                var baseWidth =
+                sitOnWidth[potentiallyOneSitOn]
+
+                baseWidth +=
+                sitOnWidth.count == 2 ?
+                sitOnWidth[right] +
+                armSupportWidth[rightArmOfLeftSitOn] +
+                armSupportWidth [leftArmOfRightSitOn ]: 0.0
+
+                return baseWidth
         }
     }
 }
+
+
 
 struct InitialBaseMeasureFor {
    

@@ -84,7 +84,8 @@ struct CreateOccupantSupport {
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
         _ baseMeasurement: InitialBaseMeasureFor,
         _ objectOptions: OptionDictionary,
-        _ twinSitOnOptions: TwinSitOnOptions
+        _ twinSitOnOptions: TwinSitOnOptions,
+        _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes]
     ) {
         self.baseType = baseType
         self.initialOccupantBodySupportMeasure = initialOccupantBodySupportMeasure
@@ -141,9 +142,10 @@ struct CreateOccupantSupport {
         
 
         allBodySupportFromPrimaryOrigin =
-            getAllBodySuppportFromPrimaryOrigin(
-                initialOccupantBodySupportMeasure
-            )
+        fromPrimaryOriginToOccupantSupports
+//            getAllBodySuppportFromPrimaryOrigin(
+//                initialOccupantBodySupportMeasure
+//            )
         
         allBodySupportCorners =
             getAllBodySupportFromPrimaryOriginCorners(
@@ -180,22 +182,22 @@ struct CreateOccupantSupport {
         
 
         
-        
-        func getAllBodySuppportFromPrimaryOrigin(
-            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
-            -> [PositionAsIosAxes] {
-
-            var fromPrimaryToSitOnOrigins: [PositionAsIosAxes] = []
-            for supportIndex in 0..<numberOfSeats {
-                fromPrimaryToSitOnOrigins.append(
-                    getOneBodySupportFromPrimaryOrigin(
-                        supportIndex,
-                        initialOccupantBodySupportMeasure)
-                    )
-                }
-            return
-                fromPrimaryToSitOnOrigins
-        }
+//
+//        func getAllBodySuppportFromPrimaryOrigin(
+//            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
+//            -> [PositionAsIosAxes] {
+//
+//            var fromPrimaryToSitOnOrigins: [PositionAsIosAxes] = []
+//            for supportIndex in 0..<numberOfSeats {
+//                fromPrimaryToSitOnOrigins.append(
+//                    getOneBodySupportFromPrimaryOrigin(
+//                        supportIndex,
+//                        initialOccupantBodySupportMeasure)
+//                    )
+//                }
+//            return
+//                fromPrimaryToSitOnOrigins
+//        }
         
         
         func getDictionary(
@@ -261,185 +263,180 @@ struct CreateOccupantSupport {
 
         
         
-        func getOneBodySupportFromPrimaryOrigin(
-            _ supportIndex: Int,
-            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
-                -> PositionAsIosAxes {
-
-            let modifiedPositionForReclineBackRest = InitialOccupantBackSupportMeasurement(objectOptions).backSupport.length
-            
-            var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
-            
-            let halfLength = initialOccupantBodySupportMeasure.sitOn.length/2
-            
-            var bodySupportlengthFromPrimaryOrigin: Double = 0
-
-            if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.fixedWheel.rawValue) {
-            
-            let hangerStartToFootSupportEndLength =
-                InitialOccupantFootSupportMeasure.footSupportHanger.length +
-                InitialOccupantFootSupportMeasure.footSupport.length
-                
-            switch baseType {
-                    
-                    case .fixedWheelFrontDrive:
-                        if !frontAndRearSeats {
-                            bodySupportlengthFromPrimaryOrigin += -halfLength
-                        }
-                
-                        if frontAndRearSeats && supportIndex == 0 {
-                            bodySupportlengthFromPrimaryOrigin +=
-                            -halfLength +
-                            -hangerStartToFootSupportEndLength
-                        }
-
-                    case .fixedWheelMidDrive:
-                            bodySupportlengthFromPrimaryOrigin =
-                            soloAndMidDriveCase()
-                    
-                    case .fixedWheelSolo:
-                            bodySupportlengthFromPrimaryOrigin =
-                            soloAndMidDriveCase()
-                
-                    case .fixedWheelRearDrive:
-                        bodySupportlengthFromPrimaryOrigin =
-                            allRearDriveCase()
-                    
-                    case .fixedWheelManualRearDrive:
-                        bodySupportlengthFromPrimaryOrigin =
-                            allRearDriveCase()
-
-                    default:
-                        bodySupportlengthFromPrimaryOrigin =
-                    halfLength +
-                    modifiedPositionForReclineBackRest
-                }
-                
-                
-                func soloAndMidDriveCase() -> Double {
-                    
-                    var bodySupportlengthFromPrimaryOrigin = 0.0
-                    
-                    if frontAndRearSeats  {
-                        bodySupportlengthFromPrimaryOrigin =
-                        supportIndex == 0 ?
-                        -halfLength: -(hangerStartToFootSupportEndLength + halfLength)
-                    }
-                    
-                    return bodySupportlengthFromPrimaryOrigin
-                }
-                
-                func allRearDriveCase() -> Double {
-                    var bodySupportlengthFromPrimaryOrigin =
-                    halfLength
-                    if !frontAndRearSeats {
-                        bodySupportlengthFromPrimaryOrigin += 0
-                        //modifiedPositionForReclineBackRest
-                    } else {
-                        if supportIndex == 1 {
-                            bodySupportlengthFromPrimaryOrigin +=
-                            (halfLength +
-                            hangerStartToFootSupportEndLength)
-                        }
-                    }
+//        func getOneBodySupportFromPrimaryOrigin(
+//            _ supportIndex: Int,
+//            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure)
+//                -> PositionAsIosAxes {
+//
+//            let modifiedPositionForReclineBackRest = InitialOccupantBackSupportMeasurement(objectOptions).backSupport.length
+//
+//            var occupantBodySupportFromPrimaryOrigin: PositionAsIosAxes = Globalx.iosLocation
+//
+//            let halfLength = initialOccupantBodySupportMeasure.sitOn.length/2
+//
+//            var bodySupportlengthFromPrimaryOrigin: Double = 0
+//
+//            if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.fixedWheel.rawValue) {
+//
+//            let hangerStartToFootSupportEndLength =
+//                InitialOccupantFootSupportMeasure.footSupportHanger.length +
+//                InitialOccupantFootSupportMeasure.footSupport.length
+//
+//            switch baseType {
+//
+//                    case .fixedWheelFrontDrive:
+//                        if !frontAndRearSeats {
+//                            bodySupportlengthFromPrimaryOrigin += -halfLength
+//                        }
+//
+//                        if frontAndRearSeats && supportIndex == 0 {
+//                            bodySupportlengthFromPrimaryOrigin +=
+//                            -halfLength +
+//                            -hangerStartToFootSupportEndLength
+//                        }
+//
+//                    case .fixedWheelMidDrive:
+//                            bodySupportlengthFromPrimaryOrigin =
+//                            soloAndMidDriveCase()
+//
+//                    case .fixedWheelSolo:
+//                            bodySupportlengthFromPrimaryOrigin =
+//                            soloAndMidDriveCase()
+//
+//                    case .fixedWheelRearDrive:
+//                        bodySupportlengthFromPrimaryOrigin =
+//                            allRearDriveCase()
+//
+//                    case .fixedWheelManualRearDrive:
+//                        bodySupportlengthFromPrimaryOrigin =
+//                            allRearDriveCase()
+//
+//                    default:
+//                        bodySupportlengthFromPrimaryOrigin =
+//                    halfLength +
+//                    modifiedPositionForReclineBackRest
+//                }
+//
+//
+//                func soloAndMidDriveCase() -> Double {
+//
+//                    var bodySupportlengthFromPrimaryOrigin = 0.0
+//
+//                    if frontAndRearSeats  {
+//                        bodySupportlengthFromPrimaryOrigin =
+//                        supportIndex == 0 ?
+//                        -halfLength: -(hangerStartToFootSupportEndLength + halfLength)
+//                    }
+//
+//                    return bodySupportlengthFromPrimaryOrigin
+//                }
+//
+//                func allRearDriveCase() -> Double {
+//                    var bodySupportlengthFromPrimaryOrigin =
+//                    halfLength
+//                    if !frontAndRearSeats {
+//                        bodySupportlengthFromPrimaryOrigin += 0
+//
+//                    } else {
+//                        if supportIndex == 1 {
+//                            bodySupportlengthFromPrimaryOrigin +=
+//                            (halfLength +
+//                            hangerStartToFootSupportEndLength)
+//                        }
+//                    }
                     
 //print(supportIndex)
 //print(bodySupportlengthFromPrimaryOrigin)
 //print("")
-                    return bodySupportlengthFromPrimaryOrigin
-                }
-                
-//                occupantBodySupportFromPrimaryOrigin =
-//                    getAllBodySupportFromPrimaryOriginAccountForAllSitOn(
-//                        supportIndex,
-//                        bodySupportlengthFromPrimaryOrigin)
-                
-                return (x: 0.0, y: bodySupportlengthFromPrimaryOrigin, z: 0)
-            }
-            
-            
 
-            if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.caster.rawValue) {
-                
-                let initialOccupantBodySupportFromPrimaryOrigin =
-                (x: 0.0, y: halfLength, z: 0.0 )
 
                 
-                switch baseType {
-                    case .allCasterChair:
-                        occupantBodySupportFromPrimaryOrigin =
-                    CreateIosPosition.addTwoTouples(
-                            initialOccupantBodySupportFromPrimaryOrigin,
-                            (x:0, y: modifiedPositionForReclineBackRest, z:0) )
-                    
-                    case .allCasterStretcher:
-                        occupantBodySupportFromPrimaryOrigin =
-                    (x: 0,
-                     y: baseMeasurement.rearToFrontLength/2,
-                     z: 0)
-                    
-                    case .allCasterBed:
-                        let headEndPartWidth = 100.0
-                        occupantBodySupportFromPrimaryOrigin =
-
-                    (x: 0,
-                     y: initialOccupantBodySupportMeasure.sleepOn.length/2 +
-                     headEndPartWidth,
-                     z: 0)
-                    
-                    case .allCasterHoist:
-                    //break
-                        occupantBodySupportFromPrimaryOrigin =
-                    (x: 0, y: 0, z: 0)
-                    
-                    default:
-                        occupantBodySupportFromPrimaryOrigin =
-                            initialOccupantBodySupportFromPrimaryOrigin
-                    }
-            }
-            
-            return occupantBodySupportFromPrimaryOrigin
-        }
+//                return (x: 0.0, y: bodySupportlengthFromPrimaryOrigin, z: 0)
+//            }
+//
+//
+//
+//            if baseType.rawValue.contains(GroupsDerivedFromRawValueOfBaseObjectTypes.caster.rawValue) {
+//
+//                let initialOccupantBodySupportFromPrimaryOrigin =
+//                (x: 0.0, y: halfLength, z: 0.0 )
+//
+//
+//                switch baseType {
+//                    case .allCasterChair:
+//                        occupantBodySupportFromPrimaryOrigin =
+//                    CreateIosPosition.addTwoTouples(
+//                            initialOccupantBodySupportFromPrimaryOrigin,
+//                            (x:0, y: modifiedPositionForReclineBackRest, z:0) )
+//
+//                    case .allCasterStretcher:
+//                        occupantBodySupportFromPrimaryOrigin =
+//                    (x: 0,
+//                     y: baseMeasurement.rearToFrontLength/2,
+//                     z: 0)
+//
+//                    case .allCasterBed:
+//                        let headEndPartWidth = 100.0
+//                        occupantBodySupportFromPrimaryOrigin =
+//
+//                    (x: 0,
+//                     y: initialOccupantBodySupportMeasure.sleepOn.length/2 +
+//                     headEndPartWidth,
+//                     z: 0)
+//
+//                    case .allCasterHoist:
+//                    //break
+//                        occupantBodySupportFromPrimaryOrigin =
+//                    (x: 0, y: 0, z: 0)
+//
+//                    default:
+//                        occupantBodySupportFromPrimaryOrigin =
+//                            initialOccupantBodySupportFromPrimaryOrigin
+//                    }
+//            }
+//
+//            return occupantBodySupportFromPrimaryOrigin
+//        }
         
         
         
         
         
-        func getAllBodySupportFromPrimaryOriginAccountForAllSitOn (
-            _ supportIndex: Int,
-            _ bodySupportLengthFromPrimaryOrigin: Double)
-            -> PositionAsIosAxes {
-                var location = Globalx.iosLocation
-                let bodySupportDimension = initialOccupantBodySupportMeasure.sitOn
-                let supportHalfWidthDimension =
-                InitialOccupantSideSupportMeasurement().rightSideSupportFromSitOnOrigin.x
-                + InitialOccupantSideSupportMeasurement().sitOnArm.width/2
-                
-                if !sideBySideSeats && !frontAndRearSeats {
-                    location = (x: 0.0, y: bodySupportLengthFromPrimaryOrigin, z: 0.0)
-                }
-
-                if sideBySideSeats {
-                    if supportIndex == 0 {
-                        location.x = -supportHalfWidthDimension
-
-                    } else {
-                        location.x = supportHalfWidthDimension
-                    }
-                }
-
-                if frontAndRearSeats {
-                    if supportIndex == 0 {
-                        location.y = bodySupportLengthFromPrimaryOrigin + bodySupportDimension.length
-                    } else {
-                        location.y = bodySupportLengthFromPrimaryOrigin - bodySupportDimension.length
-                    }
-                    
-                }
-                
-
-                return location
-        }
+//        func getAllBodySupportFromPrimaryOriginAccountForAllSitOn (
+//            _ supportIndex: Int,
+//            _ bodySupportLengthFromPrimaryOrigin: Double)
+//            -> PositionAsIosAxes {
+//                var location = Globalx.iosLocation
+//                let bodySupportDimension = initialOccupantBodySupportMeasure.sitOn
+//                let supportHalfWidthDimension =
+//                InitialOccupantSideSupportMeasurement().rightSideSupportFromSitOnOrigin.x
+//                + InitialOccupantSideSupportMeasurement().sitOnArm.width/2
+//
+//                if !sideBySideSeats && !frontAndRearSeats {
+//                    location = (x: 0.0, y: bodySupportLengthFromPrimaryOrigin, z: 0.0)
+//                }
+//
+//                if sideBySideSeats {
+//                    if supportIndex == 0 {
+//                        location.x = -supportHalfWidthDimension
+//
+//                    } else {
+//                        location.x = supportHalfWidthDimension
+//                    }
+//                }
+//
+//                if frontAndRearSeats {
+//                    if supportIndex == 0 {
+//                        location.y = bodySupportLengthFromPrimaryOrigin + bodySupportDimension.length
+//                    } else {
+//                        location.y = bodySupportLengthFromPrimaryOrigin - bodySupportDimension.length
+//                    }
+//
+//                }
+//
+//
+//                return location
+//        }
     }
     
 
