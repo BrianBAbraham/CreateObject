@@ -104,7 +104,7 @@ struct CreateDefaultObjectInitiated {
                 
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
                 
-        let intialBaseMeasureFor = InitialBaseMeasureFor()
+      //  let intialBaseMeasureFor = InitialBaseMeasureFor()
 
 //        let halfWidthAllowingForTwinSeatSideBySide =
 //                intialBaseMeasureFor.halfWidth
@@ -179,7 +179,7 @@ struct CreateDefaultObjectInitiated {
 
             default:
                 baseMeasurementAndSitOnOrigin =
-                    (baseMeasurement: InitialBaseMeasureFor(),
+                    (baseMeasurement: baseMeasurement,
                      fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
         }
         
@@ -198,10 +198,10 @@ struct CreateDefaultObjectInitiated {
         (baseMeasurement: InitialBaseMeasureFor,
          fromPrimaryToSitOnOrigin: [PositionAsIosAxes]) =
             (baseMeasurement: InitialBaseMeasureFor(),
-             fromPrimaryToSitOnOrigin: [] )
+             fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
         
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
-        let intialBaseMeasureFor = InitialBaseMeasureFor()
+        //let intialBaseMeasureFor = InitialBaseMeasureFor()
         
         let footSupportHangerLength =
                 InitialOccupantFootSupportMeasure.footSupportHanger.length
@@ -212,9 +212,9 @@ struct CreateDefaultObjectInitiated {
             frontAndRear ?
             [oneSitOnLength, oneSitOnLength]: [oneSitOnLength]
         
-        let halfWidthAllowingForTwinSeatSideBySide =
+       // let halfWidthAllowingForTwinSeatSideBySide =
                 //addedDimensionForTwinSitOn.width/2 +
-                intialBaseMeasureFor.halfWidth
+         //       intialBaseMeasureFor.halfWidth
         
         let oneSitOnWidth = initialOccupantBodySupportMeasure.sitOn.width
         let oneArmSupportWidth = InitialOccupantSideSupportMeasurement().sitOnArm.width

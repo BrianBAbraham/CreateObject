@@ -7,45 +7,7 @@
 
 import Foundation
 
-//struct BaseAndSupportWidth {
-//    var fromPrimaryToSitOnOrigin: [PositionAsIosAxes]
-//    let width: Double
-//
-//
-//    init (
-//        _ sitOnWidth: [Double],
-//        _ armSupportWidth: [Double]
-//    ) {
-//
-//        let sitOnWidth = sitOnWidth
-//        let armSupportWidth = armSupportWidth
-//        let left = 0
-//        let right = 1
-//
-//        width = getBaseWidth()
-//
-//        fromPrimaryToSitOnOrigin =
-//            getOriginPosition()
-//
-//
-//
-//
-//        func getOriginPosition()
-//            -> [PositionAsIosAxes] {
-//
-//                ()
-//        }
-//
-//        func getBaseWidth()
-//            -> Double {
-//            sitOnWidth[left] +
-//            sitOnWidth[right] +
-//            armSupportWidth[left] +
-//            armSupportWidth[right]
-//        }
-//
-//    }
-//}
+
 
 
 
