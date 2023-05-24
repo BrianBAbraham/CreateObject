@@ -31,7 +31,7 @@ struct InitialOccupantBodySupportMeasure {
         overHead: Dimension = (length: 40 ,width: 550),
         overHeadHook: Dimension = (length: 100 ,width: 10),
         overHeadJoint: Dimension = Joint.dimension,
-        sleepOn: Dimension = (length: 1800 ,width: 900),
+        sleepOn: Dimension = (length: 2000 ,width: 900),
         standOn: Dimension = (length: 300 ,width: 500)) {
         self.lieOn = lieOn
         self.overHead = overHead
@@ -61,7 +61,7 @@ struct CreateOccupantSupport {
   
     var dictionary: [String: PositionAsIosAxes ] = [:] //
     
-    let frontAndRearSeats: Bool //= false
+//    let frontAndRearSeats: Bool //= false
     let initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure //
     
     var numberOfSeats: Int
@@ -70,7 +70,7 @@ struct CreateOccupantSupport {
     let occupantSupportMeasures: InitialOccupantBodySupportMeasure =
         InitialOccupantBodySupportMeasure()//
 
-    let sideBySideSeats: Bool //= true
+//    let sideBySideSeats: Bool //= true
     
     
     var allBodySupportCorners: [[PositionAsIosAxes]] = []//
@@ -92,16 +92,19 @@ struct CreateOccupantSupport {
         self.baseMeasurement = baseMeasurement
         self.objectOptions = objectOptions
         
-        sideBySideSeats =
-        twinSitOnOptions[TwinSitOnOption.leftAndRight] ?? false
+//        sideBySideSeats =
+//        twinSitOnOptions[TwinSitOnOption.leftAndRight] ?? false
+//
+//        frontAndRearSeats =
+//        twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false
         
-        frontAndRearSeats =
-        twinSitOnOptions[TwinSitOnOption.frontAndRear] ?? false
+//print(fromPrimaryOriginToOccupantSupports)
+//print("")
+        numberOfSeats =  fromPrimaryOriginToOccupantSupports.count// 1
         
-        
-        numberOfSeats =  1
-        if baseType.rawValue.contains("wheelchair") {
-            numberOfSeats += (sideBySideSeats || frontAndRearSeats ? 1:0)}
+//print(numberOfSeats)
+//        if baseType.rawValue.contains("wheelchair") {
+//            numberOfSeats += (sideBySideSeats || frontAndRearSeats ? 1:0)}
        
         
         switch baseType {
@@ -155,6 +158,9 @@ struct CreateOccupantSupport {
 
         
         for supportIndex in 0..<numberOfSeats {
+//    print("numberOfSeats")
+//    print(numberOfSeats)
+//    print("")
             getDictionary(
                 supportIndex,
                 objectOptions
@@ -204,7 +210,10 @@ struct CreateOccupantSupport {
             _ supportIndex: Int,
             _ objectOptions: OptionDictionary
             ){
-                
+//print(#function)
+//print("CreateOccupantSupport")
+//print(supportIndex)
+//print("")
             if backSupportRequired {
                 let occupantBackSupport =
                 CreateOccupantBackSupport (
@@ -216,6 +225,10 @@ struct CreateOccupantSupport {
             }
                 
             if footSupportRequired {
+//print(baseType)
+//print(allBodySupportFromPrimaryOrigin)
+//print(initialOccupantBodySupportMeasure)
+//print("")
                 let occupantFootSupport =
                     CreateOccupantFootSupport(
                         allBodySupportFromPrimaryOrigin,

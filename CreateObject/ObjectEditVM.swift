@@ -298,6 +298,7 @@ extension ObjectEditViewModel {
          //   let supportIndexName = Part.sitOn.rawValue + sitOnId.rawValue
                 let supportIndex = sitOnId == .id0 ?  0 : 1
             //firstItem.key.contains(supportIndexName) ? 0 : 1
+
 //print(supportIndex)
             let hangerLinkDictionary =
                 CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(

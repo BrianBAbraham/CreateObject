@@ -86,43 +86,48 @@ struct BaseDimensionAndSupportPosition {
             var fromPrimaryToSitOnOriginPosition: [PositionAsIosAxes] = []
                 
             if onlyOneSitOnFrontToRear && onlyOneSitOnLeftToRight {
-                fromPrimaryToSitOnOriginPosition.append(
-                    (x: 0.0, y: fromPrimaryToSitOnLength[potentiallyOneSitOn], z: 0.0 ))
+                fromPrimaryToSitOnOriginPosition =
+                    [(x: 0.0, y: fromPrimaryToSitOnLength[potentiallyOneSitOn], z: 0.0 )]
             }
             
             if !onlyOneSitOnFrontToRear {
+                fromPrimaryToSitOnOriginPosition = []
                 for length in fromPrimaryToSitOnLength {
                     fromPrimaryToSitOnOriginPosition.append( (x: 0.0, y: length, z: 0.0) )
                 }
             }
 
             if !onlyOneSitOnLeftToRight {
+                fromPrimaryToSitOnOriginPosition = []
                 let widths = getWidth()
                 for width in widths {
                     fromPrimaryToSitOnOriginPosition.append( (x: width, y: fromPrimaryToSitOnLength[0], z: 0.0) )
                 }
             }
             
-            return fromPrimaryToSitOnOriginPosition
                 
-                func getWidth()
-                    -> [Double] {
-                        [-(baseWidth - sitOnWidth[0])/2, (baseWidth - sitOnWidth[1])/2]
-                }
+        
+//print(fromPrimaryToSitOnOriginPosition)
+                return fromPrimaryToSitOnOriginPosition
                 
-                func fixedWheelRearDrive()
-                    -> [Double] {
-                    if onlyOneSitOnFrontToRear {
-                        fromPrimaryToSitOnLength =
-                        [ baseLength - 0.5 * sitOnLength[rear]]
-                    } else {
-                        fromPrimaryToSitOnLength =
-                        [ baseLength - 0.5 * sitOnLength[rear] - sitOnLength[front] - hangerLength,
-                          baseLength - 0.5 * sitOnLength[front]
-                        ]
-                    }
-                    return fromPrimaryToSitOnLength
+            func getWidth()
+                -> [Double] {
+                    [-(baseWidth - sitOnWidth[0])/2, (baseWidth - sitOnWidth[1])/2]
+            }
+            
+            func fixedWheelRearDrive()
+                -> [Double] {
+                if onlyOneSitOnFrontToRear {
+                    fromPrimaryToSitOnLength =
+                    [ baseLength - 0.5 * sitOnLength[rear]]
+                } else {
+                    fromPrimaryToSitOnLength =
+                    [ baseLength - 0.5 * sitOnLength[rear] - sitOnLength[front] - hangerLength,
+                      baseLength - 0.5 * sitOnLength[front]
+                    ]
                 }
+                return fromPrimaryToSitOnLength
+            }
         }
             
         func getBaseLength()

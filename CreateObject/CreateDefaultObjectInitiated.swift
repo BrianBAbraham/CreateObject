@@ -60,7 +60,12 @@ struct CreateDefaultObjectInitiated {
             let baseMeasurement = measurementForBaseGivenOccupantSupport.baseMeasurement
             
             let fromPrimaryToOccupantSupports = measurementForBaseGivenOccupantSupport.fromPrimaryToSitOnOrigin
-            
+//if baseType == .allCasterBed{
+//    print(initialOccupantBodySupportMeasure)
+//    print(baseMeasurement)
+//    print(fromPrimaryToOccupantSupports)
+//    print("")
+//}
             occupantSupport =
                 CreateOccupantSupport(
                     baseType,
@@ -96,43 +101,52 @@ struct CreateDefaultObjectInitiated {
                 
         let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
         
-        let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
+        //let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
                 
         let addedForReclineBackSupport: Double =
             objectOptions[ObjectOptions.recliningBackSupport] ?? false ?
                 InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
                 
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
-                
-      //  let intialBaseMeasureFor = InitialBaseMeasureFor()
-
-//        let halfWidthAllowingForTwinSeatSideBySide =
-//                intialBaseMeasureFor.halfWidth
-                
-//        let oneSitOnLength = initialOccupantBodySupportMeasure.sitOn.length
-//        let frontAndRear = twinSitOnOptions[.frontAndRear] ?? false
-
-                
+                                
         let stabilityChoices = [50.0, addedForReclineBackSupport]
         let stability = stabilityChoices.max() ?? stabilityChoices[0]
             
 
                 
-
+        var rearToFront = 0.0
             
         switch baseType {
             case .allCasterBed:
+            let sleepOnDimension = initialOccupantBodySupportMeasure.sleepOn
+            rearToFront = 2200.0
                 baseMeasurement =
-                InitialBaseMeasureFor(rearToFrontLength: 2200, halfWidth: 450)
+                InitialBaseMeasureFor(
+                    rearToFrontLength: rearToFront, halfWidth: sleepOnDimension.width/2)
+            
+                baseMeasurementAndSitOnOrigin =
+                    getBaseMeasurementAndSitOnOriginForSingleSupport(baseMeasurement, rearToFront/2)
+            
+
             
             case .allCasterChair:
-                baseMeasurement = InitialBaseMeasureFor(
-                    rearToFrontLength: 500 + addedForReclineBackSupport
-                , halfWidth: 200)
-            
-            case .allCasterHoist:
+                let sitOnDimension = initialOccupantBodySupportMeasure.sitOn
+                rearToFront = sitOnDimension.length + stability
                 baseMeasurement =
-                InitialBaseMeasureFor(rearToFrontLength: 1200, halfWidth: 300)
+                InitialBaseMeasureFor(
+                    rearToFrontLength: rearToFront, halfWidth: sitOnDimension.width/2)
+            
+                baseMeasurementAndSitOnOrigin =
+                    getBaseMeasurementAndSitOnOriginForSingleSupport(baseMeasurement, rearToFront/2)
+
+            case .allCasterHoist:
+                rearToFront = 1200
+                baseMeasurement =
+                    InitialBaseMeasureFor(rearToFrontLength: rearToFront, halfWidth: 300)
+                baseMeasurementAndSitOnOrigin =
+                    getBaseMeasurementAndSitOnOriginForSingleSupport(baseMeasurement, rearToFront/2)
+    
+
             
             case .allCasterTiltInSpaceShowerChair:
                 baseMeasurement =
@@ -142,10 +156,15 @@ struct CreateDefaultObjectInitiated {
                 break
             
             case .allCasterStretcher:
+                let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
+                rearToFront = 1400
                 baseMeasurement =
                 InitialBaseMeasureFor(
-                    rearToFrontLength: lieOnDimension.length/2,
+                    rearToFrontLength: rearToFront,
                     halfWidth: lieOnDimension.width/2)
+                baseMeasurementAndSitOnOrigin =
+                    getBaseMeasurementAndSitOnOriginForSingleSupport(baseMeasurement, rearToFront/2)
+          
             
 
             case .fixedWheelFrontDrive:
@@ -176,6 +195,9 @@ struct CreateDefaultObjectInitiated {
                   baseMeasurement = InitialBaseMeasureFor(
                     rearToFrontLength: 1200,
                     halfWidth: 450)
+                    baseMeasurementAndSitOnOrigin =
+                        (baseMeasurement: baseMeasurement,
+                        fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
 
             default:
                 baseMeasurementAndSitOnOrigin =
@@ -186,6 +208,18 @@ struct CreateDefaultObjectInitiated {
         return baseMeasurementAndSitOnOrigin
                 
     }
+    
+    func getBaseMeasurementAndSitOnOriginForSingleSupport(
+        _ baseMeasurement: InitialBaseMeasureFor,
+        _ fromPrimaryToSupportOrigin: Double)
+        ->  (baseMeasurement: InitialBaseMeasureFor,
+             fromPrimaryToSitOnOrigin: [PositionAsIosAxes]) {
+        
+        (baseMeasurement: baseMeasurement,
+         fromPrimaryToSitOnOrigin:
+            [(x: 0.0, y: fromPrimaryToSupportOrigin, z: 0)])
+    }
+    
     
 
     func getPositionForTwinSitOnObjects (
@@ -201,7 +235,6 @@ struct CreateDefaultObjectInitiated {
              fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
         
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
-        //let intialBaseMeasureFor = InitialBaseMeasureFor()
         
         let footSupportHangerLength =
                 InitialOccupantFootSupportMeasure.footSupportHanger.length
@@ -211,10 +244,6 @@ struct CreateDefaultObjectInitiated {
         let sitOnLength =
             frontAndRear ?
             [oneSitOnLength, oneSitOnLength]: [oneSitOnLength]
-        
-       // let halfWidthAllowingForTwinSeatSideBySide =
-                //addedDimensionForTwinSitOn.width/2 +
-         //       intialBaseMeasureFor.halfWidth
         
         let oneSitOnWidth = initialOccupantBodySupportMeasure.sitOn.width
         let oneArmSupportWidth = InitialOccupantSideSupportMeasurement().sitOnArm.width

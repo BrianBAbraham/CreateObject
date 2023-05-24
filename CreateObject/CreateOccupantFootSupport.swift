@@ -158,6 +158,10 @@ struct CreateOccupantFootSupport {
             
             
             if hangerLinkRequired {
+//print(#function)
+//print("getDictionary")
+//print(supportIndex)
+//print("")
                 let hangerLinkDictionary =
                     CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
                         .footSupportHangerSitOnVerticalJoint,
