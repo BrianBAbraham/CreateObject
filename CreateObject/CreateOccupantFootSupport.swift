@@ -51,7 +51,7 @@ struct InitialOccupantFootSupportMeasure {
     
     let rightFootSupportFromFromSitOnOrigin: PositionAsIosAxes
     
-    init(_ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure) {
+    init(_ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement) {
         sitOnLengthAndOffset =
         initialOccupantBodySupportMeasure.sitOn.length/2 - 10
         
@@ -98,7 +98,7 @@ struct CreateOccupantFootSupport {
     init(
         _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
-        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure,
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
         _ baseType: BaseObjectTypes){
         
         self.supportIndex = supportIndex

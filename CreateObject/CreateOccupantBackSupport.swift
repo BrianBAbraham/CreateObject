@@ -7,35 +7,103 @@
 
 import Foundation
 
+struct BackSupportStability {
+    
+    let setBackOfRearWheels: Double
+    
+    init(
+        stability: Double,
+        
+        maximalTilt: Double ,
+        
+        backSupportHeight: Double
+            = InitialOccupantBackSupportMeasurement.backSupportHeight,
+        
+        maximalTiltAngle: Measurement<UnitAngle> =
+        InitialOccupantBackSupportMeasurement.maximumBackSupportRecline,
+        maximalReclineAngle: Double) {
+        
+            setBackOfRearWheels =
+                getSetBack(stability,
+                           maximalTilt,
+                           backSupportHeight,
+                           maximalTiltAngle,
+                           maximalReclineAngle)
+            
+            func getSetBack(
+                _ stability: Double,
+                _ maximalTilt: Double,
+                _ backSupportHeight: Double,
+                _ maximumTiltAngle: Measurement<UnitAngle> ,
+                _ maximalReclineAngle: Double)
+                -> Double {
+                    
+                InitialOccupantSupportTiltMeasurement(
+                    maximumTiltAngle, length: backSupportHeight)
+                    
+                    
+                    return 0.0
+            }
+    }
+    
+
+}
+
 struct InitialOccupantBackSupportMeasurement {
     static let backSupportHeight = 500.0
     
     static let maximumBackSupportRecline =
-    Measurement(value: 60, unit: UnitAngle.degrees)
+    Measurement(value: 30, unit: UnitAngle.degrees)
     
     static let minimumBackSupportRecline =
-    Measurement(value: 5, unit: UnitAngle.degrees)
+    Measurement(value: 0, unit: UnitAngle.degrees)
     
     static let lengthOfMaximallyReclinedBackSupport =
-    sin(maximumBackSupportRecline.converted(to: .radians).value) * backSupportHeight
+        Tilted(maximumBackSupportRecline).factor * backSupportHeight
+        
     
     static let lengthOfMinimillyReclinedBackSupport =
-    sin(minimumBackSupportRecline.converted(to: .radians).value) * backSupportHeight
+        Tilted(minimumBackSupportRecline).factor * backSupportHeight
+      
+        
+    let initialOccupantBodySupportMeasure =  InitialOccupantBodySupportMeasurement()
     
-    let initialOccupantBodySupportMeasure =  InitialOccupantBodySupportMeasure()
+    var backSupport: Dimension
     
-    let backSupport: Dimension
+    let defaultBackSupport: Dimension
 
     let backSupportFromParentOrigin: PositionAsIosAxes
     let backSupportJointFromParentOrigin: PositionAsIosAxes
     let backSupportJoint = Joint.dimension
        
-    init( _ objectionOptions: OptionDictionary)
+    init( _ objectOptions: OptionDictionary)
         {
+            /// case no recline and no tilt
+            /// case recline and no tilt
+            /// case tilt and no recline
+            /// case tilt and recline
+            ///
+            ///
+            defaultBackSupport =
+            (length:
+                InitialOccupantBackSupportMeasurement.lengthOfMinimillyReclinedBackSupport,
+            width:
+                initialOccupantBodySupportMeasure.sitOn.width)
+            
             backSupport =
-            (length: objectionOptions[.recliningBackSupport] ?? false ? InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: InitialOccupantBackSupportMeasurement.lengthOfMinimillyReclinedBackSupport,
-             width: initialOccupantBodySupportMeasure.sitOn.width)
+                objectOptions[.reclinedBackSupport] ?? false ?
+             (length:
+                InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport,
+              width: defaultBackSupport.width) :
+                defaultBackSupport
         
+//            objectOptions[.reclinedBackSupport] ?? false
+//
+//            objectOptions[.tiltInSpace] ?? false ?
+//
+//
+//            objectOptions[.tiltAndRecline] ?? false
+            
         backSupportFromParentOrigin =
         (x: 0,
          y: -(initialOccupantBodySupportMeasure.sitOn.length + backSupport.length)/2,
@@ -55,7 +123,7 @@ struct CreateOccupantBackSupport {
     // INPUT FROM SEAT
     let measurementFor: InitialOccupantBackSupportMeasurement
     
-    var dictionary: [String: PositionAsIosAxes ] = [:]
+    var dictionary: PositionDictionary = [:]
     
     let supportIndex: Int
     
@@ -102,7 +170,7 @@ struct CreateOccupantBackSupport {
        let backSupportJointDictionary =
             CreateOnePartOrSideSymmetricParts(
                 measurementFor.backSupportJoint,
-                .backSupportHorizontalJoint,
+                .backSupportJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 measurementFor.backSupportJointFromParentOrigin,
                 supportIndex)

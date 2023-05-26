@@ -15,7 +15,7 @@ struct CreateOccupantOverHeadSupport {
     
     init(
         _ fromPrimaryOrigin: PositionAsIosAxes,
-        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure) {
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement) {
             
         getDictionary(
             fromPrimaryOrigin,
@@ -24,7 +24,7 @@ struct CreateOccupantOverHeadSupport {
             
            func getDictionary(
             _ fromPrimaryOrigin: PositionAsIosAxes,
-            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasure
+            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement
            ) {
                
                let partFromParentOrigin =
@@ -45,14 +45,14 @@ struct CreateOccupantOverHeadSupport {
                let overHeadSupportJointDictionary =
                CreateOnePartOrSideSymmetricParts(
                        initialOccupantBodySupportMeasure.overHeadJoint,
-                       .overHeadSupportVerticalJoint,
+                       .overHeadSupportJoint,
                        fromPrimaryOrigin,
                        partFromParentOrigin,
                        supportIndexIsAlways)
 
                let overHeadSupportHookDictionary =
                    CreateOnePartOrSideSymmetricParts(
-                    InitialOccupantBodySupportMeasure().overHeadHook,
+                    InitialOccupantBodySupportMeasurement().overHeadHook,
                         .overHeadHookSupport,
                     fromPrimaryOrigin,
                     (x: initialOccupantBodySupportMeasure.overHead.width/2 - 50,

@@ -14,14 +14,11 @@ struct ForFixedWheelBaseObject {
     let fixedWheelsFromPrimaryOriginsDictionary: [String: PositionAsIosAxes]    //CHANGE
     let rearToCentreLength: Double
     let rearToFrontLength: Double
-    //let occupantSupportTypes: [OccupantSupportTypes]
     let wheelBaseType: BaseObjectTypes
-   // let allSitOnFromPrimaryOrigin: [PositionAsIosAxes]
-    //let occupantSupport: CreateOccupantSupport
+
 
     init(
         _ wheelBaseType: BaseObjectTypes,
-        //_ occupantSupport: CreateOccupantSupport,
         _ measurement: InitialBaseMeasureFor
     ) {
         

@@ -68,6 +68,7 @@ struct PartView: View {
         if partName.contains(Part.footSupport.rawValue) {z = 0}
        if partName.contains(Part.sitOn.rawValue) {z = 3}
         if partName.contains("Joint") {z = 10}
+        if partName.contains("heel") {z = 0}
     return z
     }
     

@@ -9,7 +9,7 @@ import Foundation
 
 struct InitialOccupantSideSupportMeasurement {
     
-    let initialOccupantBodySupportMeasure =  InitialOccupantBodySupportMeasure()
+    let initialOccupantBodySupportMeasure =  InitialOccupantBodySupportMeasurement()
     
     let sideSupportJoint: Dimension =
     (length: 20, width: 20 )

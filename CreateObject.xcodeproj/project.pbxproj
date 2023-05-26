@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FD02601A2A1FB39700E6504A /* CreateOccupantTiltSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0260192A1FB39700E6504A /* CreateOccupantTiltSupport.swift */; };
 		FD060BD52A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */; };
+		FD0FD1E92A20D7BE0096B984 /* CreateOccupantHeadSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0FD1E82A20D7BE0096B984 /* CreateOccupantHeadSupport.swift */; };
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
 		FD4B8BCD29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickVM.swift */; };
@@ -55,7 +57,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FD0260192A1FB39700E6504A /* CreateOccupantTiltSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantTiltSupport.swift; sourceTree = "<group>"; };
 		FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerOptionsView.swift; sourceTree = "<group>"; };
+		FD0FD1E82A20D7BE0096B984 /* CreateOccupantHeadSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantHeadSupport.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFootSupportLeftRightPosition.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickVM.swift; sourceTree = "<group>"; };
@@ -155,6 +159,8 @@
 				FDAC054829EADEFB00FCB400 /* JointDimensions.swift */,
 				FDCE3F0A299A8B5B00C19F2A /* Save.swift */,
 				FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */,
+				FD0FD1E82A20D7BE0096B984 /* CreateOccupantHeadSupport.swift */,
+				FD0260192A1FB39700E6504A /* CreateOccupantTiltSupport.swift */,
 				FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */,
 				FD92B5802A055D7400C12481 /* CreateOccupantBackSupport.swift */,
 				FDA1B72C29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift */,
@@ -260,6 +266,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD02601A2A1FB39700E6504A /* CreateOccupantTiltSupport.swift in Sources */,
 				FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */,
 				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
@@ -285,6 +292,7 @@
 				FD9B4B4229A0E01000E408AA /* CreateBaseWithAllCasters.swift in Sources */,
 				FD9E02F32975613B00ACAA70 /* Joints.swift in Sources */,
 				FD9B4B4029A0DF7800E408AA /* CreateBaseWithFixedWheels.swift in Sources */,
+				FD0FD1E92A20D7BE0096B984 /* CreateOccupantHeadSupport.swift in Sources */,
 				FD8E998C299FD7320074196B /* DimensionsForBaseObject.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,

@@ -13,7 +13,7 @@ struct CreateDefaultObjectInitiated {
    
     var dictionary: [String: PositionAsIosAxes ] = [:]
 
-    let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
+    let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasurement()
 
     let objectOptions: OptionDictionary
     let twinSitOnOptions: TwinSitOnOptions
@@ -72,7 +72,7 @@ struct CreateDefaultObjectInitiated {
                     initialOccupantBodySupportMeasure,
                     baseMeasurement,
                     objectOptions,
-                    twinSitOnOptions,
+                    //twinSitOnOptions,
                     fromPrimaryToOccupantSupports
                 )
 
@@ -99,12 +99,10 @@ struct CreateDefaultObjectInitiated {
             (baseMeasurement: InitialBaseMeasureFor(),
              fromPrimaryToSitOnOrigin: [] )
                 
-        let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasure()
-        
-        //let lieOnDimension = initialOccupantBodySupportMeasure.lieOn
+        let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasurement()
                 
         let addedForReclineBackSupport: Double =
-            objectOptions[ObjectOptions.recliningBackSupport] ?? false ?
+            objectOptions[ObjectOptions.reclinedBackSupport] ?? false ?
                 InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
                 
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
@@ -127,18 +125,20 @@ struct CreateDefaultObjectInitiated {
                 baseMeasurementAndSitOnOrigin =
                     getBaseMeasurementAndSitOnOriginForSingleSupport(baseMeasurement, rearToFront/2)
             
-
+            
             
             case .allCasterChair:
                 let sitOnDimension = initialOccupantBodySupportMeasure.sitOn
                 rearToFront = sitOnDimension.length + stability
-                baseMeasurement =
+            
+            baseMeasurement =
                 InitialBaseMeasureFor(
                     rearToFrontLength: rearToFront, halfWidth: sitOnDimension.width/2)
             
                 baseMeasurementAndSitOnOrigin =
-                    getBaseMeasurementAndSitOnOriginForSingleSupport(baseMeasurement, rearToFront/2)
-
+                    getBaseMeasurementAndSitOnOriginForSingleSupport(
+                        baseMeasurement, stability + sitOnDimension.length/2)
+            
             case .allCasterHoist:
                 rearToFront = 1200
                 baseMeasurement =
@@ -146,11 +146,22 @@ struct CreateDefaultObjectInitiated {
                 baseMeasurementAndSitOnOrigin =
                     getBaseMeasurementAndSitOnOriginForSingleSupport(baseMeasurement, rearToFront/2)
     
-
             
             case .allCasterTiltInSpaceShowerChair:
-                baseMeasurement =
-                InitialBaseMeasureFor(rearToFrontLength: 600, halfWidth: 300)
+            let sitOnDimension = initialOccupantBodySupportMeasure.sitOn
+            rearToFront = sitOnDimension.length + stability
+        
+        baseMeasurement =
+            InitialBaseMeasureFor(
+                rearToFrontLength: rearToFront, halfWidth: sitOnDimension.width/2)
+        
+            baseMeasurementAndSitOnOrigin =
+                getBaseMeasurementAndSitOnOriginForSingleSupport(
+                    baseMeasurement, stability + sitOnDimension.length/2)
+            
+            
+            
+            
             
             case .allCasterStandAid:
                 break
@@ -217,7 +228,7 @@ struct CreateDefaultObjectInitiated {
         
         (baseMeasurement: baseMeasurement,
          fromPrimaryToSitOnOrigin:
-            [(x: 0.0, y: fromPrimaryToSupportOrigin, z: 0)])
+            [(x: 0.0, y: fromPrimaryToSupportOrigin, z: 500.0)])
     }
     
     

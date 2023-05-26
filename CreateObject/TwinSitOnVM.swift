@@ -86,7 +86,7 @@ extension TwinSitOnViewModel {
         }
         
         if dictionary[.frontAndRear] ?? false {
-            options = [.front, .rear]
+            options = [.rear, .front]
         }
         
         return options

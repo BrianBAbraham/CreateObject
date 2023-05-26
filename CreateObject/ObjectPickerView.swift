@@ -59,7 +59,8 @@ struct PickDefaultObjectView: View {
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)
             
-            
+            Tilt(objectPickVM.getCurrentObjectName())
+                .padding(.horizontal)
             BackSupportRecline(objectPickVM.getCurrentObjectName())
 //                .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
 //                    self.recline = value

@@ -212,7 +212,9 @@ extension ObjectEditViewModel {
             if uniquePartName.contains(Part.backSupport.rawValue) {
                 color = .gray
             }
-            
+            if uniquePartName.contains("head") {
+                color = .gray
+            }
 //            if uniquePartName.contains(BaseObjectTypes.showerTray.rawValue) {
 //                color = .blue
 //            }

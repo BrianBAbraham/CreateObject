@@ -18,19 +18,27 @@ import SwiftUI
 struct BackSupportRecline: View {
     @State private var reclineToggle = false
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let showRecline: Bool
     
     init(_ name: String) {
-        showRecline = name.contains("air") ? true: false
+        showRecline =
+        (name.contains("air") && !name.contains("ilting")) ?
+            true: false
     }
     
     var body: some View {
         if showRecline {
             Toggle("Reclining back",isOn: $reclineToggle)
                 .onChange(of: reclineToggle) { value in
+                    let dictionary = twinSitOnVM.getTwinSitOnOptions()
                     let name = objectPickVM.getCurrentObjectName()
-                    objectPickVM.setObjectOptionDictionary(ObjectOptions.recliningBackSupport, reclineToggle) //RECLINE
-                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(name)
+                    objectPickVM.setObjectOptionDictionary(
+                        ObjectOptions.reclinedBackSupport,
+                        reclineToggle) //RECLINE
+                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                        name,
+                         twinSitOnOptions: dictionary)
                     
                 }
 //                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
@@ -39,6 +47,36 @@ struct BackSupportRecline: View {
         }
     }
 }
+
+struct Tilt: View {
+    @State private var tiltToggle = false
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+    let showTilt: Bool
+    
+    init(_ name: String) {
+        showTilt = name.contains("ilting") ? true: false
+    }
+    
+    var body: some View {
+        if showTilt {
+            Toggle("Tilt",isOn: $tiltToggle)
+                .onChange(of: tiltToggle) { value in
+                    
+                    let name = objectPickVM.getCurrentObjectName()
+                    objectPickVM.setObjectOptionDictionary(
+                        ObjectOptions.tiltInSpace,
+                        tiltToggle)
+                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                        name)
+                    
+                }
+        } else {
+            EmptyView()
+        }
+    }
+}
+
 
 struct DoubleSitOnPreferenceKey: PreferenceKey {
     static var defaultValue: Bool = false

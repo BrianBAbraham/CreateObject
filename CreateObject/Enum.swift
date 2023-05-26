@@ -18,12 +18,12 @@ enum Part: String {
     case arm = "arm"
     case armVerticalJoint = "armVerticalJoint"
     case backSupport = "backSupport"
-    case backSupportHorizontalJoint = "backSupportHorizontalJoint"
+    case backSupportJoint = "backSupportHorizontalJoint"
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 
     case overHeadSupport = "overHeadSupport"
     case overHeadHookSupport = "overHeadHookSupport"
-    case overHeadSupportVerticalJoint = "overHeadSupportVerticalJoint"
+    case overHeadSupportJoint = "overHeadSupportVerticalJoint"
     case casterFork = "casterFork"
     case casterForkAtCenter = "casterForkAtCenter"
     case casterForkAtFront = "casterForkAtFront"
@@ -53,6 +53,9 @@ enum Part: String {
     case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
 
     case headSupport = "headSupport"
+    case headSupportJoint = "headSupportHorizontalJoint"
+    case headSupportLink = "headSupportLink"
+    case headSupportLinkJoint = "headSupportLinkHorizontalJoint"
     case joint = "Joint"
     
     case leftToRightDimension = "xIos"
@@ -62,9 +65,12 @@ enum Part: String {
 
     case sitOn = "sitOn"
     case stringLink = "_"
+    case tiltJoint = "tiltInSpaceHorizontalJoint" 
     case topToBottomDimension = "yIos"
 
 }
+
+
 
 enum ObjectOptions: String, CaseIterable  {
     case assistant = "assistant"
@@ -72,8 +78,11 @@ enum ObjectOptions: String, CaseIterable  {
     case door = "door"
 
     case headSupport = "head support"
+
     case occupant = "occupant"
-    case recliningBackSupport = "reclining back support"
+    case reclinedBackSupport = "reclining back support"
+    case tiltInSpace = "tilt in space"
+    case tiltAndRecline = "tilt in space and reclining back support"
     case selfPropellers = "self propllers"
     case singleFootSupport = "single foot support"
     case sixCaster = "six caster"
