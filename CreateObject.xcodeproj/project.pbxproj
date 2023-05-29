@@ -13,7 +13,7 @@
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
 		FD4B8BCD29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickVM.swift */; };
-		FD8C21C129C0ABCD0034E293 /* DictionaryCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8C21C029C0ABCD0034E293 /* DictionaryCreation.swift */; };
+		FD8C21C129C0ABCD0034E293 /* ObjectDictionaryCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8C21C029C0ABCD0034E293 /* ObjectDictionaryCreation.swift */; };
 		FD8E998C299FD7320074196B /* DimensionsForBaseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */; };
 		FD91AF8E296DBB13005DEA51 /* CreateOccupantSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */; };
 		FD92B5812A055D7400C12481 /* CreateOccupantBackSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD92B5802A055D7400C12481 /* CreateOccupantBackSupport.swift */; };
@@ -23,7 +23,7 @@
 		FD9A5429298BF1FB00B903C3 /* CreateOccupantFootSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9A5428298BF1FB00B903C3 /* CreateOccupantFootSupport.swift */; };
 		FD9B4B4029A0DF7800E408AA /* CreateBaseWithFixedWheels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B3F29A0DF7800E408AA /* CreateBaseWithFixedWheels.swift */; };
 		FD9B4B4229A0E01000E408AA /* CreateBaseWithAllCasters.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B4129A0E01000E408AA /* CreateBaseWithAllCasters.swift */; };
-		FD9B4B4429A1265600E408AA /* DictionaryTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B4329A1265600E408AA /* DictionaryTransformation.swift */; };
+		FD9B4B4429A1265600E408AA /* ObjectDictionaryTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B4329A1265600E408AA /* ObjectDictionaryTransformation.swift */; };
 		FD9CF76E29A65AC4006B5B40 /* PartCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */; };
 		FD9E02F32975613B00ACAA70 /* Joints.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9E02F22975613B00ACAA70 /* Joints.swift */; };
 		FD9E02F72975966600ACAA70 /* CreateDefaultObjectInitiated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9E02F62975966600ACAA70 /* CreateDefaultObjectInitiated.swift */; };
@@ -32,7 +32,7 @@
 		FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA4743C29E46925003F1202 /* ObjectView.swift */; };
 		FDA8D6162A121D5D0017CAB5 /* TwinSitOnVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */; };
 		FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */; };
-		FDAB603829E98C2500BE56FA /* DictionaryInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */; };
+		FDAB603829E98C2500BE56FA /* ObjectDictionaryInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAB603729E98C2500BE56FA /* ObjectDictionaryInformation.swift */; };
 		FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC054829EADEFB00FCB400 /* JointDimensions.swift */; };
 		FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931CF2A0134AE00F86B4F /* CircleView.swift */; };
 		FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931D12A014DDF00F86B4F /* SceneVM.swift */; };
@@ -55,6 +55,7 @@
 		FDD7247D29B0DD1000B50259 /* Development.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD7247C29B0DD1000B50259 /* Development.swift */; };
 		FDD74B0F29CB3E2B001BBF51 /* CreateCaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD74B0E29CB3E2B001BBF51 /* CreateCaster.swift */; };
 		FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEA615E2A2484D000A50ACC /* Calculate.swift */; };
+		FDEA61612A24EEBD00A50ACC /* MeasurementDictionaryCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEA61602A24EEBD00A50ACC /* MeasurementDictionaryCreation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,7 +65,7 @@
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFootSupportLeftRightPosition.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickVM.swift; sourceTree = "<group>"; };
-		FD8C21C029C0ABCD0034E293 /* DictionaryCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryCreation.swift; sourceTree = "<group>"; };
+		FD8C21C029C0ABCD0034E293 /* ObjectDictionaryCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDictionaryCreation.swift; sourceTree = "<group>"; };
 		FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionsForBaseObject.swift; sourceTree = "<group>"; };
 		FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantSupport.swift; sourceTree = "<group>"; };
 		FD92B5802A055D7400C12481 /* CreateOccupantBackSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantBackSupport.swift; sourceTree = "<group>"; };
@@ -74,7 +75,7 @@
 		FD9A5428298BF1FB00B903C3 /* CreateOccupantFootSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantFootSupport.swift; sourceTree = "<group>"; };
 		FD9B4B3F29A0DF7800E408AA /* CreateBaseWithFixedWheels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBaseWithFixedWheels.swift; sourceTree = "<group>"; };
 		FD9B4B4129A0E01000E408AA /* CreateBaseWithAllCasters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBaseWithAllCasters.swift; sourceTree = "<group>"; };
-		FD9B4B4329A1265600E408AA /* DictionaryTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTransformation.swift; sourceTree = "<group>"; };
+		FD9B4B4329A1265600E408AA /* ObjectDictionaryTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDictionaryTransformation.swift; sourceTree = "<group>"; };
 		FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartCreation.swift; sourceTree = "<group>"; };
 		FD9E02F22975613B00ACAA70 /* Joints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Joints.swift; sourceTree = "<group>"; };
 		FD9E02F62975966600ACAA70 /* CreateDefaultObjectInitiated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDefaultObjectInitiated.swift; sourceTree = "<group>"; };
@@ -83,7 +84,7 @@
 		FDA4743C29E46925003F1202 /* ObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectView.swift; sourceTree = "<group>"; };
 		FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinSitOnVM.swift; sourceTree = "<group>"; };
 		FDAA120E29CF32B7009BEB3A /* CreateOccupantBodySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantBodySupport.swift; sourceTree = "<group>"; };
-		FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryInformation.swift; sourceTree = "<group>"; };
+		FDAB603729E98C2500BE56FA /* ObjectDictionaryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDictionaryInformation.swift; sourceTree = "<group>"; };
 		FDAC054829EADEFB00FCB400 /* JointDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointDimensions.swift; sourceTree = "<group>"; };
 		FDB931CF2A0134AE00F86B4F /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		FDB931D12A014DDF00F86B4F /* SceneVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneVM.swift; sourceTree = "<group>"; };
@@ -107,6 +108,7 @@
 		FDD7247C29B0DD1000B50259 /* Development.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Development.swift; sourceTree = "<group>"; };
 		FDD74B0E29CB3E2B001BBF51 /* CreateCaster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCaster.swift; sourceTree = "<group>"; };
 		FDEA615E2A2484D000A50ACC /* Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculate.swift; sourceTree = "<group>"; };
+		FDEA61602A24EEBD00A50ACC /* MeasurementDictionaryCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementDictionaryCreation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,9 +147,10 @@
 				FDC71F0E296C916200B68427 /* Enum.swift */,
 				FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */,
 				FDBD6EF729C4A6F700144603 /* Types.swift */,
-				FD9B4B4329A1265600E408AA /* DictionaryTransformation.swift */,
-				FD8C21C029C0ABCD0034E293 /* DictionaryCreation.swift */,
-				FDAB603729E98C2500BE56FA /* DictionaryInformation.swift */,
+				FDEA61602A24EEBD00A50ACC /* MeasurementDictionaryCreation.swift */,
+				FD9B4B4329A1265600E408AA /* ObjectDictionaryTransformation.swift */,
+				FD8C21C029C0ABCD0034E293 /* ObjectDictionaryCreation.swift */,
+				FDAB603729E98C2500BE56FA /* ObjectDictionaryInformation.swift */,
 				FDD0CAEE29DB393600203BE5 /* Screen.swift */,
 				FD9CF76D29A65AC4006B5B40 /* PartCreation.swift */,
 				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
@@ -280,7 +283,7 @@
 				FD4B8BCD29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift in Sources */,
 				FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */,
 				FDBD6EF829C4A6F700144603 /* Types.swift in Sources */,
-				FD9B4B4429A1265600E408AA /* DictionaryTransformation.swift in Sources */,
+				FD9B4B4429A1265600E408AA /* ObjectDictionaryTransformation.swift in Sources */,
 				FDB931D42A01504D00F86B4F /* SceneView.swift in Sources */,
 				FD93EFBC29DC7EB900456380 /* ObjectEditVM.swift in Sources */,
 				FD9CF76E29A65AC4006B5B40 /* PartCreation.swift in Sources */,
@@ -294,6 +297,7 @@
 				FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
 				FD9B4B4229A0E01000E408AA /* CreateBaseWithAllCasters.swift in Sources */,
+				FDEA61612A24EEBD00A50ACC /* MeasurementDictionaryCreation.swift in Sources */,
 				FD9E02F32975613B00ACAA70 /* Joints.swift in Sources */,
 				FD9B4B4029A0DF7800E408AA /* CreateBaseWithFixedWheels.swift in Sources */,
 				FD0FD1E92A20D7BE0096B984 /* CreateOccupantHeadSupport.swift in Sources */,
@@ -304,13 +308,13 @@
 				FD9E02F72975966600ACAA70 /* CreateDefaultObjectInitiated.swift in Sources */,
 				FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */,
 				FDC71F15296C921C00B68427 /* CreateBase.swift in Sources */,
-				FDAB603829E98C2500BE56FA /* DictionaryInformation.swift in Sources */,
+				FDAB603829E98C2500BE56FA /* ObjectDictionaryInformation.swift in Sources */,
 				FDB96BC929BA491A0011FAFF /* CreateFixedWheel.swift in Sources */,
 				FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */,
 				FDD74B0F29CB3E2B001BBF51 /* CreateCaster.swift in Sources */,
 				FDAA120F29CF32B7009BEB3A /* CreateOccupantBodySupport.swift in Sources */,
 				FDC71F13296C91E400B68427 /* BaseObjectEnum.swift in Sources */,
-				FD8C21C129C0ABCD0034E293 /* DictionaryCreation.swift in Sources */,
+				FD8C21C129C0ABCD0034E293 /* ObjectDictionaryCreation.swift in Sources */,
 				FDA1B72D29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift in Sources */,
 				FDC71F0F296C916200B68427 /* Enum.swift in Sources */,
 				FDD7247D29B0DD1000B50259 /* Development.swift in Sources */,

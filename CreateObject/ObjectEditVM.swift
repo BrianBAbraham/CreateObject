@@ -241,8 +241,8 @@ extension ObjectEditViewModel {
                         sitOnId).dictionary
                 
                 print("first")
-DictionaryInArrayOut().getNameValue(filteredDictionaryForOneSitOn).forEach{print($0)}
-print("")
+//DictionaryInArrayOut().getNameValue(filteredDictionaryForOneSitOn).forEach{print($0)}
+//print("")
                 
                 
             let soloFootSupportPresent = Part.id

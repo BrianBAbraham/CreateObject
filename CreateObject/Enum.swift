@@ -37,6 +37,13 @@ enum Part: String {
     case casterWheelAtFront = "casterWheelAtFront"
     case casterWheelAtRear = "casterWheelAtRear"
     case ceiling = "ceiling"
+    
+    //case centreToFront = "centreToFront"
+    case centreHalfWidth = "halfWidthAtCentre"
+    case rearToCentre = "rearToCentre"
+    case rearToFront = "rearToFront"
+    case frameTube = "frameTube"
+
 
     case corner = "corner"
     case id = "_id"
@@ -62,24 +69,39 @@ enum Part: String {
     case headSupportJoint = "headSupportHorizontalJoint"
     case headSupportLink = "headSupportLink"
     case headSupportLinkJoint = "headSupportLinkHorizontalJoint"
+    
+    case height = "Height"
     case joint = "Joint"
     
     case joyStickForOccupant = "occupantControlledJoystick"
     case joyStickForAssistant = "assistantControlledJoystick"
     
     case leftToRightDimension = "xIos"
-
+    case length = "Length"
+    case lieOnSupport = "lieOn"
     case objectOrigin = "objectOrigin"
     case viewOrigin = "viewOrigin"
 
     case sitOn = "sitOn"
+    case sleepOnSupport = "sleepOn"
+    case standOnSupport = "standOn"
     case stringLink = "_"
     case tiltJoint = "tiltInSpaceHorizontalJoint" 
     case topToBottomDimension = "yIos"
-
+    case width = "Width"
 }
 
+enum MeasurementParts: String {
+    case base = "Base"
+    case body = "BodySupport"
+    case foot = "FootSupport"
+}
 
+//enum MeausurementDirections {
+//    case height
+//    case length
+//    case width =
+//}
 
 
 struct PartCollections {

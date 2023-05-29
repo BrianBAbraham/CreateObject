@@ -210,6 +210,13 @@ struct CreateDefaultObjectInitiated {
                     .fixedWheelManualRearDrive)
             
             case .showerTray:
+            
+            
+let measurementDictionary = DefaultBaseMeasurement().dictionary
+print( GetFromMeasurementDictionary(measurementDictionary, .rearToFront, .base) .dimension)
+            
+            
+            
                   baseMeasurement = InitialBaseMeasureFor(
                     rearToFrontLength: 1200,
                     halfWidth: 450)
@@ -217,6 +224,11 @@ struct CreateDefaultObjectInitiated {
                         (baseMeasurement: baseMeasurement,
                         fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
 
+            
+            
+            
+            
+            
             default:
                 baseMeasurementAndSitOnOrigin =
                     (baseMeasurement: baseMeasurement,

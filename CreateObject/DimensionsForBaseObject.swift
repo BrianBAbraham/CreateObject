@@ -217,3 +217,31 @@ struct InitialBaseMeasureFor {
     
     
 }
+
+
+struct DefaultBaseMeasurement: Measurements {
+    let nameCase = MeasurementParts.base
+    let parts: [Part] =
+    [ .rearToCentre, .rearToFront, .frameTube, .centreHalfWidth]
+    let lengths: [Double] =
+        [200, 500, Joint.dimension.length, 0]
+    let widths: [Double] =
+        [0, 0, Joint.dimension.width, 300]
+    
+    
+    let dictionary: MeasurementDictionary
+    
+    init() {
+        dictionary =
+            CreateMeasurementDictionary (
+                nameCase,
+                parts,
+                lengths,
+                widths).dictionary
+        
+//for (key, value) in dictionary {
+//print(key, value)
+//}
+//print("")
+    }
+}

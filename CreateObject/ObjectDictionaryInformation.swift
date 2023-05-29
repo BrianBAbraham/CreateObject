@@ -1,5 +1,5 @@
 //
-//  DictionaryInformation.swift
+//  ObjectDictionaryInformation.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 14/04/2023.
