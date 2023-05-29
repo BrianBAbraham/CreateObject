@@ -209,6 +209,69 @@ struct SuccessivelyFilteredDictionary {
     }
 }
 
+struct Filter {
+    let dictionary: PositionDictionary
+    
+    init (
+        _ parts: [Part],
+        _ dictionary: PositionDictionary,
+        _ originOrAndCorner: Part?,
+        _ sitOnId: Part?) {
+            
+            self.dictionary =
+            filterDictionary (
+                parts,
+                dictionary,
+                originOrAndCorner,
+                sitOnId)
+            
+            func filterDictionary(
+                _ parts: [Part],
+                _ dictionary: PositionDictionary,
+                _ originOrAndCorner: Part?,
+                _ sitOnId: Part?
+            )
+            -> PositionDictionary {
+                let partNameTermination = Part.stringLink.rawValue
+                var filteredDictionary: PositionDictionary = [:]
+                for part in parts {
+                    filteredDictionary  +=
+                    dictionary.filter({$0.key.contains(part.rawValue + partNameTermination )})
+                }
+                
+                if let originOrAndCorner {
+                    switch originOrAndCorner {
+                    case .corner:
+                        filteredDictionary =
+                        filteredDictionary.filter({$0.key.contains(Part.corner.rawValue)})
+                    case .objectOrigin:
+                        filteredDictionary =
+                        filteredDictionary.filter({$0.key.contains(Part.objectOrigin.rawValue)})
+                    default:
+                        break
+                    }
+                }
+                
+                if let sitOnId {
+                    let sitOnName =
+                            CreateNameFromParts([.stringLink, .sitOn, sitOnId]).name
+                    switch sitOnId {
+                    case .id0:
+                        filteredDictionary =
+                        filteredDictionary.filter({$0.key.contains(sitOnName)})
+                    case .id1:
+                        filteredDictionary =
+                        filteredDictionary.filter({$0.key.contains(sitOnName)})
+                    default:
+                        break
+                    }
+                }
+                
+                return filteredDictionary
+            }
+        }
+}
+
 struct OriginStringInDictionaryOut {
     var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE
     let namesAsString: String
@@ -253,6 +316,14 @@ struct OriginStringInDictionaryOut {
     }
 }
 
+
+struct EditFootSupportPosition {
+    let dictionary: PositionDictionary
+    
+    init(_ dictionary: PositionDictionary) {
+        self.dictionary = [:]
+    }
+}
 
 struct Merge {
     static let these = Merge()

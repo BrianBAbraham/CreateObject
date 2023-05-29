@@ -316,8 +316,8 @@ extension ObjectPickViewModel {
     func getScreenFrameSize ()
         -> Dimension{
         
-        let objectName = getCurrentObjectName()
-            var maximumLengthIncrease = 0.0
+        //let objectName = getCurrentObjectName()
+            //var maximumLengthIncrease = 0.0
             
 //            maximumLengthIncrease =
 //            objectName.contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) ?

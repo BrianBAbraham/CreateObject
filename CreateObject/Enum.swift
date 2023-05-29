@@ -15,7 +15,7 @@ enum DictionaryTypes  {
 
 
 enum Part: String {
-    case arm = "arm"
+    case armSupport = "arm"
     case armVerticalJoint = "armVerticalJoint"
     case backSupport = "backSupport"
     case backSupportJoint = "backSupportHorizontalJoint"
@@ -24,6 +24,7 @@ enum Part: String {
     case overHeadSupport = "overHeadSupport"
     case overHeadHookSupport = "overHeadHookSupport"
     case overHeadSupportJoint = "overHeadSupportVerticalJoint"
+    case carriedObjectAtRear = "objectCarriedAtRear"
     case casterFork = "casterFork"
     case casterForkAtCenter = "casterForkAtCenter"
     case casterForkAtFront = "casterForkAtFront"
@@ -47,16 +48,24 @@ enum Part: String {
     case footSupport = "footSupport"
     case footSupportInOnePiece = "footSupportInOnePiece"
     case footSupportHorizontalJoint = "footSupportHorizontalJoint"
-    case footSupportHanger = "footSupportHanger"
+    //case footSupportHanger = "footSupportHanger"
     case footSupportHangerLink = "footSupportHangerLink"
     case footSupportHangerSitOnVerticalJoint = "footSupportHangerSitOnVerticalJoint"
     case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
 
+    case handleAtRear = "rearHandle"
+    case handleAtRearInOnePiece = "rearHandleInOnePiece"
+    
+    
+    
     case headSupport = "headSupport"
     case headSupportJoint = "headSupportHorizontalJoint"
     case headSupportLink = "headSupportLink"
     case headSupportLinkJoint = "headSupportLinkHorizontalJoint"
     case joint = "Joint"
+    
+    case joyStickForOccupant = "occupantControlledJoystick"
+    case joyStickForAssistant = "assistantControlledJoystick"
     
     case leftToRightDimension = "xIos"
 
@@ -68,6 +77,27 @@ enum Part: String {
     case tiltJoint = "tiltInSpaceHorizontalJoint" 
     case topToBottomDimension = "yIos"
 
+}
+
+
+
+
+struct PartCollections {
+    
+    static let head: [Part] =
+        [.headSupport, .armVerticalJoint, .headSupportLink, .headSupportLinkJoint]
+    static  let reclinable: [Part] =
+        [.backSupport, .backSupportJoint, .joyStickForAssistant, .carriedObjectAtRear] + head
+    static let foot: [Part] =
+        [.footSupport,
+        .footSupportHangerLink,
+            .footSupportHorizontalJoint,
+            .footSupportInOnePiece,
+            .footSupportHangerBaseJoint,
+            .footSupportHangerSitOnVerticalJoint]
+    
+  static  let tiltable: [Part] =
+    [.armSupport, .sitOn, .backSupportJoint, .joyStickForOccupant]  + reclinable + foot
 }
 
 

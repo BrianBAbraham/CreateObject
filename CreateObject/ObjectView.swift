@@ -64,7 +64,7 @@ struct PartView: View {
     var zPosition: Double {
         var z = 0.0
       
-        if partName.contains(Part.arm.rawValue) {z = 9}
+        if partName.contains(Part.armSupport.rawValue) {z = 9}
         if partName.contains(Part.footSupport.rawValue) {z = 0}
        if partName.contains(Part.sitOn.rawValue) {z = 3}
         if partName.contains("Joint") {z = 10}

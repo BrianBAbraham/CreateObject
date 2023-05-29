@@ -13,19 +13,22 @@ struct CreateOccupantTiltSupport {
     ///tilting from UI
     ///
     
-    var dictionary: [String: PositionAsIosAxes ] = [:]
-  
+    var dictionaryForTiltJoint: PositionDictionary = [:]
+    var tiltedDictionary: PositionDictionary = [:]
+
     init(
+        _ dictionary: PositionDictionary,
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
         _ sitOnWidth: [Double] ){
             
-        dictionary =
+    dictionaryForTiltJoint =
         getDictionary(
             supportIndex,
             parentFromPrimaryOrigin,
             sitOnWidth
         )
+            tiltedDictionary = tiltTheDictionary(dictionary)
     }
     
     mutating func getDictionary(
@@ -45,5 +48,15 @@ struct CreateOccupantTiltSupport {
             
             return tiltDictionary.cornerDictionary
     }
+
+    func tiltTheDictionary(
+        _ dictionary: PositionDictionary)
+        -> PositionDictionary{
+            let tiltable = PartCollections.tiltable
+            
+            
+            return [:]
+    }
+    
     
 }

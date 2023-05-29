@@ -70,7 +70,7 @@ struct CreateOccupantSideSupport {
         let sideSupportDictionary =
             CreateOnePartOrSideSymmetricParts(
                 measurementFor.sitOnArm,
-                .arm,
+                .armSupport,
                 parentFromPrimaryOrigin[supportIndex],
                 partFromParentOrigin,
                 supportIndex)

@@ -37,6 +37,8 @@ enum BaseObjectTypes: String, CaseIterable {
     case scooterRearDrive4Wheeler  = "Scooter 4 wheel rear drive"
     case scooterRearDrive3Wheeler = "Scooter 3 wheel rear drive"
     
+    case seatThatTilts = "Tilting chair"
+    
     case showerTray = "Shower tray"
     
     case stairLiftStraight = "Straight stair-lift"

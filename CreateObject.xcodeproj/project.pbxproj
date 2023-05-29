@@ -54,6 +54,7 @@
 		FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD0CAEE29DB393600203BE5 /* Screen.swift */; };
 		FDD7247D29B0DD1000B50259 /* Development.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD7247C29B0DD1000B50259 /* Development.swift */; };
 		FDD74B0F29CB3E2B001BBF51 /* CreateCaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD74B0E29CB3E2B001BBF51 /* CreateCaster.swift */; };
+		FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEA615E2A2484D000A50ACC /* Calculate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -105,6 +106,7 @@
 		FDD0CAEE29DB393600203BE5 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		FDD7247C29B0DD1000B50259 /* Development.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Development.swift; sourceTree = "<group>"; };
 		FDD74B0E29CB3E2B001BBF51 /* CreateCaster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCaster.swift; sourceTree = "<group>"; };
+		FDEA615E2A2484D000A50ACC /* Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				FDC71F00296C911200B68427 /* CreateObjectApp.swift */,
+				FDEA615E2A2484D000A50ACC /* Calculate.swift */,
 				FDD7247C29B0DD1000B50259 /* Development.swift */,
 				FDC71F0E296C916200B68427 /* Enum.swift */,
 				FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */,
@@ -286,6 +289,7 @@
 				FD95DA2C29E40F1B009A9500 /* EditObjectMenuView.swift in Sources */,
 				FD92B5812A055D7400C12481 /* CreateOccupantBackSupport.swift in Sources */,
 				FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */,
+				FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */,
 				FDA8D6162A121D5D0017CAB5 /* TwinSitOnVM.swift in Sources */,
 				FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,

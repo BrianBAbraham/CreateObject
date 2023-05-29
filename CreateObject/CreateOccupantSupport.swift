@@ -18,7 +18,7 @@ import Foundation
 struct InitialOccupantSupportTiltMeasurement {
 
     static let maximumTilt =
-        Measurement(value: 30, unit: UnitAngle.degrees)
+        Measurement(value: 90, unit: UnitAngle.degrees)
     
     static let minimumTilt =
         Measurement(value: -10, unit: UnitAngle.degrees)
@@ -29,8 +29,9 @@ struct InitialOccupantSupportTiltMeasurement {
     let titledLength: Double
     
     init (
-        _ tilt: Measurement<UnitAngle>,
-        length: Double) {
+        _ tilt: Measurement<UnitAngle> = maximumTilt,
+        length: Double
+    ) {
 
            titledLength =
             getTiltedLength(tilt,  length)
@@ -59,7 +60,7 @@ struct CreateOccupantSupport {
     
     var backSupportRequired = true
     var bodySupportRequired = true
-    var headSupportRequirerd = false
+    var headSupportRequired = false
     var overheadSupportRequired = false
     var armSupportRequired = true
     var footSupportRequired = true
@@ -131,9 +132,14 @@ struct CreateOccupantSupport {
                 backSupportRequired = false
             case .allCasterTiltInSpaceShowerChair:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
+                tiltRequired =
+                    objectOptions[.tiltInSpace] ?? false ? true: false
+                headSupportRequired =
+                    objectOptions[.headSupport] ?? false ? true: false
+//print(headSupportRequired)
+            case .seatThatTilts:
+                occupantSupportMeasure = occupantSupportMeasures.sitOn
                 tiltRequired = true
-                headSupportRequirerd = true
-
             
             default:
                 occupantSupportMeasure = occupantSupportMeasures.sitOn
@@ -236,7 +242,7 @@ struct CreateOccupantSupport {
             }
 
 
-            if headSupportRequirerd {
+            if headSupportRequired {
                 let occupantHeadSupport =
                 CreateOccupantHeadSupport(
                     allBodySupportFromPrimaryOrigin,
@@ -263,11 +269,13 @@ struct CreateOccupantSupport {
             if tiltRequired {
                let tiltDictionary =
                 CreateOccupantTiltSupport(
+                    dictionary,
                     allBodySupportFromPrimaryOrigin,
                     supportIndex,
                     [600.0, 500.0]
                 )
-                dictionary += tiltDictionary.dictionary
+//print(tiltDictionary)
+                dictionary += tiltDictionary.dictionaryForTiltJoint
             }
         }
     }

@@ -148,16 +148,23 @@ struct CreateDefaultObjectInitiated {
     
             
             case .allCasterTiltInSpaceShowerChair:
-            let sitOnDimension = initialOccupantBodySupportMeasure.sitOn
-            rearToFront = sitOnDimension.length + stability
-        
-        baseMeasurement =
-            InitialBaseMeasureFor(
-                rearToFrontLength: rearToFront, halfWidth: sitOnDimension.width/2)
-        
-            baseMeasurementAndSitOnOrigin =
-                getBaseMeasurementAndSitOnOriginForSingleSupport(
-                    baseMeasurement, stability + sitOnDimension.length/2)
+            
+            let tilt = InitialOccupantSupportTiltMeasurement.maximumTilt
+            let recline = InitialOccupantBackSupportMeasurement.maximumBackSupportRecline
+            
+            BackSupportStability(minimumSetBack: 50.0)
+            
+            
+                let sitOnDimension = initialOccupantBodySupportMeasure.sitOn
+                rearToFront = sitOnDimension.length + stability
+            
+                baseMeasurement =
+                    InitialBaseMeasureFor(
+                        rearToFrontLength: rearToFront, halfWidth: sitOnDimension.width/2)
+            
+                baseMeasurementAndSitOnOrigin =
+                    getBaseMeasurementAndSitOnOriginForSingleSupport(
+                        baseMeasurement, stability + sitOnDimension.length/2)
             
             
             

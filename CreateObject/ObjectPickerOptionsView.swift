@@ -77,6 +77,34 @@ struct Tilt: View {
     }
 }
 
+struct HeadSupport: View {
+    @State private var headSuppportToggle = false
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+    let showTilt: Bool
+    
+    init(_ name: String) {
+        showTilt = name.contains("ilting") ? true: false
+    }
+    
+    var body: some View {
+        if showTilt {
+            Toggle("Headrest",isOn: $headSuppportToggle)
+                .onChange(of: headSuppportToggle) { value in
+                    
+                    let name = objectPickVM.getCurrentObjectName()
+                    objectPickVM.setObjectOptionDictionary(
+                        ObjectOptions.headSupport,
+                        headSuppportToggle)
+                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                        name)
+                    
+                }
+        } else {
+            EmptyView()
+        }
+    }
+}
 
 struct DoubleSitOnPreferenceKey: PreferenceKey {
     static var defaultValue: Bool = false

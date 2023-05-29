@@ -12,51 +12,69 @@ struct BackSupportStability {
     let setBackOfRearWheels: Double
     
     init(
-        stability: Double,
+        minimumSetBack: Double,
         
-        maximalTilt: Double ,
+        fromTiltAxisToBackSupport: PositionAsIosAxes =
+        (x:0, y: -250.0, z: 350.0),
         
-        backSupportHeight: Double
-            = InitialOccupantBackSupportMeasurement.backSupportHeight,
+        backSupportHeight: Double = InitialOccupantBackSupportMeasurement.backSupportHeight,
         
         maximalTiltAngle: Measurement<UnitAngle> =
-        InitialOccupantBackSupportMeasurement.maximumBackSupportRecline,
-        maximalReclineAngle: Double) {
+            InitialOccupantSupportTiltMeasurement.maximumTilt,
         
-            setBackOfRearWheels =
-                getSetBack(stability,
-                           maximalTilt,
-                           backSupportHeight,
-                           maximalTiltAngle,
-                           maximalReclineAngle)
+        maximalReclineAngle: Measurement<UnitAngle>  =
+            InitialOccupantBackSupportMeasurement.maximumBackSupportRecline){
+                
+        setBackOfRearWheels =
+        getSetBack(
+            minimumSetBack,
+            fromTiltAxisToBackSupport,
+            backSupportHeight,
+            maximalTiltAngle,
+            maximalReclineAngle)
             
-            func getSetBack(
-                _ stability: Double,
-                _ maximalTilt: Double,
-                _ backSupportHeight: Double,
-                _ maximumTiltAngle: Measurement<UnitAngle> ,
-                _ maximalReclineAngle: Double)
-                -> Double {
-                    
-                InitialOccupantSupportTiltMeasurement(
-                    maximumTiltAngle, length: backSupportHeight)
-                    
-                    
-                    return 0.0
-            }
-    }
-    
+        func getSetBack(
+            _ minimumSetBack: Double,
+            _ fromTiltAxisToBackSupport: PositionAsIosAxes,
+            _ backSupportHeight: Double,
+            _ maximumTiltAngle: Measurement<UnitAngle> ,
+            _ maximalReclineAngle: Measurement<UnitAngle>)
+            -> Double {
+            let o = abs(fromTiltAxisToBackSupport.y)
+            let a = fromTiltAxisToBackSupport.z
+            let r = sqrt(pow(o,2) + pow(a,2))
+            let tiltToBackSupportOriginInitialAngle =
+                Measurement(value: atan(o/a), unit: UnitAngle.radians)
+            
+            let tiltSetBack =
+                CircularMotionChange(
+                    r,
+                    tiltToBackSupportOriginInitialAngle,
+                    maximalTiltAngle).horizontal
+          
+            let reclineSetBack =
+                CircularMotionChange(
+                    backSupportHeight/2,
+                    maximalTiltAngle,
+                    maximalReclineAngle).horizontal
 
+//print(tiltSetBack)
+//print(reclineSetBack)
+            return
+                [ minimumSetBack, tiltSetBack + reclineSetBack].max()
+                ?? minimumSetBack
+        }
+    }
 }
 
 struct InitialOccupantBackSupportMeasurement {
     static let backSupportHeight = 500.0
     
     static let maximumBackSupportRecline =
-    Measurement(value: 30, unit: UnitAngle.degrees)
+    Measurement(value: 0, unit: UnitAngle.degrees)
     
     static let minimumBackSupportRecline =
-    Measurement(value: 0, unit: UnitAngle.degrees)
+    Measurement(value: 2, unit: UnitAngle.degrees)
     
     static let lengthOfMaximallyReclinedBackSupport =
         Tilted(maximumBackSupportRecline).factor * backSupportHeight

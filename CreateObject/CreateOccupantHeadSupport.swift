@@ -12,13 +12,8 @@ struct InitialOccupantHeadSupportMeasurement {
     static let headSupport = (length: 100.0, width: 200.0)
     static let headSupportLink = (length: 200.0, width: 30.0)
     static let headBackSupportHeightGap = 100.0
-//    static let backSupportHeight =
-//        InitialOccupantBackSupportMeasurement.backSupportHeight
-//    static let fromBackSupportTopToHeadSupport =
-//        (x: 0, y: backSupportHeight/2 , z: 0.0)
-//    static let headSupportHeight =
-//        InitialOccupantBackSupportMeasurement.backSupportHeight +
-//        200.0
+    static let headTopAboveBackSupport =
+        headSupport.length + headBackSupportHeightGap
 }
 
 
