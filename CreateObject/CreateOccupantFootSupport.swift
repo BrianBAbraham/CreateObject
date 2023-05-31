@@ -76,7 +76,151 @@ struct InitialOccupantFootSupportMeasure {
     }
 }
 
+struct DefaultFootSupportMeasurement: Measurements {
+    let nameCase = MeasurementParts.foot
+    let dictionary: MeasurementDictionary
+    
+    let parts: [Part] =
+    [.footSupport, .footSupportHorizontalJoint, .footSupportHangerSitOnVerticalJoint]
+    let lengths: [Double] =
+    []
+}
 
+struct DefaultOccupantFootSupportMeasure {
+    let footSupportHangerJoint = Joint.dimension
+    let footSupport: Dimension
+    //let footSupportHanger: Dimension
+    let footSupportJoint: Dimension
+    
+//    let sitOnLengthAndOffset: Double
+//
+//    let sitOnWidthAndOffset: Double
+//
+//    let rightFootSupportHangerVerticalJointFromSitOnOrigin: PositionAsIosAxes
+//
+//
+//    let footSupportHangerMaximumLength: Dimension
+//
+//    let footSupportHangerMinimumLength: Dimension
+//
+//    let footSupportHangerMaximumLengthIncrease: Dimension
+//
+//
+//    let rightFootSupportJointFromHangerJointOrigin: PositionAsIosAxes
+//
+//    let rightFootSupportFromFootSupportJointOrigin: PositionAsIosAxes
+//
+//    let rightFootSupportJointFromSitOnOrigin: PositionAsIosAxes
+//    
+//    let rightFootSupportFromFromSitOnOrigin: PositionAsIosAxes
+    
+    init( _ baseType: BaseObjectTypes) {
+
+        footSupport = FootSupportDictionary(baseType).value
+        
+        footSupportJoint = FootSupportJointDictionary(baseType).value
+        
+        
+        
+    }
+    
+}
+
+struct FootSupportDictionary {
+    let dictionary: DimensionDictionary =
+        [.showerTray: (length: 1200.0, width: 900.0),
+        ]
+    let general = (length: 100.0, width: 150.0)
+    let value: Dimension
+    
+    init(_ baseType: BaseObjectTypes) {
+      value = dictionary[baseType] ?? general
+    }
+    
+}
+
+struct FootSupportJointDictionary {
+    let dictionary: DimensionDictionary =
+        [:]
+    let general: Dimension
+    let value: Dimension
+    
+    init(_ baseType: BaseObjectTypes) {
+        general =
+            (length: FootSupportDictionary(baseType).general.length,
+             width: Joint.dimension.width)
+        value = dictionary[baseType] ?? general
+    }
+    
+}
+
+struct FootSupportMaximumDictionary {
+    let dictionary: DimensionDictionary =
+        [.showerTray: (length: 1800.0, width: 1400.0),
+        ]
+    let general = (length: 100.0, width: 150.0)
+    
+    let value: Dimension
+    
+    init(_ baseType: BaseObjectTypes) {
+      value = dictionary[baseType] ?? general
+    }
+}
+
+//struct FootSupportHangerDictionary {
+//    let dictionary: DimensionDictionary =
+//        [:]
+//    let general = (length: 200.0, width: 20.0)
+//}
+
+struct SitOnCornerToFootSupportHangerVerticalJointDictionary {
+    let dictionary: PartToPartDictionary =
+        [:]
+    let general = (x: 20.0, y: -20.0, z: 0.0)
+    
+    let value: PositionAsIosAxes
+    
+    init(_ baseType: BaseObjectTypes) {
+      value = dictionary[baseType] ?? general
+    }
+}
+
+struct HangerVerticalJointToFootSupportJointDictionary {
+    let dictionary: PartToPartDictionary =
+        [:]
+    let general = (x: 0.0, y: 200.0, z: 0.0)
+    
+    let value: PositionAsIosAxes
+    
+    init(_ baseType: BaseObjectTypes) {
+      value = dictionary[baseType] ?? general
+    }
+}
+
+struct FootSupportJointToFootSupportDictionary {
+    let dictionary: PartToPartDictionary =
+        [:]
+    let general: PositionAsIosAxes// = (x: 0.0, y: 200.0, z: 0.0)
+    
+    let value: PositionAsIosAxes
+    
+    init(_ baseType: BaseObjectTypes) {
+        general = (x: -FootSupportDictionary(baseType).value.width/2, y: 0.0, z: 0.0)
+        value = dictionary[baseType] ?? general
+    }
+}
+
+
+/// width, length, height
+/// x, y ,z
+/// sitOn or base
+/// "footSupportHangerSitOnVerticalJoint
+/// "footSupportHorizontalJoint -footSupport
+/// ("footSupportHangerLink)
+/// _id0_sitOn_id0,
+/// _id1_sitOn_id0,
+/// _id0_sitOn_id1,
+/// _id1_sitOn_id1,
 
 
 struct CreateOccupantFootSupport {
@@ -91,7 +235,8 @@ struct CreateOccupantFootSupport {
     var footSupportHangerSitOnVerticalJointRequired = true
     var footSupportFromParent: PositionAsIosAxes
     
-    var dictionary: [String: PositionAsIosAxes ] = [:]
+    var dictionary: PositionDictionary = [:]
+    var measurements: MeasurementDictionary
     
     let supportIndex: Int
   
@@ -99,11 +244,12 @@ struct CreateOccupantFootSupport {
         _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
-        _ baseType: BaseObjectTypes){
+        _ baseType: BaseObjectTypes,
+        _ measurements: MeasurementDictionary = [:] ){
         
         self.supportIndex = supportIndex
         self.initialOccupantFootSupportMeasure = InitialOccupantFootSupportMeasure (initialOccupantBodySupportMeasure)
-        
+        self.measurements = measurements
             
             switch baseType {
             case .showerTray:
@@ -113,8 +259,11 @@ struct CreateOccupantFootSupport {
                 footSupportJointRequired = false
                 footSupportHangerSitOnVerticalJointRequired = false
                 footSupportFromParent = Globalx.iosLocation
+                
+                
                 footSupportDimension =
-                InitialOccupantFootSupportMeasure.footShowerSupport
+                GetFromMeasurementDictionary(measurements, .footSupport, .foot).dimension
+                //InitialOccupantFootSupportMeasure.footShowerSupport
             default:
                 footSupportFromParent =
                 initialOccupantFootSupportMeasure.rightFootSupportFromFromSitOnOrigin

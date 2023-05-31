@@ -71,7 +71,7 @@ struct InitialOccupantBackSupportMeasurement {
     static let backSupportHeight = 500.0
     
     static let maximumBackSupportRecline =
-    Measurement(value: 0, unit: UnitAngle.degrees)
+    Measurement(value: 30, unit: UnitAngle.degrees)
     
     static let minimumBackSupportRecline =
     Measurement(value: 2, unit: UnitAngle.degrees)

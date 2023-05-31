@@ -64,8 +64,38 @@ struct GetFromMeasurementDictionary {
             return dimension
         }
     }
+}
+
+
+struct SetMeasurementInDictionary {
+    let dictionary: MeasurementDictionary
     
-    
+    init(
+        _ dictionary: MeasurementDictionary,
+        _ part: Part,
+        _ nameCase: MeasurementParts,
+        _ dimension: Dimension
+    ) {
+        self.dictionary =
+            setDictionary(dictionary, part,nameCase, dimension)
+        
+        func setDictionary (
+            _ dictionary: MeasurementDictionary,
+            _ part: Part,
+            _ nameCase: MeasurementParts,
+            _ dimension: Dimension)
+            -> MeasurementDictionary{
+            var editedDictionary = dictionary
+            let preName = part.rawValue + nameCase.rawValue
+            let widthName = preName + Part.width.rawValue
+            let lengthName = preName + Part.length.rawValue
+            
+            editedDictionary[lengthName] = dimension.length
+            editedDictionary[widthName] = dimension.width
+            
+            return editedDictionary
+        }
+    }
 }
 
 protocol Measurements {

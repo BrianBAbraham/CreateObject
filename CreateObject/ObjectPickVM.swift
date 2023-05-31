@@ -13,6 +13,7 @@ struct ObjectPickModel {
     var defaultDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
     var objectOptionDictionary: OptionDictionary
+    var currentMeasurements: MeasurementDictionary = [:]
         
     
     
@@ -64,7 +65,7 @@ extension ObjectPickViewModel {
     
     func getAllPartFromPrimaryOriginDictionary() -> [String: PositionAsIosAxes] {
         let allUniquePartNames = getUniquePartNamesFromObjectDictionary()
-        
+
         let dictionary = getRelevantDictionary(.forScreen)
         var originDictionary: [String: PositionAsIosAxes] = [:]
         for uniqueName in allUniquePartNames {
@@ -370,7 +371,7 @@ extension ObjectPickViewModel {
     func getUniquePartNamesFromObjectDictionary() -> [String] {
         
         let uniquePartNames = GetUniqueNames(getObjectDictionary()).forPart
-
+//print(uniquePartNames)
         return  uniquePartNames
     }
     
@@ -402,37 +403,56 @@ extension ObjectPickViewModel {
         OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary
     }
     
+    func editCurrentMeasurements(
+        _ part: Part,
+        _ nameCase: MeasurementParts,
+        _ dimension: Dimension){
+        var measurements = getCurrentMeasurements()
+        
+        measurements =
+        SetMeasurementInDictionary(
+            measurements,
+            part,
+            nameCase,
+            dimension).dictionary
+        
+        setCurrentMeasurements(measurements)
+    }
     
+    func getCurrentMeasurements()
+        -> MeasurementDictionary {
+        objectPickModel.currentMeasurements
+    }
     
+    func setCurrentMeasurements(
+        _ measurements: MeasurementDictionary) {
+        objectPickModel.currentMeasurements = measurements
+    }
 
     func setCurrentObjectWithDefaultOrEditedDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
         twinSitOnOptions: TwinSitOnOptions = [:]) {
         
-            //dictionary for passed name
-//            var dictionaryForPassedName = CreateObjectInitiated(
-//                baseName: objectName,
-//                getObjectOptionsDictionary(),
-//                twinSitOnOptions).dictionary
-//
+            //experimental
+            let measurements = getCurrentMeasurements()
+ //print(measurements)
             let nonNilWhenEditedDictionaryPassed = ""
-//
-//            if editedDictionary[ stringIndicatingEditedDictionaryNotPassed] != nil {
-//
-//            } else {
-//
-//                dictionaryForPassedName = editedDictionary
-//            }
+
             objectPickModel.currentObjectDictionary =
             editedDictionary[ nonNilWhenEditedDictionaryPassed] != nil ?
             CreateDefaultObjectInitiated(
                 baseName: objectName,
                 getObjectOptionsDictionary(),
-                twinSitOnOptions).dictionary:
-                editedDictionary
-            
-        //objectPickModel.currentObjectDictionary = dictionaryForPassedName
+                twinSitOnOptions
+            ).dictionary
+            :
+//            CreateDefaultObjectInitiated(
+//                baseName: objectName,
+//                getObjectOptionsDictionary(),
+//                twinSitOnOptions,
+//                measurements).dictionary
+            editedDictionary
     }
     
     

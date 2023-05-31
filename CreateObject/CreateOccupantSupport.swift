@@ -72,7 +72,8 @@ struct CreateOccupantSupport {
 
     let baseMeasurement: InitialBaseMeasureFor //
   
-    var dictionary: [String: PositionAsIosAxes ] = [:] //
+    var dictionary: PositionDictionary = [:]
+    var measurements: MeasurementDictionary
 
     let initialOccupantBodySupportMeasurement: InitialOccupantBodySupportMeasurement //
     
@@ -93,13 +94,14 @@ struct CreateOccupantSupport {
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
         _ baseMeasurement: InitialBaseMeasureFor,
         _ objectOptions: OptionDictionary,
-        _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes]
+        _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes],
+        _ measurements: MeasurementDictionary = [:]
     ) {
         self.baseType = baseType
         self.initialOccupantBodySupportMeasurement = initialOccupantBodySupportMeasure
         self.baseMeasurement = baseMeasurement
         self.objectOptions = objectOptions
-        
+        self.measurements = measurements
 
         numberOfSeats =  fromPrimaryOriginToOccupantSupports.count// 1
         
@@ -236,7 +238,8 @@ struct CreateOccupantSupport {
                         allBodySupportFromPrimaryOrigin,
                         supportIndex,
                         initialOccupantBodySupportMeasure,
-                        baseType)
+                        baseType,
+                        measurements)
                     dictionary +=
                     occupantFootSupport.dictionary
             }

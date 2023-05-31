@@ -221,12 +221,14 @@ struct InitialBaseMeasureFor {
 
 struct DefaultBaseMeasurement: Measurements {
     let nameCase = MeasurementParts.base
+    static let rearToCentre = 250.0
+    static let rearToFront = 500.0
     let parts: [Part] =
-    [ .rearToCentre, .rearToFront, .frameTube, .centreHalfWidth]
+    [ .rearToCentre, .rearToFront, .centreToFront,.frameTube]
     let lengths: [Double] =
-        [200, 500, Joint.dimension.length, 0]
+    [rearToCentre, rearToFront, rearToFront - rearToCentre, Joint.dimension.length]
     let widths: [Double] =
-        [0, 0, Joint.dimension.width, 300]
+        [500, 600, 500, Joint.dimension.width]
     
     
     let dictionary: MeasurementDictionary

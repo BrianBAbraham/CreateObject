@@ -12,6 +12,7 @@ import Foundation
 struct CreateDefaultObjectInitiated {
    
     var dictionary: [String: PositionAsIosAxes ] = [:]
+    var measurements: MeasurementDictionary
 
     let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasurement()
 
@@ -21,18 +22,16 @@ struct CreateDefaultObjectInitiated {
     init(
         baseName baseObjectName: String,
         _ objectOptions: OptionDictionary,
-        _ twinSitOnOptions: TwinSitOnOptions = [:]
+        _ twinSitOnOptions: TwinSitOnOptions = [:],
+        _ measurements: MeasurementDictionary = [:]
     ) {
            
         self.objectOptions = objectOptions
         self.twinSitOnOptions = twinSitOnOptions
+        self.measurements = measurements
         
         getDictionary(baseObjectName)
     }
-    
-    
-
-    
     
     mutating func getDictionary(
         _ baseName: String) {
@@ -60,20 +59,15 @@ struct CreateDefaultObjectInitiated {
             let baseMeasurement = measurementForBaseGivenOccupantSupport.baseMeasurement
             
             let fromPrimaryToOccupantSupports = measurementForBaseGivenOccupantSupport.fromPrimaryToSitOnOrigin
-//if baseType == .allCasterBed{
-//    print(initialOccupantBodySupportMeasure)
-//    print(baseMeasurement)
-//    print(fromPrimaryToOccupantSupports)
-//    print("")
-//}
+
             occupantSupport =
                 CreateOccupantSupport(
                     baseType,
                     initialOccupantBodySupportMeasure,
                     baseMeasurement,
                     objectOptions,
-                    //twinSitOnOptions,
-                    fromPrimaryToOccupantSupports
+                    fromPrimaryToOccupantSupports,
+                    measurements
                 )
 
             dictionary +=
@@ -88,7 +82,7 @@ struct CreateDefaultObjectInitiated {
             
         }
     
-    func getBaseAndOccupantSupportMeasurement(
+    mutating func getBaseAndOccupantSupportMeasurement(
         _ baseType: BaseObjectTypes)
         -> (baseMeasurement: InitialBaseMeasureFor,
             fromPrimaryToSitOnOrigin: [PositionAsIosAxes] ) {
@@ -208,18 +202,37 @@ struct CreateDefaultObjectInitiated {
                 getPositionForTwinSitOnObjects(
                     stability,
                     .fixedWheelManualRearDrive)
+     
+            
+            
             
             case .showerTray:
             
             
-let measurementDictionary = DefaultBaseMeasurement().dictionary
-print( GetFromMeasurementDictionary(measurementDictionary, .rearToFront, .base) .dimension)
+//measurements = DefaultBaseMeasurement().dictionary
+//GetFromMeasurementDictionary(measurements, .rearToFront, .base)
+print("before")
+print(measurements)
+print("")
+            if measurements == [:] {
+                measurements =
+                SetMeasurementInDictionary(
+                    measurements,
+                    .footSupport,
+                    .foot,
+                    (length: 1200, width: 900)).dictionary
+            }
             
+print("after")
+print(measurements)
+print("")
+            //print(GetFromMeasurementDictionary(measurements, .rearToFront, .base))
             
-            
-                  baseMeasurement = InitialBaseMeasureFor(
-                    rearToFrontLength: 1200,
-                    halfWidth: 450)
+                  baseMeasurement =
+                    InitialBaseMeasureFor(
+                    )
+
+
                     baseMeasurementAndSitOnOrigin =
                         (baseMeasurement: baseMeasurement,
                         fromPrimaryToSitOnOrigin: [Globalx.iosLocation])

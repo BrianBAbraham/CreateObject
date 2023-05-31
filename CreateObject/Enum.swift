@@ -38,7 +38,7 @@ enum Part: String {
     case casterWheelAtRear = "casterWheelAtRear"
     case ceiling = "ceiling"
     
-    //case centreToFront = "centreToFront"
+    case centreToFront = "centreToFront"
     case centreHalfWidth = "halfWidthAtCentre"
     case rearToCentre = "rearToCentre"
     case rearToFront = "rearToFront"
@@ -58,7 +58,7 @@ enum Part: String {
     //case footSupportHanger = "footSupportHanger"
     case footSupportHangerLink = "footSupportHangerLink"
     case footSupportHangerSitOnVerticalJoint = "footSupportHangerSitOnVerticalJoint"
-    case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
+    //case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
 
     case handleAtRear = "rearHandle"
     case handleAtRearInOnePiece = "rearHandleInOnePiece"
@@ -115,7 +115,7 @@ struct PartCollections {
         .footSupportHangerLink,
             .footSupportHorizontalJoint,
             .footSupportInOnePiece,
-            .footSupportHangerBaseJoint,
+            //.footSupportHangerBaseJoint,
             .footSupportHangerSitOnVerticalJoint]
     
   static  let tiltable: [Part] =
