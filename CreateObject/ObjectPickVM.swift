@@ -13,7 +13,7 @@ struct ObjectPickModel {
     var defaultDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
     var objectOptionDictionary: OptionDictionary
-    var currentMeasurements: MeasurementDictionary = [:]
+
         
     
     
@@ -316,20 +316,6 @@ extension ObjectPickViewModel {
     
     func getScreenFrameSize ()
         -> Dimension{
-        
-        //let objectName = getCurrentObjectName()
-            //var maximumLengthIncrease = 0.0
-            
-//            maximumLengthIncrease =
-//            objectName.contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) ?
-//            InitialOccupantFootSupportMeasure.footSupportHangerMaximumLengthIncrease: maximumLengthIncrease
-//
-//            maximumLengthIncrease =
-//            objectName.contains(BaseObjectTypes.showerTray.rawValue) ?
-//            InitialOccupantFootSupportMeasure.footShowerSupportMaximumIncrease.length: maximumLengthIncrease
-            
-            
-            
         let objectDefaultDimension = getObjectDimension(getCurrentObjectDictionary())
             
         let objectDimensionWithLengthIncrease =
@@ -403,40 +389,15 @@ extension ObjectPickViewModel {
         OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary
     }
     
-    func editCurrentMeasurements(
-        _ part: Part,
-        _ nameCase: MeasurementParts,
-        _ dimension: Dimension){
-        var measurements = getCurrentMeasurements()
-        
-        measurements =
-        SetMeasurementInDictionary(
-            measurements,
-            part,
-            nameCase,
-            dimension).dictionary
-        
-        setCurrentMeasurements(measurements)
-    }
-    
-    func getCurrentMeasurements()
-        -> MeasurementDictionary {
-        objectPickModel.currentMeasurements
-    }
-    
-    func setCurrentMeasurements(
-        _ measurements: MeasurementDictionary) {
-        objectPickModel.currentMeasurements = measurements
-    }
+
 
     func setCurrentObjectWithDefaultOrEditedDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
         twinSitOnOptions: TwinSitOnOptions = [:]) {
         
-            //experimental
-            let measurements = getCurrentMeasurements()
- //print(measurements)
+            
+
             let nonNilWhenEditedDictionaryPassed = ""
 
             objectPickModel.currentObjectDictionary =
@@ -447,11 +408,6 @@ extension ObjectPickViewModel {
                 twinSitOnOptions
             ).dictionary
             :
-//            CreateDefaultObjectInitiated(
-//                baseName: objectName,
-//                getObjectOptionsDictionary(),
-//                twinSitOnOptions,
-//                measurements).dictionary
             editedDictionary
     }
     

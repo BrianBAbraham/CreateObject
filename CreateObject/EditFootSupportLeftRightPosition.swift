@@ -151,17 +151,11 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
                     .id0,
                     proposedLength - currentLength.value
                 )
-                objectPickVM.editCurrentMeasurements(.footSupport, .foot, (length: proposedLength, width: 900))
                 
                 objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary
                 )
-                
-                //experimental
-
-                
-                
             }
             Text(displayLength)
         }

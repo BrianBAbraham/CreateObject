@@ -158,19 +158,55 @@ struct DictionaryInStringOut {
 
 
 
-struct DictionaryInArrayOut {
-    func getNameValue(_ dictionary: [String: PositionAsIosAxes ], _ sender: String = "") -> [String]{    //CHANGE
-//print(dictionary)
+struct DictionaryInArrayOut2 {
+    func getNameValue (_ dictionary: [String: PositionAsIosAxes ], _ sender: String = "") -> [String]{    //CHANGE
+        //print(dictionary)
         var namesAndMeasurements: [String] = []
         var values: PositionAsIosAxes    //CHANGE
         for key in dictionary.keys {
             values = dictionary[key]!
-                namesAndMeasurements.append(
-                    key + ": " +
-                    String(Int(values.x)) + Part.stringLink.rawValue +
-                    String(Int(values.y)) + Part.stringLink.rawValue +
-                    String(Int(values.z))
-                )
+            namesAndMeasurements.append(
+                key + ": " +
+                String(Int(values.x)) + Part.stringLink.rawValue +
+                String(Int(values.y)) + Part.stringLink.rawValue +
+                String(Int(values.z))
+            )
+        }
+        let sortedNamesAndMeasurements = namesAndMeasurements.sorted(by: <)
+        return sortedNamesAndMeasurements
+    }
+
+    
+    func getAllOriginNamesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{    //CHANGE
+        DictionaryInStringOut(myDictionary).stringOfNamesOut
+    }
+    
+    func getAllOriginValuesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{    //CHANGE
+        DictionaryInStringOut(myDictionary).stringOfValuesOut
+    }
+}
+
+struct DictionaryInArrayOut {
+    func getNameValue <T>(_ dictionary: [String: T ]) -> [String]{    //CHANGE
+        //print(dictionary)
+        var namesAndMeasurements: [String] = []
+        //var values: PositionAsIosAxes    //CHANGE
+        
+        var description = ""
+        for (key, value) in dictionary {
+            if let position = value as? PositionArrayAsIosAxes {
+                description = "\(key): \(position.x), \(position.y), \(position.z)"
+
+            }
+            
+            if let position = value as? Dimension3d {
+                description = "\(key): \(position.length), \(position.width), \(position.height)"
+            }
+            
+            namesAndMeasurements.append(
+                description
+            )
+            
         }
         let sortedNamesAndMeasurements = namesAndMeasurements.sorted(by: <)
         return sortedNamesAndMeasurements
@@ -184,7 +220,6 @@ struct DictionaryInArrayOut {
         DictionaryInStringOut(myDictionary).stringOfValuesOut
     }
 }
-
 
 struct SuccessivelyFilteredDictionary {
     let dictionary: PositionDictionary

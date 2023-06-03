@@ -38,32 +38,19 @@ struct InitialOccupantBodySupportMeasurement {
 
 
 
-struct DefaultOccupantBodySupportMeasurement: Measurements {
-    let nameCase = MeasurementParts.body
-    let parts: [Part] =
-        [.lieOnSupport, .sitOn, .sleepOnSupport, .overHeadSupport, .overHeadHookSupport, .overHeadSupportJoint]
-    let lengths: [Double] =
-        [1600, 400, 2000, 40, 100, Joint.dimension.length]
-    let widths: [Double] =
-        [600, 400, 900, 550, 10, Joint.dimension.width]
-    
-    
-    let dictionary: MeasurementDictionary
-    
-    init() {
-        dictionary =
-            CreateMeasurementDictionary (
-                nameCase,
-                parts,
-                lengths,
-                widths).dictionary
-        
-//for (key, value) in dictionary {
-//print(key, value)
-//}
-//print("")
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

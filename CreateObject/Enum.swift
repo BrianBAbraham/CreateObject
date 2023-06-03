@@ -17,8 +17,20 @@ enum DictionaryTypes  {
 enum Part: String {
     case armSupport = "arm"
     case armVerticalJoint = "armVerticalJoint"
+    
     case backSupport = "backSupport"
+    case backSupportAdditionalObject = "backSupportAdditionalObject"
+    case backSupportAssistantHandle = "backSupportRearHandle"
+    case backSupportAssistantHandleInOnePiece = "backSupportRearHandleInOnePiece"
+    case backSupportAssistantJoystick = "backSupportJoyStick"
     case backSupportJoint = "backSupportHorizontalJoint"
+    case backSupportHeadSupport = "backSupportHeadSupport"
+    case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
+    case backSupportHeadSupportLink = "backSupportHeadSupportLink"
+    case backSupportHeadSupportLinkJoint = "backSupportHeadSupportLinkHorizontalJoint"
+
+    
+    
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 
     case overHeadSupport = "overHeadSupport"
@@ -60,21 +72,18 @@ enum Part: String {
     case footSupportHangerSitOnVerticalJoint = "footSupportHangerSitOnVerticalJoint"
     //case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
 
-    case handleAtRear = "rearHandle"
-    case handleAtRearInOnePiece = "rearHandleInOnePiece"
+    
+   
     
     
     
-    case headSupport = "headSupport"
-    case headSupportJoint = "headSupportHorizontalJoint"
-    case headSupportLink = "headSupportLink"
-    case headSupportLinkJoint = "headSupportLinkHorizontalJoint"
+   
     
     case height = "Height"
     case joint = "Joint"
     
     case joyStickForOccupant = "occupantControlledJoystick"
-    case joyStickForAssistant = "assistantControlledJoystick"
+    //case joyStickForAssistant = "assistantControlledJoystick"
     
     case leftToRightDimension = "xIos"
     case length = "Length"
@@ -104,31 +113,36 @@ enum MeasurementParts: String {
 //}
 
 
-struct PartCollections {
-    
-    static let head: [Part] =
-        [.headSupport, .armVerticalJoint, .headSupportLink, .headSupportLinkJoint]
-    static  let reclinable: [Part] =
-        [.backSupport, .backSupportJoint, .joyStickForAssistant, .carriedObjectAtRear] + head
-    static let foot: [Part] =
-        [.footSupport,
-        .footSupportHangerLink,
-            .footSupportHorizontalJoint,
-            .footSupportInOnePiece,
-            //.footSupportHangerBaseJoint,
-            .footSupportHangerSitOnVerticalJoint]
-    
-  static  let tiltable: [Part] =
-    [.armSupport, .sitOn, .backSupportJoint, .joyStickForOccupant]  + reclinable + foot
-}
+//struct PartCollections {
+//    
+//    static let head: [Part] =
+//        [.backSupportHeadSupport, .armVerticalJoint, .backSupportHheadSupportLink, .backSupportHeadSupportLinkJoint]
+//    static  let reclinable: [Part] =
+//        [.backSupport, .backSupportJoint, .baskSupportAssistantJoystick, .backSupportAdditionalObject] + head
+//    static let foot: [Part] =
+//        [.footSupport,
+//        .footSupportHangerLink,
+//            .footSupportHorizontalJoint,
+//            .footSupportInOnePiece,
+//            //.footSupportHangerBaseJoint,
+//            .footSupportHangerSitOnVerticalJoint]
+//    
+//  static  let tiltable: [Part] =
+//    [.armSupport, .sitOn, .backSupportJoint, .joyStickForOccupant]  + reclinable + foot
+//}
 
 
 
 enum ObjectOptions: String, CaseIterable  {
     case assistant = "assistant"
+    
+    case backSupportAssistantHandles = "back support assistant handles"
+    case backSupportAdditionalObject = "bacl support additional object"
+    case backSupportAssistantHandlesInOnPiece = "back support assistant handle in one piece"
+    case backSupportAssistantJoystick = "back support assistant joystick"
     case bumper = "bumper"
     case door = "door"
-
+    case footSupportInOnePiece = "foot support in one piece"
     case headSupport = "head support"
 
     case occupant = "occupant"

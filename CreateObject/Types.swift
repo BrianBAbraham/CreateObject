@@ -23,10 +23,15 @@ rear: PositionAsIosAxes)
 typealias OptionDictionary = [ObjectOptions: Bool]
 typealias PositionDictionary = [String: PositionAsIosAxes]
 typealias MeasurementDictionary = [String: Double]
-typealias DimensionDictionary = [BaseObjectTypes: Dimension]
+typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
+typealias BaseObject3DimensionDictionary = [BaseObjectTypes: Dimension3d]
+typealias PartDimensionDictionary = [String: Dimension]
+typealias Part3DimensionDictionary = [String: Dimension3d]
+typealias BaseObjectPositionDictionary = [BaseObjectTypes: PositionAsIosAxes]
 typealias PartToPartDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (length: Double, width: Double)
+typealias Dimension3d = (length: Double, width: Double, height: Double)
 
 typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
 

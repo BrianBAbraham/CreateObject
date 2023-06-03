@@ -39,12 +39,12 @@ struct CreateOccupantHeadSupport {
         let headSupportFromParentOrigin =
             getPartFromParentOrigin(
                 objectOptions,
-                .headSupport)
+                .backSupportHeadSupport)
             
         let headSupportLinkFromParentOrigin =
             getPartFromParentOrigin(
                 objectOptions,
-                .headSupportLink)
+                .backSupportHeadSupportLink)
         
         self.supportIndex = supportIndex
 
@@ -67,11 +67,11 @@ struct CreateOccupantHeadSupport {
             var lengths: [Double] = []
             
             switch part {
-                case .headSupport:
+                case .backSupportHeadSupport:
                     let headSupportHalfLength =
                         headSupportMeasurement.length/2
                     lengths = [headSupportHalfLength, gapLlength, backSupportHalfLength]
-                case .headSupportLink:
+                case .backSupportHeadSupportLink:
                     let linkHalfLength = InitialOccupantHeadSupportMeasurement.headSupportLink.length/2
                     lengths = [linkHalfLength, backSupportHalfLength]
                 default :
@@ -101,7 +101,7 @@ struct CreateOccupantHeadSupport {
                 let headSupportDictionary =
                     CreateOnePartOrSideSymmetricParts(
                        headSupportMeasurement,
-                        .headSupport,
+                        .backSupportHeadSupport,
                         parentFromPrimaryOrigin[supportIndex],
                         headSupportFromParentOrigin,
                         supportIndex)
@@ -109,7 +109,7 @@ struct CreateOccupantHeadSupport {
                 let headSupportLinkDictionary =
                     CreateOnePartOrSideSymmetricParts(
                         headSupporLinkMeasurement,
-                        .headSupportLink,
+                        .backSupportHeadSupportLink,
                         parentFromPrimaryOrigin[supportIndex],
                         headSupportLinkFromParentOrigin,
                         supportIndex)

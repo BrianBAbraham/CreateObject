@@ -55,6 +55,9 @@ struct PickDefaultObjectView: View {
                     tag,
                     twinSitOnOptions: twinSitOnVM.getTwinSitOnOptions())
                
+                
+  
+                
             }
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)

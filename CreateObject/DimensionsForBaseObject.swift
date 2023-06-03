@@ -219,31 +219,31 @@ struct InitialBaseMeasureFor {
 }
 
 
-struct DefaultBaseMeasurement: Measurements {
-    let nameCase = MeasurementParts.base
-    static let rearToCentre = 250.0
-    static let rearToFront = 500.0
-    let parts: [Part] =
-    [ .rearToCentre, .rearToFront, .centreToFront,.frameTube]
-    let lengths: [Double] =
-    [rearToCentre, rearToFront, rearToFront - rearToCentre, Joint.dimension.length]
-    let widths: [Double] =
-        [500, 600, 500, Joint.dimension.width]
-    
-    
-    let dictionary: MeasurementDictionary
-    
-    init() {
-        dictionary =
-            CreateMeasurementDictionary (
-                nameCase,
-                parts,
-                lengths,
-                widths).dictionary
+//struct DefaultBaseMeasurement: Measurements {
+//    let nameCase = MeasurementParts.base
+//    static let rearToCentre = 250.0
+//    static let rearToFront = 500.0
+//    let parts: [Part] =
+//    [ .rearToCentre, .rearToFront, .centreToFront,.frameTube]
+//    let lengths: [Double] =
+//    [rearToCentre, rearToFront, rearToFront - rearToCentre, Joint.dimension.length]
+//    let widths: [Double] =
+//        [500, 600, 500, Joint.dimension.width]
+//
+//
+//    let dictionary: MeasurementDictionary
+//
+//    init() {
+//        dictionary =
+//            CreateMeasurementDictionary (
+//                nameCase,
+//                parts,
+//                lengths,
+//                widths).dictionary
         
 //for (key, value) in dictionary {
 //print(key, value)
 //}
 //print("")
-    }
-}
+//    }
+//}

@@ -269,17 +269,17 @@ struct CreateOccupantSupport {
                 dictionary += overHeadSupportDictionary
             }
                 
-            if tiltRequired {
-               let tiltDictionary =
-                CreateOccupantTiltSupport(
-                    dictionary,
-                    allBodySupportFromPrimaryOrigin,
-                    supportIndex,
-                    [600.0, 500.0]
-                )
-//print(tiltDictionary)
-                dictionary += tiltDictionary.dictionaryForTiltJoint
-            }
+//            if tiltRequired {
+//               let tiltDictionary =
+//                CreateOccupantTiltSupport(
+//                    dictionary,
+//                    allBodySupportFromPrimaryOrigin,
+//                    supportIndex,
+//                    [600.0, 500.0]
+//                )
+//
+//                dictionary += tiltDictionary.dictionaryForTiltJoint
+//            }
         }
     }
 }

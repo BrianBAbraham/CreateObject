@@ -107,7 +107,7 @@ struct ContentView: View {
     }
 
     var originDictionary: [String] {
-        DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary(),"test")
+        DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary())
     }
 
     var currentDictionary: PositionDictionary {
