@@ -14,41 +14,36 @@ struct RequestOccupantFootSupportDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ sitOnId: Part,
-        _ partId: Part) {
+        _ twinSitOnOptions: TwinSitOnOptions
+        ) {
             
-        getDictionary(sitOnId, partId)
+        getDictionary()
         
-        func getDictionary(
-            _ supportId: Part,
-            _ sitOnId: Part) {
+        func getDictionary() {
                 
+            let allOccupantRelated = AllOccupantFootRelated(baseType)
             dictionary =
                 CreateDefaultDimensionDictionary(
-                AllOccupantFootRelatedPartThatMakeName(supportId, sitOnId).partsThatMakeNames,
-                AllOccupantFootRelatedDimension(baseType).dimensions
+                    allOccupantRelated.parts,
+                    allOccupantRelated.dimensions,
+                    twinSitOnOptions
                 ).dictionary
         }
     }
 }
 
-struct AllOccupantFootRelatedPartThatMakeName {
-    let partsThatMakeNames: [[Part]]
-    init(_ supportId: Part, _ sitOnId: Part) {
-        partsThatMakeNames = [
-            [.footSupportHangerSitOnVerticalJoint, supportId, .stringLink, .sitOn, sitOnId],
-            [.footSupportHangerLink, supportId, .stringLink, .sitOn, sitOnId],
-            [.footSupportHorizontalJoint, supportId, .stringLink, .sitOn, sitOnId],
-            [.footSupport, supportId, .stringLink, .sitOn, sitOnId],
-            [.footSupportInOnePiece, supportId, .stringLink, .sitOn, sitOnId]
-        ]
-    }
-}
-
-
-struct AllOccupantFootRelatedDimension {
+struct AllOccupantFootRelated {
+    let parts: [Part]
     let dimensions: [Dimension3d]
     init(_ baseType: BaseObjectTypes) {
+        parts =
+            [.footSupportHangerSitOnVerticalJoint,
+             .footSupportHangerLink,
+             .footSupportHorizontalJoint,
+             .footSupport,
+             .footSupportInOnePiece
+        ]
+        
         dimensions =
         [
             Joint.dimension3d,

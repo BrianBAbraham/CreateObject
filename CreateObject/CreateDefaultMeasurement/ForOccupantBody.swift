@@ -13,27 +13,22 @@ struct RequestOccupantBodySupportDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ sitOnId: Part,
-        _ options: OptionDictionary) {
+        _ twinSitOnOptions: TwinSitOnOptions
+    ) {
             
-        getDictionary(sitOnId, .id0)
+        getDictionary()
             
         
-            func getDictionary(
-                _ supportId: Part,
-                _ sitOnId: Part) {
-                let partsThatMakeNames = [
-                    [.sitOn, supportId,.stringLink,.sitOn, sitOnId]
-                ]
-                    
+            func getDictionary() {
                 let dimensions = [
                     OccupantBodySupportDefaultDimension(baseType).value
                 ]
                     
                 dictionary =
                     CreateDefaultDimensionDictionary(
-                    partsThatMakeNames,
-                    dimensions
+                        [.sitOn],
+                    dimensions,
+                        twinSitOnOptions
                     ).dictionary
             }
         }

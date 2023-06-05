@@ -63,7 +63,7 @@ struct CreateDefaultObjectInitiated {
 //RequestOccupantBodySupportDefaultDimensionDictionary(baseType, .id0, objectOptions).dictionary
 //DictionaryInArrayOut().getNameValue(occupantBodySupportDefaultDimensionDictionary).forEach{print($0)}
     let occupantBackSupportDefaultDimensionDictionary =
-            RequestOccupantBackSupportDefaultDimensionDictionary(baseType, .id0, .id0).dictionary
+            RequestOccupantFootSupportDefaultDimensionDictionary(baseType, twinSitOnOptions).dictionary
     DictionaryInArrayOut().getNameValue(occupantBackSupportDefaultDimensionDictionary).forEach{print($0)}
             
             

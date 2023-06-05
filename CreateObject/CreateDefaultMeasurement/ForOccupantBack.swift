@@ -13,44 +13,36 @@ struct RequestOccupantBackSupportDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ sitOnId: Part,
-        _ partId: Part) {
-            
-        getDictionary(sitOnId, .id0)
-            
+        _ twinSitOnOptions: TwinSitOnOptions
+    ) {
+        getDictionary()
 
-        
-            func getDictionary(
-                _ supportId: Part,
-                _ sitOnId: Part) {
-               
-             let allOccupantBackRelated =
-                    AllOccupantBackRelated(
-                        baseType,  supportId, sitOnId)
-                    
-
-                dictionary =
-                    CreateDefaultDimensionDictionary(
-                        allOccupantBackRelated.partsThatMakeNames,
-                        allOccupantBackRelated.dimensions
-                    ).dictionary
-            }
+        func getDictionary() {
+           
+         let allOccupantBackRelated =
+                AllOccupantBackRelated(
+                    baseType
+                )
+                
+            dictionary =
+                CreateDefaultDimensionDictionary(
+                    allOccupantBackRelated.parts,
+                    allOccupantBackRelated.dimensions,
+                    twinSitOnOptions
+                ).dictionary
         }
+    }
 }
 // use touple? (part: Part, dimension: Dimension3d)
 // avoids errors of assignment
 // pass touple wiithout nameEnd and allow create to add 
 
 struct AllOccupantBackRelated {
-    var partsThatMakeNames: [[Part]] = []
+    var parts: [Part] = []
     var dimensions: [Dimension3d] = []
-    init(_ baseType: BaseObjectTypes,
-         _ supportId: Part,
-         _ sitOnId: Part) {
-    
-        let nameEnd: [Part] = [supportId, .stringLink, .sitOn, sitOnId]
-
-        let parts: [Part] =
+    init(_ baseType: BaseObjectTypes
+    ) {
+         parts =
             [.backSupportAdditionalObject,
             .backSupportHeadSupport,
             .backSupportHeadSupportLink,
@@ -60,11 +52,7 @@ struct AllOccupantBackRelated {
             .backSupportAssistantJoystick,
             .backSupport,
             .backSupportJoint]
-        
-        for part in parts {
-            partsThatMakeNames.append([part] + nameEnd)
-        }
-
+    
         let dimensionsList =
             [
                 OccupantBackSupportAdditionalObjectDefaultDimension(baseType).value,
