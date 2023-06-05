@@ -111,8 +111,8 @@ struct ObjectView: View {
         twinSitOnVM.getTwinSitOnOptions()  //TWIN
     }
     
-    var defaultDictionary: PositionDictionary {
-        CreateDefaultObjectInitiated(
+    var initialDictionary: PositionDictionary {
+        CreateInitialObject(
             baseName: objectName,
             objectOptionsDictionary,
             twinSitOnOptionsDictionary)  //TWIN
@@ -124,7 +124,7 @@ struct ObjectView: View {
     }
 
     var measurementScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(defaultDictionary)
+        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(initialDictionary)
     }
     
     var zoom: CGFloat {

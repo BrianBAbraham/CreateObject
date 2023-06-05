@@ -22,7 +22,7 @@ import Foundation
 
 enum DictionaryVersion {
     case useCurrent
-    case useDefault
+    case useInitial
     case useLoaded
 }
 

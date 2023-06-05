@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PickDefaultObjectView: View {
+struct PickInitialObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objecEditVM: ObjectEditViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
@@ -49,9 +49,9 @@ struct PickDefaultObjectView: View {
             }
             .onChange(of: equipmentType) {tag in
                 self.equipmentType = tag
-                objectPickVM.setDefaultObjectDictionary(tag)
+                objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
-                objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
                     tag,
                     twinSitOnOptions: twinSitOnVM.getTwinSitOnOptions())
                

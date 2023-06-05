@@ -44,8 +44,8 @@ struct OccupantSideSupportDefaultDimension {
          , width: 20.0, height: 20.0)
         ]
     static let general =
-    (length: OccupantBackSupportDefaultDimension(.fixedWheelRearDrive).value.length,
-         width: 50.0, height: 30.0)
+    (length: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive).value.length,
+         width: 40.0, height: 30.0)
     let value: Dimension3d
     
     init(

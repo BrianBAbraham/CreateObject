@@ -9,7 +9,7 @@ import Foundation
 
 
 
-struct CreateDefaultObjectInitiated {
+struct CreateInitialObject {
    
     var dictionary: [String: PositionAsIosAxes ] = [:]
     var measurements: MeasurementDictionary
@@ -56,15 +56,8 @@ struct CreateDefaultObjectInitiated {
 
             
             
-//let occupantFootSupportDefaultDimensionDictionary =
-//            RequestOccupantFootSupportDefaultDimensionDictionary(baseType, .id0, .id0, objectOptions).dictionary
-//DictionaryInArrayOut().getNameValue(occupantFootSupportDefaultDimensionDictionary).forEach{print($0)}
-//let occupantBodySupportDefaultDimensionDictionary =
-//RequestOccupantBodySupportDefaultDimensionDictionary(baseType, .id0, objectOptions).dictionary
-//DictionaryInArrayOut().getNameValue(occupantBodySupportDefaultDimensionDictionary).forEach{print($0)}
-    let occupantBackSupportDefaultDimensionDictionary =
-            RequestOccupantFootSupportDefaultDimensionDictionary(baseType, twinSitOnOptions).dictionary
-    DictionaryInArrayOut().getNameValue(occupantBackSupportDefaultDimensionDictionary).forEach{print($0)}
+
+    
             
             
             
@@ -226,25 +219,6 @@ struct CreateDefaultObjectInitiated {
             
             case .showerTray:
             
-            
-//measurements = DefaultBaseMeasurement().dictionary
-//GetFromMeasurementDictionary(measurements, .rearToFront, .base)
-//print("before")
-//print(measurements)
-//print("")
-//            if measurements == [:] {
-//                measurements =
-//                SetMeasurementInDictionary(
-//                    measurements,
-//                    .footSupport,
-//                    .foot,
-//                    (length: 1200, width: 900)).dictionary
-//            }
-//
-//print("after")
-//print(measurements)
-//print("")
-            //print(GetFromMeasurementDictionary(measurements, .rearToFront, .base))
             
                   baseMeasurement =
                     InitialBaseMeasureFor(

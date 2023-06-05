@@ -8,9 +8,10 @@
 import Foundation
 
 struct ObjectPickModel {
+    var defaultObjectDictionary:  Part3DimensionDictionary = [:]
     var currentObjectName: String  //FixedWheelBase.Subtype.midDrive.rawValu
     var currentObjectDictionary: PositionDictionary
-    var defaultDictionary: PositionDictionary
+    var initialDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
     var objectOptionDictionary: OptionDictionary
 
@@ -39,7 +40,7 @@ class ObjectPickViewModel: ObservableObject {
     static let twinSitOnDictionary: TwinSitOnOptions = [:]
     
     static let dictionary =
-    CreateDefaultObjectInitiated(
+    CreateInitialObject(
         baseName: initialObjectName,
         optionDictionary,
         twinSitOnDictionary)
@@ -48,7 +49,7 @@ class ObjectPickViewModel: ObservableObject {
     @Published private var objectPickModel: ObjectPickModel =
         ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
                         currentObjectDictionary: dictionary,
-                        defaultDictionary: dictionary,
+                        initialDictionary: dictionary,
                         objectOptionDictionary: optionDictionary)
 }
 
@@ -113,11 +114,18 @@ extension ObjectPickViewModel {
 //    }
     
     
-    
-
     func getDefaultObjectDictionary()
+        -> Part3DimensionDictionary {
+            
+            let defaultDimensionDictionary =
+            objectPickModel.defaultObjectDictionary
+            DictionaryInArrayOut().getNameValue(defaultDimensionDictionary).forEach{print($0)}
+        return defaultDimensionDictionary
+    }
+
+    func getInitialObjectDictionary()
     -> PositionDictionary {
-        objectPickModel.defaultDictionary
+        objectPickModel.initialDictionary
     }
     
     
@@ -129,8 +137,8 @@ extension ObjectPickViewModel {
             switch version  {
             case .useCurrent:
               return  objectPickModel.currentObjectDictionary
-            case .useDefault:
-              return  objectPickModel.defaultDictionary
+            case .useInitial:
+              return  objectPickModel.initialDictionary
             case .useLoaded:
               return  objectPickModel.loadedDictionary
             }
@@ -316,13 +324,13 @@ extension ObjectPickViewModel {
     
     func getScreenFrameSize ()
         -> Dimension{
-        let objectDefaultDimension = getObjectDimension(getCurrentObjectDictionary())
+        let objectInitialDimension = getObjectDimension(getCurrentObjectDictionary())
             
         let objectDimensionWithLengthIncrease =
-            (length: objectDefaultDimension.length //+
+            (length: objectInitialDimension.length //+
              //maximumLengthIncrease * 0
              ,
-            width: objectDefaultDimension.width)
+            width: objectInitialDimension.width)
 
         var frameSize: Dimension =
             (length: Screen.smallestDimension,
@@ -345,6 +353,12 @@ extension ObjectPickViewModel {
         return frameSize
     }
     
+    
+//    func getTwinSitOnOptions()
+//        -> TwinSitOnOptions {
+//            objectPickModel.twin
+//    }
+    
 
     func getUniquePartNamesFromLoadedDictionary() -> [String] {
    
@@ -361,24 +375,44 @@ extension ObjectPickViewModel {
         return  uniquePartNames
     }
     
+    
+    //MARK: SET
     func setCurrentObjectName(_ objectName: String){
         objectPickModel.currentObjectName = objectName
-        setCurrentObjectWithDefaultOrEditedDictionary(objectName)
+        setCurrentObjectWithInitialOrEditedDictionary(objectName)
     }
     
+    func setDefaultObjectDictionary(
+            _ baseType: BaseObjectTypes,
+            _ twinSitOnOptions: TwinSitOnOptions) {
+        var defaultDimensionDictionary =
+                RequestOccupantFootSupportDefaultDimensionDictionary(
+                    baseType, twinSitOnOptions).dictionary
+                
+             defaultDimensionDictionary +=
+                RequestOccupantBackSupportDefaultDimensionDictionary(
+                    baseType, twinSitOnOptions).dictionary
+                
+            defaultDimensionDictionary +=
+                RequestOccupantSideSupportDefaultDimensionDictionary(
+                    baseType, twinSitOnOptions).dictionary
+                
+                objectPickModel.defaultObjectDictionary = defaultDimensionDictionary
+        
+    }
     
     func setEditedObjectDictionary(_ editedDictionary: PositionDictionary) {
         objectPickModel.currentObjectDictionary = editedDictionary
     }
     
-    func setDefaultObjectDictionary(_ objectName: String) {
-        let defaultDictionary =
-        CreateDefaultObjectInitiated(
+    func setInitialObjectDictionary(_ objectName: String) {
+        let initialDictionary =
+        CreateInitialObject(
             baseName: objectName,
             getObjectOptionsDictionary())
             .dictionary
         
-        objectPickModel.defaultDictionary = defaultDictionary
+        objectPickModel.initialDictionary = initialDictionary
     }
     
     func setLoadedDictionary(_ entity: LocationEntity){
@@ -391,7 +425,7 @@ extension ObjectPickViewModel {
     
 
 
-    func setCurrentObjectWithDefaultOrEditedDictionary(
+    func setCurrentObjectWithInitialOrEditedDictionary(
         _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
         twinSitOnOptions: TwinSitOnOptions = [:]) {
@@ -402,7 +436,7 @@ extension ObjectPickViewModel {
 
             objectPickModel.currentObjectDictionary =
             editedDictionary[ nonNilWhenEditedDictionaryPassed] != nil ?
-            CreateDefaultObjectInitiated(
+            CreateInitialObject(
                 baseName: objectName,
                 getObjectOptionsDictionary(),
                 twinSitOnOptions

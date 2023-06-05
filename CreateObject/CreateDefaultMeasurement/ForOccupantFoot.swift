@@ -46,7 +46,6 @@ struct AllOccupantFootRelated {
         
         dimensions =
         [
-            Joint.dimension3d,
             OccupantFootSupportHangerJointDefaultDimension(baseType).value,
             OccupantFootSupportHangerLinkDefaultDimension(baseType).value,
             OccupantFootSupportHorizontalJointDefaultDimension(baseType).value,

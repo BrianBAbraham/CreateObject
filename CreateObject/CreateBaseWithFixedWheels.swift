@@ -27,18 +27,14 @@ struct ForFixedWheelBaseObject {
         centreToFrontLength = measurement.centreToFrontLength
         
         centreHalfWidth = measurement.halfWidth
-        
-        //self.occupantSupport = occupantSupport
-        
+                
         rearToCentreLength = measurement.rearToCentreLength
         
         rearToFrontLength = measurement.rearToFrontLength
         
         self.wheelBaseType = wheelBaseType
         
-        //self.allSitOnFromPrimaryOrigin = occupantSupport.allBodySupportFromPrimaryOrigin
-        
-        //occupantSupportTypes = occupantSupport.occupantSupportTypes
+
             
         let fixedWheelOriginLocations =
         CreateIosPosition.forLeftRightAsArray(x:  centreHalfWidth)
@@ -55,7 +51,7 @@ struct ForFixedWheelBaseObject {
     
     
     
-    func getDictionary() -> [String: PositionAsIosAxes ]{    //CHANGE
+    func getDictionary() -> [String: PositionAsIosAxes ]{
         
         var casterDictionary: PositionDictionary = [:]
 
@@ -66,7 +62,7 @@ struct ForFixedWheelBaseObject {
                 .casterWheelAtRear,
                 measurement.baseCornerFromPrimaryOriginForWidthAxisAt.front.rear
             ).dictionary
-//print(casterAtRearDictionary.filter({$0.key.contains("Vertical")}))
+
             casterDictionary += casterAtRearDictionary
         }
         
@@ -77,13 +73,7 @@ struct ForFixedWheelBaseObject {
                 .casterWheelAtFront,
                 measurement.baseCornerFromPrimaryOriginForWidthAxisAt.rear.front
             ).dictionary
-//print(casterAtFrontDictionary.filter({$0.key.contains("Vertical")}))
-            
-//    print("")
-//    print("createBase")
-//            DictionaryInArrayOut().getNameValue(casterAtFrontDictionary).forEach{print($0)}
-//    print("createBase")
-//    print("")
+
             casterDictionary += casterAtFrontDictionary
         }
         

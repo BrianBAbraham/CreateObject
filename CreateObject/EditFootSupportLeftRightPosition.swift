@@ -122,14 +122,14 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
         
         var editedDictionary: PositionDictionary = [:]
         
-        let defaultDictionary = objectPickVM.getDefaultObjectDictionary()
+        let initialDictionary = objectPickVM.getInitialObjectDictionary()
         
          let displayLength = String(format: "%.0f",currentLength.value)
         
 
         
         let minToMax = objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
-            defaultDictionary,
+            initialDictionary,
             curentDictionary,
             .footSupportInOnePiece,
             sitOnId)
@@ -152,7 +152,7 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
                     proposedLength - currentLength.value
                 )
                 
-                objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary
                 )
@@ -206,11 +206,11 @@ struct FootSupportWithHangerLinkLengthSlider: View {
                 ) [idIntForSide],
             unit: UnitLength.millimeters)
         
-        let defaultDictionary = objectPickVM.getDefaultObjectDictionary()
+        let initialDictionary = objectPickVM.getInitialObjectDictionary()
         
         let minToMax =
             objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
-                defaultDictionary,
+                initialDictionary,
                 curentDictionary,
                 onePieceOrLeftRightFootSupport,
                 sitOnId)
@@ -241,7 +241,7 @@ struct FootSupportWithHangerLinkLengthSlider: View {
                 
                
                 
-                objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
                     objectPickVM.getCurrentObjectName(),
                     editedDictionary)
             }

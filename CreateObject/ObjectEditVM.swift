@@ -187,7 +187,7 @@ extension ObjectEditViewModel {
 //                color = .blue
 //            }
             
-            if uniquePartName.contains(Part.overHeadSupport.rawValue) {
+            if uniquePartName.contains(Part.overheadSupport.rawValue) {
                 color = .green
             }
             

@@ -69,8 +69,8 @@ struct ContentView: View {
         objectPickVM.getList(.useCurrent)
     }
 
-    var defaultObjectDictionaryAsList: [String] {
-        objectPickVM.getList(.useDefault)
+    var initialObjectDictionaryAsList: [String] {
+        objectPickVM.getList(.useInitial)
     }
     
     var loadedObjectDictionaryAsList: [String] {
@@ -146,7 +146,7 @@ struct ContentView: View {
                     ZStack{
                         VStack {
                         
-                            PickDefaultObjectView()
+                            PickInitialObjectView()
 
 
                             AddToSceneView(objectPickVM.getCurrentObjectDictionary(), name)
@@ -199,8 +199,8 @@ struct ContentView: View {
                  Text("View current dictionary")
                 }
 
-                NavigationLink(destination: ListView(equipmentName, defaultObjectDictionaryAsList)){
-                 Text("View default dictionary")
+                NavigationLink(destination: ListView(equipmentName, initialObjectDictionaryAsList)){
+                 Text("View initial dictionary")
                 }
 
                 NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
@@ -333,7 +333,7 @@ struct ToggleItem: View {
                     twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
                     let dictionary = twinSitOnVM.getTwinSitOnOptions()
 
-                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
                         objectPickVM.getCurrentObjectName (),
                         twinSitOnOptions: dictionary)
                     

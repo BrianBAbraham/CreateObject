@@ -36,7 +36,7 @@ struct BackSupportRecline: View {
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.reclinedBackSupport,
                         reclineToggle) //RECLINE
-                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
                         name,
                          twinSitOnOptions: dictionary)
                     
@@ -67,7 +67,7 @@ struct Tilt: View {
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.tiltInSpace,
                         tiltToggle)
-                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
                         name)
                     
                 }
@@ -96,7 +96,7 @@ struct HeadSupport: View {
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.headSupport,
                         headSuppportToggle)
-                    objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(
+                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
                         name)
                     
                 }
@@ -144,7 +144,7 @@ struct TwinSitOn: View {
                         
                         let name = objectPickVM.getCurrentObjectName()
                         
-                        objectPickVM.setCurrentObjectWithDefaultOrEditedDictionary(name)
+                        objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(name)
                     }
                 }
             

@@ -33,9 +33,16 @@ enum Part: String {
     
     case baseToCarryBarConnector = "baseToCarryBarConnector"
 
-    case overHeadSupport = "overHeadSupport"
-    case overHeadHookSupport = "overHeadHookSupport"
-    case overHeadSupportJoint = "overHeadSupportVerticalJoint"
+    case overheadSupportMastBase = "overHeadSupporMastBase"
+    case overheadSupportMast = "overHeadSupporMast"
+    case overheadSupportAssistantHandle = "overHeadSupporHandle"
+    case overheadSupportAssistantHandleInOnePiece = "overHeadSupporHandleInOnePiece"
+    case overheadSupportLink = "overHeadSupportLink"
+    case overheadSupport = "overHeadSupport"
+    case overheadSupportHook = "overHeadHookSupport"
+    case overheadSupportJoint = "overHeadSupportVerticalJoint"
+    
+    
     case carriedObjectAtRear = "objectCarriedAtRear"
     case casterFork = "casterFork"
     case casterForkAtCenter = "casterForkAtCenter"
