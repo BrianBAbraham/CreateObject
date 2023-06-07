@@ -73,7 +73,7 @@ struct CreateOccupantSupport {
     let baseMeasurement: InitialBaseMeasureFor //
   
     var dictionary: PositionDictionary = [:]
-    var measurements: MeasurementDictionary
+    //var measurements: MeasurementDictionary
 
     let initialOccupantBodySupportMeasurement: InitialOccupantBodySupportMeasurement //
     
@@ -95,56 +95,50 @@ struct CreateOccupantSupport {
         _ baseMeasurement: InitialBaseMeasureFor,
         _ objectOptions: OptionDictionary,
         _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes],
-        _ measurements: MeasurementDictionary = [:]
+        _ defaultDictionary: Part3DimensionDictionary
     ) {
         self.baseType = baseType
         self.initialOccupantBodySupportMeasurement = initialOccupantBodySupportMeasure
         self.baseMeasurement = baseMeasurement
         self.objectOptions = objectOptions
-        self.measurements = measurements
+        //self.measurements = measurements
 
         numberOfSeats =  fromPrimaryOriginToOccupantSupports.count// 1
         
-   
+        occupantSupportMeasure =
+            DimensionChange(GetDimensionFromDictionary(defaultDictionary).sitOnOneDimension2D).from3Dto2D
         
         switch baseType {
-            case .allCasterChair:
-                occupantSupportMeasure = occupantSupportMeasures.sitOn
             case .allCasterBed:
-                occupantSupportMeasure = occupantSupportMeasures.sleepOn
                 footSupportRequired = false
                 armSupportRequired = false
                 backSupportRequired = false
             case .allCasterStretcher:
-                occupantSupportMeasure = occupantSupportMeasures.lieOn
                 footSupportRequired = false
                 armSupportRequired = false
                 backSupportRequired = false
             case .allCasterHoist:
-                occupantSupportMeasure = occupantSupportMeasures.sitOn
                 overheadSupportRequired = true
                 bodySupportRequired = false
                 footSupportRequired = false
                 armSupportRequired = false
                 backSupportRequired = false
             case .showerTray:
-                occupantSupportMeasure = occupantSupportMeasures.sitOn
                 bodySupportRequired = false
                 armSupportRequired = false
                 backSupportRequired = false
             case .allCasterTiltInSpaceShowerChair:
-                occupantSupportMeasure = occupantSupportMeasures.sitOn
+
                 tiltRequired =
                     objectOptions[.tiltInSpace] ?? false ? true: false
                 headSupportRequired =
                     objectOptions[.headSupport] ?? false ? true: false
-//print(headSupportRequired)
             case .seatThatTilts:
-                occupantSupportMeasure = occupantSupportMeasures.sitOn
                 tiltRequired = true
             
             default:
-                occupantSupportMeasure = occupantSupportMeasures.sitOn
+            break
+                //occupantSupportMeasure = occupantSupportMeasures.sitOn
 
         }
         
@@ -238,8 +232,9 @@ struct CreateOccupantSupport {
                         allBodySupportFromPrimaryOrigin,
                         supportIndex,
                         initialOccupantBodySupportMeasure,
-                        baseType,
-                        measurements)
+                        baseType//,
+                        //measurements
+                    )
                     dictionary +=
                     occupantFootSupport.dictionary
             }
@@ -250,7 +245,8 @@ struct CreateOccupantSupport {
                 CreateOccupantHeadSupport(
                     allBodySupportFromPrimaryOrigin,
                     supportIndex,
-                    objectOptions
+                    objectOptions,
+                    defaultDictionary
                 )
                 dictionary +=
                 occupantHeadSupport.dictionary

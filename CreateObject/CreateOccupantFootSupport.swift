@@ -120,7 +120,7 @@ struct CreateOccupantFootSupport {
     var footSupportFromParent: PositionAsIosAxes
     
     var dictionary: PositionDictionary = [:]
-    var measurements: MeasurementDictionary
+    //var measurements: MeasurementDictionary
     
     let supportIndex: Int
   
@@ -128,12 +128,13 @@ struct CreateOccupantFootSupport {
         _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
-        _ baseType: BaseObjectTypes,
-        _ measurements: MeasurementDictionary = [:] ){
+        _ baseType: BaseObjectTypes//,
+       // _ measurements: MeasurementDictionary = [:]
+    ){
         
         self.supportIndex = supportIndex
         self.initialOccupantFootSupportMeasure = InitialOccupantFootSupportMeasure (initialOccupantBodySupportMeasure)
-        self.measurements = measurements
+        //self.measurements = measurements
             
             switch baseType {
             case .showerTray:
@@ -142,7 +143,7 @@ struct CreateOccupantFootSupport {
                 hangerLinkRequired = false
                 footSupportJointRequired = false
                 footSupportHangerSitOnVerticalJointRequired = false
-                footSupportFromParent = Globalx.iosLocation
+                footSupportFromParent = ZeroTouple.iosLocation
                 
                 
                 footSupportDimension =

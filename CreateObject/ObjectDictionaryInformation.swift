@@ -50,7 +50,7 @@ struct PartNameAndItsCornerLocations {
                     
                     
 //print(assembledUniquePartCornerName)
-                    uniqueCornerLocation = dictionary[ String(assembledUniquePartCornerName)] ?? Globalx.iosLocation
+                    uniqueCornerLocation = dictionary[ String(assembledUniquePartCornerName)] ?? ZeroTouple.iosLocation
                     uniqueCornerLocations.append(uniqueCornerLocation)
                 }
             }
@@ -58,7 +58,7 @@ struct PartNameAndItsCornerLocations {
             if numberOfConnectStringSymbols == 1 { // not related to possibly two sitOn elements
                 for cornerName in cornerNames {
                     let newName = uniquePartName + cornerName
-                    uniqueCornerLocation = dictionary[newName] ?? Globalx.iosLocation
+                    uniqueCornerLocation = dictionary[newName] ?? ZeroTouple.iosLocation
                     uniqueCornerLocations.append(uniqueCornerLocation)
                 }
             }
@@ -69,5 +69,40 @@ struct PartNameAndItsCornerLocations {
     }
 }
 
-
-
+struct GetDimensionFromDictionary {
+    let dimension3D: Dimension3d
+    let sitOnOneDimension2D: Dimension3d
+    let sitOnTwoDimension2D: Dimension3d
+    
+    init(
+        _ dictionary: Part3DimensionDictionary,
+        _ parts: [Part] = []) {
+            
+        dimension3D =
+        getDimension(
+            dictionary,
+            parts
+        )
+            
+        sitOnOneDimension2D =
+            
+                getDimension( dictionary, [.sitOn, .id0, .stringLink, .sitOn, .id0])
+         
+            
+        sitOnTwoDimension2D =
+            
+                getDimension( dictionary, [.sitOn, .id1, .stringLink, .sitOn, .id1])
+         
+            
+            func getDimension(
+                _ dictionary: Part3DimensionDictionary,
+                _ parts: [Part])
+                -> Dimension3d {
+                let name = CreateNameFromParts(parts).name
+//print(name)
+                let dimension = dictionary[name] ?? ZeroTouple.dimension3D
+                
+                return dimension
+        }
+    }
+}

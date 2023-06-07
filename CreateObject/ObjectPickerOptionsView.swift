@@ -31,14 +31,16 @@ struct BackSupportRecline: View {
         if showRecline {
             Toggle("Reclining back",isOn: $reclineToggle)
                 .onChange(of: reclineToggle) { value in
-                    let dictionary = twinSitOnVM.getTwinSitOnOptions()
+                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
                     let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.reclinedBackSupport,
                         reclineToggle) //RECLINE
-                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
-                        name,
-                         twinSitOnOptions: dictionary)
+                    objectPickVM.setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                        
+                        //.setCurrentObjectWithInitialOrEditedDictionary(
+                        //name,
+                         //twinSitOnOptions: dictionary)
                     
                 }
 //                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
@@ -62,13 +64,14 @@ struct Tilt: View {
         if showTilt {
             Toggle("Tilt",isOn: $tiltToggle)
                 .onChange(of: tiltToggle) { value in
-                    
+                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
                     let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.tiltInSpace,
                         tiltToggle)
-                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
-                        name)
+                    objectPickVM.setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                    //setCurrentObjectWithInitialOrEditedDictionary(
+                      //  name)
                     
                 }
         } else {
@@ -91,13 +94,14 @@ struct HeadSupport: View {
         if showTilt {
             Toggle("Headrest",isOn: $headSuppportToggle)
                 .onChange(of: headSuppportToggle) { value in
-                    
+                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
                     let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.headSupport,
                         headSuppportToggle)
-                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
-                        name)
+                    objectPickVM.setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                    //.setCurrentObjectWithInitialOrEditedDictionary(
+                       // name)
                     
                 }
         } else {
@@ -143,8 +147,10 @@ struct TwinSitOn: View {
                         twinSitOnVM.setAllConfigurationFalse()
                         
                         let name = objectPickVM.getCurrentObjectName()
-                        
-                        objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(name)
+                        let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+                        objectPickVM
+                            .setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                        //.setCurrentObjectWithInitialOrEditedDictionary(name)
                     }
                 }
             

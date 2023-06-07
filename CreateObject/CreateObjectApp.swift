@@ -10,14 +10,16 @@ import SwiftUI
 @main
 struct CreateObjectApp: App {
     @StateObject var twinSitOnVM = TwinSitOnViewModel()
+  
     @StateObject var objectPickVM = ObjectPickViewModel()
+    
     @StateObject var objectEditVM = ObjectEditViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
-    //@StateObject var  corerDataViewModel = CoreDataViewModel()
+
     var body: some Scene {
         WindowGroup {
-            //ContentView(objectPickVM.getCurrentObjectName())
+
             ContentView()
                 .environmentObject(twinSitOnVM)
                 .environmentObject(objectPickVM)
@@ -27,3 +29,16 @@ struct CreateObjectApp: App {
         }
     }
 }
+
+
+//@main
+//struct CreateObjectApp: App {
+//    @StateObject var twinSitOnVM = TwinSitOnViewModel()
+//    @StateObject var objectPickVM = ObjectPickViewModel()
+//    var body: some Scene {
+//        WindowGroup {
+//             ContentView()
+//
+//        }
+//    }
+//}

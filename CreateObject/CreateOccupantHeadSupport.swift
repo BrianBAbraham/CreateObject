@@ -30,10 +30,20 @@ struct CreateOccupantHeadSupport {
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
-        _ objectOptions: OptionDictionary
+        _ objectOptions: OptionDictionary,
+        _ defaultDictionary: Part3DimensionDictionary
         ) {
             
-        let headSupportMeasurement = InitialOccupantHeadSupportMeasurement.headSupport
+            let sitOnId: Part = [.id0, .id1][supportIndex]
+        
+        let headSupportMeasurement =
+            DimensionChange(
+            GetDimensionFromDictionary(
+                defaultDictionary,
+                [ .backSupportHeadSupport, .id0, .stringLink, .sitOn, sitOnId]
+            ).dimension3D ).from3Dto2D
+            //InitialOccupantHeadSupportMeasurement.headSupport
+        
         let headSupporLinkMeasurement = InitialOccupantHeadSupportMeasurement.headSupportLink
             
         let headSupportFromParentOrigin =

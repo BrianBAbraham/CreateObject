@@ -115,7 +115,8 @@ struct ObjectView: View {
         CreateInitialObject(
             baseName: objectName,
             objectOptionsDictionary,
-            twinSitOnOptionsDictionary)  //TWIN
+            twinSitOnOptionsDictionary,
+            [:])  //TWIN
         .dictionary
     }
     

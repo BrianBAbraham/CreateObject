@@ -33,6 +33,7 @@ typealias PartToPartDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
 typealias Dimension = (length: Double, width: Double)
 typealias Dimension3d = (length: Double, width: Double, height: Double)
 
+
 typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
 
 //typealias MinMax = (min: Double, max: Double)

@@ -331,11 +331,13 @@ struct ToggleItem: View {
                 switch toggleFor {
                 case .twinSitOn:
                     twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
+                    
                     let dictionary = twinSitOnVM.getTwinSitOnOptions()
-
-                    objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
-                        objectPickVM.getCurrentObjectName (),
-                        twinSitOnOptions: dictionary)
+                    let name = objectPickVM.getCurrentObjectName ()
+                    objectPickVM.setCurrentObjectByCreatingFromName(
+                        name,
+                        dictionary
+                    )
                     
                 case .sitOnPosition:
                     twinSitOnVM.setTwinSitOnOption(

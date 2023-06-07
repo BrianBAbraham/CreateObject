@@ -24,7 +24,7 @@ struct InitialOccupantBodySupportMeasurement {
         overHead: Dimension = (length: 40 ,width: 550),
         overHeadHook: Dimension = (length: 100 ,width: 10),
         overHeadJoint: Dimension = Joint.dimension,
-        sleepOn: Dimension = (length: 2000 ,width: 900),
+        sleepOn: Dimension = (length: 2000 ,width: 1800),
         standOn: Dimension = (length: 300 ,width: 500)) {
         self.lieOn = lieOn
         self.overHead = overHead
@@ -73,7 +73,7 @@ struct CreateOccupantBodySupport {
                 occupantSupportMeasure,
                 .sitOn,
                 oneBodySupportFromPrimaryOrigin,
-                Globalx.iosLocation,
+                ZeroTouple.iosLocation,
                 supportIndex)
 
             

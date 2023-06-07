@@ -7,8 +7,10 @@
 
 import Foundation
 
-struct Globalx {
-    static let iosLocation: PositionAsIosAxes = (x: 0.0, y: 0.0, z: 0.0 )}
+struct ZeroTouple {
+    static let iosLocation: PositionAsIosAxes = (x: 0.0, y: 0.0, z: 0.0 )
+    static let dimension3D: Dimension3d = (length: 0.0, width:  0.0, height:  0.0)
+}
 
 struct CreateIosPosition {
     static  func addTwoTouples(_ first: PositionAsIosAxes, _ second: PositionAsIosAxes) -> PositionAsIosAxes {
@@ -203,5 +205,14 @@ struct CreateIosPosition {
         }
             
             return leftThenRightmost
+    }
+}
+
+struct DimensionChange {
+    let from3Dto2D: Dimension
+    init(
+        _ threeDimension: Dimension3d
+    ) {
+        from3Dto2D = (length: threeDimension.length ,width: threeDimension.width)
     }
 }

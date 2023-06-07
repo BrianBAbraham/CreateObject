@@ -24,17 +24,19 @@ enum TwinSitOnOption: String, CaseIterable  {
 }
 
 struct TwinSitOnModel {
-    var options: TwinSitOnOptions
+  var options: TwinSitOnOptions = [:]
 }
 
 
 class TwinSitOnViewModel: ObservableObject {
     
+
     static let twinSitOnOptionsDictionary =
     Dictionary(uniqueKeysWithValues: TwinSitOnOption.allCases.map { $0 }.map { ($0, false) })
     
-    @Published private var twinSitOnModel: TwinSitOnModel =
+    @Published private (set) var twinSitOnModel: TwinSitOnModel =
     TwinSitOnModel( options: twinSitOnOptionsDictionary)
+    
     
 }
 

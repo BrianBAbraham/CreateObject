@@ -10,9 +10,8 @@ import Foundation
 
 
 struct CreateInitialObject {
-   
+    var defaultDictionary: Part3DimensionDictionary
     var dictionary: [String: PositionAsIosAxes ] = [:]
-    var measurements: MeasurementDictionary
 
     let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasurement()
 
@@ -23,14 +22,14 @@ struct CreateInitialObject {
         baseName baseObjectName: String,
         _ objectOptions: OptionDictionary,
         _ twinSitOnOptions: TwinSitOnOptions = [:],
-        _ measurements: MeasurementDictionary = [:]
+        _ defaultDictionary: Part3DimensionDictionary
     ) {
            
         self.objectOptions = objectOptions
         self.twinSitOnOptions = twinSitOnOptions
-        self.measurements = measurements
-        
+        self.defaultDictionary = defaultDictionary
 
+//DictionaryInArrayOut().getNameValue(defaultDictionary).forEach{print($0)}
         
         getDictionary(baseObjectName)
     }
@@ -53,16 +52,6 @@ struct CreateInitialObject {
             } else {
                 baseType = BaseObjectTypes(rawValue: baseName)!
             }
-
-            
-            
-
-    
-            
-            
-            
-            
-            
             
             let measurementForBaseGivenOccupantSupport =
                     getBaseAndOccupantSupportMeasurement(baseType)
@@ -78,7 +67,7 @@ struct CreateInitialObject {
                     baseMeasurement,
                     objectOptions,
                     fromPrimaryToOccupantSupports,
-                    measurements
+                    defaultDictionary
                 )
 
             dictionary +=
@@ -116,13 +105,16 @@ struct CreateInitialObject {
         let stability = stabilityChoices.max() ?? stabilityChoices[0]
             
 
+            /// the dimensions in the default dictionary need to input into the object creation
+            /// currently the struct InitialMeasurement is used and intitated with case based values
                 
         var rearToFront = 0.0
             
         switch baseType {
             case .allCasterBed:
-            let sleepOnDimension = initialOccupantBodySupportMeasure.sleepOn
-            rearToFront = 2200.0
+            let sleepOnDimension =
+                DimensionChange(GetDimensionFromDictionary(defaultDictionary).sitOnOneDimension2D).from3Dto2D
+            rearToFront = sleepOnDimension.length + 200.0
                 baseMeasurement =
                 InitialBaseMeasureFor(
                     rearToFrontLength: rearToFront, halfWidth: sleepOnDimension.width/2)
@@ -227,7 +219,7 @@ struct CreateInitialObject {
 
                     baseMeasurementAndSitOnOrigin =
                         (baseMeasurement: baseMeasurement,
-                        fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
+                        fromPrimaryToSitOnOrigin: [ZeroTouple.iosLocation])
 
             
             
@@ -237,7 +229,7 @@ struct CreateInitialObject {
             default:
                 baseMeasurementAndSitOnOrigin =
                     (baseMeasurement: baseMeasurement,
-                     fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
+                     fromPrimaryToSitOnOrigin: [ZeroTouple.iosLocation])
         }
         
         return baseMeasurementAndSitOnOrigin
@@ -267,7 +259,7 @@ struct CreateInitialObject {
         (baseMeasurement: InitialBaseMeasureFor,
          fromPrimaryToSitOnOrigin: [PositionAsIosAxes]) =
             (baseMeasurement: InitialBaseMeasureFor(),
-             fromPrimaryToSitOnOrigin: [Globalx.iosLocation])
+             fromPrimaryToSitOnOrigin: [ZeroTouple.iosLocation])
         
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
         

@@ -152,10 +152,12 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
                     proposedLength - currentLength.value
                 )
                 
-                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
-                    objectPickVM.getCurrentObjectName(),
-                    editedDictionary
-                )
+//                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
+//                    objectPickVM.getCurrentObjectName(),
+//                    editedDictionary)
+                
+                objectPickVM.setCurrentObjectWithEditedDictionary(editedDictionary)
+                
             }
             Text(displayLength)
         }
@@ -240,10 +242,10 @@ struct FootSupportWithHangerLinkLengthSlider: View {
                         sitOnId)
                 
                
-                
-                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
-                    objectPickVM.getCurrentObjectName(),
-                    editedDictionary)
+                objectPickVM.setCurrentObjectWithEditedDictionary(editedDictionary)
+//                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
+//                    objectPickVM.getCurrentObjectName(),
+//                    editedDictionary)
             }
             Text(displayLength)
         }

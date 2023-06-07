@@ -76,7 +76,7 @@ struct Corner {
             -> [[PositionAsIosAxes]] {
                 
            var cornerPositionsForBothSides =
-           [[Globalx.iosLocation], [Globalx.iosLocation]]
+           [[ZeroTouple.iosLocation], [ZeroTouple.iosLocation]]
     
            for position in partForBothSidesFromPrimary {
                cornerPositionsForBothSides.append(

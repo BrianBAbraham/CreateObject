@@ -28,7 +28,7 @@ struct CreateOccupantOverHeadSupport {
            ) {
                
                let partFromParentOrigin =
-               Globalx.iosLocation
+               ZeroTouple.iosLocation
                
                let supportIndexIsAlways = 0
                

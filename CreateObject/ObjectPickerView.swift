@@ -23,6 +23,9 @@ struct PickInitialObjectView: View {
     @State private var recline = false
     //@State private var reclineToggle = false
     
+    var defaultObjectDictionary: Part3DimensionDictionary {
+        objectPickVM.getDefaultObjectDictionary()}
+    
     var currentEqipmentType: String {
         getCurrentEquipmentType()
     }
@@ -32,6 +35,13 @@ struct PickInitialObjectView: View {
     }
     
     var body: some View {
+        
+//        let dOD = defaultObjectDictionary.count == 0 ?
+//            objectPickVM.setDefaultObjectDictionary(
+//                    BaseObjectTypes.fixedWheelRearDrive,
+//                    twinSitOnVM.getTwinSitOnOptions()): objectPickVM.createDefaultObjectDictionary(<#T##baseType: BaseObjectTypes##BaseObjectTypes#>, <#T##twinSitOnOptions: TwinSitOnOptions##TwinSitOnOptions#>)
+//        }
+        
         let twinSitOnState = twinSitOnVM.getState() //TWIN
         //let doubleSitOnState = objectPickVM.getCurrentOptionThereAreDoubleSitOn()  //TWIN
         let boundEquipmentType = Binding(
@@ -40,7 +50,6 @@ struct PickInitialObjectView: View {
         )
         
         VStack {
-
             Picker("Equipment",selection: boundEquipmentType ) {
                 ForEach(objectNames, id:  \.self)
                         { equipment in
@@ -48,16 +57,20 @@ struct PickInitialObjectView: View {
                 }
             }
             .onChange(of: equipmentType) {tag in
+                let twinSitOnOptions = twinSitOnVM.getTwinSitOnOptions()
                 self.equipmentType = tag
                 objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
-                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
+   
+                objectPickVM.setDefaultObjectDictionary(
+                    BaseObjectTypes(rawValue: tag) ??
+                        BaseObjectTypes.fixedWheelRearDrive,
+                    twinSitOnOptions)
+
+            
+                objectPickVM.setCurrentObjectByCreatingFromName(
                     tag,
-                    twinSitOnOptions: twinSitOnVM.getTwinSitOnOptions())
-               
-                
-  
-                
+                    twinSitOnOptions)
             }
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)
@@ -78,12 +91,7 @@ struct PickInitialObjectView: View {
 //                    self.recline = value
 //                })
                 .padding(.horizontal)
-            
-            
-
         }
-
-
     }
 }
 

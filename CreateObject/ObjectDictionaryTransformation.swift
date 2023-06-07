@@ -158,33 +158,32 @@ struct DictionaryInStringOut {
 
 
 
-struct DictionaryInArrayOut2 {
-    func getNameValue (_ dictionary: [String: PositionAsIosAxes ], _ sender: String = "") -> [String]{    //CHANGE
-        //print(dictionary)
-        var namesAndMeasurements: [String] = []
-        var values: PositionAsIosAxes    //CHANGE
-        for key in dictionary.keys {
-            values = dictionary[key]!
-            namesAndMeasurements.append(
-                key + ": " +
-                String(Int(values.x)) + Part.stringLink.rawValue +
-                String(Int(values.y)) + Part.stringLink.rawValue +
-                String(Int(values.z))
-            )
-        }
-        let sortedNamesAndMeasurements = namesAndMeasurements.sorted(by: <)
-        return sortedNamesAndMeasurements
-    }
-
-    
-    func getAllOriginNamesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{    //CHANGE
-        DictionaryInStringOut(myDictionary).stringOfNamesOut
-    }
-    
-    func getAllOriginValuesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{    //CHANGE
-        DictionaryInStringOut(myDictionary).stringOfValuesOut
-    }
-}
+//struct DictionaryInArrayOut2 {
+//    func getNameValue (_ dictionary: [String: PositionAsIosAxes ], _ sender: String = "") -> [String]{
+//        var namesAndMeasurements: [String] = []
+//        var values: PositionAsIosAxes
+//        for key in dictionary.keys {
+//            values = dictionary[key]!
+//            namesAndMeasurements.append(
+//                key + ": " +
+//                String(Int(values.x)) + Part.stringLink.rawValue +
+//                String(Int(values.y)) + Part.stringLink.rawValue +
+//                String(Int(values.z))
+//            )
+//        }
+//        let sortedNamesAndMeasurements = namesAndMeasurements.sorted(by: <)
+//        return sortedNamesAndMeasurements
+//    }
+//
+//    
+//    func getAllOriginNamesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{
+//        DictionaryInStringOut(myDictionary).stringOfNamesOut
+//    }
+//    
+//    func getAllOriginValuesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{
+//        DictionaryInStringOut(myDictionary).stringOfValuesOut
+//    }
+//}
 
 struct DictionaryInArrayOut {
     func getNameValue <T>(_ dictionary: [String: T ]) -> [String]{    //CHANGE
