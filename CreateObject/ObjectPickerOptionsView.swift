@@ -150,17 +150,29 @@ struct TwinSitOn: View {
                         let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
                         objectPickVM
                             .setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
-                        //.setCurrentObjectWithInitialOrEditedDictionary(name)
                     }
+//                    else {
+//
+//                        let objectType = objectPickVM.getCurrentObjectType()
+//                        let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+//                        objectPickVM.setDefaultObjectDictionary(
+//                            objectType,
+//                            twinSitOnDictionary)
+//
+//print(twinSitOnDictionary)
+//                    }
                 }
             
-            let options = [TwinSitOnOption.leftAndRight, TwinSitOnOption.frontAndRear]
+            let options: [TwinSitOnOption] = [.leftAndRight, .frontAndRear]
                         
             if twinSitOnToggle {
                 ExclusiveToggles(
                     twinSitOnVM.getManyState(options), 
                     options,
                     .twinSitOn)
+                
+
+                
             }
             
         } else {

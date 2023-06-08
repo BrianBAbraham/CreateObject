@@ -40,17 +40,14 @@ class ObjectPickViewModel: ObservableObject {
     
     static let twinSitOnDictionary: TwinSitOnOptions = [:]
     
-//    static let defaultObjectDictionary =
-//    createDefaultObjectDictionary(
-//        initialObject,
-//        twinSitOnDictionary)
-    
+
     static let dictionary =
         CreateInitialObject(
             baseName: initialObjectName,
             optionDictionary,
             twinSitOnDictionary,
-            [:])
+            ObjectDefaultDimension(initialObject, twinSitOnDictionary).dictionary//    [:]
+        )
             .dictionary
     
     @Published private var objectPickModel: ObjectPickModel =
@@ -59,17 +56,10 @@ class ObjectPickViewModel: ObservableObject {
                         initialDictionary: dictionary,
                         objectOptionDictionary: optionDictionary)
     
-//    let twinSitOnModel: TwinSitOnModel
     init() {
         setDefaultObjectDictionary(
             Self.initialObject,
             Self.twinSitOnDictionary)
-        
-        let defaultDictionary = getDefaultObjectDictionary()
-        
-        
-        
-//print("set Default dictionary")
     }
 }
 
@@ -105,11 +95,19 @@ extension ObjectPickViewModel {
     
     
     func getCurrentObjectName() -> String{
-//        print ("getting current object name")
-//        print( objectPickModel.currentObjectName)
-//        return
         objectPickModel.currentObjectName
     }
+    
+    
+    func getCurrentObjectType()
+        ->BaseObjectTypes {
+        let objectName = getCurrentObjectName()
+        
+        return BaseObjectTypes(rawValue: objectName) ??
+            BaseObjectTypes.fixedWheelRearDrive
+    }
+    
+    
     
     func getCurrentOptionState(_ options: [ObjectOptions])
         -> [Bool] {
@@ -406,23 +404,9 @@ extension ObjectPickViewModel {
         _ baseType: BaseObjectTypes,
         _ twinSitOnOptions: TwinSitOnOptions)
         -> Part3DimensionDictionary {
-            var defaultDimensionDictionary =
-                    RequestOccupantBodySupportDefaultDimensionDictionary(
-                        baseType, twinSitOnOptions).dictionary
-                    
-                defaultDimensionDictionary +=
-                        RequestOccupantFootSupportDefaultDimensionDictionary(
-                            baseType, twinSitOnOptions).dictionary
-                    
-                 defaultDimensionDictionary +=
-                    RequestOccupantBackSupportDefaultDimensionDictionary(
-                        baseType, twinSitOnOptions).dictionary
-                    
-                defaultDimensionDictionary +=
-                    RequestOccupantSideSupportDefaultDimensionDictionary(
-                        baseType, twinSitOnOptions).dictionary
-            
-            return defaultDimensionDictionary
+            return
+                ObjectDefaultDimension(baseType,twinSitOnOptions).dictionary
+          
     }
     
     func setDefaultObjectDictionary(

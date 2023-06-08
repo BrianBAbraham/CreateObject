@@ -62,9 +62,10 @@ struct PickInitialObjectView: View {
                 objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
    
+                let objectType =
+                objectPickVM.getCurrentObjectType()
                 objectPickVM.setDefaultObjectDictionary(
-                    BaseObjectTypes(rawValue: tag) ??
-                        BaseObjectTypes.fixedWheelRearDrive,
+                    objectType,
                     twinSitOnOptions)
 
             

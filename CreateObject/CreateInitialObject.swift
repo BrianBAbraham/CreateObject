@@ -113,7 +113,7 @@ struct CreateInitialObject {
         switch baseType {
             case .allCasterBed:
             let sleepOnDimension =
-                DimensionChange(GetDimensionFromDictionary(defaultDictionary).sitOnOneDimension2D).from3Dto2D
+                DimensionChange(GetDimensionFromDictionary(defaultDictionary).sitOnOneDimension3D).from3Dto2D
             rearToFront = sleepOnDimension.length + 200.0
                 baseMeasurement =
                 InitialBaseMeasureFor(

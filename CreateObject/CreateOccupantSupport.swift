@@ -65,48 +65,31 @@ struct CreateOccupantSupport {
     var armSupportRequired = true
     var footSupportRequired = true
     var tiltRequired = false
-    
-    var allBodySupportFromPrimaryOrigin: [PositionAsIosAxes] = []
-    
     let baseType: BaseObjectTypes //
 
     let baseMeasurement: InitialBaseMeasureFor //
   
     var dictionary: PositionDictionary = [:]
-    //var measurements: MeasurementDictionary
-
-    let initialOccupantBodySupportMeasurement: InitialOccupantBodySupportMeasurement //
-    
     var numberOfSeats: Int
  
-    var occupantSupportMeasure: Dimension //
+   // var occupantSupportMeasure: Dimension //
     let occupantSupportMeasures: InitialOccupantBodySupportMeasurement =
         InitialOccupantBodySupportMeasurement()//
     
     var allBodySupportCorners: [[PositionAsIosAxes]] = []//
     let objectOptions: OptionDictionary//
-    
 
-    
-    
     init(
         _ baseType: BaseObjectTypes,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
         _ baseMeasurement: InitialBaseMeasureFor,
         _ objectOptions: OptionDictionary,
         _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes],
-        _ defaultDictionary: Part3DimensionDictionary
+        _ objectDefaultDimensionDictionary: Part3DimensionDictionary
     ) {
         self.baseType = baseType
-        self.initialOccupantBodySupportMeasurement = initialOccupantBodySupportMeasure
         self.baseMeasurement = baseMeasurement
         self.objectOptions = objectOptions
-        //self.measurements = measurements
-
-        numberOfSeats =  fromPrimaryOriginToOccupantSupports.count// 1
-        
-        occupantSupportMeasure =
-            DimensionChange(GetDimensionFromDictionary(defaultDictionary).sitOnOneDimension2D).from3Dto2D
         
         switch baseType {
             case .allCasterBed:
@@ -137,30 +120,43 @@ struct CreateOccupantSupport {
                 tiltRequired = true
             
             default:
-            break
-                //occupantSupportMeasure = occupantSupportMeasures.sitOn
-
+                break
         }
         
-
-        allBodySupportFromPrimaryOrigin =
-        fromPrimaryOriginToOccupantSupports
-
+        numberOfSeats =  fromPrimaryOriginToOccupantSupports.count// 1
         
-        allBodySupportCorners =
-            getAllBodySupportFromPrimaryOriginCorners(
-                allBodySupportFromPrimaryOrigin,
-                occupantSupportMeasure.length,
-                occupantSupportMeasure.width)
+        
+       // for supportIndex in 0..<numberOfSeats {
+          let occupantSupportMeasures =
+            [DimensionChange(GetDimensionFromDictionary(
+                objectDefaultDimensionDictionary).sitOnOneDimension3D).from3Dto2D,
+             DimensionChange(GetDimensionFromDictionary(
+                 objectDefaultDimensionDictionary).sitOnTwoDimension3D).from3Dto2D
+            ]
+        //}
 
+//        occupantSupportMeasure =
+//        DimensionChange(GetDimensionFromDictionary(
+//            objectDefaultDimensionDictionary).sitOnOneDimension3D).from3Dto2D
         
         for supportIndex in 0..<numberOfSeats {
-//    print("numberOfSeats")
-//    print(numberOfSeats)
-//    print("")
+            
+            //occupantSupportMeasure = occupantSupportMeasures[supportIndex]
+            
+            allBodySupportCorners =
+                getAllBodySupportFromPrimaryOriginCorners(
+                    fromPrimaryOriginToOccupantSupports,
+                    occupantSupportMeasures[supportIndex].length,
+                    occupantSupportMeasures[supportIndex].width)
+
+            
             getDictionary(
                 supportIndex,
-                objectOptions
+                objectOptions,
+                fromPrimaryOriginToOccupantSupports,
+                objectDefaultDimensionDictionary,
+                initialOccupantBodySupportMeasure,
+                occupantSupportMeasures
             )
         }
         
@@ -183,100 +179,94 @@ struct CreateOccupantSupport {
             return oneOrTwoSitOnPartCorners
         }
         
-
         
 
-        
-        
-        func getDictionary(
-            _ supportIndex: Int,
-            _ objectOptions: OptionDictionary
-            ){
-            if armSupportRequired {
-                let occupantSideSuppport =
-                CreateOccupantSideSupport(
-                    allBodySupportFromPrimaryOrigin,
-                    supportIndex
-                )
-                dictionary +=
-                occupantSideSuppport.dictionary
-                }
-
-            if backSupportRequired {
-                let occupantBackSupport =
-                    CreateOccupantBackSupport (
-                        allBodySupportFromPrimaryOrigin,
-                        supportIndex,
-                        objectOptions)
-                dictionary +=
-                occupantBackSupport.dictionary
-            }
-            
-                
-            if bodySupportRequired {
-                let bodySupportDictionary =
-                CreateOccupantBodySupport (
-                    allBodySupportFromPrimaryOrigin[supportIndex],
-                    allBodySupportCorners [supportIndex],
-                    supportIndex,
-                    baseType,
-                    occupantSupportMeasure
-                    ).dictionary
-                dictionary += bodySupportDictionary
-            }
-                
-                
-            if footSupportRequired {
-                let occupantFootSupport =
-                    CreateOccupantFootSupport(
-                        allBodySupportFromPrimaryOrigin,
-                        supportIndex,
-                        initialOccupantBodySupportMeasure,
-                        baseType//,
-                        //measurements
-                    )
-                    dictionary +=
-                    occupantFootSupport.dictionary
-            }
-
-
-            if headSupportRequired {
-                let occupantHeadSupport =
-                CreateOccupantHeadSupport(
-                    allBodySupportFromPrimaryOrigin,
-                    supportIndex,
-                    objectOptions,
-                    defaultDictionary
-                )
-                dictionary +=
-                occupantHeadSupport.dictionary
-            }
-
-                
-            if overheadSupportRequired {
-                let overHeadSupportFromPrimaryOrigin: PositionAsIosAxes =
-                (x: 0, y: baseMeasurement.rearToFrontLength/3*2, z: 1200)
-                
-                let overHeadSupportDictionary =
-                CreateOccupantOverHeadSupport (
-                    overHeadSupportFromPrimaryOrigin,
-                    initialOccupantBodySupportMeasure
-                    ).dictionary
-                dictionary += overHeadSupportDictionary
-            }
-                
-//            if tiltRequired {
-//               let tiltDictionary =
-//                CreateOccupantTiltSupport(
-//                    dictionary,
-//                    allBodySupportFromPrimaryOrigin,
-//                    supportIndex,
-//                    [600.0, 500.0]
-//                )
-//
-//                dictionary += tiltDictionary.dictionaryForTiltJoint
-//            }
-        }
     }
+    
+   mutating func getDictionary(
+        _ supportIndex: Int,
+        _ objectOptions: OptionDictionary,
+        _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes],
+        _ objectDefaultDimensionDictionary: Part3DimensionDictionary,
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
+        _ occupantSupportMeasures: [Dimension]
+        ){
+        if armSupportRequired {
+            let occupantSideSuppport =
+            CreateOccupantSideSupport(
+                fromPrimaryOriginToOccupantSupports,
+                supportIndex
+            )
+            dictionary +=
+            occupantSideSuppport.dictionary
+            }
+
+        if backSupportRequired {
+            let occupantBackSupport =
+                CreateOccupantBackSupport (
+                    fromPrimaryOriginToOccupantSupports,
+                    supportIndex,
+                    objectOptions)
+            dictionary +=
+            occupantBackSupport.dictionary
+        }
+        
+            
+        if bodySupportRequired {
+            let bodySupportDictionary =
+            CreateOccupantBodySupport (
+                fromPrimaryOriginToOccupantSupports[supportIndex],
+                allBodySupportCorners [supportIndex],
+                supportIndex,
+                baseType,
+                occupantSupportMeasures[supportIndex]
+                ).dictionary
+            dictionary += bodySupportDictionary
+        }
+            
+            
+        if footSupportRequired {
+            let occupantFootSupport =
+                CreateOccupantFootSupport(
+                    fromPrimaryOriginToOccupantSupports,
+                    supportIndex,
+                    initialOccupantBodySupportMeasure,
+                    baseType//,
+                    //measurements
+                )
+                dictionary +=
+                occupantFootSupport.dictionary
+        }
+
+
+        if headSupportRequired {
+            let occupantHeadSupport =
+            CreateOccupantHeadSupport(
+                fromPrimaryOriginToOccupantSupports,
+                supportIndex,
+                objectOptions,
+                objectDefaultDimensionDictionary
+            )
+            dictionary +=
+            occupantHeadSupport.dictionary
+        }
+
+            
+        if overheadSupportRequired {
+            let overHeadSupportFromPrimaryOrigin: PositionAsIosAxes =
+            (x: 0, y: baseMeasurement.rearToFrontLength/3*2, z: 1200)
+            
+            let overHeadSupportDictionary =
+            CreateOccupantOverHeadSupport (
+                overHeadSupportFromPrimaryOrigin,
+                initialOccupantBodySupportMeasure
+                ).dictionary
+            dictionary += overHeadSupportDictionary
+        }
+            
+    }
+    
+    
+    
 }
     

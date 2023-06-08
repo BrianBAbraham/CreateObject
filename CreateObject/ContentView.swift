@@ -280,6 +280,7 @@ struct CustomPreferenceKey: PreferenceKey {
 
 struct ExclusiveToggles: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
 
     let toggleCases: [TwinSitOnOption]
     
@@ -293,6 +294,9 @@ struct ExclusiveToggles: View {
         self.toggleCases = toggleCases
         _flags = State(initialValue: optionStates)
         self.toggleFor = toggleFor
+        
+        
+
     }
     
     var body: some View {
@@ -320,7 +324,15 @@ struct ToggleItem: View {
     let toggleCases: [TwinSitOnOption]
     let toggleFor: Toggles
 
+//    init() {
+
+//    }
+    
     var body: some View {
+        
+
+        
+        
         let isOn = Binding (get: { self.storage[self.tag] },
             set: { value in
             
@@ -339,11 +351,22 @@ struct ToggleItem: View {
                         dictionary
                     )
                     
+let objectType = objectPickVM.getCurrentObjectType()
+let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+objectPickVM.setDefaultObjectDictionary(
+    objectType,
+    twinSitOnDictionary)
+objectPickVM.setCurrentObjectByCreatingFromName(name,twinSitOnDictionary)
+
+                    
                 case .sitOnPosition:
                     twinSitOnVM.setTwinSitOnOption(
                         toggleCases[index],
                         setOption
                     )
+                    
+
+
                 }
             }
 
