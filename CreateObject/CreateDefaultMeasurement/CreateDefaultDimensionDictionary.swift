@@ -26,9 +26,7 @@ struct CreateDefaultDimensionDictionary {
 
         idsForSitOn =
             (twinSitOnOptions[.frontAndRear] ?? false ||
-            twinSitOnOptions[.leftAndRight] ?? false)  ? idsForSitOn: [.id0]
-print(idsForSitOn)
-        
+            twinSitOnOptions[.leftAndRight] ?? false)  ? idsForSitOn: [.id0]        
         for partId in  idsForPart {
             for sitOnId in idsForSitOn {
                 let nameEnd: [Part] = [partId, .stringLink, .sitOn, sitOnId]

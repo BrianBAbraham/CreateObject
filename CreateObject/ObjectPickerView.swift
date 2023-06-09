@@ -36,12 +36,6 @@ struct PickInitialObjectView: View {
     
     var body: some View {
         
-//        let dOD = defaultObjectDictionary.count == 0 ?
-//            objectPickVM.setDefaultObjectDictionary(
-//                    BaseObjectTypes.fixedWheelRearDrive,
-//                    twinSitOnVM.getTwinSitOnOptions()): objectPickVM.createDefaultObjectDictionary(<#T##baseType: BaseObjectTypes##BaseObjectTypes#>, <#T##twinSitOnOptions: TwinSitOnOptions##TwinSitOnOptions#>)
-//        }
-        
         let twinSitOnState = twinSitOnVM.getState() //TWIN
         //let doubleSitOnState = objectPickVM.getCurrentOptionThereAreDoubleSitOn()  //TWIN
         let boundEquipmentType = Binding(
@@ -57,21 +51,21 @@ struct PickInitialObjectView: View {
                 }
             }
             .onChange(of: equipmentType) {tag in
-                let twinSitOnOptions = twinSitOnVM.getTwinSitOnOptions()
+
                 self.equipmentType = tag
                 objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
    
-                let objectType =
-                objectPickVM.getCurrentObjectType()
-                objectPickVM.setDefaultObjectDictionary(
-                    objectType,
-                    twinSitOnOptions)
+                
 
-            
-                objectPickVM.setCurrentObjectByCreatingFromName(
-                    tag,
-                    twinSitOnOptions)
+let twinSitOnOptions = twinSitOnVM.getTwinSitOnOptions()
+objectPickVM.setDefaultObjectDictionary(
+    twinSitOnOptions)
+objectPickVM.setCurrentObjectByCreatingFromName(
+    //tag,
+    twinSitOnOptions)
+                
+                
             }
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)

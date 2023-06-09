@@ -323,10 +323,6 @@ struct ToggleItem: View {
     var label: String = ""
     let toggleCases: [TwinSitOnOption]
     let toggleFor: Toggles
-
-//    init() {
-
-//    }
     
     var body: some View {
         
@@ -344,19 +340,13 @@ struct ToggleItem: View {
                 case .twinSitOn:
                     twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
                     
-                    let dictionary = twinSitOnVM.getTwinSitOnOptions()
-                    let name = objectPickVM.getCurrentObjectName ()
-                    objectPickVM.setCurrentObjectByCreatingFromName(
-                        name,
-                        dictionary
-                    )
-                    
-let objectType = objectPickVM.getCurrentObjectType()
-let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+
+let twinSitOnOptions =
+twinSitOnVM.getTwinSitOnOptions()
 objectPickVM.setDefaultObjectDictionary(
-    objectType,
-    twinSitOnDictionary)
-objectPickVM.setCurrentObjectByCreatingFromName(name,twinSitOnDictionary)
+    twinSitOnOptions)
+objectPickVM.setCurrentObjectByCreatingFromName(
+    twinSitOnOptions)
 
                     
                 case .sitOnPosition:
@@ -364,9 +354,6 @@ objectPickVM.setCurrentObjectByCreatingFromName(name,twinSitOnDictionary)
                         toggleCases[index],
                         setOption
                     )
-                    
-
-
                 }
             }
 

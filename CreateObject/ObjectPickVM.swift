@@ -58,7 +58,7 @@ class ObjectPickViewModel: ObservableObject {
     
     init() {
         setDefaultObjectDictionary(
-            Self.initialObject,
+           // Self.initialObject,
             Self.twinSitOnDictionary)
     }
 }
@@ -410,9 +410,9 @@ extension ObjectPickViewModel {
     }
     
     func setDefaultObjectDictionary(
-            _ baseType: BaseObjectTypes,
+
             _ twinSitOnOptions: TwinSitOnOptions) {
-                
+             let baseType = getCurrentObjectType()
             objectPickModel.defaultObjectDictionary =
             createDefaultObjectDictionary(
                 baseType,
@@ -449,32 +449,30 @@ extension ObjectPickViewModel {
     
 
 
-//    func setCurrentObjectWithInitialOrEditedDictionary(
-//        _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
-//        _ editedDictionary: PositionDictionary = ["": Globalx.iosLocation],
-//        twinSitOnOptions: TwinSitOnOptions = [:],
-//        _ defaultObjectDictionary: Part3DimensionDictionary) {
-//        
-//            let defaultDictionary = getDefaultObjectDictionary()
-//
-//            let nonNilWhenEditedDictionaryPassed = ""
-//
-//            objectPickModel.currentObjectDictionary =
-//            editedDictionary[ nonNilWhenEditedDictionaryPassed] != nil ?
-//            CreateInitialObject(
-//                baseName: objectName,
-//                getObjectOptionsDictionary(),
-//                twinSitOnOptions,
-//                defaultDictionary
-//            ).dictionary
-//            :
-//            editedDictionary
-//    }
     
     func setCurrentObjectByCreatingFromName(
-        _ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
+        //_ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ twinSitOnDictionary: TwinSitOnOptions) {
             
+            let optionsDictionary = getObjectOptionsDictionary()
+            
+            let defaultDictionary = getDefaultObjectDictionary()
+          let objectName = getCurrentObjectName()
+        
+            objectPickModel.currentObjectDictionary =
+            CreateInitialObject(
+                baseName: objectName,
+                optionsDictionary,
+                twinSitOnDictionary,
+                defaultDictionary
+            ).dictionary
+    }
+    
+    func setCurrentObjectByCreatingFromName2(
+        _ twinSitOnDictionary: TwinSitOnOptions) {
+            
+            let objectName = getCurrentObjectName ()
+          
             let optionsDictionary = getObjectOptionsDictionary()
             
             let defaultDictionary = getDefaultObjectDictionary()
@@ -487,7 +485,9 @@ extension ObjectPickViewModel {
                 twinSitOnDictionary,
                 defaultDictionary
             ).dictionary
-        }
+    }
+    
+    
     
     func setCurrentObjectWithEditedDictionary(
         _ editedDictionary: PositionDictionary) {

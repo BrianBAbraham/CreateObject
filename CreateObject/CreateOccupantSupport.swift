@@ -72,7 +72,6 @@ struct CreateOccupantSupport {
     var dictionary: PositionDictionary = [:]
     var numberOfSeats: Int
  
-   // var occupantSupportMeasure: Dimension //
     let occupantSupportMeasures: InitialOccupantBodySupportMeasurement =
         InitialOccupantBodySupportMeasurement()//
     
@@ -135,13 +134,9 @@ struct CreateOccupantSupport {
             ]
         //}
 
-//        occupantSupportMeasure =
-//        DimensionChange(GetDimensionFromDictionary(
-//            objectDefaultDimensionDictionary).sitOnOneDimension3D).from3Dto2D
+
         
         for supportIndex in 0..<numberOfSeats {
-            
-            //occupantSupportMeasure = occupantSupportMeasures[supportIndex]
             
             allBodySupportCorners =
                 getAllBodySupportFromPrimaryOriginCorners(

@@ -32,11 +32,13 @@ struct BackSupportRecline: View {
             Toggle("Reclining back",isOn: $reclineToggle)
                 .onChange(of: reclineToggle) { value in
                     let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                    let name = objectPickVM.getCurrentObjectName()
+                    //let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.reclinedBackSupport,
                         reclineToggle) //RECLINE
-                    objectPickVM.setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                    objectPickVM.setCurrentObjectByCreatingFromName(
+                        //name,
+                        twinSitOnDictionary)
                         
                         //.setCurrentObjectWithInitialOrEditedDictionary(
                         //name,
@@ -65,11 +67,13 @@ struct Tilt: View {
             Toggle("Tilt",isOn: $tiltToggle)
                 .onChange(of: tiltToggle) { value in
                     let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                    let name = objectPickVM.getCurrentObjectName()
+                   // let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.tiltInSpace,
                         tiltToggle)
-                    objectPickVM.setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                    objectPickVM.setCurrentObjectByCreatingFromName(
+                        //name,
+                        twinSitOnDictionary)
                     //setCurrentObjectWithInitialOrEditedDictionary(
                       //  name)
                     
@@ -95,11 +99,13 @@ struct HeadSupport: View {
             Toggle("Headrest",isOn: $headSuppportToggle)
                 .onChange(of: headSuppportToggle) { value in
                     let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                    let name = objectPickVM.getCurrentObjectName()
+                    //let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.headSupport,
                         headSuppportToggle)
-                    objectPickVM.setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                    objectPickVM.setCurrentObjectByCreatingFromName(
+                        //name,
+                        twinSitOnDictionary)
                     //.setCurrentObjectWithInitialOrEditedDictionary(
                        // name)
                     
@@ -146,10 +152,12 @@ struct TwinSitOn: View {
                         
                         twinSitOnVM.setAllConfigurationFalse()
                         
-                        let name = objectPickVM.getCurrentObjectName()
+                       // let name = objectPickVM.getCurrentObjectName()
                         let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
                         objectPickVM
-                            .setCurrentObjectByCreatingFromName(name, twinSitOnDictionary)
+                            .setCurrentObjectByCreatingFromName(
+                                //name,
+                                twinSitOnDictionary)
                     }
 //                    else {
 //
