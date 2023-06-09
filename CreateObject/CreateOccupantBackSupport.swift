@@ -150,7 +150,10 @@ struct CreateOccupantBackSupport {
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
-        _ objectOptions: OptionDictionary
+        _ objectOptions: OptionDictionary,
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
+        
+        
     ){
         measurementFor = InitialOccupantBackSupportMeasurement(objectOptions)
         
@@ -163,7 +166,8 @@ struct CreateOccupantBackSupport {
         getDictionary(
             supportIndex,
             parentFromPrimaryOrigin,
-            backSupportMeasurement
+            backSupportMeasurement,
+            defaultOrModifiedObjectDimensionDictionary
         )
     }
     
@@ -171,15 +175,25 @@ struct CreateOccupantBackSupport {
     mutating func getDictionary(
         _ supportIndex: Int,
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
-        _ backSupportMeasurement: Dimension
+        _ backSupportMeasurement: Dimension,
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
+        
         ) {
         
         let partFromParentOrigin =
             measurementFor.backSupportFromParentOrigin
+        
+
+        let dimension =
+            DimensionChange(
+                GetDimensionFromDictionary(
+                    defaultOrModifiedObjectDimensionDictionary,
+                    [.backSupport, .id0, .stringLink, .sitOn, [.id0, .id1][supportIndex]]).dimension3D
+            ).from3Dto2D
             
         let backSupportDictionary =
             CreateOnePartOrSideSymmetricParts(
-                backSupportMeasurement,
+                dimension,
                 .backSupport,
                 parentFromPrimaryOrigin[supportIndex],
                 partFromParentOrigin,
@@ -187,7 +201,7 @@ struct CreateOccupantBackSupport {
             
        let backSupportJointDictionary =
             CreateOnePartOrSideSymmetricParts(
-                measurementFor.backSupportJoint,
+                Joint.dimension,
                 .backSupportJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 measurementFor.backSupportJointFromParentOrigin,

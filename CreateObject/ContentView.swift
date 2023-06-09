@@ -47,6 +47,10 @@ struct ListView: View {
 }
 
 
+
+//Content view mediates data between view models
+//All data is requested from view models
+//All data is passed to view models to set model
 struct ContentView: View {
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
@@ -60,10 +64,6 @@ struct ContentView: View {
    
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
-    
-//    init(_ equipmentName: String) {
-//        self.equipmentName = equipmentName
-//        }
     
     var currentObjectDictionaryAsList: [String] {
         objectPickVM.getList(.useCurrent)

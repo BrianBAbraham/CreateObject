@@ -31,20 +31,28 @@ struct CreateOccupantHeadSupport {
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
         _ objectOptions: OptionDictionary,
-        _ defaultDictionary: Part3DimensionDictionary
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
         ) {
             
             let sitOnId: Part = [.id0, .id1][supportIndex]
         
-        let headSupportMeasurement =
+        let headSupportDimension =
             DimensionChange(
             GetDimensionFromDictionary(
-                defaultDictionary,
+                defaultOrModifiedObjectDimensionDictionary,
                 [ .backSupportHeadSupport, .id0, .stringLink, .sitOn, sitOnId]
             ).dimension3D ).from3Dto2D
             //InitialOccupantHeadSupportMeasurement.headSupport
         
-        let headSupporLinkMeasurement = InitialOccupantHeadSupportMeasurement.headSupportLink
+        //let headSupporLinkMeasurement = InitialOccupantHeadSupportMeasurement.headSupportLink
+        
+        let headSupportLinkDimension =
+                DimensionChange(
+                GetDimensionFromDictionary(
+                    defaultOrModifiedObjectDimensionDictionary,
+                    [ .backSupportHeadSupportLink, .id0, .stringLink, .sitOn, sitOnId]
+                ).dimension3D ).from3Dto2D
+            
             
         let headSupportFromParentOrigin =
             getPartFromParentOrigin(
@@ -79,7 +87,7 @@ struct CreateOccupantHeadSupport {
             switch part {
                 case .backSupportHeadSupport:
                     let headSupportHalfLength =
-                        headSupportMeasurement.length/2
+                        headSupportDimension.length/2
                     lengths = [headSupportHalfLength, gapLlength, backSupportHalfLength]
                 case .backSupportHeadSupportLink:
                     let linkHalfLength = InitialOccupantHeadSupportMeasurement.headSupportLink.length/2
@@ -110,7 +118,7 @@ struct CreateOccupantHeadSupport {
                     
                 let headSupportDictionary =
                     CreateOnePartOrSideSymmetricParts(
-                       headSupportMeasurement,
+                       headSupportDimension,
                         .backSupportHeadSupport,
                         parentFromPrimaryOrigin[supportIndex],
                         headSupportFromParentOrigin,
@@ -118,7 +126,7 @@ struct CreateOccupantHeadSupport {
 
                 let headSupportLinkDictionary =
                     CreateOnePartOrSideSymmetricParts(
-                        headSupporLinkMeasurement,
+                        headSupportLinkDimension,
                         .backSupportHeadSupportLink,
                         parentFromPrimaryOrigin[supportIndex],
                         headSupportLinkFromParentOrigin,

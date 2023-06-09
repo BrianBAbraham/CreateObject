@@ -25,6 +25,15 @@ class ObjectEditViewModel: ObservableObject {
 
 extension ObjectEditViewModel {
     
+    
+    //receive default dictionary and make changes returning a modified dictionary
+    // MARK: EDIT DEFAULT DICTIONARY
+    func getModifiedDictionary (
+        _ dictionary: Part3DimensionDictionary)
+        -> Part3DimensionDictionary{
+        dictionary
+    }
+    
     func getCurrenPartToEditName() -> String {
         let partName = partEditModel.part
         return partName

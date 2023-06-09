@@ -128,9 +128,9 @@ struct CreateOccupantFootSupport {
         _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
         _ supportIndex: Int,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
-        _ baseType: BaseObjectTypes//,
-       // _ measurements: MeasurementDictionary = [:]
-    ){
+        _ baseType: BaseObjectTypes,
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
+        ){
         
         self.supportIndex = supportIndex
         self.initialOccupantFootSupportMeasure = InitialOccupantFootSupportMeasure (initialOccupantBodySupportMeasure)
@@ -147,8 +147,13 @@ struct CreateOccupantFootSupport {
                 
                 
                 footSupportDimension =
+                    DimensionChange(
+                        GetDimensionFromDictionary(
+                            defaultOrModifiedObjectDimensionDictionary,
+                            [.footSupport, .id0, .stringLink, .sitOn, [.id0, .id1][supportIndex]]).dimension3D
+                    ).from3Dto2D
 //                GetFromMeasurementDictionary(measurements, .footSupport, .foot).dimension
-                InitialOccupantFootSupportMeasure.footShowerSupport
+                //InitialOccupantFootSupportMeasure.footShowerSupport
             default:
                 footSupportFromParent =
                 initialOccupantFootSupportMeasure.rightFootSupportFromFromSitOnOrigin
@@ -160,16 +165,21 @@ struct CreateOccupantFootSupport {
             
         getDictionary(
             supportIndex,
-            allBodySupportFromPrimaryOrigin
+            allBodySupportFromPrimaryOrigin,
+            defaultOrModifiedObjectDimensionDictionary
         )
     }
     
 
     mutating func getDictionary(
         _ supportIndex: Int,
-        _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes]
+        _ allBodySupportFromPrimaryOrigin: [PositionAsIosAxes],
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
         ) {
             let support: Part = footSupportInOnePieceRequired ? .footSupportInOnePiece: .footSupport
+            
+           
+            
             
             footDictionary(
                 footSupportDimension,
@@ -192,10 +202,7 @@ struct CreateOccupantFootSupport {
             
             
             if hangerLinkRequired {
-//print(#function)
-//print("getDictionary")
-//print(supportIndex)
-//print("")
+
                 let hangerLinkDictionary =
                     CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
                         .footSupportHangerSitOnVerticalJoint,

@@ -65,9 +65,9 @@ struct CreateOccupantSupport {
     var armSupportRequired = true
     var footSupportRequired = true
     var tiltRequired = false
-    let baseType: BaseObjectTypes //
+    let baseType: BaseObjectTypes
 
-    let baseMeasurement: InitialBaseMeasureFor //
+    let baseMeasurement: InitialBaseMeasureFor
   
     var dictionary: PositionDictionary = [:]
     var numberOfSeats: Int
@@ -75,7 +75,7 @@ struct CreateOccupantSupport {
     let occupantSupportMeasures: InitialOccupantBodySupportMeasurement =
         InitialOccupantBodySupportMeasurement()//
     
-    var allBodySupportCorners: [[PositionAsIosAxes]] = []//
+    var allBodySupportCorners: [[PositionAsIosAxes]] = []
     let objectOptions: OptionDictionary//
 
     init(
@@ -84,7 +84,7 @@ struct CreateOccupantSupport {
         _ baseMeasurement: InitialBaseMeasureFor,
         _ objectOptions: OptionDictionary,
         _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes],
-        _ objectDefaultDimensionDictionary: Part3DimensionDictionary
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
     ) {
         self.baseType = baseType
         self.baseMeasurement = baseMeasurement
@@ -124,15 +124,13 @@ struct CreateOccupantSupport {
         
         numberOfSeats =  fromPrimaryOriginToOccupantSupports.count// 1
         
-        
-       // for supportIndex in 0..<numberOfSeats {
+        let dimensions = GetDimensionFromDictionary(
+            defaultOrModifiedObjectDimensionDictionary).sitOnDimension3D
+
           let occupantSupportMeasures =
-            [DimensionChange(GetDimensionFromDictionary(
-                objectDefaultDimensionDictionary).sitOnOneDimension3D).from3Dto2D,
-             DimensionChange(GetDimensionFromDictionary(
-                 objectDefaultDimensionDictionary).sitOnTwoDimension3D).from3Dto2D
+            [DimensionChange(dimensions[0]).from3Dto2D,
+             DimensionChange(dimensions[1]).from3Dto2D
             ]
-        //}
 
 
         
@@ -149,7 +147,7 @@ struct CreateOccupantSupport {
                 supportIndex,
                 objectOptions,
                 fromPrimaryOriginToOccupantSupports,
-                objectDefaultDimensionDictionary,
+                defaultOrModifiedObjectDimensionDictionary,
                 initialOccupantBodySupportMeasure,
                 occupantSupportMeasures
             )
@@ -182,7 +180,7 @@ struct CreateOccupantSupport {
         _ supportIndex: Int,
         _ objectOptions: OptionDictionary,
         _ fromPrimaryOriginToOccupantSupports: [PositionAsIosAxes],
-        _ objectDefaultDimensionDictionary: Part3DimensionDictionary,
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary,
         _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
         _ occupantSupportMeasures: [Dimension]
         ){
@@ -190,7 +188,8 @@ struct CreateOccupantSupport {
             let occupantSideSuppport =
             CreateOccupantSideSupport(
                 fromPrimaryOriginToOccupantSupports,
-                supportIndex
+                supportIndex,
+                defaultOrModifiedObjectDimensionDictionary
             )
             dictionary +=
             occupantSideSuppport.dictionary
@@ -201,7 +200,8 @@ struct CreateOccupantSupport {
                 CreateOccupantBackSupport (
                     fromPrimaryOriginToOccupantSupports,
                     supportIndex,
-                    objectOptions)
+                    objectOptions,
+                    defaultOrModifiedObjectDimensionDictionary)
             dictionary +=
             occupantBackSupport.dictionary
         }
@@ -226,8 +226,8 @@ struct CreateOccupantSupport {
                     fromPrimaryOriginToOccupantSupports,
                     supportIndex,
                     initialOccupantBodySupportMeasure,
-                    baseType//,
-                    //measurements
+                    baseType,
+                    defaultOrModifiedObjectDimensionDictionary
                 )
                 dictionary +=
                 occupantFootSupport.dictionary
@@ -240,7 +240,7 @@ struct CreateOccupantSupport {
                 fromPrimaryOriginToOccupantSupports,
                 supportIndex,
                 objectOptions,
-                objectDefaultDimensionDictionary
+                defaultOrModifiedObjectDimensionDictionary
             )
             dictionary +=
             occupantHeadSupport.dictionary
@@ -254,7 +254,8 @@ struct CreateOccupantSupport {
             let overHeadSupportDictionary =
             CreateOccupantOverHeadSupport (
                 overHeadSupportFromPrimaryOrigin,
-                initialOccupantBodySupportMeasure
+                initialOccupantBodySupportMeasure,
+                defaultOrModifiedObjectDimensionDictionary
                 ).dictionary
             dictionary += overHeadSupportDictionary
         }

@@ -15,16 +15,19 @@ struct CreateOccupantOverHeadSupport {
     
     init(
         _ fromPrimaryOrigin: PositionAsIosAxes,
-        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement) {
+        _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary) {
             
         getDictionary(
             fromPrimaryOrigin,
-            initialOccupantBodySupportMeasure
+            initialOccupantBodySupportMeasure,
+            defaultOrModifiedObjectDimensionDictionary
         )
             
            func getDictionary(
             _ fromPrimaryOrigin: PositionAsIosAxes,
-            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement
+            _ initialOccupantBodySupportMeasure: InitialOccupantBodySupportMeasurement,
+            _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
            ) {
                
                let partFromParentOrigin =
@@ -33,10 +36,25 @@ struct CreateOccupantOverHeadSupport {
                let supportIndexIsAlways = 0
                
                let jointAboveSupport = fromPrimaryOrigin.z + 50
+               
+               let overheadDimension =
+                   DimensionChange(
+                       GetDimensionFromDictionary(
+                           defaultOrModifiedObjectDimensionDictionary,
+                           [.overheadSupport, .id0, .stringLink, .sitOn, .id0]).dimension3D
+                   ).from3Dto2D
+               
+               let hookDimension =
+                   DimensionChange(
+                       GetDimensionFromDictionary(
+                           defaultOrModifiedObjectDimensionDictionary,
+                           [.overheadSupportHook, .id0, .stringLink, .sitOn, .id0]).dimension3D
+                   ).from3Dto2D
                    
+               
                let overHeadSupportDictionary =
                CreateOnePartOrSideSymmetricParts(
-                       initialOccupantBodySupportMeasure.overHead,
+                        overheadDimension,
                        .overheadSupport,
                        fromPrimaryOrigin,
                        partFromParentOrigin,
@@ -44,7 +62,7 @@ struct CreateOccupantOverHeadSupport {
                
                let overHeadSupportJointDictionary =
                CreateOnePartOrSideSymmetricParts(
-                       initialOccupantBodySupportMeasure.overHeadJoint,
+                Joint.dimension,
                        .overheadSupportJoint,
                        fromPrimaryOrigin,
                        partFromParentOrigin,
@@ -52,7 +70,7 @@ struct CreateOccupantOverHeadSupport {
 
                let overHeadSupportHookDictionary =
                    CreateOnePartOrSideSymmetricParts(
-                    InitialOccupantBodySupportMeasurement().overHeadHook,
+                    overheadDimension,
                         .overheadSupportHook,
                     fromPrimaryOrigin,
                     (x: initialOccupantBodySupportMeasure.overHead.width/2 - 50,

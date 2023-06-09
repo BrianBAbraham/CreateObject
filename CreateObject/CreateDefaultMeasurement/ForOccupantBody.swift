@@ -34,6 +34,7 @@ struct RequestOccupantBodySupportDefaultDimensionDictionary {
         }
 }
 
+
 struct OccupantBodySupportDefaultDimension {
     
     var dictionary: BaseObject3DimensionDictionary =
@@ -52,7 +53,79 @@ struct OccupantBodySupportDefaultDimension {
     
 }
 
+//
+//struct RequestOccupantBodySupportDefaultOriginDictionary {
+//    var dictionary: PositionDictionary = [:]
+//
+//    init(
+//        _ baseType: BaseObjectTypes,
+//        _ twinSitOnOptions: TwinSitOnOptions
+//        ) {
+//
+//        getDictionary()
+//
+//        func getDictionary() {
+//
+//            let allOccupantRelated = AllOccupantFootRelated(baseType)
+//            dictionary =
+//                CreateDefaultOriginDictionary(
+//                    allOccupantRelated.parts,
+//                    allOccupantRelated.dimensions,
+//                    twinSitOnOptions
+//                ).dictionary
+//        }
+//    }
+//}
 
+struct OccupantBodySupportDefaultOrigin {
+    static let sitOnHeight = 500.0
+    var dictionary: BaseObjectOriginDictionary =
+    [ .allCasterBed :
+        (x: 0.0,
+         y: OccupantBodySupportDefaultDimension(.allCasterBed).value.length/2 ,
+         z: Self.sitOnHeight),
+      .allCasterChair:
+        (x: 0.0,
+         y: OccupantBodySupportDefaultDimension(.allCasterChair).value.length/2 ,
+         z: Self.sitOnHeight),
+      .allCasterHoist:
+        (x: 0.0,
+         y: BaseDefaultDimension(.allCasterHoist).value.length/2 ,
+         z: OccupantOverheadSupportMastDefaultDimension(.allCasterHoist).value.height),
+      .allCasterTiltInSpaceShowerChair:
+        (x: 0.0,
+         y:  OccupantBodySupportDefaultDimension(.allCasterTiltInSpaceShowerChair).value.length/2,
+         z: Self.sitOnHeight),
+      .allCasterStretcher:
+        (x: 0.0,
+         y: OccupantBodySupportDefaultDimension(.allCasterStretcher).value.length/2 ,
+         z: Self.sitOnHeight),
+      .fixedWheelFrontDrive:
+        (x: 0.0,
+         y: -OccupantBodySupportDefaultDimension(.allCasterChair).value.length/2 ,
+         z: Self.sitOnHeight),
+      .fixedWheelMidDrive:
+        (x: 0.0,
+         y: 0.0,
+         z: Self.sitOnHeight),
+      .fixedWheelRearDrive:
+        (x: 0.0,
+         y: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive).value.length/2 ,
+         z: Self.sitOnHeight),
+      .fixedWheelManualRearDrive:
+        (x: 0.0,
+         y: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive).value.length/2 ,
+         z: Self.sitOnHeight)
+    ]
+    
+    static let general = ZeroTouple.iosLocation
+    let value: PositionAsIosAxes
+    
+    init (
+        _ baseType: BaseObjectTypes ) {
+            value = dictionary[baseType] ?? Self.general
+        }
+}
 //struct RequestOccupantSupportDefaultDimensionDictionary {
 //    var dictionary: Part3DimensionDictionary = [:]
 //

@@ -27,8 +27,9 @@ typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
 typealias BaseObject3DimensionDictionary = [BaseObjectTypes: Dimension3d]
 typealias PartDimensionDictionary = [String: Dimension]
 typealias Part3DimensionDictionary = [String: Dimension3d]
-typealias BaseObjectPositionDictionary = [BaseObjectTypes: PositionAsIosAxes]
-typealias PartToPartDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
+typealias BaseObjectOriginDictionary = [BaseObjectTypes: PositionAsIosAxes]
+///
+typealias OriginDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (length: Double, width: Double)
 typealias Dimension3d = (length: Double, width: Double, height: Double)

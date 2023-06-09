@@ -13,13 +13,13 @@ struct InitialOccupantSideSupportMeasurement {
     
     let sideSupportJoint: Dimension =
     (length: 20, width: 20 )
-    
+
     let sitOnArm: Dimension =
     (length: 350,  width: 40)
-   
+
     let sleepOnSide: Dimension =
     (length: 1800,  width: 20)
-    
+
     let stretchOnSide:Dimension =
     (length: 1800,  width: 20)
 
@@ -47,29 +47,41 @@ struct CreateOccupantSideSupport {
     
     init(
         _ parentFromPrimaryOrigin: [PositionAsIosAxes],
-        _ supportIndex: Int
+        _ supportIndex: Int,
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
     ){
         measurementFor = InitialOccupantSideSupportMeasurement()
         self.supportIndex = supportIndex
 
+
+        
         getDictionary(
             supportIndex,
-            parentFromPrimaryOrigin
+            parentFromPrimaryOrigin,
+            defaultOrModifiedObjectDimensionDictionary
         )
     }
     
 
     mutating func getDictionary(
         _ supportIndex: Int,
-        _ parentFromPrimaryOrigin: [PositionAsIosAxes]
+        _ parentFromPrimaryOrigin: [PositionAsIosAxes],
+        _ defaultOrModifiedObjectDimensionDictionary: Part3DimensionDictionary
         ) {
-        
+            let dimension =
+                DimensionChange(
+                    GetDimensionFromDictionary(
+                        defaultOrModifiedObjectDimensionDictionary,
+                        [.armSupport, .id0, .stringLink, .sitOn, [.id0, .id1][supportIndex]]).dimension3D
+                ).from3Dto2D
+            
+            
         let partFromParentOrigin =
             measurementFor.rightSideSupportFromSitOnOrigin
             
         let sideSupportDictionary =
             CreateOnePartOrSideSymmetricParts(
-                measurementFor.sitOnArm,
+                dimension,
                 .armSupport,
                 parentFromPrimaryOrigin[supportIndex],
                 partFromParentOrigin,
@@ -77,7 +89,7 @@ struct CreateOccupantSideSupport {
             
        let sideSupportJointDictionary =
             CreateOnePartOrSideSymmetricParts(
-                measurementFor.sideSupportJoint,
+                Joint.dimension,
                 .armVerticalJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 measurementFor.rightSideSupportJointFromSitOnOrigin,

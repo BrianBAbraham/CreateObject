@@ -133,24 +133,53 @@ struct OccupantFootSupportDefaultDimension {
 
 
 
-
+///parent orgin to child orrigin
+///base is parent
+///sitOn is paren sitt
+///
 
 
 //MARK: POSITION
-struct SitOnRightFrontCornerToFootSupportHangerVerticalJointPosition {
-    let dictionary: BaseObjectPositionDictionary = [:]
-    let general: PositionAsIosAxes
-    let value: PositionAsIosAxes
-    
-    init(_ baseType: BaseObjectTypes) {
-        general =
-        (x: 40.0, y: -40.0, z: 0.0)
-        value = dictionary[baseType] ?? general
-    }
-}
+
+//struct RequestOccupantFootSupportDefaultOriginDictionary {
+//    var dictionary: PositionDictionary = [:]
+//
+//    init(
+//        _ baseType: BaseObjectTypes,
+//        _ twinSitOnOptions: TwinSitOnOptions
+//        ) {
+//
+//        getDictionary()
+//
+//        func getDictionary() {
+//
+//            let allOccupantRelated = AllOccupantFootRelated(baseType)
+//            dictionary =
+//                CreateDefaultOriginDictionary(
+//                    allOccupantRelated.parts,
+//                    allOccupantRelated.dimensions,
+//                    twinSitOnOptions
+//                ).dictionary
+//        }
+//    }
+//}
+
+
+
+//struct SitOnRightFrontCornerToFootSupportHangerVerticalJointPosition {
+//    let dictionary: BaseObjectPositionDictionary = [:]
+//    let general: PositionAsIosAxes
+//    let value: PositionAsIosAxes
+//    
+//    init(_ baseType: BaseObjectTypes) {
+//        general =
+//        (x: 40.0, y: -40.0, z: 0.0)
+//        value = dictionary[baseType] ?? general
+//    }
+//}
 
 struct HangerVerticalJointToFootSupportJointPosition {
-    let dictionary: PartToPartDictionary =
+    let dictionary: OriginDictionary =
         [:]
     let general =
         (x: 0.0,
@@ -166,7 +195,7 @@ struct HangerVerticalJointToFootSupportJointPosition {
 
 
 struct FootSupportJointToFootSupportPosition {
-    let dictionary: PartToPartDictionary =
+    let dictionary: OriginDictionary =
         [:]
     let general: PositionAsIosAxes = (x: 0.0, y: OccupantFootSupportDefaultDimension.general.length, z: 0.0)
     

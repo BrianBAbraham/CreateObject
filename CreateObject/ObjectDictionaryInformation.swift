@@ -71,8 +71,8 @@ struct PartNameAndItsCornerLocations {
 
 struct GetDimensionFromDictionary {
     let dimension3D: Dimension3d
-    let sitOnOneDimension3D: Dimension3d
-    let sitOnTwoDimension3D: Dimension3d
+    let sitOnDimension3D: [Dimension3d]
+    
     
     init(
         _ dictionary: Part3DimensionDictionary,
@@ -84,11 +84,10 @@ struct GetDimensionFromDictionary {
             parts
         )
             
-        sitOnOneDimension3D =
-                getDimension( dictionary, [.sitOn, .id0, .stringLink, .sitOn, .id0])
-         
-        sitOnTwoDimension3D =
-                getDimension( dictionary, [.sitOn, .id1, .stringLink, .sitOn, .id1])
+        sitOnDimension3D =
+                [getDimension( dictionary, [.sitOn, .id0, .stringLink, .sitOn, .id0]),
+        
+                getDimension( dictionary, [.sitOn, .id1, .stringLink, .sitOn, .id1])]
          
             
             
