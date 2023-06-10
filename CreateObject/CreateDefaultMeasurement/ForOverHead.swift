@@ -22,7 +22,7 @@ struct RequestOccupantOverHeadSupportDefaultDimensionDictionary {
         
         func getDictionary() {
                 
-            let allOccupantRelated = AllOccupantOverheadRelated(baseType)
+            let allOccupantRelated = AllOccupantOverheadRelated(baseType, twinSitOnOptions)
             dictionary =
                 CreateDefaultDimensionDictionary(
                     allOccupantRelated.parts,
@@ -39,9 +39,11 @@ struct AllOccupantOverheadRelated {
     static let tube = (length: 50.0, width: 50.0)
     var parts: [Part] = []
     var dimensions: [Dimension3d] = []
-    init(_ baseType: BaseObjectTypes
+    init(
+        _ baseType: BaseObjectTypes,
+        _ twinSitOnOptions: TwinSitOnOptions
     ) {
-        let width = BaseDefaultDimension(.allCasterHoist).value.width
+        let width = DistanceBetween(.allCasterHoist, twinSitOnOptions).rearWheels()
         
          parts =
             [.overheadSupportMastBase,

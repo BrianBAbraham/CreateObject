@@ -66,3 +66,35 @@ enum GroupsDerivedFromRawValueOfPartTypes: String {
 case sitOn = "hair"
 }
 
+
+struct BaseObjectGroups {
+    let rearPrimaryOrigin: [BaseObjectTypes] =
+        [.allCasterBed,
+         .allCasterChair,
+         .allCasterHoist,
+         .allCasterStandAid,
+         .allCasterStretcher,
+         .allCasterTiltInSpaceShowerChair,
+         .fixedWheelManualRearDrive,
+         .fixedWheelRearDrive,
+         .scooterRearDrive3Wheeler,
+         .scooterRearDrive4Wheeler,
+         .seatThatTilts]
+    
+    let midPrimaryOrigin: [BaseObjectTypes] =
+        [.fixedWheelMidDrive]
+    
+    let frontPrimaryOrigin: [BaseObjectTypes] =
+        [.fixedWheelFrontDrive,
+        .scooterFrontDrive3Wheeler,
+        .scooterFrontDrive4Wheeler]
+    
+    let twinSitOnAbility: [BaseObjectTypes] =
+        [ .fixedWheelManualRearDrive,
+          .fixedWheelRearDrive,
+          .fixedWheelFrontDrive,
+          .scooterRearDrive3Wheeler,
+          .scooterRearDrive4Wheeler,
+          .scooterFrontDrive3Wheeler,
+          .scooterFrontDrive4Wheeler]
+}

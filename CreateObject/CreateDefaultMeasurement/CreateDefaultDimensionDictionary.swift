@@ -136,3 +136,34 @@ struct ObjectDefaultOrigin {
             }
         }
 }
+
+
+//
+//struct Chair {
+//    let sizeDictionaryOut: Part3DimensionDictionary = [:]
+//    let originDictionaryOut: PositionDictionary = [:]
+//    let options: ObjectOptions
+//    let baseType: BaseObjectTypes
+//
+//
+//    struct DistanceBetween {
+//        let frontToRearWheels: BaseSizeDictionary =
+//            [.fixedWheelRearDrive: 400.0, .fixedWheelFrontDrive: 400.0, .fixedWheelMidDrive: 400.0]
+//        let frontToMidWheels: BaseSizeDictionary
+//        let midToFrontWheels: BaseSizeDictionary
+//        let rearWheels: BaseSizeDictionary
+//        let midWheels: BaseSizeDictionary
+//        let frontWheels: BaseSizeDictionary
+//    }
+//
+//    struct SizeOf {
+//        let parts: Part3DimensionDictionary =
+//        [Part.armSupport.rawValue: ZeroTouple.dimension3D]
+//
+//    }
+//
+//    struct OriginFrom {
+//
+//    }
+//
+//}
