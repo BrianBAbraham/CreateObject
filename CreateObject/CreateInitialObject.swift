@@ -31,7 +31,7 @@ struct CreateInitialObject {
         self.defaultOrModifiedObjectDimensionDictionary = partDictionary
 
 //DictionaryInArrayOut().getNameValue(defaultDictionary).forEach{print($0)}
-        
+print( OccupantBodySupportDefaultOrigin(.fixedWheelRearDrive, twinSitOnOptions, objectOptions).origin)
         getDictionary(baseObjectName)
     }
     

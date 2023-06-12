@@ -23,6 +23,7 @@ rear: PositionAsIosAxes)
 typealias OptionDictionary = [ObjectOptions: Bool]
 typealias PositionDictionary = [String: PositionAsIosAxes]
 typealias MeasurementDictionary = [String: Double]
+typealias BaseObjectDoubleDictionary = [BaseObjectTypes: Double]
 typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
 typealias BaseObject3DimensionDictionary = [BaseObjectTypes: Dimension3d]
 typealias PartDimensionDictionary = [String: Dimension]

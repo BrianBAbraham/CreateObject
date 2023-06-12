@@ -89,35 +89,71 @@ struct DistanceBetween {
     let baseType: BaseObjectTypes
     let twinSitOnOptions: TwinSitOnOptions
     let occupantBodySupportDefaultDimension: Dimension3d
-    let rearStabilility: Double
+    let stability  = Stability()
+    let currentObjectDefaultDimensionDictionary: Part3DimensionDictionary
+    //let ySitOnOrigin: [Double]
+  
 
 
     init(_ baseType: BaseObjectTypes,
-         _ twinSitOnOptions: TwinSitOnOptions) {
+         _ twinSitOnOptions: TwinSitOnOptions,
+         _ currentObjectDefaultDimensionDictionary: Part3DimensionDictionary = [:]) {
         self.baseType = baseType
         self.twinSitOnOptions = twinSitOnOptions
+        self.currentObjectDefaultDimensionDictionary = currentObjectDefaultDimensionDictionary
         
         occupantBodySupportDefaultDimension =
-            OccupantBackSupportDefaultDimension(
+            OccupantBodySupportDefaultDimension(
                 .fixedWheelRearDrive).value
         
-        rearStabilility = Stability().atRear
+        //ySitOnOrigin
+        
     }
+    
+    
+    /// initially dic = [:] so dic[name] = nil
+    /// latter not nil
     
     func frontToRearWheels()
         -> Double {
+            var modifiedOrDefaultOccupantBodySupportLengths: [Double] = []
+            let ids: [Part] = [.id0, .id1]
+            for id in ids {
+                modifiedOrDefaultOccupantBodySupportLengths.append(
+                    currentObjectDefaultDimensionDictionary[
+                        CreateNameFromParts([.sitOn, id,.stringLink,.object,.id0]).name]?.length ??
+                    occupantBodySupportDefaultDimension.length )
+            }
+            
+            let defaultFootHangerLinkLength =
+                OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length
+            var modifiedOrDefaultFootHangerLinkLengths: [Double] = []
+            
+            for id in ids {
+                modifiedOrDefaultFootHangerLinkLengths.append(
+                    currentObjectDefaultDimensionDictionary[
+                        CreateNameFromParts([.footSupportHangerLink, id,.stringLink,.sitOn,.id0]).name]?.length ??
+                    defaultFootHangerLinkLength )
+            }
+            
+            let maximumModifiedOrDefaultHangerLinkLength = modifiedOrDefaultFootHangerLinkLengths.max()!
+            
+             /// the additional  length includes the rear sitOn length and the maxximum footHangerLinkLength
+            var general =
+                modifiedOrDefaultOccupantBodySupportLengths[0] +
+                stability.atRear +
+                stability.atFront +
+                    (twinSitOnOptions[.frontAndRear] ?? false
+                     ?
+                    modifiedOrDefaultOccupantBodySupportLengths[1] +
+                    maximumModifiedOrDefaultHangerLinkLength:
+                    0.0)
+            
             let dictionary: BaseSizeDictionary =
                 [
-                .fixedWheelRearDrive:
-                    occupantBodySupportDefaultDimension.length +
-                    rearStabilility,
-                
-                .fixedWheelFrontDrive: 400.0,
-                    
-                .fixedWheelMidDrive: 600.0,
                 .allCasterHoist: 1200.0,
                 .allCasterTiltInSpaceShowerChair: 600.0]
-            let general = 400.0
+           
             return
                 dictionary[baseType] ?? general
     }
@@ -163,11 +199,40 @@ struct DistanceBetween {
             return
                 dictionary[baseType] ?? general
     }
+    
+    
+//    func adjustmentForFrontAndRearSitOn (_ standardSize: Double)
+//        -> Double {
+//
+//        if twinSitOnOptions[.frontAndRear] ?? false {
+//            switch baseType {
+//
+//            case .fixedWheelFrontDrive:
+//                return standardSize
+//            case .fixedWheelMidDrive:
+//                return standardSize
+//            case .fixedWheelRearDrive:
+//                return standardSize
+//            case .fixedWheelManualRearDrive:
+//                return standardSize
+//            case .fixedWheelSolo:
+//                return standardSize
+//
+//            default:return standardSize
+//            }
+//        }
+//    }
+    
 }
 
 
 struct Stability {
+    
+    let dictionary: BaseObjectDoubleDictionary = [:]
     let atRear = 0.0
     let atFront = 0.0
+    let atLeft = 0.0
+    let atRight = 0.0
 }
+
 

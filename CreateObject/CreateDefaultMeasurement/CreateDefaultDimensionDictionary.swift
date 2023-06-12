@@ -16,7 +16,7 @@ struct CreateDefaultDimensionDictionary {
         _ twinSitOnOptions: TwinSitOnOptions) {
             
         var idsForPart: [Part] = [.id0, .id1]
-        var idsForSitOn: [Part] =  [.id0, .id1]
+        let idsForSitOn: [Part] =  TwinSitOn(twinSitOnOptions).state ? [.id0, .id1]: [.id0]
         
         // any part with backSupport in the name will only have one item per sitOn
         let onlyOneExists = [Part.backSupport.rawValue]
@@ -24,14 +24,11 @@ struct CreateDefaultDimensionDictionary {
         idsForPart =
             onlyOneExists.contains(where: parts[enumCodedSoAnyMemberCanBeUsed].rawValue.contains) ? [.id0]: idsForPart
 
-        idsForSitOn =
-            (twinSitOnOptions[.frontAndRear] ?? false ||
-            twinSitOnOptions[.leftAndRight] ?? false)  ? idsForSitOn: [.id0]        
-        for partId in  idsForPart {
-            for sitOnId in idsForSitOn {
-                let nameEnd: [Part] = [partId, .stringLink, .sitOn, sitOnId]
-                
-                for index in 0..<parts.count {
+        for index in 0..<parts.count{
+            for partId in  idsForPart {
+                for sitOnId in idsForSitOn {
+                    let nameEnd: [Part] = parts[index] == .sitOn ?
+                    [sitOnId, .stringLink, .object, .id0] : [partId, .stringLink, .sitOn, sitOnId]
                     let x = [parts[index]] + nameEnd
                     self.dictionary +=
                     [CreateNameFromParts(x).name: dimensions[index] ]
@@ -64,14 +61,19 @@ struct ObjectDefaultDimension {
                         defaultDimensionDictionary +=
                                 RequestOccupantFootSupportDefaultDimensionDictionary(
                                     baseType, twinSitOnOptions).dictionary
-                            
+
                          defaultDimensionDictionary +=
                             RequestOccupantBackSupportDefaultDimensionDictionary(
                                 baseType, twinSitOnOptions).dictionary
-                            
+
                         defaultDimensionDictionary +=
                             RequestOccupantSideSupportDefaultDimensionDictionary(
                                 baseType, twinSitOnOptions).dictionary
+                    
+
+//print("DEFAULT")
+//DictionaryInArrayOut().getNameValue(defaultDimensionDictionary).forEach{print($0)}
+//print("")
                     
                     return defaultDimensionDictionary
             }

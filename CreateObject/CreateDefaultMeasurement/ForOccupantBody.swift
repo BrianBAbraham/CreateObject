@@ -20,14 +20,16 @@ struct RequestOccupantBodySupportDefaultDimensionDictionary {
             
         
             func getDictionary() {
-                let dimensions = [
-                    OccupantBodySupportDefaultDimension(baseType).value
-                ]
-                    
+                let dimension = OccupantBodySupportDefaultDimension(baseType).value
+                let dimensions =
+                TwinSitOn(twinSitOnOptions).state ? [dimension, dimension]: [dimension]
+                let parts: [Part] =
+                TwinSitOn(twinSitOnOptions).state ? [.sitOn, .sitOn]: [.sitOn]
+                
                 dictionary =
                     CreateDefaultDimensionDictionary(
-                        [.sitOn],
-                    dimensions,
+                        parts,
+                        dimensions,
                         twinSitOnOptions
                     ).dictionary
             }
@@ -83,113 +85,162 @@ struct OccupantBodySupportDefaultDimension {
 /// base type?
 struct OccupantBodySupportDefaultOrigin {
     static let sitOnHeight = 500.0
-    //var dictionary: BaseObjectOriginDictionary
-    
-    static let general = ZeroTouple.iosLocation
-    let value: [PositionAsIosAxes]
+   // let modifiedOrDefaultDimensionDictionary: Part3DimensionDictionary
+    let modifiedOrDefaultOriginDictionary: PositionDictionary
+    let stability = Stability()
+    var origin: [PositionAsIosAxes] = []
+    let sitOnOrigin0: PositionAsIosAxes?
+    let sitOnOrigin1: PositionAsIosAxes?
+
     
     init (
         _ baseType: BaseObjectTypes,
         _ twinSitOnOptions:TwinSitOnOptions,
-        _ objectOptions: OptionDictionary) {
+        _ objectOptions: OptionDictionary,
+      //  _ modifiedOrDefaultDimensionDictionary: Part3DimensionDictionary = [:],
+        _ modifiedOrDefaultOriginDictionary: PositionDictionary = [:]) {
             
+        //self.modifiedOrDefaultDimensionDictionary =  modifiedOrDefaultDimensionDictionary
+        self.modifiedOrDefaultOriginDictionary =  modifiedOrDefaultOriginDictionary
+        
+        sitOnOrigin0 = modifiedOrDefaultOriginDictionary[
+            CreateNameFromParts([.sitOn, .id0, .object, .id0]).name ]
             
-            //DEVELOP CODE
-            let stability = 0.0
+        sitOnOrigin1 = modifiedOrDefaultOriginDictionary[
+            CreateNameFromParts([.sitOn, .id1, .object, .id0]).name ]
             
-            value = getDictionary(
-                baseType,
-                twinSitOnOptions,
-                objectOptions)
-
-       
-            func getDictionary (
-                _ baseType: BaseObjectTypes,
-                _ twinSitOnOptions: TwinSitOnOptions,
-                _ objectOptions: OptionDictionary)
-                -> [PositionAsIosAxes] {
+   
+        if BaseObjectGroups().rearPrimaryOrigin.contains(baseType) {
+            forRearPrimaryOrigin()
+        }
+            
+        if BaseObjectGroups().frontPrimaryOrigin.contains(baseType) {
+            forFrontPrimaryOrgin()
+        }
+  
+        if BaseObjectGroups().midPrimaryOrigin.contains(baseType) {
+            forMidPrimaryOrigin()
+        }
+        
+        func forRearPrimaryOrigin() {
+            origin.append(
+                sitOnOrigin0 ??
+                (x: 0.0,
+                y:
+                Stability().atRear +
+                OccupantBodySupportDefaultDimension(baseType).value.length/2,
+                z: 0.0)
+            )
+            
+            if twinSitOnOptions[.frontAndRear] ?? false {
+                origin.append(
+                    sitOnOrigin1 ??
+                        (x: 0.0,
+                        y:
+                        Stability().atRear +
+                        OccupantBodySupportDefaultDimension(baseType).value.length +
+                        OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length +
+                        OccupantBodySupportDefaultDimension(baseType).value.length/2,
+                         z: 0.0)
+                )
+            }
+            
+            if twinSitOnOptions[.leftAndRight]  ?? false {
+                let xOrigin1 =
+                sitOnOrigin1?.x ??
+                    leftAndRightX()
+                let xOrigin0 =
+                sitOnOrigin0?.x ??
+                    -leftAndRightX()
                 
-                    
-                    let origin: [PositionAsIosAxes]
-                    
-                    origin = BaseObjectGroups().rearPrimaryOrigin.contains(baseType) ? forRearPrimaryOrigin(): [ZeroTouple.iosLocation]
-                    
-                    
-//                    let dictionary: BaseObjectOriginDictionary =
-//                [ .allCasterBed :
-//                    (x: 0.0,
-//                     y: OccupantBodySupportDefaultDimension(.allCasterBed).value.length/2 ,
-//                     z: Self.sitOnHeight),
-//                  .allCasterChair:
-//                    (x: 0.0,
-//                     y: OccupantBodySupportDefaultDimension(.allCasterChair).value.length/2 ,
-//                     z: Self.sitOnHeight),
-//                  .allCasterHoist:
-//                    (x: 0.0,
-//                     y: DistanceBetween(.allCasterHoist).frontToRearWheels(),
-//                     z: OccupantOverheadSupportMastDefaultDimension(.allCasterHoist).value.height),
-//                  .allCasterTiltInSpaceShowerChair:
-//                    (x: 0.0,
-//                     y:  OccupantBodySupportDefaultDimension(.allCasterTiltInSpaceShowerChair).value.length/2,
-//                     z: Self.sitOnHeight),
-//                  .allCasterStretcher:
-//                    (x: 0.0,
-//                     y: OccupantBodySupportDefaultDimension(.allCasterStretcher).value.length/2 ,
-//                     z: Self.sitOnHeight),
-//                  .fixedWheelFrontDrive:
-//                    (x: 0.0,
-//                     y: -OccupantBodySupportDefaultDimension(.allCasterChair).value.length/2 ,
-//                     z: Self.sitOnHeight),
-//                  .fixedWheelMidDrive:
-//                    (x: 0.0,
-//                     y: 0.0,
-//                     z: Self.sitOnHeight),
-//                  .fixedWheelRearDrive:
-//                   , forRearPrimaryOrigin()
-//                  .fixedWheelManualRearDrive:
-//                    (x: 0.0,
-//                     y: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive).value.length/2 ,
-//                     z: Self.sitOnHeight)
-//                ]
-                    
-                    func forRearPrimaryOrigin ()
-                    -> [PositionAsIosAxes] {
-                        var origin: [PositionAsIosAxes]
-                        if BaseObjectGroups().twinSitOnAbility.contains(baseType) {
-                                if  twinSitOnOptions[.frontAndRear] ?? false {
-                                    let yRear =
-                                    DistanceBetween(baseType, twinSitOnOptions).frontToRearWheels()/2
-                                    let yFront =
-                                        OccupantBodySupportDefaultDimension(baseType).value.length +
-                                        OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length
-                                }
-                                if twinSitOnOptions[.leftAndRight] ?? false {
-                                    let xPosition =
-                                        OccupantBodySupportDefaultDimension(baseType).value.width +
-                                        OccupantSideSupportDefaultDimension(baseType).value.width
-                                    let yPosition =
-                                        OccupantBodySupportDefaultDimension(baseType).value.length/2
-                                    
-                                    origin =
-                                    [(x: -xPosition, y: yPosition, z: Self.sitOnHeight),
-                                     (x: xPosition, y: yPosition, z: Self.sitOnHeight)]
-                                     
-                                }
-                        } else {
-                            origin = [ZeroTouple.iosLocation]
-                        }
-                       
-                        
-                        return
-                        [
-                            (x: 0.0,
-                             y: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive).value.length/2 ,
-                             z: Self.sitOnHeight)
-                        ]
-                    }
-                return origin
+            origin =
+                [(x: xOrigin0,
+                  y: origin[0].y,
+                  z: 0.0),
+                (x: xOrigin1,
+                 y: origin[0].y,
+                 z: 0.0)
+                ]
             }
         }
+            
+            
+        func forMidPrimaryOrigin(){
+            let baseLength =
+                Stability().atRear +
+                OccupantBodySupportDefaultDimension(baseType).value.length +
+                OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length +
+                OccupantBodySupportDefaultDimension(baseType).value.length +
+                Stability().atFront
+            
+            origin.append(
+            sitOnOrigin0 ??
+            (x: 0.0,
+             y: 0.5 * (baseLength - OccupantBodySupportDefaultDimension(baseType).value.length),
+             z: 0.0)
+            )
+            
+            if twinSitOnOptions[.frontAndRear] ?? false {
+                origin =
+                [sitOnOrigin0 ??
+                (x: 0.0,
+                 y: -origin[0].y,
+                 z: 0.0)
+                 ,
+                sitOnOrigin1 ??
+                (x: 0.0,
+                 y: origin[0].y,
+                z: 0.0)
+                ]
+            }
+            
+            if twinSitOnOptions[.leftAndRight] ?? false {
+                origin =
+                [sitOnOrigin0 ??
+                (x: 0.0,
+                 y: -origin[0].y,
+                 z: 0.0)
+                 ,
+                sitOnOrigin1 ??
+                (x: 0.0,
+                 y: origin[0].y,
+                z: 0.0)
+                ]
+            }
+        }
+            
+        func forFrontPrimaryOrgin() {
+            origin.append(
+                sitOnOrigin0 ??
+                (x: 0.0,
+                 y:
+                -(Stability().atFront +
+                    OccupantBodySupportDefaultDimension(baseType).value.length/2),
+                 z: 0.0 )
+                 )
+            
+            if twinSitOnOptions[.frontAndRear] ?? false {
+                origin = [
+                    sitOnOrigin1 ??
+                    (x: 0.0,
+                     y:
+                        -Stability().atFront -
+                        OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length -
+                        OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length -
+                        OccupantBodySupportDefaultDimension(baseType).value.length/2,
+                     z: 0.0
+                     ),
+                    origin[0]
+                ]
+            }
+        }
+            
+            func leftAndRightX ()
+                -> Double {
+                    (OccupantBodySupportDefaultDimension(baseType).value.width/2 +
+                   OccupantSideSupportDefaultDimension(baseType).value.width)
+            }
+    }
 }
 //struct RequestOccupantSupportDefaultDimensionDictionary {
 //    var dictionary: Part3DimensionDictionary = [:]

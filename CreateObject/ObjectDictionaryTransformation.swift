@@ -187,15 +187,15 @@ struct DictionaryInStringOut {
 
 struct DictionaryInArrayOut {
     func getNameValue <T>(_ dictionary: [String: T ]) -> [String]{    //CHANGE
-        //print(dictionary)
+
         var namesAndMeasurements: [String] = []
         //var values: PositionAsIosAxes    //CHANGE
         
         var description = ""
         for (key, value) in dictionary {
-            if let position = value as? PositionArrayAsIosAxes {
-                description = "\(key): \(position.x), \(position.y), \(position.z)"
 
+            if let position = value as? PositionAsIosAxes {
+                description = "\(key): \(position.x), \(position.y), \(position.z)"
             }
             
             if let position = value as? Dimension3d {

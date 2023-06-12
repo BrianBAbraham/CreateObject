@@ -154,8 +154,16 @@ extension ObjectPickViewModel {
         func getVersion() -> PositionDictionary {
             switch version  {
             case .useCurrent:
+                
+
+                
+                
               return  objectPickModel.currentObjectDictionary
             case .useInitial:
+//print("TEST")
+//let dic = objectPickModel.initialDictionary
+//DictionaryInArrayOut().getNameValue(dic).forEach{print($0)}
+                
               return  objectPickModel.initialDictionary
             case .useLoaded:
               return  objectPickModel.loadedDictionary
@@ -427,7 +435,7 @@ extension ObjectPickViewModel {
     
     func setInitialObjectDictionary(_ objectName: String) {
         let defaultDictionary = getDefaultObjectDictionary()
-             
+ 
         let initialDictionary =
             CreateInitialObject(
                 baseName: objectName,
@@ -435,6 +443,9 @@ extension ObjectPickViewModel {
                 [:],
                 defaultDictionary)
                 .dictionary
+        
+//DictionaryInArrayOut().getNameValue(initialDictionary).forEach{print($0)}
+//print(initialDictionary)
         objectPickModel.initialDictionary = initialDictionary
     }
     

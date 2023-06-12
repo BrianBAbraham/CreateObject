@@ -85,9 +85,9 @@ struct GetDimensionFromDictionary {
         )
             
         sitOnDimension3D =
-                [getDimension( dictionary, [.sitOn, .id0, .stringLink, .sitOn, .id0]),
+                [getDimension( dictionary, [.sitOn, .id0, .stringLink, .object, .id0]),
         
-                getDimension( dictionary, [.sitOn, .id1, .stringLink, .sitOn, .id1])]
+                getDimension( dictionary, [.sitOn, .id1, .stringLink, .object, .id0])]
          
             
             

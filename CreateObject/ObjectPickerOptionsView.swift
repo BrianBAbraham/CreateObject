@@ -126,7 +126,7 @@ struct DoubleSitOnPreferenceKey: PreferenceKey {
 
 
 
-struct TwinSitOn: View {
+struct TwinSitOnView: View {
     @State private var twinSitOnToggle: Bool
     
     @EnvironmentObject var objectPickVM: ObjectPickViewModel

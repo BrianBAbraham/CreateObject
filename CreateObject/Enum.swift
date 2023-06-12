@@ -88,6 +88,7 @@ enum Part: String {
     case leftToRightDimension = "xIos"
     case length = "Length"
     case lieOnSupport = "lieOn"
+    case object = "object"
     case objectOrigin = "objectOrigin"
     case viewOrigin = "viewOrigin"
 

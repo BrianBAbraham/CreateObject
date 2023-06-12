@@ -23,6 +23,17 @@ enum TwinSitOnOption: String, CaseIterable  {
     
 }
 
+struct TwinSitOn {
+    let options: TwinSitOnOptions
+    let state : Bool
+    
+    init(_ options: TwinSitOnOptions ){
+        self.options = options
+        state =
+        (options[.frontAndRear] ?? false || options[.leftAndRight] ?? false)
+    }
+}
+
 struct TwinSitOnModel {
   var options: TwinSitOnOptions = [:]
 }
