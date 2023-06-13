@@ -85,72 +85,94 @@ struct OccupantBodySupportDefaultDimension {
 /// base type?
 struct OccupantBodySupportDefaultOrigin {
     static let sitOnHeight = 500.0
-   // let modifiedOrDefaultDimensionDictionary: Part3DimensionDictionary
-    let modifiedOrDefaultOriginDictionary: PositionDictionary
-    let stability = Stability()
+    let stability: Stability
     var origin: [PositionAsIosAxes] = []
-    let sitOnOrigin0: PositionAsIosAxes?
-    let sitOnOrigin1: PositionAsIosAxes?
-
+    let frontAndRearState: Bool
+    let leftandRightState: Bool
+    var dictionaryOut: PositionDictionary = [:]
+    let occupantBodySupport: Dimension3d
+    let occupantFootSupportHangerLink: Dimension3d
+    let distanceBetweenFrontAndRearWheels: DistanceBetweenFrontAndRearWheels
     
     init (
         _ baseType: BaseObjectTypes,
         _ twinSitOnOptions:TwinSitOnOptions,
-        _ objectOptions: OptionDictionary,
-      //  _ modifiedOrDefaultDimensionDictionary: Part3DimensionDictionary = [:],
-        _ modifiedOrDefaultOriginDictionary: PositionDictionary = [:]) {
+        _ objectOptions: OptionDictionary){
             
-        //self.modifiedOrDefaultDimensionDictionary =  modifiedOrDefaultDimensionDictionary
-        self.modifiedOrDefaultOriginDictionary =  modifiedOrDefaultOriginDictionary
-        
-        sitOnOrigin0 = modifiedOrDefaultOriginDictionary[
-            CreateNameFromParts([.sitOn, .id0, .object, .id0]).name ]
+        stability = Stability(baseType)
+        frontAndRearState = twinSitOnOptions[.frontAndRear] ?? false
+        leftandRightState = twinSitOnOptions[.leftAndRight] ?? false
             
-        sitOnOrigin1 = modifiedOrDefaultOriginDictionary[
-            CreateNameFromParts([.sitOn, .id1, .object, .id0]).name ]
+        occupantBodySupport =
+            OccupantBodySupportDefaultDimension(baseType).value
+        occupantFootSupportHangerLink =
+            OccupantFootSupportHangerLinkDefaultDimension(baseType).value
             
-   
+        distanceBetweenFrontAndRearWheels =
+             DistanceBetweenFrontAndRearWheels(baseType)
+            
         if BaseObjectGroups().rearPrimaryOrigin.contains(baseType) {
             forRearPrimaryOrigin()
         }
-            
         if BaseObjectGroups().frontPrimaryOrigin.contains(baseType) {
             forFrontPrimaryOrgin()
         }
-  
         if BaseObjectGroups().midPrimaryOrigin.contains(baseType) {
             forMidPrimaryOrigin()
+        }
+            
+        
+        getDictionary()
+    
+print("")
+print(baseType.rawValue)
+//print(dictionaryOut)
+print(distanceBetweenFrontAndRearWheels.ifFrontAndRearSitOn)
+print("")
+            
+        func getDictionary() {
+            let ids: [Part] =
+                (frontAndRearState || leftandRightState) ?
+                [.id0, .id1] :  [.id0]
+            
+                
+                for index in 0..<ids.count {
+                    self.dictionaryOut[
+                        CreateNameFromParts([
+                            .sitOn,
+                            ids[index],
+                            .stringLink,
+                            .object,
+                            .id0]).name] = origin[index]
+                }
         }
         
         func forRearPrimaryOrigin() {
             origin.append(
-                sitOnOrigin0 ??
                 (x: 0.0,
                 y:
-                Stability().atRear +
-                OccupantBodySupportDefaultDimension(baseType).value.length/2,
-                z: 0.0)
+                stability.atRear +
+                 occupantBodySupport.length/2,
+                 z: Self.sitOnHeight)
             )
             
-            if twinSitOnOptions[.frontAndRear] ?? false {
+            if frontAndRearState {
                 origin.append(
-                    sitOnOrigin1 ??
                         (x: 0.0,
                         y:
-                        Stability().atRear +
-                        OccupantBodySupportDefaultDimension(baseType).value.length +
-                        OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length +
-                        OccupantBodySupportDefaultDimension(baseType).value.length/2,
-                         z: 0.0)
+                            
+                        stability.atRear +
+                         occupantBodySupport.length +
+                         occupantFootSupportHangerLink.length +
+                        occupantBodySupport.length/2,
+                         z: Self.sitOnHeight)
                 )
             }
             
-            if twinSitOnOptions[.leftAndRight]  ?? false {
+            if leftandRightState {
                 let xOrigin1 =
-                sitOnOrigin1?.x ??
                     leftAndRightX()
                 let xOrigin0 =
-                sitOnOrigin0?.x ??
                     -leftAndRightX()
                 
             origin =
@@ -159,85 +181,86 @@ struct OccupantBodySupportDefaultOrigin {
                   z: 0.0),
                 (x: xOrigin1,
                  y: origin[0].y,
-                 z: 0.0)
+                 z: Self.sitOnHeight)
                 ]
             }
         }
             
-            
         func forMidPrimaryOrigin(){
-            let baseLength =
-                Stability().atRear +
-                OccupantBodySupportDefaultDimension(baseType).value.length +
-                OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length +
-                OccupantBodySupportDefaultDimension(baseType).value.length +
-                Stability().atFront
+            let baseLength = frontAndRearState ?
+                distanceBetweenFrontAndRearWheels.ifFrontAndRearSitOn: distanceBetweenFrontAndRearWheels.ifNoFrontAndRearSitOn
             
             origin.append(
-            sitOnOrigin0 ??
             (x: 0.0,
-             y: 0.5 * (baseLength - OccupantBodySupportDefaultDimension(baseType).value.length),
-             z: 0.0)
+             y: 0.5 * (baseLength - occupantBodySupport.length),
+             z: Self.sitOnHeight)
             )
             
-            if twinSitOnOptions[.frontAndRear] ?? false {
+            if frontAndRearState {
                 origin =
-                [sitOnOrigin0 ??
+                [
                 (x: 0.0,
                  y: -origin[0].y,
-                 z: 0.0)
+                 z: Self.sitOnHeight)
                  ,
-                sitOnOrigin1 ??
                 (x: 0.0,
                  y: origin[0].y,
-                z: 0.0)
+                z: Self.sitOnHeight)
                 ]
             }
             
-            if twinSitOnOptions[.leftAndRight] ?? false {
+            if leftandRightState {
                 origin =
-                [sitOnOrigin0 ??
+                [
                 (x: 0.0,
                  y: -origin[0].y,
-                 z: 0.0)
+                 z: Self.sitOnHeight)
                  ,
-                sitOnOrigin1 ??
                 (x: 0.0,
                  y: origin[0].y,
-                z: 0.0)
+                z: Self.sitOnHeight)
                 ]
             }
         }
             
         func forFrontPrimaryOrgin() {
             origin.append(
-                sitOnOrigin0 ??
                 (x: 0.0,
                  y:
-                -(Stability().atFront +
-                    OccupantBodySupportDefaultDimension(baseType).value.length/2),
-                 z: 0.0 )
+                -(stability.atFront +
+                    occupantBodySupport.length/2),
+                 z: Self.sitOnHeight )
                  )
             
-            if twinSitOnOptions[.frontAndRear] ?? false {
+            if frontAndRearState {
                 origin = [
-                    sitOnOrigin1 ??
                     (x: 0.0,
                      y:
-                        -Stability().atFront -
-                        OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length -
-                        OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length -
-                        OccupantBodySupportDefaultDimension(baseType).value.length/2,
-                     z: 0.0
+                        -stability.atFront -
+                        occupantBodySupport.length -
+                        occupantFootSupportHangerLink.length -
+                        occupantBodySupport.length/2,
+                     z: Self.sitOnHeight
                      ),
                     origin[0]
+                ]
+            }
+            
+            if leftandRightState {
+                origin = [
+                    (x: -leftAndRightX(),
+                     y: origin[0].y,
+                     z: Self.sitOnHeight),
+                    (x: leftAndRightX(),
+                     y: origin[0].y,
+                     z: Self.sitOnHeight)
                 ]
             }
         }
             
             func leftAndRightX ()
                 -> Double {
-                    (OccupantBodySupportDefaultDimension(baseType).value.width/2 +
+                    (occupantBodySupport.width/2 +
                    OccupantSideSupportDefaultDimension(baseType).value.width)
             }
     }

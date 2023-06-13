@@ -85,72 +85,101 @@ struct AllBaseRelated {
 
 typealias BaseSizeDictionary = [BaseObjectTypes: Double]
 
+
+struct DistanceBetweenFrontAndRearWheels {
+    var ifNoFrontAndRearSitOn: Double = 0.0
+    var ifFrontAndRearSitOn: Double = 0.0
+    let occupantBodySupport: Dimension3d
+    let occupantFootSupportHangerLink: Dimension3d
+    let stability: Stability
+    
+    init (
+        _ baseType: BaseObjectTypes){
+            
+            stability = Stability(baseType)
+            
+            occupantBodySupport =
+                OccupantBodySupportDefaultDimension(baseType).value
+            
+            occupantFootSupportHangerLink =
+                OccupantFootSupportHangerLinkDefaultDimension(baseType).value
+            
+            ifFrontAndRearSitOn =
+                requiredDistanceBetweenFrontRearWheeIfFrontAndRear()
+            
+            ifNoFrontAndRearSitOn =
+                requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
+        }
+    
+    func requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
+        -> Double {
+        stability.atRear +
+        occupantBodySupport.length +
+        stability.atFront
+    }
+        
+    func requiredDistanceBetweenFrontRearWheeIfFrontAndRear ()
+        -> Double {
+        requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear() +
+        occupantFootSupportHangerLink.length +
+        occupantBodySupport.length/2
+    }
+}
+
+
+
 struct DistanceBetween {
     let baseType: BaseObjectTypes
     let twinSitOnOptions: TwinSitOnOptions
     let occupantBodySupportDefaultDimension: Dimension3d
-    let stability  = Stability()
-    let currentObjectDefaultDimensionDictionary: Part3DimensionDictionary
-    //let ySitOnOrigin: [Double]
-  
-
+    let stability: Stability
+    var distanceBetweenFrontAndRearWheels: Double = 0.0
+    let frontAndRearState: Bool
+    let leftandRightState: Bool
 
     init(_ baseType: BaseObjectTypes,
-         _ twinSitOnOptions: TwinSitOnOptions,
-         _ currentObjectDefaultDimensionDictionary: Part3DimensionDictionary = [:]) {
+         _ twinSitOnOptions: TwinSitOnOptions
+        ) {
         self.baseType = baseType
         self.twinSitOnOptions = twinSitOnOptions
-        self.currentObjectDefaultDimensionDictionary = currentObjectDefaultDimensionDictionary
+        
+        frontAndRearState = twinSitOnOptions[.frontAndRear] ?? false
+        leftandRightState = twinSitOnOptions[.leftAndRight] ?? false
+        
+        stability = Stability(baseType)
+       
+        distanceBetweenFrontAndRearWheels =
+             getDistanceBetweenFrontAndRearWheels(baseType)
         
         occupantBodySupportDefaultDimension =
             OccupantBodySupportDefaultDimension(
-                .fixedWheelRearDrive).value
+                baseType).value
         
-        //ySitOnOrigin
+   
         
+        func getDistanceBetweenFrontAndRearWheels (_ baseType: BaseObjectTypes) -> Double {
+            let distanceBetweenFrontAndRearWheels =
+                 DistanceBetweenFrontAndRearWheels(baseType)
+            let distance =
+            twinSitOnOptions[.frontAndRear] ?? false ?
+            distanceBetweenFrontAndRearWheels.ifFrontAndRearSitOn:
+            distanceBetweenFrontAndRearWheels.ifNoFrontAndRearSitOn
+            return distance
+        }
+    
+
     }
-    
-    
     /// initially dic = [:] so dic[name] = nil
     /// latter not nil
     
     func frontToRearWheels()
         -> Double {
-            var modifiedOrDefaultOccupantBodySupportLengths: [Double] = []
-            let ids: [Part] = [.id0, .id1]
-            for id in ids {
-                modifiedOrDefaultOccupantBodySupportLengths.append(
-                    currentObjectDefaultDimensionDictionary[
-                        CreateNameFromParts([.sitOn, id,.stringLink,.object,.id0]).name]?.length ??
-                    occupantBodySupportDefaultDimension.length )
-            }
-            
-            let defaultFootHangerLinkLength =
-                OccupantFootSupportHangerLinkDefaultDimension(baseType).value.length
-            var modifiedOrDefaultFootHangerLinkLengths: [Double] = []
-            
-            for id in ids {
-                modifiedOrDefaultFootHangerLinkLengths.append(
-                    currentObjectDefaultDimensionDictionary[
-                        CreateNameFromParts([.footSupportHangerLink, id,.stringLink,.sitOn,.id0]).name]?.length ??
-                    defaultFootHangerLinkLength )
-            }
-            
-            let maximumModifiedOrDefaultHangerLinkLength = modifiedOrDefaultFootHangerLinkLengths.max()!
-            
-             /// the additional  length includes the rear sitOn length and the maxximum footHangerLinkLength
-            var general =
-                modifiedOrDefaultOccupantBodySupportLengths[0] +
-                stability.atRear +
-                stability.atFront +
-                    (twinSitOnOptions[.frontAndRear] ?? false
-                     ?
-                    modifiedOrDefaultOccupantBodySupportLengths[1] +
-                    maximumModifiedOrDefaultHangerLinkLength:
-                    0.0)
+
+            let general = distanceBetweenFrontAndRearWheels
             
             let dictionary: BaseSizeDictionary =
                 [
+                .allCasterBed: 2000.0,
                 .allCasterHoist: 1200.0,
                 .allCasterTiltInSpaceShowerChair: 600.0]
            
@@ -160,6 +189,7 @@ struct DistanceBetween {
     
     func midToRearWheels()
         -> Double {
+            
             let dictionary: BaseSizeDictionary =
                 [.fixedWheelMidDrive: 300.0]
             let general = 0.0
@@ -233,6 +263,11 @@ struct Stability {
     let atFront = 0.0
     let atLeft = 0.0
     let atRight = 0.0
+    let baseType: BaseObjectTypes
+    
+    init(_ baseType: BaseObjectTypes) {
+        self.baseType = baseType
+    }
 }
 
 
