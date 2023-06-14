@@ -38,12 +38,50 @@ struct CreateDefaultDimensionDictionary {
     }
 }
 
+
+struct Parent {
+    let parentProperty: Int
+    
+    struct Child {
+        func accessParentProperty(parent: Parent) {
+            let value = parent.parentProperty
+            print(value) // Output: 10
+        }
+    }
+}
+
+
+//struct Parent {
+//    let data: Int = 10
+//
+//    struct ChildA {
+//        var dataForChildA = Parent.data * 2
+//        }
+//    }
+    
+//    struct ChildB {
+//        var dataForChildA: Int {
+//            data * 2
+//    }
+    
+//}
+
 struct ObjectDefaultDimension {
     let dictionary: Part3DimensionDictionary
+    let modifiedPartDictionary: Part3DimensionDictionary
+    let modifiedOriginDictionary: PositionDictionary
+    let modifiedAngleDictionary: AngleDictionary
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions) {
+        _ twinSitOnOptions: TwinSitOnOptions,
+        _ modifiedPartDictionary: Part3DimensionDictionary = [:],
+        _ modifiedOriginDictinary: PositionDictionary = [:],
+        _ modifiedAngleDictionary: AngleDictionary = [:]) {
+            
+            self.modifiedPartDictionary = modifiedPartDictionary
+            self.modifiedOriginDictionary = modifiedOriginDictinary
+            self.modifiedAngleDictionary = modifiedAngleDictionary
             
             dictionary =
             createDefaultObjectDictionary(
@@ -56,11 +94,15 @@ struct ObjectDefaultDimension {
                 -> Part3DimensionDictionary {
                     var defaultDimensionDictionary =
                             RequestOccupantBodySupportDefaultDimensionDictionary(
-                                baseType, twinSitOnOptions).dictionary
+                                baseType,
+                                twinSitOnOptions,
+                                modifiedPartDictionary).dictionary
                             
                         defaultDimensionDictionary +=
                                 RequestOccupantFootSupportDefaultDimensionDictionary(
-                                    baseType, twinSitOnOptions).dictionary
+                                    baseType,
+                                    twinSitOnOptions,
+                                    modifiedPartDictionary).dictionary
 
                          defaultDimensionDictionary +=
                             RequestOccupantBackSupportDefaultDimensionDictionary(
@@ -68,7 +110,9 @@ struct ObjectDefaultDimension {
 
                         defaultDimensionDictionary +=
                             RequestOccupantSideSupportDefaultDimensionDictionary(
-                                baseType, twinSitOnOptions).dictionary
+                                baseType,
+                                twinSitOnOptions,
+                                modifiedPartDictionary).dictionary
                     
 
 //print("DEFAULT")

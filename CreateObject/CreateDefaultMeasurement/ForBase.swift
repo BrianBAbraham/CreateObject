@@ -94,15 +94,16 @@ struct DistanceBetweenFrontAndRearWheels {
     let stability: Stability
     
     init (
-        _ baseType: BaseObjectTypes){
+        _ baseType: BaseObjectTypes,
+        _ modifiedPartDictionary: Part3DimensionDictionary){
             
             stability = Stability(baseType)
             
             occupantBodySupport =
-                OccupantBodySupportDefaultDimension(baseType).value
+                OccupantBodySupportDefaultDimension(baseType, modifiedPartDictionary).value
             
             occupantFootSupportHangerLink =
-                OccupantFootSupportHangerLinkDefaultDimension(baseType).value
+                OccupantFootSupportHangerLinkDefaultDimension(baseType, modifiedPartDictionary).value
             
             ifFrontAndRearSitOn =
                 requiredDistanceBetweenFrontRearWheeIfFrontAndRear()
@@ -138,7 +139,8 @@ struct DistanceBetween {
     let leftandRightState: Bool
 
     init(_ baseType: BaseObjectTypes,
-         _ twinSitOnOptions: TwinSitOnOptions
+         _ twinSitOnOptions: TwinSitOnOptions,
+         _ modifiedPartDictionary: Part3DimensionDictionary
         ) {
         self.baseType = baseType
         self.twinSitOnOptions = twinSitOnOptions
@@ -153,13 +155,13 @@ struct DistanceBetween {
         
         occupantBodySupportDefaultDimension =
             OccupantBodySupportDefaultDimension(
-                baseType).value
+                baseType, modifiedPartDictionary).value
         
    
         
         func getDistanceBetweenFrontAndRearWheels (_ baseType: BaseObjectTypes) -> Double {
             let distanceBetweenFrontAndRearWheels =
-                 DistanceBetweenFrontAndRearWheels(baseType)
+                 DistanceBetweenFrontAndRearWheels(baseType,modifiedPartDictionary)
             let distance =
             twinSitOnOptions[.frontAndRear] ?? false ?
             distanceBetweenFrontAndRearWheels.ifFrontAndRearSitOn:

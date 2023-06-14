@@ -7,6 +7,7 @@
 
 import Foundation
 
+typealias MinMaxAngle = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle>)
 typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
 typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
@@ -36,6 +37,8 @@ typealias Dimension = (length: Double, width: Double)
 typealias Dimension3d = (length: Double, width: Double, height: Double)
 
 
-typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
+//typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
 
 //typealias MinMax = (min: Double, max: Double)
+typealias AngleDictionary = [String: Measurement<UnitAngle>]
+typealias AngleMinMaxDictionary = [String: MinMaxAngle]

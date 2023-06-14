@@ -14,14 +14,18 @@ struct RequestOccupantFootSupportDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions
+        _ twinSitOnOptions: TwinSitOnOptions,
+        _ modifiedPartDictionary: Part3DimensionDictionary
         ) {
             
         getDictionary()
         
         func getDictionary() {
                 
-            let allOccupantRelated = AllOccupantFootRelated(baseType)
+            let allOccupantRelated =
+                AllOccupantFootRelated(
+                    baseType,
+                    modifiedPartDictionary)
             dictionary =
                 CreateDefaultDimensionDictionary(
                     allOccupantRelated.parts,
@@ -35,7 +39,9 @@ struct RequestOccupantFootSupportDefaultDimensionDictionary {
 struct AllOccupantFootRelated {
     let parts: [Part]
     let dimensions: [Dimension3d]
-    init(_ baseType: BaseObjectTypes) {
+    init(
+        _ baseType: BaseObjectTypes,
+        _ modifiedPartDictionary: Part3DimensionDictionary) {
         parts =
             [.footSupportHangerSitOnVerticalJoint,
              .footSupportHangerLink,
@@ -47,10 +53,10 @@ struct AllOccupantFootRelated {
         dimensions =
         [
             OccupantFootSupportHangerJointDefaultDimension(baseType).value,
-            OccupantFootSupportHangerLinkDefaultDimension(baseType).value,
+            OccupantFootSupportHangerLinkDefaultDimension(baseType, modifiedPartDictionary).value,
             OccupantFootSupportHorizontalJointDefaultDimension(baseType).value,
-            OccupantFootSupportDefaultDimension(baseType).value,
-            OccupantFootSupportInOnePieceDefaultDimension(baseType).value
+            OccupantFootSupportDefaultDimension(baseType,modifiedPartDictionary).value,
+            OccupantFootSupportInOnePieceDefaultDimension(baseType,modifiedPartDictionary).value
         ]
     }
 }
@@ -68,7 +74,6 @@ struct OccupantFootSupportHangerJointDefaultDimension {
     init(_ baseType: BaseObjectTypes) {
         value = dictionary[baseType] ?? Self.general
     }
-    
 }
 
 struct OccupantFootSupportHangerLinkDefaultDimension {
@@ -77,10 +82,15 @@ struct OccupantFootSupportHangerLinkDefaultDimension {
     static let general = (length: 200.0, width: 20.0, height: 20.0)
     let value: Dimension3d
     
-    init(_ baseType: BaseObjectTypes) {
-        value = dictionary[baseType] ?? Self.general
+    init(
+        _ baseType: BaseObjectTypes,
+        _ modifiedPartDictionary: Part3DimensionDictionary ) {
+        
+            value =
+                //modifiedDictionary[baseType] ??
+                dictionary[baseType] ??
+                Self.general
     }
-    
 }
 
 struct OccupantFootSupportHorizontalJointDefaultDimension {
@@ -110,8 +120,14 @@ struct OccupantFootSupportInOnePieceDefaultDimension {
          height: 10.0)
     let value: Dimension3d
     
-    init(_ baseType: BaseObjectTypes) {
-        value = dictionary[baseType] ?? Self.general
+    init(
+        _ baseType: BaseObjectTypes,
+        _ modifiedPartDictionary: Part3DimensionDictionary) {
+        
+            value =
+                //modifiedDictionary[baseType] ??
+                dictionary[baseType] ??
+                Self.general
     }
 }
 
@@ -122,8 +138,14 @@ struct OccupantFootSupportDefaultDimension {
     static let general = (length: 100.0, width: 150.0, height: 10.0)
     let value: Dimension3d
     
-    init(_ baseType: BaseObjectTypes) {
-        value = dictionary[baseType] ?? Self.general
+    init(
+        _ baseType: BaseObjectTypes,
+        _ modifiedPartDictionary: Part3DimensionDictionary) {
+        
+            value =
+                //modifiedDictionary[baseType] ??
+                dictionary[baseType] ??
+                Self.general
     }
 }
 

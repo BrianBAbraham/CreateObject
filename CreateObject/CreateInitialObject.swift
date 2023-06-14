@@ -34,7 +34,7 @@ struct CreateInitialObject {
 //print(
         OccupantBodySupportDefaultOrigin(
     BaseObjectTypes(rawValue: baseObjectName) ??
-    .fixedWheelRearDrive, twinSitOnOptions, objectOptions)
+        .fixedWheelRearDrive, twinSitOnOptions, objectOptions, [:])
             //.origin)
         
         getDictionary(baseObjectName)

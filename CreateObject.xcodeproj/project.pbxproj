@@ -217,11 +217,11 @@
 		FDFC686E2A2A1B0B0027E219 /* CreateDefaultMeasurement */ = {
 			isa = PBXGroup;
 			children = (
-				FDEA61602A24EEBD00A50ACC /* ForOccupantFoot.swift */,
-				FDFC686F2A2A1BB40027E219 /* ForOccupantBody.swift */,
 				FDFC68712A2A1C800027E219 /* ForOccupantBack.swift */,
-				FDFC68732A2A3AAD0027E219 /* ForOccupantSide.swift */,
+				FDFC686F2A2A1BB40027E219 /* ForOccupantBody.swift */,
+				FDEA61602A24EEBD00A50ACC /* ForOccupantFoot.swift */,
 				FDF085632A2E18F200EB147F /* ForOverHead.swift */,
+				FDFC68732A2A3AAD0027E219 /* ForOccupantSide.swift */,
 				FDF085652A2E222900EB147F /* ForBase.swift */,
 				FDFC68752A2A3EBF0027E219 /* CreateDefaultDimensionDictionary.swift */,
 			);

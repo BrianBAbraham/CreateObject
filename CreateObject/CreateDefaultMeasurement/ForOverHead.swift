@@ -15,14 +15,15 @@ struct RequestOccupantOverHeadSupportDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions
+        _ twinSitOnOptions: TwinSitOnOptions,
+        _ modifiedPartDictionary: Part3DimensionDictionary
         ) {
             
         getDictionary()
         
         func getDictionary() {
                 
-            let allOccupantRelated = AllOccupantOverheadRelated(baseType, twinSitOnOptions)
+            let allOccupantRelated = AllOccupantOverheadRelated(baseType, twinSitOnOptions, modifiedPartDictionary)
             dictionary =
                 CreateDefaultDimensionDictionary(
                     allOccupantRelated.parts,
@@ -41,9 +42,9 @@ struct AllOccupantOverheadRelated {
     var dimensions: [Dimension3d] = []
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions
-    ) {
-        let width = DistanceBetween(.allCasterHoist, twinSitOnOptions).rearWheels()
+        _ twinSitOnOptions: TwinSitOnOptions,
+        _ modifiedPartDictionary: Part3DimensionDictionary) {
+        let width = DistanceBetween(.allCasterHoist, twinSitOnOptions, modifiedPartDictionary).rearWheels()
         
          parts =
             [.overheadSupportMastBase,
@@ -86,7 +87,13 @@ struct OccupantOverheadSupportMastDefaultDimension {
      height: 1500.0)
     let value: Dimension3d
     
-    init(_ baseType: BaseObjectTypes) {
-        value = dictionary[baseType] ?? Self.general
+    init(
+        _ baseType: BaseObjectTypes,
+        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
+        
+            value =
+                modifiedDictionary[baseType] ??
+                dictionary[baseType] ??
+                Self.general
     }
 }
