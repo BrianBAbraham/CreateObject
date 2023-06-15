@@ -18,8 +18,6 @@ struct RequestOccupantBodySupportDefaultDimensionDictionary {
         ) {
             
         getDictionary()
-            
-        
             func getDictionary() {
                 let dimension =
                     OccupantBodySupportDefaultDimension(
@@ -114,6 +112,7 @@ struct OccupantBodySupportDefaultOrigin {
             
         occupantBodySupport =
             OccupantBodySupportDefaultDimension(baseType, modifiedPartDictionary).value
+            
         occupantFootSupportHangerLink =
             OccupantFootSupportHangerLinkDefaultDimension(baseType, modifiedPartDictionary).value
             
