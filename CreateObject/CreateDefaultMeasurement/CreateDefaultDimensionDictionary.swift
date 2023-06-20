@@ -632,6 +632,8 @@ struct ObjectDefaultOrModifiedSpecification {
                     
                 for sitOnIndex in 0..<sitOnIds.count {
                     var name: String
+                    var position: PositionAsIosAxes
+                    var positions: [PositionAsIosAxes]
                     for footSupportIndex in 0..<2 {
                         name =
                         CreateNameFromParts([
@@ -641,7 +643,15 @@ struct ObjectDefaultOrModifiedSpecification {
                             .footSupportHangerSitOnVerticalJoint,
                             twoIds[footSupportIndex] ]).name
                         
-                        self.dictionaryOut += [name :                                              SitOnToHangerVerticalJointDefaultOrigin(parent.baseType).value]
+                        positions =
+                        CreateIosPosition.forLeftRightAsArrayFromPosition(
+                            SitOnToHangerVerticalJointDefaultOrigin(parent.baseType).value
+                        )
+                        
+                        position =
+                            parent.modifiedOriginDictionary[name] ??
+                                positions[footSupportIndex]
+                        self.dictionaryOut += [name :  position]
                         
                         
                         name =
@@ -653,7 +663,14 @@ struct ObjectDefaultOrModifiedSpecification {
                             twoIds[footSupportIndex],
                         ]).name
                         
-                        self.dictionaryOut += [name :                                              HangerVerticalJointToHangerLinkDefaultOrigin(parent.baseType).value]
+                        positions =
+                        CreateIosPosition.forLeftRightAsArrayFromPosition(
+                            HangerVerticalJointToHangerLinkDefaultOrigin(parent.baseType).value
+                        )
+                        
+                        position = parent.modifiedOriginDictionary[name] ??
+                            positions[footSupportIndex]
+                        self.dictionaryOut += [name : position]
                     }
                     
                     let footSupportIds: [Part] =
@@ -667,13 +684,16 @@ struct ObjectDefaultOrModifiedSpecification {
                             .stringLink,
                             .footSupport,
                             footSupportIds[footSupportIndex] ]).name
-                            
-                        let origin =
-                        footPlateInOnePieceState ?
-                        FootSupportJointToFootSupportInOnePieceDefaultOrigin(parent.baseType).value:
-                        FootSupportJointToFootSupportInTwoPieceDefaultOrigin(parent.baseType).value
                         
-                        self.dictionaryOut += [name : origin]
+                        positions = footPlateInOnePieceState ?
+                        [FootSupportJointToFootSupportInOnePieceDefaultOrigin(parent.baseType).value]:
+                        CreateIosPosition.forLeftRightAsArrayFromPosition(
+                                HangerVerticalJointToHangerLinkDefaultOrigin(parent.baseType).value
+                            )
+                        
+                        position = parent.modifiedOriginDictionary[name] ?? positions[footSupportIndex]
+                        
+                        self.dictionaryOut += [name : position]
                     }
                 }
             }
