@@ -23,8 +23,7 @@ struct RequestOccupantSideSupportDefaultDimensionDictionary {
                 
             let allOccupantRelated =
             OccupantSideSupportDefaultDimension(
-                baseType,
-                modifiedPartDictionary
+                baseType
             )
             
             dictionary =
@@ -51,17 +50,19 @@ struct OccupantSideSupportDefaultDimension {
         ]
     
     let value: Dimension3d
-    let modifiedPartDictionary: Part3DimensionDictionary
+    //let modifiedPartDictionary: Part3DimensionDictionary
     var general: Dimension3d
         
     
     init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedPartDictionary: Part3DimensionDictionary  ) {
+        _ baseType: BaseObjectTypes//,
+        //_ modifiedPartDictionary: Part3DimensionDictionary
+    ) {
             
-            self.modifiedPartDictionary = modifiedPartDictionary
+            //self.modifiedPartDictionary = modifiedPartDictionary
             general =
-            (length: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive, modifiedPartDictionary).value.length,
+            (length: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive//, modifiedPartDictionary
+                                                        ).value.length,
             width: 40.0,
              height: 30.0)
         

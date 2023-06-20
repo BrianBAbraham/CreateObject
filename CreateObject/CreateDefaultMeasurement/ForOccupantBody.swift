@@ -10,24 +10,23 @@ import Foundation
 
 struct RequestOccupantBodySupportDefaultDimensionDictionary {
     var dictionary: Part3DimensionDictionary = [:]
-    
+
     init(
         _ baseType: BaseObjectTypes,
         _ twinSitOnOptions: TwinSitOnOptions,
         _ modifiedPartDictionary: Part3DimensionDictionary
         ) {
-            
+
         getDictionary()
             func getDictionary() {
                 let dimension =
                     OccupantBodySupportDefaultDimension(
-                        baseType,
-                        modifiedPartDictionary).value
+                        baseType).value
                 let dimensions =
                 TwinSitOn(twinSitOnOptions).state ? [dimension, dimension]: [dimension]
                 let parts: [Part] =
                 TwinSitOn(twinSitOnOptions).state ? [.sitOn, .sitOn]: [.sitOn]
-                
+
                 dictionary =
                     CreateDefaultDimensionDictionary(
                         parts,
@@ -40,7 +39,6 @@ struct RequestOccupantBodySupportDefaultDimensionDictionary {
 
 
 struct OccupantBodySupportDefaultDimension {
-    
     var dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher: (length: 1200.0, width: 600.0, height: 10.0),
      .allCasterBed: (length: 2000.0, width: 900.0, height: 150.0),
@@ -49,13 +47,9 @@ struct OccupantBodySupportDefaultDimension {
     static let general = (length: 500.0, width: 400.0, height: 50.0)
     let value: Dimension3d
     
-    
     init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedPartDictionary: Part3DimensionDictionary) {
-        
+        _ baseType: BaseObjectTypes) {
             value =
-                //modifiedDictionary[baseType] ??
                 dictionary[baseType] ??
                 Self.general
     }
@@ -103,21 +97,25 @@ struct OccupantBodySupportDefaultOrigin {
     init (
         _ baseType: BaseObjectTypes,
         _ twinSitOnOptions:TwinSitOnOptions,
-        _ objectOptions: OptionDictionary,
-        _ modifiedPartDictionary: Part3DimensionDictionary){
+        _ objectOptions: OptionDictionary//,
+        //_ modifiedPartDictionary: Part3DimensionDictionary
+    ){
         
         stability = Stability(baseType)
         frontAndRearState = twinSitOnOptions[.frontAndRear] ?? false
         leftandRightState = twinSitOnOptions[.leftAndRight] ?? false
             
         occupantBodySupport =
-            OccupantBodySupportDefaultDimension(baseType, modifiedPartDictionary).value
+            OccupantBodySupportDefaultDimension(baseType//, modifiedPartDictionary
+            ).value
             
         occupantFootSupportHangerLink =
-            OccupantFootSupportHangerLinkDefaultDimension(baseType, modifiedPartDictionary).value
+            OccupantFootSupportHangerLinkDefaultDimension(baseType//, modifiedPartDictionary
+            ).value
             
         distanceBetweenFrontAndRearWheels =
-             DistanceBetweenFrontAndRearWheels(baseType, modifiedPartDictionary)
+             DistanceBetweenFrontAndRearWheels(baseType//, modifiedPartDictionary
+             )
             
         if BaseObjectGroups().rearPrimaryOrigin.contains(baseType) {
             forRearPrimaryOrigin()
@@ -269,7 +267,8 @@ print("")
             func leftAndRightX ()
                 -> Double {
                     (occupantBodySupport.width/2 +
-                     OccupantSideSupportDefaultDimension(baseType, modifiedPartDictionary).value.width)
+                     OccupantSideSupportDefaultDimension(baseType//, modifiedPartDictionary
+                                                        ).value.width)
             }
     }
 }

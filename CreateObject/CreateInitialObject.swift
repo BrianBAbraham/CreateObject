@@ -31,11 +31,13 @@ struct CreateInitialObject {
         self.defaultOrModifiedObjectDimensionDictionary = partDictionary
 
 //DictionaryInArrayOut().getNameValue(defaultDictionary).forEach{print($0)}
-//print(
-        OccupantBodySupportDefaultOrigin(
+//prin
+        let  objectDefaultOrModifiedSpecification =
+        ObjectDefaultOrModifiedSpecification(
     BaseObjectTypes(rawValue: baseObjectName) ??
-        .fixedWheelRearDrive, twinSitOnOptions, objectOptions, [:])
+        .fixedWheelRearDrive, twinSitOnOptions, objectOptions)
             //.origin)
+        print(objectDefaultOrModifiedSpecification.originDictionaryOut)
         
         getDictionary(baseObjectName)
     }

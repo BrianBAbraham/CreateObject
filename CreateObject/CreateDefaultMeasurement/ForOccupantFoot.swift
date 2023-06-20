@@ -53,7 +53,7 @@ struct AllOccupantFootRelated {
         dimensions =
         [
             OccupantFootSupportHangerJointDefaultDimension(baseType).value,
-            OccupantFootSupportHangerLinkDefaultDimension(baseType, modifiedPartDictionary).value,
+            OccupantFootSupportHangerLinkDefaultDimension(baseType).value,
             OccupantFootSupportHorizontalJointDefaultDimension(baseType).value,
             OccupantFootSupportDefaultDimension(baseType,modifiedPartDictionary).value,
             OccupantFootSupportInOnePieceDefaultDimension(baseType,modifiedPartDictionary).value
@@ -77,17 +77,12 @@ struct OccupantFootSupportHangerJointDefaultDimension {
 }
 
 struct OccupantFootSupportHangerLinkDefaultDimension {
-    let dictionary: BaseObject3DimensionDictionary =
-    [:]
+    let dictionary: BaseObject3DimensionDictionary = [:]
     static let general = (length: 200.0, width: 20.0, height: 20.0)
     let value: Dimension3d
-    
     init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedPartDictionary: Part3DimensionDictionary ) {
-        
+        _ baseType: BaseObjectTypes) {
             value =
-                //modifiedDictionary[baseType] ??
                 dictionary[baseType] ??
                 Self.general
     }
@@ -123,9 +118,7 @@ struct OccupantFootSupportInOnePieceDefaultDimension {
     init(
         _ baseType: BaseObjectTypes,
         _ modifiedPartDictionary: Part3DimensionDictionary) {
-        
             value =
-                //modifiedDictionary[baseType] ??
                 dictionary[baseType] ??
                 Self.general
     }
@@ -143,7 +136,6 @@ struct OccupantFootSupportDefaultDimension {
         _ modifiedPartDictionary: Part3DimensionDictionary) {
         
             value =
-                //modifiedDictionary[baseType] ??
                 dictionary[baseType] ??
                 Self.general
     }
@@ -151,62 +143,17 @@ struct OccupantFootSupportDefaultDimension {
 
 
 
+//MARK: ORIGIN
 
 
-
-
-///parent orgin to child orrigin
-///base is parent
-///sitOn is paren sitt
-///
-
-
-//MARK: POSITION
-
-//struct RequestOccupantFootSupportDefaultOriginDictionary {
-//    var dictionary: PositionDictionary = [:]
-//
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptions
-//        ) {
-//
-//        getDictionary()
-//
-//        func getDictionary() {
-//
-//            let allOccupantRelated = AllOccupantFootRelated(baseType)
-//            dictionary =
-//                CreateDefaultOriginDictionary(
-//                    allOccupantRelated.parts,
-//                    allOccupantRelated.dimensions,
-//                    twinSitOnOptions
-//                ).dictionary
-//        }
-//    }
-//}
-
-
-
-//struct SitOnRightFrontCornerToFootSupportHangerVerticalJointPosition {
-//    let dictionary: BaseObjectPositionDictionary = [:]
-//    let general: PositionAsIosAxes
-//    let value: PositionAsIosAxes
-//    
-//    init(_ baseType: BaseObjectTypes) {
-//        general =
-//        (x: 40.0, y: -40.0, z: 0.0)
-//        value = dictionary[baseType] ?? general
-//    }
-//}
-
-struct HangerVerticalJointToFootSupportJointPosition {
+struct SitOnToHangerVerticalJointDefaultOrigin {
+    static let jointBelowSeat = -50.0
     let dictionary: OriginDictionary =
         [:]
     let general =
-        (x: 0.0,
-         y: OccupantFootSupportHangerLinkDefaultDimension.general.length,
-         z: 0.0)
+        (x: OccupantBodySupportDefaultDimension.general.width/2 * 0.95,
+         y: OccupantBodySupportDefaultDimension.general.length/2 * 0.95,
+         z: jointBelowSeat)
     
     let value: PositionAsIosAxes
     
@@ -216,10 +163,13 @@ struct HangerVerticalJointToFootSupportJointPosition {
 }
 
 
-struct FootSupportJointToFootSupportPosition {
+struct HangerVerticalJointToHangerLinkDefaultOrigin {
     let dictionary: OriginDictionary =
         [:]
-    let general: PositionAsIosAxes = (x: 0.0, y: OccupantFootSupportDefaultDimension.general.length, z: 0.0)
+    let general: PositionAsIosAxes =
+    (x: 0.0,
+     y: OccupantFootSupportHangerLinkDefaultDimension.general.length/2,
+     z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
     
     let value: PositionAsIosAxes
     
@@ -229,20 +179,67 @@ struct FootSupportJointToFootSupportPosition {
     }
 }
 
-
-
-
-
-
-struct FootSupportMaximumDictionary {
-    let dictionary: BaseObjectDimensionDictionary =
-        [.showerTray: (length: 1800.0, width: 1400.0),
-        ]
-    let general = (length: 100.0, width: 150.0)
+struct HangerLinkToFootSupportJointDefaultOrigin {
+    static let footSupportHeightAboutFloor = 100.0
+    let dictionary: OriginDictionary =
+        [:]
+    let general =
+        (x: 0.0,
+         y: OccupantFootSupportDefaultDimension.general.length/2,
+         z: -(ObjectDefaultOrModifiedSpecification.sitOnHeight -
+             Self.footSupportHeightAboutFloor +
+             SitOnToHangerVerticalJointDefaultOrigin.jointBelowSeat) )
     
-    let value: Dimension
+    let value: PositionAsIosAxes
     
     init(_ baseType: BaseObjectTypes) {
       value = dictionary[baseType] ?? general
     }
 }
+
+struct FootSupportJointToFootSupportInTwoPieceDefaultOrigin {
+    static let footSupportHeightAboutFloor = 100.0
+    let dictionary: OriginDictionary =
+        [:]
+    let general: PositionAsIosAxes
+    let value: PositionAsIosAxes
+    
+    init(_ baseType: BaseObjectTypes) {
+    general =
+        (x: -OccupantFootSupportHorizontalJointDefaultDimension(baseType).value.width/2,
+         y: (OccupantFootSupportHangerLinkDefaultDimension.general.length +  OccupantFootSupportDefaultDimension.general.length)/2,
+         z: 0.0 )
+        
+    value = dictionary[baseType] ?? general
+    }
+}
+
+struct FootSupportJointToFootSupportInOnePieceDefaultOrigin {
+    static let footSupportHeightAboutFloor = 100.0
+    let dictionary: OriginDictionary =
+        [:]
+    let general: PositionAsIosAxes
+    let value: PositionAsIosAxes
+    
+    init(_ baseType: BaseObjectTypes) {
+    general =
+        (x: -OccupantBodySupportDefaultDimension(baseType).value.width/2,
+         y: (OccupantFootSupportHangerLinkDefaultDimension.general.length +  OccupantFootSupportDefaultDimension.general.length)/2,
+         z: 0.0 )
+        
+    value = dictionary[baseType] ?? general
+    }
+}
+
+//struct FootSupportMaximumDictionary {
+//    let dictionary: BaseObjectDimensionDictionary =
+//        [.showerTray: (length: 1800.0, width: 1400.0),
+//        ]
+//    let general = (length: 100.0, width: 150.0)
+//
+//    let value: Dimension
+//
+//    init(_ baseType: BaseObjectTypes) {
+//      value = dictionary[baseType] ?? general
+//    }
+//}
