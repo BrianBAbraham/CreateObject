@@ -55,237 +55,34 @@ struct OccupantBodySupportDefaultDimension {
     }
 }
 
-//
-//struct RequestOccupantBodySupportDefaultOriginDictionary {
-//    var dictionary: PositionDictionary = [:]
-//
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptions
-//        ) {
-//
-//        getDictionary()
-//
-//        func getDictionary() {
-//
-//            let allOccupantRelated = AllOccupantFootRelated(baseType)
-//            dictionary =
-//                CreateDefaultOriginDictionary(
-//                    allOccupantRelated.parts,
-//                    allOccupantRelated.dimensions,
-//                    twinSitOnOptions
-//                ).dictionary
-//        }
-//    }
-//}
-
-
-/// twin seat?
-/// stability?
-/// base type?
-struct OccupantBodySupportDefaultOrigin {
-    static let sitOnHeight = 500.0
-    let stability: Stability
-    var origin: [PositionAsIosAxes] = []
-    let frontAndRearState: Bool
-    let leftandRightState: Bool
-    var dictionaryOut: PositionDictionary = [:]
-    let occupantBodySupport: Dimension3d
-    let occupantFootSupportHangerLink: Dimension3d
-    let distanceBetweenFrontAndRearWheels: DistanceBetweenFrontAndRearWheels
+struct OccupantBodySupportDefaultTiltOrigin {
+    var dictionary: BaseObjectOriginDictionary = [:]
     
-    init (
-        _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions:TwinSitOnOptions,
-        _ objectOptions: OptionDictionary//,
-        //_ modifiedPartDictionary: Part3DimensionDictionary
-    ){
-        
-        stability = Stability(baseType)
-        frontAndRearState = twinSitOnOptions[.frontAndRear] ?? false
-        leftandRightState = twinSitOnOptions[.leftAndRight] ?? false
-            
-        occupantBodySupport =
-            OccupantBodySupportDefaultDimension(baseType//, modifiedPartDictionary
-            ).value
-            
-        occupantFootSupportHangerLink =
-            OccupantFootSupportHangerLinkDefaultDimension(baseType//, modifiedPartDictionary
-            ).value
-            
-        distanceBetweenFrontAndRearWheels =
-             DistanceBetweenFrontAndRearWheels(baseType//, modifiedPartDictionary
-             )
-            
-        if BaseObjectGroups().rearPrimaryOrigin.contains(baseType) {
-            forRearPrimaryOrigin()
-        }
-        if BaseObjectGroups().frontPrimaryOrigin.contains(baseType) {
-            forFrontPrimaryOrgin()
-        }
-        if BaseObjectGroups().midPrimaryOrigin.contains(baseType) {
-            forMidPrimaryOrigin()
-        }
-            
-        
-        getDictionary()
+    static let general = (x: 0.0, y: 0.0, z: -100.0)
     
-print("")
-print(baseType.rawValue)
-//print(dictionaryOut)
-print(distanceBetweenFrontAndRearWheels.ifFrontAndRearSitOn)
-print("")
-            
-        func getDictionary() {
-            let ids: [Part] =
-                (frontAndRearState || leftandRightState) ?
-                [.id0, .id1] :  [.id0]
-            
-                
-                for index in 0..<ids.count {
-                    self.dictionaryOut[
-                        CreateNameFromParts([
-                            .sitOn,
-                            ids[index],
-                            .stringLink,
-                            .object,
-                            .id0]).name] = origin[index]
-                }
-        }
-        
-        func forRearPrimaryOrigin() {
-            origin.append(
-                (x: 0.0,
-                y:
-                stability.atRear +
-                 occupantBodySupport.length/2,
-                 z: Self.sitOnHeight)
-            )
-            
-            if frontAndRearState {
-                origin.append(
-                        (x: 0.0,
-                        y:
-                            
-                        stability.atRear +
-                         occupantBodySupport.length +
-                         occupantFootSupportHangerLink.length +
-                        occupantBodySupport.length/2,
-                         z: Self.sitOnHeight)
-                )
-            }
-            
-            if leftandRightState {
-                let xOrigin1 =
-                    leftAndRightX()
-                let xOrigin0 =
-                    -leftAndRightX()
-                
-            origin =
-                [(x: xOrigin0,
-                  y: origin[0].y,
-                  z: 0.0),
-                (x: xOrigin1,
-                 y: origin[0].y,
-                 z: Self.sitOnHeight)
-                ]
-            }
-        }
-            
-        func forMidPrimaryOrigin(){
-            let baseLength = frontAndRearState ?
-                distanceBetweenFrontAndRearWheels.ifFrontAndRearSitOn: distanceBetweenFrontAndRearWheels.ifNoFrontAndRearSitOn
-            
-            origin.append(
-            (x: 0.0,
-             y: 0.5 * (baseLength - occupantBodySupport.length),
-             z: Self.sitOnHeight)
-            )
-            
-            if frontAndRearState {
-                origin =
-                [
-                (x: 0.0,
-                 y: -origin[0].y,
-                 z: Self.sitOnHeight)
-                 ,
-                (x: 0.0,
-                 y: origin[0].y,
-                z: Self.sitOnHeight)
-                ]
-            }
-            
-            if leftandRightState {
-                origin =
-                [
-                (x: 0.0,
-                 y: -origin[0].y,
-                 z: Self.sitOnHeight)
-                 ,
-                (x: 0.0,
-                 y: origin[0].y,
-                z: Self.sitOnHeight)
-                ]
-            }
-        }
-            
-        func forFrontPrimaryOrgin() {
-            origin.append(
-                (x: 0.0,
-                 y:
-                -(stability.atFront +
-                    occupantBodySupport.length/2),
-                 z: Self.sitOnHeight )
-                 )
-            
-            if frontAndRearState {
-                origin = [
-                    (x: 0.0,
-                     y:
-                        -stability.atFront -
-                        occupantBodySupport.length -
-                        occupantFootSupportHangerLink.length -
-                        occupantBodySupport.length/2,
-                     z: Self.sitOnHeight
-                     ),
-                    origin[0]
-                ]
-            }
-            
-            if leftandRightState {
-                origin = [
-                    (x: -leftAndRightX(),
-                     y: origin[0].y,
-                     z: Self.sitOnHeight),
-                    (x: leftAndRightX(),
-                     y: origin[0].y,
-                     z: Self.sitOnHeight)
-                ]
-            }
-        }
-            
-            func leftAndRightX ()
-                -> Double {
-                    (occupantBodySupport.width/2 +
-                     OccupantSideSupportDefaultDimension(baseType//, modifiedPartDictionary
-                                                        ).value.width)
-            }
+    let value: PositionAsIosAxes
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
     }
 }
-//struct RequestOccupantSupportDefaultDimensionDictionary {
-//    var dictionary: Part3DimensionDictionary = [:]
-//
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ sitOnId: Part,
-//        _ options: OptionDictionary,
-//        _ partsThatMakeNames: [[Part]],
-//        _ dimensions: [Dimension3d]) {
-//
-//            dictionary =
-//                CreateDefaultDimensionDictionary(
-//                partsThatMakeNames,
-//                dimensions
-//                ).dictionary
-//        }
-//}
+
+
+struct OccupantBodySupportDefaultTiltAngle {
+    var dictionary: BaseObjectAngleDictionary =
+        [.allCasterTiltInSpaceShowerChair: Measurement(value: 30.0, unit: UnitAngle.degrees)]
+    
+    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}

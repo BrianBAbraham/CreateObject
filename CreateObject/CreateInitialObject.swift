@@ -35,7 +35,9 @@ struct CreateInitialObject {
         let  objectDefaultOrModifiedSpecification =
         ObjectDefaultOrModifiedSpecification(
     BaseObjectTypes(rawValue: baseObjectName) ??
-        .fixedWheelRearDrive, twinSitOnOptions, objectOptions)
+        .fixedWheelRearDrive,
+    twinSitOnOptions,
+    [objectOptions, objectOptions])
             //.origin)
         print(objectDefaultOrModifiedSpecification.originDictionaryOut)
         

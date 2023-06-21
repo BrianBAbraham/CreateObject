@@ -28,7 +28,7 @@ enum Part: String {
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
     case backSupportHeadSupportLinkJoint = "backSupportHeadSupportLinkHorizontalJoint"
-
+    case backSupportReclineAngle = "backSupportReclineAngle"
     
     
     case baseToCarryBarConnector = "baseToCarryBarConnector"
@@ -96,6 +96,7 @@ enum Part: String {
     case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"
     case stringLink = "_"
+    case tiltAngle = "tiltAngle"
     case tiltJoint = "tiltInSpaceHorizontalJoint" 
     case topToBottomDimension = "yIos"
     case width = "Width"

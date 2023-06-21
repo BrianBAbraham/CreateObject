@@ -240,3 +240,38 @@ struct OccupantBackSupportJointDefaultDimension {
                 Self.general
     }
 }
+
+
+//MARK: ANGLE
+
+struct OccupantBackSupportDefaultAngle {
+    var dictionary: BaseObjectAngleDictionary =
+    [:]
+    
+    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
+
+//struct OccupantHeadSupportLinkDefaultAngle {
+//    var dictionary: BaseObjectAngleDictionary =
+//    [:]
+//
+//    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
+//
+//    let value: Measurement<UnitAngle>
+//    
+//    init(
+//        _ baseType: BaseObjectTypes) {
+//            value =
+//                dictionary[baseType] ??
+//                Self.general
+//    }
+//}
