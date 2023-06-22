@@ -186,6 +186,8 @@ struct DictionaryInStringOut {
 //}
 
 struct DictionaryInArrayOut {
+    
+    
     func getNameValue <T>(_ dictionary: [String: T ]) -> [String]{    //CHANGE
 
         var namesAndMeasurements: [String] = []

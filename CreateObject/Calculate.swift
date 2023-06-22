@@ -47,3 +47,41 @@ struct CircularMotionChange {
     }
     
 }
+
+
+
+struct RotationAboutNonOriginPoint {
+    let firstPointInGlobal: PositionAsIosAxes
+    let secondPointInLocal: PositionAsIosAxes
+    let angleChange: Measurement<UnitAngle>
+    var currentAngle: Measurement<UnitAngle> {
+        AngleFromPosition(position: secondPointInLocal).angle
+    }
+    var radius: Double {
+        RadiusFromPosition(position: secondPointInLocal).radius
+    }
+    var motionChange: CircularMotionChange {
+        CircularMotionChange(radius, currentAngle, angleChange)
+    }
+    var horzontalChange: Double {
+        motionChange.horizontal
+    }
+    var verticalChange: Double {
+        motionChange.vertical
+    }
+}
+
+
+struct AngleFromPosition {
+    let position: PositionAsIosAxes
+    var angle: Measurement<UnitAngle> {
+        Measurement(value: atan2(position.z, position.y), unit: UnitAngle.radians)
+    }
+}
+
+struct RadiusFromPosition {
+    let position: PositionAsIosAxes
+    var radius: Double {
+        sqrt(position.z * position.z + position.y * position.y)
+    }
+}

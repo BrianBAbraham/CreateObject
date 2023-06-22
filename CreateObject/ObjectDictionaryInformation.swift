@@ -88,10 +88,6 @@ struct GetDimensionFromDictionary {
                 [getDimension( dictionary, [.sitOn, .id0, .stringLink, .object, .id0]),
         
                 getDimension( dictionary, [.sitOn, .id1, .stringLink, .object, .id0])]
-         
-            
-            
-            
             func getDimension(
                 _ dictionary: Part3DimensionDictionary,
                 _ parts: [Part])
@@ -101,6 +97,72 @@ struct GetDimensionFromDictionary {
                 let dimension = dictionary[name] ?? ZeroTouple.dimension3D
                 
                 return dimension
+        }
+    }
+}
+
+
+struct GetPositionFromDictionary {
+    let dimension3D: Dimension3d
+    let sitOnDimension3D: [Dimension3d]
+    
+    
+    init(
+        _ dictionary: Part3DimensionDictionary,
+        _ parts: [Part] = []) {
+            
+        dimension3D =
+        getDimension(
+            dictionary,
+            parts
+        )
+            
+        sitOnDimension3D =
+                [getDimension( dictionary, [.sitOn, .id0, .stringLink, .object, .id0]),
+        
+                getDimension( dictionary, [.sitOn, .id1, .stringLink, .object, .id0])]
+            func getDimension(
+                _ dictionary: Part3DimensionDictionary,
+                _ parts: [Part])
+                -> Dimension3d {
+                let name = CreateNameFromParts(parts).name
+//print(name)
+                let dimension = dictionary[name] ?? ZeroTouple.dimension3D
+                
+                return dimension
+        }
+    }
+}
+
+struct GetValueFromDictionary <T> {
+    var value: T
+
+    init(
+        _ dictionary: [String: T],
+        _ parts: [Part] = []) {
+            
+            value = ZeroTouple.iosLocation as! T
+      
+        getDimension(
+            dictionary,
+            parts
+        )
+ 
+        func getDimension(
+            _ dictionary: [String: T],
+            _ parts: [Part]){
+
+            let name = CreateNameFromParts(parts).name
+
+            let wrappedDimension = dictionary[name] //
+
+                if wrappedDimension is PositionAsIosAxes {
+                value = wrappedDimension ?? ZeroTouple.iosLocation as! T
+            }
+
+                if wrappedDimension is Dimension3d {
+                value = wrappedDimension ?? ZeroTouple.dimension3D as! T
+            }
         }
     }
 }

@@ -158,9 +158,9 @@ struct ObjectDefaultOrModifiedCornerDictionary {
     var orignDictionaryPostAngleOut: PositionDictionary = [:]
     var dimensionDictionaryPostAngleOut: Part3DimensionDictionary = [:]
     var cornerDictionaryOut: PositionDictionary = [:]
-    let modifiedPartDictionary: Part3DimensionDictionary
-    let modifiedOriginDictionary: PositionDictionary
-    let modifiedAngleDictionary: AngleDictionary
+    let defaultOrModifiedPartDictionary: Part3DimensionDictionary
+    let defaultOrModifiedOriginDictionary: PositionDictionary
+    let defaultOrModifiedAngleDictionary: AngleDictionary
     let baseType: BaseObjectTypes
     let twinSitOnOptions: TwinSitOnOptions
     let objectOptionDictionaries: OptionDictionary
@@ -170,35 +170,61 @@ struct ObjectDefaultOrModifiedCornerDictionary {
         _ baseType: BaseObjectTypes,
         _ twinSitOnOptions: TwinSitOnOptions,
         _ objectOptionDictionaries: OptionDictionary,
-        _ modifiedPartDictionary: Part3DimensionDictionary = [:],
-        _ modifiedOriginDictionary: PositionDictionary = [:],
-        _ modifiedAngleDictionary: AngleDictionary = [:] ) {
+        _ defautlOrModifiedPartDictionary: Part3DimensionDictionary = [:],
+        _ defaultOrModifiedOriginDictionary: PositionDictionary = [:],
+        _ defaultOrModifiedAngleDictionary: AngleDictionary = [:] ) {
             
             self.baseType = baseType
             self.twinSitOnOptions = twinSitOnOptions
             self.objectOptionDictionaries = objectOptionDictionaries
-            self.modifiedPartDictionary = modifiedPartDictionary
-            self.modifiedOriginDictionary = modifiedOriginDictionary
-            self.modifiedAngleDictionary = modifiedAngleDictionary
+            self.defaultOrModifiedPartDictionary = defautlOrModifiedPartDictionary
+            self.defaultOrModifiedOriginDictionary = defaultOrModifiedOriginDictionary
+            self.defaultOrModifiedAngleDictionary = defaultOrModifiedAngleDictionary
             
+            let defaultOrModifiedOriginNames =
+                Set(DictionaryInArrayOut().getNameValue(defaultOrModifiedOriginDictionary))
+            let childSitOnName =
+                CreateNameFromParts([.stringLink,.sitOn,.stringLink]).name
             
-            for key in modifiedOriginDictionary.keys {
-                if key.contains(Part.object.rawValue) {
-                    
-                }
-                if key.contains(CreateNameFromParts([.sitOn,.id0,.stringLink]).name) {
-                    
-                }
+            let nonSitOn =
+                Set([CreateNameFromParts([.stringLink,.sleepOnSupport,.stringLink]).name, CreateNameFromParts([.stringLink,.sleepOnSupport,.stringLink]).name])
+           
+            if defaultOrModifiedOriginNames.contains(childSitOnName) {
+                
             }
+            
+            if !defaultOrModifiedOriginNames.isDisjoint(with: nonSitOn) {
+                
+            }
+          
+            func forSitOn () {
+                
+                
+            }
+            
+            
+            func forNonSitOn() {
+                
+            }
+            
+            let childFootSupportName = CreateNameFromParts([.stringLink,.footSupport,.stringLink]).name
+            
+//
+//            for key in defaultOrModifiedOriginDictionary.keys {
+//                if key.contains(Part.object.rawValue) {
+//
+//                }
+//                if key.contains(CreateNameFromParts([.sitOn,.id0,.stringLink]).name) {
+//
+//                }
+//
+//                if key.contains(CreateNameFromParts([.stringLink,.footSupport,.stringLink]).name) {
+//
+//                }
+//            }
         }
     
-    /// rules if parent is object if contains
-    /// rules if parent is sitOn if contains  sitOn_id0_n
-    /// rules if parent is backSupport
-    /// tilt: get  part centre from rotation centtre and transfrom origin and transform part  dimension then sum transformed origin and transformed dimension for viewed size in plane
-    ///  get % + child from parent and transform
-    ///  repeat for each child
-    ///  recline:  repeat above using new rotation centre and new angle but acting on tillted origin and tilted dimension
+
 }
 
 
@@ -213,21 +239,21 @@ struct ObjectDefaultOrModifiedSpecification {
     let modifiedAngleDictionary: AngleDictionary
     let baseType: BaseObjectTypes
     let twinSitOnOptions: TwinSitOnOptions
-    let objectOptionDictionary: [OptionDictionary]
+    let objectOptionDictionaries: [OptionDictionary]
     var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
     
     init(
         _ baseType: BaseObjectTypes,
         _ twinSitOnOptions: TwinSitOnOptions,
-        _ objectOptionDictionary: [OptionDictionary],
+        _ objectOptionDictionaries: [OptionDictionary],
         _ modifiedPartDictionary: Part3DimensionDictionary = [:],
         _ modifiedOriginDictinary: PositionDictionary = [:],
         _ modifiedAngleDictionary: AngleDictionary = [:] ) {
             
         self.baseType = baseType
         self.twinSitOnOptions = twinSitOnOptions
-        self.objectOptionDictionary = objectOptionDictionary
+        self.objectOptionDictionaries = objectOptionDictionaries
         self.modifiedPartDictionary = modifiedPartDictionary
         self.modifiedOriginDictionary = modifiedOriginDictinary
         self.modifiedAngleDictionary = modifiedAngleDictionary
@@ -259,6 +285,119 @@ struct ObjectDefaultOrModifiedSpecification {
         
     }
     
+    
+    
+    //MARK: CORNERS
+    struct ObjectDefaultOrModifiedCornerDictionary {
+        var orignDictionaryPostAngleOut: PositionDictionary = [:]
+        var dimensionDictionaryPostAngleOut: Part3DimensionDictionary = [:]
+        var cornerDictionaryOut: PositionDictionary = [:]
+        var reclineRequiredState: [Bool] = []
+        var tiltRequiredState: [Bool] = []
+        //var noTilt: Bool
+        
+        init(
+            parent: ObjectDefaultOrModifiedSpecification ) {
+        
+            getTiltAndReclineRequiredState(parent)
+            //noTilt = tiltRequiredState.contains(true) ? true: false
+
+                
+                
+            let defaultOrModifiedOriginNames =
+                Set(DictionaryInArrayOut().getNameValue(parent.originDictionaryOut) )
+            
+            let childSitOnName =
+            CreateNameFromParts([.stringLink,.sitOn,.stringLink]).name
+            
+            let nonSitOn =
+            Set([CreateNameFromParts(
+                    [.stringLink,.sleepOnSupport,.stringLink]).name,
+                 CreateNameFromParts(
+                    [.stringLink,.sleepOnSupport,.stringLink]).name])
+            
+            if defaultOrModifiedOriginNames.contains(childSitOnName) {
+                forSitOn(parent)
+            }
+            
+            if !defaultOrModifiedOriginNames.isDisjoint(with: nonSitOn) {
+                forNonSitOn(parent)
+            }
+            
+
+            
+                
+                
+            let childFootSupportName = CreateNameFromParts([.stringLink,.footSupport,.stringLink]).name
+            
+           
+        }
+        
+        func forSitOn (_ parent: ObjectDefaultOrModifiedSpecification) {
+            for index in 0..<parent.oneOrTwoIds.count {
+                if tiltRequiredState[index] {
+                    
+                    
+                    let tiltJointOrigin =
+                        GetValueFromDictionary(
+                            parent.modifiedOriginDictionary,
+                            [.sitOn, parent.oneOrTwoIds[index],.stringLink, .tiltJoint, .stringLink, .id0]).value
+                    let sitOnOrigin =
+                        GetValueFromDictionary(
+                            parent.modifiedOriginDictionary,
+                            [.object, .id0, .stringLink, .sitOn, parent.oneOrTwoIds[index]]).value
+                    let tiltJointOriginFromGlobal =
+                        CreateIosPosition.addTwoTouples(sitOnOrigin, tiltJointOrigin)
+                    
+ 
+                }
+                
+                if reclineRequiredState[index] {
+                    
+                }
+            }
+            
+        }
+        
+        
+        func forNonSitOn(_ parent: ObjectDefaultOrModifiedSpecification) {
+            let thereIsOnlyOne = 0
+            if tiltRequiredState[thereIsOnlyOne] {
+                
+            }
+        }
+        
+        
+        mutating func getTiltAndReclineRequiredState(_ parent: ObjectDefaultOrModifiedSpecification){
+            for index in 0..<parent.oneOrTwoIds.count {
+                tiltRequiredState.append(
+                    (parent.objectOptionDictionaries[index][.tiltInSpace] ?? false ||
+                     parent.objectOptionDictionaries[index][.tiltAndRecline] ?? false)
+                    )
+                
+                reclineRequiredState.append(
+                    (parent.objectOptionDictionaries[index][.reclinedBackSupport] ?? false ||
+                     parent.objectOptionDictionaries[index][.tiltAndRecline] ?? false)
+                    )
+            }
+            
+        }
+        
+        
+        
+    }
+    
+    
+    
+    /// rules if parent is object if contains
+    /// rules if parent is sitOn if contains  sitOn_id0_n
+    /// rules if parent is backSupport
+    /// tilt: get  part centre from rotation centtre and transfrom origin and transform part  dimension then sum transformed origin and transformed dimension for viewed size in plane
+    ///  get % + child from parent and transform
+    ///  repeat for each child
+    ///  recline:  repeat above using new rotation centre and new angle but acting on tillted origin and tilted dimension
+    
+    
     //MARK: ANGLES
     
     struct RequestOccupantAngleDictionary {
@@ -280,7 +419,7 @@ struct ObjectDefaultOrModifiedSpecification {
                 var tiltState: Bool
                 for index in 0..<ids.count {
                     tiltState =
-                        (parent.objectOptionDictionary[index][.tiltInSpace] ?? false || parent.objectOptionDictionary[index][.tiltAndRecline] ?? false)
+                        (parent.objectOptionDictionaries[index][.tiltInSpace] ?? false || parent.objectOptionDictionaries[index][.tiltAndRecline] ?? false)
                     
                     name =
                     CreateNameFromParts([.tiltAngle, .stringLink, .sitOn, ids[index]]).name
@@ -304,7 +443,7 @@ struct ObjectDefaultOrModifiedSpecification {
                 
                 for index in 0..<ids.count {
                     tiltState =
-                        (parent.objectOptionDictionary[index][.reclinedBackSupport] ?? false || parent.objectOptionDictionary[index][.tiltAndRecline] ?? false)
+                        (parent.objectOptionDictionaries[index][.reclinedBackSupport] ?? false || parent.objectOptionDictionaries[index][.tiltAndRecline] ?? false)
                     
                     
                     name =
@@ -498,7 +637,7 @@ struct ObjectDefaultOrModifiedSpecification {
             func getModifiedMaximumHangerLinkDimension(_ id: Part)
                 -> Dimension3d {
                     let index = id == .id0 ? 0: 1
-                    let footSupportInOnePieceState = parent.objectOptionDictionary[index][.footSupportInOnePiece] ?? false
+                    let footSupportInOnePieceState = parent.objectOptionDictionaries[index][.footSupportInOnePiece] ?? false
                     let names: [String] =
                     [CreateNameFromParts([.footSupportHangerLink, .id0, .stringLink, .sitOn, id]).name]
                     var modifiedDimensions: [Dimension3d?] = [parent.modifiedPartDictionary[names[0]]]
@@ -689,7 +828,7 @@ struct ObjectDefaultOrModifiedSpecification {
                     var positions: [PositionAsIosAxes]
                     
                     let footPlateInOnePieceState =
-                    parent.objectOptionDictionary[sitOnIndex][.footSupportInOnePiece] ?? false
+                    parent.objectOptionDictionaries[sitOnIndex][.footSupportInOnePiece] ?? false
                     
                     for footSupportIndex in 0..<2 {
                         name =
