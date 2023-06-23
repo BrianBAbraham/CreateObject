@@ -50,13 +50,13 @@ struct BackSupportStability {
                 CircularMotionChange(
                     r,
                     tiltToBackSupportOriginInitialAngle,
-                    maximalTiltAngle).horizontal
+                    maximalTiltAngle).yChange
           
             let reclineSetBack =
                 CircularMotionChange(
                     backSupportHeight/2,
                     maximalTiltAngle,
-                    maximalReclineAngle).horizontal
+                    maximalReclineAngle).yChange
 
 //print(tiltSetBack)
 //print(reclineSetBack)

@@ -39,7 +39,7 @@ struct CreateInitialObject {
     twinSitOnOptions,
     [objectOptions, objectOptions])
             //.origin)
-        print(objectDefaultOrModifiedSpecification.originDictionaryOut)
+        //print(objectDefaultOrModifiedSpecification.parentToPartOriginDictionaryOut)
         
         getDictionary(baseObjectName)
     }

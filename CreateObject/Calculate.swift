@@ -9,16 +9,16 @@ import Foundation
 
 struct CircularMotionChange {
     
-    let horizontal: Double
-    let vertical: Double
+    let yChange: Double
+    let zChange: Double
     
     init (
         _ r: Double,
         _ angle0: Measurement<UnitAngle>,
         _ angle1: Measurement<UnitAngle>) {
            
-            horizontal = getChange(r, angle0, angle1, .horizontal)
-            vertical = getChange(r, angle0, angle1, .vertical)
+            yChange = getChange(r, angle0, angle1, .yChange)
+            zChange = getChange(r, angle0, angle1, .zChange)
             
             func getChange(
                 _ r: Double,
@@ -31,10 +31,10 @@ struct CircularMotionChange {
                 let angle1 = angle1.converted(to: .radians).value
                     var trigValue: Double
                     switch direction {
-                    case .horizontal:
+                    case .yChange:
                         trigValue =
                         ( sin(angle0 + angle1) - sin(angle0) )
-                    case .vertical:
+                    case .zChange:
                         trigValue =
                         r * ( sin(angle0 + angle1) - sin(angle0) )
                     }
@@ -42,32 +42,32 @@ struct CircularMotionChange {
             }
         }
     enum Direction {
-        case horizontal
-        case vertical
+        case yChange
+        case zChange
     }
     
 }
 
 
 
-struct RotationAboutNonOriginPoint {
-    let firstPointInGlobal: PositionAsIosAxes
-    let secondPointInLocal: PositionAsIosAxes
+struct PositionOfPointAfterRotationAboutPoint {
+    //let staticPoint: PositionAsIosAxes
+    let fromStaticToMovingPoint: PositionAsIosAxes
     let angleChange: Measurement<UnitAngle>
     var currentAngle: Measurement<UnitAngle> {
-        AngleFromPosition(position: secondPointInLocal).angle
+        AngleFromPosition(position: fromStaticToMovingPoint).angle
     }
     var radius: Double {
-        RadiusFromPosition(position: secondPointInLocal).radius
+        RadiusFromPosition(position: fromStaticToMovingPoint).radius
     }
     var motionChange: CircularMotionChange {
         CircularMotionChange(radius, currentAngle, angleChange)
     }
-    var horzontalChange: Double {
-        motionChange.horizontal
+    var yChange: Double {
+        motionChange.yChange
     }
-    var verticalChange: Double {
-        motionChange.vertical
+    var zChange: Double {
+        motionChange.zChange
     }
 }
 
