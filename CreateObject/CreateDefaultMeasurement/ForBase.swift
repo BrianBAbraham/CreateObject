@@ -86,49 +86,49 @@ struct AllBaseRelated {
 typealias BaseSizeDictionary = [BaseObjectTypes: Double]
 
 
-struct DistanceBetweenFrontAndRearWheels {
-    var ifNoFrontAndRearSitOn: Double = 0.0
-    var ifFrontAndRearSitOn: Double = 0.0
-    let occupantBodySupport: Dimension3d
-    let occupantFootSupportHangerLink: Dimension3d
-    let stability: Stability
-    
-    init (
-        _ baseType: BaseObjectTypes//,
-    //    _ modifiedPartDictionary: Part3DimensionDictionary
-    ){
-            
-            stability = Stability(baseType)
-            
-            occupantBodySupport =
-                OccupantBodySupportDefaultDimension(baseType//, modifiedPartDictionary
-                ).value
-            
-            occupantFootSupportHangerLink =
-                OccupantFootSupportHangerLinkDefaultDimension(baseType//, modifiedPartDictionary
-                ).value
-            
-            ifFrontAndRearSitOn =
-                requiredDistanceBetweenFrontRearWheeIfFrontAndRear()
-            
-            ifNoFrontAndRearSitOn =
-                requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
-        }
-    
-    func requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
-        -> Double {
-        stability.atRear +
-        occupantBodySupport.length +
-        stability.atFront
-    }
-        
-    func requiredDistanceBetweenFrontRearWheeIfFrontAndRear ()
-        -> Double {
-        requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear() +
-        occupantFootSupportHangerLink.length +
-        occupantBodySupport.length/2
-    }
-}
+//struct DistanceBetweenFrontAndRearWheels {
+//    var ifNoFrontAndRearSitOn: Double = 0.0
+//    var ifFrontAndRearSitOn: Double = 0.0
+//    let occupantBodySupport: Dimension3d
+//    let occupantFootSupportHangerLink: Dimension3d
+//    let stability: Stability
+//
+//    init (
+//        _ baseType: BaseObjectTypes//,
+//
+//    ){
+//
+//            stability = Stability(baseType)
+//
+//            occupantBodySupport =
+//                OccupantBodySupportDefaultDimension(baseType
+//                ).value
+//
+//            occupantFootSupportHangerLink =
+//                OccupantFootSupportHangerLinkDefaultDimension(baseType
+//                ).value
+//
+//            ifFrontAndRearSitOn =
+//                requiredDistanceBetweenFrontRearWheeIfFrontAndRear()
+//
+//            ifNoFrontAndRearSitOn =
+//                requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
+//        }
+//
+//    func requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
+//        -> Double {
+//        stability.atRear +
+//        occupantBodySupport.length +
+//        stability.atFront
+//    }
+//
+//    func requiredDistanceBetweenFrontRearWheeIfFrontAndRear ()
+//        -> Double {
+//        requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear() +
+//        occupantFootSupportHangerLink.length +
+//        occupantBodySupport.length/2
+//    }
+//}
 
 // coould this go intoo ORIGIN FOR BODY?
 struct DistanceBetweenFrontAndRearWheels2 {

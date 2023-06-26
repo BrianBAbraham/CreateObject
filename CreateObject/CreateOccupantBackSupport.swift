@@ -109,7 +109,7 @@ struct InitialOccupantBackSupportMeasurement {
                 initialOccupantBodySupportMeasure.sitOn.width)
             
             backSupport =
-                objectOptions[.reclinedBackSupport] ?? false ?
+                objectOptions[.angleBackSupport] ?? false ?
              (length:
                 InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport,
               width: defaultBackSupport.width) :

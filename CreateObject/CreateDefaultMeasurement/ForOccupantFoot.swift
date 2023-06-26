@@ -44,7 +44,7 @@ struct AllOccupantFootRelated {
         _ modifiedPartDictionary: Part3DimensionDictionary) {
         parts =
             [.footSupportHangerSitOnVerticalJoint,
-             .footSupportHangerLink,
+             //.footSupportHangerLink,
              .footSupportHorizontalJoint,
              .footSupport,
              .footSupportInOnePiece
@@ -53,9 +53,9 @@ struct AllOccupantFootRelated {
         dimensions =
         [
             OccupantFootSupportHangerJointDefaultDimension(baseType).value,
-            OccupantFootSupportHangerLinkDefaultDimension(baseType).value,
+            //OccupantFootSupportHangerLinkDefaultDimension(baseType).value,
             OccupantFootSupportHorizontalJointDefaultDimension(baseType).value,
-            OccupantFootSupportDefaultDimension(baseType,modifiedPartDictionary).value,
+            OccupantFootSupportDefaultDimension(baseType).value,
             OccupantFootSupportInOnePieceDefaultDimension(baseType,modifiedPartDictionary).value
         ]
     }
@@ -131,8 +131,7 @@ struct OccupantFootSupportDefaultDimension {
     let value: Dimension3d
     
     init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedPartDictionary: Part3DimensionDictionary) {
+        _ baseType: BaseObjectTypes) {
         
             value =
                 dictionary[baseType] ??
@@ -160,40 +159,24 @@ struct SitOnToHangerVerticalJointDefaultOrigin {
 }
 
 
-struct HangerVerticalJointToHangerLinkDefaultOrigin {
-    let dictionary: OriginDictionary =
-        [:]
-    let general: PositionAsIosAxes =
-    (x: 0.0,
-     y: OccupantFootSupportHangerLinkDefaultDimension.general.length/2,
-     z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
-    
-    let value: PositionAsIosAxes
-    
-    init(_ baseType: BaseObjectTypes) {
-        
-        value = dictionary[baseType] ?? general
-    }
-}
-
-struct HangerLinkToFootSupportJointDefaultOrigin {
+struct HangerVerticalJointToFootSupportJointDefaultOrigin {
     static let footSupportHeightAboveFloor = 100.0
     let dictionary: OriginDictionary =
         [:]
     let general =
         (x: 0.0,
-         y: (OccupantFootSupportHangerLinkDefaultDimension.general.length +
-            OccupantFootSupportDefaultDimension.general.length)/2,
+         y: OccupantFootSupportHangerLinkDefaultDimension.general.length,
          z: -(ObjectDefaultOrModifiedSpecification.sitOnHeight -
              Self.footSupportHeightAboveFloor +
              SitOnToHangerVerticalJointDefaultOrigin.jointBelowSeat) )
-    
+
     let value: PositionAsIosAxes
-    
+
     init(_ baseType: BaseObjectTypes) {
       value = dictionary[baseType] ?? general
     }
 }
+
 
 struct FootSupportJointToFootSupportInTwoPieceDefaultOrigin {
     
@@ -204,8 +187,9 @@ struct FootSupportJointToFootSupportInTwoPieceDefaultOrigin {
     
     init(_ baseType: BaseObjectTypes) {
     general =
-        (x: -OccupantFootSupportHorizontalJointDefaultDimension(baseType).value.width/2,
-         y: (OccupantFootSupportHangerLinkDefaultDimension.general.length +  OccupantFootSupportDefaultDimension.general.length)/2,
+        (x: -(OccupantFootSupportHorizontalJointDefaultDimension(baseType).value.width +
+         OccupantFootSupportDefaultDimension(baseType).value.width)/2,
+         y: 0.0,
          z: 0.0 )
         
     value = dictionary[baseType] ?? general
@@ -222,10 +206,28 @@ struct FootSupportJointToFootSupportInOnePieceDefaultOrigin {
     init(_ baseType: BaseObjectTypes) {
     general =
         (x: -OccupantBodySupportDefaultDimension(baseType).value.width/2,
-         y: (OccupantFootSupportHangerLinkDefaultDimension.general.length +  OccupantFootSupportDefaultDimension.general.length)/2,
+         y: 0.0,
          z: 0.0 )
         
     value = dictionary[baseType] ?? general
+    }
+}
+
+
+
+struct OccupantFootSupportDefaultAngle {
+    var dictionary: BaseObjectAngleDictionary =
+    [:]
+    
+    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
     }
 }
 

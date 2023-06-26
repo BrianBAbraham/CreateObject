@@ -98,7 +98,7 @@ struct CreateOccupantHeadSupport {
             let yLength = lengths.reduce(0, +)
 //print(lengths)
             let yLengthWithTilt =
-                objectOptions[.reclinedBackSupport] ?? false ?
+                objectOptions[.angleBackSupport] ?? false ?
                 Tilted(InitialOccupantBackSupportMeasurement.maximumBackSupportRecline).factor * yLength:
                 Tilted(InitialOccupantBackSupportMeasurement.minimumBackSupportRecline).factor * yLength
             let yFinalLength = backSupportLengthFromPrimaryOrigin - yLengthWithTilt

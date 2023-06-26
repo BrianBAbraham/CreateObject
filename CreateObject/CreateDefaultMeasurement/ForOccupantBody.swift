@@ -55,7 +55,26 @@ struct OccupantBodySupportDefaultDimension {
     }
 }
 
-struct OccupantBodySupportDefaultTiltOrigin {
+
+struct OccupantBodySupportAngleJointDefaultDimension {
+    var dictionary: BaseObject3DimensionDictionary =
+    [:
+        ]
+   static let general =
+        (length: Joint.dimension.length,
+         width: OccupantBodySupportDefaultDimension.general.width * 1.5,
+         height: Joint.dimension.length)
+    let value: Dimension3d
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
+
+struct OccupantBodySupportDefaultAngleJointOrigin {
     var dictionary: BaseObjectOriginDictionary = [:]
     
     static let general = (x: 0.0, y: 0.0, z: -100.0)
@@ -71,7 +90,7 @@ struct OccupantBodySupportDefaultTiltOrigin {
 }
 
 
-struct OccupantBodySupportDefaultTiltAngle {
+struct OccupantBodySupportDefaultAngle {
     var dictionary: BaseObjectAngleDictionary =
         [.allCasterTiltInSpaceShowerChair: Measurement(value: 30.0, unit: UnitAngle.degrees)]
     

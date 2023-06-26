@@ -106,7 +106,7 @@ struct CreateInitialObject {
         let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasurement()
                 
         let addedForReclineBackSupport: Double =
-            objectOptions[ObjectOptions.reclinedBackSupport] ?? false ?
+            objectOptions[ObjectOptions.angleBackSupport] ?? false ?
                 InitialOccupantBackSupportMeasurement.lengthOfMaximallyReclinedBackSupport: 0
                 
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()

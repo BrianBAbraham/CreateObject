@@ -34,7 +34,7 @@ struct BackSupportRecline: View {
                     let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
                     //let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
-                        ObjectOptions.reclinedBackSupport,
+                        ObjectOptions.angleBackSupport,
                         reclineToggle) //RECLINE
                     objectPickVM.setCurrentObjectByCreatingFromName(
                         //name,
