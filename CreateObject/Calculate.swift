@@ -26,17 +26,17 @@ struct CircularMotionChange {
                 _ angle1: Measurement<UnitAngle>,
                 _ direction: Direction)
                 -> Double {
-                    
+
                 let angle0 = angle0.converted(to: .radians).value
                 let angle1 = angle1.converted(to: .radians).value
                     var trigValue: Double
                     switch direction {
                     case .yChange:
                         trigValue =
-                        ( sin(angle0 + angle1) - sin(angle0) )
+                            ( sin(angle0 + angle1) - sin(angle0) )
                     case .zChange:
                         trigValue =
-                        r * ( sin(angle0 + angle1) - sin(angle0) )
+                            ( cos(angle0 + angle1) - cos(angle0) )
                     }
             return r * trigValue
             }
@@ -51,14 +51,19 @@ struct CircularMotionChange {
 
 
 struct PositionOfPointAfterRotationAboutPoint {
-    //let staticPoint: PositionAsIosAxes
-    let fromStaticToMovingPoint: PositionAsIosAxes
+    let staticPoint: PositionAsIosAxes
+    let movingPoint: PositionAsIosAxes
+    var fromStaticToPointAboutToMove: PositionAsIosAxes{
+        CreateIosPosition.subtractSecondFromFirstTouple(
+            movingPoint,
+            staticPoint)
+    }
     let angleChange: Measurement<UnitAngle>
     var currentAngle: Measurement<UnitAngle> {
-        AngleFromPosition(position: fromStaticToMovingPoint).angle
+        AngleFromPosition(position: fromStaticToPointAboutToMove).angle
     }
     var radius: Double {
-        RadiusFromPosition(position: fromStaticToMovingPoint).radius
+        RadiusFromPosition(position: fromStaticToPointAboutToMove).radius
     }
     var motionChange: CircularMotionChange {
         CircularMotionChange(radius, currentAngle, angleChange)
@@ -68,6 +73,17 @@ struct PositionOfPointAfterRotationAboutPoint {
     }
     var zChange: Double {
         motionChange.zChange
+    }
+    
+    var fromStaticToPointWhichHasMoved: PositionAsIosAxes {
+        (x: fromStaticToPointAboutToMove.x,
+         y: fromStaticToPointAboutToMove.y + yChange,
+         z: fromStaticToPointAboutToMove.z + zChange)  }
+    
+    var fromOriginToPointWhichHasMoved: PositionAsIosAxes {
+        CreateIosPosition.addTwoTouples(
+            staticPoint,
+            fromStaticToPointWhichHasMoved)
     }
 }
 
