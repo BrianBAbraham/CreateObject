@@ -180,7 +180,8 @@ struct PartGroupsFor {
         .joyStickForOccupant,
         .lieOnSupport,
         .sleepOnSupport,
-        .backSupportJoint
+        .backSupportJoint,
+        .footSupportHangerSitOnVerticalJoint
         ]
     
     let footAngle: [Part] =
