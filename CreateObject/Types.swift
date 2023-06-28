@@ -43,3 +43,6 @@ typealias Dimension3d = (length: Double, width: Double, height: Double)
 typealias AngleDictionary = [String: Measurement<UnitAngle>]
 typealias AngleMinMaxDictionary = [String: MinMaxAngle]
 typealias BaseObjectAngleDictionary = [BaseObjectTypes: Measurement<UnitAngle>]
+
+
+typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]

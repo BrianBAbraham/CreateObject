@@ -14,7 +14,7 @@ struct RequestOccupantFootSupportDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions,
+        _ twinSitOnOptions: TwinSitOnOptionDictionary,
         _ modifiedPartDictionary: Part3DimensionDictionary
         ) {
             
@@ -166,7 +166,7 @@ struct HangerVerticalJointToFootSupportJointDefaultOrigin {
     let general =
         (x: 0.0,
          y: OccupantFootSupportHangerLinkDefaultDimension.general.length,
-         z: -(ObjectDefaultOrModifiedSpecification.sitOnHeight -
+         z: -(ObjectDefaultOrModifiedDictionaries.sitOnHeight -
              Self.footSupportHeightAboveFloor +
              SitOnToHangerVerticalJointDefaultOrigin.jointBelowSeat) )
 
@@ -215,7 +215,7 @@ struct FootSupportJointToFootSupportInOnePieceDefaultOrigin {
 
 
 
-struct OccupantFootSupportDefaultAngle {
+struct OccupantFootSupportDefaultAngleChange {
     var dictionary: BaseObjectAngleDictionary =
     [:]
     

@@ -38,7 +38,7 @@ class ObjectPickViewModel: ObservableObject {
     static let optionDictionary =
     Dictionary(uniqueKeysWithValues: ObjectOptions.allCases.map { $0 }.map { ($0, true) })
     
-    static let twinSitOnDictionary: TwinSitOnOptions = [:]
+    static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
     
 
     static let dictionary =
@@ -81,7 +81,7 @@ extension ObjectPickViewModel {
         var originDictionary: [String: PositionAsIosAxes] = [:]
         for uniqueName in allUniquePartNames {
             let entryName = "primaryOrigin_id0_" + uniqueName
-            let found = dictionary[entryName] ?? ZeroTouple.iosLocation
+            let found = dictionary[entryName] ?? ZeroValue.iosLocation
             originDictionary += [uniqueName: found]
         }
 
@@ -410,7 +410,7 @@ extension ObjectPickViewModel {
     
     func createDefaultObjectDictionary(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions)
+        _ twinSitOnOptions: TwinSitOnOptionDictionary)
         -> Part3DimensionDictionary {
             return
                 ObjectDefaultDimension(baseType,twinSitOnOptions).dictionary
@@ -419,7 +419,7 @@ extension ObjectPickViewModel {
     
     func setDefaultObjectDictionary(
 
-            _ twinSitOnOptions: TwinSitOnOptions) {
+            _ twinSitOnOptions: TwinSitOnOptionDictionary) {
              let baseType = getCurrentObjectType()
             objectPickModel.defaultObjectDictionary =
             createDefaultObjectDictionary(
@@ -463,7 +463,7 @@ extension ObjectPickViewModel {
     
     func setCurrentObjectByCreatingFromName(
         //_ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
-        _ twinSitOnDictionary: TwinSitOnOptions) {
+        _ twinSitOnDictionary: TwinSitOnOptionDictionary) {
             
             let optionsDictionary = getObjectOptionsDictionary()
             
@@ -480,7 +480,7 @@ extension ObjectPickViewModel {
     }
     
     func setCurrentObjectByCreatingFromName2(
-        _ twinSitOnDictionary: TwinSitOnOptions) {
+        _ twinSitOnDictionary: TwinSitOnOptionDictionary) {
             
             let objectName = getCurrentObjectName ()
           

@@ -12,7 +12,7 @@ struct RequestBaseDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions
+        _ twinSitOnOptions: TwinSitOnOptionDictionary
     ) {
         getDictionary()
 

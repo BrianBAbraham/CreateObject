@@ -80,7 +80,7 @@ struct PositionOfPointAfterRotationAboutPoint {
          y: fromStaticToPointAboutToMove.y + yChange,
          z: fromStaticToPointAboutToMove.z + zChange)  }
     
-    var fromOriginToPointWhichHasMoved: PositionAsIosAxes {
+    var fromObjectOriginToPointWhichHasMoved: PositionAsIosAxes {
         CreateIosPosition.addTwoTouples(
             staticPoint,
             fromStaticToPointWhichHasMoved)

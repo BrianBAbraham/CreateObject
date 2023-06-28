@@ -50,7 +50,7 @@ struct PartNameAndItsCornerLocations {
                     
                     
 //print(assembledUniquePartCornerName)
-                    uniqueCornerLocation = dictionary[ String(assembledUniquePartCornerName)] ?? ZeroTouple.iosLocation
+                    uniqueCornerLocation = dictionary[ String(assembledUniquePartCornerName)] ?? ZeroValue.iosLocation
                     uniqueCornerLocations.append(uniqueCornerLocation)
                 }
             }
@@ -58,7 +58,7 @@ struct PartNameAndItsCornerLocations {
             if numberOfConnectStringSymbols == 1 { // not related to possibly two sitOn elements
                 for cornerName in cornerNames {
                     let newName = uniquePartName + cornerName
-                    uniqueCornerLocation = dictionary[newName] ?? ZeroTouple.iosLocation
+                    uniqueCornerLocation = dictionary[newName] ?? ZeroValue.iosLocation
                     uniqueCornerLocations.append(uniqueCornerLocation)
                 }
             }
@@ -94,7 +94,7 @@ struct GetDimensionFromDictionary {
                 -> Dimension3d {
                 let name = CreateNameFromParts(parts).name
 //print(name)
-                let dimension = dictionary[name] ?? ZeroTouple.dimension3D
+                let dimension = dictionary[name] ?? ZeroValue.dimension3D
                 
                 return dimension
         }
@@ -127,7 +127,7 @@ struct GetPositionFromDictionary {
                 -> Dimension3d {
                 let name = CreateNameFromParts(parts).name
 //print(name)
-                let dimension = dictionary[name] ?? ZeroTouple.dimension3D
+                let dimension = dictionary[name] ?? ZeroValue.dimension3D
                 
                 return dimension
         }
@@ -141,7 +141,7 @@ struct GetValueFromDictionary <T> {
         _ dictionary: [String: T],
         _ parts: [Part] = []) {
             
-            value = ZeroTouple.iosLocation as! T
+            value = ZeroValue.iosLocation as! T
       
         getDimension(
             dictionary,
@@ -157,11 +157,11 @@ struct GetValueFromDictionary <T> {
             let wrappedDimension = dictionary[name] //
 
                 if wrappedDimension is PositionAsIosAxes {
-                value = wrappedDimension ?? ZeroTouple.iosLocation as! T
+                value = wrappedDimension ?? ZeroValue.iosLocation as! T
             }
 
                 if wrappedDimension is Dimension3d {
-                value = wrappedDimension ?? ZeroTouple.dimension3D as! T
+                value = wrappedDimension ?? ZeroValue.dimension3D as! T
             }
         }
     }

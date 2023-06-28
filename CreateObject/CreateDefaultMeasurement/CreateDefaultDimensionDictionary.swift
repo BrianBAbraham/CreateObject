@@ -13,7 +13,7 @@ struct CreateDefaultDimensionDictionary {
     init(
         _ parts: [Part],
         _ dimensions: [Dimension3d],
-        _ twinSitOnOptions: TwinSitOnOptions) {
+        _ twinSitOnOptions: TwinSitOnOptionDictionary) {
             
         var idsForPart: [Part] = [.id0, .id1]
         let idsForSitOn: [Part] =  TwinSitOn(twinSitOnOptions).state ? [.id0, .id1]: [.id0]
@@ -47,7 +47,7 @@ struct ObjectDefaultDimension {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions,
+        _ twinSitOnOptions: TwinSitOnOptionDictionary,
         _ modifiedPartDictionary: Part3DimensionDictionary = [:],
         _ modifiedOriginDictinary: PositionDictionary = [:],
         _ modifiedAngleDictionary: AngleDictionary = [:]) {
@@ -63,7 +63,7 @@ struct ObjectDefaultDimension {
         
             func createDefaultObjectDictionary(
                 _ baseType: BaseObjectTypes,
-                _ twinSitOnOptions: TwinSitOnOptions)
+                _ twinSitOnOptions: TwinSitOnOptionDictionary)
                 -> Part3DimensionDictionary {
                     var defaultDimensionDictionary =
                             RequestOccupantBodySupportDefaultDimensionDictionary(
@@ -100,7 +100,7 @@ struct ObjectDefaultOrigin {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions) {
+        _ twinSitOnOptions: TwinSitOnOptionDictionary) {
             
             dictionary =
                 createDefaultOriginDictionary(
@@ -109,7 +109,7 @@ struct ObjectDefaultOrigin {
             
             func createDefaultOriginDictionary(
                 _ baseType: BaseObjectTypes,
-                _ twinSitOnOptions: TwinSitOnOptions)
+                _ twinSitOnOptions: TwinSitOnOptionDictionary)
             -> PositionDictionary{
                 
                 return [:]
@@ -211,165 +211,170 @@ struct ObjectDefaultOrigin {
 //        }
 //}
 
-//MARK: PARENT
-struct ObjectDefaultOrModifiedSpecification {
+//MARK: - PARENT
+//
+struct ObjectDefaultOrModifiedDictionaries {
     
     static let sitOnHeight = 500.0
-    var partDictionaryOut: Part3DimensionDictionary = [:]
-    var editedOrDefaultParentToPartOriginDictionaryOut: PositionDictionary = [:]
-    var objectToPartOriginDictionaryOut: PositionDictionary = [:]
-    var angleChangeDictionaryOut: AngleDictionary = [:]
-    let modifiedPartDictionary: Part3DimensionDictionary
-    var editedParentToPartOriginDictionaryIn: PositionDictionary
-    let modifiedAngleDictionary: AngleDictionary
+    var dimensionDefault: Part3DimensionDictionary = [:]
+    var parentToPartOriginDefault: PositionDictionary = [:]
+    var objectToPartOriginDefault: PositionDictionary = [:]
+    var angleChangeDefault: AngleDictionary = [:]
+    let dimensionIn: Part3DimensionDictionary
+    let objectToPartOriginIn: PositionDictionary
+    var objectToPartOriginOut: PositionDictionary = [:]
+    let angleChangeIn: AngleDictionary
     let baseType: BaseObjectTypes
-    let twinSitOnOptions: TwinSitOnOptions
-    let objectOptionDictionaries: [OptionDictionary]
+    let twinSitOnOption: TwinSitOnOptionDictionary
+    let objectOptions: [OptionDictionary]
     var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
     
+    /// provide default dictionaries or provide dictionaries which are edited in accordance with an UI edited inputted dictionary
+    ///
+    /// - Parameters:
+    ///   - baseType: as Enum
+    ///   - twinSitOnOption: dictionary as [Enum: Bool] indicating a configuration with two seats
+    ///   - objectOptions: dictionary as [Enum: Bool] indicating options for object
+    ///   - dimension: empty or default or modified dictionary of part as [String: Dimension3d]
+    ///   - objectToPartOrigin: empty or default or modified dictionary as  [String: PositionAsIosAxes] indicating part origin
+    ///   - angleChange: empty or default or modified dictionary as [String: Measurement<UnitAngle>] indicating object configuration angles but not angles of parts which change during movement
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions,
-        _ objectOptionDictionaries: [OptionDictionary],
-        _ modifiedPartDictionary: Part3DimensionDictionary = [:],
-        _ modifiedOriginDictionary: PositionDictionary = [:],
-        _ modifiedAngleDictionary: AngleDictionary = [:] ) {
+        _ twinSitOnOption: TwinSitOnOptionDictionary,
+        _ objectOptions: [OptionDictionary],
+        _ dimension: Part3DimensionDictionary = [:],
+        _ objectToPartOrigin: PositionDictionary = [:],
+        _ angleChange: AngleDictionary = [:] ) {
             
         self.baseType = baseType
-        self.twinSitOnOptions = twinSitOnOptions
-        self.objectOptionDictionaries = objectOptionDictionaries
-        self.modifiedPartDictionary = modifiedPartDictionary
-        self.editedParentToPartOriginDictionaryIn = modifiedOriginDictionary
-        self.modifiedAngleDictionary = modifiedAngleDictionary
+        self.twinSitOnOption = twinSitOnOption
+        self.objectOptions = objectOptions
+        self.dimensionIn = dimension
+        self.objectToPartOriginIn = objectToPartOrigin
+        self.angleChangeIn = angleChange
             
-        twinSitOnState = TwinSitOn(twinSitOnOptions).state
+        twinSitOnState = TwinSitOn(twinSitOnOption).state
         
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
             
-        partDictionaryOut +=
-        RequestOccupantBodySupportDimensionDictionary(parent: self).dictionaryOut
+        dimensionDefault +=
+        OccupantBodySupportDimension(parent: self).dictionaryOut
+        dimensionDefault +=
+        OccupantBackSupportDimension(parent: self).dictionaryOut
+        dimensionDefault +=
+        OccupantFootSupportDimension(parent: self).dictionaryOut
+        dimensionDefault +=
+        OccupantSideSupportDimension(parent: self).dictionaryOut
         
-        partDictionaryOut +=
-        RequestOccupantBackSupportDimensionDictionary(parent: self).dictionaryOut
-        
-        partDictionaryOut +=
-        RequestOccupantFootSupportDimensionDictionary(parent: self).dictionaryOut
-        
-        partDictionaryOut +=
-        RequestOccupantSideSupportDimensionDictionary(parent: self).dictionaryOut
-        
-        
-            
-            
-        editedOrDefaultParentToPartOriginDictionaryOut +=
-        RequestOccupantBodySupportOriginDictionary(parent: self).parentToPartDictionaryOut
+        parentToPartOriginDefault +=
+        OccupantBodySupportOrigin(parent: self).parentToPartDictionaryOut
 
-        objectToPartOriginDictionaryOut += editedOrDefaultParentToPartOriginDictionaryOut// sit on is first item
+        // parent to body support is identical to object to body support
+        objectToPartOriginDefault += parentToPartOriginDefault
             
-        let occupantFootSupportOriginDefaultOrModifiedDictionary =
-            OccupantFootSupportOriginDefaultOrModifiedDictionary(parent: self)
+        let occupantFootSupportOrigin =
+            OccupantFootSupportOrigin(parent: self)
             
-        editedOrDefaultParentToPartOriginDictionaryOut += occupantFootSupportOriginDefaultOrModifiedDictionary.parentToPart
+        parentToPartOriginDefault +=
+            occupantFootSupportOrigin.parentToPart
     
-        objectToPartOriginDictionaryOut +=
-        occupantFootSupportOriginDefaultOrModifiedDictionary.objectToPart
+        objectToPartOriginDefault +=
+            occupantFootSupportOrigin.objectToPart
             
-//print(objectToPartOriginDictionaryOut)
-            
-            
-        angleChangeDictionaryOut =
-            RequestOccupantAngleDictionary(parent: self).defaultOrModified
+        angleChangeDefault =
+            ObjectAngleChange(parent: self).dictionary
 
-        objectToPartOriginDictionaryOut +=
-            OccupanBodySupportRotationOriginDefaultOrModifiedDictionary(parent: self).objectToPart
+        objectToPartOriginDefault +=
+            OccupanBodySupportRotationOrigin(parent: self).objectToPart
  
-//print(angleChangeDictionaryOut)
+        //replace the parts values which are rotated with the rotated values
+        objectToPartOriginOut =
+            Replace(initial: objectToPartOriginDefault,
+                    replacement:
+                        PositionAfterRotation(parent: self).forObjectToPartOrigin
+                ).intialWithReplacements
 
-            editedParentToPartOriginDictionaryIn =
-                ObjectAfterRotationDictionary(parent: self).forOrigin
-//DictionaryInArrayOut().getNameValue(modifiedOriginDictionary).forEach{print($0)}
-//print(objectToPartOriginDictionaryOut)
-//let test = ObjectAfterRotationDictionary(parent: self)
+            
+//print("ROTATED")
+//DictionaryInArrayOut().getNameValue(objectToPartOriginOut).forEach{print($0)}
+
             
         }
     
     
     
-    //MARK: ROTATION
-    struct ObjectAfterRotationDictionary {
-        var forOrigin: PositionDictionary = [:]
+    //MARK: - ROTATION
+    struct PositionAfterRotation {
+        var forObjectToPartOrigin: PositionDictionary = [:]
         var forDimension: Part3DimensionDictionary = [:]
 
         init(
-            parent: ObjectDefaultOrModifiedSpecification ) {
+            parent: ObjectDefaultOrModifiedDictionaries ) {
             for sitOnId in parent.oneOrTwoIds {
                 let tiltOriginPart: [Part] =
                     [.object, .id0, .stringLink, .bodySupportAngleJoint, .id0, .stringLink, .sitOn, sitOnId]
                 let tiltOriginName =
-                CreateNameFromParts(tiltOriginPart).name
-                    let angleName =
-                CreateNameFromParts([.bodySupportAngle, .stringLink, .sitOn, sitOnId]).name
+                    CreateNameFromParts(tiltOriginPart).name
+                let angleName =
+                    CreateNameFromParts([.bodySupportAngle, .stringLink, .sitOn, sitOnId]).name
 
-                if let tiltOrigin = parent.objectToPartOriginDictionaryOut[tiltOriginName] {
-
+                if let tiltOrigin = parent.objectToPartOriginDefault[tiltOriginName] {
+                    let angleChange =
+                        parent.angleChangeDefault[angleName] ??
+                        ZeroValue.angle
+                    
                     forSitOnTilt(
                         parent,
                         tiltOrigin,
-                        parent.angleChangeDictionaryOut[angleName] ?? Measurement(value: 0.0, unit: UnitAngle.radians),
+                        angleChange,
                         sitOnId)
                     }
                 }
             }
+       /*
+        all parts attached to the body support are rotated
+        about the Ios x axis
+        but the angle of rotation is zero
+        unless the option dictionary permits the UI to set a
+        non-zero angle in angleChangeIn
+        or an object has a non-zero angle
+        set in angleChangeDefault
+        if an object with only some parts attached
+        to the body support are to be rotated then additional code
+        which checks the base type can be added
+        */
         
        mutating func forSitOnTilt (
-            _ parent: ObjectDefaultOrModifiedSpecification,
+            _ parent: ObjectDefaultOrModifiedDictionaries,
             _ originOfRotation: PositionAsIosAxes,
             _ changeOfAngle: Measurement<UnitAngle>,
             _ sitOnId: Part) {
                 
             let allPartsSubjectToAngle = PartGroupsFor().allAngle
             let partsOnLeftAndRight = PartGroupsFor().leftAndRight
-print(parent.objectToPartOriginDictionaryOut)
-                for part in  allPartsSubjectToAngle {
+            
+            for part in  allPartsSubjectToAngle {
                 let partIds: [Part] =  partsOnLeftAndRight.contains(part) ? [.id0, .id1]: [.id0]
-          
+                
                 for partId in partIds {
                     let partName =
-                        CreateNameFromParts([
-                            .object, .id0, .stringLink, part, partId, .stringLink, .sitOn, sitOnId]).name
-//print(partName)
-                    if let originOfPart = parent.objectToPartOriginDictionaryOut[partName] {
-
+                    CreateNameFromParts([
+                        .object, .id0, .stringLink, part, partId, .stringLink, .sitOn, sitOnId]).name
+                    
+                    if let originOfPart = parent.objectToPartOriginDefault[partName] {
+                        
                         let newPosition =
                         PositionOfPointAfterRotationAboutPoint(
                             staticPoint: originOfRotation,
                             movingPoint: originOfPart,
-                            angleChange: changeOfAngle).fromOriginToPointWhichHasMoved
+                            angleChange: changeOfAngle).fromObjectOriginToPointWhichHasMoved
                         
-                        forOrigin += [partName: newPosition]
-print("old pos")
-print(partName)
-print(originOfPart)
-print(originOfRotation)
-print(newPosition)
-print("new pos")
-print("")
+                        forObjectToPartOrigin += [partName: newPosition]
                     }
                 }
             }
         }
-        
-        
-        func forNonSitOn(_ parent: ObjectDefaultOrModifiedSpecification) {
-            let thereIsOnlyOne = 0
-//            if tiltRequiredState[thereIsOnlyOne] {
-//
-//            }
-        }
-    
-            
-
     }
     
     
@@ -390,11 +395,11 @@ print("")
     
     //MARK: ANGLES
     
-    struct RequestOccupantAngleDictionary {
-        var defaultOrModified: AngleDictionary = [:]
+    struct ObjectAngleChange {
+        var dictionary: AngleDictionary = [:]
         
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
             
                 for id in parent.oneOrTwoIds {
                     setAngleDictionary( id)
@@ -410,29 +415,30 @@ print("")
                     ]
                 let defaultAngles =
                     [
-                        OccupantBodySupportDefaultAngle(parent.baseType).value,
-                        OccupantBackSupportDefaultAngle(parent.baseType).value,
-                        OccupantFootSupportDefaultAngle(parent.baseType).value
+                        OccupantBodySupportDefaultAngleChange(parent.baseType).value,
+                        OccupantBackSupportDefaultAngleChange(parent.baseType).value,
+                        OccupantFootSupportDefaultAngleChange(parent.baseType).value
                     ]
                 var name: String
                 var angle: Measurement<UnitAngle>
                 for index in 0..<partForNames.count {
                     name =
-                    CreateNameFromParts(partForNames[index]).name
-                angle =
-                    parent.modifiedAngleDictionary[name] ?? defaultAngles[index]
-                defaultOrModified += [name: angle]
+                        CreateNameFromParts(partForNames[index]).name
+                    angle =
+                        parent.angleChangeIn[name] ?? defaultAngles[index]
+                    dictionary += [name: angle]
                 }
             }
         }
     }
     
+    
     //MARK: DIMENSION FOR BACK
-    struct RequestOccupantBackSupportDimensionDictionary {
+    struct OccupantBackSupportDimension {
         var dictionaryOut: Part3DimensionDictionary = [:]
        
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
             
             getDictionary()
             
@@ -445,7 +451,7 @@ print("")
                     CreateDefaultDimensionDictionary(
                         allOccupantRelated.parts,
                         allOccupantRelated.dimensions,
-                        parent.twinSitOnOptions
+                        parent.twinSitOnOption
                     ).dictionary
             }
         }
@@ -453,11 +459,11 @@ print("")
     
     
     //MARK: DIMENSION FOR BODY
-    struct RequestOccupantBodySupportDimensionDictionary {
+    struct OccupantBodySupportDimension {
         var dictionaryOut: Part3DimensionDictionary = [:]
         
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
                 
             getDictionary()
                 
@@ -476,7 +482,7 @@ print("")
                     CreateDefaultDimensionDictionary(
                         parts,
                         dimensions,
-                        parent.twinSitOnOptions
+                        parent.twinSitOnOption
                     ).dictionary
             }
         }
@@ -484,11 +490,11 @@ print("")
     
     
     //MARK: DIMENSION FOR FOOT
-    struct RequestOccupantFootSupportDimensionDictionary {
+    struct OccupantFootSupportDimension {
         var dictionaryOut: Part3DimensionDictionary = [:]
        
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
             
             getDictionary()
             
@@ -497,12 +503,12 @@ print("")
                 let allOccupantRelated =
                     AllOccupantFootRelated(
                         parent.baseType,
-                        parent.modifiedPartDictionary)
+                        parent.dimensionIn)
                 dictionaryOut =
                     CreateDefaultDimensionDictionary(
                         allOccupantRelated.parts,
                         allOccupantRelated.dimensions,
-                        parent.twinSitOnOptions
+                        parent.twinSitOnOption
                     ).dictionary
             }
         }
@@ -510,11 +516,11 @@ print("")
     
     
     //MARK: DIMENSION FOR SIDE
-    struct RequestOccupantSideSupportDimensionDictionary {
+    struct OccupantSideSupportDimension {
         var dictionaryOut: Part3DimensionDictionary = [:]
        
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
             
             getDictionary()
             
@@ -529,7 +535,7 @@ print("")
                     CreateDefaultDimensionDictionary(
                         [.armSupport],
                         [allOccupantRelated.value],
-                        parent.twinSitOnOptions
+                        parent.twinSitOnOption
                     ).dictionary
             }
         }
@@ -537,7 +543,7 @@ print("")
 
     
     //MARK: ORIGIN FOR BODY
-    struct RequestOccupantBodySupportOriginDictionary {
+    struct OccupantBodySupportOrigin {
         var parentToPartDictionaryOut: PositionDictionary = [:]
         var objectToPartDictionaryOut: PositionDictionary = [:]
         
@@ -551,12 +557,12 @@ print("")
         let distanceBetweenFrontAndRearWheels: DistanceBetweenFrontAndRearWheels2
         
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
         
             stability = Stability(parent.baseType)
             
-            frontAndRearState = parent.twinSitOnOptions[.frontAndRear] ?? false
-            leftandRightState = parent.twinSitOnOptions[.leftAndRight] ?? false
+            frontAndRearState = parent.twinSitOnOption[.frontAndRear] ?? false
+            leftandRightState = parent.twinSitOnOption[.leftAndRight] ?? false
   
             let bodySupportDefaultDimension = OccupantBodySupportDefaultDimension(parent.baseType).value
                 
@@ -598,7 +604,7 @@ print("")
                 -> Dimension3d {
                 let name =
                     CreateNameFromParts([.object, .id0, .stringLink, .sitOn, id]).name
-                let modifiedDimension: Dimension3d? = parent.modifiedPartDictionary[name]
+                let modifiedDimension: Dimension3d? = parent.dimensionIn[name]
                 return
                    modifiedDimension ?? bodySupportDefaultDimension
             }
@@ -607,17 +613,17 @@ print("")
             func getModifiedMaximumHangerLinkDimension(_ id: Part)
                 -> Dimension3d {
                     let index = id == .id0 ? 0: 1
-                    let footSupportInOnePieceState = parent.objectOptionDictionaries[index][.footSupportInOnePiece] ?? false
+                    let footSupportInOnePieceState = parent.objectOptions[index][.footSupportInOnePiece] ?? false
                     let names: [String] =
                     [CreateNameFromParts([.footSupportHangerLink, .id0, .stringLink, .sitOn, id]).name]
-                    var modifiedDimensions: [Dimension3d?] = [parent.modifiedPartDictionary[names[0]]]
+                    var modifiedDimensions: [Dimension3d?] = [parent.dimensionIn[names[0]]]
                     
                     if footSupportInOnePieceState {
                         
                     } else {
                         let name =
                         CreateNameFromParts([.footSupportHangerLink, .id1, .stringLink, .sitOn, id]).name
-                        modifiedDimensions += [parent.modifiedPartDictionary[name]]
+                        modifiedDimensions += [parent.dimensionIn[name]]
                         
                     }
                 
@@ -664,7 +670,7 @@ print("")
                     y:
                     stability.atRear +
                      occupantBodySupportsDimension[0].length/2,
-                     z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                     z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                 )
                 
                 if frontAndRearState {
@@ -676,7 +682,7 @@ print("")
                             occupantBodySupportsDimension[0].length +
                             occupantFootSupportHangerLinksDimension[0].length +
                             occupantBodySupportsDimension[1].length/2,
-                             z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                             z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                     )
                 }
                 
@@ -692,7 +698,7 @@ print("")
                       z: 0.0),
                     (x: xOrigin1,
                      y: origin[0].y,
-                     z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                     z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                     ]
                 }
             }
@@ -704,7 +710,7 @@ print("")
                 origin.append(
                 (x: 0.0,
                  y: 0.5 * (baseLength - occupantBodySupportsDimension[0].length),
-                 z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                 z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                 )
                 
                 if frontAndRearState {
@@ -712,11 +718,11 @@ print("")
                     [
                     (x: 0.0,
                      y: -origin[0].y,
-                     z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                     z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                      ,
                     (x: 0.0,
                      y: origin[0].y,
-                    z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                    z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                     ]
                 }
                 
@@ -725,11 +731,11 @@ print("")
                     [
                     (x: 0.0,
                      y: -origin[0].y,
-                     z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                     z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                      ,
                     (x: 0.0,
                      y: origin[0].y,
-                    z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                    z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                     ]
                 }
             }
@@ -740,7 +746,7 @@ print("")
                      y:
                     -(stability.atFront +
                         occupantBodySupportsDimension[0].length/2),
-                     z: ObjectDefaultOrModifiedSpecification.sitOnHeight )
+                     z: ObjectDefaultOrModifiedDictionaries.sitOnHeight )
                      )
                 
                 if frontAndRearState {
@@ -751,7 +757,7 @@ print("")
                             occupantBodySupportsDimension[0].length -
                             occupantFootSupportHangerLinksDimension[1].length -
                             occupantBodySupportsDimension[1].length/2,
-                         z: ObjectDefaultOrModifiedSpecification.sitOnHeight
+                         z: ObjectDefaultOrModifiedDictionaries.sitOnHeight
                          ),
                         origin[0]
                     ]
@@ -761,10 +767,10 @@ print("")
                     origin = [
                         (x: -leftAndRightX(),
                          y: origin[0].y,
-                         z: ObjectDefaultOrModifiedSpecification.sitOnHeight),
+                         z: ObjectDefaultOrModifiedDictionaries.sitOnHeight),
                         (x: leftAndRightX(),
                          y: origin[0].y,
-                         z: ObjectDefaultOrModifiedSpecification.sitOnHeight)
+                         z: ObjectDefaultOrModifiedDictionaries.sitOnHeight)
                     ]
                 }
             }
@@ -779,12 +785,12 @@ print("")
     }
     
     //MARK: BODY ROTATION ORIGIN
-    struct OccupanBodySupportRotationOriginDefaultOrModifiedDictionary {
+    struct OccupanBodySupportRotationOrigin {
         var parentToPart: PositionDictionary = [:]
         var objectToPart: PositionDictionary = [:]
         
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
             let sitOnIds = parent.oneOrTwoIds
             
             for sitOnId in sitOnIds {
@@ -803,10 +809,10 @@ print("")
                 CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
                 
                 let occupantBodySupportOrigin =
-                    parent.objectToPartOriginDictionaryOut[sitOnOriginName]!
+                    parent.objectToPartOriginDefault[sitOnOriginName]!
                 
                 let occupantBodySupportParentToRotationOrigin =
-                    parent.editedParentToPartOriginDictionaryIn[sitOnOriginName] ??
+                    parent.objectToPartOriginIn[sitOnOriginName] ??
                         OccupantBodySupportDefaultParentToRotationOrigin(parent.baseType).value
                 let objectToAngleJointOrigin =
                     CreateIosPosition.addTwoTouples(
@@ -831,12 +837,12 @@ print("")
     
     
     //MARK: ORIGIN FOR FOOT
-    struct OccupantFootSupportOriginDefaultOrModifiedDictionary {
+    struct OccupantFootSupportOrigin {
         var parentToPart: PositionDictionary = [:]
         var objectToPart: PositionDictionary = [:]
        
         init(
-            parent: ObjectDefaultOrModifiedSpecification) {
+            parent: ObjectDefaultOrModifiedDictionaries) {
             
             getDictionary()
 //print(objectToPartDictionaryOut)
@@ -850,7 +856,7 @@ print("")
                     let sitOnId = sitOnIds[sitOnIndex]
                    
                     let footPlateInOnePieceState =
-                    parent.objectOptionDictionaries[sitOnIndex][.footSupportInOnePiece] ?? false
+                    parent.objectOptions[sitOnIndex][.footSupportInOnePiece] ?? false
                     
                     for footSupportIndex in [1, 0] {
                         
@@ -858,7 +864,7 @@ print("")
                         
                         parentChildPositions.append(
                             GetValueFromDictionary(
-                                parent.editedOrDefaultParentToPartOriginDictionaryOut,
+                                parent.parentToPartOriginDefault,
                                 [.object, .id0, .stringLink,.sitOn, sitOnId]).value )
                         
                         addToDictionary([
@@ -923,7 +929,7 @@ print("")
                             defaultParentToPartOriginPosition)
 
                         let positionOut =
-                            parent.editedParentToPartOriginDictionaryIn[name] ??
+                            parent.objectToPartOriginIn[name] ??
                             defaultPositions[index]
 //print("position out \(positionOut)")
                         self.parentToPart += [name : positionOut]

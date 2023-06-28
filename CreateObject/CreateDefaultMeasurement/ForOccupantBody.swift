@@ -13,7 +13,7 @@ struct RequestOccupantBodySupportDefaultDimensionDictionary {
 
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions,
+        _ twinSitOnOptions: TwinSitOnOptionDictionary,
         _ modifiedPartDictionary: Part3DimensionDictionary
         ) {
 
@@ -90,7 +90,7 @@ struct OccupantBodySupportDefaultParentToRotationOrigin {
 }
 
 
-struct OccupantBodySupportDefaultAngle {
+struct OccupantBodySupportDefaultAngleChange {
     var dictionary: BaseObjectAngleDictionary =
         [.allCasterTiltInSpaceShowerChair: Measurement(value: 30.0, unit: UnitAngle.degrees)]
     

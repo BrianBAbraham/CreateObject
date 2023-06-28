@@ -107,7 +107,7 @@ struct ObjectView: View {
     }
     
     
-    var twinSitOnOptionsDictionary: TwinSitOnOptions {
+    var twinSitOnOptionsDictionary: TwinSitOnOptionDictionary {
         twinSitOnVM.getTwinSitOnOptions()  //TWIN
     }
     

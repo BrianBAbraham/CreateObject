@@ -13,7 +13,7 @@ struct RequestOccupantSideSupportDefaultDimensionDictionary {
     let modifiedPartDictionary: Part3DimensionDictionary
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions,
+        _ twinSitOnOptions: TwinSitOnOptionDictionary,
         _ modifiedPartDictionary: Part3DimensionDictionary
         ) {
         self.modifiedPartDictionary = modifiedPartDictionary

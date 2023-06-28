@@ -13,7 +13,7 @@ struct RequestOccupantBackSupportDefaultDimensionDictionary {
     
     init(
         _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptions
+        _ twinSitOnOptions: TwinSitOnOptionDictionary
     ) {
         getDictionary()
 
@@ -244,7 +244,7 @@ struct OccupantBackSupportJointDefaultDimension {
 
 //MARK: ANGLE
 
-struct OccupantBackSupportDefaultAngle {
+struct OccupantBackSupportDefaultAngleChange {
     var dictionary: BaseObjectAngleDictionary =
     [:]
     

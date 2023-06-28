@@ -73,7 +73,7 @@ struct CreateOccupantBodySupport {
                 occupantSupportMeasure,
                 .sitOn,
                 oneBodySupportFromPrimaryOrigin,
-                ZeroTouple.iosLocation,
+                ZeroValue.iosLocation,
                 supportIndex)
 
             

@@ -8,7 +8,7 @@
 import Foundation
 
 
-typealias TwinSitOnOptions = [TwinSitOnOption : Bool]
+
 
 enum TwinSitOnOption: String, CaseIterable  {
    
@@ -24,10 +24,10 @@ enum TwinSitOnOption: String, CaseIterable  {
 }
 
 struct TwinSitOn {
-    let options: TwinSitOnOptions
+    let options: TwinSitOnOptionDictionary
     let state : Bool
     
-    init(_ options: TwinSitOnOptions ){
+    init(_ options: TwinSitOnOptionDictionary ){
         self.options = options
         state =
         (options[.frontAndRear] ?? false || options[.leftAndRight] ?? false)
@@ -35,7 +35,7 @@ struct TwinSitOn {
 }
 
 struct TwinSitOnModel {
-  var options: TwinSitOnOptions = [:]
+  var options: TwinSitOnOptionDictionary = [:]
 }
 
 
@@ -84,7 +84,7 @@ extension TwinSitOnViewModel {
     }
 
     func getTwinSitOnOptions()
-        -> TwinSitOnOptions {
+        -> TwinSitOnOptionDictionary {
             twinSitOnModel.options
     }
     
@@ -154,7 +154,7 @@ extension TwinSitOnViewModel {
     }
     
     
-    func setTwinSitOnOptions(_ options: TwinSitOnOptions) {
+    func setTwinSitOnOptions(_ options: TwinSitOnOptionDictionary) {
         twinSitOnModel.options = options
         
     }

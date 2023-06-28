@@ -143,7 +143,7 @@ struct CreateOccupantFootSupport {
                 hangerLinkRequired = false
                 footSupportJointRequired = false
                 footSupportHangerSitOnVerticalJointRequired = false
-                footSupportFromParent = ZeroTouple.iosLocation
+                footSupportFromParent = ZeroValue.iosLocation
                 
                 
                 footSupportDimension =

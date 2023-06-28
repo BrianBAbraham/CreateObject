@@ -17,12 +17,12 @@ struct CreateInitialObject {
     let initialOccupantBodySupportMeasure = InitialOccupantBodySupportMeasurement()
 
     let objectOptions: OptionDictionary
-    let twinSitOnOptions: TwinSitOnOptions
+    let twinSitOnOptions: TwinSitOnOptionDictionary
     
     init(
         baseName baseObjectName: String,
         _ objectOptions: OptionDictionary,
-        _ twinSitOnOptions: TwinSitOnOptions = [:],
+        _ twinSitOnOptions: TwinSitOnOptionDictionary = [:],
         _ partDictionary: Part3DimensionDictionary
     ) {
            
@@ -33,7 +33,7 @@ struct CreateInitialObject {
 //DictionaryInArrayOut().getNameValue(defaultDictionary).forEach{print($0)}
 //prin
         let  objectDefaultOrModifiedSpecification =
-        ObjectDefaultOrModifiedSpecification(
+        ObjectDefaultOrModifiedDictionaries(
     BaseObjectTypes(rawValue: baseObjectName) ??
         .fixedWheelRearDrive,
     twinSitOnOptions,
@@ -229,7 +229,7 @@ struct CreateInitialObject {
 
                     baseMeasurementAndSitOnOrigin =
                         (baseMeasurement: baseMeasurement,
-                        fromPrimaryToSitOnOrigin: [ZeroTouple.iosLocation])
+                        fromPrimaryToSitOnOrigin: [ZeroValue.iosLocation])
 
             
             
@@ -239,7 +239,7 @@ struct CreateInitialObject {
             default:
                 baseMeasurementAndSitOnOrigin =
                     (baseMeasurement: baseMeasurement,
-                     fromPrimaryToSitOnOrigin: [ZeroTouple.iosLocation])
+                     fromPrimaryToSitOnOrigin: [ZeroValue.iosLocation])
         }
         
         return baseMeasurementAndSitOnOrigin
@@ -269,7 +269,7 @@ struct CreateInitialObject {
         (baseMeasurement: InitialBaseMeasureFor,
          fromPrimaryToSitOnOrigin: [PositionAsIosAxes]) =
             (baseMeasurement: InitialBaseMeasureFor(),
-             fromPrimaryToSitOnOrigin: [ZeroTouple.iosLocation])
+             fromPrimaryToSitOnOrigin: [ZeroValue.iosLocation])
         
         var baseMeasurement: InitialBaseMeasureFor = InitialBaseMeasureFor()
         

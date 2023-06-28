@@ -396,3 +396,29 @@ extension Dictionary {
         }
     }
 }
+
+struct Replace {
+    var intialWithReplacements: PositionDictionary = [:]
+    
+    init( initial: PositionDictionary, replacement: PositionDictionary) {
+        
+        intialWithReplacements =
+        replace(initial, replacement)
+    }
+
+    func replace(
+        _ initial: PositionDictionary,
+        _ replacement: PositionDictionary) -> PositionDictionary{
+        var initialWithReplacements = initial
+        for (key, value) in replacement {
+            if let oldValue = initial[key] {
+                
+//print("replacement")
+//print(value)
+                initialWithReplacements[key] = value
+            }
+        }
+        return initialWithReplacements
+    }
+    
+}
