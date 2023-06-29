@@ -61,7 +61,7 @@
 		FDFC68702A2A1BB40027E219 /* ForOccupantBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC686F2A2A1BB40027E219 /* ForOccupantBody.swift */; };
 		FDFC68722A2A1C800027E219 /* ForOccupantBack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68712A2A1C800027E219 /* ForOccupantBack.swift */; };
 		FDFC68742A2A3AAD0027E219 /* ForOccupantSide.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68732A2A3AAD0027E219 /* ForOccupantSide.swift */; };
-		FDFC68762A2A3EBF0027E219 /* CreateDefaultDimensionDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68752A2A3EBF0027E219 /* CreateDefaultDimensionDictionary.swift */; };
+		FDFC68762A2A3EBF0027E219 /* DimensionDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68752A2A3EBF0027E219 /* DimensionDictionary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -120,7 +120,7 @@
 		FDFC686F2A2A1BB40027E219 /* ForOccupantBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForOccupantBody.swift; sourceTree = "<group>"; };
 		FDFC68712A2A1C800027E219 /* ForOccupantBack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForOccupantBack.swift; sourceTree = "<group>"; };
 		FDFC68732A2A3AAD0027E219 /* ForOccupantSide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForOccupantSide.swift; sourceTree = "<group>"; };
-		FDFC68752A2A3EBF0027E219 /* CreateDefaultDimensionDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDefaultDimensionDictionary.swift; sourceTree = "<group>"; };
+		FDFC68752A2A3EBF0027E219 /* DimensionDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionDictionary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,7 +223,7 @@
 				FDF085632A2E18F200EB147F /* ForOverHead.swift */,
 				FDFC68732A2A3AAD0027E219 /* ForOccupantSide.swift */,
 				FDF085652A2E222900EB147F /* ForBase.swift */,
-				FDFC68752A2A3EBF0027E219 /* CreateDefaultDimensionDictionary.swift */,
+				FDFC68752A2A3EBF0027E219 /* DimensionDictionary.swift */,
 			);
 			path = CreateDefaultMeasurement;
 			sourceTree = "<group>";
@@ -304,7 +304,7 @@
 				FDFC68722A2A1C800027E219 /* ForOccupantBack.swift in Sources */,
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
 				FDBD6EFC29C4B40500144603 /* CreateOccupantSideSupport.swift in Sources */,
-				FDFC68762A2A3EBF0027E219 /* CreateDefaultDimensionDictionary.swift in Sources */,
+				FDFC68762A2A3EBF0027E219 /* DimensionDictionary.swift in Sources */,
 				FDA3352E29AA5DF200409A61 /* CreateObjectRectangle.swift in Sources */,
 				FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */,
 				FD91AF8E296DBB13005DEA51 /* CreateOccupantSupport.swift in Sources */,

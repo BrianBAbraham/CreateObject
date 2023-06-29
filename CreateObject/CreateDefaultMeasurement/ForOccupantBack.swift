@@ -8,31 +8,31 @@
 import Foundation
 
 
-struct RequestOccupantBackSupportDefaultDimensionDictionary {
-    var dictionary: Part3DimensionDictionary = [:]
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptionDictionary
-    ) {
-        getDictionary()
-
-        func getDictionary() {
-           
-         let allOccupantBackRelated =
-                AllOccupantBackRelated(
-                    baseType
-                )
-                
-            dictionary =
-                CreateDefaultDimensionDictionary(
-                    allOccupantBackRelated.parts,
-                    allOccupantBackRelated.dimensions,
-                    twinSitOnOptions
-                ).dictionary
-        }
-    }
-}
+//struct RequestOccupantBackSupportDefaultDimensionDictionary {
+//    var dictionary: Part3DimensionDictionary = [:]
+//
+//    init(
+//        _ baseType: BaseObjectTypes,
+//        _ twinSitOnOptions: TwinSitOnOptionDictionary
+//    ) {
+//        getDictionary()
+//
+//        func getDictionary() {
+//
+//         let allOccupantBackRelated =
+//                AllOccupantBackRelated(
+//                    baseType
+//                )
+//
+//            dictionary =
+//                DimensionDictionary(
+//                    allOccupantBackRelated.parts,
+//                    allOccupantBackRelated.dimensions,
+//                    twinSitOnOptions
+//                ).forPart
+//        }
+//    }
+//}
 // use touple? (part: Part, dimension: Dimension3d)
 // avoids errors of assignment
 // pass touple wiithout nameEnd and allow create to add 
@@ -51,7 +51,7 @@ struct AllOccupantBackRelated {
             .backSupportAssistantHandleInOnePiece,
             .backSupportAssistantJoystick,
             .backSupport,
-            .backSupportJoint]
+            .backSupportAngleJoint]
     
         let dimensionsList =
             [
@@ -63,7 +63,7 @@ struct AllOccupantBackRelated {
                 OccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
                 OccupantBackSupportJoystickDefaultDimension(baseType).value,
                 OccupantBackSupportDefaultDimension(baseType).value,
-                OccupantBackSupportJointDefaultDimension(baseType).value
+                OccupantBackSupportAngleJointDefaultDimension(baseType).value
                 
                 ]
         dimensions.append(contentsOf: dimensionsList)
@@ -223,7 +223,7 @@ struct OccupantBackSupportDefaultDimension {
     }
 }
 
-struct OccupantBackSupportJointDefaultDimension {
+struct OccupantBackSupportAngleJointDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -241,6 +241,24 @@ struct OccupantBackSupportJointDefaultDimension {
     }
 }
 
+//MARK: -ORIGIN
+struct OccupantBackSupportDefaultParentToRotationOrigin {
+    var dictionary: OriginDictionary =
+        [:]
+
+
+    let value: PositionAsIosAxes
+
+    init(_ baseType: BaseObjectTypes) {
+        
+        let general =
+            (x: 0.0,
+             y: -OccupantBodySupportDefaultDimension(baseType).value.length/2,
+             z: 0.0)
+        
+      value = dictionary[baseType] ?? general
+    }
+}
 
 //MARK: ANGLE
 
@@ -248,7 +266,7 @@ struct OccupantBackSupportDefaultAngleChange {
     var dictionary: BaseObjectAngleDictionary =
     [:]
     
-    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
+    static let general = Measurement(value: 0.0 , unit: UnitAngle.radians)
     
     let value: Measurement<UnitAngle>
     

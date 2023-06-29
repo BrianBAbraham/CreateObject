@@ -23,7 +23,7 @@ enum Part: String {
     case backSupportAssistantHandle = "backSupportRearHandle"
     case backSupportAssistantHandleInOnePiece = "backSupportRearHandleInOnePiece"
     case backSupportAssistantJoystick = "backSupportJoyStick"
-    case backSupportJoint = "backSupportHorizontalJoint"
+    case backSupportAngleJoint = "backSupportAngleJoint"
     case backSupportHeadSupport = "backSupportHeadSupport"
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
@@ -180,7 +180,7 @@ struct PartGroupsFor {
         .joyStickForOccupant,
         .lieOnSupport,
         .sleepOnSupport,
-        .backSupportJoint,
+        .backSupportAngleJoint,
         .footSupportHangerSitOnVerticalJoint
         ]
     
@@ -213,9 +213,10 @@ struct PartGroupsFor {
         .footSupportHangerLink,
         .footSupportHorizontalJoint,
         ]
-
+    var backAndHead: [Part]
+        {backAngle + headAngle}
     var sitOnAndBackAngle: [Part]
-        {sitOnAngle + backAngle + headAngle}
+        {sitOnAngle + backAndHead}
     var allAngle: [Part]
         {sitOnAndBackAngle + footAngle}
     

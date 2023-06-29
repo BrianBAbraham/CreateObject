@@ -343,8 +343,10 @@ struct ToggleItem: View {
 
 let twinSitOnOptions =
 twinSitOnVM.getTwinSitOnOptions()
-objectPickVM.setDefaultObjectDictionary(
-    twinSitOnOptions)
+                    
+//objectPickVM.setDefaultObjectDictionary(
+//    twinSitOnOptions)
+                    
 objectPickVM.setCurrentObjectByCreatingFromName(
     twinSitOnOptions)
 

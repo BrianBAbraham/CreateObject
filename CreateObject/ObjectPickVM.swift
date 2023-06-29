@@ -45,8 +45,8 @@ class ObjectPickViewModel: ObservableObject {
         CreateInitialObject(
             baseName: initialObjectName,
             optionDictionary,
-            twinSitOnDictionary,
-            ObjectDefaultDimension(initialObject, twinSitOnDictionary).dictionary//    [:]
+            twinSitOnDictionary//,
+            //ObjectDefaultDimension(initialObject, twinSitOnDictionary).dictionary//    [:]
         )
             .dictionary
     
@@ -57,9 +57,9 @@ class ObjectPickViewModel: ObservableObject {
                         objectOptionDictionary: optionDictionary)
     
     init() {
-        setDefaultObjectDictionary(
-           // Self.initialObject,
-            Self.twinSitOnDictionary)
+//        setDefaultObjectDictionary(
+//
+//            Self.twinSitOnDictionary)
     }
 }
 
@@ -408,25 +408,25 @@ extension ObjectPickViewModel {
     }
     
     
-    func createDefaultObjectDictionary(
-        _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptionDictionary)
-        -> Part3DimensionDictionary {
-            return
-                ObjectDefaultDimension(baseType,twinSitOnOptions).dictionary
-          
-    }
+//    func createDefaultObjectDictionary(
+//        _ baseType: BaseObjectTypes,
+//        _ twinSitOnOptions: TwinSitOnOptionDictionary)
+//        -> Part3DimensionDictionary {
+//            return
+//                ObjectDefaultDimension(baseType,twinSitOnOptions).dictionary
+//
+//    }
     
-    func setDefaultObjectDictionary(
-
-            _ twinSitOnOptions: TwinSitOnOptionDictionary) {
-             let baseType = getCurrentObjectType()
-            objectPickModel.defaultObjectDictionary =
-            createDefaultObjectDictionary(
-                baseType,
-                twinSitOnOptions)
-    //print(defaultDimensionDictionary)
-    }
+//    func setDefaultObjectDictionary(
+//
+//            _ twinSitOnOptions: TwinSitOnOptionDictionary) {
+//             let baseType = getCurrentObjectType()
+//            objectPickModel.defaultObjectDictionary =
+//            createDefaultObjectDictionary(
+//                baseType,
+//                twinSitOnOptions)
+//
+//    }
     
     
     func setEditedObjectDictionary(_ editedDictionary: PositionDictionary) {

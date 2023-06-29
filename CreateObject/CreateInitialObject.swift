@@ -23,7 +23,7 @@ struct CreateInitialObject {
         baseName baseObjectName: String,
         _ objectOptions: OptionDictionary,
         _ twinSitOnOptions: TwinSitOnOptionDictionary = [:],
-        _ partDictionary: Part3DimensionDictionary
+        _ partDictionary: Part3DimensionDictionary = [:]
     ) {
            
         self.objectOptions = objectOptions
@@ -33,7 +33,7 @@ struct CreateInitialObject {
 //DictionaryInArrayOut().getNameValue(defaultDictionary).forEach{print($0)}
 //prin
         let  objectDefaultOrModifiedSpecification =
-        ObjectDefaultOrModifiedDictionaries(
+        ObjectDefaultOrEditedDictionaries(
     BaseObjectTypes(rawValue: baseObjectName) ??
         .fixedWheelRearDrive,
     twinSitOnOptions,

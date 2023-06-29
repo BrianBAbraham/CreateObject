@@ -9,32 +9,32 @@ import Foundation
 
 
 
-struct RequestOccupantFootSupportDefaultDimensionDictionary {
-    var dictionary: Part3DimensionDictionary = [:]
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptionDictionary,
-        _ modifiedPartDictionary: Part3DimensionDictionary
-        ) {
-            
-        getDictionary()
-        
-        func getDictionary() {
-                
-            let allOccupantRelated =
-                AllOccupantFootRelated(
-                    baseType,
-                    modifiedPartDictionary)
-            dictionary =
-                CreateDefaultDimensionDictionary(
-                    allOccupantRelated.parts,
-                    allOccupantRelated.dimensions,
-                    twinSitOnOptions
-                ).dictionary
-        }
-    }
-}
+//struct RequestOccupantFootSupportDefaultDimensionDictionary {
+//    var dictionary: Part3DimensionDictionary = [:]
+//    
+//    init(
+//        _ baseType: BaseObjectTypes,
+//        _ twinSitOnOptions: TwinSitOnOptionDictionary,
+//        _ modifiedPartDictionary: Part3DimensionDictionary
+//        ) {
+//            
+//        getDictionary()
+//        
+//        func getDictionary() {
+//                
+//            let allOccupantRelated =
+//                AllOccupantFootRelated(
+//                    baseType,
+//                    modifiedPartDictionary)
+//            dictionary =
+//                DimensionDictionary(
+//                    allOccupantRelated.parts,
+//                    allOccupantRelated.dimensions,
+//                    twinSitOnOptions
+//                ).forPart
+//        }
+//    }
+//}
 
 struct AllOccupantFootRelated {
     let parts: [Part]
@@ -166,7 +166,7 @@ struct HangerVerticalJointToFootSupportJointDefaultOrigin {
     let general =
         (x: 0.0,
          y: OccupantFootSupportHangerLinkDefaultDimension.general.length,
-         z: -(ObjectDefaultOrModifiedDictionaries.sitOnHeight -
+         z: -(ObjectDefaultOrEditedDictionaries.sitOnHeight -
              Self.footSupportHeightAboveFloor +
              SitOnToHangerVerticalJointDefaultOrigin.jointBelowSeat) )
 

@@ -8,34 +8,34 @@
 import Foundation
 
 
-struct RequestOccupantBodySupportDefaultDimensionDictionary {
-    var dictionary: Part3DimensionDictionary = [:]
-
-    init(
-        _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptionDictionary,
-        _ modifiedPartDictionary: Part3DimensionDictionary
-        ) {
-
-        getDictionary()
-            func getDictionary() {
-                let dimension =
-                    OccupantBodySupportDefaultDimension(
-                        baseType).value
-                let dimensions =
-                TwinSitOn(twinSitOnOptions).state ? [dimension, dimension]: [dimension]
-                let parts: [Part] =
-                TwinSitOn(twinSitOnOptions).state ? [.sitOn, .sitOn]: [.sitOn]
-
-                dictionary =
-                    CreateDefaultDimensionDictionary(
-                        parts,
-                        dimensions,
-                        twinSitOnOptions
-                    ).dictionary
-            }
-        }
-}
+//struct RequestOccupantBodySupportDefaultDimensionDictionary {
+//    var dictionary: Part3DimensionDictionary = [:]
+//
+//    init(
+//        _ baseType: BaseObjectTypes,
+//        _ twinSitOnOptions: TwinSitOnOptionDictionary,
+//        _ modifiedPartDictionary: Part3DimensionDictionary
+//        ) {
+//
+//        getDictionary()
+//            func getDictionary() {
+//                let dimension =
+//                    OccupantBodySupportDefaultDimension(
+//                        baseType).value
+//                let dimensions =
+//                TwinSitOn(twinSitOnOptions).state ? [dimension, dimension]: [dimension]
+//                let parts: [Part] =
+//                TwinSitOn(twinSitOnOptions).state ? [.sitOn, .sitOn]: [.sitOn]
+//
+//                dictionary =
+//                    DimensionDictionary(
+//                        parts,
+//                        dimensions,
+//                        twinSitOnOptions
+//                    ).forPart
+//            }
+//        }
+//}
 
 
 struct OccupantBodySupportDefaultDimension {

@@ -59,8 +59,10 @@ struct PickInitialObjectView: View {
 //print(objectPickVM.getInitialObjectDictionary())
 
 let twinSitOnOptions = twinSitOnVM.getTwinSitOnOptions()
-objectPickVM.setDefaultObjectDictionary(
-    twinSitOnOptions)
+                
+//objectPickVM.setDefaultObjectDictionary(
+//    twinSitOnOptions)
+                
 objectPickVM.setCurrentObjectByCreatingFromName(
     //tag,
     twinSitOnOptions)

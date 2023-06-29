@@ -8,33 +8,33 @@
 //import Foundation
 //
 
-struct RequestOccupantSideSupportDefaultDimensionDictionary {
-    var dictionary: Part3DimensionDictionary = [:]
-    let modifiedPartDictionary: Part3DimensionDictionary
-    init(
-        _ baseType: BaseObjectTypes,
-        _ twinSitOnOptions: TwinSitOnOptionDictionary,
-        _ modifiedPartDictionary: Part3DimensionDictionary
-        ) {
-        self.modifiedPartDictionary = modifiedPartDictionary
-        getDictionary()
-        
-        func getDictionary() {
-                
-            let allOccupantRelated =
-            OccupantSideSupportDefaultDimension(
-                baseType
-            )
-            
-            dictionary =
-                CreateDefaultDimensionDictionary(
-                    [.armSupport],
-                    [allOccupantRelated.value],
-                    twinSitOnOptions
-                ).dictionary
-        }
-    }
-}
+//struct RequestOccupantSideSupportDefaultDimensionDictionary {
+//    var dictionary: Part3DimensionDictionary = [:]
+//    let modifiedPartDictionary: Part3DimensionDictionary
+//    init(
+//        _ baseType: BaseObjectTypes,
+//        _ twinSitOnOptions: TwinSitOnOptionDictionary,
+//        _ modifiedPartDictionary: Part3DimensionDictionary
+//        ) {
+//        self.modifiedPartDictionary = modifiedPartDictionary
+//        getDictionary()
+//        
+//        func getDictionary() {
+//                
+//            let allOccupantRelated =
+//            OccupantSideSupportDefaultDimension(
+//                baseType
+//            )
+//            
+//            dictionary =
+//                DimensionDictionary(
+//                    [.armSupport],
+//                    [allOccupantRelated.value],
+//                    twinSitOnOptions
+//                ).forPart
+//        }
+//    }
+//}
 
 
 
