@@ -11,7 +11,7 @@ import Foundation
 struct DimensionDictionary {
     var forPart: Part3DimensionDictionary = [:]
     
-    /// makes uses of dictionary with value
+    /// makes uses of dictionary value
     /// or uses passsed default value
     /// - Parameters:
     ///   - parts: all the parts associated with that section of the object
@@ -283,8 +283,19 @@ struct ObjectDefaultOrEditedDictionaries {
         createOccupantSupportObjectToPartOriginDictionary()
             
 
-DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
-
+//DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
+            
+ print(OccupantBodySupportDefaultDimension(.allCasterBed).value)
+            for angle in [0.0, 10.0, 20.0, 30.0,40.0,50.0,60.0,90.0] {
+print(
+ObjectCorners (
+dimensionIn: OccupantBodySupportDefaultDimension(.allCasterBed).value,
+angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
+)
+            }
+            
+            
+            
             
         func createOccupantSupportDimensionDictionary() {
             let occupantSupportDimensionDictionary =
@@ -327,13 +338,12 @@ DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
             
             //replace the part origin positions which are rotated with the rotated values
             objectToPartOriginOut =
-                Replace(initial: objectToPartOriginOut,
-                        replacement:
+                Replace(
+                    initial: objectToPartOriginOut,
+                    replacement:
                             PositionAfterRotation(parent: self).forObjectToPartOrigin
                     ).intialWithReplacements
-            
         }
-            
     }
     
     
@@ -348,19 +358,19 @@ DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
             for sitOnId in parent.oneOrTwoIds {
                 let tiltOriginPart: [Part] =
                     [.object, .id0, .stringLink, .bodySupportAngleJoint, .id0, .stringLink, .sitOn, sitOnId]
-                let tiltOriginName =
+                let originOfRotationName =
                     CreateNameFromParts(tiltOriginPart).name
                 let angleName =
                     CreateNameFromParts([.bodySupportAngle, .stringLink, .sitOn, sitOnId]).name
 
-                if let tiltOrigin = parent.objectToPartOriginOut[tiltOriginName] {
+                if let originOfRotation = parent.objectToPartOriginOut[originOfRotationName] {
                     let angleChange =
                         parent.angleChangeDefault[angleName] ??
                         ZeroValue.angle
                     
                     forSitOnWithFootTilt(
                         parent,
-                        tiltOrigin,
+                        originOfRotation,
                         angleChange,
                         sitOnId)
                     }
@@ -460,6 +470,8 @@ DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
     
     //MARK: ANGLES
     
+    /// Provides the default or passed in value
+    /// of the change in angle from the neutral configuration
     struct ObjectAngleChange {
         var dictionary: AngleDictionary = [:]
         
@@ -827,112 +839,10 @@ DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
     }
     
     //MARK: BODY ROTATION ORIGIN
-    struct OccupanBodySupportRotationOrigin {
-        var parentToPart: PositionDictionary = [:]
-        var objectToPart: PositionDictionary = [:]
-        
-        init(
-            parent: ObjectDefaultOrEditedDictionaries) {
-            let sitOnIds = parent.oneOrTwoIds
-            
-            for sitOnId in sitOnIds {
-                let name =
-                CreateNameFromParts(
-                    [.sitOn, sitOnId, .stringLink, .bodySupportAngleJoint, .id0]
-                ).name
-                
-                getDictionary(name, sitOnId)
-            }
-            
 
-            func getDictionary(_ name: String, _ sitOnId: Part) {
-                
-                let sitOnOriginName =
-                    CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
-                
-                let occupantBodySupportOrigin =
-                    parent.objectToPartOriginOut[sitOnOriginName]!
-                
-                let rotationOriginName =
-                    CreateNameFromParts([.sitOn, sitOnId, .stringLink, .bodySupportAngleJoint, .id0, .stringLink, .sitOn, sitOnId]).name
-                
-                let occupantBodySupportParentToRotationOrigin =
-                    parent.parentToPartOriginIn[rotationOriginName] ??
-                        OccupantBodySupportDefaultParentToRotationOrigin(parent.baseType).value
-                
-                
-                let objectToAngleJointOrigin =
-                    CreateIosPosition.addTwoTouples(
-                    occupantBodySupportOrigin,
-                    occupantBodySupportParentToRotationOrigin)
-                
-                let objectToAngleJointOriginName =
-                    CreateNameFromParts(
-                        [.object,
-                        .id0,
-                        .stringLink,
-                        .bodySupportAngleJoint,
-                        .id0,
-                        .stringLink,
-                        .sitOn, sitOnId]).name
-                
-                objectToPart = [objectToAngleJointOriginName: objectToAngleJointOrigin]
-
-            }
-        }
-    }
     
-    
-    struct OccupanBackSupportRotationOrigin {
-        var parentToPart: PositionDictionary = [:]
-        var objectToPart: PositionDictionary = [:]
-        
-        init(
-            parent: ObjectDefaultOrEditedDictionaries) {
-            let sitOnIds = parent.oneOrTwoIds
-            
-            for sitOnId in sitOnIds {
-                let name =
-                CreateNameFromParts(
-                    [.sitOn, sitOnId, .stringLink, .bodySupportAngleJoint, .id0]
-                ).name
-                
-                getDictionary(name, sitOnId)
-            }
-            
-
-            func getDictionary(_ name: String, _ sitOnId: Part) {
-                
-                let sitOnOriginName =
-                CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
-                
-                let occupantBodySupportOrigin =
-                    parent.objectToPartOriginOut[sitOnOriginName]!
-                
-                let occupantBodySupportParentToRotationOrigin =
-                    parent.objectToPartOriginIn[sitOnOriginName] ??
-                        OccupantBackSupportDefaultParentToRotationOrigin(parent.baseType).value
-                let objectToAngleJointOrigin =
-                    CreateIosPosition.addTwoTouples(
-                    occupantBodySupportOrigin,
-                    occupantBodySupportParentToRotationOrigin)
-                
-                let objectToAngleJointOriginName =
-                    CreateNameFromParts(
-                        [.object,
-                        .id0,
-                        .stringLink,
-                        .backSupportAngleJoint,
-                        .id0,
-                        .stringLink,
-                        .sitOn, sitOnId]).name
-                
-                objectToPart = [objectToAngleJointOriginName: objectToAngleJointOrigin]
-
-            }
-        }
-    }
-    
+    /// Provides a dictionary of object-view of joint origins
+    /// about which parts are rotated
     struct OccupantSupportRotationOriginDictionary {
         var objectToPartOut: PositionDictionary = [:]
         let angleJoint: Part
@@ -941,77 +851,89 @@ DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
             parent: ObjectDefaultOrEditedDictionaries,
             _ angleJoint: Part) {
             
-        self.angleJoint = angleJoint
+            self.angleJoint = angleJoint
 
-        let sitOnIds = parent.oneOrTwoIds
-          
-        for sitOnId in sitOnIds {
-            let name =
-            CreateNameFromParts(
-                [.sitOn, sitOnId, .stringLink, angleJoint, .id0]
-            ).name
-            
-            var rotationOriginName = ""
-            var parentToRotationOrigin = ZeroValue.iosLocation
-            
-            switch angleJoint {
-               
-                case .backSupportAngleJoint:
-                    rotationOriginName =
-                        CreateNameFromParts([.sitOn, sitOnId, .stringLink, .backSupportAngleJoint, .id0, .stringLink, .sitOn, sitOnId]).name
-                    
-                    parentToRotationOrigin =
-                        parent.parentToPartOriginIn[rotationOriginName] ??
-                        OccupantBackSupportDefaultParentToRotationOrigin(parent.baseType).value
+            let sitOnIds = parent.oneOrTwoIds
+              
+            for sitOnId in sitOnIds {
+                let angleJointName =
+                    CreateNameFromParts(
+                        [.sitOn, sitOnId, .stringLink, angleJoint, .id0]
+                    ).name
                 
-            case .bodySupportAngleJoint:
-                rotationOriginName =
-                    CreateNameFromParts([.sitOn, sitOnId, .stringLink, .bodySupportAngleJoint, .id0, .stringLink, .sitOn, sitOnId]).name
-                
-                parentToRotationOrigin =
-                    parent.parentToPartOriginIn[rotationOriginName] ??
-                    OccupantBodySupportDefaultParentToRotationOrigin(parent.baseType).value
-                    
-                default: break
-            }
-            
-
-            getDictionary(name, sitOnId, parentToRotationOrigin, angleJoint)
-        }
-
-
-            func getDictionary(
-                _ name: String,
-                _ sitOnId: Part,
-                _ parentToRotationOrigin: PositionAsIosAxes,
-                _ angleJoint: Part) {
-
                 let sitOnOriginName =
-                CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
-
+                    CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
                 let occupantBodySupportOrigin =
                     parent.objectToPartOriginOut[sitOnOriginName]!
+                
+                switch angleJoint {
+                   
+                    case .backSupportAngleJoint:
+                        calculateAndAddObjectToRotationJointWhichHaveSitOnParentToDictionary (
+                            .backSupportAngleJoint,
+                            OccupantBackSupportDefaultParentToRotationOrigin(parent.baseType).value)
+                    
+                    
+                    case .bodySupportAngleJoint:
+                        calculateAndAddObjectToRotationJointWhichHaveSitOnParentToDictionary (
+                            .bodySupportAngleJoint,
+                            OccupantBodySupportDefaultParentToRotationOrigin(parent.baseType).value
+                        )
+                    
+    //                case .backSupportHeadLinkJoint:
+    //                    parentToRotationOriginName =
+    //                        createNameForParentToRotationJoint(.backSupport, .backSupportHeadLinkJoint)
+    //
+    //                    parentToRotationOrigin =
+    //                        parent.parentToPartOriginIn[parentToRotationOriginName] ??
+    //                        OccupantBodySupportDefaultParentToRotationOrigin(parent.baseType).value
+                        
+                    default: break
+                }
+                
+                
+                func calculateAndAddObjectToRotationJointWhichHaveSitOnParentToDictionary(
+                    _ rotationJoint: Part, _ defaultPosition: PositionAsIosAxes) {
+                    let parentToRotationOriginName =
+                            createNameForParentToRotationJoint(.sitOn, rotationJoint)
+                    let parentToRotationOrigin =
+                        parent.parentToPartOriginIn[parentToRotationOriginName] ??
+                        defaultPosition
+                    let objectToRotationOrigin =
+                        CreateIosPosition.addTwoTouples(
+                        occupantBodySupportOrigin,
+                        parentToRotationOrigin)
+                    let objectToRotationOriginName =
+                        createNameForObjectToRotationJoint(.sitOn, .bodySupportAngleJoint)
+                    objectToPartOut += [objectToRotationOriginName: objectToRotationOrigin]
+                }
+                
+                
+                func createNameForParentToRotationJoint(_ parent: Part, _ joint: Part)
+                -> String {
+                    let startOfOriginName =  CreateNameFromParts([parent, sitOnId, .stringLink]).name
+                    let endOfOriginName =  CreateNameFromParts([ .id0, .stringLink, .sitOn, sitOnId]).name
+                    return
+                        startOfOriginName + joint.rawValue + endOfOriginName
+                }
 
-                let objectToAngleJointOrigin =
-                    CreateIosPosition.addTwoTouples(
-                    occupantBodySupportOrigin,
-                    parentToRotationOrigin)
-
-                let objectToAngleJointOriginName =
-                    CreateNameFromParts(
-                        [.object,
-                        .id0,
-                        .stringLink,
-                        angleJoint,
-                        .id0,
-                        .stringLink,
-                        .sitOn, sitOnId]).name
-
-                objectToPartOut = [objectToAngleJointOriginName: objectToAngleJointOrigin]
-
+                
+                func createNameForObjectToRotationJoint(_ parent: Part, _ joint: Part)
+                -> String {
+                    return
+                        CreateNameFromParts(
+                            [.object,
+                            .id0,
+                            .stringLink,
+                            angleJoint,
+                            .id0,
+                            .stringLink,
+                            .sitOn, sitOnId]).name
+                }
             }
         }
     }
+    
     
     //MARK: ORIGIN FOR FOOT
     struct OccupantFootSupportOrigin {
@@ -1129,4 +1051,67 @@ DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
             }
         }
     }
+    
+    
+    /// Provide all eight corner positions for part
+    struct ObjectCorners {
+        let dimensionIn: Dimension3d
+        let angleChange: Measurement<UnitAngle>
+        var are: [PositionAsIosAxes] {
+            calculateFrom(dimension: dimensionIn) }
+        var aferRotationAre: [PositionAsIosAxes] {
+            calculatePositionAfterRotation(are, angleChange)
+        }
+        var maximumLength: Double {
+            calculateMaximumLength(aferRotationAre)
+        }
+        
+    
+        func calculateFrom( dimension: Dimension3d)
+        -> [PositionAsIosAxes] {
+            let (l,w,h) = dimension
+            return
+                [
+                ZeroValue.iosLocation,
+                (x: w,      y: 0.0, z: 0.0 ),
+                (x: w,      y: l,   z: 0.0 ),
+                (x: 0.0,    y: l,   z: 0.0),
+                (x: 0.0,    y: 0.0, z: h),
+                (x: w,      y: 0.0, z: h),
+                (x: w,      y: l,   z: h ),
+                (x: 0.0,    y: l,   z: h )
+                ]
+        }
+        
+        func calculatePositionAfterRotation(
+            _ corners: [PositionAsIosAxes],
+            _ angleChange: Measurement<UnitAngle>)
+            -> [PositionAsIosAxes] {
+            var rotatedCorners: [PositionAsIosAxes] = []
+            
+            let useAnyIndexForRotation = 0
+            for corner in corners {
+                rotatedCorners.append(
+                    PositionOfPointAfterRotationAboutPoint(
+                        staticPoint: corners[useAnyIndexForRotation],
+                        movingPoint: corner,
+                        angleChange: angleChange).fromStaticToPointWhichHasMoved )
+            }
+print(rotatedCorners)
+            return rotatedCorners
+        }
+        
+        func calculateMaximumLength(
+            _ corners: [PositionAsIosAxes])
+            -> Double {
+            let yValues =
+                CreateIosPosition.getArrayFromPositions(corners).y
+            return
+                yValues.max()! - yValues.min()!
+        }
+    }
+    
+    
+    
+    
 }

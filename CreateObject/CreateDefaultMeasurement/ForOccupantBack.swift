@@ -46,7 +46,7 @@ struct AllOccupantBackRelated {
             [.backSupportAdditionalObject,
             .backSupportHeadSupport,
             .backSupportHeadSupportLink,
-            .backSupportHeadSupportLinkJoint,
+            .backSupportHeadLinkJoint,
             .backSupportAssistantHandle,
             .backSupportAssistantHandleInOnePiece,
             .backSupportAssistantJoystick,
@@ -242,10 +242,10 @@ struct OccupantBackSupportAngleJointDefaultDimension {
 }
 
 //MARK: -ORIGIN
+// origins of rotation position are described in the parent view
 struct OccupantBackSupportDefaultParentToRotationOrigin {
     var dictionary: OriginDictionary =
         [:]
-
 
     let value: PositionAsIosAxes
 
@@ -260,9 +260,43 @@ struct OccupantBackSupportDefaultParentToRotationOrigin {
     }
 }
 
+
+struct OccupantBackSupportHeadLinkDefaultParentToRotationOrigin {
+    var dictionary: OriginDictionary =
+        [:]
+
+    let value: PositionAsIosAxes
+
+    init(_ baseType: BaseObjectTypes) {
+        
+        let general =
+            (x: 0.0,
+             y: 0.0,
+             z: OccupantBackSupportDefaultDimension(baseType).value.length/2)
+        
+      value = dictionary[baseType] ?? general
+    }
+}
+
 //MARK: ANGLE
 
 struct OccupantBackSupportDefaultAngleChange {
+    var dictionary: BaseObjectAngleDictionary =
+    [:]
+    
+    static let general = Measurement(value: 0.0 , unit: UnitAngle.radians)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
+
+struct OccupantBackSupportHeadLinkDefaultAngleChange {
     var dictionary: BaseObjectAngleDictionary =
     [:]
     

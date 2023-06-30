@@ -41,7 +41,7 @@ import Foundation
 struct OccupantBodySupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher: (length: 1200.0, width: 600.0, height: 10.0),
-     .allCasterBed: (length: 2000.0, width: 900.0, height: 150.0),
+     .allCasterBed: (length: 2000.0, width: 0.0, height: 0.0),
      .allCasterHoist: (length: 0.0, width: 0.0, height: 0.0)
         ]
     static let general = (length: 500.0, width: 400.0, height: 50.0)

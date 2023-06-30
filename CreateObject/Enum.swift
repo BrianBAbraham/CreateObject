@@ -27,7 +27,7 @@ enum Part: String {
     case backSupportHeadSupport = "backSupportHeadSupport"
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
-    case backSupportHeadSupportLinkJoint = "backSupportHeadSupportLinkHorizontalJoint"
+    case backSupportHeadLinkJoint = "backSupportHeadSupportLinkHorizontalJoint"
     case backSupportReclineAngle = "backSupportReclineAngle"
     
     
@@ -203,7 +203,7 @@ struct PartGroupsFor {
         [
         .backSupportHeadSupport,
         .backSupportHeadSupportLink,
-        .backSupportHeadSupportLinkJoint
+        .backSupportHeadLinkJoint
         ]
     let leftAndRight: [Part] =
         [
