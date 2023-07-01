@@ -227,11 +227,11 @@ struct DimensionDictionary {
 struct ObjectDefaultOrEditedDictionaries {
     
     static let sitOnHeight = 500.0
-    var dimensionOut: Part3DimensionDictionary = [:]
+    var preTiltDimension: Part3DimensionDictionary = [:]
     var parentToPartOriginOut: PositionDictionary = [:]
     var objectToPartOriginOut: PositionDictionary = [:]
     var angleChangeDefault: AngleDictionary = [:]
-    let dimensionIn: Part3DimensionDictionary
+    let preTiltDimensionIn: Part3DimensionDictionary
     let objectToPartOriginIn: PositionDictionary
     let parentToPartOriginIn: PositionDictionary
     let angleChangeIn: AngleDictionary
@@ -264,15 +264,15 @@ struct ObjectDefaultOrEditedDictionaries {
         _ dimension: Part3DimensionDictionary = [:],
         _ objectToPartOrigin: PositionDictionary = [:],
         _ parentToPartOrigin: PositionDictionary = [:],
-        _ angleChange: AngleDictionary = [:] ) {
+        _ angleChangeIn: AngleDictionary = [:] ) {
             
         self.baseType = baseType//= .allCasterTiltInSpaceShowerChair
         self.twinSitOnOption = twinSitOnOption
         self.objectOptions = objectOptions
-        self.dimensionIn = dimension
+        self.preTiltDimensionIn = dimension
         self.objectToPartOriginIn = objectToPartOrigin
         self.parentToPartOriginIn = parentToPartOrigin
-        self.angleChangeIn = angleChange
+        self.angleChangeIn = angleChangeIn
             
         twinSitOnState = TwinSitOn(twinSitOnOption).state
         
@@ -283,28 +283,31 @@ struct ObjectDefaultOrEditedDictionaries {
         createOccupantSupportObjectToPartOriginDictionary()
             
 
-//DictionaryInArrayOut().getNameValue( objectToPartOriginOut).forEach{print($0)}
+DictionaryInArrayOut().getNameValue( preTiltDimension).forEach{print($0)}
             
- print(OccupantBodySupportDefaultDimension(.allCasterBed).value)
-            for angle in [0.0, 10.0, 20.0, 30.0,40.0,50.0,60.0,90.0] {
-print(
-ObjectCorners (
-dimensionIn: OccupantBodySupportDefaultDimension(.allCasterBed).value,
-angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
-)
-            }
-            
-            
-            
+
+//            for angle in [5.0, 10.0, 20.0, 30.0,40.0,50.0,60.0,90.0] {
+//print(
+//ObjectCorners (
+//dimensionIn: OccupantBodySupportDefaultDimension(.allCasterBed).value,
+//angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
+//)
+           // }
+//    print(
+//        PositionOfPointAfterRotationAboutPoint(staticPoint: ZeroValue.iosLocation, movingPoint: (x: 0.0, y: 1000.0, z: 0.0), angleChange: Measurement(value: 90.0, unit: UnitAngle.degrees)).fromStaticToPointWhichHasMoved
+//
+//    )
             
         func createOccupantSupportDimensionDictionary() {
             let occupantSupportDimensionDictionary =
                 OccupantSupportDimensionDictionary(parent: self)
                 
-            dimensionOut += occupantSupportDimensionDictionary.forBack
-            dimensionOut += occupantSupportDimensionDictionary.forBody
-            dimensionOut += occupantSupportDimensionDictionary.forFoot
-            dimensionOut += occupantSupportDimensionDictionary.forSide
+            preTiltDimension += occupantSupportDimensionDictionary.forBack
+            preTiltDimension += occupantSupportDimensionDictionary.forBody
+            preTiltDimension += occupantSupportDimensionDictionary.forFoot
+            preTiltDimension += occupantSupportDimensionDictionary.forSide
+            
+            
         }
             
        // Rotations are applied
@@ -470,7 +473,7 @@ angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
     
     //MARK: ANGLES
     
-    /// Provides the default or passed in value
+    /// Provides extant  passed in value or if not default
     /// of the change in angle from the neutral configuration
     struct ObjectAngleChange {
         var dictionary: AngleDictionary = [:]
@@ -536,7 +539,7 @@ angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
                         allOccupantRelated.parts,
                         allOccupantRelated.dimensions,
                         parent.twinSitOnOption,
-                        parent.dimensionIn
+                        parent.preTiltDimensionIn
                     ).forPart
             }
                 
@@ -546,16 +549,27 @@ angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
                         OccupantBodySupportDefaultDimension(
                             parent.baseType).value
                     
+                    let angle =
+                        OccupantBodySupportDefaultAngleChange(parent.baseType).value
+                    
+                    let rotatedDimension =
+                        ObjectCorners(
+                            dimensionIn: dimension,
+                            angleChangeIn:  angle
+                        ).rotatedDimension
+                    
                     let dimensions =
-                        parent.twinSitOnState ? [dimension, dimension]: [dimension]
+                        parent.twinSitOnState ? [rotatedDimension, rotatedDimension]: [rotatedDimension]
+                    
                     let parts: [Part] =
                         parent.twinSitOnState ? [.sitOn, .sitOn]: [.sitOn]
+                    
                     return
                         DimensionDictionary(
                             parts,
                             dimensions,
                             parent.twinSitOnOption,
-                            parent.dimensionIn
+                            parent.preTiltDimensionIn
                         ).forPart
             }
                 
@@ -565,29 +579,41 @@ angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
                     let allOccupantRelated =
                         AllOccupantFootRelated(
                             parent.baseType,
-                            parent.dimensionIn)
+                            parent.preTiltDimensionIn)
                     return
                         DimensionDictionary(
                             allOccupantRelated.parts,
                             allOccupantRelated.dimensions,
                             parent.twinSitOnOption,
-                            parent.dimensionIn
+                            parent.preTiltDimensionIn
                         ).forPart
             }
                 
             func  getDictionaryForSide()
                 -> Part3DimensionDictionary {
-                    let allOccupantRelated =
-                        OccupantSideSupportDefaultDimension(
-                            parent.baseType
-                    )
+//                    let allOccupantRelated =
+//                        OccupantSideSupportDefaultDimension(
+//                            parent.baseType
+//                    )
+//
+                    
+                    let dimension =
+                    OccupantSideSupportDefaultDimension(
+                        parent.baseType).value
+                    let angle =
+                    OccupantBodySupportDefaultAngleChange(parent.baseType).value
+                    let rotatedDimension =
+                    ObjectCorners(
+                        dimensionIn: dimension,
+                        angleChangeIn:  angle
+                    ).rotatedDimension
                     
                    return
                         DimensionDictionary(
                             [.armSupport],
-                            [allOccupantRelated.value],
+                            [rotatedDimension],
                             parent.twinSitOnOption,
-                            parent.dimensionIn
+                            parent.preTiltDimensionIn
                         ).forPart
             }
         }
@@ -658,7 +684,7 @@ angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
                 -> Dimension3d {
                 let name =
                     CreateNameFromParts([.object, .id0, .stringLink, .sitOn, id]).name
-                let modifiedDimension: Dimension3d? = parent.dimensionIn[name]
+                let modifiedDimension: Dimension3d? = parent.preTiltDimensionIn[name]
                 return
                    modifiedDimension ?? bodySupportDefaultDimension
             }
@@ -670,14 +696,14 @@ angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
                     let footSupportInOnePieceState = parent.objectOptions[index][.footSupportInOnePiece] ?? false
                     let names: [String] =
                     [CreateNameFromParts([.footSupportHangerLink, .id0, .stringLink, .sitOn, id]).name]
-                    var modifiedDimensions: [Dimension3d?] = [parent.dimensionIn[names[0]]]
+                    var modifiedDimensions: [Dimension3d?] = [parent.preTiltDimensionIn[names[0]]]
                     
                     if footSupportInOnePieceState {
                         
                     } else {
                         let name =
                         CreateNameFromParts([.footSupportHangerLink, .id1, .stringLink, .sitOn, id]).name
-                        modifiedDimensions += [parent.dimensionIn[name]]
+                        modifiedDimensions += [parent.preTiltDimensionIn[name]]
                         
                     }
                 
@@ -1051,67 +1077,71 @@ angleChange: Measurement(value: angle, unit: UnitAngle.degrees)).maximumLength
             }
         }
     }
-    
-    
-    /// Provide all eight corner positions for part
-    struct ObjectCorners {
-        let dimensionIn: Dimension3d
-        let angleChange: Measurement<UnitAngle>
-        var are: [PositionAsIosAxes] {
-            calculateFrom(dimension: dimensionIn) }
-        var aferRotationAre: [PositionAsIosAxes] {
-            calculatePositionAfterRotation(are, angleChange)
-        }
-        var maximumLength: Double {
-            calculateMaximumLength(aferRotationAre)
-        }
-        
-    
-        func calculateFrom( dimension: Dimension3d)
-        -> [PositionAsIosAxes] {
-            let (l,w,h) = dimension
-            return
-                [
-                ZeroValue.iosLocation,
-                (x: w,      y: 0.0, z: 0.0 ),
-                (x: w,      y: l,   z: 0.0 ),
-                (x: 0.0,    y: l,   z: 0.0),
-                (x: 0.0,    y: 0.0, z: h),
-                (x: w,      y: 0.0, z: h),
-                (x: w,      y: l,   z: h ),
-                (x: 0.0,    y: l,   z: h )
-                ]
-        }
-        
-        func calculatePositionAfterRotation(
-            _ corners: [PositionAsIosAxes],
-            _ angleChange: Measurement<UnitAngle>)
-            -> [PositionAsIosAxes] {
-            var rotatedCorners: [PositionAsIosAxes] = []
-            
-            let useAnyIndexForRotation = 0
-            for corner in corners {
-                rotatedCorners.append(
-                    PositionOfPointAfterRotationAboutPoint(
-                        staticPoint: corners[useAnyIndexForRotation],
-                        movingPoint: corner,
-                        angleChange: angleChange).fromStaticToPointWhichHasMoved )
-            }
-print(rotatedCorners)
-            return rotatedCorners
-        }
-        
-        func calculateMaximumLength(
-            _ corners: [PositionAsIosAxes])
-            -> Double {
-            let yValues =
-                CreateIosPosition.getArrayFromPositions(corners).y
-            return
-                yValues.max()! - yValues.min()!
-        }
+}
+
+
+/// Provide all eight corner positions for part
+/// Rotate about x axis left to rigth on screen
+/// Provide maximum y length resulting from rotation
+struct ObjectCorners {
+    let dimensionIn: Dimension3d
+    let angleChangeIn: Measurement<UnitAngle>
+    var are: [PositionAsIosAxes] {
+        calculateFrom(dimension: dimensionIn) }
+    var aferRotationAre: [PositionAsIosAxes] {
+        calculatePositionAfterRotation(are, angleChangeIn)
+    }
+    var maximumLengthAfterRotationAboutX: Double {
+        calculateMaximumLength(aferRotationAre)
+    }
+    var rotatedDimension: Dimension3d {
+        (
+        length: maximumLengthAfterRotationAboutX,
+        width: dimensionIn.width,
+        height: dimensionIn.height)
     }
     
+
+    func calculateFrom( dimension: Dimension3d)
+    -> [PositionAsIosAxes] {
+        let (l,w,h) = dimension
+        return
+            [
+            ZeroValue.iosLocation,
+            (x: w,      y: 0.0, z: 0.0 ),
+            (x: w,      y: l,   z: 0.0 ),
+            (x: 0.0,    y: l,   z: 0.0),
+            (x: 0.0,    y: 0.0, z: h),
+            (x: w,      y: 0.0, z: h),
+            (x: w,      y: l,   z: h ),
+            (x: 0.0,    y: l,   z: h )
+            ]
+    }
     
+    func calculatePositionAfterRotation(
+        _ corners: [PositionAsIosAxes],
+        _ angleChange: Measurement<UnitAngle>)
+        -> [PositionAsIosAxes] {
+        var rotatedCorners: [PositionAsIosAxes] = []
+        
+        let useAnyIndexForRotation = 0
+        for corner in corners {
+            rotatedCorners.append(
+                PositionOfPointAfterRotationAboutPoint(
+                    staticPoint: corners[useAnyIndexForRotation],
+                    movingPoint: corner,
+                    angleChange: angleChange).fromStaticToPointWhichHasMoved )
+        }
+//print(rotatedCorners)
+        return rotatedCorners
+    }
     
-    
+    func calculateMaximumLength(
+        _ corners: [PositionAsIosAxes])
+        -> Double {
+        let yValues =
+            CreateIosPosition.getArrayFromPositions(corners).y
+        return
+            yValues.max()! - yValues.min()!
+    }
 }

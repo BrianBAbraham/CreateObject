@@ -53,20 +53,33 @@ struct AllOccupantBackRelated {
             .backSupport,
             .backSupportAngleJoint]
     
-        let dimensionsList =
+        let dimensionList =
             [
-                OccupantBackSupportAdditionalObjectDefaultDimension(baseType).value,
-                OccupantHeadSupportDefaultDimension(baseType).value,
-                OccupantHeadSupportLinkDefaultDimension(baseType).value,
-                OccupantHeadSupportJointDefaultDimension(baseType).value,
-                OccupantBackSupportAssistantHandlesDefaultDimension(baseType).value,
-                OccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
-                OccupantBackSupportJoystickDefaultDimension(baseType).value,
-                OccupantBackSupportDefaultDimension(baseType).value,
-                OccupantBackSupportAngleJointDefaultDimension(baseType).value
-                
-                ]
-        dimensions.append(contentsOf: dimensionsList)
+            OccupantBackSupportAdditionalObjectDefaultDimension(baseType).value,
+            OccupantHeadSupportDefaultDimension(baseType).value,
+            OccupantHeadSupportLinkDefaultDimension(baseType).value,
+            OccupantHeadSupportJointDefaultDimension(baseType).value,
+            OccupantBackSupportAssistantHandlesDefaultDimension(baseType).value,
+            OccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
+            OccupantBackSupportJoystickDefaultDimension(baseType).value,
+            OccupantBackSupportDefaultDimension(baseType).value,
+            OccupantBackSupportAngleJointDefaultDimension(baseType).value
+            ]
+        
+        var rotatedDimensionList: [Dimension3d] = []
+        let angle =
+            OccupantBackSupportDefaultAngleChange(baseType).value +
+            OccupantBodySupportDefaultAngleChange(baseType).value
+        
+        for dimension in dimensionList {
+            rotatedDimensionList.append(
+                ObjectCorners(
+                    dimensionIn: dimension,
+                    angleChangeIn:  angle
+                ).rotatedDimension
+            )
+        }
+        dimensions = rotatedDimensionList
     }
 }
 

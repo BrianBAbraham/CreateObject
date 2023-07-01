@@ -50,14 +50,27 @@ struct AllOccupantFootRelated {
              .footSupportInOnePiece
         ]
         
-        dimensions =
+        let dimensionList =
         [
-            OccupantFootSupportHangerJointDefaultDimension(baseType).value,
-            //OccupantFootSupportHangerLinkDefaultDimension(baseType).value,
-            OccupantFootSupportHorizontalJointDefaultDimension(baseType).value,
-            OccupantFootSupportDefaultDimension(baseType).value,
-            OccupantFootSupportInOnePieceDefaultDimension(baseType,modifiedPartDictionary).value
+        OccupantFootSupportHangerJointDefaultDimension(baseType).value,
+        OccupantFootSupportHorizontalJointDefaultDimension(baseType).value,
+        OccupantFootSupportDefaultDimension(baseType).value,
+        OccupantFootSupportInOnePieceDefaultDimension(baseType,modifiedPartDictionary).value
         ]
+            
+        var rotatedDimensionList: [Dimension3d] = []
+        let angle =
+            OccupantBodySupportDefaultAngleChange(baseType).value
+        
+        for dimension in dimensionList {
+            rotatedDimensionList.append(
+                ObjectCorners(
+                    dimensionIn: dimension,
+                    angleChangeIn:  angle
+                ).rotatedDimension
+            )
+        }
+        dimensions = rotatedDimensionList
     }
 }
 

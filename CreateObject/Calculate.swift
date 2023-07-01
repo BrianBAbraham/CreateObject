@@ -31,10 +31,10 @@ struct CircularMotionChange {
                 let angle1 = angle1.converted(to: .radians).value
                     var trigValue: Double
                     switch direction {
-                    case .yChange:
+                    case .zChange:
                         trigValue =
                             ( sin(angle0 + angle1) - sin(angle0) )
-                    case .zChange:
+                    case .yChange:
                         trigValue =
                             ( cos(angle0 + angle1) - cos(angle0) )
                     }
