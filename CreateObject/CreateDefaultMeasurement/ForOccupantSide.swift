@@ -8,33 +8,7 @@
 //import Foundation
 //
 
-//struct RequestOccupantSideSupportDefaultDimensionDictionary {
-//    var dictionary: Part3DimensionDictionary = [:]
-//    let modifiedPartDictionary: Part3DimensionDictionary
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptionDictionary,
-//        _ modifiedPartDictionary: Part3DimensionDictionary
-//        ) {
-//        self.modifiedPartDictionary = modifiedPartDictionary
-//        getDictionary()
-//        
-//        func getDictionary() {
-//                
-//            let allOccupantRelated =
-//            OccupantSideSupportDefaultDimension(
-//                baseType
-//            )
-//            
-//            dictionary =
-//                DimensionDictionary(
-//                    [.armSupport],
-//                    [allOccupantRelated.value],
-//                    twinSitOnOptions
-//                ).forPart
-//        }
-//    }
-//}
+
 
 
 
@@ -42,11 +16,12 @@ struct PreTiltOccupantSideSupportDefaultDimension {
     
     var dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher:
-        (length: PreTiltOccupantBackSupportDefaultDimension(.allCasterStretcher).value.length
-         , width: 20.0, height: 20.0),
+        (width: 20.0, length: PreTiltOccupantBackSupportDefaultDimension(.allCasterStretcher).value.length, height: 20.0),
+
      .allCasterBed:
-        (length: PreTiltOccupantBackSupportDefaultDimension(.allCasterBed).value.length
-         , width: 20.0, height: 20.0)
+        (width: 20.0,
+         length: PreTiltOccupantBackSupportDefaultDimension(.allCasterBed).value.length
+         , height: 20.0)
         ]
     
     let value: Dimension3d
@@ -61,9 +36,10 @@ struct PreTiltOccupantSideSupportDefaultDimension {
             
             //self.modifiedPartDictionary = modifiedPartDictionary
             general =
-            (length: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive//, modifiedPartDictionary
+            (            width: 40.0,
+                length: OccupantBodySupportDefaultDimension(.fixedWheelRearDrive//, modifiedPartDictionary
                                                         ).value.length,
-            width: 40.0,
+
              height: 30.0)
         
             value =

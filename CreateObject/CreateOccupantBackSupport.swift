@@ -202,7 +202,7 @@ struct CreateOccupantBackSupport {
        let backSupportJointDictionary =
             CreateOnePartOrSideSymmetricParts(
                 Joint.dimension,
-                .backSupportAngleJoint,
+                .backSupporRotationJoint,
                 parentFromPrimaryOrigin[supportIndex],
                 measurementFor.backSupportJointFromParentOrigin,
                 supportIndex)

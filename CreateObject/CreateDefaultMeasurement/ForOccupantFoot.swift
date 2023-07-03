@@ -9,32 +9,7 @@ import Foundation
 
 
 
-//struct RequestOccupantFootSupportDefaultDimensionDictionary {
-//    var dictionary: Part3DimensionDictionary = [:]
-//    
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptionDictionary,
-//        _ modifiedPartDictionary: Part3DimensionDictionary
-//        ) {
-//            
-//        getDictionary()
-//        
-//        func getDictionary() {
-//                
-//            let allOccupantRelated =
-//                AllOccupantFootRelated(
-//                    baseType,
-//                    modifiedPartDictionary)
-//            dictionary =
-//                DimensionDictionary(
-//                    allOccupantRelated.parts,
-//                    allOccupantRelated.dimensions,
-//                    twinSitOnOptions
-//                ).forPart
-//        }
-//    }
-//}
+
 
 struct AllOccupantFootRelated {
     let parts: [Part]
@@ -90,7 +65,7 @@ struct OccupantFootSupportHangerJointDefaultDimension {
 
 struct OccupantFootSupportHangerLinkDefaultDimension {
     let dictionary: BaseObject3DimensionDictionary = [:]
-    static let general = (length: 200.0, width: 20.0, height: 20.0)
+    static let general = (width: 20.0, length: 200.0, height: 20.0)
     let value: Dimension3d
     init(
         _ baseType: BaseObjectTypes) {
@@ -109,8 +84,9 @@ struct OccupantFootSupportHorizontalJointDefaultDimension {
     init(_ baseType: BaseObjectTypes) {
         
         general =
-        (length: OccupantFootSupportDefaultDimension.general.length,
-         width: Joint.dimension.width,
+        (         width: Joint.dimension.width,
+            length: OccupantFootSupportDefaultDimension.general.length,
+
          height: Joint.dimension.width)
         
         value = dictionary[baseType] ?? general
@@ -122,8 +98,9 @@ struct OccupantFootSupportInOnePieceDefaultDimension {
     [ :
         ]
     static let general =
-        (length: 100.0,
+        (
          width: OccupantBodySupportDefaultDimension.general.width,
+         length: 100.0,
          height: 10.0)
     let value: Dimension3d
     
@@ -138,9 +115,9 @@ struct OccupantFootSupportInOnePieceDefaultDimension {
 
 struct OccupantFootSupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
-    [.showerTray: (length: 1200.0, width: 900.0, height: 0.0),
+    [.showerTray: (width: 900.0, length: 1200.0, height: 0.0),
         ]
-    static let general = (length: 100.0, width: 150.0, height: 10.0)
+    static let general = (width: 150.0, length: 100.0, height: 10.0)
     let value: Dimension3d
     
     init(

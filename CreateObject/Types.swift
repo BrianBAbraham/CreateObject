@@ -34,7 +34,7 @@ typealias BaseObjectOriginDictionary = [BaseObjectTypes: PositionAsIosAxes]
 typealias OriginDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (length: Double, width: Double)
-typealias Dimension3d = (length: Double, width: Double, height: Double)
+typealias Dimension3d = (width: Double, length: Double,  height: Double)
 
 
 //typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)

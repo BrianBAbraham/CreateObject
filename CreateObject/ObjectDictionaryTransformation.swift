@@ -340,9 +340,9 @@ struct OriginStringInDictionaryOut {
 
              func stringToPositionAsIosAxes(_ name: [String]) -> PositionAsIosAxes {    //CHANGE
                  return
-                 (x: (name[0] as NSString).doubleValue,
-                 y: (name[1] as NSString).doubleValue,
-                 z:(name[2] as NSString).doubleValue)
+                     (x: (name[0] as NSString).doubleValue,
+                     y: (name[1] as NSString).doubleValue,
+                     z:(name[2] as NSString).doubleValue)
                    //  (x: 0.0, y:0.0, z:0.0)
              }
 

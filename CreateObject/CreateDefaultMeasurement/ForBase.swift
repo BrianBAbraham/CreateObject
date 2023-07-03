@@ -7,31 +7,7 @@
 
 import Foundation
 
-//struct RequestBaseDefaultDimensionDictionary {
-//    var dictionary: Part3DimensionDictionary = [:]
-//    
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptionDictionary
-//    ) {
-//        getDictionary()
-//
-//        func getDictionary() {
-//           
-//         let allOccupantBackRelated =
-//                AllOccupantBackRelated(
-//                    baseType
-//                )
-//                
-//            dictionary =
-//                DimensionDictionary(
-//                    allOccupantBackRelated.parts,
-//                    allOccupantBackRelated.dimensions,
-//                    twinSitOnOptions
-//                ).forPart
-//        }
-//    }
-//}
+
 
 struct AllBaseRelated {
     let parts: [Part]

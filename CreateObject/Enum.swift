@@ -19,15 +19,15 @@ enum Part: String {
     case armVerticalJoint = "armVerticalJoint"
     
     case backSupport = "backSupport"
-    case backSupportAdditionalObject = "backSupportAdditionalObject"
+    case backSupportAdditionalPart = "backSupportAdditionalPart"
     case backSupportAssistantHandle = "backSupportRearHandle"
     case backSupportAssistantHandleInOnePiece = "backSupportRearHandleInOnePiece"
     case backSupportAssistantJoystick = "backSupportJoyStick"
-    case backSupportAngleJoint = "backSupportAngleJoint"
+    case backSupporRotationJoint = "backSupportAngleJoint"
     case backSupportHeadSupport = "backSupportHeadSupport"
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
-    case backSupportHeadLinkJoint = "backSupportHeadSupportLinkHorizontalJoint"
+    case backSupportHeadLinkRotationJoint = "backSupportHeadSupportLinkHorizontalJoint"
     case backSupportReclineAngle = "backSupportReclineAngle"
     
     
@@ -99,7 +99,7 @@ enum Part: String {
     case standOnSupport = "standOn"
     case stringLink = "_"
     case bodySupportAngle = "tiltAngle"
-    case bodySupportAngleJoint = "tiltInSpaceHorizontalJoint" 
+    case bodySupportRotationJoint = "tiltInSpaceHorizontalJoint" 
     case topToBottomDimension = "yIos"
     case width = "Width"
 }
@@ -180,7 +180,7 @@ struct PartGroupsFor {
         .joyStickForOccupant,
         .lieOnSupport,
         .sleepOnSupport,
-        .backSupportAngleJoint,
+        .backSupporRotationJoint,
         .footSupportHangerSitOnVerticalJoint
         ]
     
@@ -195,7 +195,7 @@ struct PartGroupsFor {
         [
         .backSupport,
         .backSupportAssistantJoystick,
-        .backSupportAdditionalObject,
+        .backSupportAdditionalPart,
         .backSupportAssistantHandle,
         .backSupportHeadSupportJoint
         ]
@@ -203,7 +203,7 @@ struct PartGroupsFor {
         [
         .backSupportHeadSupport,
         .backSupportHeadSupportLink,
-        .backSupportHeadLinkJoint
+        .backSupportHeadLinkRotationJoint
         ]
     let leftAndRight: [Part] =
         [

@@ -8,43 +8,16 @@
 import Foundation
 
 
-//struct RequestOccupantBodySupportDefaultDimensionDictionary {
-//    var dictionary: Part3DimensionDictionary = [:]
-//
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptionDictionary,
-//        _ modifiedPartDictionary: Part3DimensionDictionary
-//        ) {
-//
-//        getDictionary()
-//            func getDictionary() {
-//                let dimension =
-//                    OccupantBodySupportDefaultDimension(
-//                        baseType).value
-//                let dimensions =
-//                TwinSitOn(twinSitOnOptions).state ? [dimension, dimension]: [dimension]
-//                let parts: [Part] =
-//                TwinSitOn(twinSitOnOptions).state ? [.sitOn, .sitOn]: [.sitOn]
-//
-//                dictionary =
-//                    DimensionDictionary(
-//                        parts,
-//                        dimensions,
-//                        twinSitOnOptions
-//                    ).forPart
-//            }
-//        }
-//}
+
 
 
 struct OccupantBodySupportDefaultDimension {
     let dictionary: BaseObject3DimensionDictionary =
-    [.allCasterStretcher: (length: 1200.0, width: 600.0, height: 10.0),
-     .allCasterBed: (length: 2000.0, width: 900.0, height: 150.0),
-     .allCasterHoist: (length: 0.0, width: 0.0, height: 0.0)
+    [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
+     .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
+     .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
         ]
-    static let general = (length: 500.0, width: 400.0, height: 50.0)
+    static let general = (width: 400.0, length: 500.0, height: 50.0)
     let value: Dimension3d
     
     init(

@@ -8,34 +8,7 @@
 import Foundation
 
 
-//struct RequestOccupantBackSupportDefaultDimensionDictionary {
-//    var dictionary: Part3DimensionDictionary = [:]
-//
-//    init(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptionDictionary
-//    ) {
-//        getDictionary()
-//
-//        func getDictionary() {
-//
-//         let allOccupantBackRelated =
-//                AllOccupantBackRelated(
-//                    baseType
-//                )
-//
-//            dictionary =
-//                DimensionDictionary(
-//                    allOccupantBackRelated.parts,
-//                    allOccupantBackRelated.dimensions,
-//                    twinSitOnOptions
-//                ).forPart
-//        }
-//    }
-//}
-// use touple? (part: Part, dimension: Dimension3d)
-// avoids errors of assignment
-// pass touple wiithout nameEnd and allow create to add 
+
 
 struct AllOccupantBackRelated {
     var parts: [Part] = []
@@ -43,15 +16,15 @@ struct AllOccupantBackRelated {
     init(_ baseType: BaseObjectTypes
     ) {
          parts =
-            [.backSupportAdditionalObject,
+            [.backSupportAdditionalPart,
             .backSupportHeadSupport,
             .backSupportHeadSupportLink,
-            .backSupportHeadLinkJoint,
+            .backSupportHeadLinkRotationJoint,
             .backSupportAssistantHandle,
             .backSupportAssistantHandleInOnePiece,
             .backSupportAssistantJoystick,
             .backSupport,
-            .backSupportAngleJoint]
+            .backSupporRotationJoint]
     
         let dimensionList =
             [
@@ -88,9 +61,9 @@ struct PreTiltOccupantBackSupportAdditionalObjectDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
-        (length: 100.0,
-         width: OccupantBodySupportDefaultDimension.general.width,
-         height: 100.0)
+        (width: OccupantBodySupportDefaultDimension.general.width,
+        length: 100.0,
+        height: 100.0)
     let value: Dimension3d
     
     init(
@@ -108,9 +81,9 @@ struct PreTiltOccupantHeadSupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
-        (length: 100.0,
-         width: 100.0,
-         height: 100.0)
+        (width: 100.0,
+        length: 100.0,
+        height: 100.0)
     let value: Dimension3d
     
     init(
@@ -128,8 +101,8 @@ struct PreTiltOccupantHeadSupportLinkDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
-        (length: 20.0,
-         width: 20.0,
+        (width: 20.0,
+         length: 20.0,
          height: 100.0)
     let value: Dimension3d
     
@@ -160,8 +133,8 @@ struct PreTiltOccupantBackSupportJoystickDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
-        (length: 100.0,
-         width: 100.0,
+        (width: 100.0,
+         length: 100.0,
          height: 100.0)
     let value: Dimension3d
     
@@ -180,8 +153,8 @@ struct PreTiltOccupantBackSupportAssistantHandlesDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
-        (length: 100.0,
-         width: 30.0,
+        (    width: 30.0,
+             length: 100.0,
          height: 30.0)
     let value: Dimension3d
     
@@ -200,8 +173,9 @@ struct PreTiltOccupantBackSupportAssistantHandlesInOnePieceDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
-        (length: 100.0,
+        (
          width: OccupantBodySupportDefaultDimension.general.width,
+         length: 100.0,
          height: 30.0)
     let value: Dimension3d
     
@@ -220,8 +194,9 @@ struct PreTiltOccupantBackSupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
-        (length: 10.0,
+        (
          width: OccupantBodySupportDefaultDimension.general.width,
+         length: 10.0,
          height: 500.0)
     let value: Dimension3d
     
