@@ -155,7 +155,7 @@ struct OccupantFootSupportDefaultDimension {
 
 
 //MARK: ORIGIN
-struct SitOnToHangerVerticalJointDefaultOrigin {
+struct PreTiltSitOnToHangerVerticalJointDefaultOrigin {
     static let jointBelowSeat = -50.0
     let dictionary: OriginDictionary =
         [:]
@@ -172,7 +172,7 @@ struct SitOnToHangerVerticalJointDefaultOrigin {
 }
 
 
-struct HangerVerticalJointToFootSupportJointDefaultOrigin {
+struct PreTiltHangerVerticalJointToFootSupportJointDefaultOrigin {
     static let footSupportHeightAboveFloor = 100.0
     let dictionary: OriginDictionary =
         [:]
@@ -181,7 +181,7 @@ struct HangerVerticalJointToFootSupportJointDefaultOrigin {
          y: OccupantFootSupportHangerLinkDefaultDimension.general.length,
          z: -(ObjectDefaultOrEditedDictionaries.sitOnHeight -
              Self.footSupportHeightAboveFloor +
-             SitOnToHangerVerticalJointDefaultOrigin.jointBelowSeat) )
+             PreTiltSitOnToHangerVerticalJointDefaultOrigin.jointBelowSeat) )
 
     let value: PositionAsIosAxes
 
@@ -191,7 +191,7 @@ struct HangerVerticalJointToFootSupportJointDefaultOrigin {
 }
 
 
-struct FootSupportJointToFootSupportInTwoPieceDefaultOrigin {
+struct PreTiltFootSupportJointToFootSupportInTwoPieceDefaultOrigin {
     
     let dictionary: OriginDictionary =
         [:]
@@ -209,7 +209,7 @@ struct FootSupportJointToFootSupportInTwoPieceDefaultOrigin {
     }
 }
 
-struct FootSupportJointToFootSupportInOnePieceDefaultOrigin {
+struct PreTiltFootSupportJointToFootSupportInOnePieceDefaultOrigin {
 
     let dictionary: OriginDictionary =
         [:]

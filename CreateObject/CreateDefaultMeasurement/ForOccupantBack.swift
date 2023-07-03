@@ -55,15 +55,15 @@ struct AllOccupantBackRelated {
     
         let dimensionList =
             [
-            OccupantBackSupportAdditionalObjectDefaultDimension(baseType).value,
-            OccupantHeadSupportDefaultDimension(baseType).value,
-            OccupantHeadSupportLinkDefaultDimension(baseType).value,
-            OccupantHeadSupportJointDefaultDimension(baseType).value,
-            OccupantBackSupportAssistantHandlesDefaultDimension(baseType).value,
-            OccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
-            OccupantBackSupportJoystickDefaultDimension(baseType).value,
-            OccupantBackSupportDefaultDimension(baseType).value,
-            OccupantBackSupportAngleJointDefaultDimension(baseType).value
+            PreTiltOccupantBackSupportAdditionalObjectDefaultDimension(baseType).value,
+            PreTiltOccupantHeadSupportDefaultDimension(baseType).value,
+            PreTiltOccupantHeadSupportLinkDefaultDimension(baseType).value,
+            PreTiltOccupantHeadSupportJointDefaultDimension(baseType).value,
+            PreTiltOccupantBackSupportAssistantHandlesDefaultDimension(baseType).value,
+            PreTiltOccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
+            PreTiltOccupantBackSupportJoystickDefaultDimension(baseType).value,
+            PreTiltOccupantBackSupportDefaultDimension(baseType).value,
+            PreTiltOccupantBackSupportAngleJointDefaultDimension(baseType).value
             ]
         
         var rotatedDimensionList: [Dimension3d] = []
@@ -84,7 +84,7 @@ struct AllOccupantBackRelated {
 }
 
 //MARK: DIMENSION
-struct OccupantBackSupportAdditionalObjectDefaultDimension {
+struct PreTiltOccupantBackSupportAdditionalObjectDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -104,7 +104,7 @@ struct OccupantBackSupportAdditionalObjectDefaultDimension {
     }
 }
 
-struct OccupantHeadSupportDefaultDimension {
+struct PreTiltOccupantHeadSupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -124,7 +124,7 @@ struct OccupantHeadSupportDefaultDimension {
     }
 }
 
-struct OccupantHeadSupportLinkDefaultDimension {
+struct PreTiltOccupantHeadSupportLinkDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -144,7 +144,7 @@ struct OccupantHeadSupportLinkDefaultDimension {
     }
 }
 
-struct OccupantHeadSupportJointDefaultDimension {
+struct PreTiltOccupantHeadSupportJointDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -156,7 +156,7 @@ struct OccupantHeadSupportJointDefaultDimension {
     }
 }
 
-struct OccupantBackSupportJoystickDefaultDimension {
+struct PreTiltOccupantBackSupportJoystickDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -176,7 +176,7 @@ struct OccupantBackSupportJoystickDefaultDimension {
     }
 }
 
-struct OccupantBackSupportAssistantHandlesDefaultDimension {
+struct PreTiltOccupantBackSupportAssistantHandlesDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -196,7 +196,7 @@ struct OccupantBackSupportAssistantHandlesDefaultDimension {
     }
 }
 
-struct OccupantBackSupportAssistantHandlesInOnePieceDefaultDimension {
+struct PreTiltOccupantBackSupportAssistantHandlesInOnePieceDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -216,7 +216,7 @@ struct OccupantBackSupportAssistantHandlesInOnePieceDefaultDimension {
     }
 }
 
-struct OccupantBackSupportDefaultDimension {
+struct PreTiltOccupantBackSupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -236,7 +236,7 @@ struct OccupantBackSupportDefaultDimension {
     }
 }
 
-struct OccupantBackSupportAngleJointDefaultDimension {
+struct PreTiltOccupantBackSupportAngleJointDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [:]
     static let general =
@@ -285,7 +285,7 @@ struct OccupantBackSupportHeadLinkDefaultParentToRotationOrigin {
         let general =
             (x: 0.0,
              y: 0.0,
-             z: OccupantBackSupportDefaultDimension(baseType).value.length/2)
+             z: PreTiltOccupantBackSupportDefaultDimension(baseType).value.length/2)
         
       value = dictionary[baseType] ?? general
     }

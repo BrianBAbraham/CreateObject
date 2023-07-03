@@ -38,14 +38,14 @@
 
 
 
-struct OccupantSideSupportDefaultDimension {
+struct PreTiltOccupantSideSupportDefaultDimension {
     
     var dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher:
-        (length: OccupantBackSupportDefaultDimension(.allCasterStretcher).value.length
+        (length: PreTiltOccupantBackSupportDefaultDimension(.allCasterStretcher).value.length
          , width: 20.0, height: 20.0),
      .allCasterBed:
-        (length: OccupantBackSupportDefaultDimension(.allCasterBed).value.length
+        (length: PreTiltOccupantBackSupportDefaultDimension(.allCasterBed).value.length
          , width: 20.0, height: 20.0)
         ]
     
