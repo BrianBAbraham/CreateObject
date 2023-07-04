@@ -10,6 +10,6 @@ import Foundation
 struct Joint {
     static let dimension = (length: 20.0, width: 20.0)
     static let dimension3d
-        = (length: 20.0, width: 20.0, height: 20.0)
+        = (width: 20.0, length: 20.0, height: 20.0)
 }
 

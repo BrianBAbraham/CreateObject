@@ -47,7 +47,7 @@ struct OccupantBodySupportAngleJointDefaultDimension {
     }
 }
 
-struct OccupantBodySupportDefaultParentToRotationOrigin {
+struct PreTiltSitOnToRotationJointDefaultOrigin {
     let dictionary: BaseObjectOriginDictionary = [:]
     
     static let general = (x: 0.0, y: 0.0, z: -100.0)

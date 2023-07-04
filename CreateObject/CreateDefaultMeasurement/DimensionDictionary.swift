@@ -132,8 +132,16 @@ struct ObjectDefaultOrEditedDictionaries {
 //        PositionOfPointAfterRotationAboutPoint(staticPoint: ZeroValue.iosLocation, movingPoint: (x: 0.0, y: 1000.0, z: 0.0), angleChange: Measurement(value: 90.0, unit: UnitAngle.degrees)).fromStaticToPointWhichHasMoved
 //
 //    )
+            angleChangeDefault =
+                ObjectAngleChange(parent: self).dictionary
             
-            
+            //replace the part origin positions which are rotated with the rotated values
+            postTiltObjectToPartOrigin =
+                Replace(
+                    initial: postTiltObjectToPartOrigin,
+                    replacement:
+                            OriginPostTilt(parent: self).forObjectToPartOrigin
+                    ).intialWithReplacements
             
         // Rotations are applied
         func createOccupantSupportPostTiltDimensionDictionary() {
@@ -145,45 +153,38 @@ struct ObjectDefaultOrEditedDictionaries {
             postTiltDimension += occupantSupportDimensionDictionary.forSide
         }
             
-       // Rotations are applied
+  
         func createOccupantSupportObjectToPartOriginDictionary() {
             preTiltParentToPartOriginOut +=
-            PreTiltOccupantBodySupportOrigin(parent: self).parentToPartDictionaryOut
+                PreTiltOccupantBodySupportOrigin(parent: self).parentToPartDictionaryOut
 
             // parent to body support is identical to object to body support
             preTiltObjectToPartOrigin += preTiltParentToPartOriginOut
                 
             let occupantFootSupportOrigin =
                 PreTiltOccupantFootSupportOrigin(parent: self)
-            preTiltParentToPartOriginOut +=
-                occupantFootSupportOrigin.parentToPart
+            
+//            preTiltParentToPartOriginOut +=
+//                occupantFootSupportOrigin.parentToPart
+            
             preTiltObjectToPartOrigin +=
                 occupantFootSupportOrigin.objectToPart
             
-            angleChangeDefault =
-                ObjectAngleChange(parent: self).dictionary
-
-            
-            postTiltObjectToPartOrigin +=
+            preTiltObjectToPartOrigin +=
                 OccupantSupportRotationJointOriginDictionary(parent: self, .bodySupportRotationJoint).objectToPartOut
      
-            postTiltObjectToPartOrigin +=
+            preTiltObjectToPartOrigin +=
                 OccupantSupportRotationJointOriginDictionary(parent: self, .backSupporRotationJoint).objectToPartOut
+
+DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
             
-            
-            //replace the part origin positions which are rotated with the rotated values
-            postTiltObjectToPartOrigin =
-                Replace(
-                    initial: postTiltObjectToPartOrigin,
-                    replacement:
-                            OriginPostTilt(parent: self).forObjectToPartOrigin
-                    ).intialWithReplacements
+ 
         }
     }
     
     
     
-    //MARK: TILT ORIGIN
+    //MARK: ORIGIN POST TILT
     struct OriginPostTilt {
         var forObjectToPartOrigin: PositionDictionary = [:]
         var forDimension: Part3DimensionDictionary = [:]
@@ -706,15 +707,17 @@ struct ObjectDefaultOrEditedDictionaries {
         }
     }
     
-    //MARK: TILT ORIGIN
+    //MARK: TILT ORIGIN PRE-TILT
 
-    
-    /// Provides a dictionary of object orientatiion view
-    /// of joint origins post tilt
-    /// about which parts are rotated
+    /// Provides dictionary
+    /// in object-view orientatiion
+    /// of origins of joint about which parts are rotated
+    ///
     /// as these are object-view orientation
     /// the positiion from obeject  changes
     /// as the sitIOn tilts for all but the tilt origin for sitOn
+    ///
+    /// some of these joints, for example, back joint is subject to sitOn tilt
     struct OccupantSupportRotationJointOriginDictionary {
         var objectToPartOut: PositionDictionary = [:]
         let angleJoint: Part
@@ -736,21 +739,19 @@ struct ObjectDefaultOrEditedDictionaries {
                 
                 let sitOnOriginName =
                     CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
-                let occupantBodySupportOrigin =
-                    parent.postTiltObjectToPartOrigin[sitOnOriginName]!
+                let occupantBodySupportPreTiltOrigin =
+                    parent.preTiltObjectToPartOrigin[sitOnOriginName]!
                 
                 switch angleJoint {
-                   
                     case .backSupporRotationJoint:
                         objectToRotationJointWhichHasSitOnParentCalculatedAndAddedToDictionary (
                             .backSupporRotationJoint,
-                            OccupantBackSupportDefaultParentToRotationOrigin(parent.baseType).value)
-                    
+                            PreTiltSitOnToBackSupportRotationJointDefaultOrigin(parent.baseType).value)
                     
                     case .bodySupportRotationJoint:
                         objectToRotationJointWhichHasSitOnParentCalculatedAndAddedToDictionary (
                             .bodySupportRotationJoint,
-                            OccupantBodySupportDefaultParentToRotationOrigin(parent.baseType).value
+                            PreTiltSitOnToRotationJointDefaultOrigin(parent.baseType).value
                         )
                     
 //                    case .backSupportHeadLinkRotationJoint:
@@ -759,7 +760,7 @@ struct ObjectDefaultOrEditedDictionaries {
 //
 //                        parentToRotationOrigin =
 //                            parent.parentToPartOriginIn[parentToRotationOriginName] ??
-//                            OccupantBodySupportDefaultParentToRotationOrigin(parent.baseType).value
+//                            PreTiltSitOnToRotationJointDefaultOrigin(parent.baseType).value
                         
                     default: break
                 }
@@ -775,10 +776,11 @@ struct ObjectDefaultOrEditedDictionaries {
                         defaultPosition
                     let objectToRotationOrigin =
                         CreateIosPosition.addTwoTouples(
-                        occupantBodySupportOrigin,
+                        occupantBodySupportPreTiltOrigin,
                         parentToRotationOrigin)
                     let objectToRotationOriginName =
                         createNameForObjectToRotationJoint(.sitOn, .bodySupportRotationJoint)
+                        
                     objectToPartOut += [objectToRotationOriginName: objectToRotationOrigin]
                 }
                 
@@ -917,7 +919,112 @@ struct ObjectDefaultOrEditedDictionaries {
             }
         }
     }
+    
+    
+    // MARK: BACK ORIGIN
+    struct PreTiltOccupantBackSupportOrigin {
+        var parentToPart: PositionDictionary = [:]
+        var objectToPart: PositionDictionary = [:]
+       
+        init(
+            parent: ObjectDefaultOrEditedDictionaries) {
+            
+            getDictionary()
+
+            func getDictionary() {
+               
+                let sitOnIds = parent.oneOrTwoIds
+                var parentChildPositions: [PositionAsIosAxes]
+                
+                for sitOnIndex in 0..<sitOnIds.count {
+                    
+                    let sitOnId = sitOnIds[sitOnIndex]
+                    let onlyOneBackSupportId: Part = .id0
+                    let headSupportState =
+                    parent.objectOptions[sitOnIndex][.headSupport] ?? false
+                    
+    
+                        parentChildPositions = []
+                        
+                        parentChildPositions.append(
+                            GetValueFromDictionary(
+                                parent.preTiltParentToPartOriginOut,
+                                [.object, .id0, .stringLink,.sitOn, sitOnId]).value )
+                        
+                        addToDictionary([
+                            .sitOn,
+                            sitOnId,
+                            .stringLink,
+                            .footSupportHangerSitOnVerticalJoint,
+                            onlyOneBackSupportId],
+                            PreTiltSitOnToHangerVerticalJointDefaultOrigin(parent.baseType).value)
+                        
+                        addToDictionary([
+                            .footSupportHangerSitOnVerticalJoint,
+                            sitOnId,
+                            .stringLink,
+                            .footSupportHorizontalJoint,
+                            onlyOneBackSupportId],
+                            PreTiltHangerVerticalJointToFootSupportJointDefaultOrigin(parent.baseType).value)
+                        
+                        
+                        if headSupportState {
+
+                            addToDictionary([
+                                .footSupportHangerLink,
+                                sitOnId,
+                                .stringLink,
+                                .footSupportHorizontalJoint,
+                                onlyOneBackSupportId],
+                                PreTiltFootSupportJointToFootSupportInOnePieceDefaultOrigin(parent.baseType).value)
+                        }
+                        
+
+                    
+                    func addToDictionary(
+                        _ parts: [Part],
+                        _ defaultParentToPartOriginPosition: PositionAsIosAxes){
+                            
+                        let name =
+                            CreateNameFromParts(
+                            parts).name
+
+//                        let defaultPositions =
+//                            CreateIosPosition.forLeftRightAsArrayFromPosition(
+//                            defaultParentToPartOriginPosition)
+
+                        let positionOut =
+                            parent.preTiltObjectToPartOriginIn[name] ??
+                            defaultParentToPartOriginPosition
+
+                        self.parentToPart += [name : positionOut]
+                        
+                        parentChildPositions.append(positionOut)
+                            
+                        let objectName =
+                                CreateNameFromParts(
+                                    [.object, .id0] +
+                                    Array(parts[2...3] + [.id0, .stringLink, .sitOn, sitOnId])).name
+                            
+                        self.objectToPart +=
+                            [objectName: CreateIosPosition.addArrayOfTouples(parentChildPositions)]
+                            
+                    }
+                }
+            }
+        }
+    }
+    
+    // OccupantBodySupport Default ParentToRotation Origin
+    // PreTilt SitOnToHangerVerticalJoint Default Origin
+    
 }
+
+
+
+
+
+
 
 //MARK: CORNERS
 /// Provide all eight corner positions for part
