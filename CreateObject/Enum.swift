@@ -97,6 +97,9 @@ enum Part: String {
     case sitOn = "sitOn"
     case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"
+    
+    case sideSupport = "sideSupport"
+    case sideSupportRotationJoint = "sideSupportRotatationJoint"
     case stringLink = "_"
     case bodySupportAngle = "tiltAngle"
     case bodySupportRotationJoint = "tiltInSpaceHorizontalJoint" 

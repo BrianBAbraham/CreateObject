@@ -99,7 +99,7 @@ struct OccupantFootSupportInOnePieceDefaultDimension {
         ]
     static let general =
         (
-         width: OccupantBodySupportDefaultDimension.general.width,
+         width: PreTiltOccupantBodySupportDefaultDimension.general.width,
          length: 100.0,
          height: 10.0)
     let value: Dimension3d
@@ -137,8 +137,8 @@ struct PreTiltSitOnToHangerVerticalJointDefaultOrigin {
     let dictionary: OriginDictionary =
         [:]
     let general =
-        (x: OccupantBodySupportDefaultDimension.general.width/2 * 0.95,
-         y: OccupantBodySupportDefaultDimension.general.length/2 * 0.95,
+        (x: PreTiltOccupantBodySupportDefaultDimension.general.width/2 * 0.95,
+         y: PreTiltOccupantBodySupportDefaultDimension.general.length/2 * 0.95,
          z: jointBelowSeat)
     
     let value: PositionAsIosAxes
@@ -195,7 +195,7 @@ struct PreTiltFootSupportJointToFootSupportInOnePieceDefaultOrigin {
     
     init(_ baseType: BaseObjectTypes) {
     general =
-        (x: -OccupantBodySupportDefaultDimension(baseType).value.width/2,
+        (x: -PreTiltOccupantBodySupportDefaultDimension(baseType).value.width/2,
          y: 0.0,
          z: 0.0 )
         

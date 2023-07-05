@@ -11,7 +11,7 @@ import Foundation
 
 
 
-struct OccupantBodySupportDefaultDimension {
+struct PreTiltOccupantBodySupportDefaultDimension {
     let dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
      .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
@@ -34,8 +34,9 @@ struct OccupantBodySupportAngleJointDefaultDimension {
     [:
         ]
    static let general =
-        (length: Joint.dimension.length,
-         width: OccupantBodySupportDefaultDimension.general.width * 1.5,
+        (
+         width: PreTiltOccupantBodySupportDefaultDimension.general.width * 1.5,
+         length: Joint.dimension.length,
          height: Joint.dimension.length)
     let value: Dimension3d
     
@@ -46,6 +47,33 @@ struct OccupantBodySupportAngleJointDefaultDimension {
                 Self.general
     }
 }
+
+
+// tilt as in tilted/rotated/angled
+// origins are described from the parent origin
+// and the object-orientation not the parent orientation
+
+struct PreTiltOccupantBodySupportDefaultOrigin {
+    let baseType: BaseObjectTypes
+  
+    
+    init ( _ baseType: BaseObjectTypes) {
+        self.baseType = baseType
+        }
+    
+  func getBodySupportToBodySupportRotationJoint()
+    -> PositionAsIosAxes {
+        let dictionary: OriginDictionary = [:]
+        let general = (x: 0.0, y: 0.0, z: -100.0)
+           
+        return
+            dictionary[baseType] ?? general
+    }
+    
+}
+
+
+
 
 struct PreTiltSitOnToRotationJointDefaultOrigin {
     let dictionary: BaseObjectOriginDictionary = [:]
