@@ -60,7 +60,7 @@ struct ObjectDefaultOrEditedDictionaries {
     let preTiltDimensionIn: Part3DimensionDictionary
     var postTiltDimension: Part3DimensionDictionary = [:]
     
-    var preTiltParentToPartOriginOut: PositionDictionary = [:]
+    var preTiltParentToPartOrigin: PositionDictionary = [:]
     
     var preTiltObjectToPartOrigin: PositionDictionary = [:]
     var postTiltObjectToPartOrigin: PositionDictionary = [:]
@@ -168,6 +168,15 @@ struct ObjectDefaultOrEditedDictionaries {
                     element.objectToPartDictionary
             }
            
+            
+            
+            func creatPostTiltObjectToPartOriginDictionary() {
+                
+            }
+            
+            func createCornerDictionary(){
+                
+            }
 
 
 DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
@@ -345,6 +354,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
         }
     }
     
+    
     //retrieves a passed value if extant else a default value
     struct OccupantSupportPostTiltDimensionDictionary {
         var forBack:  Part3DimensionDictionary = [:]
@@ -465,7 +475,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
 
         var occupantBodySupportsDimension: [Dimension3d] = []
         var occupantFootSupportHangerLinksDimension: [Dimension3d] = []
-        let distanceBetweenFrontAndRearWheels: DistanceBetweenFrontAndRearWheels2
+        let distanceBetweenFrontAndRearWheels: DistanceBetweenFrontAndRearWheels
         
         init(
             parent: ObjectDefaultOrEditedDictionaries) {
@@ -488,7 +498,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                 (parent.twinSitOnState ? [getModifiedMaximumHangerLinkDimension(.id1)]: [])
              
             distanceBetweenFrontAndRearWheels =
-                DistanceBetweenFrontAndRearWheels2(
+                DistanceBetweenFrontAndRearWheels(
                     parent.baseType,
                     occupantBodySupportsDimension,
                     occupantFootSupportHangerLinksDimension)
@@ -724,7 +734,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                         
                         parentChildPositions.append(
                             GetValueFromDictionary(
-                                parent.preTiltParentToPartOriginOut,
+                                parent.preTiltParentToPartOrigin,
                                 [.object, .id0, .stringLink,.sitOn, sitOnId]).value )
                         
                         addToDictionary([
@@ -835,7 +845,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                         // a tree from object origin to the last part origin
                         parentChildPositions.append(
                             GetValueFromDictionary(
-                                parent.preTiltParentToPartOriginOut,
+                                parent.preTiltParentToPartOrigin,
                                 [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
                         )
                     
@@ -938,7 +948,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                         // a tree from object origin to the last part origin
                         parentChildPositions.append(
                             GetValueFromDictionary(
-                                parent.preTiltParentToPartOriginOut,
+                                parent.preTiltParentToPartOrigin,
                                 [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
                         )
                     

@@ -107,7 +107,7 @@ typealias BaseSizeDictionary = [BaseObjectTypes: Double]
 //}
 
 // coould this go intoo ORIGIN FOR BODY?
-struct DistanceBetweenFrontAndRearWheels2 {
+struct DistanceBetweenFrontAndRearWheels {
     var ifNoFrontAndRearSitOn: Double = 0.0
     var ifFrontAndRearSitOn: Double = 0.0
     let occupantBodySupport: [Dimension3d]
