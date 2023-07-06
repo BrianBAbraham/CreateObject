@@ -38,7 +38,7 @@ struct DimensionDictionary {
                 for sitOnId in idsForSitOn {
                     let nameStart: [Part] = [.object, .id0, .stringLink]
                     let nameEnd: [Part] = parts[index] == .sitOn ?
-                    [sitOnId, .stringLink, .object, .id0] : [partId, .stringLink, .sitOn, sitOnId]
+                    [sitOnId, .stringLink, .sitOn, .id0] : [partId, .stringLink, .sitOn, sitOnId]
                     let x = nameStart + [parts[index]] + nameEnd
                     let partName = CreateNameFromParts(x).name
                     let dimension = dimensionIn[partName] ?? defaultDimensions[index]
@@ -133,7 +133,7 @@ struct ObjectDefaultOrEditedDictionaries {
                 ).intialWithReplacements
             
 //DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($0)}
-//DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
+DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
             createCornerDictionary()
             
