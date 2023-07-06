@@ -178,8 +178,8 @@ struct PartGroupsFor {
     let sitOnAngle: [Part] =
         [
         .sitOn,
-        .armSupport,
-        .armVerticalJoint,
+        .sideSupport,
+        .sideSupportRotationJoint,
         .joyStickForOccupant,
         .lieOnSupport,
         .sleepOnSupport,
@@ -210,8 +210,8 @@ struct PartGroupsFor {
         ]
     let leftAndRight: [Part] =
         [
-        .armSupport,
-        .armVerticalJoint,
+        .sideSupport,
+        .sideSupportRotationJoint,
         .footSupport,
         .footSupportHangerLink,
         .footSupportHorizontalJoint,

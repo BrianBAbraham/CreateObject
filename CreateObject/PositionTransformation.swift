@@ -217,3 +217,20 @@ struct DimensionChange {
         from3Dto2D = (length: threeDimension.length ,width: threeDimension.width)
     }
 }
+
+struct HalfThis {
+    let dimension: Dimension3d
+    
+    init(_ dimension: Dimension3d) {
+        self.dimension = get(dimension)
+        
+        func  get(_ dimension: Dimension3d)
+          -> Dimension3d {
+              (width: dimension.width/2,
+               length: dimension.length/2,
+               height: dimension.height/2)
+          }
+    }
+    
+
+}

@@ -72,7 +72,7 @@ struct PreTiltOccupantSideSupportDefaultOrigin {
         let dictionary: OriginDictionary = [:]
         let general =
             (x: 0.0,
-             y: PreTiltOccupantBackSupportDefaultDimension(baseType).value.length,
+             y: PreTiltOccupantSideSupportDefaultDimension(baseType).value.length/2,
              z: 0.0)
         return
             dictionary[baseType] ?? general

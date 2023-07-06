@@ -36,7 +36,7 @@ class ObjectPickViewModel: ObservableObject {
    
     
     static let optionDictionary =
-    Dictionary(uniqueKeysWithValues: ObjectOptions.allCases.map { $0 }.map { ($0, true) })
+    Dictionary(uniqueKeysWithValues: ObjectOptions.allCases.map { $0 }.map { ($0, false) })
     
     static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
     

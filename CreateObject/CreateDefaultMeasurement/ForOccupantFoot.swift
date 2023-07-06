@@ -168,7 +168,7 @@ struct PreTiltHangerVerticalJointToFootSupportJointDefaultOrigin {
 }
 
 
-struct PreTiltFootSupportJointToFootSupportInTwoPieceDefaultOrigin {
+struct 0{
     
     let dictionary: OriginDictionary =
         [:]
