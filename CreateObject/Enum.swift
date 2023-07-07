@@ -74,10 +74,10 @@ enum Part: String {
     case footSupport = "footSupport"
     
     case footSupportInOnePiece = "footSupportInOnePiece"
-    case footSupportHorizontalJoint = "footSupportHorizontalJoint"
+    case footSupportJoint = "footSupportHorizontalJoint"
     //case footSupportHanger = "footSupportHanger"
     case footSupportHangerLink = "footSupportHangerLink"
-    case footSupportHangerSitOnVerticalJoint = "footSupportHangerSitOnVerticalJoint"
+    case footSupportHangerJoint = "footSupportHangerSitOnVerticalJoint"
     //case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
     
     case height = "Height"
@@ -173,7 +173,7 @@ enum Toggles {
 struct PartGroupsFor {
     
     var foot: [String] {
-        [Part.footSupport.rawValue, Part.footSupportHorizontalJoint.rawValue]
+        [Part.footSupport.rawValue, Part.footSupportJoint.rawValue]
     }
     let sitOnAngle: [Part] =
         [
@@ -184,14 +184,14 @@ struct PartGroupsFor {
         .lieOnSupport,
         .sleepOnSupport,
         .backSupporRotationJoint,
-        .footSupportHangerSitOnVerticalJoint
+        .footSupportHangerJoint
         ]
     
     let footAngle: [Part] =
         [
         .footSupport,
         .footSupportHangerLink,
-        .footSupportHorizontalJoint,
+        .footSupportJoint,
         .footSupportInOnePiece
         ]
     let backAngle: [Part] =
@@ -214,7 +214,7 @@ struct PartGroupsFor {
         .sideSupportRotationJoint,
         .footSupport,
         .footSupportHangerLink,
-        .footSupportHorizontalJoint,
+        .footSupportJoint,
         ]
     var backAndHead: [Part]
         {backAngle + headAngle}

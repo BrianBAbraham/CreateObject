@@ -11,6 +11,13 @@ import Foundation
 
 
 
+/// links are:
+/// 1footSupportHangerSitOnVerticalJoint
+/// 2 footSupportHorizontalJoint
+/// 3 footSupport OR footSupportInOnePiece
+/// footSupportHangerLink is derived from 1 and 2 when the final dictionary is available
+/// so you edit positions of 1 or 3 to change hangerLink
+/// and hangerLink only exists to create default position and not future editiing
 struct AllOccupantFootRelated {
     let parts: [Part]
     let dimensions: [Dimension3d]
@@ -18,19 +25,19 @@ struct AllOccupantFootRelated {
         _ baseType: BaseObjectTypes,
         _ modifiedPartDictionary: Part3DimensionDictionary) {
         parts =
-            [.footSupportHangerSitOnVerticalJoint,
+            [.footSupportHangerJoint,
              //.footSupportHangerLink,
-             .footSupportHorizontalJoint,
+             .footSupportJoint,
              .footSupport,
              .footSupportInOnePiece
         ]
-        
+        let defaultDimension = PretTiltOccupantFootSupportDefaultDimension(baseType)
         let dimensionList =
         [
-        OccupantFootSupportHangerJointDefaultDimension(baseType).value,
-        OccupantFootSupportHorizontalJointDefaultDimension(baseType).value,
-        OccupantFootSupportDefaultDimension(baseType).value,
-        OccupantFootSupportInOnePieceDefaultDimension(baseType,modifiedPartDictionary).value
+            defaultDimension.getHangerJoint(),
+            defaultDimension.getFootJoint(),
+            defaultDimension.getFootSupportInTwoPieces(),
+            defaultDimension.getFootSupportInOnePiece()
         ]
             
         var rotatedDimensionList: [Dimension3d] = []
@@ -50,161 +57,132 @@ struct AllOccupantFootRelated {
 }
 
 
-
-//MARK: DIMENSION
-struct OccupantFootSupportHangerJointDefaultDimension {
-    let dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general = Joint.dimension3d
-    let value: Dimension3d
-    
-    init(_ baseType: BaseObjectTypes) {
-        value = dictionary[baseType] ?? Self.general
-    }
-}
-
-struct OccupantFootSupportHangerLinkDefaultDimension {
-    let dictionary: BaseObject3DimensionDictionary = [:]
-    static let general = (width: 20.0, length: 200.0, height: 20.0)
-    let value: Dimension3d
-    init(
-        _ baseType: BaseObjectTypes) {
-            value =
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct OccupantFootSupportHorizontalJointDefaultDimension {
-    let dictionary: BaseObject3DimensionDictionary =
-        [:]
-    let general: Dimension3d
-    let value: Dimension3d
-    
-    init(_ baseType: BaseObjectTypes) {
+//MARK: DIMENSION FOOT
+struct PretTiltOccupantFootSupportDefaultDimension {
+    let baseType: BaseObjectTypes
         
-        general =
-        (         width: Joint.dimension.width,
-            length: OccupantFootSupportDefaultDimension.general.length,
-
-         height: Joint.dimension.width)
-        
-        value = dictionary[baseType] ?? general
+    init ( _ baseType: BaseObjectTypes) {
+        self.baseType = baseType
     }
-}
-
-struct OccupantFootSupportInOnePieceDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [ :
-        ]
-    static let general =
-        (
-         width: PreTiltOccupantBodySupportDefaultDimension.general.width,
-         length: 100.0,
-         height: 10.0)
-    let value: Dimension3d
     
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedPartDictionary: Part3DimensionDictionary) {
-            value =
-                dictionary[baseType] ??
-                Self.general
+    func getHangerJoint() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = Joint.dimension3d
+        return
+            dictionary[baseType] ?? general
     }
-}
-
-struct OccupantFootSupportDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [.showerTray: (width: 900.0, length: 1200.0, height: 0.0),
-        ]
-    static let general = (width: 150.0, length: 100.0, height: 10.0)
-    let value: Dimension3d
     
-    init(
-        _ baseType: BaseObjectTypes) {
-        
-            value =
-                dictionary[baseType] ??
-                Self.general
+    func getHangerLink() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = (width: 20.0, length: 200.0, height: 20.0)
+        return
+            dictionary[baseType] ?? general
     }
-}
-
-
-
-//MARK: ORIGIN
-struct PreTiltSitOnToHangerVerticalJointDefaultOrigin {
-    static let jointBelowSeat = -50.0
-    let dictionary: OriginDictionary =
-        [:]
-    let general =
-        (x: PreTiltOccupantBodySupportDefaultDimension.general.width/2 * 0.95,
-         y: PreTiltOccupantBodySupportDefaultDimension.general.length/2 * 0.95,
-         z: jointBelowSeat)
     
-    let value: PositionAsIosAxes
-    
-    init(_ baseType: BaseObjectTypes) {
-      value = dictionary[baseType] ?? general
+    func getFootJoint () -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = Joint.dimension3d
+        return
+            dictionary[baseType] ?? general
     }
-}
-
-
-struct PreTiltHangerVerticalJointToFootSupportJointDefaultOrigin {
-    static let footSupportHeightAboveFloor = 100.0
-    let dictionary: OriginDictionary =
-        [:]
-    let general =
-        (x: 0.0,
-         y: OccupantFootSupportHangerLinkDefaultDimension.general.length,
-         z: -(ObjectDefaultOrEditedDictionaries.sitOnHeight -
-             Self.footSupportHeightAboveFloor +
-             PreTiltSitOnToHangerVerticalJointDefaultOrigin.jointBelowSeat) )
-
-    let value: PositionAsIosAxes
-
-    init(_ baseType: BaseObjectTypes) {
-      value = dictionary[baseType] ?? general
-    }
-}
-
-
-struct PreTiltFootSupportJointToFootSupportInTwoPieceDefaultOrigin {
     
-    let dictionary: OriginDictionary =
-        [:]
-    let general: PositionAsIosAxes
-    let value: PositionAsIosAxes
-    
-    init(_ baseType: BaseObjectTypes) {
-    general =
-        (x: -(OccupantFootSupportHorizontalJointDefaultDimension(baseType).value.width +
-         OccupantFootSupportDefaultDimension(baseType).value.width)/2,
-         y: 0.0,
-         z: 0.0 )
-        
-    value = dictionary[baseType] ?? general
+    func getFootSupportInTwoPieces() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = (width: 150.0, length: 100.0, height: 10.0)
+        return
+            dictionary[baseType] ?? general
     }
-}
-
-struct PreTiltFootSupportJointToFootSupportInOnePieceDefaultOrigin {
-
-    let dictionary: OriginDictionary =
-        [:]
-    let general: PositionAsIosAxes
-    let value: PositionAsIosAxes
     
-    init(_ baseType: BaseObjectTypes) {
-    general =
-        (x: -PreTiltOccupantBodySupportDefaultDimension(baseType).value.width/2,
-         y: 0.0,
-         z: 0.0 )
-        
-    value = dictionary[baseType] ?? general
+    func getFootSupportInOnePiece() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general =       (
+            width: PreTiltOccupantBodySupportDefaultDimension.general.width,
+            length: 100.0,
+            height: 10.0)
+        return
+            dictionary[baseType] ?? general
     }
+    
 }
 
 
 
+//MARK: ORIGIN FOOT
+struct PreTiltOccupantFootSupportDefaultOrigin {
+    let baseType: BaseObjectTypes
+    let jointBelowSeat = -50.0
+    let footSupportHeightAboveFloor = 100.0
+    let defaultFootSupportDimension:
+        PretTiltOccupantFootSupportDefaultDimension
+    let defaultBodySupportDimension:
+        PreTiltOccupantBodySupportDefaultDimension
+    
+    
+    init ( _ baseType: BaseObjectTypes) {
+        self.baseType = baseType
+        defaultFootSupportDimension =
+            PretTiltOccupantFootSupportDefaultDimension(baseType)
+        defaultBodySupportDimension =
+            PreTiltOccupantBodySupportDefaultDimension(baseType)
+    }
+    
+    func getSitOnToHangerJoint()
+        -> PositionAsIosAxes {
+            let dictionary: OriginDictionary =
+                [:]
+            let general =
+            (x: defaultBodySupportDimension.value.width/2 * 0.95,
+             y: defaultBodySupportDimension.value.length/2 * 0.95,
+             z: jointBelowSeat)
+        return
+            dictionary[baseType] ?? general
+    }
+    
+    func getHangerJointToFootJoint()
+        -> PositionAsIosAxes {
+            let dictionary: OriginDictionary =
+                [:]
+            let general =
+            (x: 0.0,
+                 y: defaultFootSupportDimension.getHangerLink().length,
+                 z:  -(ObjectDefaultOrEditedDictionaries.sitOnHeight -
+                       footSupportHeightAboveFloor +
+                      jointBelowSeat)
+            )
+        return
+            dictionary[baseType] ?? general
+    }
+    
+    func getJointToTwoPieceFoot()
+    -> PositionAsIosAxes {
+        let dictionary: OriginDictionary =
+            [:]
+        let general =
+            (x:  -(defaultFootSupportDimension.getFootJoint().width +
+                   defaultFootSupportDimension.getFootSupportInOnePiece().width)/2,
+             y: 0.0,
+             z: jointBelowSeat)
+    return
+        dictionary[baseType] ?? general
+    }
+    
+    func getJointToOnePieceFoot()
+    -> PositionAsIosAxes {
+        let dictionary: OriginDictionary =
+            [:]
+        let general =
+            (x: 0.0,
+             y: 0.0,
+             z: jointBelowSeat)
+    return
+        dictionary[baseType] ?? general
+    }
+    
+    
+}
+
+
+//MARK: FOOT ANGLE
 struct OccupantFootSupportDefaultAngleChange {
     var dictionary: BaseObjectAngleDictionary =
     [:]

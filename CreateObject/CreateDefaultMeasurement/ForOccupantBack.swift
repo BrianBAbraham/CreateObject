@@ -20,23 +20,24 @@ struct AllOccupantBackRelated {
             .backSupportHeadSupport,
             .backSupportHeadSupportLink,
             .backSupportHeadLinkRotationJoint,
-            .backSupportAssistantHandle,
-            .backSupportAssistantHandleInOnePiece,
-            .backSupportAssistantJoystick,
+            //.backSupportAssistantHandle,
+            //.backSupportAssistantHandleInOnePiece,
+            //.backSupportAssistantJoystick,
             .backSupport,
             .backSupporRotationJoint]
-    
+        
+    let defaultDimension = PreTiltOccupantBackSupportDefaultDimension(baseType)
         let dimensionList =
             [
-            PreTiltOccupantBackSupportAdditionalObjectDefaultDimension(baseType).value,
-            PreTiltOccupantHeadSupportDefaultDimension(baseType).value,
-            PreTiltOccupantHeadSupportLinkDefaultDimension(baseType).value,
-            PreTiltOccupantHeadSupportJointDefaultDimension(baseType).value,
-            PreTiltOccupantBackSupportAssistantHandlesDefaultDimension(baseType).value,
-            PreTiltOccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
-            PreTiltOccupantBackSupportJoystickDefaultDimension(baseType).value,
-            PreTiltOccupantBackSupportDefaultDimension(baseType).value,
-            PreTiltOccupantBackSupportAngleJointDefaultDimension(baseType).value
+                defaultDimension.getAdditionalObject(),
+                defaultDimension.getHeadSupport(),
+                defaultDimension.getHeadSupportLink() ,
+                defaultDimension.getHeadSupportRotationJoint(),
+            //PreTiltOccupantBackSupportAssistantHandlesDefaultDimension(baseType).value,
+            //PreTiltOccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
+            //PreTiltOccupantBackSupportJoystickDefaultDimension(baseType).value,
+                defaultDimension.getBackSupport(),
+                defaultDimension.getBackSupportRotationJoint()
             ]
         
         var rotatedDimensionList: [Dimension3d] = []
@@ -58,15 +59,13 @@ struct AllOccupantBackRelated {
 
 //MARK: DIMENSION
 
-struct PreTiltOccupantBackSupportDefaultDimension2 {
+struct PreTiltOccupantBackSupportDefaultDimension {
     let baseType: BaseObjectTypes
     
     
     init ( _ baseType: BaseObjectTypes) {
         self.baseType = baseType
     }
-    
-
     
     func getBackSupportRotationJoint() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
@@ -91,7 +90,6 @@ struct PreTiltOccupantBackSupportDefaultDimension2 {
         return
             dictionary[baseType] ?? general
     }
-    
     
     func getHeadSupportLink() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
@@ -126,177 +124,6 @@ struct PreTiltOccupantBackSupportDefaultDimension2 {
 }
 
 
-struct PreTiltOccupantBackSupportAdditionalObjectDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-        (width: PreTiltOccupantBodySupportDefaultDimension.general.width,
-        length: 100.0,
-        height: 100.0)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct PreTiltOccupantHeadSupportDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-        (width: 100.0,
-        length: 100.0,
-        height: 100.0)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct PreTiltOccupantHeadSupportLinkDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-        (width: 20.0,
-         length: 20.0,
-         height: 100.0)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct PreTiltOccupantHeadSupportJointDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-    Joint.dimension3d
-    let value: Dimension3d
-    
-    init(_ baseType: BaseObjectTypes) {
-        value = dictionary[baseType] ?? Self.general
-    }
-}
-
-struct PreTiltOccupantBackSupportJoystickDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-        (width: 100.0,
-         length: 100.0,
-         height: 100.0)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct PreTiltOccupantBackSupportAssistantHandlesDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-        (    width: 30.0,
-             length: 100.0,
-         height: 30.0)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct PreTiltOccupantBackSupportAssistantHandlesInOnePieceDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-        (
-         width: PreTiltOccupantBodySupportDefaultDimension.general.width,
-         length: 100.0,
-         height: 30.0)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct PreTiltOccupantBackSupportDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-        (
-         width: PreTiltOccupantBodySupportDefaultDimension.general.width,
-         length: 10.0,
-         height: 500.0)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-struct PreTiltOccupantBackSupportAngleJointDefaultDimension {
-    var dictionary: BaseObject3DimensionDictionary =
-    [:]
-    static let general =
-    Joint.dimension3d
-    let value: Dimension3d
-    
-    init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedDictionary: BaseObject3DimensionDictionary = [:] ) {
-        
-            value =
-                modifiedDictionary[baseType] ??
-                dictionary[baseType] ??
-                Self.general
-    }
-}
 
 //MARK: -ORIGIN
 // tilt as in tilted/rotated/angled
@@ -305,11 +132,16 @@ struct PreTiltOccupantBackSupportAngleJointDefaultDimension {
 
 struct PreTiltOccupantBackSupportDefaultOrigin {
     let baseType: BaseObjectTypes
+    let defaultBackSupportDimension:
+        PreTiltOccupantBackSupportDefaultDimension
   
     
     init ( _ baseType: BaseObjectTypes) {
         self.baseType = baseType
-        }
+        
+        defaultBackSupportDimension =
+            PreTiltOccupantBackSupportDefaultDimension(baseType)
+    }
     
   func getSitOnToBackSupportRotationJoint()
     -> PositionAsIosAxes {
@@ -329,7 +161,7 @@ struct PreTiltOccupantBackSupportDefaultOrigin {
         let general =
             (x: 0.0,
              y: 0.0,
-             z: PreTiltOccupantBackSupportDefaultDimension(baseType).value.height/2)
+             z: defaultBackSupportDimension.getBackSupport().height/2)
         return
             dictionary[baseType] ?? general
     }
@@ -340,7 +172,7 @@ struct PreTiltOccupantBackSupportDefaultOrigin {
         let general =
         (x: 0.0,
          y: 0.0,
-         z: PreTiltOccupantBackSupportDefaultDimension(baseType).value.height/2)
+         z: defaultBackSupportDimension.getBackSupport().height/2)
         return
             dictionary[baseType] ?? general
     }
@@ -351,8 +183,8 @@ struct PreTiltOccupantBackSupportDefaultOrigin {
         let general =
             (x: 0.0,
              y: 0.0,
-             z: PreTiltOccupantHeadSupportLinkDefaultDimension(baseType).value.height +
-                PreTiltOccupantHeadSupportDefaultDimension(baseType).value.height/2  )
+             z: defaultBackSupportDimension.getHeadSupportLink().height +
+                 defaultBackSupportDimension.getHeadSupport().height/2  )
         return
             dictionary[baseType] ?? general
     }

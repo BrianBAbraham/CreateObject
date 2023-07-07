@@ -75,22 +75,6 @@ struct PreTiltOccupantBodySupportDefaultOrigin {
 
 
 
-struct PreTiltSitOnToRotationJointDefaultOrigin {
-    let dictionary: BaseObjectOriginDictionary = [:]
-    
-    static let general = (x: 0.0, y: 0.0, z: -100.0)
-    
-    let value: PositionAsIosAxes
-    
-    init(
-        _ baseType: BaseObjectTypes) {
-            value =
-                dictionary[baseType] ??
-                Self.general
-    }
-}
-
-
 struct OccupantBodySupportDefaultAngleChange {
     let dictionary: BaseObjectAngleDictionary =
         [.allCasterTiltInSpaceShowerChair: Measurement(value: 30.0, unit: UnitAngle.degrees)]

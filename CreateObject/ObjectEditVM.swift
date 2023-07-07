@@ -127,7 +127,7 @@ extension ObjectEditViewModel {
         let defaultDictionary = dictionaryForMeasurement
         let partFromAnySide = Part.id0
         let hangerVerticalJointFromObjectOriginName =
-            CreateNameFromParts([.objectOrigin, .id0,.stringLink,.footSupportHangerSitOnVerticalJoint,partFromAnySide,.stringLink, .sitOn, sitOnId] ).name
+            CreateNameFromParts([.objectOrigin, .id0,.stringLink,.footSupportHangerJoint,partFromAnySide,.stringLink, .sitOn, sitOnId] ).name
         let itemFromFilteredDictionary =
         SuccessivelyFilteredDictionary([hangerVerticalJointFromObjectOriginName],defaultDictionary).dictionary.first
 
@@ -244,7 +244,7 @@ extension ObjectEditViewModel {
             
                 var filteredDictionaryForOneSitOn =
                     Filter(
-                        [.footSupport,.footSupportHorizontalJoint],
+                        [.footSupport,.footSupportJoint],
                         dictionary,
                         .corner,
                         sitOnId).dictionary
@@ -286,8 +286,8 @@ extension ObjectEditViewModel {
             // add link entries
             let hangerLinkDictionary =
                 CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
-                    .footSupportHangerSitOnVerticalJoint,
-                    .footSupportHorizontalJoint,
+                    .footSupportHangerJoint,
+                    .footSupportJoint,
                     .footSupportHangerLink,
                     editedDictionary,
                     supportIndex).newCornerDictionary

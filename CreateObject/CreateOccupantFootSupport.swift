@@ -189,14 +189,14 @@ struct CreateOccupantFootSupport {
             if footSupportHangerSitOnVerticalJointRequired {
                 footDictionary(
                     Joint.dimension,
-                    .footSupportHangerSitOnVerticalJoint,
+                    .footSupportHangerJoint,
                     initialOccupantFootSupportMeasure.rightFootSupportHangerJointFromSitOnOrigin)
             }
             
             if footSupportJointRequired {
                 footDictionary(
                     InitialOccupantFootSupportMeasure.footSupportJoint,
-                    .footSupportHorizontalJoint,
+                    .footSupportJoint,
                     initialOccupantFootSupportMeasure.rightFootSupportJointFromSitOnOrigin)
             }
             
@@ -205,8 +205,8 @@ struct CreateOccupantFootSupport {
 
                 let hangerLinkDictionary =
                     CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
-                        .footSupportHangerSitOnVerticalJoint,
-                        .footSupportHorizontalJoint,
+                        .footSupportHangerJoint,
+                        .footSupportJoint,
                         .footSupportHangerLink,
                         dictionary,
                         supportIndex)

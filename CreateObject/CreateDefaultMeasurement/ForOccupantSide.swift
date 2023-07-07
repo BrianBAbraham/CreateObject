@@ -17,12 +17,12 @@ struct PreTiltOccupantSideSupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher:
         (width: 20.0,
-         length: PreTiltOccupantBackSupportDefaultDimension(.allCasterStretcher).value.length,
+         length: PreTiltOccupantBodySupportDefaultDimension(.allCasterStretcher).value.length,
          height: 20.0),
 
      .allCasterBed:
         (width: 20.0,
-         length: PreTiltOccupantBackSupportDefaultDimension(.allCasterBed).value.length,
+         length: PreTiltOccupantBodySupportDefaultDimension(.allCasterBed).value.length,
          height: 20.0)
         ]
     
