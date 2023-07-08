@@ -177,8 +177,6 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
     return
         dictionary[baseType] ?? general
     }
-    
-    
 }
 
 

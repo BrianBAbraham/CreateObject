@@ -30,12 +30,11 @@ struct PreTiltOccupantSideSupportDefaultDimension {
     var general: Dimension3d
         
     init(
-        _ baseType: BaseObjectTypes
-    ) {
-            general =
-            (width: 40.0,
-            length: PreTiltOccupantBodySupportDefaultDimension(baseType).value.length,
-            height: 30.0)
+        _ baseType: BaseObjectTypes) {
+        general =
+        (width: 40.0,
+        length: PreTiltOccupantBodySupportDefaultDimension(baseType).value.length,
+        height: 30.0)
         
     value =
         dictionary[baseType] ??
@@ -65,7 +64,6 @@ struct PreTiltOccupantSideSupportDefaultOrigin {
         return
             dictionary[baseType] ?? general
     }
-    
     
     func getSideSupportRotationJointToSideSupport()
     -> PositionAsIosAxes {

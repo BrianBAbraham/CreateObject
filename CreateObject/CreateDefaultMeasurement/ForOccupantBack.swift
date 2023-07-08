@@ -33,9 +33,6 @@ struct AllOccupantBackRelated {
                 defaultDimension.getHeadSupport(),
                 defaultDimension.getHeadSupportLink() ,
                 defaultDimension.getHeadSupportRotationJoint(),
-            //PreTiltOccupantBackSupportAssistantHandlesDefaultDimension(baseType).value,
-            //PreTiltOccupantBackSupportAssistantHandlesInOnePieceDefaultDimension(baseType).value,
-            //PreTiltOccupantBackSupportJoystickDefaultDimension(baseType).value,
                 defaultDimension.getBackSupport(),
                 defaultDimension.getBackSupportRotationJoint()
             ]
@@ -58,10 +55,8 @@ struct AllOccupantBackRelated {
 }
 
 //MARK: DIMENSION
-
 struct PreTiltOccupantBackSupportDefaultDimension {
     let baseType: BaseObjectTypes
-    
     
     init ( _ baseType: BaseObjectTypes) {
         self.baseType = baseType
@@ -154,7 +149,6 @@ struct PreTiltOccupantBackSupportDefaultOrigin {
             dictionary[baseType] ?? general
     }
     
-    
     func getRotationJointToBackSupport()
     -> PositionAsIosAxes {
         let dictionary: OriginDictionary = [:]
@@ -224,18 +218,4 @@ struct OccupantBackSupportHeadLinkDefaultAngleChange {
     }
 }
 
-//struct OccupantHeadSupportLinkDefaultAngle {
-//    var dictionary: BaseObjectAngleDictionary =
-//    [:]
-//
-//    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
-//
-//    let value: Measurement<UnitAngle>
-//    
-//    init(
-//        _ baseType: BaseObjectTypes) {
-//            value =
-//                dictionary[baseType] ??
-//                Self.general
-//    }
-//}
+

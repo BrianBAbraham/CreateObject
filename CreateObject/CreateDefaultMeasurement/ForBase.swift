@@ -66,17 +66,19 @@ typealias BaseSizeDictionary = [BaseObjectTypes: Double]
 
 
 /// Dimensions for  support determine the length
-struct LengthBetweenFrontAndRearWheels {
+struct LengthBetween {
     var ifNoFrontAndRearSitOn: Double = 0.0
     var ifFrontAndRearSitOn: Double = 0.0
     let occupantBodySupport: [Dimension3d]
     let occupantFootSupportHangerLink: [Dimension3d]
     let stability: Stability
+    let baseType: BaseObjectTypes
     
     init (
         _ baseType: BaseObjectTypes,
         _ occupantBodySupportsDimension: [Dimension3d],
         _ occupantFootSupportHangerLinksDimension: [Dimension3d] ){
+            self.baseType = baseType
             
             stability = Stability(baseType)
             
@@ -88,133 +90,99 @@ struct LengthBetweenFrontAndRearWheels {
             
             if occupantBodySupportsDimension.count == 2 {
                 ifFrontAndRearSitOn =
-                    requiredDistanceBetweenFrontRearWheeIfFrontAndRear()
+                    frontRearIfFrontAndRearSitOn()
             } else {
                 ifNoFrontAndRearSitOn =
-                    requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
+                    frontRearIfNoFrontAndRearSitOn()
             }
            
         }
     
-    func requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear()
+    func frontRearIfNoFrontAndRearSitOn()
         -> Double {
         stability.atRear +
         occupantBodySupport[0].length +
         stability.atFront
     }
         
-    func requiredDistanceBetweenFrontRearWheeIfFrontAndRear ()
+    func frontRearIfFrontAndRearSitOn ()
         -> Double {
-        requiredDistanceBetweenFrontRearWheeIfNoFrontAndRear() +
+        frontRearIfNoFrontAndRearSitOn() +
         occupantFootSupportHangerLink[0].length +
         occupantBodySupport[1].length
     }
+    
+    
+    func rearIfLeftAndRightSitOn()
+        -> Double {
+            let dictionary: BaseSizeDictionary =
+            [.allCasterHoist: 600.0,
+            .fixedWheelMidDrive: 300.0,
+            .fixedWheelRearDrive: 500.0,
+            .fixedWheelFrontDrive: 400.0,
+             .fixedWheelManualRearDrive: 500.0]
+            let general = 400.0
+            return
+                dictionary[baseType] ?? general
+    }
+    
+    func rearIfNoLeftAndRightSitOn()
+        -> Double {
+            let dictionary: BaseSizeDictionary =
+            [.allCasterHoist: 600.0,
+            .fixedWheelMidDrive: 300.0,
+            .fixedWheelRearDrive: 500.0,
+            .fixedWheelFrontDrive: 400.0,
+             .fixedWheelManualRearDrive: 500.0]
+            let general = 400.0
+            return
+                dictionary[baseType] ?? general
+    }
+    
+    func midIfLeftAndRightSitOn()
+        -> Double {
+            let dictionary: BaseSizeDictionary =
+            [.fixedWheelMidDrive: 500.0]
+            let general = 0.0
+            return
+                dictionary[baseType] ?? general
+    }
+    
+    func midIfNoLeftAndRightSitOn()
+        -> Double {
+            let dictionary: BaseSizeDictionary =
+            [.fixedWheelMidDrive: 500.0]
+            let general = 0.0
+            return
+                dictionary[baseType] ?? general
+    }
+    
+    func frontIfLeftAndRightSitOn()
+        -> Double {
+            let dictionary: BaseSizeDictionary =
+            [.fixedWheelMidDrive: 400.0,
+            .fixedWheelRearDrive: 400.0,
+            .fixedWheelFrontDrive:500.0]
+            let general = 400.0
+            return
+                dictionary[baseType] ?? general
+    }
+    
+    func frontIfNoLeftAndRightSitOn()
+        -> Double {
+            let dictionary: BaseSizeDictionary =
+            [.fixedWheelMidDrive: 400.0,
+            .fixedWheelRearDrive: 400.0,
+            .fixedWheelFrontDrive:500.0]
+            let general = 400.0
+            return
+                dictionary[baseType] ?? general
+    }
+    
 }
 
 
-//struct DistanceBetween {
-//    let baseType: BaseObjectTypes
-//    let twinSitOnOptions: TwinSitOnOptions
-//    let occupantBodySupportDefaultDimension: Dimension3d
-//    let stability: Stability
-//    var distanceBetweenFrontAndRearWheels: Double = 0.0
-//    let frontAndRearState: Bool
-//    let leftandRightState: Bool
-//
-//    init(_ baseType: BaseObjectTypes,
-//         _ twinSitOnOptions: TwinSitOnOptions,
-//         _ modifiedPartDictionary: Part3DimensionDictionary
-//        ) {
-//        self.baseType = baseType
-//        self.twinSitOnOptions = twinSitOnOptions
-//        
-//        frontAndRearState = twinSitOnOptions[.frontAndRear] ?? false
-//        leftandRightState = twinSitOnOptions[.leftAndRight] ?? false
-//        
-//        stability = Stability(baseType)
-//       
-//        distanceBetweenFrontAndRearWheels =
-//             getDistanceBetweenFrontAndRearWheels(baseType)
-//        
-//        occupantBodySupportDefaultDimension =
-//            OccupantBodySupportDefaultDimension(
-//                baseType, modifiedPartDictionary).value
-//        
-//   
-//        
-//        func getDistanceBetweenFrontAndRearWheels (_ baseType: BaseObjectTypes) -> Double {
-//            let distanceBetweenFrontAndRearWheels =
-//                 DistanceBetweenFrontAndRearWheels(baseType,modifiedPartDictionary)
-//            let distance =
-//            twinSitOnOptions[.frontAndRear] ?? false ?
-//            distanceBetweenFrontAndRearWheels.ifFrontAndRearSitOn:
-//            distanceBetweenFrontAndRearWheels.ifNoFrontAndRearSitOn
-//            return distance
-//        }
-//    
-//
-//    }
-//
-//    func frontToRearWheels()
-//        -> Double {
-//
-//            let general = distanceBetweenFrontAndRearWheels
-//            
-//            let dictionary: BaseSizeDictionary =
-//                [
-//                .allCasterBed: 2000.0,
-//                .allCasterHoist: 1200.0,
-//                .allCasterTiltInSpaceShowerChair: 600.0]
-//           
-//            return
-//                dictionary[baseType] ?? general
-//    }
-//    
-//    func midToRearWheels()
-//        -> Double {
-//            
-//            let dictionary: BaseSizeDictionary =
-//                [.fixedWheelMidDrive: 300.0]
-//            let general = 0.0
-//            return
-//                dictionary[baseType] ?? general
-//    }
-//    
-//    func rearWheels()
-//        -> Double {
-//            let dictionary: BaseSizeDictionary =
-//            [.allCasterHoist: 600.0,
-//            .fixedWheelMidDrive: 300.0,
-//            .fixedWheelRearDrive: 500.0,
-//            .fixedWheelFrontDrive: 400.0,
-//             .fixedWheelManualRearDrive: 500.0]
-//            let general = 400.0
-//            return
-//                dictionary[baseType] ?? general
-//    }
-//    
-//    func midWheels()
-//        -> Double {
-//            let dictionary: BaseSizeDictionary =
-//            [.fixedWheelMidDrive: 500.0]
-//            let general = 0.0
-//            return
-//                dictionary[baseType] ?? general
-//    }
-//    
-//    func frontWheels()
-//        -> Double {
-//            let dictionary: BaseSizeDictionary =
-//            [.fixedWheelMidDrive: 400.0,
-//            .fixedWheelRearDrive: 400.0,
-//            .fixedWheelFrontDrive:500.0]
-//            let general = 400.0
-//            return
-//                dictionary[baseType] ?? general
-//    }
-//    
-//        
-//}
+
 
 
 struct Stability {
