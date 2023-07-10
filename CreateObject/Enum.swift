@@ -68,6 +68,8 @@ enum Part: String {
     case id = "_id"
     case id0 = "_id0"
     case id1 = "_id1"
+    case id2 = "_id2"
+    case id3 = "_id3"
     case fixedWheel = "fixedWheel"
     case fixedWheelPropeller = "fixedWheelPropeller"
     

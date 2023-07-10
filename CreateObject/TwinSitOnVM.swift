@@ -26,11 +26,13 @@ enum TwinSitOnOption: String, CaseIterable  {
 struct TwinSitOn {
     let options: TwinSitOnOptionDictionary
     let state : Bool
+    let frontAndRearState: Bool
     
     init(_ options: TwinSitOnOptionDictionary ){
         self.options = options
+        frontAndRearState = options[.frontAndRear] ?? false
         state =
-        (options[.frontAndRear] ?? false || options[.leftAndRight] ?? false)
+        (frontAndRearState || options[.leftAndRight] ?? false)
     }
 }
 

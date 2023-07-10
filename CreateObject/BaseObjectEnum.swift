@@ -68,18 +68,16 @@ case sitOn = "hair"
 
 
 struct BaseObjectGroups {
-    let rearPrimaryOrigin: [BaseObjectTypes] =
+    let allCaster: [BaseObjectTypes] =
         [.allCasterBed,
          .allCasterChair,
          .allCasterHoist,
          .allCasterStandAid,
          .allCasterStretcher,
-         .allCasterTiltInSpaceShowerChair,
-         .fixedWheelManualRearDrive,
-         .fixedWheelRearDrive,
-         .scooterRearDrive3Wheeler,
-         .scooterRearDrive4Wheeler,
-         .seatThatTilts]
+         .allCasterTiltInSpaceShowerChair]
+    
+    var rearPrimaryOrigin: [BaseObjectTypes]
+   
     
     let midPrimaryOrigin: [BaseObjectTypes] =
         [.fixedWheelMidDrive]
@@ -97,4 +95,18 @@ struct BaseObjectGroups {
           .scooterRearDrive4Wheeler,
           .scooterFrontDrive3Wheeler,
           .scooterFrontDrive4Wheeler]
+    
+    let singleWheelPresent: [BaseObjectTypes] =
+    [ .scooterRearDrive3Wheeler,
+      .scooterFrontDrive3Wheeler]
+    
+    init() {
+        rearPrimaryOrigin = allCaster +
+        [
+         .fixedWheelManualRearDrive,
+         .fixedWheelRearDrive,
+         .scooterRearDrive3Wheeler,
+         .scooterRearDrive4Wheeler,
+         .seatThatTilts]
+    }
 }

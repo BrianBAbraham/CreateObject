@@ -506,6 +506,8 @@ print(corners)
         let leftandRightState: Bool
 
         var occupantBodySupportsDimension: [Dimension3d] = []
+        var occupantSideSupportsDimension: [[Dimension3d]] = []
+        
         var occupantFootSupportHangerLinksDimension: [Dimension3d] = []
         let lengthBetweenWheels: LengthBetween
         
@@ -519,9 +521,15 @@ print(corners)
   
             let bodySupportDefaultDimension = PreTiltOccupantBodySupportDefaultDimension(parent.baseType).value
                 
+            let sideSupportDefaultDimension = PreTiltOccupantSideSupportDefaultDimension(parent.baseType).value
+                
             occupantBodySupportsDimension =
                 [getModifiedSitOnDimension(.id0)] +
                 (parent.twinSitOnState ? [getModifiedSitOnDimension(.id1)] : [])
+                
+            occupantSideSupportsDimension =
+                [getModifiedSideSupportDimension(.id0)] +
+                (parent.twinSitOnState ? [getModifiedSideSupportDimension(.id1)] : [])
                          
             let occupantFootSupportHangerLinkDefaultDimension =
                 PretTiltOccupantFootSupportDefaultDimension(parent.baseType).getHangerLink()
@@ -538,10 +546,6 @@ print(corners)
                     parent.baseType,
                     occupantBodySupportsDimension,
                     occupantFootSupportHangerLinksDimension)
-                
-                
-                
-                
                 
             if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
             forRearPrimaryOrigin()
@@ -563,12 +567,27 @@ print(corners)
             func getModifiedSitOnDimension(_ id: Part)
                 -> Dimension3d {
                 let name =
-                    CreateNameFromParts([.object, .id0, .stringLink, .sitOn, id]).name
-                let modifiedDimension: Dimension3d? = parent.preTiltDimensionIn[name]
+                    CreateNameFromParts([.object, .id0, .stringLink, .sitOn, id, .stringLink, .sitOn, id]).name
+                let modifiedDimension = parent.preTiltDimensionIn[name] ?? bodySupportDefaultDimension
                 return
-                   modifiedDimension ?? bodySupportDefaultDimension
+                   modifiedDimension
             }
-              
+            
+                
+            func getModifiedSideSupportDimension(_ id: Part)
+                -> [Dimension3d] {
+                    var sideSupportDimension: [Dimension3d] = []
+                    let sideSupportIds: [Part] = [.id0, .id1]
+                    for sideId in sideSupportIds {
+                        let name =
+                            CreateNameFromParts([.object, .id0, .stringLink, .sideSupport, sideId, .stringLink, .sitOn, id]).name
+                        let modifiedDimension = parent.preTiltDimensionIn[name] ?? sideSupportDefaultDimension
+                        sideSupportDimension.append(modifiedDimension)
+                    }
+                return
+                    sideSupportDimension
+            }
+                
                 
             func getModifiedMaximumHangerLinkDimension(_ id: Part)
                 -> Dimension3d {
@@ -737,13 +756,16 @@ print(corners)
                 
                 func leftAndRightX ()
                     -> Double {
-                        (occupantBodySupportsDimension[0].width + occupantBodySupportsDimension[1].width)/2 +
-                        PreTiltOccupantSideSupportDefaultDimension(parent.baseType//, parent.modifiedPartDictionary
-                        ).value.width
+                    (occupantBodySupportsDimension[0].width +
+                     occupantBodySupportsDimension[1].width)/2 +
+                    occupantSideSupportsDimension[0][1].width +
+                    occupantSideSupportsDimension[1][0].width
                 }
         }
     }
     
+    // occupantBodySupportsDimension[0].width + occupantBodySupportsDimension[1].width +                         PreTiltOccupantSideSupportDefaultDimension(parent.baseType
+    //).value.width * 2
     
     
     //MARK: FOOT/SIDE/BACK/ROTATE ORIGIN
@@ -942,7 +964,127 @@ print(corners)
     }
     
 
+//MARK: BASE ORIGIN
     
+    struct Base {
+        var objectToPartDictionary: PositionDictionary = [:]
+        let lengthBetweenFrontAndRearWheels: Double
+        let parent: ObjectDefaultOrEditedDictionaries
+        let bodySupportOrigin: PreTiltOccupantBodySupportOrigin
+        
+        init(
+            parent: ObjectDefaultOrEditedDictionaries,
+            bodySupportOrigin: PreTiltOccupantBodySupportOrigin ) {
+                self.parent = parent
+                self.bodySupportOrigin = bodySupportOrigin
+                
+                lengthBetweenFrontAndRearWheels =
+                    getLengthBetweenFrontAndRearWheels()
+                
+                let widthBetweenWheelsAtOrigin = getWidthBetweenWheels()
+                
+                let wheelAndCasterVerticalJointOrigin =
+                    WheelAndCasterVerticalJointOrigin(
+                         parent.baseType,
+                         lengthBetweenFrontAndRearWheels,
+                        widthBetweenWheelsAtOrigin)
+                
+                let ids: [Part] = [.id0, .id1, .id2, .id3]
+                
+                
+                
+                if BaseObjectGroups().allCaster.contains(parent.baseType) {
+                    let wheelOrigin = wheelAndCasterVerticalJointOrigin.getCasterWhenAllCaster()
+                    let casterOrigin = CasterOrigin(parent.baseType)
+                    let forkOrigin =
+                        [casterOrigin.forRearCasterVerticalJointToFork(),
+                         casterOrigin.forRearCasterVerticalJointToFork(),
+                         casterOrigin.forFrontCasterVerticalJointToFork(),
+                         casterOrigin.forFrontCasterVerticalJointToFork()]
+                    let casterWheelOrigin =
+                        [casterOrigin.forRearCasterForkToWheel(),
+                         casterOrigin.forRearCasterForkToWheel(),
+                         casterOrigin.forFrontCasterForkToWheel(),
+                         casterOrigin.forFrontCasterForkToWheel()]
+                    
+                    getDictionaryForCaster(
+                        wheelOrigin,
+                        forkOrigin,
+                        casterWheelOrigin)
+               
+                }
+                
+                if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
+                forRearPrimaryOrigin()
+                }
+                    
+                if BaseObjectGroups().frontPrimaryOrigin.contains(parent.baseType) {
+                forFrontPrimaryOrgin()
+                }
+                    
+                if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
+                forMidPrimaryOrigin()
+                }
+                
+                
+                func getLengthBetweenFrontAndRearWheels ()
+                    -> Double {
+                    TwinSitOn(parent.twinSitOnOption).frontAndRearState ?
+                        bodySupportOrigin.lengthBetweenWheels.frontRearIfFrontAndRearSitOn():
+                        bodySupportOrigin.lengthBetweenWheels.frontRearIfNoFrontAndRearSitOn()
+                }
+            }
+        
+        
+        func getWidthBetweenWheels()
+            -> Double {
+            
+            let bodySupportDimension =
+                    bodySupportOrigin.occupantBodySupportsDimension
+            let sideSupportDimension =
+                    bodySupportOrigin.occupantSideSupportsDimension
+               
+                let widthWithoutStability =
+                    bodySupportDimension.count == 2 ?
+                        (forIndex(0) + forIndex(1)): forIndex(0)
+                let width = widthWithoutStability +
+                Stability(parent.baseType).atLeft +
+                Stability(parent.baseType).atRight
+                
+                func forIndex(_ id: Int) -> Double {
+                    return
+                        bodySupportDimension[id].width + sideSupportDimension[id][0].width + sideSupportDimension[id][1].width
+                }
+                return width
+            }
+        
+        func getDictionaryForCaster(
+            _ originOfBaseContact: [PositionAsIosAxes],
+            _ originOfFork: [PositionAsIosAxes],
+            _ originOfWheel: [PositionAsIosAxes]
+            ) {
+            
+        }
+
+        func getDictionaryForFixedWheel(
+            _ originOfBaseContact: [PositionAsIosAxes]
+            ) {
+            
+        }
+        
+        func forRearPrimaryOrigin() {
+        }
+        
+        
+        func forMidPrimaryOrigin() {
+        }
+        
+        func forFrontPrimaryOrgin() {
+        }
+        
+    }
+    
+
     
     
 }

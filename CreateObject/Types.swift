@@ -35,7 +35,7 @@ typealias OriginDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (length: Double, width: Double)
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
-
+typealias WheelSize = (radius: Double, width: Double)
 
 //typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
 
@@ -44,5 +44,6 @@ typealias AngleDictionary = [String: Measurement<UnitAngle>]
 typealias AngleMinMaxDictionary = [String: MinMaxAngle]
 typealias BaseObjectAngleDictionary = [BaseObjectTypes: Measurement<UnitAngle>]
 
+typealias BaseObjectWheelSizeDictionary = [BaseObjectTypes: WheelSize]
 
 typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
