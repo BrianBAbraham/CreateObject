@@ -12,6 +12,7 @@ enum BaseObjectTypes: String, CaseIterable {
     case allCasterBed = "Bed with caster base"
     case allCasterChair = "Chair with caster base"
     case allCasterHoist = "Hoist with caster base"
+    case allCasterSixHoist = "Hoist with caster base and six caster"
     case allCasterTiltInSpaceShowerChair = "Tilting shower chair with caster base"
     case allCasterStandAid = "Stand aid with caster base"
     case allCasterStretcher = "Stretcher with caster Base "
@@ -101,7 +102,7 @@ struct BaseObjectGroups {
       .scooterFrontDrive3Wheeler]
     
     init() {
-        rearPrimaryOrigin = allCaster +
+        rearPrimaryOrigin =
         [
          .fixedWheelManualRearDrive,
          .fixedWheelRearDrive,

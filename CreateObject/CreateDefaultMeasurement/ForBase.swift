@@ -201,6 +201,15 @@ struct WheelDimension {
              height: wheelSize.radius * 2)
     }
     
+    func getMidCasterDimension() -> Dimension3d {
+        let wheelSize = getFrontCasterRadius()
+        
+        return
+            (width: wheelSize.width,
+             length: wheelSize.radius * 2,
+             height: wheelSize.radius * 2)
+    }
+    
     func getRearCasterDimension() -> Dimension3d {
         let wheelSize = getRearCasterRadius()
         
@@ -211,6 +220,14 @@ struct WheelDimension {
     }
     
     func getFrontCasterRadius()  -> WheelSize {
+        let dictionary: BaseObjectWheelSizeDictionary =
+        [.allCasterStandAid: (radius: 25.0, width: 10.0)]
+        let general = (radius: 40.0, width: 20.0)
+        return
+            dictionary[baseType] ?? general
+    }
+    
+    func getMidCasterRadius()  -> WheelSize {
         let dictionary: BaseObjectWheelSizeDictionary =
         [.allCasterStandAid: (radius: 25.0, width: 10.0)]
         let general = (radius: 40.0, width: 20.0)
@@ -233,6 +250,13 @@ struct WheelDimension {
             dictionary[baseType] ?? general
     }
     
+    func getMidCasterFork() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = (width: 30.0, length: 150.0, height: 20.0)
+        return
+            dictionary[baseType] ?? general
+    }
+    
     func getRearCasterFork() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general = (width: 30.0, length: 150.0, height: 20.0)
@@ -241,6 +265,13 @@ struct WheelDimension {
     }
     
     func getFrontCasterTrail() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = (width: 0.0, length: 20.0, height: 0.0)
+        return
+            dictionary[baseType] ?? general
+    }
+    
+    func getMidCasterTrail() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general = (width: 0.0, length: 20.0, height: 0.0)
         return
@@ -297,13 +328,13 @@ struct WheelAndCasterVerticalJointOrigin {
     
     func getDriveWheels()
         -> [PositionAsIosAxes] {
-        getLeftAndRightSide(
+        //getLeftAndRightSide(
             [(
             x: widthBetweeenWheelsOnOrigin/2,
             y: 0.0,
             z: WheelDimension(baseType).getFixedRadius().radius)
              ]
-        )
+        //)
     }
     
     func getSteerWheel()
@@ -324,18 +355,18 @@ struct WheelAndCasterVerticalJointOrigin {
     
     func getCasterwhenRearPrimaryOrigin()
     -> [PositionAsIosAxes] {
-        getLeftAndRightSide(
+        //getLeftAndRightSide(
             [(
             x: widthBetweeenWheelsOnOrigin/2,
             y: lengthBetweenFrontAndRearWheels,
             z: WheelDimension(baseType).getFrontCasterRadius().radius)
              ]
-        )
+        //)
     }
     
     func getCasterWhenAllCaster()
     -> [PositionAsIosAxes] {
-        getLeftAndRightSide(
+        //getLeftAndRightSide(
             [(
             x: widthBetweeenWheelsOnOrigin/2,
             y: 0,
@@ -344,23 +375,23 @@ struct WheelAndCasterVerticalJointOrigin {
             x: widthBetweeenWheelsOnOrigin/2,
             y: lengthBetweenFrontAndRearWheels,
             z: WheelDimension(baseType).getFrontCasterRadius().radius) ]
-        )
+        //)
     }
     
     func getCasterWhenAllSixCaster()
     -> [PositionAsIosAxes] {
-            getLeftAndRightSide(
+            //getLeftAndRightSide(
             getCasterWhenAllCaster() +
             [(
             x: widthBetweeenWheelsOnOrigin/2,
             y: lengthBetweenFrontAndRearWheels/2,
             z: WheelDimension(baseType).getFrontCasterRadius().radius)]
-        )
+        //)
     }
     
     func getCasterWhenMidPrimaryOrigin()
     -> [PositionAsIosAxes] {
-        getLeftAndRightSide(
+        //getLeftAndRightSide(
             [(
             x: widthBetweeenWheelsOnOrigin/2,
             y: -lengthBetweenFrontAndRearWheels/2,
@@ -369,31 +400,21 @@ struct WheelAndCasterVerticalJointOrigin {
             x: widthBetweeenWheelsOnOrigin/2,
             y: lengthBetweenFrontAndRearWheels/2,
             z: WheelDimension(baseType).getFrontCasterRadius().radius)]
-        )
+        //)
     }
     
     func getCasterWhenFrontPrimaryOrgin()
     -> [PositionAsIosAxes] {
-        getLeftAndRightSide(
+        //getLeftAndRightSide(
             [(
             x: widthBetweeenWheelsOnOrigin/2,
             y: -lengthBetweenFrontAndRearWheels,
             z: WheelDimension(baseType).getFrontCasterRadius().radius)
              ]
-        )
+       // )
     }
     
-    func getLeftAndRightSide (
-        _ rightSideWheelOrigin: [PositionAsIosAxes])
-    -> [PositionAsIosAxes] {
-        var positions: [PositionAsIosAxes] = []
-            for position in rightSideWheelOrigin {
-                let leftAndRight = CreateIosPosition.forLeftRightAsArrayFromPosition(position)
-                positions += leftAndRight
-            }
-        return positions
-        
-    }
+//s
 }
 
 struct CasterOrigin {
@@ -411,6 +432,20 @@ struct CasterOrigin {
             WheelDimension(baseType).getFrontCasterFork()
         let casterTrailDimension =
             WheelDimension(baseType).getFrontCasterTrail()
+        return
+            (
+                x: 0.0,
+                y: -(casterForkDimension.length + casterTrailDimension.length)/2,
+                z: -casterForkDimension.height/2)
+    }
+    
+    func forMidCasterVerticalJointToFork()
+        -> PositionAsIosAxes {
+            
+        let casterForkDimension =
+            WheelDimension(baseType).getMidCasterFork()
+        let casterTrailDimension =
+            WheelDimension(baseType).getMidCasterTrail()
         return
             (
                 x: 0.0,
@@ -438,6 +473,18 @@ struct CasterOrigin {
             
         let casterWheelDimension =
             WheelDimension(baseType).getFrontCasterDimension()
+        return
+            (
+                x: 0.0,
+                y: 0.0,
+                z: -casterWheelDimension.height/2)
+    }
+    
+    func forMidCasterForkToWheel()
+        -> PositionAsIosAxes {
+            
+        let casterWheelDimension =
+            WheelDimension(baseType).getMidCasterDimension()
         return
             (
                 x: 0.0,
