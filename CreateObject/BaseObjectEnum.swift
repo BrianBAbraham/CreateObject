@@ -77,7 +77,13 @@ struct BaseObjectGroups {
          .allCasterStretcher,
          .allCasterTiltInSpaceShowerChair]
     
-    var rearPrimaryOrigin: [BaseObjectTypes]
+    var rearPrimaryOrigin: [BaseObjectTypes] =
+    [
+     .fixedWheelManualRearDrive,
+     .fixedWheelRearDrive,
+     .scooterRearDrive3Wheeler,
+     .scooterRearDrive4Wheeler,
+     .seatThatTilts]
    
     
     let midPrimaryOrigin: [BaseObjectTypes] =
@@ -98,16 +104,23 @@ struct BaseObjectGroups {
           .scooterFrontDrive4Wheeler]
     
     let singleWheelPresent: [BaseObjectTypes] =
-    [ .scooterRearDrive3Wheeler,
-      .scooterFrontDrive3Wheeler]
+        [ .scooterRearDrive3Wheeler,
+          .scooterFrontDrive3Wheeler]
+    
+    let sixWheels: [BaseObjectTypes] =
+        [
+        .allCasterSixHoist,
+        .fixedWheelMidDrive]
+    
+    let fourWheels: [BaseObjectTypes]
     
     init() {
-        rearPrimaryOrigin =
+        fourWheels =
         [
-         .fixedWheelManualRearDrive,
-         .fixedWheelRearDrive,
-         .scooterRearDrive3Wheeler,
-         .scooterRearDrive4Wheeler,
-         .seatThatTilts]
+        .fixedWheelRearDrive,
+        .fixedWheelRearDrive,
+        .scooterRearDrive4Wheeler,
+        .scooterFrontDrive4Wheeler] +
+        allCaster
     }
 }

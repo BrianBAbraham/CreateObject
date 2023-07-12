@@ -125,8 +125,8 @@ struct ObjectDefaultOrEditedDictionaries {
         creatPostTiltObjectToPartOriginDictionary()
 
             
-//DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($0)}
-DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
+DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
         createCornerDictionary()
             
@@ -202,8 +202,8 @@ DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
                 let c7 = (x: O.x - hD.width, y: O.y + hD.length, z: O.z + hD.height)
                 let corners =
                     [ c0,c1,c2,c3,c4,c5,c6,c7]
-print(key)
-print(corners)
+//print(key)
+//print(corners)
             }
             
             /// given tilted dimensions and origins create the eight corners
@@ -778,13 +778,13 @@ print(corners)
         init(
             parent: ObjectDefaultOrEditedDictionaries) {
             
-                
-       defaultFootOrigin = PreTiltOccupantFootSupportDefaultOrigin(parent.baseType)
-        defaultBackOrigin = PreTiltOccupantBackSupportDefaultOrigin(parent.baseType)
+            defaultFootOrigin = PreTiltOccupantFootSupportDefaultOrigin(parent.baseType)
+            defaultBackOrigin = PreTiltOccupantBackSupportDefaultOrigin(parent.baseType)
                 
             getDictionary()
 
             func getDictionary() {
+                // -x, +x so .id0, .id1
                 let twoIds: [Part] = [.id0, .id1]
                 let sitOnIds = parent.oneOrTwoIds
                 var parentChildPositions: [PositionAsIosAxes]
@@ -802,7 +802,8 @@ print(corners)
                     let headSupportState =
                     parent.objectOptions[sitOnIndex][.headSupport] ?? false
         
-                    for indexForSide in [1, 0] {
+                    for indexForSide in [0, 1] {
+                        
                         parentChildPositions = []
                         //first position in array
                         parentChildPositions.append(
@@ -948,7 +949,9 @@ print(corners)
                         self.parentToPartDictionary += [name : positionOut]
                         
                         parentChildPositions.append(positionOut)
-                            
+                        
+                        //twoIds[indexForSide] assigns -x to .id0 and +x to .id1
+
                         let objectName =
                                 CreateNameFromParts(
                                     [.object, .id0] +
@@ -979,111 +982,91 @@ print(corners)
         init(
             parent: ObjectDefaultOrEditedDictionaries,
             bodySupportOrigin: PreTiltOccupantBodySupportOrigin ) {
-                self.parent = parent
-                self.bodySupportOrigin = bodySupportOrigin
                 
-                lengthBetweenFrontAndRearWheels =
-                    getLengthBetweenFrontAndRearWheels()
+            self.parent = parent
+            self.bodySupportOrigin = bodySupportOrigin
+            
+            lengthBetweenFrontAndRearWheels =
+                getLengthBetweenFrontAndRearWheels()
+            
+            let widthBetweenWheelsAtOrigin = getWidthBetweenWheels()
+            
+            wheelAndCasterVerticalJointOrigin =
+                WheelAndCasterVerticalJointOrigin(
+                     parent.baseType,
+                     lengthBetweenFrontAndRearWheels,
+                    widthBetweenWheelsAtOrigin)
+
+            let baseWheelJointIds: [Part] = getRequiredIds()
+
+            casterOrigin = CasterOrigin(parent.baseType)
+            
+            let defaultObjectToWheelBaseJointOrigin =
+                getDefaultObjecToWheelBaseJointOrigin()
                 
-                let widthBetweenWheelsAtOrigin = getWidthBetweenWheels()
-                
-                wheelAndCasterVerticalJointOrigin =
-                    WheelAndCasterVerticalJointOrigin(
-                         parent.baseType,
-                         lengthBetweenFrontAndRearWheels,
-                        widthBetweenWheelsAtOrigin)
-                
-                let ids: [Part] = [.id0, .id1, .id2, .id3]
-                
-    
+            let defaultWheelBaseJointToForkOrigin  =
+                getDefaultWheelBaseJointToForkOrigin()
+            
+            let defaultForkToCasterWheelOrigin =
+                getDefaultForkToCasterWheelOrigin()
                     
-                casterOrigin = CasterOrigin(parent.baseType)
                 
-                let defaultObjectToWheelBaseJointOrigin = getDefaultObjecToWheelBaseJointOrigin()
+                getDictionary(
+                    defaultObjectToWheelBaseJointOrigin,
+                    defaultWheelBaseJointToForkOrigin,
+                    defaultForkToCasterWheelOrigin,
+                    baseWheelJointIds) ///NB CHANGE
+                   
                     
-                let defaultWheelBaseJointToForkOrigin  =
-                    getDefaultWheelBaseJointToForkOrigin()
-                
-                let defaultForkToCasterWheelOrigin =
-                    getDefaultForkToCasterWheelOrigin()
-                        
-                    
-                    getDictionary(
-                        defaultObjectToWheelBaseJointOrigin,
-                        defaultWheelBaseJointToForkOrigin,
-                        defaultForkToCasterWheelOrigin)
-               
-                
-//                if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
-//                forRearPrimaryOrigin()
-//                }
-//
-//                if BaseObjectGroups().frontPrimaryOrigin.contains(parent.baseType) {
-//                forFrontPrimaryOrgin()
-//                }
-//
-//                if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
-//                forMidPrimaryOrigin()
-//                }
-//
-                
-                func getLengthBetweenFrontAndRearWheels ()
-                    -> Double {
-                    TwinSitOn(parent.twinSitOnOption).frontAndRearState ?
-                        bodySupportOrigin.lengthBetweenWheels.frontRearIfFrontAndRearSitOn():
-                        bodySupportOrigin.lengthBetweenWheels.frontRearIfNoFrontAndRearSitOn()
-                }
-                
-                func getWidthBetweenWheels()
-                    -> Double {
-                    
-                    let bodySupportDimension =
-                            bodySupportOrigin.occupantBodySupportsDimension
-                    let sideSupportDimension =
-                            bodySupportOrigin.occupantSideSupportsDimension
-                       
-                        let widthWithoutStability =
-                            bodySupportDimension.count == 2 ?
-                                (forIndex(0) + forIndex(1)): forIndex(0)
-                        let width = widthWithoutStability +
-                        Stability(parent.baseType).atLeft +
-                        Stability(parent.baseType).atRight
-                        
-                        func forIndex(_ id: Int) -> Double {
-                            return
-                                bodySupportDimension[id].width + sideSupportDimension[id][0].width + sideSupportDimension[id][1].width
-                        }
-                        return width
-                    }
-                
                 
                 func getDictionary(
                     _ originOfBaseContact: [PositionAsIosAxes],
                     _ originOfFork: [PositionAsIosAxes],
-                    _ originOfWheel: [PositionAsIosAxes]
+                    _ originOfWheel: [PositionAsIosAxes],
+                    _ baseWheelJointIds: [Part]
                     ) {
                     let twoIds: [Part] = [.id0, .id1]
-                    let sitOnIds: [Part] = [.id0]
+                    let onlyOneSitOnId: [Part] = [.id0]
                     var parentChildPositions: [PositionAsIosAxes]
                     
-                    for sitOnIndex in 0..<sitOnIds.count {
+                    for sitOnIndex in 0..<onlyOneSitOnId.count {
                         
-                        let sitOnId = sitOnIds[sitOnIndex]
+                        let sitOnId = onlyOneSitOnId[sitOnIndex]
+                        
+                        // fetch the origins for the base type one, two or three with +x or x =0
+                        // baseWheelJointIndex are ordered so that
+                        // each origin if a pair assigns to the next baseWheelJointIndexPair
+                       
                         
                         for indexForSide in [1,0] {
+                            
                             parentChildPositions = []
                             
                             //first positiion in array
-                            parentChildPositions.append(ZeroValue.iosLocation)
+                            parentChildPositions.append(GetValueFromDictionary(
+                                parent.preTiltObjectToPartOrigin,
+                                [.object, .id0, .stringLink, .baseWheelJoint, sitOnId, .stringLink, .sitOn, sitOnId]).value )
                             
-                            
-                            
-                        }
+                            //WheelBaseJoint
+                            for baseWheelJointId in baseWheelJointIds {
+                                addToDictionary([
+                                        .sitOn,
+                                        sitOnId,
+                                        .stringLink,
+                                        .bodySupportRotationJoint,
+                                        baseWheelJointId],
+                                        PreTiltOccupantBodySupportDefaultOrigin(parent.baseType)
+                                            .getBodySupportToBodySupportRotationJoint(),
+                                                indexForSide
+                                            )
+                            }
                         
+                        }
+                            
                         func addToDictionary(
                             _ parts: [Part],
                             _ defaultParentToPartOriginPosition: PositionAsIosAxes,
-                            _ index: Int ){
+                            _ indexForSide: Int ){
 
                             let name =
                                 CreateNameFromParts(
@@ -1095,7 +1078,7 @@ print(corners)
 
                             let positionOut =
                                 parent.preTiltObjectToPartOriginIn[name] ??
-                                defaultPositions[index]
+                                defaultPositions[indexForSide]
 
 
                             self.parentToPartDictionary += [name : positionOut]
@@ -1106,7 +1089,7 @@ print(corners)
                             let objectName =
                                     CreateNameFromParts(
                                         [.object, .id0] +
-                                        Array(parts[2...3] + [twoIds[index], .stringLink, .sitOn, sitOnId])).name
+                                        Array(parts[2...3] + [twoIds[indexForSide], .stringLink, .sitOn, sitOnId])).name
 
                             self.objectToPartDictionary +=
                                 [objectName: CreateIosPosition.addArrayOfTouples(parentChildPositions)]
@@ -1117,12 +1100,83 @@ print(corners)
                         
                 }
                 
+            
+            func getRequiredIds()
+                -> [Part]{
+                // id locations are assigned as clockwise order
+                // as visually layed out
+                //
+                // id0...id1 for two
+                //
+                // id0...id1 for three front
+                //    id2
+                //
+                //    id0    for three rear
+                // id2...id1
+                //
+                // id0...id1 for four
+                // id3...id2
+                //
+                // id0...id1 for six
+                // id5...id2
+                // id4...id3
+                //
+                // location in array with left right as pairs
+                let twoIds: [Part] = [.id0, .id1]
+                var requiredIds: [Part] = []
+                //create selection process for number of ids
+                  if BaseObjectGroups().fourWheels.contains(parent.baseType) {
+                      requiredIds = twoIds + [.id3, .id2]
+                  }
+
+                  if BaseObjectGroups().sixWheels.contains(parent.baseType) {
+                      requiredIds = twoIds + [.id5, .id2, .id4, .id3]
+                  }
+
+                  if parent.baseType == .scooterRearDrive3Wheeler {
+                      requiredIds = [.id0,.id2, .id1]
+                  }
+
+                  if parent.baseType == .scooterFrontDrive3Wheeler {
+                      requiredIds = twoIds  + [.id2]
+                  }
+                return requiredIds
             }
-        
-        
+                
+            
+                
+            func getLengthBetweenFrontAndRearWheels ()
+                -> Double {
+                TwinSitOn(parent.twinSitOnOption).frontAndRearState ?
+                    bodySupportOrigin.lengthBetweenWheels.frontRearIfFrontAndRearSitOn():
+                    bodySupportOrigin.lengthBetweenWheels.frontRearIfNoFrontAndRearSitOn()
+            }
+            
+            func getWidthBetweenWheels()
+                -> Double {
+                
+                let bodySupportDimension =
+                        bodySupportOrigin.occupantBodySupportsDimension
+                let sideSupportDimension =
+                        bodySupportOrigin.occupantSideSupportsDimension
+                   
+                    let widthWithoutStability =
+                        bodySupportDimension.count == 2 ?
+                            (forIndex(0) + forIndex(1)): forIndex(0)
+                    let width = widthWithoutStability +
+                    Stability(parent.baseType).atLeft +
+                    Stability(parent.baseType).atRight
+                    
+                    func forIndex(_ id: Int) -> Double {
+                        return
+                            bodySupportDimension[id].width + sideSupportDimension[id][0].width + sideSupportDimension[id][1].width
+                    }
+                    return width
+                }
 
+            
+        }
         
-
 
 //        func getDictionaryForFixedWheel(
 //            _ originOfBaseContact: [PositionAsIosAxes]

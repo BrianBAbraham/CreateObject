@@ -32,6 +32,7 @@ enum Part: String {
     
     
     case baseToCarryBarConnector = "baseToCarryBarConnector"
+    case baseWheelJoint = "baseWheelJoint"
 
     case overheadSupportMastBase = "overHeadSupporMastBase"
     case overheadSupportMast = "overHeadSupporMast"
@@ -70,6 +71,8 @@ enum Part: String {
     case id1 = "_id1"
     case id2 = "_id2"
     case id3 = "_id3"
+    case id4 = "_id4"
+    case id5 = "_id5"
     case fixedWheel = "fixedWheel"
     case fixedWheelPropeller = "fixedWheelPropeller"
     
