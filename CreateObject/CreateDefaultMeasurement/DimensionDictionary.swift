@@ -929,16 +929,16 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
                 //}
                     
                     func addToDictionary(
-                        _ parts: [Part],
-                        _ allPartIds: [Part],
+                        _ part: [Part],
+                        _ idsForPart: [Part],
                         _ objectToParent: PositionAsIosAxes,
                         _ defaultParentToPartOriginPosition: PositionAsIosAxes,
                         _ indicesForSide: [Int] )
                         {
                         for indexForSide in indicesForSide {
                             var parentChildPositions = [objectToParent]
-                            let partId = allPartIds[indexForSide]
-                            let partsWithId = parts + [partId]
+                            let partId = idsForPart[indexForSide]
+                            let partsWithId = part + [partId]
                             let name =
                             CreateNameFromParts(
                                 partsWithId).name
@@ -950,7 +950,7 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
                                 defaultParentToPartOriginPosition)
                             
                             let positionOut =
-                            parent.preTiltObjectToPartOriginIn[name] ??
+                            parent.preTiltParentToPartOriginIn[name] ??
                             defaultPositions[indexForSide]
                             
                             self.parentToPartDictionary += [name : positionOut]
@@ -962,7 +962,7 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
                             let objectName =
                             CreateNameFromParts(
                                 [.object, .id0] +
-                                Array(parts[2...3] + [allPartIds[indexForSide], .stringLink, .sitOn, sitOnId])).name
+                                Array(part[2...3] + [idsForPart[indexForSide], .stringLink, .sitOn, sitOnId])).name
                             
                             self.objectToPartDictionary +=
                             [objectName: CreateIosPosition.addArrayOfTouples(parentChildPositions)]
