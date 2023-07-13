@@ -180,6 +180,15 @@ struct CreateIosPosition {
              (x: p.x, y: p.y, z: p.z)]
         }
     
+//    static func forLeftRightAsArrayFromPositionIfNonZeroX(
+//        _ p: PositionAsIosAxes )
+//    -> [PositionAsIosAxes]{
+//        p.x == 0.0 ?
+//            [p]:
+//            [(x: -p.x, y: p.y, z: p.z ),
+//             (x: p.x, y: p.y, z: p.z)]
+//        }
+    
     static func byExtractingLeftRightOfAsArray(_ position: LeftRightPositionAsIosAxis  ) -> [PositionAsIosAxes] {
         [position.left, position.right]
     }
