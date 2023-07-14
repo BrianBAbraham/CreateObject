@@ -56,6 +56,7 @@ enum Part: String {
     case casterWheelAtCenter = "casterWheelAtCenter"
     case casterWheelAtFront = "casterWheelAtFront"
     case casterWheelAtRear = "casterWheelAtRear"
+    case casterWheel = "casterWheel"
     case ceiling = "ceiling"
     
     case centreToFront = "centreToFront"
