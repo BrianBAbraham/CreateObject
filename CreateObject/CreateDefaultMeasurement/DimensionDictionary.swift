@@ -69,21 +69,22 @@ struct Root {
         _ sitOnId: Part)
         -> [[Part]] {
         var idPairs: [[Part]] = []
-        for nodePair in nodePairs {
+        let mayBeOneId = 0
+        for index in 0..<nodePairs.count {
             idPairs.append(
-                getNodeId(nodePair, partId, sitOnId ) )
+                getNodeId(nodePairs[index], partId, sitOnId ) )
         }
         
         func getNodeId (
             _ nodePair: [Part],
-            _ partId: Part,
+            _ partIds: Part,
             _ sitOnId: Part)
         -> [Part] {
             [
             nodePair[0] == .object ?
-                .id0: (nodePair[0] == Part.sitOn ? sitOnId: partId),
+                .id0: (nodePair[0] == Part.sitOn ? sitOnId: partIds),
             nodePair[1] == .object ?
-                .id0: (nodePair[1] == Part.sitOn ? sitOnId: partId)]
+                .id0: (nodePair[1] == Part.sitOn ? sitOnId: partIds)]
         }
         return idPairs
     }
@@ -95,8 +96,8 @@ struct Root {
         -> [String]{
             var nodePairNames: [String] = []
             for index in 0..<nodePairs.count {
-                let firstId = idPairs[index][0]
-                let secondId = idPairs[index][1]
+//                let firstId = idPairs[index][0]
+//                let secondId = idPairs[index][1]
                 let name =
                     CreateNameFromParts( [
                         nodePairs[index][0],
@@ -115,14 +116,48 @@ struct Root {
     
     func getNamesFromNodePairsToDeepestRoot(
         _ allNodes: [Part],
-        _ partId: Part,
-        _ sitOnId: Part)
+        _ partIds: [[Part]])
         -> [String] {
-            let fromFirstNode = [Part.object] + allNodes
-            let nodePairsToDeepestRoot = getNodePairsToDeepestRoot(fromFirstNode)
-            let idPairsToDeepestRoot = getIdPairsToDeepestRoot(nodePairsToDeepestRoot, partId, sitOnId)
-            return
-                getNamesFromNodePairs(nodePairsToDeepestRoot, idPairsToDeepestRoot, sitOnId)
+
+            let sitOnId = partIds[0][0]
+            let fromFirstNodeFromObject = [Part.object] + allNodes
+            let nodePairsToDeepestRootForIdZero =
+                    getNodePairsToDeepestRoot(fromFirstNodeFromObject)
+            let idPairsToDeepestRootForIdZero: [[Part]] =
+                    Array(repeating: [.id0,.id0], count: nodePairsToDeepestRootForIdZero.count)
+            
+            let namesForIdZero =
+                getNamesFromNodePairs(
+                    nodePairsToDeepestRootForIdZero,
+                    idPairsToDeepestRootForIdZero,
+                    sitOnId)
+//                    getIdPairsToDeepestRoot(
+//                    nodePairsToDeepestRoot,
+//                    .id0, .id0)
+            
+            var allNodesForIdOne: [Part] = [.object]
+            var idPairsToDeepestRootForIdOne: [[Part]] = []
+            //var partIdsWhichHaveLeftRight: [[Part]] = []
+            for index in 0..<allNodes.count {
+                if partIds[index].count == 2 {
+                    allNodesForIdOne.append(allNodes[index])
+                    idPairsToDeepestRootForIdOne.append([.id1,.id1])
+                }
+            }
+            
+            let nodePairsToDeepestRootForIdOne =
+                getNodePairsToDeepestRoot(allNodesForIdOne)
+           
+            let namesForIdOne =
+            getNamesFromNodePairs(
+                nodePairsToDeepestRootForIdOne,
+                idPairsToDeepestRootForIdOne,
+                sitOnId)
+            
+            
+            
+            return namesForIdZero + namesForIdOne
+                
     }
 }
 
@@ -849,12 +884,22 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
         var objectToPartDictionary: PositionDictionary = [:]
         let defaultFootOrigin: PreTiltOccupantFootSupportDefaultOrigin
         let defaultBackOrigin: PreTiltOccupantBackSupportDefaultOrigin
+        let defaultSideOrigin: PreTiltOccupantSideSupportDefaultOrigin
+        //let defaultBodySupport: PreTiltOccupantBodySupportOrigin
         
         init(
             parent: ObjectDefaultOrEditedDictionaries) {
             
+//            defaultBodySupport =
+//                PreTiltOccupantBodySupportOrigin(parent: parent)
+            
             defaultFootOrigin = PreTiltOccupantFootSupportDefaultOrigin(parent.baseType)
+                
             defaultBackOrigin = PreTiltOccupantBackSupportDefaultOrigin(parent.baseType)
+                
+            defaultSideOrigin =
+                PreTiltOccupantSideSupportDefaultOrigin(parent.baseType)
+            
             let allPartIds = getAllPartIds()
                 
             getDictionary(allPartIds)
@@ -883,7 +928,7 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
                     parentChildPositions = []
                     //first position in array
                     //parentChildPositions.append(
-                let objectToParent =
+                let objectToSitOn =
                         GetValueFromDictionary(
                             parent.preTiltObjectToPartOrigin,
                             [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value //)
@@ -961,57 +1006,99 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
 //                        [0, 1])
                     
 
+                let leftRightId: [Part] = [.id0, .id1]
+                let centreId: [Part] = [.id0]
+                var footSupportInOneOrTwoPieces: Part
+                var footJointToFootSupportOrigin: PositionAsIosAxes
+                var footSupportIds: [Part]
                 
-                
-                
-                
-                
-                let footSupportInOneOrTwoPieces: Part =
-                    footPlateInOnePieceState ?
-                        .footSupportInOnePiece:
+                if footPlateInOnePieceState {
+                    footSupportInOneOrTwoPieces =
+                        .footSupportInOnePiece
+                    footJointToFootSupportOrigin =
+                        defaultFootOrigin.getJointToOnePieceFoot()
+                    footSupportIds =
+                        centreId
+                } else {
+                    footSupportInOneOrTwoPieces =
                         .footSupport
+                    footJointToFootSupportOrigin =
+                        defaultFootOrigin.getJointToTwoPieceFoot()
+                    footSupportIds =
+                        leftRightId
+                }
+                
+                
+              
                 let allFootSupportNodes: [Part] =
                     [
                     .sitOn,
                     .footSupportHangerJoint,
                     .footSupportJoint,
-                    footSupportInOneOrTwoPieces
-                    ]
+                    footSupportInOneOrTwoPieces]
+                let allFootSupportOrign =
+                    [
+                    objectToSitOn,
+                    defaultFootOrigin.getSitOnToHangerJoint(),
+                    defaultFootOrigin.getHangerJointToFootJoint(),
+                    footJointToFootSupportOrigin]
+         
+                let allFootSupportIds =
+                    [
+                    [sitOnId],
+                    leftRightId,
+                    leftRightId,
+                    footSupportIds]
                 
                 let allSideSupportNodes: [Part] =
                     [
                     .sitOn,
                     .sideSupportRotationJoint,
-                    .sideSupport
-                    ]
-
+                    .sideSupport]
+                let allSideSupportOrigin =
+                    [
+                    objectToSitOn,
+                    defaultSideOrigin.getSitOnToSideSupportRotationJoint(),
+                    defaultSideOrigin.getSideSupportRotationJointToSideSupport()]
+                let allSideSupportIds =
+                    [
+                    leftRightId,
+                    leftRightId]
+                
                 let allBackSupportNodes: [Part] =
                     [
                     .sitOn,
                     .backSupporRotationJoint,
                     .backSupport,
-                    .backSupportHeadSupportJoint
-                    ]
+                    .backSupportHeadSupportJoint]
                 let allBackSupportOrigin =
-                [
-                    //parent.PreTiltOccupantBodySupportOrigin(parent.baseType).origin[0],
-                    defaultBackOrigin.getSitOnToBackSupportRotationJoint()
+                    [
+                    objectToSitOn,
+                    defaultBackOrigin.getSitOnToBackSupportRotationJoint(),
+                    defaultBackOrigin.getRotationJointToBackSupport(),
+                    defaultBackOrigin.getBackSupportToHeadLinkRotationJoint()]
+                let allBackSupportIds =
+                    [
+                    [sitOnId],
+                    centreId,
+                    centreId,
+                    centreId]
                 
-                ]
-                
-    for id in [Part.id0, Part.id1] {
-        print(
+//    for id in [Part.id0, Part.id1] {
+//        print(
             //Root().getNamesFromNodePairsToDeepestRoot(allFootSupportNodes, id, sitOnId ),
            // Root().getNamesFromNodePairsToDeepestRoot(allSideSupportNodes, id, sitOnId )
-        )
-    }
+//        )
+//    }
                 
-    for id in [Part.id0] {
+//    for id in [Part.id0] {
         print(
          
-            Root().getNamesFromNodePairsToDeepestRoot(allBackSupportNodes, id, sitOnId )
+            Root().getNamesFromNodePairsToDeepestRoot(
+                allFootSupportNodes,
+                allFootSupportIds )
         )
-    }
+    //}
                 
                 
                 
@@ -1023,7 +1110,7 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
                         .stringLink,
                         .footSupportHangerJoint],
                         allPartIds,
-                        objectToParent,
+                        objectToSitOn,
                         defaultFootOrigin
                             .getSitOnToHangerJoint(),
                         [0, 1])
