@@ -138,6 +138,15 @@ struct CreateIosPosition {
         (x: -touple.x, y: -touple.y, z: touple.z)
     }
     
+    static func getLeftFromRight (
+        _ right: PositionAsIosAxes)
+        -> PositionAsIosAxes{
+        (
+            x: -right.x,
+            y: right.y,
+            z: right.z)
+    }
+    
     static func forLeftRight(
         x: Double = 0.0,
         y: Double = 0.0,
