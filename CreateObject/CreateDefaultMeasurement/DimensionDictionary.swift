@@ -1143,6 +1143,13 @@ struct ObjectDefaultOrEditedDictionaries {
                     leftRightId,
                     leftRightId,
                     footSupportIds]
+                parentToPartDictionary +=
+                CreateParentToPartOriginDictionary(
+                    origin: allFootSupportOrign,
+                    partIds: allFootSupportIds,
+                    partNodes: allFootSupportNodes
+                ).get()
+                
                 
                 let allSideSupportNodes: [Part] =
                     [
@@ -1156,8 +1163,17 @@ struct ObjectDefaultOrEditedDictionaries {
                     defaultSideOrigin.getSideSupportRotationJointToSideSupport()]
                 let allSideSupportIds =
                     [
+                    [sitOnId],
                     leftRightId,
                     leftRightId]
+                parentToPartDictionary +=
+                CreateParentToPartOriginDictionary(
+                    origin: allSideSupportOrigin,
+                    partIds: allSideSupportIds,
+                    partNodes: allSideSupportNodes
+                ).get()
+                
+                
                 
                 let allBackSupportNodes: [Part] =
                     [
@@ -1177,45 +1193,34 @@ struct ObjectDefaultOrEditedDictionaries {
                     centreId,
                     centreId,
                     centreId]
+                parentToPartDictionary +=
+                CreateParentToPartOriginDictionary(
+                    origin: allBackSupportOrigin,
+                    partIds: allBackSupportIds,
+                    partNodes: allBackSupportNodes
+                ).get()
                 
-//    for id in [Part.id0, Part.id1] {
-//        print(
-            //Root().getNamesFromNodePairsToDeepestRoot(allFootSupportNodes, id, sitOnId ),
-           // Root().getNamesFromNodePairsToDeepestRoot(allSideSupportNodes, id, sitOnId )
-//        )
-//    }
+
+
                 
-//    for id in [Part.id0] {
-        //print(
-            let originDictionary =
-            CreateParentToPartOriginDictionary(
-                origin: allFootSupportOrign,
-                partIds: allFootSupportIds,
-                partNodes: allFootSupportNodes
-            ).get()
+DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
                 
-DictionaryInArrayOut().getNameValue( originDictionary).forEach{print($0)}
-                
-//            Root().getNamesFromNodePairsToDeepestRoot(
-//                allFootSupportNodes,
-//                allFootSupportIds )
-        //)
-    //}
+
                 
                 
                 
                 
                 //FOOT
-                    addToDictionary([
-                        .sitOn,
-                        sitOnId,
-                        .stringLink,
-                        .footSupportHangerJoint],
-                        allPartIds,
-                        objectToSitOn,
-                        defaultFootOrigin
-                            .getSitOnToHangerJoint(),
-                        [0, 1])
+//                    addToDictionary([
+//                        .sitOn,
+//                        sitOnId,
+//                        .stringLink,
+//                        .footSupportHangerJoint],
+//                        allPartIds,
+//                        objectToSitOn,
+//                        defaultFootOrigin
+//                            .getSitOnToHangerJoint(),
+//                        [0, 1])
                     
 //                    addToDictionary([
 //                        .footSupportHangerJoint,
@@ -1253,46 +1258,46 @@ DictionaryInArrayOut().getNameValue( originDictionary).forEach{print($0)}
                 
 
                 
-                    func addToDictionary(
-                        _ part: [Part],
-                        _ idsForPart: [Part],
-                        _ objectToParent: PositionAsIosAxes,
-                        _ defaultParentToPartOriginPosition: PositionAsIosAxes,
-                        _ indicesForSide: [Int] )
-                        {
-                        for indexForSide in indicesForSide {
-                            var parentChildPositions = [objectToParent]
-                            let partId = idsForPart[indexForSide]
-                            let partsWithId = part + [partId]
-                            let name =
-                            CreateNameFromParts(
-                                partsWithId).name
-                            
-                            // returns -x, +x for +x input
-                            // unless x=0, returns x=0, x=0
-                            let defaultPositions =
-                            CreateIosPosition.forLeftRightAsArrayFromPosition(
-                                defaultParentToPartOriginPosition)
-                            
-                            let positionOut =
-                            parent.preTiltParentToPartOriginIn[name] ??
-                            defaultPositions[indexForSide]
-                            
-                            self.parentToPartDictionary += [name : positionOut]
-                            
-                            parentChildPositions.append(positionOut)
-                            
-                            //twoIds[indexForSide] assigns -x to .id0 and +x to .id1
-                            print(parentChildPositions)
-                            let objectName =
-                            CreateNameFromParts(
-                                [.object, .id0] +
-                                Array(part[2...3] + [idsForPart[indexForSide], .stringLink, .sitOn, sitOnId])).name
-                            
-                            self.objectToPartDictionary +=
-                            [objectName: CreateIosPosition.addArrayOfTouples(parentChildPositions)]
-                        }
-                    }
+//                    func addToDictionary(
+//                        _ part: [Part],
+//                        _ idsForPart: [Part],
+//                        _ objectToParent: PositionAsIosAxes,
+//                        _ defaultParentToPartOriginPosition: PositionAsIosAxes,
+//                        _ indicesForSide: [Int] )
+//                        {
+//                        for indexForSide in indicesForSide {
+//                            var parentChildPositions = [objectToParent]
+//                            let partId = idsForPart[indexForSide]
+//                            let partsWithId = part + [partId]
+//                            let name =
+//                            CreateNameFromParts(
+//                                partsWithId).name
+//                            
+//                            // returns -x, +x for +x input
+//                            // unless x=0, returns x=0, x=0
+//                            let defaultPositions =
+//                            CreateIosPosition.forLeftRightAsArrayFromPosition(
+//                                defaultParentToPartOriginPosition)
+//                            
+//                            let positionOut =
+//                            parent.preTiltParentToPartOriginIn[name] ??
+//                            defaultPositions[indexForSide]
+//                            
+//                            self.parentToPartDictionary += [name : positionOut]
+//                            
+//                            parentChildPositions.append(positionOut)
+//                            
+//                            //twoIds[indexForSide] assigns -x to .id0 and +x to .id1
+//                            print(parentChildPositions)
+//                            let objectName =
+//                            CreateNameFromParts(
+//                                [.object, .id0] +
+//                                Array(part[2...3] + [idsForPart[indexForSide], .stringLink, .sitOn, sitOnId])).name
+//                            
+//                            self.objectToPartDictionary +=
+//                            [objectName: CreateIosPosition.addArrayOfTouples(parentChildPositions)]
+//                        }
+//                    }
                 }
             }
         }
@@ -1438,13 +1443,7 @@ DictionaryInArrayOut().getNameValue( originDictionary).forEach{print($0)}
                             parentChildPositions.append(positionOut)
 
 
-//                            let objectName =
-//                                    CreateNameFromParts(
-//                                        [.object, .id0] +
-//                                        Array(parts[2...3] + [twoIds[indexForSide], .stringLink, .sitOn, sitOnId])).name
-//
-//                            self.objectToPartDictionary +=
-//                                [objectName: CreateIosPosition.addArrayOfTouples(parentChildPositions)]
+
 
                         }
 
