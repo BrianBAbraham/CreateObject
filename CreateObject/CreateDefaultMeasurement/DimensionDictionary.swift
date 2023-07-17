@@ -51,7 +51,16 @@ struct DimensionDictionary {
 }
 
 
+/// The parts have a root like structure
+/// each node forms a pair with its neighbour
+///  the neighbour pairs require the correct ids
+///  for left and centre id is id0
+///  for right id is id1
+///   object is always id0
+///   sitOn varies as seit o n
 struct Root {
+    
+    // from array to [ [array[0], array[1]], [array[1], array[2]] and etc ]
     func getNodePairsToDeepestRoot (
         _ allNodes: [Part])
         -> [[Part]] {
@@ -63,31 +72,6 @@ struct Root {
         return nodePairs
     }
     
-    func getIdPairsToDeepestRoot (
-        _ nodePairs: [[Part]],
-        _ partId: Part,
-        _ sitOnId: Part)
-        -> [[Part]] {
-        var idPairs: [[Part]] = []
-        let mayBeOneId = 0
-        for index in 0..<nodePairs.count {
-            idPairs.append(
-                getNodeId(nodePairs[index], partId, sitOnId ) )
-        }
-        
-        func getNodeId (
-            _ nodePair: [Part],
-            _ partIds: Part,
-            _ sitOnId: Part)
-        -> [Part] {
-            [
-            nodePair[0] == .object ?
-                .id0: (nodePair[0] == Part.sitOn ? sitOnId: partIds),
-            nodePair[1] == .object ?
-                .id0: (nodePair[1] == Part.sitOn ? sitOnId: partIds)]
-        }
-        return idPairs
-    }
     
     func getNamesFromNodePairs(
         _ nodePairs: [[Part]],
@@ -96,8 +80,6 @@ struct Root {
         -> [String]{
             var nodePairNames: [String] = []
             for index in 0..<nodePairs.count {
-//                let firstId = idPairs[index][0]
-//                let secondId = idPairs[index][1]
                 let name =
                     CreateNameFromParts( [
                         nodePairs[index][0],
@@ -115,71 +97,114 @@ struct Root {
     }
     
     
+    func getIdPairs(
+        _ partId: Part,
+        _ sitOnId: Part,
+        _ nodePairsToDeepestRoot: [[Part]])
+        -> [[Part]]{
+            var idPairs: [[Part]] = []
+            for nodePair in nodePairsToDeepestRoot {
+                let firstId = nodePair[0] == .sitOn ? sitOnId: partId
+                let SecondId = nodePair[1] == .sitOn ? sitOnId: partId
+                idPairs.append([firstId,SecondId])
+            }
+            return idPairs
+    }
+    
+    
+    func getIdPairsForRight(
+        _ sitOnId: Part,
+        _ nodePairsToDeepestRoot: [[Part]],
+        _ partIds: [[Part]] )
+        -> [[Part]]{
+            var idPairs: [[Part]] = []
+            for index in 0..<nodePairsToDeepestRoot.count {
+                let firstId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: .id1
+                let SecondId = nodePairsToDeepestRoot[index][1] == .sitOn ? sitOnId: .id1
+                
+                if partIds[index].count == 2 {
+                    idPairs.append([firstId,SecondId])
+                }
+                
+            }
+            
+            return idPairs
+    }
+    
+    
     func getNamesFromNodePairsToDeepestRootForLeftOrCentre(
-        _ allNodes: [Part],
+        _ nodePairsToDeepestRoot: [[Part]],
         _ partIds: [[Part]],
         _ sitOnId: Part)
         -> [String] {
-           
-            let fromFirstNodeFromObject = [Part.object] + allNodes
-            let nodePairsToDeepestRootForIdZero =
-                    getNodePairsToDeepestRoot(fromFirstNodeFromObject)
-            let idPairsToDeepestRootForIdZero: [[Part]] =
-                    Array(repeating: [.id0,.id0], count: nodePairsToDeepestRootForIdZero.count)
             
+            let idPairsToDeepestRoot: [[Part]] =
+                getIdPairs(.id0, sitOnId, nodePairsToDeepestRoot)
             return
                 getNamesFromNodePairs(
-                    nodePairsToDeepestRootForIdZero,
-                    idPairsToDeepestRootForIdZero,
+                    nodePairsToDeepestRoot,
+                    idPairsToDeepestRoot,
                     sitOnId)
     }
     
-    func getNamesFromNodePairsToDeepestRootForRight(
-        _ allNodes: [Part],
+    
+   func getNamesFromNodePairsToDeepestRootForRight(
+        _ nodePairsToDeepestRoot: [[Part]],
         _ partIds: [[Part]],
         _ sitOnId: Part)
         -> [String] {
-        var allNodesForIdOne: [Part] = [.object, .sitOn]
-
-        for index in 0..<allNodes.count {
+        let idPairs =
+        getIdPairsForRight(
+            sitOnId,
+            nodePairsToDeepestRoot,
+            partIds
+        )
+        var allNodePairForIdOne: [[Part]] =  []
+        
+        for index in 0..<nodePairsToDeepestRoot.count {
             if partIds[index].count == 2 {
-                allNodesForIdOne.append(allNodes[index])
+                allNodePairForIdOne.append(nodePairsToDeepestRoot[index])
             }
         }
-       
-        let nodePairsToDeepestRootForIdOne =
-            getNodePairsToDeepestRoot(allNodesForIdOne)
-        var idPairsToDeepestRootForIdOne: [[Part]] =
-                Array(repeating: [.id1,.id1], count: nodePairsToDeepestRootForIdOne.count)
         return
             getNamesFromNodePairs(
-                nodePairsToDeepestRootForIdOne,
-                idPairsToDeepestRootForIdOne,
+                allNodePairForIdOne,
+                idPairs,
                 sitOnId)
     }
-            
-    func getNamesFromNodePairsToDeepestRoot(
+       
+        
+    func getNamesFromNodePairsToDeepestRoot (
         _ allNodes: [Part],
         _ partIds: [[Part]])
         -> [String] {
-
-            let sitOnId = partIds[0][0]
-            
-            return
-                getNamesFromNodePairsToDeepestRootForLeftOrCentre(
-                    allNodes,
-                    partIds,
-                    sitOnId
-                    )
-                +
-                getNamesFromNodePairsToDeepestRootForRight(
-                    allNodes,
-                    partIds,
-                    sitOnId
-                    )
+        
+        let sitOnId = partIds[0][0]
+        
+        let allNodeFromObject = [Part.object] + allNodes
+        
+        // from array to [ [array[0], array[1]], [array[1], array[2]] and etc ]
+        let nodePairsToDeepestRoot =
+        getNodePairsToDeepestRoot(allNodeFromObject)
+        
+        
+        return
+            getNamesFromNodePairsToDeepestRootForLeftOrCentre(
+                nodePairsToDeepestRoot,
+                partIds,
+                sitOnId)
+            +
+            getNamesFromNodePairsToDeepestRootForRight(
+                nodePairsToDeepestRoot,
+                partIds,
+                sitOnId)
+        
     }
-    
 }
+
+
+
+
 
 
 struct AddLeftToRightOrigin {
@@ -199,7 +224,7 @@ struct AddLeftToRightOrigin {
     }
 }
 
-struct CreateOriginDictionary {
+struct CreateParentToPartOriginDictionary {
     let origin: [PositionAsIosAxes]
     let partIds: [[Part]]
     let partNodes: [Part]
@@ -207,18 +232,17 @@ struct CreateOriginDictionary {
     
     func get()
         -> PositionDictionary{
+            
         let names =
             Root().getNamesFromNodePairsToDeepestRoot(
-                partNodes,
-                partIds)
-            print(names.count)
+                    partNodes,
+                    partIds)
             
         let allOrigin =
                 AddLeftToRightOrigin(
                     origin: origin,
                     partIds: partIds).get()
-//WHY ARE THERE MORE NAMES THAN ORIGINS?
-            print(allOrigin.count)
+
         
         var dictionary: PositionDictionary = [:]
 
@@ -229,6 +253,8 @@ struct CreateOriginDictionary {
         return dictionary
     }
 }
+
+
 
 //MARK: - PARENT
 //
@@ -303,7 +329,7 @@ struct ObjectDefaultOrEditedDictionaries {
         creatPostTiltObjectToPartOriginDictionary()
 
             
-DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
         createCornerDictionary()
@@ -1160,16 +1186,20 @@ DictionaryInArrayOut().getNameValue( postTiltObjectToPartOrigin).forEach{print($
 //    }
                 
 //    for id in [Part.id0] {
-        print(
-            CreateOriginDictionary(
+        //print(
+            let originDictionary =
+            CreateParentToPartOriginDictionary(
                 origin: allFootSupportOrign,
                 partIds: allFootSupportIds,
                 partNodes: allFootSupportNodes
             ).get()
+                
+DictionaryInArrayOut().getNameValue( originDictionary).forEach{print($0)}
+                
 //            Root().getNamesFromNodePairsToDeepestRoot(
 //                allFootSupportNodes,
 //                allFootSupportIds )
-        )
+        //)
     //}
                 
                 
