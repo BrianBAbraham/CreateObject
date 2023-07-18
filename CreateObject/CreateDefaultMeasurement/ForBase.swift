@@ -327,94 +327,93 @@ struct WheelAndCasterVerticalJointOrigin {
     }
     
     func getDriveWheels()
-        -> [PositionAsIosAxes] {
-        //getLeftAndRightSide(
-            [(
+        -> PositionAsIosAxes {
+            (
             x: widthBetweeenWheelsOnOrigin/2,
             y: 0.0,
             z: WheelDimension(baseType).getFixedRadius().radius)
-             ]
-        //)
     }
     
-    func getSteerWheel()
+    func getFrontSteerWheelWhenDriveAtRear()
+    -> PositionAsIosAxes {
+        (
+        x: 0.0,
+        y: lengthBetweenFrontAndRearWheels,
+        z: WheelDimension(baseType).getFixedRadius().radius)
+    }
+    
+    func getFrontSteerWheelWhenDriveAtFront()
     -> [PositionAsIosAxes] {
-        baseType == .scooterRearDrive3Wheeler ?
         [(
             x: 0.0,
             y: -lengthBetweenFrontAndRearWheels,
-            z: WheelDimension(baseType).getFixedRadius().radius)
-        ] :
-        [(
-            x: 0.0,
-            y: lengthBetweenFrontAndRearWheels,
             z: WheelDimension(baseType).getFixedRadius().radius)
         ]
         
     }
     
-    func getCasterwhenRearPrimaryOrigin()
-    -> [PositionAsIosAxes] {
-        //getLeftAndRightSide(
-            [(
-            x: widthBetweeenWheelsOnOrigin/2,
-            y: lengthBetweenFrontAndRearWheels,
-            z: WheelDimension(baseType).getFrontCasterRadius().radius)
-             ]
-        //)
+    func getRearCasterwhenRearPrimaryOrigin()
+    -> PositionAsIosAxes {
+            getDriveWheels()
     }
     
-    func getCasterWhenAllCaster()
-    -> [PositionAsIosAxes] {
-        //getLeftAndRightSide(
-            [(
-            x: widthBetweeenWheelsOnOrigin/2,
-            y: 0,
-            z: WheelDimension(baseType).getFrontCasterRadius().radius),
+    func getFrontCasterwhenRearPrimaryOrigin()
+    -> PositionAsIosAxes {
              (
             x: widthBetweeenWheelsOnOrigin/2,
             y: lengthBetweenFrontAndRearWheels,
-            z: WheelDimension(baseType).getFrontCasterRadius().radius) ]
-        //)
+            z: WheelDimension(baseType).getFrontCasterRadius().radius)
     }
     
-    func getCasterWhenAllSixCaster()
-    -> [PositionAsIosAxes] {
-            //getLeftAndRightSide(
-            getCasterWhenAllCaster() +
-            [(
-            x: widthBetweeenWheelsOnOrigin/2,
-            y: lengthBetweenFrontAndRearWheels/2,
-            z: WheelDimension(baseType).getFrontCasterRadius().radius)]
-        //)
-    }
+//    func getCasterWhenAllCaster()
+//    -> [PositionAsIosAxes] {
+//
+//            [(
+//            x: widthBetweeenWheelsOnOrigin/2,
+//            y: 0,
+//            z: WheelDimension(baseType).getFrontCasterRadius().radius),
+//             (
+//            x: widthBetweeenWheelsOnOrigin/2,
+//            y: lengthBetweenFrontAndRearWheels,
+//            z: WheelDimension(baseType).getFrontCasterRadius().radius) ]
+//
+//    }
     
-    func getCasterWhenMidPrimaryOrigin()
-    -> [PositionAsIosAxes] {
-        //getLeftAndRightSide(
-            [(
+//    func getCasterWhenAllSixCaster()
+//    -> [PositionAsIosAxes] {
+//
+//            getCasterWhenAllCaster() +
+//            [(
+//            x: widthBetweeenWheelsOnOrigin/2,
+//            y: lengthBetweenFrontAndRearWheels/2,
+//            z: WheelDimension(baseType).getFrontCasterRadius().radius)]
+//
+//    }
+    
+    func getRearCasterWhenMidPrimaryOrigin()
+    -> PositionAsIosAxes {
+            (
             x: widthBetweeenWheelsOnOrigin/2,
             y: -lengthBetweenFrontAndRearWheels/2,
-            z: WheelDimension(baseType).getFrontCasterRadius().radius),
+            z: WheelDimension(baseType).getFrontCasterRadius().radius)
+    }
+    
+    
+    func getFrontCasterWhenMidPrimaryOrigin()
+    -> PositionAsIosAxes {
             (
             x: widthBetweeenWheelsOnOrigin/2,
             y: lengthBetweenFrontAndRearWheels/2,
-            z: WheelDimension(baseType).getFrontCasterRadius().radius)]
-        //)
+            z: WheelDimension(baseType).getFrontCasterRadius().radius)
     }
     
-    func getCasterWhenFrontPrimaryOrgin()
-    -> [PositionAsIosAxes] {
-        //getLeftAndRightSide(
-            [(
+    func getRearCasterWhenFrontPrimaryOrgin()
+    -> PositionAsIosAxes {
+            (
             x: widthBetweeenWheelsOnOrigin/2,
             y: -lengthBetweenFrontAndRearWheels,
             z: WheelDimension(baseType).getFrontCasterRadius().radius)
-             ]
-       // )
     }
-    
-//s
 }
 
 struct CasterOrigin {
@@ -521,3 +520,70 @@ struct Stability {
 }
 
 
+struct WheelId {
+    let atMid: [Part] = [.id2, .id3]
+    var allIds: [[Part]] = []
+    let baseType: BaseObjectTypes
+    
+    init( _ baseType: BaseObjectTypes) {
+        
+        self.baseType = baseType
+        
+        // id locations are assigned as follows
+        // as visually layed out
+        //
+        // id0...id1 for two
+        //
+        // id0...id1 for three front
+        //    id2
+        //
+        //    id0    for three rear
+        // id1...id2
+        //
+        // id0...id1 for four
+        // id2...id3
+        //
+        // id0...id1 for six
+        // id2...id3
+        // id4...id5
+        //
+        func getAllIds() {
+           allIds = [getAtRear()]
+            if BaseObjectGroups().sixWheels.contains(baseType) {
+                allIds.append(atMid)
+            }
+            allIds.append(getAtFront())
+        }
+        
+        func getAtRear() -> [Part] {
+            BaseObjectGroups().singleWheelAtRear
+                    .contains(baseType) ?
+                        [.id0]: [.id0, .id1]
+        }
+        
+       
+        func getAtFront ()
+            -> [Part] {
+                var ids: [Part] = [.id2, .id3]
+                
+            if BaseObjectGroups().singleWheelAtRear
+                .contains(baseType) {
+               ids = [.id1, .id2]
+            }
+            if BaseObjectGroups().singleWheelAtFront
+                .contains(baseType) {
+               ids = [.id2]
+            }
+            if BaseObjectGroups().sixWheels
+                .contains(baseType) {
+             ids =  [.id4, .id5]
+            }
+                
+            if BaseObjectGroups().singleWheelAtFront
+                .contains(baseType) {
+              ids =  [ .id2]
+            }
+            return ids
+        }
+    }
+}
