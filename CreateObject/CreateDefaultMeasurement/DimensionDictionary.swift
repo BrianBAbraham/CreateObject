@@ -753,7 +753,7 @@ struct ObjectDefaultOrEditedDictionaries {
                     occupantBodySupportsDimension,
                     occupantFootSupportHangerLinksDimension)
                 
-            if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
+            if BaseObjectGroups().rearFixedWheel.contains(parent.baseType) {
             forRearPrimaryOrigin()
             }
                 
@@ -1324,6 +1324,18 @@ DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
         let wheelAndCasterVerticalJointOrigin: WheelAndCasterVerticalJointOrigin
         let casterOrigin: CasterOrigin
         
+        let allCasterWheelNodes:[Part] =
+            [
+            .baseWheelJoint,
+            .casterFork,
+            .casterWheel]
+        
+        let allFixedWheelNodes: [Part] =
+            [
+            .baseWheelJoint,
+            .fixedWheel]
+        
+        
         init(
             parent: ObjectDefaultOrEditedDictionaries,
             bodySupportOrigin: PreTiltOccupantBodySupportOrigin ) {
@@ -1337,61 +1349,45 @@ DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
                 let widthBetweenWheelsAtOrigin = getWidthBetweenWheels()
                 
                 wheelAndCasterVerticalJointOrigin =
-                WheelAndCasterVerticalJointOrigin(
-                    parent.baseType,
-                    lengthBetweenFrontAndRearWheels,
-                    widthBetweenWheelsAtOrigin)
-                
-              //  let allPartIds: [Part] = getAllIds()
+                    WheelAndCasterVerticalJointOrigin(
+                        parent.baseType,
+                        lengthBetweenFrontAndRearWheels,
+                        widthBetweenWheelsAtOrigin)
                 
                 casterOrigin = CasterOrigin(parent.baseType)
                 
-                //the number of origin is
-                //1 if only two wheels
-                //2 if 3 or four wheels
-                //3 if six wheels
-//                let defaultObjectToWheelBaseJointOrigin =
-//                getDefaultObjecToWheelBaseJointOrigin()
-//
-//                let defaultWheelBaseJointToForkOrigin  =
-//                getDefaultWheelBaseJointToForkOrigin()
-//
-//                let defaultForkToCasterWheelOrigin =
-//                getDefaultForkToCasterWheelOrigin()
                 
-                let allCasterWheelNodes:[Part] =
-                    [
-                    .baseWheelJoint,
-                    .casterFork,
-                    .casterWheel]
-                let allCasterWheelOrigin =
-                    [
-                    getDefaultObjectToWheelBaseJointOrigin(),
-                    getDefaultWheelBaseJointToForkOrigin(),
-                    getDefaultForkToCasterWheelOrigin()]
+                
+                func getLengthBetweenFrontAndRearWheels ()
+                    -> Double {
+                    TwinSitOn(parent.twinSitOnOption).frontAndRearState ?
+                        bodySupportOrigin.lengthBetweenWheels.frontRearIfFrontAndRearSitOn():
+                        bodySupportOrigin.lengthBetweenWheels.frontRearIfNoFrontAndRearSitOn()
+                }
+                
+                func getWidthBetweenWheels()
+                    -> Double {
+                    
+                    let bodySupportDimension =
+                            bodySupportOrigin.occupantBodySupportsDimension
+                    let sideSupportDimension =
+                            bodySupportOrigin.occupantSideSupportsDimension
+                       
+                        let widthWithoutStability =
+                            bodySupportDimension.count == 2 ?
+                                (forIndex(0) + forIndex(1)): forIndex(0)
+                        let width = widthWithoutStability +
+                        Stability(parent.baseType).atLeft +
+                        Stability(parent.baseType).atRight
+                        
+                        func forIndex(_ id: Int) -> Double {
+                            return
+                                bodySupportDimension[id].width + sideSupportDimension[id][0].width + sideSupportDimension[id][1].width
+                        }
+                        return width
+                }
+                
 
-                ///  number of elements is not constant for all base types
-                ///  values vary for front-rear postion
-                ///  vallues vary for drive type
-                    
-                
-                let allFixedWheelNodes: [Part] =
-                    [
-                    .baseWheelJoint
-                    ]
-                
-                
-                
-                
-//                getDictionary(
-//                    defaultObjectToWheelBaseJointOrigin,
-//                    defaultWheelBaseJointToForkOrigin,
-//                    defaultForkToCasterWheelOrigin,
-//                    allPartIds)
-                   
-                    
- /// objectToPart1, part1ToPart2...partNToPartN+1
-/// objectToPartN, partNToPartN+1
                 func getDictionary(
                     _ originOfWheelBaseJoint: [PositionAsIosAxes],
                     _ originOfFork: [PositionAsIosAxes],
@@ -1410,259 +1406,69 @@ DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
                         // each origin if a pair assigns to the next baseWheelJointIndexPair
                        
                         
-                        for indexForSide in [1,0] {
+                        //for indexForSide in [1,0] {
                             
-                            parentChildPositions = []
-                            
-                            //first positiion in array
-                            parentChildPositions.append(GetValueFromDictionary(
-                                parent.preTiltObjectToPartOrigin,
-                                [.object, .id0, .stringLink, .baseWheelJoint, sitOnId, .stringLink, .sitOn, sitOnId]).value )
-                            
-                            //WheelBaseJoint
-                            for baseWheelJointId in allPartIds {
-                                addToDictionary([
-                                        .object,
-                                        .id0,
-                                        .stringLink,
-                                        .baseWheelJoint,
-                                        baseWheelJointId],
-                                        PreTiltOccupantBodySupportDefaultOrigin(parent.baseType)
-                                            .getBodySupportToBodySupportRotationJoint(),
-                                                indexForSide
-                                            )
-                            }
+                         parentChildPositions = []
                         
-                        }
-                            
-                        func addToDictionary(
-                            _ parts: [Part],
-                            _ defaultParentToPartOriginPosition: PositionAsIosAxes,
-                            _ indexForSide: Int ){
-
-                            let name =
-                                CreateNameFromParts(
-                                parts).name
-
-                            let defaultPositions =
-                                CreateIosPosition.forLeftRightAsArrayFromPosition(
-                                defaultParentToPartOriginPosition)
-
-                            let positionOut =
-                                parent.preTiltObjectToPartOriginIn[name] ??
-                                defaultPositions[indexForSide]
-
-
-                            self.parentToPartDictionary += [name : positionOut]
-
-                            parentChildPositions.append(positionOut)
-
-
-
-
-                        }
-
-                    }
+                    let allRearNodes =
+                        getRearNodes()
+                    let allRearOrigin =
+                        getRearOrigin()
+                    let allRearIds =
+                        Array(repeating: WheelId(parent.baseType).atRear,
+                              count: allRearNodes.count)
+    
+                        parentToPartDictionary +=
+                            CreateParentToPartOriginDictionary(
+                                origin: allRearOrigin,
+                                partIds: allRearIds,
+                                partNodes: allRearNodes
+                                ).get()
                         
+//print(parentToPartDictionary)
                 }
-                
-                
-            func getNodes () {
-                
-                // wheelsets are created separately
-                // create rear
-                //create mid
-                //create front
-                var allIds: [[Part]] = []
-                if BaseObjectGroups().fourWheels.contains(parent.baseType) {
-                    allIds =
-                        [
-                        [.id0, .id1],
-                        [.id2, .id3] ]
-                }
-             
-                if BaseObjectGroups().sixWheels.contains(parent.baseType) {
-                    allIds =
-                    [
-                        [.id0, .id1],
-                        [.id2, .id3],
-                        [.id4, .id5] ]
+                        
+
+                func getRearNodes()
+                    -> [Part] {
+                    var allNodes: [Part] = []
+                    if BaseObjectGroups().allCaster.contains(parent.baseType) {
+                        allNodes =
+                            allCasterWheelNodes
                     }
-                
-                if BaseObjectGroups().allCaster.contains(parent.baseType) {
-                    let allNodes: [Part] =
-                        [
-                            .baseWheelJoint,
-                            .casterFork,
-                            .casterWheel]
                     
-                    
-                }
-            }
-                
-            
-
-                
-            func getLengthBetweenFrontAndRearWheels ()
-                -> Double {
-                TwinSitOn(parent.twinSitOnOption).frontAndRearState ?
-                    bodySupportOrigin.lengthBetweenWheels.frontRearIfFrontAndRearSitOn():
-                    bodySupportOrigin.lengthBetweenWheels.frontRearIfNoFrontAndRearSitOn()
-            }
-            
-            func getWidthBetweenWheels()
-                -> Double {
-                
-                let bodySupportDimension =
-                        bodySupportOrigin.occupantBodySupportsDimension
-                let sideSupportDimension =
-                        bodySupportOrigin.occupantSideSupportsDimension
-                   
-                    let widthWithoutStability =
-                        bodySupportDimension.count == 2 ?
-                            (forIndex(0) + forIndex(1)): forIndex(0)
-                    let width = widthWithoutStability +
-                    Stability(parent.baseType).atLeft +
-                    Stability(parent.baseType).atRight
-                    
-                    func forIndex(_ id: Int) -> Double {
-                        return
-                            bodySupportDimension[id].width + sideSupportDimension[id][0].width + sideSupportDimension[id][1].width
+                    if BaseObjectGroups().rearFixedWheel.contains(parent.baseType) {
+                        allNodes =
+                            allFixedWheelNodes
                     }
-                    return width
+                        return allNodes
                 }
-
-            
+                        
+                        
+                func getRearOrigin()
+                    -> [PositionAsIosAxes] {
+                        var origin: [PositionAsIosAxes] = []
+                        if BaseObjectGroups()
+                            .allCaster.contains(parent.baseType) {
+                            
+                            origin =
+                                [
+                                wheelAndCasterVerticalJointOrigin
+                                    .getRearCasterWhenRearPrimaryOrigin(),
+                                casterOrigin.forRearCasterVerticalJointToFork(),
+                                casterOrigin.forRearCasterForkToWheel() ]
+                                
+                        } else {
+                            origin =
+                                [
+                                wheelAndCasterVerticalJointOrigin
+                                    .getRightDriveWheel() ]
+                        }
+                    return origin
+                }
+            }
         }
-        
-
-//        func getDictionaryForFixedWheel(
-//            _ originOfBaseContact: [PositionAsIosAxes]
-//            ) {
-//
-//
-//
-//            }
-        
-        func getDefaultObjectToWheelBaseJointOrigin ()
-        -> [PositionAsIosAxes] {
-            var allWheelToBaseJointOrigin: [PositionAsIosAxes] = []
-            if BaseObjectGroups().allCaster.contains(parent.baseType) {
-                allWheelToBaseJointOrigin =
-                    [
-                    wheelAndCasterVerticalJointOrigin.getRearCasterwhenRearPrimaryOrigin(),
-                    wheelAndCasterVerticalJointOrigin.getFrontCasterwhenRearPrimaryOrigin()]
-            }
-            
-            if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
-                allWheelToBaseJointOrigin =
-                    [
-                    wheelAndCasterVerticalJointOrigin.getDriveWheels(),
-                    wheelAndCasterVerticalJointOrigin.getFrontCasterwhenRearPrimaryOrigin()]
-            }
-            
-            if parent.baseType == .fixedWheelMidDrive {
-                allWheelToBaseJointOrigin =
-                    [
-                    wheelAndCasterVerticalJointOrigin.getRearCasterWhenMidPrimaryOrigin(),
-                    wheelAndCasterVerticalJointOrigin.getDriveWheels(),
-                    wheelAndCasterVerticalJointOrigin.getFrontCasterWhenMidPrimaryOrigin()]
-            }
-                
-            return
-                allWheelToBaseJointOrigin
-        }
-        
-        
-
-            
-        func getDefaultWheelBaseJointToForkOrigin ()
-            -> [PositionAsIosAxes] {
-            var forkOrigin =
-                Array(repeating: ZeroValue.iosLocation, count: 3)
-                
-            if BaseObjectGroups().allCaster.contains(parent.baseType) {
-                let forkForSixCasterOrigin =
-                parent.baseType == .allCasterSixHoist ? [casterOrigin.forMidCasterVerticalJointToFork()]: []
-               
-                forkOrigin =
-                    [casterOrigin.forRearCasterVerticalJointToFork()] +
-                    forkForSixCasterOrigin +
-                    [casterOrigin.forFrontCasterVerticalJointToFork()]
- 
-            }
-            
-            if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
-                forkOrigin =
-                    [casterOrigin.forRearCasterVerticalJointToFork()]
-            }
-                
-            if BaseObjectGroups().frontPrimaryOrigin.contains(parent.baseType) {
-                forkOrigin =
-                [casterOrigin.forFrontCasterVerticalJointToFork()]
-            }
-                
-            if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
-                forkOrigin =
-                    [casterOrigin.forRearCasterVerticalJointToFork()] +
-                    [casterOrigin.forFrontCasterVerticalJointToFork()]
-            }
-                return forkOrigin
-        }
-        
-        
-        func getDefaultForkToCasterWheelOrigin ()
-            -> [PositionAsIosAxes] {
-            var forkOrigin =
-                Array(repeating: ZeroValue.iosLocation, count: 3)
-                
-            if BaseObjectGroups().allCaster.contains(parent.baseType) {
-                let forkForSixCasterOrigin =
-                parent.baseType == .allCasterSixHoist ? [casterOrigin.forMidCasterForkToWheel()]: []
-               
-                forkOrigin =
-                    [casterOrigin.forRearCasterForkToWheel()] +
-                    forkForSixCasterOrigin +
-                    [casterOrigin.forFrontCasterForkToWheel()]
- 
-            }
-            
-            if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
-                forkOrigin =
-                    [casterOrigin.forRearCasterForkToWheel()]
-            }
-                
-            if BaseObjectGroups().frontPrimaryOrigin.contains(parent.baseType) {
-                forkOrigin =
-                [casterOrigin.forFrontCasterForkToWheel()]
-            }
-                
-            if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
-                forkOrigin =
-                    [casterOrigin.forRearCasterForkToWheel()] +
-                    [casterOrigin.forFrontCasterForkToWheel()]
-            }
-                return forkOrigin
-        }
-        
-
-        
-        
-//        func forRearPrimaryOrigin() {
-//        }
-//
-//
-//        func forMidPrimaryOrigin() {
-//        }
-//
-//        func forFrontPrimaryOrgin() {
-//        }
-        
     }
-    
-
-    
-    
 }
 
 

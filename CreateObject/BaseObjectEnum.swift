@@ -69,7 +69,7 @@ case sitOn = "hair"
 
 
 struct BaseObjectGroups {
-    let allCaster: [BaseObjectTypes] =
+    let allFourCaster: [BaseObjectTypes] =
         [.allCasterBed,
          .allCasterChair,
          .allCasterHoist,
@@ -77,13 +77,16 @@ struct BaseObjectGroups {
          .allCasterStretcher,
          .allCasterTiltInSpaceShowerChair]
     
-    var rearPrimaryOrigin: [BaseObjectTypes] =
-    [
-     .fixedWheelManualRearDrive,
-     .fixedWheelRearDrive,
-     .scooterRearDrive3Wheeler,
-     .scooterRearDrive4Wheeler]
+    var rearFixedWheel: [BaseObjectTypes] =
+        [
+         .fixedWheelManualRearDrive,
+         .fixedWheelRearDrive,
+         .scooterRearDrive3Wheeler,
+         .scooterRearDrive4Wheeler]
    
+    let oneRearWheel: [BaseObjectTypes] =
+        [
+        .scooterFrontDrive3Wheeler]
     
     let midPrimaryOrigin: [BaseObjectTypes] =
         [.fixedWheelMidDrive]
@@ -115,6 +118,9 @@ struct BaseObjectGroups {
     
     let fourWheels: [BaseObjectTypes]
     let threeWheels: [BaseObjectTypes]
+    let allCaster: [BaseObjectTypes]
+    let rearPrimaryOrigin: [BaseObjectTypes]
+    let rearCaster: [BaseObjectTypes]
     
     init() {
         fourWheels =
@@ -123,10 +129,22 @@ struct BaseObjectGroups {
             .fixedWheelRearDrive,
             .scooterRearDrive4Wheeler,
             .scooterFrontDrive4Wheeler] +
-            allCaster
+            allFourCaster
         
         threeWheels =
             singleWheelAtRear +
             singleWheelAtFront
+        
+        allCaster =
+            allFourCaster +
+            [.allCasterSixHoist]
+        
+        rearPrimaryOrigin =
+            allCaster +
+            rearFixedWheel
+        
+        rearCaster =
+            allCaster +
+            [.fixedWheelMidDrive, .fixedWheelFrontDrive]
     }
 }
