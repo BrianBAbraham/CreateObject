@@ -367,6 +367,14 @@ struct WheelAndCasterVerticalJointOrigin {
              z: rearCasterJointAboveFloor)
     }
     
+    func getMidCasterWhenRearPrimaryOrigin()
+        -> PositionAsIosAxes {
+            (x: getRightDriveWheel().x,
+             y: lengthBetweenFrontAndRearWheels/2,
+             z: rearCasterJointAboveFloor)
+    }
+    
+    
     func getFrontCasterWhenRearPrimaryOrigin()
         -> PositionAsIosAxes {
              (
@@ -375,7 +383,7 @@ struct WheelAndCasterVerticalJointOrigin {
             z: frontCasterJointAboveFloor)
     }
     
-    
+    //MAARK- REQUIRES OWN z value
     func getRearCasterWhenMidPrimaryOrigin()
     -> PositionAsIosAxes {
             (

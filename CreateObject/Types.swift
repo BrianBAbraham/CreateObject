@@ -47,3 +47,8 @@ typealias BaseObjectAngleDictionary = [BaseObjectTypes: Measurement<UnitAngle>]
 typealias BaseObjectWheelSizeDictionary = [BaseObjectTypes: WheelSize]
 
 typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
+
+typealias OriginIdNodes =
+    (origin: [PositionAsIosAxes],
+     ids: [[Part]],
+     nodes: [Part])

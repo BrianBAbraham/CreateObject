@@ -88,10 +88,13 @@ struct BaseObjectGroups {
         [
         .scooterFrontDrive3Wheeler]
     
-    let midPrimaryOrigin: [BaseObjectTypes] =
+    let midCaster: [BaseObjectTypes]
+        = [.allCasterSixHoist]
+    
+    let midFixedWheel: [BaseObjectTypes] =
         [.fixedWheelMidDrive]
     
-    let frontPrimaryOrigin: [BaseObjectTypes] =
+    let frontFixedWheel: [BaseObjectTypes] =
         [.fixedWheelFrontDrive,
         .scooterFrontDrive3Wheeler,
         .scooterFrontDrive4Wheeler]
@@ -118,8 +121,12 @@ struct BaseObjectGroups {
     
     let fourWheels: [BaseObjectTypes]
     let threeWheels: [BaseObjectTypes]
+    let midWheels: [BaseObjectTypes]
     let allCaster: [BaseObjectTypes]
+    let frontPrimaryOrigin: [BaseObjectTypes]
+    let midPrimaryOrigin: [BaseObjectTypes]
     let rearPrimaryOrigin: [BaseObjectTypes]
+    let frontCaster: [BaseObjectTypes]
     let rearCaster: [BaseObjectTypes]
     
     init() {
@@ -135,6 +142,10 @@ struct BaseObjectGroups {
             singleWheelAtRear +
             singleWheelAtFront
         
+        midWheels =
+            midCaster +
+            midFixedWheel
+        
         allCaster =
             allFourCaster +
             [.allCasterSixHoist]
@@ -142,9 +153,44 @@ struct BaseObjectGroups {
         rearPrimaryOrigin =
             allCaster +
             rearFixedWheel
+        midPrimaryOrigin =
+            midFixedWheel
+        frontPrimaryOrigin =
+            frontFixedWheel
+        
+        frontCaster =
+            allCaster +
+            [.fixedWheelMidDrive, .fixedWheelRearDrive]
         
         rearCaster =
             allCaster +
             [.fixedWheelMidDrive, .fixedWheelFrontDrive]
+        
+        
     }
 }
+
+
+
+struct SupportObjectGroups {
+    
+    let forSitOn: [BaseObjectTypes] =
+        [
+            .allCasterChair,
+            .allCasterStandAid,
+            .allCasterTiltInSpaceShowerChair,
+        ] + BaseObjectGroups().twinSitOnAbility
+    
+    let forFoot: [BaseObjectTypes]
+    
+    let forBack: [BaseObjectTypes]
+    
+    init() {
+        forFoot = forSitOn
+        forBack = forSitOn
+    }
+}
+///
+///allCaster
+///
+///
