@@ -128,6 +128,7 @@ struct BaseObjectGroups {
     let rearPrimaryOrigin: [BaseObjectTypes]
     let frontCaster: [BaseObjectTypes]
     let rearCaster: [BaseObjectTypes]
+    let allDriveOrigin: [BaseObjectTypes]
     
     init() {
         fourWheels =
@@ -156,6 +157,11 @@ struct BaseObjectGroups {
         midPrimaryOrigin =
             midFixedWheel
         frontPrimaryOrigin =
+            frontFixedWheel
+        
+        allDriveOrigin =
+            rearFixedWheel +
+            midFixedWheel +
             frontFixedWheel
         
         frontCaster =
