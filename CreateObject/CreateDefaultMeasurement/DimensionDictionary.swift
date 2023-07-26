@@ -75,18 +75,21 @@ struct Root {
     
     func getNamesFromNodePairs(
         _ nodePairs: [[Part]],
-        _ idPairs: [[Part]],
+        _ idForFirstAndSecondNode: [[Part]],
         _ sitOnId: Part)
         -> [String]{
+//print(nodePairs)
+//print(idPairs)
+
             var nodePairNames: [String] = []
             for index in 0..<nodePairs.count {
                 let name =
                     CreateNameFromParts( [
                         nodePairs[index][0],
-                        idPairs[index][0],
+                        idForFirstAndSecondNode[index][0],
                         .stringLink,
                         nodePairs[index][1],
-                        idPairs[index][1],
+                        idForFirstAndSecondNode[index][1],
                         .stringLink,
                         .sitOn,
                         sitOnId
@@ -95,40 +98,69 @@ struct Root {
             }
         return nodePairNames
     }
+   
+    /// fixedRear for Left
+    ///  for fixed wheel: [wheelJoint, wheel]
+    ///  [[id0, id1], [id0, id1]]  ->  obj_wheelJoint: id0 (constant)_id1([0][0])
+    ///                   -> wheelJoint_ wheel: id1([1][0]_id1([1][0]
+    ///  for caster: [wheelJoint, casterFork, casterWheel]
+    ///  [[id2, id3], [id2, id3],[id2, id3]]  -> obj_wheelJoint: id0 (constant)_id3([0][0])
+    ///                        -> wheelJoint_casterFork: id3([0][0])_id3([1][0])
+    ///                        -> casterFork_wheel: id3([1][0])_id3([2][0])
+    
+//    func getIdForFirstAndSecondNodeForLeftOrCentre(
+//        _ sitOnId: Part,
+//        _ nodePairsToDeepestRoot: [[Part]],
+//        _ partIds: [[Part]],
+//        _ zeroForLeftOrCentreAndOneForRight: Int = 0)
+//        -> [[Part]]{
+//            var idPairs: [[Part]] = []
+//            let sideIndex = zeroForLeftOrCentreAndOneForRight
+//            for index in 0..<nodePairsToDeepestRoot.count {
+//                let firstId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: (nodePairsToDeepestRoot[index][0] == .object ? .id0: partIds[index][sideIndex] )
+//                let SecondId = nodePairsToDeepestRoot[index][sideIndex] == .sitOn ? sitOnId: partIds[index][sideIndex]
+//
+//                if partIds[index].count == 2 {
+//                    idPairs.append([firstId,SecondId])
+//                }
+//
+//            }
+//
+//            return idPairs
+//    }
+    
+    /// fixedRear for Right
+    ///  for fixed wheel: [wheelJoint, wheel]
+    ///  [[id0, id1], [id0, id1]]  ->  obj_wheelJoint: id0 (constant)_id1([0][1])
+    ///                   -> wheelJoint_ wheel: id1([1][1]_id1([1][1]
+    ///  for caster: [wheelJoint, casterFork, casterWheel]
+    ///  [[id2, id3], [id2, id3],[id2, id3]]  -> obj_wheelJoint: id0 (constant)_id3([0][1])
+    ///                        -> wheelJoint_casterFork: id3([0][1])_id3([1][1])
+    ///                        -> casterFork_wheel: id3([1][1])_id3([2][1])
     
     
-    func getIdPairs(
-        _ partId: Part,
-        _ sitOnId: Part,
-        _ nodePairsToDeepestRoot: [[Part]])
-        -> [[Part]]{
-            var idPairs: [[Part]] = []
-            for nodePair in nodePairsToDeepestRoot {
-                let firstId = nodePair[0] == .sitOn ? sitOnId: partId
-                let SecondId = nodePair[1] == .sitOn ? sitOnId: partId
-                idPairs.append([firstId,SecondId])
-            }
-            return idPairs
-    }
-    
-    
-    func getIdPairsForRight(
+    func getIdForFirstAndSecondNode(
         _ sitOnId: Part,
         _ nodePairsToDeepestRoot: [[Part]],
-        _ partIds: [[Part]] )
+        _ partIds: [[Part]],
+        _ zeroForLeftOrCentreAndOneForRight: Int)
         -> [[Part]]{
-            var idPairs: [[Part]] = []
+            var idForFirstAndSecondNode: [[Part]] = []
+            let sideIndex = zeroForLeftOrCentreAndOneForRight
             for index in 0..<nodePairsToDeepestRoot.count {
-                let firstId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: (nodePairsToDeepestRoot[index][0] == .object ? .id0: .id1 )
-                let SecondId = nodePairsToDeepestRoot[index][1] == .sitOn ? sitOnId: (.id1)
+                let firstId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: (nodePairsToDeepestRoot[index][0] == .object ? .id0: partIds[index][sideIndex] )
+                let SecondId = nodePairsToDeepestRoot[index][sideIndex] == .sitOn ? sitOnId: partIds[index][sideIndex]
                 
-                if partIds[index].count == 2 {
-                    idPairs.append([firstId,SecondId])
+                if partIds[index].count == 1 && zeroForLeftOrCentreAndOneForRight == 1 {
+                   
+                } else {
+                    idForFirstAndSecondNode.append([firstId,SecondId])
                 }
                 
             }
-            
-            return idPairs
+//
+//print(idForFirstAndSecondNode)
+            return idForFirstAndSecondNode
     }
     
     
@@ -137,13 +169,17 @@ struct Root {
         _ partIds: [[Part]],
         _ sitOnId: Part)
         -> [String] {
-            
-            let idPairsToDeepestRoot: [[Part]] =
-                getIdPairs(.id0, sitOnId, nodePairsToDeepestRoot)
+            let leftOrCentreIndex = 0
+            let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
+                getIdForFirstAndSecondNode(
+                    sitOnId,
+                    nodePairsToDeepestRoot,
+                    partIds,
+                    leftOrCentreIndex)
             return
                 getNamesFromNodePairs(
                     nodePairsToDeepestRoot,
-                    idPairsToDeepestRoot,
+                    idForFirstAndSecondNodeToDeepestRoot,
                     sitOnId)
     }
     
@@ -153,23 +189,25 @@ struct Root {
         _ partIds: [[Part]],
         _ sitOnId: Part)
         -> [String] {
-        let idPairs =
-            getIdPairsForRight(
+        let rightIndex = 1
+        let idForFirstAndSecondNodeToDeepestRoot =
+            getIdForFirstAndSecondNode(
                 sitOnId,
                 nodePairsToDeepestRoot,
-                partIds)
-        var allNodePairForIdOne: [[Part]] =  []
-        
+                partIds,
+                rightIndex)
+        var allNodePairForRight: [[Part]] =  []
+
         for index in 0..<nodePairsToDeepestRoot.count {
-            if partIds[index].count == 2 {
-                allNodePairForIdOne.append(nodePairsToDeepestRoot[index])
+            if partIds[index].count == 2 {//only centre if neq 2
+                allNodePairForRight.append(nodePairsToDeepestRoot[index])
             }
         }
 
         return
             getNamesFromNodePairs(
-                allNodePairForIdOne,
-                idPairs,
+                allNodePairForRight,
+                idForFirstAndSecondNodeToDeepestRoot,
                 sitOnId)
     }
        
@@ -181,9 +219,9 @@ struct Root {
         
             
         let sitOnId = allNodes.contains(.sitOn) ?
-            partIds[0][0]: .id0 // some roots exclude sitOn
+            partIds[0][0]: .id0 // some roots exclude sitOn so use id0
         
-        let allNodeFromObject = [Part.object] + allNodes
+        let allNodeFromObject = [Part.object] + allNodes // first node is always object
         
         // from array to [ [array[0], array[1]], [array[1], array[2]] and etc ]
         let nodePairsToDeepestRoot =
@@ -204,9 +242,43 @@ struct Root {
     }
 }
 
+struct CreateParentToPartOriginDictionary {
+    let origin: [PositionAsIosAxes]
+    let partIds: [[Part]]
+    let partNodes: [Part]
+  
+    
+    init(_ originIdNodes: OriginIdNodes) {
+        origin = originIdNodes.origin
+        partIds = originIdNodes.ids
+        partNodes = originIdNodes.nodes
+//print("CreateParentToPartOriginDictionary ")
+    }
+    
+    func get()
+        -> PositionDictionary{
+//print(partNodes)
+//print(partIds)
+        let names =
+            Root().getNamesFromNodePairsToDeepestRoot(
+                    partNodes,
+                    partIds)
+//print(names)
+        let allOrigin =
+                AddLeftToRightOrigin(
+                    origin: origin,
+                    partIds: partIds).get()
 
+// print(allOrigin)
+        var dictionary: PositionDictionary = [:]
 
-
+        for (index, key) in names.enumerated() {
+            dictionary[key] = allOrigin[index]
+        }
+  //print(dictionary)
+        return dictionary
+    }
+}
 
 
 struct AddLeftToRightOrigin {
@@ -226,45 +298,6 @@ struct AddLeftToRightOrigin {
         return origin + leftOrigin
     }
 }
-
-
-
-struct CreateParentToPartOriginDictionary {
-    let origin: [PositionAsIosAxes]
-    let partIds: [[Part]]
-    let partNodes: [Part]
-  
-    
-    init(_ originIdNodes: OriginIdNodes) {
-        origin = originIdNodes.origin
-        partIds = originIdNodes.ids
-        partNodes = originIdNodes.nodes
-    }
-    
-    func get()
-        -> PositionDictionary{
-            
-        let names =
-            Root().getNamesFromNodePairsToDeepestRoot(
-                    partNodes,
-                    partIds)
-//print(names)
-        let allOrigin =
-                AddLeftToRightOrigin(
-                    origin: origin,
-                    partIds: partIds).get()
-
- //print(allOrigin)
-        var dictionary: PositionDictionary = [:]
-
-        for (index, key) in names.enumerated() {
-            dictionary[key] = allOrigin[index]
-        }
-            
-        return dictionary
-    }
-}
-
 
 
 //MARK: - PARENT
@@ -333,7 +366,7 @@ struct ObjectDefaultOrEditedDictionaries {
             
         createOccupantSupportPostTiltDimensionDictionary()
             
-        //createPreTiltObjectToPartOriginDictionary()
+        createPreTiltObjectToPartOriginDictionary()
             
 
              
@@ -345,10 +378,12 @@ struct ObjectDefaultOrEditedDictionaries {
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
             
-            createWheelOriginDictionary()
+        //createWheelOriginDictionary()
 
             
 DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
+            
+            print("")
 //DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
         createCornerDictionary()
@@ -380,10 +415,17 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
                     allOriginIdNodesForRear
                     ).get()
             
-            preTiltParentToPartOrigin +=
-                CreateParentToPartOriginDictionary(
-                    allOriginIdNodesForFront
-                    ).get()
+//            if BaseObjectGroups().midWheels.contains(baseType) {
+//                preTiltParentToPartOrigin +=
+//                    CreateParentToPartOriginDictionary(
+//                        allOriginIdNodesForMid
+//                        ).get()
+//            }
+//
+//            preTiltParentToPartOrigin +=
+//                CreateParentToPartOriginDictionary(
+//                    allOriginIdNodesForFront
+//                    ).get()
         }
             
         // Rotations are applied
@@ -405,7 +447,7 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             preTiltObjectToPartOrigin +=
                 PreTiltOccupantBodySupportOrigin(parent: self).objectToPartDictionary
             
-            
+//print("DIC")
             let preTilt: [PreTiltOrigin] =
                 [
                 PreTiltOccupantSupportOrigin(parent: self),
@@ -1173,7 +1215,7 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
 //                        nodes: allBackSupportNodes)
 //                    ).get()
                                 
-//DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
+DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
 
                 }
             }
@@ -1280,6 +1322,7 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             let allRearIds =
                     Array(repeating: WheelId(parent.baseType).atRear,
                           count: allRearNodes.count)
+//print(allRearIds)
               return
                     (
                     origin: getRearOrigin(),
@@ -1318,6 +1361,7 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             let allFrontIds =
                     Array(repeating: WheelId(parent.baseType).atFront,
                           count: allFrontNodes.count)
+//print(allFrontIds)
             return
                 (
                 origin: getFrontOrigin(),
@@ -1380,42 +1424,55 @@ extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
     }
             
 }
-
+/// if seeking origin for rear wheel
+/// if it is a rear primaary origin
+///     caster OR fixed wheel
 // MARK: TUES LOGIC IS WRONG
 // MARK: WHEEL ORIGIN EXTENSION
 extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
+    
+    
     func getRearOrigin()
         -> [PositionAsIosAxes]{
         var rearOrigin: [PositionAsIosAxes] = []
+            
+        let forkAndCasterWheel =
+            [casterOrigin.forRearCasterVerticalJointToFork(),
+             casterOrigin.forRearCasterForkToWheel()]
+        //rear caster
         if BaseObjectGroups()
-            .rearCaster.contains(parent.baseType) {
-            if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
-                rearOrigin =
+            .allCaster.contains(parent.baseType) {
+            rearOrigin =
                 [
-                    wheelAndCasterVerticalJointOrigin
-                        .getRearCasterWhenRearPrimaryOrigin()]
-            }
-            
-            if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
-                rearOrigin =
+                wheelAndCasterVerticalJointOrigin
+                    .getRearCasterWhenRearPrimaryOrigin()] +
+                forkAndCasterWheel
+        }
+       //no rear caster if rear primary origin
+        if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
+            rearOrigin =
                 [
-                    wheelAndCasterVerticalJointOrigin
-                        .getRearCasterWhenMidPrimaryOrigin()]
-            }
-            
-            if BaseObjectGroups().frontPrimaryOrigin.contains(parent.baseType) {
-                rearOrigin =
+                wheelAndCasterVerticalJointOrigin
+                    .getRearCasterWhenMidPrimaryOrigin()] +
+                forkAndCasterWheel
+        }
+        if BaseObjectGroups().frontPrimaryOrigin.contains(parent.baseType) {
+            rearOrigin =
                 [
-                    wheelAndCasterVerticalJointOrigin
-                        .getRearCasterWhenFrontPrimaryOrgin()]
-            }
+                wheelAndCasterVerticalJointOrigin
+                    .getRearCasterWhenFrontPrimaryOrigin()] +
+                forkAndCasterWheel
         }
             
-        rearOrigin +=  rearOrigin.count == 1 ?
-            [casterOrigin.forRearCasterVerticalJointToFork(),
-             casterOrigin.forRearCasterForkToWheel()]: []
-            rearOrigin += rearOrigin.count == 0 ? getForWheelDrive(): []
-print(rearOrigin)
+            
+            
+        //fixed wheel
+        if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
+            rearOrigin =
+                getForWheelDrive()
+        }
+            
+//print(rearOrigin)
         return rearOrigin
     }
     
@@ -1423,59 +1480,75 @@ print(rearOrigin)
     func getMidOrigin()
         -> [PositionAsIosAxes] {
         var midOrigin: [PositionAsIosAxes] = []
-        if BaseObjectGroups()
-            .rearPrimaryOrigin.contains(parent.baseType) {
-            if BaseObjectGroups()
-                .rearCaster.contains(parent.baseType) {
-                midOrigin =
-                    [
-                    wheelAndCasterVerticalJointOrigin
-                        .getMidCasterWhenRearPrimaryOrigin()]
-            }
-        }
-        //for midPrimaryOrigin no objects with mid casters
-        //for frontPrimaryOrigin no objects with mid casters
-        midOrigin +=  midOrigin.count == 1 ?
+        let forkAndCasterWheel =
             [casterOrigin.forMidCasterVerticalJointToFork(),
-             casterOrigin.forMidCasterForkToWheel()]: []
-        midOrigin += midOrigin.count == 0 ? getForWheelDrive(): []
+             casterOrigin.forMidCasterForkToWheel()]
+            //rear caster
+        if BaseObjectGroups()
+            .allCaster.contains(parent.baseType) {
+            midOrigin =
+                [
+                wheelAndCasterVerticalJointOrigin
+                    .getRearCasterWhenRearPrimaryOrigin()] +
+                forkAndCasterWheel
+        }
+            
+            
+        //for midPrimaryOrigin no objects with mid casters
+        
+        //for frontPrimaryOrigin no objects with mid casters
+            
+            
+        if BaseObjectGroups()
+            .midFixedWheel.contains(parent.baseType) {
+            midOrigin =
+                getForWheelDrive()
+        }
        
         return midOrigin
     }
     
-    
+    /// if front caster rear primary OR mid primary origin
+    /// if fixed wheel
     func getFrontOrigin()
         -> [PositionAsIosAxes] {
-
         var frontOrigin: [PositionAsIosAxes] = []
+        let forkAndCasterWheel =
+            [casterOrigin.forFrontCasterVerticalJointToFork(),
+             casterOrigin.forFrontCasterForkToWheel()]
+            
         if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
                 frontOrigin =
                     [
                     wheelAndCasterVerticalJointOrigin
-                        .getFrontCasterWhenRearPrimaryOrigin()]
+                        .getFrontCasterWhenRearPrimaryOrigin()] +
+                    forkAndCasterWheel
         }
             
         if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
-            if BaseObjectGroups()
-                .rearCaster.contains(parent.baseType) {
+            
                 frontOrigin =
                     [
                     wheelAndCasterVerticalJointOrigin
-                        .getFrontCasterWhenMidPrimaryOrigin()]
-            }
+                        .getFrontCasterWhenMidPrimaryOrigin()] +
+                    forkAndCasterWheel
         }
              
         //for frontPrimaryOrigin no objects with front casters
-                                    
-        frontOrigin +=  frontOrigin.count == 1 ?
-            [casterOrigin.forFrontCasterVerticalJointToFork(),
-             casterOrigin.forFrontCasterForkToWheel()]: []
-        frontOrigin += frontOrigin.count == 0 ? getForWheelDrive(): []
+            
+        if BaseObjectGroups().frontFixedWheel.contains(parent.baseType) {
+        
+            frontOrigin =
+                getForWheelDrive()
+        }
+        
         return frontOrigin
     }
     
     func getForWheelDrive()
         -> [PositionAsIosAxes] {
+//print("for wheel drive")
+        return
            BaseObjectGroups()
                 .allDriveOrigin.contains(parent.baseType) ?
                     [

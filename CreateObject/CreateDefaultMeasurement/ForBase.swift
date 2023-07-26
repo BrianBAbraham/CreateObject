@@ -401,7 +401,7 @@ struct WheelAndCasterVerticalJointOrigin {
             z: frontCasterJointAboveFloor)
     }
     
-    func getRearCasterWhenFrontPrimaryOrgin()
+    func getRearCasterWhenFrontPrimaryOrigin()
     -> PositionAsIosAxes {
             (
             x: widthBetweeenWheelsOnOrigin/2,
