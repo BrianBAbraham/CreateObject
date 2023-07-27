@@ -306,6 +306,7 @@ struct ObjectDefaultOrEditedDictionaries {
     
     static let sitOnHeight = 500.0
     var preTiltOccupantBodySupportOrigin: PreTiltOccupantBodySupportOrigin?
+    var preTiltOccupantSupportOrigin: PreTiltOrigin?
     let preTiltDimensionIn: Part3DimensionDictionary
     var postTiltDimension: Part3DimensionDictionary = [:]
     
@@ -361,25 +362,39 @@ struct ObjectDefaultOrEditedDictionaries {
             
       
         twinSitOnState = TwinSitOn(twinSitOnOption).state
-        
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
-            
-        createOccupantSupportPostTiltDimensionDictionary()
-            
-        createPreTiltObjectToPartOriginDictionary()
-            
-
-             
+        
         angleChangeDefault =
             ObjectAngleChange(parent: self).dictionary
-        
-        creatPostTiltObjectToPartOriginDictionary()
-
+            
+        //PRE TILT
+        createPreTiltObjectToPartOriginDictionary()
+            
+            
+  
+            
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
             
-        //createWheelOriginDictionary()
+        preTiltOccupantSupportOrigin =
+         PreTiltOccupantSupportOrigin(parent: self)
+             
+        createWheelOriginDictionary()
 
+        createPreTiltParentToPartOriginDictionary()
+        
+        //POST TILT
+        createOccupantSupportPostTiltDimensionDictionary()
+            
+        creatPostTiltObjectToPartOriginDictionary()
+
+  
+
+
+            
+            
+            
+            
             
 DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
             
@@ -395,12 +410,15 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             var allOriginIdNodesForRear: OriginIdNodes
             var allOriginIdNodesForMid: OriginIdNodes
             var allOriginIdNodesForFront: OriginIdNodes
+            
             if let preTiltOccupantBodySupportOrigin {
                 wheelOrigin =
-                WheelOrigin(
-                    parent: self,
-                    bodySupportOrigin: preTiltOccupantBodySupportOrigin)
+                    WheelOrigin(
+                        parent: self,
+                        bodySupportOrigin: preTiltOccupantBodySupportOrigin)
+                
                 allOriginIdNodesForRear = wheelOrigin.allOriginIdNodesForRear
+
                 allOriginIdNodesForMid = BaseObjectGroups()
                     .sixWheels.contains(baseType) ?
                         wheelOrigin.allOriginIdNodesForMid: ZeroValue.originIdNodes
@@ -410,23 +428,87 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
                 allOriginIdNodesForMid = ZeroValue.originIdNodes
                 allOriginIdNodesForFront = ZeroValue.originIdNodes
             }
+            
             preTiltParentToPartOrigin +=
                 CreateParentToPartOriginDictionary(
                     allOriginIdNodesForRear
                     ).get()
             
-//            if BaseObjectGroups().midWheels.contains(baseType) {
-//                preTiltParentToPartOrigin +=
-//                    CreateParentToPartOriginDictionary(
-//                        allOriginIdNodesForMid
-//                        ).get()
-//            }
-//
-//            preTiltParentToPartOrigin +=
-//                CreateParentToPartOriginDictionary(
-//                    allOriginIdNodesForFront
-//                    ).get()
+            if BaseObjectGroups().midWheels.contains(baseType) {
+                preTiltParentToPartOrigin +=
+                    CreateParentToPartOriginDictionary(
+                        allOriginIdNodesForMid
+                        ).get()
+            }
+
+            preTiltParentToPartOrigin +=
+                CreateParentToPartOriginDictionary(
+                    allOriginIdNodesForFront
+                    ).get()
         }
+            
+            
+        func createPreTiltParentToPartOriginDictionary () {
+            // add sitOn position
+            if let preTiltOccupantBodySupportOrigin {
+                preTiltParentToPartOrigin +=
+                    preTiltOccupantBodySupportOrigin
+                        .parentToPartDictionary
+            }
+            
+            if let data =
+                preTiltOccupantSupportOrigin
+                    as? PreTiltOccupantSupportOrigin {
+                
+                let allOriginIdNodesForFootForBothSitOn = data.allOriginIdNodesForFootSupportForBothSitOn
+                
+                for allOriginIdNodesForFoot in allOriginIdNodesForFootForBothSitOn {
+                    preTiltParentToPartOrigin +=
+                        CreateParentToPartOriginDictionary(
+                            allOriginIdNodesForFoot
+                            ).get()
+                }
+                
+                let allOriginIdNodesForSideForBothSitOn = data.allOriginIdNodesForSideSupportForBothSitOn
+                for allOriginIdNodesForSide in allOriginIdNodesForSideForBothSitOn {
+                    preTiltParentToPartOrigin +=
+                        CreateParentToPartOriginDictionary(
+                            allOriginIdNodesForSide
+                            ).get()
+                }
+                
+//                var allOriginIdNodesForSide: OriginIdNodes
+//                var allOriginIdNodesForBack: OriginIdNodes
+                
+                
+//                preTiltParentToPartOrigin +=
+//                    preTiltOccupantSupportOrigin
+//                            .parentToPartDictionary
+            }
+        }
+  
+        func createPreTiltObjectToPartOriginDictionary() {
+            // add sitOn position
+            if let preTiltOccupantBodySupportOrigin {
+                preTiltObjectToPartOrigin +=
+                    preTiltOccupantBodySupportOrigin
+                        .objectToPartDictionary
+            }
+                
+            
+            var preTilt: [PreTiltOrigin] = []//array of structs with dictionary
+            if let preTiltOccupantSupportOrigin {
+                preTilt.append(preTiltOccupantSupportOrigin)
+            }
+              
+            for element in preTilt {
+                preTiltObjectToPartOrigin +=
+                    element.objectToPartDictionary
+            }
+        }
+            
+            
+            
             
         // Rotations are applied
         func createOccupantSupportPostTiltDimensionDictionary() {
@@ -437,28 +519,10 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             postTiltDimension += occupantSupportDimensionDictionary.forFoot
             postTiltDimension += occupantSupportDimensionDictionary.forSide
         }
-            
-  
-        func createPreTiltObjectToPartOriginDictionary() {
-            
-            //this must be assigned here and not in the array
-            //for the array elements to access the property
-            //in the struct
-            preTiltObjectToPartOrigin +=
-                PreTiltOccupantBodySupportOrigin(parent: self).objectToPartDictionary
-            
-//print("DIC")
-            let preTilt: [PreTiltOrigin] =
-                [
-                PreTiltOccupantSupportOrigin(parent: self),
-                ]
-              
-            for element in preTilt {
-                preTiltObjectToPartOrigin +=
-                    element.objectToPartDictionary
-            }
-        }
-            
+      
+
+         
+
             
         func creatPostTiltObjectToPartOriginDictionary() {
             //replace the part origin positions which are rotated with the rotated values
@@ -1068,171 +1132,287 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
     
     //MARK: FOOT/SIDE/BACK/ROTATE ORIGIN
     struct PreTiltOccupantSupportOrigin: PreTiltOrigin {
+        let parent: ObjectDefaultOrEditedDictionaries
+        
         var parentToPartDictionary: PositionDictionary = [:]
         var objectToPartDictionary: PositionDictionary = [:]
+        
+        let bilateralWidthPositionId: [Part] = [.id0, .id1]
+        let unilateralWidthPositionId: [Part] = [.id0]
+        let allPartIds:[Part] = [.id0, .id1]
         let defaultFootOrigin: PreTiltOccupantFootSupportDefaultOrigin
         let defaultBackOrigin: PreTiltOccupantBackSupportDefaultOrigin
         let defaultSideOrigin: PreTiltOccupantSideSupportDefaultOrigin
+        var sitOnId: Part = .id0
+        var objectToSitOn: PositionAsIosAxes = ZeroValue.iosLocation
+        var allOriginIdNodesForFootSupportForBothSitOn:  [OriginIdNodes]  = []
+        var allOriginIdNodesForSideSupportForBothSitOn:  [OriginIdNodes]  = []
+        var allOriginIdNodesForBackSupportForBothSitOn:  [OriginIdNodes]  = []
+        
         //let defaultBodySupport: PreTiltOccupantBodySupportOrigin
         
         init(
             parent: ObjectDefaultOrEditedDictionaries) {
-            
-//            defaultBodySupport =
-//                PreTiltOccupantBodySupportOrigin(parent: parent)
-            
-            defaultFootOrigin = PreTiltOccupantFootSupportDefaultOrigin(parent.baseType)
+                self.parent = parent
+                //            defaultBodySupport =
+                //                PreTiltOccupantBodySupportOrigin(parent: parent)
                 
-            defaultBackOrigin = PreTiltOccupantBackSupportDefaultOrigin(parent.baseType)
+                defaultFootOrigin = PreTiltOccupantFootSupportDefaultOrigin(parent.baseType)
                 
-            defaultSideOrigin =
+                defaultBackOrigin = PreTiltOccupantBackSupportDefaultOrigin(parent.baseType)
+                
+                defaultSideOrigin =
                 PreTiltOccupantSideSupportDefaultOrigin(parent.baseType)
-            
-            let allPartIds = getAllPartIds()
                 
-            getDictionary(allPartIds)
-
+                let sitOnIds = parent.oneOrTwoIds
                 
-            func getDictionary(
-                _ allPartIds: [Part]) {
-            // -x, +x so .id0, .id1
-            
-            let sitOnIds = parent.oneOrTwoIds
-             
-            for sitOnIndex in 0..<sitOnIds.count {
-                let sitOnId = sitOnIds[sitOnIndex]
-               
-                let footPlateInOnePieceState =
-                parent.objectOptions[sitOnIndex][.footSupportInOnePiece] ?? false
-                
-                let headSupportState =
-                parent.objectOptions[sitOnIndex][.headSupport] ?? false
-    
-               
-                let objectToSitOn =
-                        GetValueFromDictionary(
-                            parent.preTiltObjectToPartOrigin,
-                            [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value //)
+                for sitOnIndex in 0..<sitOnIds.count {
+                    sitOnId = sitOnIds[sitOnIndex]
                     
-
+                    //access sit on position from dictionary
+                    objectToSitOn =
+                    GetValueFromDictionary(
+                        parent.preTiltObjectToPartOrigin,
+                        [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
                     
-
-                let leftRightId: [Part] = [.id0, .id1]
-                let centreId: [Part] = [.id0]
-                var footSupportInOneOrTwoPieces: Part
-                var footJointToFootSupportOrigin: PositionAsIosAxes
-                var footSupportIds: [Part]
-                
-                if footPlateInOnePieceState {
-                    footSupportInOneOrTwoPieces =
-                        .footSupportInOnePiece
-                    footJointToFootSupportOrigin =
-                        defaultFootOrigin.getJointToOnePieceFoot()
-                    footSupportIds =
-                        centreId
-                } else {
-                    footSupportInOneOrTwoPieces =
-                        .footSupport
-                    footJointToFootSupportOrigin =
-                        defaultFootOrigin.getJointToTwoPieceFoot()
-                    footSupportIds =
-                        leftRightId
+                    allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
+                    allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex) )
+                    allOriginIdNodesForBackSupportForBothSitOn.append( getOriginIdNodesForBackSupport(sitOnIndex) )
                 }
+                
+            }
+                
+                
+                
+                
+//            func getDictionary(
+//                _ allPartIds: [Part]) {
+            // -x, +x so .id0, .id1
+             
+//            for sitOnIndex in 0..<sitOnIds.count {
+//                let sitOnId = sitOnIds[sitOnIndex]
+//
+//                let footPlateInOnePieceState =
+//                parent.objectOptions[sitOnIndex][.footSupportInOnePiece] ?? false
+//
+//                let headSupportState =
+//                parent.objectOptions[sitOnIndex][.headSupport] ?? false
+    
+               //access sit on position from dictionary
+//                let objectToSitOn =
+//                        GetValueFromDictionary(
+//                            parent.preTiltObjectToPartOrigin,
+//                            [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value //)
+//
+//                var footSupportInOneOrTwoPieces: Part
+//                var footJointToFootSupportOrigin: PositionAsIosAxes
+//                var footSupportIds: [Part]
+//
+//                if footPlateInOnePieceState {
+//                    footSupportInOneOrTwoPieces =
+//                        .footSupportInOnePiece
+//                    footJointToFootSupportOrigin =
+//                        defaultFootOrigin.getJointToOnePieceFoot()
+//                    footSupportIds =
+//                        unilateralWidthPositionId
+//                } else {
+//                    footSupportInOneOrTwoPieces =
+//                        .footSupport
+//                    footJointToFootSupportOrigin =
+//                        defaultFootOrigin.getJointToTwoPieceFoot()
+//                    footSupportIds =
+//                        bilateralWidthPositionId
+//                }
                 
                 
               
-                let allFootSupportNodes: [Part] =
-                    [
-                    .sitOn,
-                    .footSupportHangerJoint,
-                    .footSupportJoint,
-                    footSupportInOneOrTwoPieces]
-                let allFootSupportOrigin =
-                    [
-                    objectToSitOn,
-                    defaultFootOrigin.getSitOnToHangerJoint(),
-                    defaultFootOrigin.getHangerJointToFootJoint(),
-                    footJointToFootSupportOrigin]
-         
-                let allFootSupportIds =
-                    [
-                    [sitOnId],
-                    leftRightId,
-                    leftRightId,
-                    footSupportIds]
-//                parentToPartDictionary +=
-//                    CreateParentToPartOriginDictionary((
-//                        origin: allFootSupportOrigin,
-//                        ids: allFootSupportIds,
-//                        nodes: allFootSupportNodes)
-//                        ).get()
-            
-                let allSideSupportNodes: [Part] =
-                    [
-                    .sitOn,
-                    .sideSupportRotationJoint,
-                    .sideSupport]
-                let allSideSupportOrigin =
-                    [
-                    objectToSitOn,
-                    defaultSideOrigin.getSitOnToSideSupportRotationJoint(),
-                    defaultSideOrigin.getSideSupportRotationJointToSideSupport()]
-                let allSideSupportIds =
-                    [
-                    [sitOnId],
-                    leftRightId,
-                    leftRightId]
-                parentToPartDictionary +=
-                    CreateParentToPartOriginDictionary((
-                        origin: allSideSupportOrigin,
-                        ids: allSideSupportIds,
-                        nodes: allSideSupportNodes)
-                        ).get()
-                
-                let allBackSupportNodes: [Part] =
-                    [
-                    .sitOn,
-                    .backSupporRotationJoint,
-                    .backSupport,
-                    .backSupportHeadSupportJoint]
-                let allBackSupportOrigin =
-                    [
-                    objectToSitOn,
-                    defaultBackOrigin.getSitOnToBackSupportRotationJoint(),
-                    defaultBackOrigin.getRotationJointToBackSupport(),
-                    defaultBackOrigin.getBackSupportToHeadLinkRotationJoint()]
-                let allBackSupportIds =
-                    [
-                    [sitOnId],
-                    centreId,
-                    centreId,
-                    centreId]
-                
-//                parentToPartDictionary +=
-//                    CreateParentToPartOriginDictionary((
-//                        origin: allBackSupportOrigin,
-//                        ids: allBackSupportIds,
-//                        nodes: allBackSupportNodes)
-//                    ).get()
-                                
-DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
+//                let allFootSupportNodes: [Part] =
+//                    [
+//                    .sitOn,
+//                    .footSupportHangerJoint,
+//                    .footSupportJoint,
+//                    footSupportInOneOrTwoPieces]
+//                let allFootSupportOrigin =
+//                    [
+//                    objectToSitOn,
+//                    defaultFootOrigin.getSitOnToHangerJoint(),
+//                    defaultFootOrigin.getHangerJointToFootJoint(),
+//                    footJointToFootSupportOrigin]
+//
+//                let allFootSupportIds =
+//                    [
+//                    [sitOnId],
+//                    bilateralWidthPositionId,
+//                    bilateralWidthPositionId,
+//                    footSupportIds]
 
-                }
-            }
+            
+//                let allSideSupportNodes: [Part] =
+//                    [
+//                    .sitOn,
+//                    .sideSupportRotationJoint,
+//                    .sideSupport]
+//                let allSideSupportOrigin =
+//                    [
+//                    objectToSitOn,
+//                    defaultSideOrigin.getSitOnToSideSupportRotationJoint(),
+//                    defaultSideOrigin.getSideSupportRotationJointToSideSupport()]
+//                let allSideSupportIds =
+//                    [
+//                    [sitOnId],
+//                    bilateralWidthPositionId,
+//                    bilateralWidthPositionId]
+//                parentToPartDictionary +=
+//                    CreateParentToPartOriginDictionary((
+//                        origin: allSideSupportOrigin,
+//                        ids: allSideSupportIds,
+//                        nodes: allSideSupportNodes)
+//                        ).get()
+                
+//                let allBackSupportNodes: [Part] =
+//                    [
+//                    .sitOn,
+//                    .backSupporRotationJoint,
+//                    .backSupport,
+//                    .backSupportHeadSupportJoint]
+//                let allBackSupportOrigin =
+//                    [
+//                    objectToSitOn,
+//                    defaultBackOrigin.getSitOnToBackSupportRotationJoint(),
+//                    defaultBackOrigin.getRotationJointToBackSupport(),
+//                    defaultBackOrigin.getBackSupportToHeadLinkRotationJoint()]
+//                let allBackSupportIds =
+//                    [
+//                    [sitOnId],
+//                    unilateralWidthPositionId,
+//                    unilateralWidthPositionId,
+//                    unilateralWidthPositionId]
+                
+
+                                
+//DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
+//
+//                }
+//            }
+        //}
+        
+        func getOriginIdNodesForSideSupport(_ sitOnIndex: Int)
+            -> OriginIdNodes {
+            let allSideSupportNodes: [Part] =
+                [
+                .sitOn,
+                .sideSupportRotationJoint,
+                .sideSupport]
+            let allSideSupportOrigin =
+                [
+                objectToSitOn,
+                defaultSideOrigin.getSitOnToSideSupportRotationJoint(),
+                defaultSideOrigin.getSideSupportRotationJointToSideSupport()]
+            let allSideSupportIds =
+                [
+                [sitOnId],
+                bilateralWidthPositionId,
+                bilateralWidthPositionId]
+            return
+               (
+                origin: allSideSupportOrigin,
+                ids: allSideSupportIds,
+                nodes: allSideSupportNodes)
         }
         
-        func getAllPartIds()
-        -> [Part] {
-            [.id0, .id1]
+        
+        func getOriginIdNodesForBackSupport(_ sitOnIndex: Int)
+            -> OriginIdNodes {
+            let headSupportState =
+                parent.objectOptions[sitOnIndex][.headSupport] ?? false
+            let allBackSupportNodes: [Part] =
+                [
+                .sitOn,
+                .backSupporRotationJoint,
+                .backSupport,
+                .backSupportHeadSupportJoint]
+            let allBackSupportOrigin =
+                [
+                objectToSitOn,
+                defaultBackOrigin.getSitOnToBackSupportRotationJoint(),
+                defaultBackOrigin.getRotationJointToBackSupport(),
+                defaultBackOrigin.getBackSupportToHeadLinkRotationJoint()]
+            let allBackSupportIds =
+                [
+                [sitOnId],
+                unilateralWidthPositionId,
+                unilateralWidthPositionId,
+                unilateralWidthPositionId]
+            return
+                (
+                origin: allBackSupportOrigin,
+                ids: allBackSupportIds,
+                nodes: allBackSupportNodes)
         }
+        
+        
+        func getOriginIdNodesForFootSupport(_ sitOnIndex: Int)
+            -> OriginIdNodes {
+            
+            let footPlateInOnePieceState =
+            parent.objectOptions[sitOnIndex][.footSupportInOnePiece] ?? false
+            
+            var footSupportInOneOrTwoPieces: Part
+            var footJointToFootSupportOrigin: PositionAsIosAxes
+            var footSupportIds: [Part]
+            
+            if footPlateInOnePieceState {
+                footSupportInOneOrTwoPieces =
+                    .footSupportInOnePiece
+                footJointToFootSupportOrigin =
+                    defaultFootOrigin.getJointToOnePieceFoot()
+                footSupportIds =
+                    unilateralWidthPositionId
+            } else {
+                footSupportInOneOrTwoPieces =
+                    .footSupport
+                footJointToFootSupportOrigin =
+                    defaultFootOrigin.getJointToTwoPieceFoot()
+                footSupportIds =
+                    bilateralWidthPositionId
+            }
+            let allFootSupportNodes: [Part] =
+                [
+                .sitOn,
+                .footSupportHangerJoint,
+                .footSupportJoint,
+                footSupportInOneOrTwoPieces]
+            let allFootSupportOrigin =
+                [
+                objectToSitOn,
+                defaultFootOrigin.getSitOnToHangerJoint(),
+                defaultFootOrigin.getHangerJointToFootJoint(),
+                footJointToFootSupportOrigin]
+     
+            let uniOrBilateralWidthPositionIdForFootSupport =
+                [
+                [sitOnId],
+                bilateralWidthPositionId,
+                bilateralWidthPositionId,
+                footSupportIds]
+                
+            return
+                (
+                origin: allFootSupportOrigin,
+                ids: uniOrBilateralWidthPositionIdForFootSupport,
+                nodes: allFootSupportNodes)
+        }
+//
+//        func getAllPartIds()
+//        -> [Part] {
+//            [.id0, .id1]
+//        }
     }
-    /// where is the best place to manage the bilateral and single item dictiionary
-    /// at source of item or creation of dictiornary
+
 
 //MARK: WHEEL ORIGIN
     struct WheelOrigin {
-//        var parentToPartDictionary: PositionDictionary = [:]
-//        var objectToPartDictionary: PositionDictionary = [:]
+
         let lengthBetweenFrontAndRearWheels: Double
         let parent: ObjectDefaultOrEditedDictionaries
         let bodySupportOrigin: PreTiltOccupantBodySupportOrigin
@@ -1314,39 +1494,41 @@ DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
                 
 
             }
-                
+             
+     
         func getOriginIdNodesForRear()
             -> OriginIdNodes {
             let allRearNodes =
                 getRearNodes()
-            let allRearIds =
+            let uniOrBilateralWidthPositionIdAtRear =
                     Array(repeating: WheelId(parent.baseType).atRear,
                           count: allRearNodes.count)
 //print(allRearIds)
               return
                     (
                     origin: getRearOrigin(),
-                    ids: allRearIds,
+                    ids: uniOrBilateralWidthPositionIdAtRear,
                     nodes: allRearNodes)
         }
         
         
         func getOriginIdNodesForMid ()
-        -> OriginIdNodes {
+            -> OriginIdNodes {
             
             var originIdNodesForMid = ZeroValue.originIdNodes
             if BaseObjectGroups().midWheels.contains(parent.baseType) {
                 
                 let allMidNodes =
                 getMidNodes()
-                let allMidIds =
+                let
+                uniOrBilateralWidthPositionIdAtMid =
                 Array(repeating: WheelId(parent.baseType).atMid,
                       count: allMidNodes.count)
                 
                 originIdNodesForMid =
                 (
                     origin: getMidOrigin(),
-                    ids: allMidIds,
+                    ids:   uniOrBilateralWidthPositionIdAtMid,
                     nodes: allMidNodes)
             }
             return
@@ -1358,14 +1540,14 @@ DictionaryInArrayOut().getNameValue( parentToPartDictionary).forEach{print($0)}
         -> OriginIdNodes {
             let allFrontNodes =
                     getFrontNodes()
-            let allFrontIds =
+            let dualOrSingleWidthPositionIdAtFront =
                     Array(repeating: WheelId(parent.baseType).atFront,
                           count: allFrontNodes.count)
 //print(allFrontIds)
             return
                 (
                 origin: getFrontOrigin(),
-                ids: allFrontIds,
+                ids: dualOrSingleWidthPositionIdAtFront,
                 nodes: allFrontNodes)
         }
                     // fetch the wheel origins for the base type one, two or three with +x or x =0
@@ -1424,10 +1606,8 @@ extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
     }
             
 }
-/// if seeking origin for rear wheel
-/// if it is a rear primaary origin
-///     caster OR fixed wheel
-// MARK: TUES LOGIC IS WRONG
+
+
 // MARK: WHEEL ORIGIN EXTENSION
 extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
     
