@@ -306,7 +306,7 @@ struct ObjectDefaultOrEditedDictionaries {
     
     static let sitOnHeight = 500.0
     var preTiltOccupantBodySupportOrigin: PreTiltOccupantBodySupportOrigin?
-    var preTiltOccupantSupportOrigin: PreTiltOrigin?
+    var preTiltOccupantFootBackSideSupportOrigin: PreTiltOrigin?
     let preTiltDimensionIn: Part3DimensionDictionary
     var postTiltDimension: Part3DimensionDictionary = [:]
     
@@ -368,21 +368,25 @@ struct ObjectDefaultOrEditedDictionaries {
             ObjectAngleChange(parent: self).dictionary
             
         //PRE TILT
-       
-            
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
             
-        preTiltOccupantSupportOrigin =
-         PreTiltOccupantSupportOrigin(parent: self)
-             
-        createWheelOriginDictionary()
+        preTiltOccupantFootBackSideSupportOrigin =
+            PreTiltOccupantSupportOrigin(parent: self)
+            
+        let preTiltWheelOriginIdNode = getPreTiltWheelOrigin()
+            
+            //getPreTiltBodyOrigin()
+        createWheelOriginDictionary(preTiltWheelOriginIdNode)
 
         createPreTiltParentToPartOriginDictionary()
             
             
         createPreTiltObjectToPartOriginDictionary()
         
+            
+            
+            
         //POST TILT
         createOccupantSupportPostTiltDimensionDictionary()
             
@@ -401,49 +405,82 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             print("")
 //DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
-        createCornerDictionary()
+        createCornerDictionary ()
             
+            func getPreTiltBodyOrigin() {
+                let ids =
+                    oneOrTwoIds
+                let origin =
+                    PreTiltOccupantBodySupportOrigin(parent: self).origin
+                    for index in 0..<ids.count {
+                        preTiltParentToPartOrigin +=
+                       [
+                            CreateNameFromParts([
+                                .object,
+                                .id0,
+                                .stringLink,
+                                .sitOn,
+                                ids[index],
+                                .stringLink,
+                                .sitOn,
+                                ids[index]
+                            ]).name: origin[index]]
+                    }
+            }
             
-        //
-        func createWheelOriginDictionary() {
+        func getPreTiltWheelOrigin()
+            -> FrontMidRearOriginIdNodes{
             var wheelOrigin: WheelOrigin
-            var allOriginIdNodesForRear: OriginIdNodes
-            var allOriginIdNodesForMid: OriginIdNodes
-            var allOriginIdNodesForFront: OriginIdNodes
+            var allOriginIdNodes: FrontMidRearOriginIdNodes
+            
             
             if let preTiltOccupantBodySupportOrigin {
                 wheelOrigin =
                     WheelOrigin(
                         parent: self,
-                        bodySupportOrigin: preTiltOccupantBodySupportOrigin)
+                        bodySupportOrigin:
+                            preTiltOccupantBodySupportOrigin)
                 
-                allOriginIdNodesForRear = wheelOrigin.allOriginIdNodesForRear
-
-                allOriginIdNodesForMid = BaseObjectGroups()
+                let allOriginIdNodesForMid =
+                BaseObjectGroups()
                     .sixWheels.contains(baseType) ?
                         wheelOrigin.allOriginIdNodesForMid: ZeroValue.originIdNodes
-                allOriginIdNodesForFront = wheelOrigin.allOriginIdNodesForFront
+                
+            allOriginIdNodes =
+                (rear: wheelOrigin.allOriginIdNodesForRear,
+                 mid: allOriginIdNodesForMid,
+                 front: wheelOrigin.allOriginIdNodesForFront)
+                
             } else {
-                allOriginIdNodesForRear = ZeroValue.originIdNodes
-                allOriginIdNodesForMid = ZeroValue.originIdNodes
-                allOriginIdNodesForFront = ZeroValue.originIdNodes
+            allOriginIdNodes =
+                (rear: ZeroValue.originIdNodes,
+                 mid: ZeroValue.originIdNodes,
+                 front: ZeroValue.originIdNodes)
             }
+            return
+                allOriginIdNodes
+        }
+            
+        //
+        func createWheelOriginDictionary(
+            _ frontMidRearOriginIdNodes: FrontMidRearOriginIdNodes) {
+
             
             preTiltParentToPartOrigin +=
                 CreateParentToPartOriginDictionary(
-                    allOriginIdNodesForRear
+                    frontMidRearOriginIdNodes.rear
                     ).get()
             
             if BaseObjectGroups().midWheels.contains(baseType) {
                 preTiltParentToPartOrigin +=
                     CreateParentToPartOriginDictionary(
-                        allOriginIdNodesForMid
+                        frontMidRearOriginIdNodes.mid
                         ).get()
             }
 
             preTiltParentToPartOrigin +=
                 CreateParentToPartOriginDictionary(
-                    allOriginIdNodesForFront
+                    frontMidRearOriginIdNodes.front
                     ).get()
         }
             
@@ -457,7 +494,7 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             }
             
             if let data =
-                preTiltOccupantSupportOrigin
+                preTiltOccupantFootBackSideSupportOrigin
                     as? PreTiltOccupantSupportOrigin {
                 
                 let allOriginIdNodesForFootForBothSitOn = data.allOriginIdNodesForFootSupportForBothSitOn
@@ -497,8 +534,8 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
                 
             
             var preTilt: [PreTiltOrigin] = []//array of structs with dictionary
-            if let preTiltOccupantSupportOrigin {
-                preTilt.append(preTiltOccupantSupportOrigin)
+            if let preTiltOccupantFootBackSideSupportOrigin {
+                preTilt.append(preTiltOccupantFootBackSideSupportOrigin)
             }
               
             for element in preTilt {

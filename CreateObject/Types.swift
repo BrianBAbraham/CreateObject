@@ -53,3 +53,6 @@ typealias OriginIdNodes =
     (origin: [PositionAsIosAxes],
      ids: [[Part]],
      nodes: [Part])
+
+typealias FrontMidRearOriginIdNodes =
+    (rear: OriginIdNodes, mid: OriginIdNodes, front: OriginIdNodes)
