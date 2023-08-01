@@ -119,30 +119,35 @@ enum MeasurementParts: String {
     case foot = "FootSupport"
 }
 
-//enum MeausurementDirections {
-//    case height
-//    case length
-//    case width =
-//}
-
-
-//struct PartCollections {
-//    
-//    static let head: [Part] =
-//        [.backSupportHeadSupport, .armVerticalJoint, .backSupportHheadSupportLink, .backSupportHeadSupportLinkJoint]
-//    static  let reclinable: [Part] =
-//        [.backSupport, .backSupportJoint, .baskSupportAssistantJoystick, .backSupportAdditionalObject] + head
-//    static let foot: [Part] =
-//        [.footSupport,
-//        .footSupportHangerLink,
-//            .footSupportHorizontalJoint,
-//            .footSupportInOnePiece,
-//            //.footSupportHangerBaseJoint,
-//            .footSupportHangerSitOnVerticalJoint]
-//    
-//  static  let tiltable: [Part] =
-//    [.armSupport, .sitOn, .backSupportJoint, .joyStickForOccupant]  + reclinable + foot
-//}
+struct PartGroup {
+    static let sideSupport: [Part] =
+            [
+            .sitOn,
+            .sideSupportRotationJoint,
+            .sideSupport]
+    static let sitOn: [Part] =
+        [.sitOn]
+    static let backSupport: [Part] =
+            [
+            .sitOn,
+            .backSupporRotationJoint,
+            .backSupport,
+            .backSupportHeadSupportJoint]
+    static let casterWheelNodes: [Part] =
+            [
+            .baseWheelJoint,
+            .casterFork,
+            .casterWheel]
+    static let fixedWheelNodes: [Part] =
+            [
+            .baseWheelJoint,
+            .fixedWheel]
+    static let fixedWheelWithPropllerNodes =
+        fixedWheelNodes + [.fixedWheelPropeller]
+    
+    
+    
+}
 
 
 

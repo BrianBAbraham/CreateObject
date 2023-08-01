@@ -905,7 +905,8 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
     struct PreTiltOccupantBodySupportOrigin: PreTiltOrigin {
 //        var parentToPartDictionary: PositionDictionary = [:]
 //        var objectToPartDictionary: PositionDictionary = [:]
-        var parts: [Part] = [.sitOn]
+        var partGroup: PartGroup.Type = PartGroup.self
+ 
         
         let stability: Stability
         var origin: [PositionAsIosAxes] = []
@@ -1161,7 +1162,7 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
     struct PreTiltOccupantSupportOrigin: PreTiltOrigin {
         let parent: ObjectDefaultOrEditedDictionaries
 
-        var parts: [Part] = [.footSupport, .sideSupport, .backSupport]
+        var partGroup: PartGroup.Type = PartGroup.self
         
         let bilateralWidthPositionId: [Part] = [.id0, .id1]
         let unilateralWidthPositionId: [Part] = [.id0]
@@ -1236,11 +1237,12 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             let headSupportState =
                 parent.objectOptions[sitOnIndex][.headSupport] ?? false
             let allBackSupportNodes: [Part] =
-                [
-                .sitOn,
-                .backSupporRotationJoint,
-                .backSupport,
-                .backSupportHeadSupportJoint]
+                partGroup.backSupport
+//                [
+//                .sitOn,
+//                .backSupporRotationJoint,
+//                .backSupport,
+//                .backSupportHeadSupportJoint]
             let allBackSupportOrigin =
                 [
                 objectToSitOn,
@@ -1318,8 +1320,11 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
 
 
 //MARK: WHEEL ORIGIN
-    struct WheelOrigin {
-
+    struct WheelOrigin: PreTiltOrigin {
+        
+        var partGroup: PartGroup.Type = PartGroup.self
+        
+        
         let lengthBetweenFrontAndRearWheels: Double
         let parent: ObjectDefaultOrEditedDictionaries
         let bodySupportOrigin: PreTiltOccupantBodySupportOrigin
@@ -1329,18 +1334,12 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
         var allOriginIdNodesForMid: OriginIdNodes = ZeroValue.originIdNodes
         var allOriginIdNodesForFront: OriginIdNodes = ZeroValue.originIdNodes
         
-        let allCasterWheelNodes:[Part] =
-            [
-            .baseWheelJoint,
-            .casterFork,
-            .casterWheel]
-        
-        let allFixedWheelNodes: [Part] =
-            [
-            .baseWheelJoint,
-            .fixedWheel]
-        
-        
+//        let allCasterWheelNodes:[Part] =
+//            PartGroup.casterWheelNodes
+//        
+//        let allFixedWheelNodes: [Part] =
+//            PartGroup.fixedWheelNodes
+
         init(
             parent: ObjectDefaultOrEditedDictionaries,
             bodySupportOrigin: PreTiltOccupantBodySupportOrigin ) {
@@ -1467,12 +1466,12 @@ extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
         var nodes: [Part] = []
         if BaseObjectGroups().rearCaster.contains(parent.baseType) {
             nodes =
-                allCasterWheelNodes
+                partGroup.casterWheelNodes
         }
         
         if BaseObjectGroups().rearFixedWheel.contains(parent.baseType) {
             nodes =
-                allFixedWheelNodes
+                partGroup.fixedWheelNodes
         }
             return nodes
     }
@@ -1482,12 +1481,12 @@ extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
         var nodes: [Part] = []
         if BaseObjectGroups().midCaster.contains(parent.baseType) {
             nodes =
-                allCasterWheelNodes
+                partGroup.casterWheelNodes
         }
         
         if BaseObjectGroups().midFixedWheel.contains(parent.baseType) {
             nodes =
-                allFixedWheelNodes
+                partGroup.fixedWheelNodes
         }
             return nodes
     }
@@ -1498,12 +1497,12 @@ extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
         var nodes: [Part] = []
         if BaseObjectGroups().frontCaster.contains(parent.baseType) {
             nodes =
-                allCasterWheelNodes
+                partGroup.casterWheelNodes
         }
         
         if BaseObjectGroups().frontFixedWheel.contains(parent.baseType) {
             nodes =
-                allFixedWheelNodes
+                partGroup.fixedWheelNodes
         }
             return nodes
     }
@@ -1646,7 +1645,7 @@ extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
 
 
 protocol PreTiltOrigin {
-    var parts: [Part] {get}
+    var partGroup: PartGroup.Type {get}
 }
 
 
