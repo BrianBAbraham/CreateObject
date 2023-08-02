@@ -131,8 +131,13 @@ struct PartGroup {
             [
             .sitOn,
             .backSupporRotationJoint,
-            .backSupport,
-            .backSupportHeadSupportJoint]
+            .backSupport]
+    static let backWithHeadSupport: [Part] =
+        backSupport +
+        [.backSupportHeadSupportJoint,
+           .backSupportHeadSupportLink,
+           .backSupportHeadLinkRotationJoint,
+            .backSupportHeadSupport]
     static let casterWheelNodes: [Part] =
             [
             .baseWheelJoint,

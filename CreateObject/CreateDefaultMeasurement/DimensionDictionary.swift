@@ -307,8 +307,10 @@ struct AddLeftToRightOrigin {
 struct ObjectDefaultOrEditedDictionaries {
     
     static let sitOnHeight = 500.0
-    var preTiltOccupantBodySupportOrigin: PreTiltOccupantBodySupportOrigin?
-    var preTiltOccupantFootBackSideSupportOrigin: PreTiltOrigin?
+    var preTiltOccupantBodySupportOrigin: ObjectCreator?//PreTiltOccupantBodySupportOrigin?
+    var preTiltOccupantFootBackSideSupportOrigin: ObjectCreator?
+    //var wheelOrigin: WheelOrigin   //var wheelOriginWithAccessibleProperties: WheelOrigin?
+    //let parentOfWheelOrigin: ObjectCreator?
     
     let preTiltDimensionIn: Part3DimensionDictionary
     var postTiltDimension: Part3DimensionDictionary = [:]
@@ -396,7 +398,16 @@ struct ObjectDefaultOrEditedDictionaries {
             
         preTiltOccupantFootBackSideSupportOrigin =
             PreTiltOccupantSupportOrigin(parent: self)
-         
+        
+//            if let preTiltOccupantBodySupportOrigin {
+//                wheelOrigin = WheelOrigin(
+//                    parent: self,
+//                    bodySupportOrigin:
+//                        preTiltOccupantBodySupportOrigin)
+//                wheelOriginWithAccessibleProperties = accessWheelOriginProperties ()
+//
+//
+//            }
 
        // Parent to part are relative values
             
@@ -426,13 +437,20 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
 //print("")
         createCornerDictionary ()
   
+//            func accessWheelOriginProperties () -> WheelOrigin?{
+//            let wheelOriginWithAccessibleProperties: WheelOrigin?
+//                if let accessibleProperties = wheelOrigin as? WheelOrigin {
+//                    wheelOriginWithAccessibleProperties = accessibleProperties
+//                }
+//                return wheelOriginWithAccessibleProperties
+//            }
             
             
         func createPreTiltParentToPartBodyOriginDictionary( ) {
             if let data =
                 preTiltOccupantBodySupportOrigin{
-                
-                let allOriginIdNodesForSitOnForBothSitOn = data.allOriginIdNodesForBodySupportForBothSitOn
+                let indexForNodeGroup = 0
+                let allOriginIdNodesForSitOnForBothSitOn = data.allOriginIdNodes[indexForNodeGroup]
                 for allOriginIdNodesForSitOn in allOriginIdNodesForSitOnForBothSitOn {
                     preTiltParentToPartOrigin +=
                         CreateParentToPartOriginDictionary(
@@ -447,27 +465,33 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             -> FrontMidRearOriginIdNodes{
             var wheelOrigin: WheelOrigin
             var allOriginIdNodes: FrontMidRearOriginIdNodes
-            
+
             //I could not reselve errors if I moved
             //wheelOrigin assignment to init
             if let preTiltOccupantBodySupportOrigin {
+                   let preTiltOccupantBodySupportOriginDowncast =
+                        preTiltOccupantBodySupportOrigin as?
+                            PreTiltOccupantBodySupportOrigin
+                  
                 wheelOrigin =
                     WheelOrigin(
                         parent: self,
                         bodySupportOrigin:
-                            preTiltOccupantBodySupportOrigin)
+                            preTiltOccupantBodySupportOriginDowncast!)
                 
-
-                
+                let rearIndex = 0
+                let midIndex = 1
+                let frontIndex = 2
+                let indexForNodeGroup = 0
                 let allOriginIdNodesForMid =
                 BaseObjectGroups()
                     .sixWheels.contains(baseType) ?
-                        wheelOrigin.allOriginIdNodesForMid: ZeroValue.originIdNodes
+                    wheelOrigin.allOriginIdNodes[midIndex][indexForNodeGroup] : ZeroValue.originIdNodes
                 
             allOriginIdNodes =
-                (rear: wheelOrigin.allOriginIdNodesForRear,
+                (rear: wheelOrigin.allOriginIdNodes[rearIndex][indexForNodeGroup] ,
                  mid: allOriginIdNodesForMid,
-                 front: wheelOrigin.allOriginIdNodesForFront)
+                 front: wheelOrigin.allOriginIdNodes[frontIndex][indexForNodeGroup])
                 
             } else {
             allOriginIdNodes =
@@ -902,12 +926,12 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
     /// commbined with the the different object origins with respect
     /// to the body support, for example, front drive v rear drive
     /// requires the following considerable logic
-    struct PreTiltOccupantBodySupportOrigin: PreTiltOrigin {
+    struct PreTiltOccupantBodySupportOrigin: ObjectCreator {
 //        var parentToPartDictionary: PositionDictionary = [:]
 //        var objectToPartDictionary: PositionDictionary = [:]
         var partGroup: PartGroup.Type = PartGroup.self
  
-        
+        let objectType: BaseObjectTypes
         let stability: Stability
         var origin: [PositionAsIosAxes] = []
         let frontAndRearState: Bool
@@ -919,10 +943,11 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
         
         let lengthBetweenWheels: LengthBetween
         var allOriginIdNodesForBodySupportForBothSitOn:  [OriginIdNodes] = []
+        var allOriginIdNodes: [[OriginIdNodes]] = []
         
         init(
             parent: ObjectDefaultOrEditedDictionaries) {
-        
+                objectType = parent.baseType
             stability = Stability(parent.baseType)
             
             frontAndRearState = parent.twinSitOnOption[.frontAndRear] ?? false
@@ -962,6 +987,8 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             }
                 
             getAllOriginIdNodesForBodySupportForBothSitOn()
+                
+            allOriginIdNodes.append(allOriginIdNodesForBodySupportForBothSitOn)
                 
             func getAllOriginIdNodesForBodySupportForBothSitOn() {
                 for index in 0..<parent.oneOrTwoIds.count {
@@ -1159,11 +1186,11 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
     
     
     //MARK: FOOT/SIDE/BACK/ROTATE ORIGIN
-    struct PreTiltOccupantSupportOrigin: PreTiltOrigin {
+    struct PreTiltOccupantSupportOrigin: ObjectCreator {
         let parent: ObjectDefaultOrEditedDictionaries
 
         var partGroup: PartGroup.Type = PartGroup.self
-        
+        let objectType: BaseObjectTypes
         let bilateralWidthPositionId: [Part] = [.id0, .id1]
         let unilateralWidthPositionId: [Part] = [.id0]
         let allPartIds:[Part] = [.id0, .id1]
@@ -1176,10 +1203,12 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
         var allOriginIdNodesForSideSupportForBothSitOn:  [OriginIdNodes]  = []
         var allOriginIdNodesForBackSupportForBothSitOn:  [OriginIdNodes]  = []
      
+        var allOriginIdNodes: [[OriginIdNodes]] = []
+
         init(
             parent: ObjectDefaultOrEditedDictionaries) {
                 self.parent = parent
-                              
+                objectType = parent.baseType
                 defaultFootOrigin =
                     PreTiltOccupantFootSupportDefaultOrigin(parent.baseType)
                 
@@ -1203,6 +1232,10 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
                     allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
                     allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex) )
                     allOriginIdNodesForBackSupportForBothSitOn.append( getOriginIdNodesForBackSupport(sitOnIndex) )
+                    allOriginIdNodes =
+                    [allOriginIdNodesForFootSupportForBothSitOn,
+                     allOriginIdNodesForSideSupportForBothSitOn,
+                    allOriginIdNodesForBackSupportForBothSitOn]
                 }
                 
             }
@@ -1210,10 +1243,7 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
         func getOriginIdNodesForSideSupport(_ sitOnIndex: Int)
             -> OriginIdNodes {
             let allSideSupportNodes: [Part] =
-                [
-                .sitOn,
-                .sideSupportRotationJoint,
-                .sideSupport]
+                    partGroup.sitOn
             let allSideSupportOrigin =
                 [
                 objectToSitOn,
@@ -1237,12 +1267,8 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             let headSupportState =
                 parent.objectOptions[sitOnIndex][.headSupport] ?? false
             let allBackSupportNodes: [Part] =
-                partGroup.backSupport
-//                [
-//                .sitOn,
-//                .backSupporRotationJoint,
-//                .backSupport,
-//                .backSupportHeadSupportJoint]
+                headSupportState ?
+                partGroup.backWithHeadSupport: partGroup.backSupport
             let allBackSupportOrigin =
                 [
                 objectToSitOn,
@@ -1320,11 +1346,11 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
 
 
 //MARK: WHEEL ORIGIN
-    struct WheelOrigin: PreTiltOrigin {
+    struct WheelOrigin: ObjectCreator {
         
         var partGroup: PartGroup.Type = PartGroup.self
         
-        
+        let objectType: BaseObjectTypes
         let lengthBetweenFrontAndRearWheels: Double
         let parent: ObjectDefaultOrEditedDictionaries
         let bodySupportOrigin: PreTiltOccupantBodySupportOrigin
@@ -1333,129 +1359,131 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
         var allOriginIdNodesForRear: OriginIdNodes = ZeroValue.originIdNodes
         var allOriginIdNodesForMid: OriginIdNodes = ZeroValue.originIdNodes
         var allOriginIdNodesForFront: OriginIdNodes = ZeroValue.originIdNodes
-        
-//        let allCasterWheelNodes:[Part] =
-//            PartGroup.casterWheelNodes
-//        
-//        let allFixedWheelNodes: [Part] =
-//            PartGroup.fixedWheelNodes
+        var allOriginIdNodes: [[OriginIdNodes]] = []
 
         init(
             parent: ObjectDefaultOrEditedDictionaries,
             bodySupportOrigin: PreTiltOccupantBodySupportOrigin ) {
                 
-                self.parent = parent
-                self.bodySupportOrigin = bodySupportOrigin
-                
-                lengthBetweenFrontAndRearWheels =
-                getLengthBetweenFrontAndRearWheels()
-                
-                let widthBetweenWheelsAtOrigin = getWidthBetweenWheels()
-                
-                wheelAndCasterVerticalJointOrigin =
-                    WheelAndCasterVerticalJointOrigin(
-                        parent.baseType,
-                        lengthBetweenFrontAndRearWheels,
-                        widthBetweenWheelsAtOrigin)
-                
-                casterOrigin = CasterOrigin(parent.baseType)
-                
-                allOriginIdNodesForRear =
-                    getOriginIdNodesForRear()
-                
-                allOriginIdNodesForMid =
-                    getOriginIdNodesForMid ()
-                
-                allOriginIdNodesForFront =
-                    getOriginIdNodesForFront()
-                
-                func getLengthBetweenFrontAndRearWheels ()
-                    -> Double {
-                    TwinSitOn(parent.twinSitOnOption).frontAndRearState ?
-                        bodySupportOrigin.lengthBetweenWheels.frontRearIfFrontAndRearSitOn():
-                        bodySupportOrigin.lengthBetweenWheels.frontRearIfNoFrontAndRearSitOn()
-                }
-                
-                func getWidthBetweenWheels()
-                    -> Double {
-                    
-                    let bodySupportDimension =
-                            bodySupportOrigin.occupantBodySupportsDimension
-                    let sideSupportDimension =
-                            bodySupportOrigin.occupantSideSupportsDimension
-                       
-                        let widthWithoutStability =
-                            bodySupportDimension.count == 2 ?
-                                (forIndex(0) + forIndex(1)): forIndex(0)
-                        let width = widthWithoutStability +
-                        Stability(parent.baseType).atLeft +
-                        Stability(parent.baseType).atRight
-                        
-                        func forIndex(_ id: Int) -> Double {
-                            return
-                                bodySupportDimension[id].width + sideSupportDimension[id][0].width + sideSupportDimension[id][1].width
-                        }
-                return width
-                }
-            }
-             
-     
-        func getOriginIdNodesForRear()
-            -> OriginIdNodes {
-            let allRearNodes =
-                getRearNodes()
-            let uniOrBilateralWidthPositionIdAtRear =
-                    Array(repeating: WheelId(parent.baseType).atRear,
-                          count: allRearNodes.count)
-              return
-                    (
-                    origin: getRearOrigin(),
-                    ids: uniOrBilateralWidthPositionIdAtRear,
-                    nodes: allRearNodes)
-        }
-        
-        
-        func getOriginIdNodesForMid ()
-            -> OriginIdNodes {
+            self.parent = parent
+            self.bodySupportOrigin = bodySupportOrigin
             
-            var originIdNodesForMid = ZeroValue.originIdNodes
-            if BaseObjectGroups().midWheels.contains(parent.baseType) {
+            lengthBetweenFrontAndRearWheels =
+            getLengthBetweenFrontAndRearWheels()
+            
+            objectType = parent.baseType
                 
-                let allMidNodes =
-                getMidNodes()
-                let
-                uniOrBilateralWidthPositionIdAtMid =
-                Array(repeating: WheelId(parent.baseType).atMid,
-                      count: allMidNodes.count)
+            let widthBetweenWheelsAtOrigin = getWidthBetweenWheels()
+            
+            wheelAndCasterVerticalJointOrigin =
+                WheelAndCasterVerticalJointOrigin(
+                    parent.baseType,
+                    lengthBetweenFrontAndRearWheels,
+                    widthBetweenWheelsAtOrigin)
+            
+            casterOrigin = CasterOrigin(parent.baseType)
+            
+            allOriginIdNodesForRear =
+                getOriginIdNodesForRear()
+            
+            allOriginIdNodesForMid =
+                getOriginIdNodesForMid ()
+            
+            allOriginIdNodesForFront =
+                getOriginIdNodesForFront()
                 
-                originIdNodesForMid =
-                (
-                    origin: getMidOrigin(),
-                    ids:   uniOrBilateralWidthPositionIdAtMid,
-                    nodes: allMidNodes)
+            allOriginIdNodes =
+                [[allOriginIdNodesForRear],
+                 [allOriginIdNodesForMid] ,
+                 [allOriginIdNodesForFront]]
+            
+            func getLengthBetweenFrontAndRearWheels ()
+                -> Double {
+                TwinSitOn(parent.twinSitOnOption).frontAndRearState ?
+                    bodySupportOrigin.lengthBetweenWheels.frontRearIfFrontAndRearSitOn():
+                    bodySupportOrigin.lengthBetweenWheels.frontRearIfNoFrontAndRearSitOn()
             }
-            return
-                originIdNodesForMid
+            
+            func getWidthBetweenWheels()
+                -> Double {
+                
+                let bodySupportDimension =
+                        bodySupportOrigin.occupantBodySupportsDimension
+                let sideSupportDimension =
+                        bodySupportOrigin.occupantSideSupportsDimension
+                   
+                    let widthWithoutStability =
+                        bodySupportDimension.count == 2 ?
+                            (forIndex(0) + forIndex(1)): forIndex(0)
+                    let width = widthWithoutStability +
+                    Stability(parent.baseType).atLeft +
+                    Stability(parent.baseType).atRight
+                    
+                    func forIndex(_ id: Int) -> Double {
+                        return
+                            bodySupportDimension[id].width + sideSupportDimension[id][0].width + sideSupportDimension[id][1].width
+                    }
+            return width
+            }
         }
-        
-        
-        func getOriginIdNodesForFront ()
-        -> OriginIdNodes {
-            let allFrontNodes =
-                    getFrontNodes()
-            let dualOrSingleWidthPositionIdAtFront =
-                    Array(repeating: WheelId(parent.baseType).atFront,
-                          count: allFrontNodes.count)
-            return
-                (
-                origin: getFrontOrigin(),
-                ids: dualOrSingleWidthPositionIdAtFront,
-                nodes: allFrontNodes)
-        }
-                    // fetch the wheel origins for the base type one, two or three with +x or x =0
-                    // baseWheelJointIndex are ordered so that
-                    // each origin if a pair assigns to the next baseWheelJointIndexPair
     }
+} //Parent struct ends
+
+// MARK: WHEEL ORIGINIDNODES EXTENSION
+extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
+    func getOriginIdNodesForRear()
+        -> OriginIdNodes {
+        let allRearNodes =
+            getRearNodes()
+        let uniOrBilateralWidthPositionIdAtRear =
+                Array(repeating: WheelId(parent.baseType).atRear,
+                      count: allRearNodes.count)
+          return
+                (
+                origin: getRearOrigin(),
+                ids: uniOrBilateralWidthPositionIdAtRear,
+                nodes: allRearNodes)
+    }
+    
+    
+    func getOriginIdNodesForMid ()
+        -> OriginIdNodes {
+        var originIdNodesForMid = ZeroValue.originIdNodes
+        if BaseObjectGroups().midWheels.contains(parent.baseType) {
+            let allMidNodes =
+                getMidNodes()
+            let
+            uniOrBilateralWidthPositionIdAtMid =
+            Array(repeating: WheelId(parent.baseType).atMid,
+                  count: allMidNodes.count)
+            originIdNodesForMid =
+                (
+                origin: getMidOrigin(),
+                ids:   uniOrBilateralWidthPositionIdAtMid,
+                nodes: allMidNodes)
+        }
+        return
+            originIdNodesForMid
+    }
+    
+    
+    func getOriginIdNodesForFront ()
+    -> OriginIdNodes {
+        let allFrontNodes =
+                getFrontNodes()
+        let dualOrSingleWidthPositionIdAtFront =
+                Array(repeating: WheelId(parent.baseType).atFront,
+                      count: allFrontNodes.count)
+        return
+            (
+            origin: getFrontOrigin(),
+            ids: dualOrSingleWidthPositionIdAtFront,
+            nodes: allFrontNodes)
+    }
+                // fetch the wheel origins for the base type one, two or three with +x or x =0
+                // baseWheelJointIndex are ordered so that
+                // each origin if a pair assigns to the next baseWheelJointIndexPair
+    
 }
 
 
@@ -1644,11 +1672,18 @@ extension ObjectDefaultOrEditedDictionaries.WheelOrigin {
 
 
 
-protocol PreTiltOrigin {
-    var partGroup: PartGroup.Type {get}
+//protocol PreTiltOrigin {
+//    var partGroup: PartGroup.Type {get}
+//}
+
+protocol ObjectCreator {
+    // the input value
+    var objectType: BaseObjectTypes {get}
+    // the return value
+    // An array of array as some structs
+    // provide more than one array of OriginIdNodes
+    var allOriginIdNodes: [[OriginIdNodes]] {get}
 }
-
-
 
 //MARK: CORNERS
 /// Provide all eight corner positions for part
