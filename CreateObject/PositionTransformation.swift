@@ -12,10 +12,15 @@ struct ZeroValue {
     static let dimension3D: Dimension3d = (width:  0.0,  length: 0.0, height:  0.0)
     static let angle: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.radians)
     static let originIdNodes: OriginIdNodes =
-        (origin: [],
-         ids: [[]],
-         nodes: [])
+    (origin: [],
+     ids: [[]],
+     nodes: [])
+    static let rearMidFrontOriginIdNodes: RearMidFrontOriginIdNodes =
+    (rear: ZeroValue.originIdNodes,
+     mid: ZeroValue.originIdNodes,
+     front: ZeroValue.originIdNodes)
 }
+    
 
 struct CreateIosPosition {
     static  func addTwoTouples(_ first: PositionAsIosAxes, _ second: PositionAsIosAxes) -> PositionAsIosAxes {

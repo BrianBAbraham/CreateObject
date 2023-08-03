@@ -54,5 +54,5 @@ typealias OriginIdNodes =
      ids: [[Part]],
      nodes: [Part])
 
-typealias FrontMidRearOriginIdNodes =
+typealias RearMidFrontOriginIdNodes =
     (rear: OriginIdNodes, mid: OriginIdNodes, front: OriginIdNodes)
