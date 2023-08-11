@@ -13,7 +13,10 @@ enum DictionaryTypes  {
     case forMeasurement
 }
 
-
+//enum Sides {
+//    case left
+//    case notLeft
+//}
 enum Part: String {
     case armSupport = "arm"
     case armVerticalJoint = "armVerticalJoint"
