@@ -54,10 +54,11 @@ struct DimensionDictionary {
 /// The parts have a root like structure
 /// each node forms a pair with its neighbour
 ///  the neighbour pairs require the correct ids
-///  for left and centre id is id0
-///  for right id is id1
+
+///  for right or umitary id is id0
+///   for left  or other id i id1
 ///   object is always id0
-///   sitOn varies as seit o n
+///   sitOn varies as sit on
 struct Root {
     
     // from array to [ [array[0], array[1]], [array[1], array[2]] and etc ]
@@ -143,26 +144,57 @@ struct Root {
         _ sitOnId: Part,
         _ nodePairsToDeepestRoot: [[Part]],
         _ partIds: [[Part]],
-        _ zeroForLeftAndOneForRightOrUnilateral: Int)
+        _ firstOrSecondIdIndex: Int)
         -> [[Part]]{
             var idForFirstAndSecondNode: [[Part]] = []
-            let sideIndex = zeroForLeftAndOneForRightOrUnilateral
-print(sideIndex)
+            //let sideIndex = 0//zeroForRightOrUnitaryAndOneForLeft
+
 print(nodePairsToDeepestRoot)
 print(partIds)
-print(zeroForLeftAndOneForRightOrUnilateral)
+print(firstOrSecondIdIndex)
 print("\n\n\n")
-    
-            for index in 0..<nodePairsToDeepestRoot.count {
-                let firstId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: (nodePairsToDeepestRoot[index][0] == .object ? .id0: partIds[index][sideIndex] )
-                let SecondId = nodePairsToDeepestRoot[index][sideIndex] == .sitOn ? sitOnId: partIds[index][sideIndex]
-                
-                if partIds[index].count == 1 && zeroForLeftAndOneForRightOrUnilateral == 1 {
-                   
-                } else {
-                    idForFirstAndSecondNode.append([firstId,SecondId])
+            if firstOrSecondIdIndex == 0 {
+                for index in 0..<nodePairsToDeepestRoot.count {
+                    let firstId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: (nodePairsToDeepestRoot[index][0] == .object ? .id0: partIds[index][0] )
+                    let secondId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: partIds[index][0]
+                    
+//                    if partIds[index].count == 1 && firstOrSecondIdIndex == 1 {
+//
+//                    } else {
+                        idForFirstAndSecondNode.append([firstId,secondId])
+//                    }
                 }
+            }
+
+            /// case 1 no partIds[index].count = 2: sitOn-back-head/ wheelJoint-fork-castWheel for asymmetry
+            /// case 2 all partIds[index].count = 2: wheelJoint-fork-castWheel for symmetry
+            /// case 3 first some partIIds[index].count = 1 then some = 2 : sitOn-hanger-foot
+            ///  case 4 first some partIIds[index].count = 1 then some = 2 then some = 1: sitOn-back-handle-joystick/  sitOn-hanger-footOnePiece
+            ///  case 5 first some partIIds[index].count = 2, then some =1: wheelJoint-wheel-propeller on one side
+            
+            if firstOrSecondIdIndex == 1 {
+                var partIdsCount: [Int] = []
+                let firstId: Part?
+                let secondId: Part?
+                //var partIdsForSecondBiLateral
+                for partId in partIds{
+                    partIdsCount.append(partId.count)
+                }
+                let partIdsCountSet = Set(partIdsCount)
                 
+                if partIdsCountSet == Set([2]) {  // ignore Set([1]) as only id0 throughout
+
+                } else {  //mixed set
+                    for partId in partIds{
+                        if partId.count == 2 {
+                            firstId = partId[0]
+                            secondId = partId[1]
+                            break
+                        }
+                    }
+                    for partId in partIds{
+                    
+                    }
             }
 //
 //print(idForFirstAndSecondNode)
@@ -170,42 +202,27 @@ print("\n\n\n")
     }
     
     
-    func getNamesFromNodePairsToDeepestRootForLeftOrCentre(
-        _ nodePairsToDeepestRoot: [[Part]],
-        _ partIds: [[Part]],
-        _ sitOnId: Part)
-        -> [String] {
-            let leftOrCentreIndex = 0
-            let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
-                getIdForFirstAndSecondNode(
-                    sitOnId,
-                    nodePairsToDeepestRoot,
-                    partIds,
-                    leftOrCentreIndex)
-         
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            return
-                getNamesFromNodePairs(
-                    nodePairsToDeepestRoot,
-                    idForFirstAndSecondNodeToDeepestRoot,
-                    sitOnId)
-    }
+//    func getNamesFromNodePairsToDeepestRootForLeftOrCentre(
+//        _ nodePairsToDeepestRoot: [[Part]],
+//        _ partIds: [[Part]],
+//        _ sitOnId: Part)
+//        -> [String] {
+//            let leftOrCentreIndex = 0
+//            let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
+//                getIdForFirstAndSecondNode(
+//                    sitOnId,
+//                    nodePairsToDeepestRoot,
+//                    partIds,
+//                    leftOrCentreIndex)
+//
+//            return
+//                getNamesFromNodePairs(
+//                    nodePairsToDeepestRoot,
+//                    idForFirstAndSecondNodeToDeepestRoot,
+//                    sitOnId)
+//    }
+    
+    
     
     func getNamesFromNodePairsToDeepestRootForLeftOrUnilateral(
         _ nodePairsToDeepestRoot: [[Part]],
@@ -277,21 +294,42 @@ print("\n\n\n")
        
     
     
-    func getNamesFromNodePairsToDeepestRootForRightOrUnilateral (
+    func getNamesFromNodePairsToDeepestRootForFirstIdIndex (
         _ allNodes: [Part],
         _ partIds: [[Part]])
         -> [String] {
         let sitOnId = allNodes.contains(.sitOn) ?
-            partIds[0][0]: .id0 // some roots exclude sitOn so use id0
+            partIds[0][0]: .id0 // some roots, eg wheels exclude sitOn so use id0
         let allNodeFromObject = [Part.object] + allNodes // first node is always object
         // from array to [ [array[0], array[1]], [array[1], array[2]] and etc ]
         let nodePairsToDeepestRoot =
             getNodePairsToDeepestRoot(allNodeFromObject)
-        return
-            getNamesFromNodePairsToDeepestRootForLeftOrCentre(
+            
+         //TEST
+            
+        let firstOrSecondIdIndex = 0
+        let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
+            getIdForFirstAndSecondNode(
+                sitOnId,
                 nodePairsToDeepestRoot,
                 partIds,
+                firstOrSecondIdIndex)
+            
+            //TEST
+            
+        return
+            
+            getNamesFromNodePairs(
+                nodePairsToDeepestRoot,
+                idForFirstAndSecondNodeToDeepestRoot,
                 sitOnId)
+            
+            //TEST OUT
+//            getNamesFromNodePairsToDeepestRootForLeftOrCentre(
+//                nodePairsToDeepestRoot,
+//                partIds,
+//                sitOnId)
+            //TEST OUT
     }
     
     
@@ -345,7 +383,7 @@ struct ParentAndObjectToPartOriginDictionary {
         ///object to part origin
         namesForRightOrUnilateral =
             Root()
-                .getNamesFromNodePairsToDeepestRootForRightOrUnilateral(
+                .getNamesFromNodePairsToDeepestRootForFirstIdIndex(
             partNodes,
             partIds)
         namesForLeft =
@@ -442,13 +480,12 @@ struct ParentAndObjectToPartOriginDictionary {
         return objectToPartOrigin
     }
     
-    func get()
-        -> PositionDictionary{
+    func get()-> PositionDictionary{
             ///names are in order from object to part
             ///so these can be used to determine
             ///object to part origin
         let namesForRightOrUnilateral =
-            Root().getNamesFromNodePairsToDeepestRootForRightOrUnilateral(
+            Root().getNamesFromNodePairsToDeepestRootForFirstIdIndex(
                     partNodes,
                     partIds)
         let namesForLeft =

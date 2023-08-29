@@ -307,7 +307,7 @@ struct WheelDimension {
 
 //MARK: ORIGIN
 /// The array of fixed wheel or caster vertical origin
-/// is ordered rear most left (UI left top screen as viewed), rearmost right
+/// is ordered rearmost left (UI left top screen as viewed), rearmost right
 /// moving towards bottom of screen
 struct WheelAndCasterVerticalJointOrigin {
     let baseType: BaseObjectTypes

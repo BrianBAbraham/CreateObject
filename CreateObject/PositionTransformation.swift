@@ -11,6 +11,7 @@ struct ZeroValue {
     static let iosLocation: PositionAsIosAxes = (x: 0.0, y: 0.0, z: 0.0 )
     static let dimension3D: Dimension3d = (width:  0.0,  length: 0.0, height:  0.0)
     static let angle: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.radians)
+    
     static let originIdNodes: OriginIdNodes =
     (origin: [],
      ids: [[]],
@@ -19,6 +20,15 @@ struct ZeroValue {
     (rear: ZeroValue.originIdNodes,
      mid: ZeroValue.originIdNodes,
      front: ZeroValue.originIdNodes)
+    
+    static let originIdNode: OriginIdNode =
+        (
+        origin: iosLocation,
+        id: [],
+        node: Part.objectOrigin)
+    
+    //static let 
+    
 }
     
 
