@@ -147,55 +147,16 @@ struct Root {
         _ firstOrSecondIdIndex: Int)
         -> [[Part]]{
             var idForFirstAndSecondNode: [[Part]] = []
-            //let sideIndex = 0//zeroForRightOrUnitaryAndOneForLeft
-
+            let sideIndex = 0//zeroForRightOrUnitaryAndOneForLeft
+print(sideIndex)
 print(nodePairsToDeepestRoot)
 print(partIds)
 print(firstOrSecondIdIndex)
 print("\n\n\n")
             if firstOrSecondIdIndex == 0 {
-                for index in 0..<nodePairsToDeepestRoot.count {
-                    let firstId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: (nodePairsToDeepestRoot[index][0] == .object ? .id0: partIds[index][0] )
-                    let secondId = nodePairsToDeepestRoot[index][0] == .sitOn ? sitOnId: partIds[index][0]
-                    
-//                    if partIds[index].count == 1 && firstOrSecondIdIndex == 1 {
-//
-//                    } else {
-                        idForFirstAndSecondNode.append([firstId,secondId])
-//                    }
-                }
-            }
-
-            /// case 1 no partIds[index].count = 2: sitOn-back-head/ wheelJoint-fork-castWheel for asymmetry
-            /// case 2 all partIds[index].count = 2: wheelJoint-fork-castWheel for symmetry
-            /// case 3 first some partIIds[index].count = 1 then some = 2 : sitOn-hanger-foot
-            ///  case 4 first some partIIds[index].count = 1 then some = 2 then some = 1: sitOn-back-handle-joystick/  sitOn-hanger-footOnePiece
-            ///  case 5 first some partIIds[index].count = 2, then some =1: wheelJoint-wheel-propeller on one side
-            
-            if firstOrSecondIdIndex == 1 {
-                var partIdsCount: [Int] = []
-                let firstId: Part?
-                let secondId: Part?
-                //var partIdsForSecondBiLateral
-                for partId in partIds{
-                    partIdsCount.append(partId.count)
-                }
-                let partIdsCountSet = Set(partIdsCount)
                 
-                if partIdsCountSet == Set([2]) {  // ignore Set([1]) as only id0 throughout
-
-                } else {  //mixed set
-                    for partId in partIds{
-                        if partId.count == 2 {
-                            firstId = partId[0]
-                            secondId = partId[1]
-                            break
-                        }
-                    }
-                    for partId in partIds{
-                    
-                    }
             }
+
 //
 //print(idForFirstAndSecondNode)
             return idForFirstAndSecondNode
@@ -294,7 +255,7 @@ print("\n\n\n")
        
     
     
-    func getNamesFromNodePairsToDeepestRootForFirstIdIndex (
+    func getNamesFromNodePairsToDeepestRootForRightOrUnilateral (
         _ allNodes: [Part],
         _ partIds: [[Part]])
         -> [String] {
@@ -383,7 +344,7 @@ struct ParentAndObjectToPartOriginDictionary {
         ///object to part origin
         namesForRightOrUnilateral =
             Root()
-                .getNamesFromNodePairsToDeepestRootForFirstIdIndex(
+                .getNamesFromNodePairsToDeepestRootForRightOrUnilateral(
             partNodes,
             partIds)
         namesForLeft =
@@ -480,12 +441,13 @@ struct ParentAndObjectToPartOriginDictionary {
         return objectToPartOrigin
     }
     
-    func get()-> PositionDictionary{
+    func get()
+        -> PositionDictionary{
             ///names are in order from object to part
             ///so these can be used to determine
             ///object to part origin
         let namesForRightOrUnilateral =
-            Root().getNamesFromNodePairsToDeepestRootForFirstIdIndex(
+            Root().getNamesFromNodePairsToDeepestRootForRightOrUnilateral(
                     partNodes,
                     partIds)
         let namesForLeft =
