@@ -139,26 +139,91 @@ struct Root {
     ///                        -> wheelJoint_casterFork: id3([0][1])_id3([1][1])
     ///                        -> casterFork_wheel: id3([1][1])_id3([2][1])
     
+    /// sitOn
+    ///  side id0, id1
+    ///  joyStick id0
+    
+    
     
     func getIdForFirstAndSecondNode(
         _ sitOnId: Part,
+        // eg [ [sitOn, side], [side, joyStick] ]
         _ nodePairsToDeepestRoot: [[Part]],
-        _ partIds: [[Part]],
+        // three parts require three arrays of id as below
+        //eg [ [id0] ,[id0, id1], [id0] ] 1 or 2 if the part is bilateral
+        _ partIdsForSecondOfNodePair: [[Part]],
         _ firstOrSecondIdIndex: Int)
-        -> [[Part]]{
-            var idForFirstAndSecondNode: [[Part]] = []
-            let sideIndex = 0//zeroForRightOrUnitaryAndOneForLeft
-print(sideIndex)
-print(nodePairsToDeepestRoot)
-print(partIds)
-print(firstOrSecondIdIndex)
-print("\n\n\n")
-            if firstOrSecondIdIndex == 0 {
+        -> [[Part]] {//for eg side0 [[id0, id0],[id0, id0]], side1 [[id0, id1]]
+        var idForFirstAndSecondNode: [[Part]] = []
+            
+
+//print(nodePairsToDeepestRoot)
+//print(partIdsForSecondOfNodePair)
+//print(firstOrSecondIdIndex)
+//print("\n\n\n")
+        if firstOrSecondIdIndex == 0 {
+            idForFirstAndSecondNode = getIdForFirstAndSecondNode(0)
+
+        }
+        
+        var partIdsCount: [Int] = []
+        if firstOrSecondIdIndex == 1 {
+            for partIds in partIdsForSecondOfNodePair {
+                partIdsCount.append(partIds.count)
+            }
+            let partIdsCountSet = Set(partIdsCount)
+            
+            // case 1 no partIds[index].count = 2: sitOn-back-head/ wheelJoint-fork-castWheel for asymmetry
+            if partIdsCountSet == Set([1]) {
+                //do nothing as there are no cases of bilateral parts
+            }
+                
+            /// case 2 all partIds[index].count = 2: wheelJoint-fork-castWheel for symmetry
+            if partIdsCountSet == Set([2]) {
+                idForFirstAndSecondNode = getIdForFirstAndSecondNode(1)
                 
             }
+                
+            //ASSUMED all cases have a single change from 1 to 2 or 2 to 1
+            if partIdsCountSet == Set([1, 2]) {
+                /// case 3 first some partIIds[index].count = 1 then some = 2 : sitOn-hanger-foot
+                if partIdsCount.last == 2 {
+                    
+                }
+                
+                ///  case 4 first some partIIds[index].count = 1 then some = 2 then some = 1: sitOn-back-handle-joystick/  sitOn-hanger-footOnePiece
+                if partIdsCount.last == 1 {
+                    
+                }
+            }
+        }
+            
+    
+            func getIdForFirstAndSecondNode (
+                _ sideIndex: Int)
+                -> [[Part]] {
+                    var idForFirstAndSecondNode: [[Part]] = []
+                    let oneIndex = 0
+                    for index in 0..<nodePairsToDeepestRoot.count {
+                        let firstId =
+                        nodePairsToDeepestRoot[index][oneIndex] == .sitOn ?
+                        sitOnId: (nodePairsToDeepestRoot[index][oneIndex] == .object ? .id0: partIdsForSecondOfNodePair[index][sideIndex] )
+                        let secondId =
+                            nodePairsToDeepestRoot[index][oneIndex] == .sitOn ? sitOnId: partIdsForSecondOfNodePair[index][sideIndex]
+                        
+                        idForFirstAndSecondNode.append([firstId,secondId])
+                    }
+                    
+                    return idForFirstAndSecondNode
+            }
+        
+        
+        
 
+            
+   
 //
-//print(idForFirstAndSecondNode)
+//print(partIdsCount)
             return idForFirstAndSecondNode
     }
     
@@ -259,6 +324,9 @@ print("\n\n\n")
         _ allNodes: [Part],
         _ partIds: [[Part]])
         -> [String] {
+print(allNodes)
+print(partIds)
+print("\n\n\n")
         let sitOnId = allNodes.contains(.sitOn) ?
             partIds[0][0]: .id0 // some roots, eg wheels exclude sitOn so use id0
         let allNodeFromObject = [Part.object] + allNodes // first node is always object
@@ -357,8 +425,6 @@ struct ParentAndObjectToPartOriginDictionary {
         createLeftOrigin()
 
     }
-    
-    
     
     mutating func createLeftOrigin()
         {
@@ -482,13 +548,15 @@ struct ParentAndObjectToPartOriginDictionary {
 }
 
 
+
+
 struct LeftAndRightOrigin {
     let rightAndUnilateralOrigin: [PositionAsIosAxes]
     let partIds: [[Part]]
     var left:
-    [PositionAsIosAxes] {
-        getLeftOrigin()
-    }
+        [PositionAsIosAxes] {
+            getLeftOrigin()
+        }
     var all: [PositionAsIosAxes] {
         rightAndUnilateralOrigin + left
     }
@@ -647,9 +715,9 @@ struct ObjectDefaultOrEditedDictionaries {
             
             
 
-DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
-print("")
-DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
+//print("")
+//DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
         createCornerDictionary ()
