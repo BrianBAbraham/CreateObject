@@ -191,7 +191,36 @@ struct GetGeneralName {
 
 
 
+struct ParentToPartName {
+    
+    
+    func convertedToObjectToPart(_ parentToPartName: String)
+        -> String {
+        var editedString = parentToPartName
+        var underscoreCount = 0
+        var startIndex: String.Index?
+        let objectName = Part.object.rawValue + Part.id0.rawValue + Part.stringLink.rawValue
 
+        for (index, character) in editedString.enumerated() {
+            if character == "_" {
+                underscoreCount += 1
+                if underscoreCount == 2 {
+                    startIndex = editedString.index(editedString.startIndex, offsetBy: index + 1)
+                    break
+                }
+            }
+        }
+
+        if let startIndex = startIndex {
+            editedString = objectName + String(editedString[startIndex...])
+        }
+//print(parentToPartName)
+//print(editedString)
+//print("\n\n")
+            return editedString
+    }
+    
+}
 
 
 
