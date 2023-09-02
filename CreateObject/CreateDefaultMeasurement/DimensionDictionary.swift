@@ -95,34 +95,32 @@ struct Root {
         -> [[Part]] {
         var idForFirstAndSecondNode: [[Part]] = []
                   
-        let sideIndex = 0
-        let oneIndex = 0
+        
+       // let oneIndex = 0
             
         var idZeroOrOne: Int
             for index in 0..<nodePairsToDeepestRoot.count {
-                idZeroOrOne = partIdsForSecondOfNodePair[index].count == 2 && usingIdZeroOrOne == 1 ? 1: 0
+                idZeroOrOne =
+                    partIdsForSecondOfNodePair[index].count == 2 && usingIdZeroOrOne == 1 ? 1: 0
                 
                 let firstId =
-                nodePairsToDeepestRoot[index][oneIndex] == .sitOn ?
-            sitOnId: (nodePairsToDeepestRoot[index][oneIndex] == .object ? .id0: partIdsForSecondOfNodePair[index][idZeroOrOne] )
+                nodePairsToDeepestRoot[index][0] == .sitOn ?
+                    sitOnId: (nodePairsToDeepestRoot[index][0] == .object ?
+                .id0: partIdsForSecondOfNodePair[index][idZeroOrOne] )
                 
-//            if  partIdsForSecondOfNodePair[index].count == 2 && usingIdZeroOrOne == 1 {
-//            secondId =
-//                nodePairsToDeepestRoot[index][oneIndex] == .sitOn ?
-//          sitOnId: partIdsForSecondOfNodePair[index][1]
-//            } else {
-//
 
-            //}
-            
-            /// case 1: usingIdZeroOrOne = 0 . idZerorOrOne = 0
-            /// case 2:
-            // [.id1,.id0]
-
-            
             let secondId =
-                nodePairsToDeepestRoot[index][oneIndex] == .sitOn ? sitOnId: partIdsForSecondOfNodePair[index][idZeroOrOne]
+                nodePairsToDeepestRoot[index][1] == .sitOn ? sitOnId: partIdsForSecondOfNodePair[index][idZeroOrOne]
 
+//if usingIdZeroOrOne == 0 {
+//print(index)
+//print(nodePairsToDeepestRoot[index])
+//print(partIdsForSecondOfNodePair[index])
+//print(idZeroOrOne)
+//print(firstId)
+//print(secondId)
+//print("\n\n")
+//}
             idForFirstAndSecondNode.append([firstId,secondId])
         }
         return idForFirstAndSecondNode
@@ -153,7 +151,11 @@ struct Root {
         _ partIds: [[Part]],
        usingIdZeroOrOne: Int)
         -> [String] {
-
+//if usingIdZeroOrOne == 0 {
+//print(allNodes)
+//print(partIds)
+//print("\n\n")
+//}
         let sitOnId = allNodes.contains(.sitOn) ?
             partIds[0][0]: .id0 // some roots, eg wheels exclude sitOn so use id0
         let allNodeFromObject = [Part.object] + allNodes // first node is always object
@@ -162,7 +164,7 @@ struct Root {
         /// [ [part_0, part_1], [part_1, part_2], [ part_2, part_3], [ part_3, part_4] ]
         let nodePairsToDeepestRoot =
             getNodePairsToDeepestRoot(allNodeFromObject)
-print(nodePairsToDeepestRoot)
+//print(nodePairsToDeepestRoot)
         /// [ [id0] ,[id0], [id1, id0],  [id1, id0], [id1]  ] transforms to
         /// [[id0, id0],  [id0, id1], [id1, id1], [id1, id1]
         let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
@@ -171,13 +173,22 @@ print(nodePairsToDeepestRoot)
                 nodePairsToDeepestRoot,
                 partIds,
                 usingIdZeroOrOne)
-print(idForFirstAndSecondNodeToDeepestRoot)
-print("\n\n")
+            
+        let names = getNamesFromNodePairs(
+            nodePairsToDeepestRoot,
+            idForFirstAndSecondNodeToDeepestRoot,
+            sitOnId)
+//if usingIdZeroOrOne == 0 {
+//    print(partIds)
+//    print(idForFirstAndSecondNodeToDeepestRoot)
+//print(nodePairsToDeepestRoot)
+//print(names)
+//print("\n\n")
+//}
+            
+
         return
-            getNamesFromNodePairs(
-                nodePairsToDeepestRoot,
-                idForFirstAndSecondNodeToDeepestRoot,
-                sitOnId)
+            names
     }
 }
 
@@ -225,11 +236,13 @@ struct ParentAndObjectToPartOriginDictionary {
         let partIdsForLeft = Array(partIds.prefix(numberOfNodesTillOnlyOneId))
         let partNodesForLeft = Array(partNodes.prefix(numberOfNodesTillOnlyOneId))
         if numberOfNodesTillOnlyOneId > 0 {
-            namesForLeft =
-            Root().getNamesFromNodePairsToDeepestRoot(
-                    partNodesForLeft,
-                    partIdsForLeft,
-                    usingIdZeroOrOne: 1)
+           namesForLeft =
+                Root().getNamesFromNodePairsToDeepestRoot(
+                        partNodesForLeft,
+                        partIdsForLeft,
+                        usingIdZeroOrOne: 1)
+//print(namesToBeUSedToCreateLeftName)
+//print("\n\n")
         } else {
             namesForLeft = []
         }
@@ -237,6 +250,9 @@ struct ParentAndObjectToPartOriginDictionary {
         allNames =
             namesForRightOrUnilateral +
             namesForLeft
+//print(namesForRightOrUnilateral)
+//print(namesForLeft)
+//print("\n\n")
         createLeftOrigin()
         
         /// for [id0], [id1, id0],  [id1, id0], [id1]  ] for
@@ -359,7 +375,7 @@ struct ParentAndObjectToPartOriginDictionary {
         var leftOrigin = rightUnilateralAndLeftOrigin.left
 
         let allOrigin =
-        rightOrUnilateralOrigin + leftOrigin
+            createObjectToPartOrigin(rightOrUnilateralOrigin) + createObjectToPartOrigin(leftOrigin)
         var dictionary: PositionDictionary = [:]
                    
         for (index, key) in allNames.enumerated() {
@@ -513,7 +529,7 @@ struct ObjectDefaultOrEditedDictionaries {
 //MARK:- INCLUDE
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
-        //createPreTiltParentToPartBodyOriginDictionary()
+        createPreTiltParentToPartBodyOriginDictionary()
             
         preTiltOccupantFootBackSideSupportOrigin =
             PreTiltOccupantSupportOrigin(parent: self)
@@ -546,8 +562,8 @@ struct ObjectDefaultOrEditedDictionaries {
             
 
 DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
-//print("")
-//DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
+print("")
+DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
         createCornerDictionary ()
@@ -604,11 +620,11 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
 
                 for allOriginIdNodesForSitOn in allOriginIdNodesForSitOnForBothSitOn {
 
-//                    preTiltParentToPartOrigin +=
-//                        ParentAndObjectToPartOriginDictionary(
-//                            allOriginIdNodesForSitOn,
-//                            preTiltParentToPartOriginIn
-//                    ).makeAndGetForParentToPart()
+                    preTiltParentToPartOrigin +=
+                        ParentAndObjectToPartOriginDictionary(
+                            allOriginIdNodesForSitOn,
+                            preTiltParentToPartOriginIn
+                    ).makeAndGetForParentToPart()
                     
                 }
             }
@@ -652,17 +668,17 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
                 for allOriginIdNodesForSide in
                         allOriginIdNodesForSideForBothSitOn {
 
-                    let parentAndObjectToPartOriginDictionary =
-                        ParentAndObjectToPartOriginDictionary(
-                        allOriginIdNodesForSide,
-                        preTiltParentToPartOriginIn
-                        )
+//                    let parentAndObjectToPartOriginDictionary =
+//                        ParentAndObjectToPartOriginDictionary(
+//                        allOriginIdNodesForSide,
+//                        preTiltParentToPartOriginIn
+//                        )
                     
-                    preTiltParentToPartOrigin +=
-                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-                    
-                    preTiltObjectToPartOrigin +=
-                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
+//                    preTiltParentToPartOrigin +=
+//                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
+//                    
+//                    preTiltObjectToPartOrigin +=
+//                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
                     
 
                 }
@@ -672,17 +688,17 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
                 for allOriginIdNodesForFoot in
                         allOriginIdNodesForFootForBothSitOn {
 
-//                    let parentAndObjectToPartOriginDictionary =
-//                        ParentAndObjectToPartOriginDictionary(
-//                        allOriginIdNodesForFoot,
-//                        preTiltParentToPartOriginIn
-//                        )
+                    let parentAndObjectToPartOriginDictionary =
+                        ParentAndObjectToPartOriginDictionary(
+                        allOriginIdNodesForFoot,
+                        preTiltParentToPartOriginIn
+                        )
                     
-//                    preTiltParentToPartOrigin +=
-//                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-//
-//                    preTiltObjectToPartOrigin +=
-//                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
+                    preTiltParentToPartOrigin +=
+                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
+
+                    preTiltObjectToPartOrigin +=
+                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
                 }
                 
                 let allOriginIdNodesForBackForBothSitOn = data.allOriginIdNodesForBackSupportForBothSitOn
