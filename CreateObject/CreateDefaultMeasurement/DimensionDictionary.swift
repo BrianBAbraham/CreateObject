@@ -529,7 +529,7 @@ struct ObjectDefaultOrEditedDictionaries {
 //MARK:- INCLUDE
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
-        createPreTiltParentToPartBodyOriginDictionary()
+        getPreTiltParentToPartBodyOriginDictionary()
             
         preTiltOccupantFootBackSideSupportOrigin =
             PreTiltOccupantSupportOrigin(parent: self)
@@ -542,9 +542,9 @@ struct ObjectDefaultOrEditedDictionaries {
                         ObjectDefaultOrEditedDictionaries.PreTiltWheelOrigin)
             }
                 
-//        getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes) //
+        getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes) //
 
-        createPreTiltParentToPartFootSideBackOriginDictionary()
+        getPreTiltParentToPartFootSideBackOriginDictionary()
 
             
             
@@ -611,8 +611,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
         }
             
             
-        func createPreTiltParentToPartBodyOriginDictionary( ) {
-
+        func getPreTiltParentToPartBodyOriginDictionary( ) {
             if let data =
                 preTiltOccupantBodySupportOrigin{
                 let indexForNodeGroup = 0
@@ -633,6 +632,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
         
         func getPreTiltWheelOriginDictionary(
             _ frontMidRearOriginIdNodes: RearMidFrontOriginIdNodes) {
+                
             createPreTiltWheelOriginDictionary(frontMidRearOriginIdNodes.rear)
                 
             if BaseObjectGroups().midWheels.contains(baseType) {
@@ -648,79 +648,55 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                         originIdNodes,
                         preTiltParentToPartOriginIn
                         )
-//                preTiltObjectToPartOrigin +=
-//                    parentAndObjectToPartOriginDictionary
-//                        .makeAndGetForObjectToPart()
-//                preTiltParentToPartOrigin +=
-//                    parentAndObjectToPartOriginDictionary
-//                        .makeAndGetForParentToPart()
+                preTiltObjectToPartOrigin +=
+                    parentAndObjectToPartOriginDictionary
+                        .makeAndGetForObjectToPart()
+                preTiltParentToPartOrigin +=
+                    parentAndObjectToPartOriginDictionary
+                        .makeAndGetForParentToPart()
                 }
         }
             
-            
-        func createPreTiltParentToPartFootSideBackOriginDictionary () {
+        func getPreTiltParentToPartFootSideBackOriginDictionary () {
             if let data =
                 preTiltOccupantFootBackSideSupportOrigin
                     as? PreTiltOccupantSupportOrigin {
 
                 let allOriginIdNodesForSideForBothSitOn = data.allOriginIdNodesForSideSupportForBothSitOn
-                
                 for allOriginIdNodesForSide in
                         allOriginIdNodesForSideForBothSitOn {
-
-//                    let parentAndObjectToPartOriginDictionary =
-//                        ParentAndObjectToPartOriginDictionary(
-//                        allOriginIdNodesForSide,
-//                        preTiltParentToPartOriginIn
-//                        )
-                    
-//                    preTiltParentToPartOrigin +=
-//                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-//                    
-//                    preTiltObjectToPartOrigin +=
-//                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
-                    
-
+                            createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdNodesForSide)
                 }
                 
                 let allOriginIdNodesForFootForBothSitOn = data.allOriginIdNodesForFootSupportForBothSitOn
-                
                 for allOriginIdNodesForFoot in
                         allOriginIdNodesForFootForBothSitOn {
-
-                    let parentAndObjectToPartOriginDictionary =
-                        ParentAndObjectToPartOriginDictionary(
-                        allOriginIdNodesForFoot,
-                        preTiltParentToPartOriginIn
-                        )
-                    
-                    preTiltParentToPartOrigin +=
-                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-
-                    preTiltObjectToPartOrigin +=
-                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
+                            createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdNodesForFoot)
                 }
                 
                 let allOriginIdNodesForBackForBothSitOn = data.allOriginIdNodesForBackSupportForBothSitOn
-
                 for allOriginIdNodesForBack in
                         allOriginIdNodesForBackForBothSitOn {
-
-//                    let parentAndObjectToPartOriginDictionary =
-//                        ParentAndObjectToPartOriginDictionary(
-//                        allOriginIdNodesForBack,
-//                        preTiltParentToPartOriginIn
-//                        )
-//                    preTiltParentToPartOrigin +=
-//                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-//                    preTiltObjectToPartOrigin +=
-//                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
-                    
-
+                            createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdNodesForBack)
+                }
+                
+                func createPreTiltParentToPartFootSideBackOriginDictionary (
+                    _ allOriginIdNodes: OriginIdNodes){
+                        let parentAndObjectToPartOriginDictionary =
+                            ParentAndObjectToPartOriginDictionary(
+                            allOriginIdNodes,
+                            preTiltParentToPartOriginIn
+                            )
+                        preTiltParentToPartOrigin +=
+                            parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
+                        preTiltObjectToPartOrigin +=
+                            parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
                 }
             }
         }
 
+            
+            
         // Rotations are applied
         func createOccupantSupportPostTiltDimensionDictionary() {
             let occupantSupportDimensionDictionary =
