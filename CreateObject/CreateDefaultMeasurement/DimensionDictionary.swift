@@ -97,13 +97,28 @@ struct Root {
                   
         let sideIndex = 0
         let oneIndex = 0
+            
         var idZeroOrOne: Int
-        for index in 0..<nodePairsToDeepestRoot.count {
-            let firstId =
-            nodePairsToDeepestRoot[index][oneIndex] == .sitOn ?
-            sitOnId: (nodePairsToDeepestRoot[index][oneIndex] == .object ? .id0: partIdsForSecondOfNodePair[index][sideIndex] )
+            for index in 0..<nodePairsToDeepestRoot.count {
+                idZeroOrOne = partIdsForSecondOfNodePair[index].count == 2 && usingIdZeroOrOne == 1 ? 1: 0
+                
+                let firstId =
+                nodePairsToDeepestRoot[index][oneIndex] == .sitOn ?
+            sitOnId: (nodePairsToDeepestRoot[index][oneIndex] == .object ? .id0: partIdsForSecondOfNodePair[index][idZeroOrOne] )
+                
+//            if  partIdsForSecondOfNodePair[index].count == 2 && usingIdZeroOrOne == 1 {
+//            secondId =
+//                nodePairsToDeepestRoot[index][oneIndex] == .sitOn ?
+//          sitOnId: partIdsForSecondOfNodePair[index][1]
+//            } else {
+//
 
-            idZeroOrOne = partIdsForSecondOfNodePair[index].count == 2 && usingIdZeroOrOne == 1 ? 1: 0
+            //}
+            
+            /// case 1: usingIdZeroOrOne = 0 . idZerorOrOne = 0
+            /// case 2:
+            // [.id1,.id0]
+
             
             let secondId =
                 nodePairsToDeepestRoot[index][oneIndex] == .sitOn ? sitOnId: partIdsForSecondOfNodePair[index][idZeroOrOne]
@@ -138,6 +153,7 @@ struct Root {
         _ partIds: [[Part]],
        usingIdZeroOrOne: Int)
         -> [String] {
+
         let sitOnId = allNodes.contains(.sitOn) ?
             partIds[0][0]: .id0 // some roots, eg wheels exclude sitOn so use id0
         let allNodeFromObject = [Part.object] + allNodes // first node is always object
@@ -146,7 +162,7 @@ struct Root {
         /// [ [part_0, part_1], [part_1, part_2], [ part_2, part_3], [ part_3, part_4] ]
         let nodePairsToDeepestRoot =
             getNodePairsToDeepestRoot(allNodeFromObject)
-        
+print(nodePairsToDeepestRoot)
         /// [ [id0] ,[id0], [id1, id0],  [id1, id0], [id1]  ] transforms to
         /// [[id0, id0],  [id0, id1], [id1, id1], [id1, id1]
         let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
@@ -155,6 +171,8 @@ struct Root {
                 nodePairsToDeepestRoot,
                 partIds,
                 usingIdZeroOrOne)
+print(idForFirstAndSecondNodeToDeepestRoot)
+print("\n\n")
         return
             getNamesFromNodePairs(
                 nodePairsToDeepestRoot,
@@ -495,7 +513,7 @@ struct ObjectDefaultOrEditedDictionaries {
 //MARK:- INCLUDE
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
-        createPreTiltParentToPartBodyOriginDictionary()
+        //createPreTiltParentToPartBodyOriginDictionary()
             
         preTiltOccupantFootBackSideSupportOrigin =
             PreTiltOccupantSupportOrigin(parent: self)
@@ -508,7 +526,7 @@ struct ObjectDefaultOrEditedDictionaries {
                         ObjectDefaultOrEditedDictionaries.PreTiltWheelOrigin)
             }
                 
-        createPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes) //
+//        getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes) //
 
         createPreTiltParentToPartFootSideBackOriginDictionary()
 
@@ -586,18 +604,18 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
 
                 for allOriginIdNodesForSitOn in allOriginIdNodesForSitOnForBothSitOn {
 
-                    preTiltParentToPartOrigin +=
-                        ParentAndObjectToPartOriginDictionary(
-                            allOriginIdNodesForSitOn,
-                            preTiltParentToPartOriginIn
-                    ).makeAndGetForParentToPart()
+//                    preTiltParentToPartOrigin +=
+//                        ParentAndObjectToPartOriginDictionary(
+//                            allOriginIdNodesForSitOn,
+//                            preTiltParentToPartOriginIn
+//                    ).makeAndGetForParentToPart()
                     
                 }
             }
         }
             
         
-        func createPreTiltWheelOriginDictionary(
+        func getPreTiltWheelOriginDictionary(
             _ frontMidRearOriginIdNodes: RearMidFrontOriginIdNodes) {
             createPreTiltWheelOriginDictionary(frontMidRearOriginIdNodes.rear)
                 
@@ -614,12 +632,12 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
                         originIdNodes,
                         preTiltParentToPartOriginIn
                         )
-                preTiltObjectToPartOrigin +=
-                    parentAndObjectToPartOriginDictionary
-                        .makeAndGetForObjectToPart()
-                preTiltParentToPartOrigin +=
-                    parentAndObjectToPartOriginDictionary
-                        .makeAndGetForParentToPart()
+//                preTiltObjectToPartOrigin +=
+//                    parentAndObjectToPartOriginDictionary
+//                        .makeAndGetForObjectToPart()
+//                preTiltParentToPartOrigin +=
+//                    parentAndObjectToPartOriginDictionary
+//                        .makeAndGetForParentToPart()
                 }
         }
             
@@ -649,20 +667,38 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
 
                 }
                 
+                let allOriginIdNodesForFootForBothSitOn = data.allOriginIdNodesForFootSupportForBothSitOn
+                
+                for allOriginIdNodesForFoot in
+                        allOriginIdNodesForFootForBothSitOn {
+
+//                    let parentAndObjectToPartOriginDictionary =
+//                        ParentAndObjectToPartOriginDictionary(
+//                        allOriginIdNodesForFoot,
+//                        preTiltParentToPartOriginIn
+//                        )
+                    
+//                    preTiltParentToPartOrigin +=
+//                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
+//
+//                    preTiltObjectToPartOrigin +=
+//                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
+                }
+                
                 let allOriginIdNodesForBackForBothSitOn = data.allOriginIdNodesForBackSupportForBothSitOn
 
                 for allOriginIdNodesForBack in
                         allOriginIdNodesForBackForBothSitOn {
 
-                    let parentAndObjectToPartOriginDictionary =
-                        ParentAndObjectToPartOriginDictionary(
-                        allOriginIdNodesForBack,
-                        preTiltParentToPartOriginIn
-                        )
-                    preTiltParentToPartOrigin +=
-                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-                    preTiltObjectToPartOrigin +=
-                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
+//                    let parentAndObjectToPartOriginDictionary =
+//                        ParentAndObjectToPartOriginDictionary(
+//                        allOriginIdNodesForBack,
+//                        preTiltParentToPartOriginIn
+//                        )
+//                    preTiltParentToPartOrigin +=
+//                        parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
+//                    preTiltObjectToPartOrigin +=
+//                        parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
                     
 
                 }
@@ -1340,8 +1376,8 @@ DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0
             let allSideSupportIds =
                 [
                 [sitOnId],
-                bilateralWidthPositionId,
-                bilateralWidthPositionId]
+                bilateralWidthPositionId, // [.id1, .id0]
+                bilateralWidthPositionId] // [.id1, .id0]
             return
                (
                 origin: allSideSupportOrigin,
