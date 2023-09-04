@@ -42,6 +42,10 @@ struct CreateInitialObject {
         //print(objectDefaultOrModifiedSpecification.parentToPartOriginDictionaryOut)
         
         getDictionary(baseObjectName)
+print("\n\n")
+DictionaryInArrayOut().getNameValue( dictionary).forEach{print($0)}
+
+
     }
     
     mutating func getDictionary(

@@ -244,6 +244,22 @@ struct CreateIosPosition {
             
             return leftThenRightmost
     }
+    
+    static func minMaxPosition (
+        _ corners: [PositionAsIosAxes])
+    //-> [PositionAsIosAxes]
+    {
+        let cornersAsArray = CreateIosPosition
+            .getArrayFromPositions(corners)
+        let xValues = cornersAsArray.x
+print(corners)
+        if let minValue = xValues.min(), let maxValue = xValues.max() {
+            if let minIndex = xValues.firstIndex(of: minValue), let maxIndex = xValues.firstIndex(of: maxValue) {
+                print(corners[minIndex])
+                print(corners[maxIndex])
+            }
+        }
+    }
 }
 
 struct DimensionChange {
