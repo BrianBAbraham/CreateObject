@@ -372,7 +372,7 @@ struct ParentAndObjectToPartOriginDictionary {
                 LeftAndRightOrigin(
                     rightAndUnilateralOrigin: rightOrUnilateralOrigin,
                     partIds: partIds)
-        var leftOrigin = rightUnilateralAndLeftOrigin.left
+            let leftOrigin = rightUnilateralAndLeftOrigin.left
 
         let allOrigin =
             createObjectToPartOrigin(rightOrUnilateralOrigin) + createObjectToPartOrigin(leftOrigin)
@@ -477,7 +477,8 @@ struct ObjectDefaultOrEditedDictionaries {
     ///   - baseType: as Enum
     ///   - twinSitOnOption: dictionary as [Enum: Bool] indicating a configuration with two seats
     ///   - objectOptions: dictionary as [Enum: Bool] indicating options for object one per sitOn
-    ///   - preTiltDimension: empty or default or modified dictionary of part  UI does produce postTilttDimesnsion it supplies angle
+    ///   - preTiltDimension: empty or default or modified dictionary of part
+    ///   UI sets angle values which determine  postTilttDimesnsion
     ///   - objectToPartOrigin: empty or default or modified dictionary as  [String: PositionAsIosAxes] indicating part origin, preTilt
     ///   - parentToPartOrigin: empty or default or modified dictionary as  [String: PositionAsIosAxes] indicating part origin, preTilt
     ///   - angleChange: empty or default or modified dictionary as [String: Measurement<UnitAngle>] indicating object configuration angles but not angles of parts which change during movement: sitOn tilt but not caster orientation
@@ -520,13 +521,13 @@ struct ObjectDefaultOrEditedDictionaries {
         /// .backSupportHeadSupportJoint
         /// an origin is the relative origin from part to next part
         /// nodes excludes first node .object
-
         /// each of the three data elements contains n members
 
         //PRE TILT
         // Checks for value in preTiltParentToPartOriginIn
         // used if present else default used
-//MARK:- INCLUDE
+            
+//MARK: - Dictionary
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
         getPreTiltParentToPartBodyOriginDictionary()
@@ -545,10 +546,6 @@ struct ObjectDefaultOrEditedDictionaries {
         getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes) //
 
         getPreTiltParentToPartFootSideBackOriginDictionary()
-
-            
-            
-//createPreTiltObjectToPartOriginDictionary()
             
         //POST TILT
         createOccupantSupportPostTiltDimensionDictionary()
@@ -557,15 +554,13 @@ struct ObjectDefaultOrEditedDictionaries {
   
 
 //DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
-            
-            
-            
-
-DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
 print("")
 DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
+            
+            
         createCornerDictionary ()
   
 
@@ -585,7 +580,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                             preTiltOccupantBodySupportOriginDowncast!)
             }
 
-                return preTiltWheelOrigin
+            return preTiltWheelOrigin
         }
             
             
@@ -624,7 +619,6 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                             allOriginIdNodesForSitOn,
                             preTiltParentToPartOriginIn
                     ).makeAndGetForParentToPart()
-                    
                 }
             }
         }
@@ -656,6 +650,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                         .makeAndGetForParentToPart()
                 }
         }
+            
             
         func getPreTiltParentToPartFootSideBackOriginDictionary () {
             if let data =
@@ -833,7 +828,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
             }
         }
         
-        // MARK: write code
+        // MARK: - write code
         mutating func forSitOnWithoutFootTilt() {}
         
         mutating func forBackRecline (
@@ -867,7 +862,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
              }
          }
         
-        // MARK: write code
+        // MARK: - write code
         mutating func forHeadSupport(){}
     }
     
@@ -1043,8 +1038,6 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
     /// to the body support, for example, front drive v rear drive
     /// requires the following considerable logic
     struct PreTiltOccupantBodySupportOrigin: ObjectCreator {
-//        var parentToPartDictionary: PositionDictionary = [:]
-//        var objectToPartDictionary: PositionDictionary = [:]
         var partGroup: PartGroup.Type = PartGroup.self
  
         let objectType: BaseObjectTypes
@@ -1081,9 +1074,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
             occupantFootSupportHangerLinksDimension =
                 [getModifiedOrDefaultMaximumHangerLinkDimension(.id0)] +
                 (parent.twinSitOnState ? [getModifiedOrDefaultMaximumHangerLinkDimension(.id1)]: [])
-                
-                
-                
+            
             lengthBetweenWheels =
                 LengthBetween(
                     parent.baseType,
@@ -1295,10 +1286,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
         
     }
     
-    // occupantBodySupportsDimension[0].width + occupantBodySupportsDimension[1].width +                         PreTiltOccupantSideSupportDefaultDimension(parent.baseType
-    //).value.width * 2
-    
-    
+ 
     
     
     //MARK: FOOT/SIDE/BACK/ROTATE ORIGIN
