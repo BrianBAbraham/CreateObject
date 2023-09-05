@@ -94,23 +94,30 @@ struct LeftAndRightOrigin {
 struct ObjectDefaultOrEditedDictionaries {
     
     static let sitOnHeight = 500.0
-    //var preTiltWheelOrigin: ObjectCreator
-    var preTiltOccupantBodySupportOrigin: ObjectCreator?//PreTiltOccupantBodySupportOrigin?
+    
+    //passed for name creation and then dictionary creation
+    var preTiltWheelOriginIdNodes: RearMidFrontOriginIdNodes = ZeroValue.rearMidFrontOriginIdNodes
+    
+   //preliminary dictionaries
+    var preTiltOccupantBodySupportOrigin: ObjectCreator?
     var preTiltOccupantFootBackSideSupportOrigin: ObjectCreator?
     var preTiltWheelOrigin: ObjectCreator?
-    //var wheelOrigin: WheelOrigin   //var wheelOriginWithAccessibleProperties: WheelOrigin?
-    //let parentOfWheelOrigin: ObjectCreator?
-    var preTiltWheelOriginIdNodes: RearMidFrontOriginIdNodes = ZeroValue.rearMidFrontOriginIdNodes
+
+
+    //UI amended dictionary
     let preTiltDimensionIn: Part3DimensionDictionary
-    var postTiltDimension: Part3DimensionDictionary = [:]
+    let preTiltParentToPartOriginIn: PositionDictionary
+    let preTiltObjectToPartOriginIn: PositionDictionary
     
+    //pre-tilt
     var preTiltParentToPartOrigin: PositionDictionary = [:]
-    
     var preTiltObjectToPartOrigin: PositionDictionary = [:]
+    
+    //post-tilt
+    var postTiltDimension: Part3DimensionDictionary = [:]
     var postTiltObjectToPartOrigin: PositionDictionary = [:]
 
-    let preTiltObjectToPartOriginIn: PositionDictionary
-    let preTiltParentToPartOriginIn: PositionDictionary
+
     
     let angleChangeIn: AngleDictionary
     var angleChangeDefault: AngleDictionary = [:]
@@ -121,11 +128,6 @@ struct ObjectDefaultOrEditedDictionaries {
     var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
     
-//    static func initalisePreTiltWheelOrigin (
-//    using preTiltWheelchairOrigin: ObjectCreator)
-//    -> ObjectCreator {
-//        return PreTiltWheelOrigin(parent: self,  bodySupportOrigin: preTiltOccupantBodySupportOrigin)
-//    }
     
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -160,7 +162,6 @@ struct ObjectDefaultOrEditedDictionaries {
         self.preTiltObjectToPartOriginIn = objectToPartOrigin
         self.preTiltParentToPartOriginIn = parentToPartOrigin
         self.angleChangeIn = angleChangeIn
-            
       
         twinSitOnState = TwinSitOn(twinSitOnOption).state
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
@@ -168,7 +169,6 @@ struct ObjectDefaultOrEditedDictionaries {
         angleChangeDefault =
             ObjectAngleChange(parent: self).dictionary
         
-            
             
         /// Data Type OriginIdNodes
         /// origin: [PositionAsIosAxes]
@@ -192,6 +192,7 @@ struct ObjectDefaultOrEditedDictionaries {
 //MARK: - Dictionary
         preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
+        
         getPreTiltParentToPartBodyOriginDictionary()
             
         preTiltOccupantFootBackSideSupportOrigin =
@@ -217,8 +218,8 @@ struct ObjectDefaultOrEditedDictionaries {
 
 //DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
-print("")
-DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
+//print("")
+//DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
 //print("")
             
@@ -376,24 +377,24 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                 ).intialWithReplacements
         }
         
-            
+            //MARK: - Assume Cuboid
             /// corners c0...c7 of a cuboid are located as follows
             /// they are viewed as per IOS axes facing the screen
             /// c0...c3 are z = 0 in the UI
-            /// c4..c7 are z = 1 in the UI
+            /// c4..c7 are z = 1 in the UI 1>0 out of screen
             /// c0 top left,,
             /// c1 top right,
             /// c2 bottom right,
             /// c3 bottom left
             /// repeat for c4...c7
+            ///c0, c3, c4, c7 colinear left
+            ///c1, c2, c5, c6 colinear right
         func createCornerDictionary(){
-            
-            let noJointPostTiltOrigin = preTiltObjectToPartOrigin.filter({!$0.key.contains("Joint")})
-
+            let noJointPostTiltOrigin = postTiltObjectToPartOrigin.filter({!$0.key.contains("Joint")})
+//print(postTiltDimension)
             for (key, _) in noJointPostTiltOrigin {
-                var corners: [PositionAsIosAxes] = []
                 let O = noJointPostTiltOrigin[key]!
-                let D = preTiltDimension[key] ?? ZeroValue.dimension3D
+                let D = postTiltDimension[key] ?? ZeroValue.dimension3D
 
                 let hD = HalfThis(D).dimension
                 let c0 = (x: O.x - hD.width, y: O.y - hD.length, z: O.z - hD.height)
@@ -404,30 +405,29 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                 let c5 = (x: O.x + hD.width, y: O.y - hD.length, z: O.z + hD.height)
                 let c6 = (x: O.x + hD.width, y: O.y + hD.length, z: O.z + hD.height)
                 let c7 = (x: O.x - hD.width, y: O.y + hD.length, z: O.z + hD.height)
-                corners =
-                    [ c0,c1,c2,c3,c4,c5,c6,c7]
-                CreateIosPosition.minMaxPosition(corners)
-            }
-            
-//            let cornerArray =
-//                CreateIosPosition.getArrayFromPositions(corners)
-       
-//print(cornerArray.x)
-            //for plan point with min/max x
-            // point with min/max y
-            // for side point with min/max z
-            // point with min/max y
+
+                let rightCorners =
+                CreateIosPosition.minMaxPositionY(
+                    [ c1,c2,c5,c6])
+                
+                let leftCorners =
+                CreateIosPosition.minMaxPositionY(
+                    [ c0,c3,c4,c7])
+                
+                let topViewCorners =
+                    [leftCorners[0], rightCorners[0], rightCorners[1], leftCorners[1]]
+//print(postTiltDimension[key] )
 //print(key)
-//print(corners)
-            
-            /// given tilted dimensions and origins create the eight corners
-            /// extract x-y or y-z or x-z corners
-            ///
+//print(topViewCorners)
+//
+//print("\n \n")
+            }
         }
-            
     }
     
     
+    ///DATA FLOW
+    ///
     
     //MARK: ORIGIN POST TILT
     struct OriginPostTilt {
@@ -596,7 +596,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
         }
     }
     
-    
+    //MARK: GET DIMENSIONS
     //retrieves a passed value if extant else a default value
     struct OccupantSupportPostTiltDimensionDictionary {
         var forBack:  Part3DimensionDictionary = [:]
@@ -618,14 +618,16 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                 let allOccupantRelated =
                     AllOccupantBackRelated(
                         parent.baseType)
-                
-                return
+                let dimensions =
                     DimensionDictionary(
                         allOccupantRelated.parts,
                         allOccupantRelated.dimensions,
                         parent.twinSitOnOption,
                         parent.preTiltDimensionIn
                     ).forPart
+                
+print(dimensions)
+                return dimensions
             }
                 
             func  getDictionaryForBody()
@@ -638,16 +640,12 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                         OccupantBodySupportDefaultAngleChange(parent.baseType).value
                     
                     let rotatedDimension =
-                        ObjectCorners(
+                        RotatedPartCorners(
                             dimensionIn: dimension,
                             angleChangeIn:  angle
-                        ).rotatedDimension
-                    
-//print(parent.baseType.rawValue)
-//print(rotatedDimension)
-//print("")
-                    
-                    let dimensions =
+                        ).dimension
+          
+                    let rotatedDimensions =
                         parent.twinSitOnState ? [rotatedDimension, rotatedDimension]: [rotatedDimension]
                     
                     let parts: [Part] =
@@ -656,7 +654,7 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                     return
                         DimensionDictionary(
                             parts,
-                            dimensions,
+                            rotatedDimensions,
                             parent.twinSitOnOption,
                             parent.preTiltDimensionIn
                         ).forPart
@@ -686,14 +684,14 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
                     let angle =
                     OccupantBodySupportDefaultAngleChange(parent.baseType).value
                     let rotatedDimension =
-                    ObjectCorners(
+                    RotatedPartCorners(
                         dimensionIn: dimension,
                         angleChangeIn:  angle
-                    ).rotatedDimension
+                    ).dimension
                     
                    return
                         DimensionDictionary(
-                            [.armSupport],
+                            [.sideSupport],
                             [rotatedDimension],
                             parent.twinSitOnOption,
                             parent.preTiltDimensionIn
@@ -1021,6 +1019,8 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0
             -> OriginIdNodes {
             let allSideSupportNodes: [Part] =
                     partGroup.sideSupport
+//print("SIDE")
+//print(partGroup.sideSupport)
             let allSideSupportOrigin =
                 [
                 objectToSitOn,
@@ -1471,69 +1471,4 @@ protocol ObjectCreator {
     var allOriginIdNodes: [[OriginIdNodes]] {get}
 }
 
-//MARK: CORNERS
-/// Provide all eight corner positions for part
-/// Rotate about x axis left to rigth on screen
-/// Provide maximum y length resulting from rotation
-struct ObjectCorners {
-    let dimensionIn: Dimension3d
-    let angleChangeIn: Measurement<UnitAngle>
-    var are: [PositionAsIosAxes] {
-        calculateFrom(dimension: dimensionIn) }
-    var aferRotationAre: [PositionAsIosAxes] {
-        calculatePositionAfterRotation(are, angleChangeIn)
-    }
-    var maximumLengthAfterRotationAboutX: Double {
-        calculateMaximumLength(aferRotationAre)
-    }
-    var rotatedDimension: Dimension3d {
-        (
-        width: dimensionIn.width,
-        length: maximumLengthAfterRotationAboutX,
-        height: dimensionIn.height)
-    }
-    
 
-    func calculateFrom( dimension: Dimension3d)
-    -> [PositionAsIosAxes] {
-        let (w,l,h) = dimension
-        return
-            [
-            ZeroValue.iosLocation,
-            (x: w,      y: 0.0, z: 0.0 ),
-            (x: w,      y: l,   z: 0.0 ),
-            (x: 0.0,    y: l,   z: 0.0),
-            (x: 0.0,    y: 0.0, z: h),
-            (x: w,      y: 0.0, z: h),
-            (x: w,      y: l,   z: h ),
-            (x: 0.0,    y: l,   z: h )
-            ]
-    }
-    
-    func calculatePositionAfterRotation(
-        _ corners: [PositionAsIosAxes],
-        _ angleChange: Measurement<UnitAngle>)
-        -> [PositionAsIosAxes] {
-        var rotatedCorners: [PositionAsIosAxes] = []
-        
-        let useAnyIndexForRotation = 0
-        for corner in corners {
-            rotatedCorners.append(
-                PositionOfPointAfterRotationAboutPoint(
-                    staticPoint: corners[useAnyIndexForRotation],
-                    movingPoint: corner,
-                    angleChange: angleChange).fromStaticToPointWhichHasMoved )
-        }
-//print(rotatedCorners)
-        return rotatedCorners
-    }
-    
-    func calculateMaximumLength(
-        _ corners: [PositionAsIosAxes])
-        -> Double {
-        let yValues =
-            CreateIosPosition.getArrayFromPositions(corners).y
-        return
-            yValues.max()! - yValues.min()!
-    }
-}

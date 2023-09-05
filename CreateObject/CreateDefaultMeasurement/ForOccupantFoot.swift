@@ -46,10 +46,10 @@ struct AllOccupantFootRelated {
         
         for dimension in dimensionList {
             rotatedDimensionList.append(
-                ObjectCorners(
+                RotatedPartCorners(
                     dimensionIn: dimension,
                     angleChangeIn:  angle
-                ).rotatedDimension
+                ).dimension
             )
         }
         dimensions = rotatedDimensionList

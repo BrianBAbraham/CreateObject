@@ -246,8 +246,10 @@ struct PartGroupsFor {
 
 
 
-
-
+enum ViewFrom {
+    case side
+    case top
+}
 
 
 //InterOrigin().names

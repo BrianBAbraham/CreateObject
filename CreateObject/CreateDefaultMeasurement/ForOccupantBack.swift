@@ -7,9 +7,6 @@
 
 import Foundation
 
-
-
-
 struct AllOccupantBackRelated {
     var parts: [Part] = []
     var dimensions: [Dimension3d] = []
@@ -44,17 +41,19 @@ struct AllOccupantBackRelated {
         
         for dimension in dimensionList {
             rotatedDimensionList.append(
-                ObjectCorners(
+                RotatedPartCorners(
                     dimensionIn: dimension,
                     angleChangeIn:  angle
-                ).rotatedDimension
+                ).dimension
             )
         }
         dimensions = rotatedDimensionList
     }
 }
 
+
 //MARK: DIMENSION
+///dimensions are
 struct PreTiltOccupantBackSupportDefaultDimension {
     let baseType: BaseObjectTypes
     

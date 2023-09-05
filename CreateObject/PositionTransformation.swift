@@ -245,21 +245,98 @@ struct CreateIosPosition {
             return leftThenRightmost
     }
     
-    static func minMaxPosition (
+//    static func convertToXY (_ positions: [PositionAsIosAxes])
+//        -> [(x: Double, y: Double)]
+//    {
+//        var twoD: [(x: Double, y: Double)] = []
+//        for position in positions {
+//            twoD.append((x: position.x, y: position.y))
+//        }
+//        return twoD
+//    }
+//
+//    static func convertToZY (_ positions: [PositionAsIosAxes])
+//        -> [(y: Double, z: Double)]
+//    {
+//        var twoD: [(y: Double, z: Double)] = []
+//        for position in positions {
+//            twoD.append((y: position.y, z: position.z))
+//        }
+//        return twoD
+//    }
+    
+    
+
+    static func minMaxPositionY (
         _ corners: [PositionAsIosAxes])
-    //-> [PositionAsIosAxes]
-    {
+        -> [PositionAsIosAxes] {
+       
         let cornersAsArray = CreateIosPosition
             .getArrayFromPositions(corners)
-        let xValues = cornersAsArray.x
-print(corners)
-        if let minValue = xValues.min(), let maxValue = xValues.max() {
-            if let minIndex = xValues.firstIndex(of: minValue), let maxIndex = xValues.firstIndex(of: maxValue) {
-                print(corners[minIndex])
-                print(corners[maxIndex])
-            }
-        }
+       
+        let yValues = cornersAsArray.y
+        let minValue = yValues.min() ?? 0.0
+        let maxValue = yValues.max() ?? 0.0
+        let minIndex = yValues.firstIndex(of: minValue) ?? 0
+        let maxIndex = yValues.firstIndex(of: maxValue) ?? 0
+        let minCorner = corners[minIndex]
+        let maxCorner = corners[maxIndex]
+        return [minCorner, maxCorner]
     }
+    //}
+    
+    
+   
+
+
+//      static func getInteriorPositions (_ polygon: [PositionAsIosAxes]) -> [PositionAsIosAxes] {
+//            var updatedPolygon = polygon
+//
+//            for point in polygon {
+//                let otherPoints = polygon.filter { $0 != point }
+//                if isPointInsidePolygon(point: point, polygon: otherPoints) {
+//                    updatedPolygon.removeAll { $0 == point }
+//                }
+//            }
+//
+//          func isPointInsidePolygon(point: PositionAsIosAxes, polygon: [PositionAsIosAxes]) -> Bool {
+//              var isInside = false
+//              let n = polygon.count
+//
+//              var i = 0
+//              var j = n - 1
+//
+//              while i < n {
+//                  let pi = polygon[i]
+//                  let pj = polygon[j]
+//
+//                  if ((pi.y > point.y) != (pj.y > point.y)) &&
+//                     (point.x < (pj.x - pi.x) * (point.y - pi.y) / (pj.y - pi.y) + pi.x) {
+//                      isInside = !isInside
+//                  }
+//
+//                  j = i
+//                  i += 1
+//              }
+//
+//              return isInside
+//          }
+//
+//            return updatedPolygon
+//        }
+        
+
+    
+    
+
+
+    // Example usage
+//    let polygon = [CGPoint(x: 0, y: 0), CGPoint(x: 0, y: 5), CGPoint(x: 5, y: 5), CGPoint(x: 5, y: 0)]
+
+//    let filteredPolygon = removeInteriorPoints(polygon: polygon)
+//    print(filteredPolygon)
+    
+    
 }
 
 struct DimensionChange {
