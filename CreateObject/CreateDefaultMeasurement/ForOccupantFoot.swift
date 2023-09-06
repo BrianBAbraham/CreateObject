@@ -20,7 +20,8 @@ import Foundation
 /// and hangerLink only exists to create default position and not future editiing
 struct AllOccupantFootRelated {
     let parts: [Part]
-    let dimensions: [Dimension3d]
+    let defaultDimensions: [Dimension3d]
+    var rotatedDimensions: RotatedDimensions = []
     init(
         _ baseType: BaseObjectTypes,
         _ modifiedPartDictionary: Part3DimensionDictionary) {
@@ -31,34 +32,34 @@ struct AllOccupantFootRelated {
              .footSupport,
              .footSupportInOnePiece
         ]
-        let defaultDimension = PretTiltOccupantFootSupportDefaultDimension(baseType)
-        let dimensionList =
-        [
-            defaultDimension.getHangerJoint(),
-            defaultDimension.getFootJoint(),
-            defaultDimension.getFootSupportInTwoPieces(),
-            defaultDimension.getFootSupportInOnePiece()
-        ]
             
-        var rotatedDimensionList: [Dimension3d] = []
+        let defaults =
+            PreTiltOccupantFootSupportDefaultDimension(baseType)
+        
+        defaultDimensions =
+        [
+        defaults.getHangerJoint(),
+        defaults.getFootJoint(),
+        defaults.getFootSupportInTwoPieces(),
+        defaults.getFootSupportInOnePiece()]
+            
         let angle =
             OccupantBodySupportDefaultAngleChange(baseType).value
         
-        for dimension in dimensionList {
-            rotatedDimensionList.append(
+        for dimension in defaultDimensions {
+            rotatedDimensions.append(
                 RotatedPartCorners(
                     dimensionIn: dimension,
                     angleChangeIn:  angle
-                ).dimension
+                ).lengthAlteredForRotationDimension
             )
         }
-        dimensions = rotatedDimensionList
     }
 }
 
 
 //MARK: DIMENSION FOOT
-struct PretTiltOccupantFootSupportDefaultDimension {
+struct PreTiltOccupantFootSupportDefaultDimension {
     let baseType: BaseObjectTypes
         
     init ( _ baseType: BaseObjectTypes) {
@@ -113,7 +114,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
     let jointBelowSeat = -50.0
     let footSupportHeightAboveFloor = 100.0
     let defaultFootSupportDimension:
-        PretTiltOccupantFootSupportDefaultDimension
+        PreTiltOccupantFootSupportDefaultDimension
     let defaultBodySupportDimension:
         PreTiltOccupantBodySupportDefaultDimension
     
@@ -121,7 +122,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
     init ( _ baseType: BaseObjectTypes) {
         self.baseType = baseType
         defaultFootSupportDimension =
-            PretTiltOccupantFootSupportDefaultDimension(baseType)
+            PreTiltOccupantFootSupportDefaultDimension(baseType)
         defaultBodySupportDimension =
             PreTiltOccupantBodySupportDefaultDimension(baseType)
     }

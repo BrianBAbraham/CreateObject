@@ -59,3 +59,24 @@ typealias RearMidFrontOriginIdNodes =
 
 typealias OriginIdNode =
     (origin: PositionAsIosAxes, id: [Part] ,node: Part)
+
+///corners of a cuboid ordered as follows
+///IOS screen view
+///bottom surface)is:
+///c0 top left,
+///c1 top right,
+///c2 bottom righ,t
+///c3 bottom left,
+///top surface is:
+///c4 top left,
+///c5 top left,
+///c6 top right,
+///c7 top left,
+typealias Corners = [PositionAsIosAxes]
+
+
+/// given a rotation about -x -- x  of a cubiod
+/// dimension y is altered 
+/// so if width and length are displayed
+/// part appears correctly
+typealias RotatedDimensions = [Dimension3d]

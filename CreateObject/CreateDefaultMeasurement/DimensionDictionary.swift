@@ -621,7 +621,7 @@ struct ObjectDefaultOrEditedDictionaries {
                 let dimensions =
                     DimensionDictionary(
                         allOccupantRelated.parts,
-                        allOccupantRelated.dimensions,
+                        allOccupantRelated.rotatedDimensions,
                         parent.twinSitOnOption,
                         parent.preTiltDimensionIn
                     ).forPart
@@ -643,7 +643,7 @@ print(dimensions)
                         RotatedPartCorners(
                             dimensionIn: dimension,
                             angleChangeIn:  angle
-                        ).dimension
+                        ).lengthAlteredForRotationDimension
           
                     let rotatedDimensions =
                         parent.twinSitOnState ? [rotatedDimension, rotatedDimension]: [rotatedDimension]
@@ -670,7 +670,7 @@ print(dimensions)
                     return
                         DimensionDictionary(
                             allOccupantRelated.parts,
-                            allOccupantRelated.dimensions,
+                            allOccupantRelated.rotatedDimensions,
                             parent.twinSitOnOption,
                             parent.preTiltDimensionIn
                         ).forPart
@@ -687,7 +687,7 @@ print(dimensions)
                     RotatedPartCorners(
                         dimensionIn: dimension,
                         angleChangeIn:  angle
-                    ).dimension
+                    ).lengthAlteredForRotationDimension
                     
                    return
                         DimensionDictionary(
@@ -831,7 +831,7 @@ print(dimensions)
                         modifiedDimension = modifiedDimensions[index]
                     }
                 return
-                   modifiedDimension ?? PretTiltOccupantFootSupportDefaultDimension(parent.baseType).getHangerLink()
+                   modifiedDimension ?? PreTiltOccupantFootSupportDefaultDimension(parent.baseType).getHangerLink()
             }
         }
         

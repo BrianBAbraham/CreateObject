@@ -9,9 +9,10 @@ import Foundation
 
 struct AllOccupantBackRelated {
     var parts: [Part] = []
-    var dimensions: [Dimension3d] = []
-    init(_ baseType: BaseObjectTypes
-    ) {
+    let defaultDimensions: [Dimension3d]
+    var rotatedDimensions: RotatedDimensions = []
+
+    init(_ baseType: BaseObjectTypes) {
          parts =
             [.backSupportAdditionalPart,
             .backSupportHeadSupport,
@@ -23,31 +24,30 @@ struct AllOccupantBackRelated {
             .backSupport,
             .backSupporRotationJoint]
         
-    let defaultDimension = PreTiltOccupantBackSupportDefaultDimension(baseType)
-        let dimensionList =
-            [
-                defaultDimension.getAdditionalObject(),
-                defaultDimension.getHeadSupport(),
-                defaultDimension.getHeadSupportLink() ,
-                defaultDimension.getHeadSupportRotationJoint(),
-                defaultDimension.getBackSupport(),
-                defaultDimension.getBackSupportRotationJoint()
-            ]
+    let defaults =
+        PreTiltOccupantBackSupportDefaultDimension(baseType)
         
-        var rotatedDimensionList: [Dimension3d] = []
+    defaultDimensions =
+        [
+            defaults.getAdditionalObject(),
+            defaults.getHeadSupport(),
+            defaults.getHeadSupportLink() ,
+            defaults.getHeadSupportRotationJoint(),
+            defaults.getBackSupport(),
+            defaults.getBackSupportRotationJoint()]
+
         let angle =
             OccupantBackSupportDefaultAngleChange(baseType).value +
             OccupantBodySupportDefaultAngleChange(baseType).value
         
-        for dimension in dimensionList {
-            rotatedDimensionList.append(
+        for dimension in defaultDimensions {
+            rotatedDimensions.append(
                 RotatedPartCorners(
                     dimensionIn: dimension,
                     angleChangeIn:  angle
-                ).dimension
+                ).lengthAlteredForRotationDimension
             )
         }
-        dimensions = rotatedDimensionList
     }
 }
 

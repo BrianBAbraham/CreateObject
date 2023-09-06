@@ -9,8 +9,37 @@
 //
 
 
-
-
+struct AllOccupantSideRelated {
+    let parts: [Part]
+    let defaultDimensions: [Dimension3d]
+    var rotatedDimensions: RotatedDimensions = []
+    init(
+        _ baseType: BaseObjectTypes,
+        _ modifiedPartDictionary: Part3DimensionDictionary) {
+        parts =
+            [
+            .sideSupport]
+            
+        let defaults =
+            PreTiltOccupantSideSupportDefaultDimension(baseType)
+        
+        defaultDimensions =
+        [
+        defaults.value]
+            
+        let angle =
+            OccupantBodySupportDefaultAngleChange(baseType).value
+        
+        for dimension in defaultDimensions {
+            rotatedDimensions.append(
+                RotatedPartCorners(
+                    dimensionIn: dimension,
+                    angleChangeIn:  angle
+                ).lengthAlteredForRotationDimension
+            )
+        }
+    }
+}
 
 struct PreTiltOccupantSideSupportDefaultDimension {
     

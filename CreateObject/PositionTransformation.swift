@@ -90,6 +90,25 @@ struct CreateIosPosition {
         return leftAndRightToupleSum
     }
     
+    
+    static func getCornersFromDimension (
+        _ dimension: Dimension3d)
+        -> Corners {
+            let (w,l,h) = dimension
+            let initialCorners: Corners =
+            [
+            (x: -w/2,  y: -l/2, z: -h/2 ),
+            (x: w/2,   y: -l/2, z: -h/2 ),
+            (x: w/2,   y: l/2, z: -h/2 ),
+            (x: -w/2,  y: l/2, z: -h/2),
+            (x: -w/2,  y: -l/2, z: h/2 ),
+            (x: w/2,   y: -l/2, z: h/2 ),
+            (x: w/2,   y: l/2, z: h/2 ),
+            (x: -w/2,  y: l/2, z: h/2) ]
+            return
+                initialCorners
+    }
+    
     static func dimensionFromIosPositions(_ positions: [PositionAsIosAxes])
     -> Dimension {
         

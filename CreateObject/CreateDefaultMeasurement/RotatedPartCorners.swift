@@ -8,42 +8,31 @@
 import Foundation
 
 //MARK: CORNERS
-/// Provide all eight corner positions for part
-/// Rotate about x axis left to rigth on screen
-/// Provide maximum y length resulting from rotation
+/// Rotation centre choice is irrelevant to results
+/// Cubiod centre is chosen
+/// Rotation is about -x -- x axis of IOS position
+/// Corners are as 'Corners quick help'
+/// lengthAlteredForRotationDimension only alters length so
+/// is useful when viewed in top down
 struct RotatedPartCorners {
     let dimensionIn: Dimension3d
     let angleChangeIn: Measurement<UnitAngle>
-    var are: [PositionAsIosAxes] {
-        calculateFrom(dimension: dimensionIn) }
+    var areInitially: [PositionAsIosAxes] {
+        CreateIosPosition.getCornersFromDimension( dimensionIn) }
     var aferRotationAre: [PositionAsIosAxes] {
-        calculatePositionAfterRotation(are, angleChangeIn)
+        calculatePositionAfterRotation(areInitially, angleChangeIn)
     }
     var maximumLengthAfterRotationAboutX: Double {
         calculateMaximumLength(aferRotationAre)
     }
-    var dimension: Dimension3d {
+    /// when viewed in top down
+    /// the length will be corrected for any -x -- x rotation
+    /// no other corrections are made
+    var lengthAlteredForRotationDimension: Dimension3d {
         (
         width: dimensionIn.width,
         length: maximumLengthAfterRotationAboutX,
         height: dimensionIn.height)
-    }
-    
-
-    func calculateFrom( dimension: Dimension3d)
-    -> [PositionAsIosAxes] {
-        let (w,l,h) = dimension
-        return
-            [
-            ZeroValue.iosLocation,
-            (x: w,      y: 0.0, z: 0.0 ),
-            (x: w,      y: l,   z: 0.0 ),
-            (x: 0.0,    y: l,   z: 0.0),
-            (x: 0.0,    y: 0.0, z: h),
-            (x: w,      y: 0.0, z: h),
-            (x: w,      y: l,   z: h ),
-            (x: 0.0,    y: l,   z: h )
-            ]
     }
     
     func calculatePositionAfterRotation(
@@ -52,17 +41,17 @@ struct RotatedPartCorners {
         -> [PositionAsIosAxes] {
         var rotatedCorners: [PositionAsIosAxes] = []
         
-        let useAnyIndexForRotation = 0
+            let cuboidCentre = ZeroValue.iosLocation
         for corner in corners {
             rotatedCorners.append(
                 PositionOfPointAfterRotationAboutPoint(
-                    staticPoint: corners[useAnyIndexForRotation],
+                    staticPoint: cuboidCentre,
                     movingPoint: corner,
                     angleChange: angleChange).fromStaticToPointWhichHasMoved )
         }
-//print(rotatedCorners)
         return rotatedCorners
     }
+    
     
     func calculateMaximumLength(
         _ corners: [PositionAsIosAxes])
@@ -73,3 +62,4 @@ struct RotatedPartCorners {
             yValues.max()! - yValues.min()!
     }
 }
+

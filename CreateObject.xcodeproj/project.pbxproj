@@ -231,8 +231,8 @@
 				FDF085652A2E222900EB147F /* ForBase.swift */,
 				FDE497DC2AA6122A006D636B /* OriginPartInDictionariesOut.swift */,
 				FDE497DE2AA6134A006D636B /* TransformOriginIdNodesToDictionary.swift */,
-				FDFC68752A2A3EBF0027E219 /* DimensionDictionary.swift */,
 				FD7FDD512AA79C830012B3F6 /* RotatedPartCorners.swift */,
+				FDFC68752A2A3EBF0027E219 /* DimensionDictionary.swift */,
 			);
 			path = CreateDefaultMeasurement;
 			sourceTree = "<group>";
