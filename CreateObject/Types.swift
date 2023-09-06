@@ -57,6 +57,12 @@ typealias OriginIdNodes =
 typealias RearMidFrontOriginIdNodes =
     (rear: OriginIdNodes, mid: OriginIdNodes, front: OriginIdNodes)
 
+
+/// encapsulates all three data used to create a dictionary
+/// crash if elements number for each lable not equal
+/// id indicates unilateral part by one id and bilateral part with two
+/// nodes are the parts in the part collection being considered
+/// the first is closes to the object origin
 typealias OriginIdNode =
     (origin: PositionAsIosAxes, id: [Part] ,node: Part)
 
@@ -75,8 +81,8 @@ typealias OriginIdNode =
 typealias Corners = [PositionAsIosAxes]
 
 
-/// given a rotation about -x -- x  of a cubiod
-/// dimension y is altered 
-/// so if width and length are displayed
+/// given a rotation about -x -- x  of a cubiod,
+/// dimension y is altered,
+/// so if width and length are displayed,
 /// part appears correctly
 typealias RotatedDimensions = [Dimension3d]

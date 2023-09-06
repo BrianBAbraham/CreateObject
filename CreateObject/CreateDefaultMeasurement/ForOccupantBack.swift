@@ -53,7 +53,7 @@ struct AllOccupantBackRelated {
 
 
 //MARK: DIMENSION
-///dimensions are
+
 struct PreTiltOccupantBackSupportDefaultDimension {
     let baseType: BaseObjectTypes
     
