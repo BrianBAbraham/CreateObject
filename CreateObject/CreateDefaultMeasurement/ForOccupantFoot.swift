@@ -21,7 +21,7 @@ import Foundation
 struct AllOccupantFootRelated {
     let parts: [Part]
     let defaultDimensions: [Dimension3d]
-    var rotatedDimensions: RotatedDimensions = []
+    var rotatedDimensions: RotatedInXxDimensions = []
     init(
         _ baseType: BaseObjectTypes,
         _ modifiedPartDictionary: Part3DimensionDictionary) {
@@ -34,7 +34,7 @@ struct AllOccupantFootRelated {
         ]
             
         let defaults =
-            PreTiltOccupantFootSupportDefaultDimension(baseType)
+            OccupantFootSupportDefaultDimension(baseType)
         
         defaultDimensions =
         [
@@ -59,7 +59,7 @@ struct AllOccupantFootRelated {
 
 
 //MARK: DIMENSION FOOT
-struct PreTiltOccupantFootSupportDefaultDimension {
+struct OccupantFootSupportDefaultDimension {
     let baseType: BaseObjectTypes
         
     init ( _ baseType: BaseObjectTypes) {
@@ -97,7 +97,7 @@ struct PreTiltOccupantFootSupportDefaultDimension {
     func getFootSupportInOnePiece() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =       (
-            width: PreTiltOccupantBodySupportDefaultDimension.general.width,
+            width: OccupantBodySupportDefaultDimension.general.width,
             length: 100.0,
             height: 10.0)
         return
@@ -114,17 +114,17 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
     let jointBelowSeat = -50.0
     let footSupportHeightAboveFloor = 100.0
     let defaultFootSupportDimension:
-        PreTiltOccupantFootSupportDefaultDimension
+        OccupantFootSupportDefaultDimension
     let defaultBodySupportDimension:
-        PreTiltOccupantBodySupportDefaultDimension
+        OccupantBodySupportDefaultDimension
     
     
     init ( _ baseType: BaseObjectTypes) {
         self.baseType = baseType
         defaultFootSupportDimension =
-            PreTiltOccupantFootSupportDefaultDimension(baseType)
+            OccupantFootSupportDefaultDimension(baseType)
         defaultBodySupportDimension =
-            PreTiltOccupantBodySupportDefaultDimension(baseType)
+            OccupantBodySupportDefaultDimension(baseType)
     }
     
     func getSitOnToHangerJoint()

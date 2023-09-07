@@ -12,7 +12,7 @@
 struct AllOccupantSideRelated {
     let parts: [Part]
     let defaultDimensions: [Dimension3d]
-    var rotatedDimensions: RotatedDimensions = []
+    var rotatedDimensions: RotatedInXxDimensions = []
     init(
         _ baseType: BaseObjectTypes,
         _ modifiedPartDictionary: Part3DimensionDictionary) {
@@ -21,7 +21,7 @@ struct AllOccupantSideRelated {
             .sideSupport]
             
         let defaults =
-            PreTiltOccupantSideSupportDefaultDimension(baseType)
+            OccupantSideSupportDefaultDimension(baseType)
         
         defaultDimensions =
         [
@@ -41,17 +41,16 @@ struct AllOccupantSideRelated {
     }
 }
 
-struct PreTiltOccupantSideSupportDefaultDimension {
-    
+struct OccupantSideSupportDefaultDimension {
     var dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher:
         (width: 20.0,
-         length: PreTiltOccupantBodySupportDefaultDimension(.allCasterStretcher).value.length,
+         length: OccupantBodySupportDefaultDimension(.allCasterStretcher).value.length,
          height: 20.0),
 
      .allCasterBed:
         (width: 20.0,
-         length: PreTiltOccupantBodySupportDefaultDimension(.allCasterBed).value.length,
+         length: OccupantBodySupportDefaultDimension(.allCasterBed).value.length,
          height: 20.0)
         ]
     
@@ -62,7 +61,7 @@ struct PreTiltOccupantSideSupportDefaultDimension {
         _ baseType: BaseObjectTypes) {
         general =
         (width: 40.0,
-        length: PreTiltOccupantBodySupportDefaultDimension(baseType).value.length,
+        length: OccupantBodySupportDefaultDimension(baseType).value.length,
         height: 30.0)
         
     value =
@@ -87,8 +86,8 @@ struct PreTiltOccupantSideSupportDefaultOrigin {
     -> PositionAsIosAxes {
         let dictionary: OriginDictionary = [:]
         let general =
-            (x: PreTiltOccupantBodySupportDefaultDimension(baseType).value.width/2,
-             y: -PreTiltOccupantBodySupportDefaultDimension(baseType).value.length/2,
+            (x: OccupantBodySupportDefaultDimension(baseType).value.width/2,
+             y: -OccupantBodySupportDefaultDimension(baseType).value.length/2,
              z: sideSupportHeight)
         return
             dictionary[baseType] ?? general
@@ -99,7 +98,7 @@ struct PreTiltOccupantSideSupportDefaultOrigin {
         let dictionary: OriginDictionary = [:]
         let general =
             (x: 0.0,
-             y: PreTiltOccupantSideSupportDefaultDimension(baseType).value.length/2,
+             y: OccupantSideSupportDefaultDimension(baseType).value.length/2,
              z: 0.0)
         return
             dictionary[baseType] ?? general

@@ -10,7 +10,7 @@ import Foundation
 struct AllOccupantBackRelated {
     var parts: [Part] = []
     let defaultDimensions: [Dimension3d]
-    var rotatedDimensions: RotatedDimensions = []
+    var rotatedDimensions: RotatedInXxDimensions = []
 
     init(_ baseType: BaseObjectTypes) {
          parts =
@@ -25,7 +25,7 @@ struct AllOccupantBackRelated {
             .backSupporRotationJoint]
         
     let defaults =
-        PreTiltOccupantBackSupportDefaultDimension(baseType)
+        OccupantBackSupportDefaultDimension(baseType)
         
     defaultDimensions =
         [
@@ -54,7 +54,7 @@ struct AllOccupantBackRelated {
 
 //MARK: DIMENSION
 
-struct PreTiltOccupantBackSupportDefaultDimension {
+struct OccupantBackSupportDefaultDimension {
     let baseType: BaseObjectTypes
     
     init ( _ baseType: BaseObjectTypes) {
@@ -71,7 +71,7 @@ struct PreTiltOccupantBackSupportDefaultDimension {
     func getBackSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-            (width: PreTiltOccupantBodySupportDefaultDimension.general.width,
+            (width: OccupantBodySupportDefaultDimension.general.width,
             length: 10.0,
             height: 500.0)
         return
@@ -98,7 +98,7 @@ struct PreTiltOccupantBackSupportDefaultDimension {
     func getHeadSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-            (width: PreTiltOccupantBodySupportDefaultDimension.general.width,
+            (width: OccupantBodySupportDefaultDimension.general.width,
             length: 100.0,
             height: 100.0)
         return
@@ -108,7 +108,7 @@ struct PreTiltOccupantBackSupportDefaultDimension {
     func getAdditionalObject() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-            (width: PreTiltOccupantBodySupportDefaultDimension.general.width,
+            (width: OccupantBodySupportDefaultDimension.general.width,
             length: 100.0,
             height: 100.0)
         return
@@ -127,14 +127,14 @@ struct PreTiltOccupantBackSupportDefaultDimension {
 struct PreTiltOccupantBackSupportDefaultOrigin {
     let baseType: BaseObjectTypes
     let defaultBackSupportDimension:
-        PreTiltOccupantBackSupportDefaultDimension
+        OccupantBackSupportDefaultDimension
   
     
     init ( _ baseType: BaseObjectTypes) {
         self.baseType = baseType
         
         defaultBackSupportDimension =
-            PreTiltOccupantBackSupportDefaultDimension(baseType)
+            OccupantBackSupportDefaultDimension(baseType)
     }
     
   func getSitOnToBackSupportRotationJoint()
@@ -142,7 +142,7 @@ struct PreTiltOccupantBackSupportDefaultOrigin {
         let dictionary: OriginDictionary = [:]
         let general =
             (x: 0.0,
-             y: -PreTiltOccupantBodySupportDefaultDimension(baseType).value.length/2,
+             y: -OccupantBodySupportDefaultDimension(baseType).value.length/2,
              z: 0.0)
         return
             dictionary[baseType] ?? general

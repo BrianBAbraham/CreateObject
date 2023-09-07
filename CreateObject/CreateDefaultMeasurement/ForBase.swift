@@ -65,8 +65,12 @@ typealias BaseSizeDictionary = [BaseObjectTypes: Double]
 
 
 
-/// Dimensions for  support determine the length
-struct LengthBetween {
+/// The length between wheels
+/// or the width between wheels
+/// taking account of side by side seats
+/// or front and rear seats
+/// and if there is a mid-wheel
+struct DistanceBetweenWheels {
     var ifNoFrontAndRearSitOn: Double = 0.0
     var ifFrontAndRearSitOn: Double = 0.0
     let occupantBodySupport: [Dimension3d]

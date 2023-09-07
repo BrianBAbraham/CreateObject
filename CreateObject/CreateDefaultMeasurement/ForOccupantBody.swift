@@ -11,7 +11,7 @@ import Foundation
 
 
 
-struct PreTiltOccupantBodySupportDefaultDimension {
+struct OccupantBodySupportDefaultDimension {
     let dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
      .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
@@ -35,7 +35,7 @@ struct OccupantBodySupportAngleJointDefaultDimension {
         ]
    static let general =
         (
-         width: PreTiltOccupantBodySupportDefaultDimension.general.width * 1.5,
+         width: OccupantBodySupportDefaultDimension.general.width * 1.5,
          length: Joint.dimension.length,
          height: Joint.dimension.length)
     let value: Dimension3d

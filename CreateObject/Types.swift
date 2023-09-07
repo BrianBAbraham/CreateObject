@@ -82,7 +82,7 @@ typealias Corners = [PositionAsIosAxes]
 
 
 /// given a rotation about -x -- x  of a cubiod,
-/// dimension y is altered,
+/// dimension y and z are altered,
 /// so if width and length are displayed,
 /// part appears correctly
-typealias RotatedDimensions = [Dimension3d]
+typealias RotatedInXxDimensions = [Dimension3d]
