@@ -59,7 +59,7 @@ struct OccupantSupportDimensionDictionary {
     var forSide: Part3DimensionDictionary = [:]
     
     init(
-        parent: ObjectDefaultOrEditedDictionaries) {
+        parent: DimensionOriginCornerDictionaries) {
         
         forBack = getDictionaryForBack()
         forBody = getDictionaryForBody()
@@ -78,10 +78,10 @@ struct OccupantSupportDimensionDictionary {
                     allOccupantRelated.parts,
                     allOccupantRelated.defaultDimensions,
                     parent.twinSitOnOption,
-                    parent.preTiltDimensionIn
+                    parent.dimensionIn
                 ).forPart
             
-print(dimensions)
+//print(dimensions)
             return dimensions
         }
             
@@ -111,7 +111,7 @@ print(dimensions)
                         parts,
                         rotatedDimensions,
                         parent.twinSitOnOption,
-                        parent.preTiltDimensionIn
+                        parent.dimensionIn
                     ).forPart
         }
             
@@ -121,13 +121,13 @@ print(dimensions)
                 let allOccupantRelated =
                     AllOccupantFootRelated(
                         parent.baseType,
-                        parent.preTiltDimensionIn)
+                        parent.dimensionIn)
                 return
                     DimensionDictionary(
                         allOccupantRelated.parts,
                         allOccupantRelated.defaultDimensions,
                         parent.twinSitOnOption,
-                        parent.preTiltDimensionIn
+                        parent.dimensionIn
                     ).forPart
         }
             
@@ -137,7 +137,7 @@ print(dimensions)
                 let allOccupantRelated =
                     AllOccupantSideRelated(
                         parent.baseType,
-                        parent.preTiltDimensionIn )
+                        parent.dimensionIn )
 
                 
                return
@@ -145,7 +145,7 @@ print(dimensions)
                         [.sideSupport],
                         allOccupantRelated.defaultDimensions,
                         parent.twinSitOnOption,
-                        parent.preTiltDimensionIn
+                        parent.dimensionIn
                     ).forPart
         }
          

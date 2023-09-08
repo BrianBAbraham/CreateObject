@@ -147,12 +147,37 @@ struct PartGroup {
             .baseWheelJoint,
             .casterFork,
             .casterWheel]
+    
+    
     static let fixedWheelNodes: [Part] =
             [
             .baseWheelJoint,
             .fixedWheel]
     static let fixedWheelWithPropllerNodes =
         fixedWheelNodes + [.fixedWheelPropeller]
+    
+    
+    static let twoCasterParts: [Part] =
+        Array( repeating: casterWheelNodes, count:  2 ).flatMap {$0}
+    static let fourCasterParts: [Part] =
+        Array( repeating: casterWheelNodes, count:  4 ).flatMap {$0}
+    static let sixCasterParts: [Part] =
+        Array( repeating: casterWheelNodes, count:  6 ).flatMap {$0}
+    static let twoFixedWheelParts =
+        Array( repeating: fixedWheelNodes, count:  2 ).flatMap {$0}
+    static let twoFixedWheelAndPropellerParts =
+        Array( repeating: fixedWheelWithPropllerNodes, count:  2 ).flatMap {$0}
+    static let twoFixedWheelsTwoCasterParts: [Part] =
+        twoFixedWheelParts + twoCasterParts
+    static let twoCasterTwoWheelParts: [Part] =
+    twoCasterParts + twoFixedWheelParts
+    static let twoCasterTwoWheelPropllerParts: [Part] =
+        twoFixedWheelAndPropellerParts + twoCasterParts
+    static let fourCasterTwoWheelParts: [Part] =
+        fourCasterParts + twoCasterParts
+    static let twoCasterTwoFixedWheelTwoCasterParts: [Part] =
+        twoCasterTwoWheelParts + twoCasterParts
+
     
     
     

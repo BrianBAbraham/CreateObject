@@ -48,21 +48,37 @@ typealias BaseObjectWheelSizeDictionary = [BaseObjectTypes: WheelSize]
 
 typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 
-
+/// encapsulates all three data used to create a dictionary
+/// crash if elements number for each lable not equal
+/// id indicates unilateral part by one id and bilateral part with two
+/// nodes are the parts in the part collection being considered
+/// origin: [PositionAsIosAxes]
+/// ids: [[Part]] : [.ida, .idb] where a,b is 0,1 or 2,3 or 4,5
+/// or [.id0] for a unilateral or centre part
+/// nodes: [part] where part is the part of the object
+/// nodes are ordered from .object to most distant node eg
+/// .sitOn,
+/// .backSupport.backSupporRotationJoint,
+/// .backSupport,
+/// .backSupportHeadSupportJoint
+/// an origin is the relative origin from part to next part
+/// nodes excludes first node .object
+/// each of the three data elements contains n members
 typealias OriginIdNodes =
     (origin: [PositionAsIosAxes],
      ids: [[Part]],
      nodes: [Part])
 
+///OriginIdNodes type is assigned to
+///'rear'', 'mid' and 'front'
+///for absent values ZeroValue.rearMidOriginIdNodes is used
 typealias RearMidFrontOriginIdNodes =
     (rear: OriginIdNodes, mid: OriginIdNodes, front: OriginIdNodes)
 
 
-/// encapsulates all three data used to create a dictionary
-/// crash if elements number for each lable not equal
-/// id indicates unilateral part by one id and bilateral part with two
-/// nodes are the parts in the part collection being considered
-/// the first is closes to the object origin
+///While OriginIdNodes (s at end)
+///has collections for each label
+///only a single value is present
 typealias OriginIdNode =
     (origin: PositionAsIosAxes, id: [Part] ,node: Part)
 

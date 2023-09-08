@@ -33,7 +33,7 @@ struct CreateInitialObject {
 //DictionaryInArrayOut().getNameValue(defaultDictionary).forEach{print($0)}
 //prin
         let  objectDefaultOrModifiedSpecification =
-        ObjectDefaultOrEditedDictionaries(
+        DimensionOriginCornerDictionaries(
     BaseObjectTypes(rawValue: baseObjectName) ??
         .fixedWheelRearDrive,
     twinSitOnOptions,

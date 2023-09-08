@@ -10,16 +10,108 @@ import Foundation
 
 
 struct AllBaseRelated {
-    let parts: [Part]
-    let dimensions: [Dimension3d]
+    var parts: [Part] = []
+    var dimensions: [Dimension3d] = []
+    let wheelDefaultDimension: WheelDefaultDimension
+    
+    
+    
+    //[ .casterWheel, .casterWheel]
+
+    
     init(_ baseType: BaseObjectTypes) {
-        parts = [
         
-        ]
+        wheelDefaultDimension = WheelDefaultDimension(baseType)
         
-        dimensions = [
         
-        ]
+        let fourCaster =
+         getDimensionsForFourCaster(PartGroup.fourCasterParts)
+        
+        switch baseType {
+        case .allCasterBed:
+            parts = PartGroup.fourCasterParts
+            dimensions = fourCaster
+        case .allCasterChair:
+            parts = PartGroup.fourCasterParts
+            dimensions = fourCaster
+        case .allCasterHoist:
+            parts = PartGroup.fourCasterParts
+            dimensions = fourCaster
+        case .allCasterSixHoist:
+            parts = PartGroup.sixCasterParts
+        case .allCasterTiltInSpaceShowerChair:
+            parts = PartGroup.fourCasterParts
+            dimensions = fourCaster
+        case .allCasterStandAid:
+            parts = PartGroup.fourCasterParts
+            dimensions = fourCaster
+        case .allCasterStretcher:
+            parts = PartGroup.fourCasterParts
+            dimensions = fourCaster
+        case .fixedWheelFrontDrive:
+            parts = PartGroup.twoCasterTwoWheelParts
+        case .fixedWheelMidDrive:
+            parts = PartGroup.twoCasterTwoFixedWheelTwoCasterParts
+        case .fixedWheelRearDrive:
+            parts = PartGroup.twoFixedWheelsTwoCasterParts
+        case .fixedWheelManualRearDrive:
+            parts = PartGroup.twoCasterTwoWheelPropllerParts
+//        case .fixedWheelSolo:
+//            <#code#>
+//        case .fixedWheelTransfer:
+//            <#code#>
+//        case .scooterFrontDrive4Wheeler:
+//            <#code#>
+//        case .scooterFrontDrive3Wheeler:
+//            <#code#>
+//        case .scooterRearDrive4Wheeler:
+//            <#code#>
+//        case .scooterRearDrive3Wheeler:
+//            <#code#>
+//        case .seatThatTilts:
+//            <#code#>
+//        case .showerTray:
+//            <#code#>
+//        case .stairLiftStraight:
+//            <#code#>
+//        case .stairLiftInternalRadius:
+//            <#code#>
+//        case .stairLiftExternalRaidus:
+//            <#code#>
+//        case .verticalLift:
+//            <#code#>
+        default:
+            break
+        }
+        
+        func getDimensionsForFourCaster(_ parts: [Part])
+            -> [Dimension3d] {
+            var dimensions: [Dimension3d] = []
+            
+            for index in 0..<parts.count {
+                switch parts[index] {
+                case .baseWheelJoint:
+                    dimensions.append(Joint.dimension3d)
+                case .casterFork:
+                    dimensions.append (
+                    index < 2 ?
+                    wheelDefaultDimension.getRearCasterFork():
+                        wheelDefaultDimension.getRearCasterFork()
+                    )
+                    break
+                case .casterWheel:
+                    dimensions.append (
+                    index < 2 ?
+                    wheelDefaultDimension.getFrontCasterFork():
+                        wheelDefaultDimension.getFrontCasterFork()
+                    )
+                default:
+                    break
+                }
+            }
+            return dimensions
+        }
+        
     }
     
     
@@ -188,7 +280,7 @@ struct DistanceBetweenWheels {
 
 
 //MARK: DIMENSION
-struct WheelDimension {
+struct WheelDefaultDimension {
     
     let baseType: BaseObjectTypes
         
@@ -317,7 +409,7 @@ struct WheelAndCasterVerticalJointOrigin {
     let baseType: BaseObjectTypes
     let lengthBetweenFrontAndRearWheels: Double
     let widthBetweeenWheelsOnOrigin: Double
-    let wheelDimension: WheelDimension
+    let wheelDimension: WheelDefaultDimension
     let rearCasterJointAboveFloor: Double
     let frontCasterJointAboveFloor: Double
     
@@ -330,7 +422,7 @@ struct WheelAndCasterVerticalJointOrigin {
                 self.lengthBetweenFrontAndRearWheels = lengthBetweenFrontRearWheels
                 self.widthBetweeenWheelsOnOrigin =
                     widthBetweeenWheelsOnOrigin
-                wheelDimension = WheelDimension(baseType)
+                wheelDimension = WheelDefaultDimension(baseType)
                 rearCasterJointAboveFloor =
                     wheelDimension.getRearCasterRadius().radius +
                     wheelDimension.getRearCasterFork().height
@@ -426,9 +518,9 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterForkDimension =
-            WheelDimension(baseType).getFrontCasterFork()
+            WheelDefaultDimension(baseType).getFrontCasterFork()
         let casterTrailDimension =
-            WheelDimension(baseType).getFrontCasterTrail()
+            WheelDefaultDimension(baseType).getFrontCasterTrail()
         return
             (
                 x: 0.0,
@@ -440,9 +532,9 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterForkDimension =
-            WheelDimension(baseType).getMidCasterFork()
+            WheelDefaultDimension(baseType).getMidCasterFork()
         let casterTrailDimension =
-            WheelDimension(baseType).getMidCasterTrail()
+            WheelDefaultDimension(baseType).getMidCasterTrail()
         return
             (
                 x: 0.0,
@@ -454,9 +546,9 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterForkDimension =
-            WheelDimension(baseType).getRearCasterFork()
+            WheelDefaultDimension(baseType).getRearCasterFork()
         let casterTrailDimension =
-            WheelDimension(baseType).getRearCasterTrail()
+            WheelDefaultDimension(baseType).getRearCasterTrail()
         return
             (
                 x: 0.0,
@@ -469,7 +561,7 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterWheelDimension =
-            WheelDimension(baseType).getFrontCasterDimension()
+            WheelDefaultDimension(baseType).getFrontCasterDimension()
         return
             (
                 x: 0.0,
@@ -481,7 +573,7 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterWheelDimension =
-            WheelDimension(baseType).getMidCasterDimension()
+            WheelDefaultDimension(baseType).getMidCasterDimension()
         return
             (
                 x: 0.0,
@@ -493,7 +585,7 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterWheelDimension =
-            WheelDimension(baseType).getRearCasterDimension()
+            WheelDefaultDimension(baseType).getRearCasterDimension()
         return
             (
                 x: 0.0,
