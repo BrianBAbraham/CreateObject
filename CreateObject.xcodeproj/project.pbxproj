@@ -179,10 +179,10 @@
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */,
 				FDC71F18296C936600B68427 /* CreateName.swift */,
+				FDF085652A2E222900EB147F /* ForBase.swift */,
 				FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */,
 				FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */,
 				FD9E02F22975613B00ACAA70 /* Joints.swift */,
-				FDAC054829EADEFB00FCB400 /* JointDimensions.swift */,
 				FDCE3F0A299A8B5B00C19F2A /* Save.swift */,
 				FD91AF8D296DBB12005DEA51 /* CreateOccupantSupport.swift */,
 				FD0FD1E82A20D7BE0096B984 /* CreateOccupantHeadSupport.swift */,
@@ -225,12 +225,12 @@
 		FDFC686E2A2A1B0B0027E219 /* CreateDefaultMeasurement */ = {
 			isa = PBXGroup;
 			children = (
+				FDAC054829EADEFB00FCB400 /* JointDimensions.swift */,
 				FDFC68712A2A1C800027E219 /* ForOccupantBack.swift */,
 				FDFC686F2A2A1BB40027E219 /* ForOccupantBody.swift */,
 				FDEA61602A24EEBD00A50ACC /* ForOccupantFoot.swift */,
 				FDF085632A2E18F200EB147F /* ForOverHead.swift */,
 				FDFC68732A2A3AAD0027E219 /* ForOccupantSide.swift */,
-				FDF085652A2E222900EB147F /* ForBase.swift */,
 				FDE497DC2AA6122A006D636B /* OriginPartInDictionariesOut.swift */,
 				FDE497DE2AA6134A006D636B /* TransformOriginIdNodesToDictionary.swift */,
 				FD7FDD512AA79C830012B3F6 /* RotatedPartCorners.swift */,

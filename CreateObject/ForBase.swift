@@ -14,18 +14,10 @@ struct AllBaseRelated {
     var dimensions: [Dimension3d] = []
     let wheelDefaultDimension: WheelDefaultDimension
     
-    
-    
-    //[ .casterWheel, .casterWheel]
-
-    
     init(_ baseType: BaseObjectTypes) {
-        
         wheelDefaultDimension = WheelDefaultDimension(baseType)
-        
-        
         let fourCaster =
-         getDimensionsForFourCaster(PartGroup.fourCasterParts)
+        getDimensionsForFourCaster(PartGroup.fourCasterParts)
         
         switch baseType {
         case .allCasterBed:
@@ -56,64 +48,99 @@ struct AllBaseRelated {
             parts = PartGroup.twoFixedWheelsTwoCasterParts
         case .fixedWheelManualRearDrive:
             parts = PartGroup.twoCasterTwoWheelPropllerParts
-//        case .fixedWheelSolo:
-//            <#code#>
-//        case .fixedWheelTransfer:
-//            <#code#>
-//        case .scooterFrontDrive4Wheeler:
-//            <#code#>
-//        case .scooterFrontDrive3Wheeler:
-//            <#code#>
-//        case .scooterRearDrive4Wheeler:
-//            <#code#>
-//        case .scooterRearDrive3Wheeler:
-//            <#code#>
-//        case .seatThatTilts:
-//            <#code#>
-//        case .showerTray:
-//            <#code#>
-//        case .stairLiftStraight:
-//            <#code#>
-//        case .stairLiftInternalRadius:
-//            <#code#>
-//        case .stairLiftExternalRaidus:
-//            <#code#>
-//        case .verticalLift:
-//            <#code#>
+            //        case .fixedWheelSolo:
+            //            <#code#>
+            //        case .fixedWheelTransfer:
+            //            <#code#>
+            //        case .scooterFrontDrive4Wheeler:
+            //            <#code#>
+            //        case .scooterFrontDrive3Wheeler:
+            //            <#code#>
+            //        case .scooterRearDrive4Wheeler:
+            //            <#code#>
+            //        case .scooterRearDrive3Wheeler:
+            //            <#code#>
+            //        case .seatThatTilts:
+            //            <#code#>
+            //        case .showerTray:
+            //            <#code#>
+            //        case .stairLiftStraight:
+            //            <#code#>
+            //        case .stairLiftInternalRadius:
+            //            <#code#>
+            //        case .stairLiftExternalRaidus:
+            //            <#code#>
+            //        case .verticalLift:
+            //            <#code#>
         default:
             break
         }
+    }
         
-        func getDimensionsForFourCaster(_ parts: [Part])
-            -> [Dimension3d] {
-            var dimensions: [Dimension3d] = []
-            
-            for index in 0..<parts.count {
-                switch parts[index] {
-                case .baseWheelJoint:
-                    dimensions.append(Joint.dimension3d)
-                case .casterFork:
-                    dimensions.append (
-                    index < 2 ?
-                    wheelDefaultDimension.getRearCasterFork():
-                        wheelDefaultDimension.getRearCasterFork()
-                    )
-                    break
-                case .casterWheel:
-                    dimensions.append (
-                    index < 2 ?
-                    wheelDefaultDimension.getFrontCasterFork():
-                        wheelDefaultDimension.getFrontCasterFork()
-                    )
-                default:
-                    break
-                }
-            }
-            return dimensions
-        }
-        
+    func getDimensionsForFourCaster(_ parts: [Part])
+        -> [Dimension3d] {
+            getTwoCaster(
+                wheelDefaultDimension.getRearCasterFork, wheelDefaultDimension.getRearCasterWheel)
+            +
+            getTwoCaster(
+                wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
     }
     
+    func getDimensionsForSixCaster(_ parts: [Part])
+        -> [Dimension3d] {
+            getTwoCaster(
+                wheelDefaultDimension.getRearCasterFork, wheelDefaultDimension.getRearCasterWheel)
+            +
+            getTwoCaster(
+                wheelDefaultDimension.getMidCasterFork, wheelDefaultDimension.getMidCasterWheel)
+            +
+            getTwoCaster(
+                wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
+    }
+    
+    func getTwoFixedWheels()
+        -> [Dimension3d] {
+        var dimensions: [Dimension3d] = []
+        for part in PartGroup.twoFixedWheelParts {
+            switch part {
+            case .baseWheelJoint:
+                dimensions.append(Joint.dimension3d)
+            
+            case .fixedWheel:
+                dimensions.append(wheelDefaultDimension.getFixed())
+
+            default:
+                break
+            }
+
+        }
+            return dimensions
+    }
+    
+    
+    func getTwoCaster(
+        _ fork: () -> Dimension3d,
+        _ wheel: () -> Dimension3d)
+        -> [Dimension3d] {
+        var dimensions: [Dimension3d] = []
+        for part in PartGroup.twoCasterParts {
+            switch part {
+            case .baseWheelJoint:
+                dimensions.append(Joint.dimension3d)
+            
+            case .casterFork:
+                dimensions.append(fork())
+                
+            case .casterWheel:
+                dimensions.append(wheel())
+
+            default:
+                break
+            }
+
+        }
+            return dimensions
+    }
     
 }
 
@@ -155,7 +182,19 @@ typealias BaseSizeDictionary = [BaseObjectTypes: Double]
 
 
 
-
+    struct Stability {
+        
+        let dictionary: BaseObjectDoubleDictionary = [:]
+        let atRear = 0.0
+        let atFront = 0.0
+        let atLeft = 0.0
+        let atRight = 0.0
+        let baseType: BaseObjectTypes
+        
+        init(_ baseType: BaseObjectTypes) {
+            self.baseType = baseType
+        }
+    }
 
 /// The length between wheels
 /// or the width between wheels
@@ -192,7 +231,7 @@ struct DistanceBetweenWheels {
                     frontRearIfNoFrontAndRearSitOn()
             }
            
-        }
+    }
     
     func frontRearIfNoFrontAndRearSitOn()
         -> Double {
@@ -274,8 +313,6 @@ struct DistanceBetweenWheels {
             return
                 dictionary[baseType] ?? general
     }
-    
-    
 }
 
 
@@ -288,7 +325,7 @@ struct WheelDefaultDimension {
         self.baseType = baseType
     }
     
-    func getFrontCasterDimension() -> Dimension3d {
+    func getFrontCasterWheel() -> Dimension3d {
         let wheelSize = getFrontCasterRadius()
         
         return
@@ -297,7 +334,7 @@ struct WheelDefaultDimension {
              height: wheelSize.radius * 2)
     }
     
-    func getMidCasterDimension() -> Dimension3d {
+    func getMidCasterWheel() -> Dimension3d {
         let wheelSize = getFrontCasterRadius()
         
         return
@@ -306,7 +343,7 @@ struct WheelDefaultDimension {
              height: wheelSize.radius * 2)
     }
     
-    func getRearCasterDimension() -> Dimension3d {
+    func getRearCasterWheel() -> Dimension3d {
         let wheelSize = getRearCasterRadius()
         
         return
@@ -561,7 +598,7 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterWheelDimension =
-            WheelDefaultDimension(baseType).getFrontCasterDimension()
+            WheelDefaultDimension(baseType).getFrontCasterWheel()
         return
             (
                 x: 0.0,
@@ -573,7 +610,7 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterWheelDimension =
-            WheelDefaultDimension(baseType).getMidCasterDimension()
+            WheelDefaultDimension(baseType).getMidCasterWheel()
         return
             (
                 x: 0.0,
@@ -585,7 +622,7 @@ struct CasterOrigin {
         -> PositionAsIosAxes {
             
         let casterWheelDimension =
-            WheelDefaultDimension(baseType).getRearCasterDimension()
+            WheelDefaultDimension(baseType).getRearCasterWheel()
         return
             (
                 x: 0.0,
@@ -595,19 +632,7 @@ struct CasterOrigin {
 }
 
 
-struct Stability {
-    
-    let dictionary: BaseObjectDoubleDictionary = [:]
-    let atRear = 0.0
-    let atFront = 0.0
-    let atLeft = 0.0
-    let atRight = 0.0
-    let baseType: BaseObjectTypes
-    
-    init(_ baseType: BaseObjectTypes) {
-        self.baseType = baseType
-    }
-}
+
 
 
 struct WheelId {
