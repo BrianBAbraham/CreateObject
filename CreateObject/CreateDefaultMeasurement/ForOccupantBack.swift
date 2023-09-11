@@ -10,7 +10,7 @@ import Foundation
 struct AllOccupantBackRelated {
     var parts: [Part] = []
     let defaultDimensions: [Dimension3d]
-    var rotatedDimensions: RotatedInXxDimensions = []
+//    var rotatedDimensions: RotatedInXxDimensions = []
 
     init(_ baseType: BaseObjectTypes) {
          parts =
@@ -36,18 +36,18 @@ struct AllOccupantBackRelated {
             defaults.getBackSupport(),
             defaults.getBackSupportRotationJoint()]
 
-        let angle =
-            OccupantBackSupportDefaultAngleChange(baseType).value +
-            OccupantBodySupportDefaultAngleChange(baseType).value
+//        let angle =
+//            OccupantBackSupportDefaultAngleChange(baseType).value +
+//            OccupantBodySupportDefaultAngleChange(baseType).value
         
-        for dimension in defaultDimensions {
-            rotatedDimensions.append(
-                RotatedPartCorners(
-                    dimensionIn: dimension,
-                    angleChangeIn:  angle
-                ).lengthAlteredForRotationDimension
-            )
-        }
+//        for dimension in defaultDimensions {
+//            rotatedDimensions.append(
+//                RotatedPartCorners(
+//                    dimensionIn: dimension,
+//                    angleChangeIn:  angle
+//                ).lengthAlteredForRotationDimension
+//            )
+//        }
     }
 }
 

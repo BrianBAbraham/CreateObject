@@ -12,7 +12,7 @@
 struct AllOccupantSideRelated {
     let parts: [Part]
     let defaultDimensions: [Dimension3d]
-    var rotatedDimensions: RotatedInXxDimensions = []
+//    var rotatedDimensions: RotatedInXxDimensions = []
     init(
         _ baseType: BaseObjectTypes,
         _ modifiedPartDictionary: Part3DimensionDictionary) {
@@ -27,17 +27,17 @@ struct AllOccupantSideRelated {
         [
         defaults.value]
             
-        let angle =
-            OccupantBodySupportDefaultAngleChange(baseType).value
+//        let angle =
+//            OccupantBodySupportDefaultAngleChange(baseType).value
         
-        for dimension in defaultDimensions {
-            rotatedDimensions.append(
-                RotatedPartCorners(
-                    dimensionIn: dimension,
-                    angleChangeIn:  angle
-                ).lengthAlteredForRotationDimension
-            )
-        }
+//        for dimension in defaultDimensions {
+//            rotatedDimensions.append(
+//                RotatedPartCorners(
+//                    dimensionIn: dimension,
+//                    angleChangeIn:  angle
+//                ).lengthAlteredForRotationDimension
+//            )
+//        }
     }
 }
 

@@ -21,7 +21,7 @@ import Foundation
 struct AllOccupantFootRelated {
     let parts: [Part]
     let defaultDimensions: [Dimension3d]
-    var rotatedDimensions: RotatedInXxDimensions = []
+    //var rotatedDimensions: RotatedInXxDimensions = []
     init(
         _ baseType: BaseObjectTypes,
         _ modifiedPartDictionary: Part3DimensionDictionary) {
@@ -43,17 +43,17 @@ struct AllOccupantFootRelated {
         defaults.getFootSupportInTwoPieces(),
         defaults.getFootSupportInOnePiece()]
             
-        let angle =
-            OccupantBodySupportDefaultAngleChange(baseType).value
+//        let angle =
+//            OccupantBodySupportDefaultAngleChange(baseType).value
         
-        for dimension in defaultDimensions {
-            rotatedDimensions.append(
-                RotatedPartCorners(
-                    dimensionIn: dimension,
-                    angleChangeIn:  angle
-                ).lengthAlteredForRotationDimension
-            )
-        }
+//        for dimension in defaultDimensions {
+//            rotatedDimensions.append(
+//                RotatedPartCorners(
+//                    dimensionIn: dimension,
+//                    angleChangeIn:  angle
+//                ).lengthAlteredForRotationDimension
+//            )
+//        }
     }
 }
 
@@ -159,8 +159,8 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
         let dictionary: OriginDictionary =
             [:]
         let general =
-            (x:  -(defaultFootSupportDimension.getFootJoint().width +
-                   defaultFootSupportDimension.getFootSupportInOnePiece().width)/2,
+            (x:   -(defaultFootSupportDimension.getFootJoint().width +
+                   defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2,
              y: 0.0,
              z: jointBelowSeat)
     return

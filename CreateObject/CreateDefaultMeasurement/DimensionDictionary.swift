@@ -35,10 +35,11 @@ struct DimensionDictionary {
         for index in 0..<parts.count{
             for partId in  idsForPart {
                 for sitOnId in idsForSitOn {
-                    let nameStart: [Part] = [.object, .id0, .stringLink]
+                    let nameStart: [Part] =
+                    [.object, .id0, .stringLink]
                     let nameEnd: [Part] = parts[index] == .sitOn ?
                     [sitOnId, .stringLink, .sitOn, .id0] : [partId, .stringLink, .sitOn, sitOnId]
-                    let x = nameStart + [parts[index]] + nameEnd
+                    let x = nameStart + [ parts[index]] + nameEnd
                     let partName = CreateNameFromParts(x).name
                     let dimension = dimensionIn[partName] ?? defaultDimensions[index]
                     self.forPart +=
@@ -91,17 +92,17 @@ struct OccupantSupportDimensionDictionary {
                     OccupantBodySupportDefaultDimension(
                         parent.baseType).value
                 
-                let angle =
-                    OccupantBodySupportDefaultAngleChange(parent.baseType).value
-                
-                let rotatedDimension =
-                    RotatedPartCorners(
-                        dimensionIn: dimension,
-                        angleChangeIn:  angle
-                    ).lengthAlteredForRotationDimension
-      
-                let rotatedDimensions =
-                    parent.twinSitOnState ? [rotatedDimension, rotatedDimension]: [rotatedDimension]
+//                let angle =
+//                    OccupantBodySupportDefaultAngleChange(parent.baseType).value
+//
+//                let rotatedDimension =
+//                    RotatedPartCorners(
+//                        dimensionIn: dimension,
+//                        angleChangeIn:  angle
+//                    ).lengthAlteredForRotationDimension
+//
+//                let rotatedDimensions =
+//                    parent.twinSitOnState ? [rotatedDimension, rotatedDimension]: [rotatedDimension]
                 
                 let parts: [Part] =
                     parent.twinSitOnState ? [.sitOn, .sitOn]: [.sitOn]
@@ -109,7 +110,7 @@ struct OccupantSupportDimensionDictionary {
                 return
                     DimensionDictionary(
                         parts,
-                        rotatedDimensions,
+                        [dimension],
                         parent.twinSitOnOption,
                         parent.dimensionIn
                     ).forPart

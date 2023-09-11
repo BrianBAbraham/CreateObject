@@ -1,5 +1,5 @@
 //
-//  Enum.swift
+//  GlobalEnum.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 09/01/2023.

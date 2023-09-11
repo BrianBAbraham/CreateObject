@@ -82,6 +82,7 @@ struct DimensionOriginCornerDictionaries {
     //pre-tilt
     var preTiltParentToPartOrigin: PositionDictionary = [:]
     var preTiltObjectToPartOrigin: PositionDictionary = [:]
+    var preTiltObjectToCornerOrigin: PositionDictionary = [:]
     
     //post-tilt
     var postTiltObjectToPartOrigin: PositionDictionary = [:]
@@ -153,7 +154,7 @@ struct DimensionOriginCornerDictionaries {
         getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes)
 
 
-            
+        createPreTiltCornerDictionary()
 
        
             
@@ -161,16 +162,17 @@ struct DimensionOriginCornerDictionaries {
         creatPostTiltObjectToPartOriginDictionary()
 
   
-//print(dimension)
+//print("DIMENSION")
 //DictionaryInArrayOut().getNameValue( dimension).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
-//print("")
+//print("/n ORIGIN")
 //DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
-//DictionaryInArrayOut().getNameValue( postTiltDimension).forEach{print($0)}
-//print("")
+//DictionaryInArrayOut().getNameValue( preTiltObjectToCornerOrigin).forEach{print($0)}
+//
+//print("\n\n\n")
             
             
-        createCornerDictionary ()
+        //createCornerDictionary ()
   
 
         func getPreTiltWheelOrigin()
@@ -328,168 +330,47 @@ struct DimensionOriginCornerDictionaries {
                 ).intialWithReplacements
         }
         
-            //MARK: - Assume Cuboid
-            /// corners c0...c7 of a cuboid are located as follows
-            /// they are viewed as per IOS axes facing the screen
-            /// c0...c3 are z = 0 in the UI
-            /// c4..c7 are z = 1 in the UI 1>0 out of screen
-            /// c0 top left,,
-            /// c1 top right,
-            /// c2 bottom right,
-            /// c3 bottom left
-            /// repeat for c4...c7
-            ///c0, c3, c4, c7 colinear left
-            ///c1, c2, c5, c6 colinear right
-        func createCornerDictionary(){
-            let noJointPostTiltOrigin = postTiltObjectToPartOrigin.filter({!$0.key.contains("Joint")})
-//print(postTiltDimension)
-            for (key, _) in noJointPostTiltOrigin {
-                let O = noJointPostTiltOrigin[key]!
-                let D = dimensionIn[key] ?? ZeroValue.dimension3D
+     
+        func createPreTiltCornerDictionary () {
+            let nameToBeRemovedCharacterCount = CreateNameFromParts([.object, .id0, .stringLink]).name.count
+            for (key, value) in dimension {
 
-                let hD = HalfThis(D).dimension
-                let c0 = (x: O.x - hD.width, y: O.y - hD.length, z: O.z - hD.height)
-                let c1 = (x: O.x + hD.width, y: O.y - hD.length, z: O.z - hD.height)
-                let c2 = (x: O.x + hD.width, y: O.y + hD.length, z: O.z - hD.height)
-                let c3 = (x: O.x - hD.width, y: O.y + hD.length, z: O.z - hD.height)
-                let c4 = (x: O.x - hD.width, y: O.y - hD.length, z: O.z + hD.height)
-                let c5 = (x: O.x + hD.width, y: O.y - hD.length, z: O.z + hD.height)
-                let c6 = (x: O.x + hD.width, y: O.y + hD.length, z: O.z + hD.height)
-                let c7 = (x: O.x - hD.width, y: O.y + hD.length, z: O.z + hD.height)
-
-                let rightCorners =
-                CreateIosPosition.minMaxPositionY(
-                    [ c1,c2,c5,c6])
-                
-                let leftCorners =
-                CreateIosPosition.minMaxPositionY(
-                    [ c0,c3,c4,c7])
-                
-                let topViewCorners =
-                    [leftCorners[0], rightCorners[0], rightCorners[1], leftCorners[1]]
-//print(postTiltDimension[key] )
+                let originValue = preTiltObjectToPartOrigin[key]
+                if let originValue {
+                    let corners = CreateIosPosition.getCornersFromDimension( value)
+                    let cornersFromObject =
+                        CreateIosPosition.addToupleToArrayOfTouples(
+                            originValue,corners)
+                    let topViewCorners = [4,5,6,7].map {cornersFromObject[$0]}
+                    let sideViewCorners = [4,7,3,0].map {cornersFromObject[$0]}
+                    
+                    let startIndex =
+                    key.index(key.startIndex, offsetBy: nameToBeRemovedCharacterCount)
+                    // for compatability with prevous code
+                    //object_id0_ is removed from the start
+                    //of the name
+                    let nameWithoutObject =
+                    String(key[startIndex...])
 //print(key)
-//print(topViewCorners)
+//print(nameWithoutObject)
+
+                    for index in 0..<topViewCorners.count {
+                        preTiltObjectToCornerOrigin +=
+                        [nameWithoutObject + Part.stringLink.rawValue + "corner" + String(index): topViewCorners[index]]
+                    }
+                }
+
+            }
+        }
+    }
+    
+    
+//    let array = [1, 2, 3, 4, 5]
+//    let indices = [0, 2, 4]
 //
-//print("\n \n")
-            }
-        }
-    }
-    
-    
-    ///DATA FLOW
-    ///
-    
-    //MARK: ORIGIN POST TILT
-    struct OriginPostTilt {
-        var forObjectToPartOrigin: PositionDictionary = [:]
-        var forDimension: Part3DimensionDictionary = [:]
-
-        init(
-            parent: DimensionOriginCornerDictionaries ) {
-            for sitOnId in parent.oneOrTwoIds {
-                let tiltOriginPart: [Part] =
-                    [.object, .id0, .stringLink, .bodySupportRotationJoint, .id0, .stringLink, .sitOn, sitOnId]
-                let originOfRotationName =
-                    CreateNameFromParts(tiltOriginPart).name
-                let angleName =
-                    CreateNameFromParts([.bodySupportAngle, .stringLink, .sitOn, sitOnId]).name
-
-                if let originOfRotation = parent.preTiltObjectToPartOrigin[originOfRotationName] {
-                    let angleChange =
-                        parent.angle[angleName] ??
-                        ZeroValue.angle
-                    
-                    forSitOnWithFootTilt(
-                        parent,
-                        originOfRotation,
-                        angleChange,
-                        sitOnId)
-                    }
-                }
-            }
-       /*
-        all parts attached to the body support are rotated
-        about the Ios x axis
-        but the angle of rotation is zero
-        unless the option dictionary permits the UI to set a
-        non-zero angle in angleChangeIn
-        or an object has a non-zero angle
-        set in angleChangeDefault
-        if an object with only some parts attached
-        to the body support are to be rotated then additional code
-        which checks the base type can be added
-        */
-        
-       mutating func forSitOnWithFootTilt (
-            _ parent: DimensionOriginCornerDictionaries,
-            _ originOfRotation: PositionAsIosAxes,
-            _ changeOfAngle: Measurement<UnitAngle>,
-            _ sitOnId: Part) {
-                
-            let allPartsSubjectToAngle = PartGroupsFor().allAngle
-            let partsOnLeftAndRight = PartGroupsFor().leftAndRight
-            
-            for part in  allPartsSubjectToAngle {
-                let partIds: [Part] =  partsOnLeftAndRight.contains(part) ? [.id0, .id1]: [.id0]
-                
-                for partId in partIds {
-                    let partName =
-                    CreateNameFromParts([
-                        .object, .id0, .stringLink, part, partId, .stringLink, .sitOn, sitOnId]).name
-                    
-                    if let originOfPart = parent.preTiltObjectToPartOrigin[partName] {
-                        
-                        let newPosition =
-                        PositionOfPointAfterRotationAboutPoint(
-                            staticPoint: originOfRotation,
-                            movingPoint: originOfPart,
-                            angleChange: changeOfAngle).fromObjectOriginToPointWhichHasMoved
-                        
-                        forObjectToPartOrigin += [partName: newPosition]
-                    }
-                }
-            }
-        }
-        
-        // MARK: - write code
-        mutating func forSitOnWithoutFootTilt() {}
-        
-        mutating func forBackRecline (
-             _ parent: DimensionOriginCornerDictionaries,
-             _ originOfRotation: PositionAsIosAxes,
-             _ changeOfAngle: Measurement<UnitAngle>,
-             _ sitOnId: Part) {
-                 
-             let allPartsSubjectToAngle = PartGroupsFor().backAndHead
-             let partsOnLeftAndRight = PartGroupsFor().leftAndRight
-             
-             for part in  allPartsSubjectToAngle {
-                 let partIds: [Part] =  partsOnLeftAndRight.contains(part) ? [.id0, .id1]: [.id0]
-                 
-                 for partId in partIds {
-                     let partName =
-                     CreateNameFromParts([
-                         .object, .id0, .stringLink, part, partId, .stringLink, .sitOn, sitOnId]).name
-                     
-                     if let originOfPart = parent.preTiltObjectToPartOrigin[partName] {
-                         
-                         let newPosition =
-                         PositionOfPointAfterRotationAboutPoint(
-                             staticPoint: originOfRotation,
-                             movingPoint: originOfPart,
-                             angleChange: changeOfAngle).fromObjectOriginToPointWhichHasMoved
-                         
-                         forObjectToPartOrigin += [partName: newPosition]
-                     }
-                 }
-             }
-         }
-        
-        // MARK: - write code
-        mutating func forHeadSupport(){}
-    }
-    
+//    let extractedElements = indices.map { array[$0] }
+//    print(extractedElements) // This will print: [1,⬤
+//
     
     
     
@@ -609,12 +490,20 @@ struct DimensionOriginCornerDictionaries {
             if BaseObjectGroups().midFixedWheel.contains(parent.baseType) {
             forMidPrimaryOrigin()
             }
+            
+                
+            if BaseObjectGroups().allFourCaster.contains(parent.baseType) {
+            forRearPrimaryOrigin()
+            }
+                
                 
             getAllOriginIdNodesForBodySupportForBothSitOn()
                 
             allOriginIdNodes.append(allOriginIdNodesForBodySupportForBothSitOn)
                 
             func getAllOriginIdNodesForBodySupportForBothSitOn() {
+//print(origin)
+//print("\n\n")
                 for index in 0..<parent.oneOrTwoIds.count {
                     let ids = [[parent.oneOrTwoIds[index]]]
                     allOriginIdNodesForBodySupportForBothSitOn.append(
@@ -1015,15 +904,35 @@ struct DimensionOriginCornerDictionaries {
             
             casterOrigin = CasterOrigin(parent.baseType)
             
+                let baseObjectGroups = BaseObjectGroups()
+//                if baseObjectGroups.rearFixedWheel.contains(objectType) {
+//                    allOriginIdNodes.append([getOriginIdNodesForRear()])
+//
+//
+//
+//                }
+//
+//                if baseObjectGroups.midFixedWheel.contains(objectType) {
+//                    allOriginIdNodes.append([getOriginIdNodesForMid()])
+//
+//                }
+//
+//                if baseObjectGroups.frontFixedWheel.contains(objectType) {
+//                    allOriginIdNodes.append([getOriginIdNodesForFront()])
+//                }
+//
+//                if baseObjectGroups.allFourCaster.contains(objectType) {
+//
+//                }
             allOriginIdNodesForRear =
                 getOriginIdNodesForRear()
-            
+
             allOriginIdNodesForMid =
                 getOriginIdNodesForMid ()
-            
+
             allOriginIdNodesForFront =
                 getOriginIdNodesForFront()
-                
+
             allOriginIdNodes =
                 [[allOriginIdNodesForRear],
                  [allOriginIdNodesForMid] ,
@@ -1127,6 +1036,7 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
         if BaseObjectGroups().rearCaster.contains(parent.baseType) {
             nodes =
                 partGroup.casterWheelNodes
+//print(parent.baseType)
         }
         
         if BaseObjectGroups().rearFixedWheel.contains(parent.baseType) {
@@ -1183,17 +1093,27 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
         -> [PositionAsIosAxes]{
         var rearOrigin: [PositionAsIosAxes] = []
             
-        let forkAndCasterWheel =
+        let forkAndCasterWheelForRear =
             [casterOrigin.forRearCasterVerticalJointToFork(),
              casterOrigin.forRearCasterForkToWheel()]
+            let forkAndCasterWheelForFront =
+                [casterOrigin.forFrontCasterVerticalJointToFork(),
+                 casterOrigin.forFrontCasterForkToWheel()]
         //rear caster
         if BaseObjectGroups()
             .allCaster.contains(parent.baseType) {
+//print(parent.baseType)
             rearOrigin =
                 [
                 wheelAndCasterVerticalJointOrigin
                     .getRearCasterWhenRearPrimaryOrigin()] +
-                forkAndCasterWheel
+                forkAndCasterWheelForRear +
+            [
+            wheelAndCasterVerticalJointOrigin
+                .getFrontCasterWhenRearPrimaryOrigin()] +
+            forkAndCasterWheelForFront
+//print(rearOrigin)
+//print("")
         }
        //no rear caster if rear primary origin
         if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
@@ -1201,14 +1121,14 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
                 [
                 wheelAndCasterVerticalJointOrigin
                     .getRearCasterWhenMidPrimaryOrigin()] +
-                forkAndCasterWheel
+                forkAndCasterWheelForRear
         }
         if BaseObjectGroups().frontPrimaryOrigin.contains(parent.baseType) {
             rearOrigin =
                 [
                 wheelAndCasterVerticalJointOrigin
                     .getRearCasterWhenFrontPrimaryOrigin()] +
-                forkAndCasterWheel
+                forkAndCasterWheelForRear
         }
             
         //fixed wheel

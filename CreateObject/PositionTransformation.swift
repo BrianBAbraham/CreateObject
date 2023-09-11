@@ -52,6 +52,23 @@ struct CreateIosPosition {
         return toupleSum
     }
     
+//    static func addToupleToArrayOfTouple (
+//        _ additiveTouple: PositionAsIosAxes,
+//        _ toupleArray: [PositionAsIosAxes])
+//        -> [PositionAsIosAxes] {
+//            
+//            var touples: [PositionAsIosAxes] = []
+//            for touple in toupleArray {
+//                touples.append(
+//                CreateIosPosition.addTwoTouples(
+//                    additiveTouple,
+//                    touple)
+//                )
+//            }
+//        return touples
+//    }
+    
+    
     static func subtractSecondFromFirstTouple(_ first: PositionAsIosAxes, _ second: PositionAsIosAxes)  -> PositionAsIosAxes {
         (x: first.x - second.x,y: first.y - second.y, z: first.z - second.z )
     }

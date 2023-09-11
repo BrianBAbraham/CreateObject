@@ -26,11 +26,12 @@ typealias PositionDictionary = [String: PositionAsIosAxes]
 typealias MeasurementDictionary = [String: Double]
 typealias BaseObjectDoubleDictionary = [BaseObjectTypes: Double]
 typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
+//. Input BaseObjectType to get Dimension3d
 typealias BaseObject3DimensionDictionary = [BaseObjectTypes: Dimension3d]
 typealias PartDimensionDictionary = [String: Dimension]
 typealias Part3DimensionDictionary = [String: Dimension3d]
 typealias BaseObjectOriginDictionary = [BaseObjectTypes: PositionAsIosAxes]
-///
+/// Input BaseObjectTypes to get default value for that object
 typealias OriginDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (length: Double, width: Double)
@@ -42,6 +43,7 @@ typealias WheelSize = (radius: Double, width: Double)
 //typealias MinMax = (min: Double, max: Double)
 typealias AngleDictionary = [String: Measurement<UnitAngle>]
 typealias AngleMinMaxDictionary = [String: MinMaxAngle]
+///input BaseObjectType to get angle
 typealias BaseObjectAngleDictionary = [BaseObjectTypes: Measurement<UnitAngle>]
 
 typealias BaseObjectWheelSizeDictionary = [BaseObjectTypes: WheelSize]
@@ -96,9 +98,5 @@ typealias OriginIdNode =
 ///c7 top left,
 typealias Corners = [PositionAsIosAxes]
 
-
-/// given a rotation about -x -- x  of a cubiod,
-/// dimension y and z are altered,
-/// so if width and length are displayed,
-/// part appears correctly
-typealias RotatedInXxDimensions = [Dimension3d]
+/// each key has eight corners as per Corners
+typealias CornerDictionary = [String: Corners]

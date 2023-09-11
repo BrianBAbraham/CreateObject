@@ -31,7 +31,7 @@ struct CreateInitialObject {
         self.defaultOrModifiedObjectDimensionDictionary = partDictionary
 
 //DictionaryInArrayOut().getNameValue(defaultDictionary).forEach{print($0)}
-//prin
+//print
         let  objectDefaultOrModifiedSpecification =
         DimensionOriginCornerDictionaries(
     BaseObjectTypes(rawValue: baseObjectName) ??
@@ -44,7 +44,7 @@ struct CreateInitialObject {
         getDictionary(baseObjectName)
 //print("\n\n")
 //DictionaryInArrayOut().getNameValue( dictionary).forEach{print($0)}
-
+        dictionary = objectDefaultOrModifiedSpecification.preTiltObjectToCornerOrigin
 
     }
     

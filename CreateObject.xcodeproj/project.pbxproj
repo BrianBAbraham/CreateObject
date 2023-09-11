@@ -13,7 +13,7 @@
 		FD0FD1E92A20D7BE0096B984 /* CreateOccupantHeadSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0FD1E82A20D7BE0096B984 /* CreateOccupantHeadSupport.swift */; };
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
 		FD4B8BCD29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */; };
-		FD7FDD522AA79C830012B3F6 /* RotatedPartCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7FDD512AA79C830012B3F6 /* RotatedPartCorners.swift */; };
+		FD7FDD522AA79C830012B3F6 /* Tilt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7FDD512AA79C830012B3F6 /* Tilt.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickVM.swift */; };
 		FD8C21C129C0ABCD0034E293 /* ObjectDictionaryCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8C21C029C0ABCD0034E293 /* ObjectDictionaryCreation.swift */; };
 		FD8E998C299FD7320074196B /* DimensionsForBaseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */; };
@@ -47,7 +47,7 @@
 		FDC71F03296C911200B68427 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F02296C911200B68427 /* ContentView.swift */; };
 		FDC71F05296C911300B68427 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDC71F04296C911300B68427 /* Assets.xcassets */; };
 		FDC71F08296C911300B68427 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDC71F07296C911300B68427 /* Preview Assets.xcassets */; };
-		FDC71F0F296C916200B68427 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F0E296C916200B68427 /* Enum.swift */; };
+		FDC71F0F296C916200B68427 /* GlobalEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F0E296C916200B68427 /* GlobalEnum.swift */; };
 		FDC71F13296C91E400B68427 /* BaseObjectEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F12296C91E400B68427 /* BaseObjectEnum.swift */; };
 		FDC71F15296C921C00B68427 /* CreateBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F14296C921C00B68427 /* CreateBase.swift */; };
 		FDC71F19296C936600B68427 /* CreateName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F18296C936600B68427 /* CreateName.swift */; };
@@ -75,7 +75,7 @@
 		FD0FD1E82A20D7BE0096B984 /* CreateOccupantHeadSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantHeadSupport.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFootSupportLeftRightPosition.swift; sourceTree = "<group>"; };
-		FD7FDD512AA79C830012B3F6 /* RotatedPartCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatedPartCorners.swift; sourceTree = "<group>"; };
+		FD7FDD512AA79C830012B3F6 /* Tilt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tilt.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickVM.swift; sourceTree = "<group>"; };
 		FD8C21C029C0ABCD0034E293 /* ObjectDictionaryCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDictionaryCreation.swift; sourceTree = "<group>"; };
 		FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionsForBaseObject.swift; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 		FDC71F02296C911200B68427 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FDC71F04296C911300B68427 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FDC71F07296C911300B68427 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		FDC71F0E296C916200B68427 /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
+		FDC71F0E296C916200B68427 /* GlobalEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEnum.swift; sourceTree = "<group>"; };
 		FDC71F12296C91E400B68427 /* BaseObjectEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseObjectEnum.swift; sourceTree = "<group>"; };
 		FDC71F14296C921C00B68427 /* CreateBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBase.swift; sourceTree = "<group>"; };
 		FDC71F18296C936600B68427 /* CreateName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateName.swift; sourceTree = "<group>"; };
@@ -164,7 +164,7 @@
 				FDC71F00296C911200B68427 /* CreateObjectApp.swift */,
 				FDEA615E2A2484D000A50ACC /* Calculate.swift */,
 				FDD7247C29B0DD1000B50259 /* Development.swift */,
-				FDC71F0E296C916200B68427 /* Enum.swift */,
+				FDC71F0E296C916200B68427 /* GlobalEnum.swift */,
 				FDC71F12296C91E400B68427 /* BaseObjectEnum.swift */,
 				FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */,
 				FDBD6EF729C4A6F700144603 /* Types.swift */,
@@ -179,7 +179,6 @@
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */,
 				FDC71F18296C936600B68427 /* CreateName.swift */,
-				FDF085652A2E222900EB147F /* ForBase.swift */,
 				FDA3352D29AA5DF200409A61 /* CreateObjectRectangle.swift */,
 				FD8E998B299FD7320074196B /* DimensionsForBaseObject.swift */,
 				FD9E02F22975613B00ACAA70 /* Joints.swift */,
@@ -228,12 +227,13 @@
 				FDAC054829EADEFB00FCB400 /* JointDimensions.swift */,
 				FDFC68712A2A1C800027E219 /* ForOccupantBack.swift */,
 				FDFC686F2A2A1BB40027E219 /* ForOccupantBody.swift */,
+				FDF085652A2E222900EB147F /* ForBase.swift */,
 				FDEA61602A24EEBD00A50ACC /* ForOccupantFoot.swift */,
 				FDF085632A2E18F200EB147F /* ForOverHead.swift */,
 				FDFC68732A2A3AAD0027E219 /* ForOccupantSide.swift */,
 				FDE497DC2AA6122A006D636B /* OriginPartInDictionariesOut.swift */,
 				FDE497DE2AA6134A006D636B /* TransformOriginIdNodesToDictionary.swift */,
-				FD7FDD512AA79C830012B3F6 /* RotatedPartCorners.swift */,
+				FD7FDD512AA79C830012B3F6 /* Tilt.swift */,
 				FD0DE3902AA9FC3A00D416CD /* DimensionDictionary.swift */,
 				FDFC68752A2A3EBF0027E219 /* CornerDictionary.swift */,
 			);
@@ -343,7 +343,7 @@
 				FD9B4B4029A0DF7800E408AA /* CreateBaseWithFixedWheels.swift in Sources */,
 				FD0FD1E92A20D7BE0096B984 /* CreateOccupantHeadSupport.swift in Sources */,
 				FDFC68702A2A1BB40027E219 /* ForOccupantBody.swift in Sources */,
-				FD7FDD522AA79C830012B3F6 /* RotatedPartCorners.swift in Sources */,
+				FD7FDD522AA79C830012B3F6 /* Tilt.swift in Sources */,
 				FD0DE3912AA9FC3A00D416CD /* DimensionDictionary.swift in Sources */,
 				FD8E998C299FD7320074196B /* DimensionsForBaseObject.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
@@ -363,7 +363,7 @@
 				FDC71F13296C91E400B68427 /* BaseObjectEnum.swift in Sources */,
 				FD8C21C129C0ABCD0034E293 /* ObjectDictionaryCreation.swift in Sources */,
 				FDA1B72D29D4686C00911D3A /* CreateOccupantOverHeadSupport.swift in Sources */,
-				FDC71F0F296C916200B68427 /* Enum.swift in Sources */,
+				FDC71F0F296C916200B68427 /* GlobalEnum.swift in Sources */,
 				FDF085642A2E18F200EB147F /* ForOverHead.swift in Sources */,
 				FDD7247D29B0DD1000B50259 /* Development.swift in Sources */,
 				FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */,

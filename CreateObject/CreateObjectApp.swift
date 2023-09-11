@@ -10,38 +10,100 @@
 CREATE CORNER DICTIONARY
 
  INPUTS from UI/load
- dimensionIn / preTiltOriginIn/ /angleIn dictionary for parts
-  BASEOBJECTTYPE
+  dimensionIn / preTiltOriginIn/ /angleIn:  dictionary for parts
+  BaseObjectTypes
   twinSitOnOptions
   baseOptions
  
- OUTPUTS dictionaries
+ DICTIONARY OUTPUTS:
  defaultDimension (for editing)
- preTiltOrigin (for editing)
  angle (for editing)
+ preTiltOrigin (for editing)
  postTiltOrigin (for editing)
  postTiltCorner for top view (for display)
  postTiltCorner for side view (for display)
   
-
+  
+ ZERO LEVEL
+ defaultDimension(BaseObjectTypes): BaseObject3DimensionDictionary ?? general value
+ defaultOrigin(BaseObjectTypes): OriginDictionary ?? general value
+ defaultAngle(BaseObjectTypes): BaseObjectAngleDictionary ?? general value
+ 'ForOccupantBack'
+ 'ForOccupantBody'
+ 'ForOccupantSide'
+ 'ForOccupantFoot'
+ 
+ 
+ ONE LEVEL
+ 'ForBase.DistanceBetweenWheels'
+ determines distance between wheel-joint from
+     'Stability'
+     OccupantBodySupportDefaultDimension parameter
+     OccupantFootSupportDefaultDimension parameter
+ 
+ 
+ TWO LEVEL
+ 'DimensionOriginCornerDictionaries'
+     determines origin-id-nodes
+     PreTiltOccupantBodySupportOrigin
+     determines sitOn origins from interactions of
+         DistanceBetweenWheels
+         Stability
+         OccupantBodySupportDefaultDimension
+         OccupantSideSupportDefaultDimension
+         OccupantFootSupportDefaultDimension
+     
+     THREE LEVEL
+     determines origin-id-nodes
+     PreTiltOccupantSupportOrigin
+     determines Foot/Back/Side from
+         PreTiltOccupantFootSupportDefaultOrigin
+         PreTiltOccupantBackSupportDefaultOrigin
+         PreTiltOccupantSideSupportDefaultOrigin
+     
+     PreTiltWheelOrigin
+     determines origin-id-nodes from
+         PreTiltOccupantBodySupportOrigin
+         WheelAndCasterVerticalJointOrigin
+     
+     FOUR LEVEL
+     ORIGINS PRETILT
+     parentToPartOrigins -> objectToPartOrigins
+ 
+ 
+ 
+ PostTilt
+ 'OriginPostTilt'
+     (each combination of tilt has a func)
+     'forSitOnWithFootTilt'
+     'forSitOnWithoutFootTilt'
+     'forBackRecline'
+ 
+ 'PartToCornersPostTilt'
+ 
+ 'ObjectToCornersPostTilt'
+ 
+ 
+ 
+ 
+ 
  
  corners are derived from
      origin for parts (angle dependent)
      dimension for parts
      angle for parts
  
-     use INPUT preTiltOrigin/ dimension /angle dictionary for parts
+     use INPUT dimensionIn/ preTiltOriginIn/ angleIn:  dictionary for parts
      ??
      use OUTPUT pretTiltOrigins/ defaultDimensions/ angle dictionary
  
  
- corners = origin(tilted) + dimensions(tilted)
+ corners = tilted(origin) + tilted(dimensions)
  corners remove intermediate colinear and internal to maximal volume on plane of choice
  
-     ORIGINS PRETILT
-     parentToPartOrigins -> objectToPartOrigins
+
  
-     ORIGINS PROST-TILT
+     ORIGINS POST-TILT
      parentToPartOrigins -> objectToPartOrigins
  
  
@@ -49,33 +111,16 @@ CREATE CORNER DICTIONARY
  DimensionOriginCornerDictionaries
  
  
-    PreTiltWheelOrigin
-    determines origin-id-nodes from
-        PreTiltOccupantBodySupportOrigin
-        WheelAndCasterVerticalJointOrigin
+
  
      
-    PreTiltOccupantSupportOrigin
-    determines Foot/Back/Side from
-        PreTiltOccupantFootSupportDefaultOrigin
-        PreTiltOccupantBackSupportDefaultOrigin
-        PreTiltOccupantSideSupportDefaultOrigin
+
      
      
-    PreTiltOccupantBodySupportOrigin
-    determines sitOn origins from interactions of
-        DistanceBetweenWheels
-        Stability
-        OccupantBodySupportDefaultDimension
-        OccupantSideSupportDefaultDimension
-        OccupantFootSupportDefaultDimension
+
  
  
-            DistanceBetweenWheels
-            determines distance between wheel-joint from
-                Stability
-                OccupantBodySupportDefaultDimension parameter
-                OccupantFootSupportDefaultDimension parameter
+
 
  */
 
