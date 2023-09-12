@@ -18,13 +18,14 @@ import Foundation
 /// footSupportHangerLink is derived from 1 and 2 when the final dictionary is available
 /// so you edit positions of 1 or 3 to change hangerLink
 /// and hangerLink only exists to create default position and not future editiing
-struct AllOccupantFootRelated {
+struct AllOccupantFootRelated: PartDimension {
     let parts: [Part]
     let defaultDimensions: [Dimension3d]
     //var rotatedDimensions: RotatedInXxDimensions = []
     init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedPartDictionary: Part3DimensionDictionary) {
+        _ baseType: BaseObjectTypes//,
+        //_ modifiedPartDictionary: Part3DimensionDictionary
+    ) {
         parts =
             [.footSupportHangerJoint,
              //.footSupportHangerLink,

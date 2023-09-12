@@ -180,9 +180,9 @@ struct OriginPartInDictionariesOut {
         let allOrigin =
             createObjectToPartOrigin(rightOrUnilateralOrigin) + createObjectToPartOrigin(leftOrigin)
         var dictionary: PositionDictionary = [:]
-print(allNames)
-print(allOrigin)
-print("")
+//print(allNames)
+//print(allOrigin)
+//print("")
         for (index, key) in allNames.enumerated() {
             let objectToPartName =    ParentToPartName().convertedToObjectToPart(key)
             dictionary[objectToPartName] = allOrigin[index]

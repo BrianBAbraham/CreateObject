@@ -8,43 +8,6 @@
 import Foundation
 
 
-
-
-
-
-
-struct LeftAndRightOrigin {
-    let rightAndUnilateralOrigin: [PositionAsIosAxes]
-    let partIds: [[Part]]
-    var left:
-        [PositionAsIosAxes] {
-            getLeftOrigin()
-        }
-    var all: [PositionAsIosAxes] {
-        rightAndUnilateralOrigin + left
-    }
-
-    func getLeftOrigin ()
-        -> [PositionAsIosAxes] {
-
-        var leftOrigin: [PositionAsIosAxes] = []
-        for index in 0..<rightAndUnilateralOrigin.count {
-            if partIds[index].count == 2 {
-                let left = CreateIosPosition.getLeftFromRight(rightAndUnilateralOrigin[index])
-                leftOrigin.append(left)
-            } else {
-                /// this adds redundant right values since values
-                /// after the final occurance of a partIds element == 2
-                /// are not used when assigned to the dictionary but this
-                /// save coding
-                leftOrigin.append(rightAndUnilateralOrigin[index])
-            }
-        }
-        return leftOrigin
-    }
-}
-
-
 /// do I want the object to be passed to an origin provider which
 /// determines which origins to provide
 /// OR
@@ -165,7 +128,7 @@ struct DimensionOriginCornerDictionaries {
 //print("DIMENSION")
 //DictionaryInArrayOut().getNameValue( dimension).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( preTiltParentToPartOrigin).forEach{print($0)}
-//print("/n ORIGIN")
+                //print("/n ORIGIN")
 //DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( preTiltObjectToCornerOrigin).forEach{print($0)}
 //
@@ -316,6 +279,7 @@ struct DimensionOriginCornerDictionaries {
             dimension += occupantSupportDimensionDictionary.forBody
             dimension += occupantSupportDimensionDictionary.forFoot
             dimension += occupantSupportDimensionDictionary.forSide
+            dimension += occupantSupportDimensionDictionary.forWheels
         }
       
 
@@ -494,6 +458,11 @@ struct DimensionOriginCornerDictionaries {
                 
             if BaseObjectGroups().allFourCaster.contains(parent.baseType) {
             forRearPrimaryOrigin()
+                
+//                print("\n\n")
+//                print("from wheels")
+//                print(origin)
+//                print("\n\n")
             }
                 
                 
@@ -502,8 +471,6 @@ struct DimensionOriginCornerDictionaries {
             allOriginIdNodes.append(allOriginIdNodesForBodySupportForBothSitOn)
                 
             func getAllOriginIdNodesForBodySupportForBothSitOn() {
-//print(origin)
-//print("\n\n")
                 for index in 0..<parent.oneOrTwoIds.count {
                     let ids = [[parent.oneOrTwoIds[index]]]
                     allOriginIdNodesForBodySupportForBothSitOn.append(
@@ -738,14 +705,27 @@ struct DimensionOriginCornerDictionaries {
                     GetValueFromDictionary(
                         parent.preTiltParentToPartOrigin,
                         [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
-//print(parent.preTiltParentToPartOrigin)
-                    allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
+                    
+                    
                     allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex) )
                     allOriginIdNodesForBackSupportForBothSitOn.append( getOriginIdNodesForBackSupport(sitOnIndex) )
+
                     allOriginIdNodes =
-                    [allOriginIdNodesForFootSupportForBothSitOn,
+                    [
                      allOriginIdNodesForSideSupportForBothSitOn,
                     allOriginIdNodesForBackSupportForBothSitOn]
+                    
+                    if BaseObjectGroups().hasFootSupport.contains(parent.baseType) {
+                        allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
+                        
+                        allOriginIdNodes.append(allOriginIdNodesForFootSupportForBothSitOn)
+                    }
+                        
+
+                    
+
+                    
+
                 }
                 
             }
@@ -937,6 +917,8 @@ struct DimensionOriginCornerDictionaries {
                 [[allOriginIdNodesForRear],
                  [allOriginIdNodesForMid] ,
                  [allOriginIdNodesForFront]]
+                
+//print(allOriginIdNodes)
             
             func getLengthBetweenFrontAndRearWheels ()
                 -> Double {
@@ -975,7 +957,7 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
     func getOriginIdNodesForRear()
         -> OriginIdNodes {
         let allRearNodes =
-            getRearNodes()
+                getRearNodes()
         let uniOrBilateralWidthPositionIdAtRear =
                 Array(repeating: WheelId(parent.baseType).atRear,
                       count: allRearNodes.count)
@@ -1087,6 +1069,8 @@ extension DimensionOriginCornerDictionaries.PreTiltOccupantBodySupportOrigin {
 
 
 // MARK: WHEEL ORIGIN EXTENSION
+/// wheelPartOrigin for rear or mid or front are required
+/// and values depend on the object origin: rear, mid or front
 extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
     
     func getRearOrigin()
@@ -1096,26 +1080,7 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
         let forkAndCasterWheelForRear =
             [casterOrigin.forRearCasterVerticalJointToFork(),
              casterOrigin.forRearCasterForkToWheel()]
-            let forkAndCasterWheelForFront =
-                [casterOrigin.forFrontCasterVerticalJointToFork(),
-                 casterOrigin.forFrontCasterForkToWheel()]
-        //rear caster
-        if BaseObjectGroups()
-            .allCaster.contains(parent.baseType) {
-//print(parent.baseType)
-            rearOrigin =
-                [
-                wheelAndCasterVerticalJointOrigin
-                    .getRearCasterWhenRearPrimaryOrigin()] +
-                forkAndCasterWheelForRear +
-            [
-            wheelAndCasterVerticalJointOrigin
-                .getFrontCasterWhenRearPrimaryOrigin()] +
-            forkAndCasterWheelForFront
-//print(rearOrigin)
-//print("")
-        }
-       //no rear caster if rear primary origin
+
         if BaseObjectGroups().midPrimaryOrigin.contains(parent.baseType) {
             rearOrigin =
                 [
@@ -1131,12 +1096,18 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
                 forkAndCasterWheelForRear
         }
             
-        //fixed wheel
         if BaseObjectGroups().rearPrimaryOrigin.contains(parent.baseType) {
-            rearOrigin =
-                getForWheelDrive()
+            if BaseObjectGroups().allFourCaster.contains(parent.baseType) {
+                rearOrigin =
+                    [
+                    wheelAndCasterVerticalJointOrigin
+                        .getRearCasterWhenRearPrimaryOrigin()] +
+                    forkAndCasterWheelForRear
+            } else {         //fixed wheel
+                rearOrigin =
+                    getForWheelDrive()
+            }
         }
-//print(rearOrigin)
         return rearOrigin
     }
     
@@ -1156,12 +1127,7 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
                     .getRearCasterWhenRearPrimaryOrigin()] +
                 forkAndCasterWheel
         }
-            
-        //for midPrimaryOrigin no objects with mid casters
-        
-        //for frontPrimaryOrigin no objects with mid casters
-            
-            
+                  
         if BaseObjectGroups()
             .midFixedWheel.contains(parent.baseType) {
             midOrigin =
@@ -1210,7 +1176,7 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
     
     func getForWheelDrive()
         -> [PositionAsIosAxes] {
-//print("for wheel drive")
+
         return
            BaseObjectGroups()
                 .allDriveOrigin.contains(parent.baseType) ?
@@ -1237,3 +1203,9 @@ protocol InputForDictionary {
 }
 
 
+/// Provides a means of passing dimenions for parts
+/// to one function
+protocol PartDimension {
+    var parts: [Part] {get}
+    var defaultDimensions: [Dimension3d] {get}
+}

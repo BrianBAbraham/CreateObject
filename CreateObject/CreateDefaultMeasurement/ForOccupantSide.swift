@@ -9,13 +9,14 @@
 //
 
 
-struct AllOccupantSideRelated {
+struct AllOccupantSideRelated: PartDimension {
     let parts: [Part]
     let defaultDimensions: [Dimension3d]
 //    var rotatedDimensions: RotatedInXxDimensions = []
     init(
-        _ baseType: BaseObjectTypes,
-        _ modifiedPartDictionary: Part3DimensionDictionary) {
+        _ baseType: BaseObjectTypes//,
+       // _ modifiedPartDictionary: Part3DimensionDictionary
+    ) {
         parts =
             [
             .sideSupport]

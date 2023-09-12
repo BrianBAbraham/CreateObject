@@ -31,7 +31,9 @@ struct DimensionDictionary {
         let enumCodedSoAnyMemberCanBeUsed = 0
         idsForPart =
             onlyOneExists.contains(where: parts[enumCodedSoAnyMemberCanBeUsed].rawValue.contains) ? [.id0]: idsForPart
-
+//print(parts)
+//print(defaultDimensions)
+//print("\n\n")
         for index in 0..<parts.count{
             for partId in  idsForPart {
                 for sitOnId in idsForSitOn {
@@ -58,52 +60,39 @@ struct OccupantSupportDimensionDictionary {
     var forBody:  Part3DimensionDictionary = [:]
     var forFoot:  Part3DimensionDictionary = [:]
     var forSide: Part3DimensionDictionary = [:]
+    var forWheels: Part3DimensionDictionary = [:]
     
     init(
         parent: DimensionOriginCornerDictionaries) {
         
-        forBack = getDictionaryForBack()
+        forBack = getDictionary(
+            AllOccupantBackRelated(
+                parent.baseType) )
         forBody = getDictionaryForBody()
-        forFoot = getDictionaryForFoot()
-        forSide = getDictionaryForSide()
+        forFoot =
+            getDictionary(
+                AllOccupantFootRelated(
+                    parent.baseType) )
+        forSide = getDictionary(
+            AllOccupantSideRelated(
+                parent.baseType) )
             
-        func  getDictionaryForBack()
-        -> Part3DimensionDictionary {
+        let allWheelRelated =
+            AllWheelRelated(
+                parent.baseType)
             
-            let allOccupantRelated =
-                AllOccupantBackRelated(
-                    parent.baseType)
-            
-            let dimensions =
-                DimensionDictionary(
-                    allOccupantRelated.parts,
-                    allOccupantRelated.defaultDimensions,
-                    parent.twinSitOnOption,
-                    parent.dimensionIn
-                ).forPart
-            
-//print(dimensions)
-            return dimensions
-        }
-            
+print (allWheelRelated.parts.count)
+        forWheels = getDictionary(
+            allWheelRelated
+            )
+print (forWheels)
         func  getDictionaryForBody()
             -> Part3DimensionDictionary {
                 let dimension =
                     OccupantBodySupportDefaultDimension(
                         parent.baseType).value
                 
-//                let angle =
-//                    OccupantBodySupportDefaultAngleChange(parent.baseType).value
-//
-//                let rotatedDimension =
-//                    RotatedPartCorners(
-//                        dimensionIn: dimension,
-//                        angleChangeIn:  angle
-//                    ).lengthAlteredForRotationDimension
-//
-//                let rotatedDimensions =
-//                    parent.twinSitOnState ? [rotatedDimension, rotatedDimension]: [rotatedDimension]
-                
+
                 let parts: [Part] =
                     parent.twinSitOnState ? [.sitOn, .sitOn]: [.sitOn]
                 
@@ -116,44 +105,20 @@ struct OccupantSupportDimensionDictionary {
                     ).forPart
         }
             
-        func  getDictionaryForFoot()
-            -> Part3DimensionDictionary {
-            
-                let allOccupantRelated =
-                    AllOccupantFootRelated(
-                        parent.baseType,
-                        parent.dimensionIn)
-                return
-                    DimensionDictionary(
-                        allOccupantRelated.parts,
-                        allOccupantRelated.defaultDimensions,
-                        parent.twinSitOnOption,
-                        parent.dimensionIn
-                    ).forPart
-        }
-            
-        func  getDictionaryForSide()
-            -> Part3DimensionDictionary {
-                
-                let allOccupantRelated =
-                    AllOccupantSideRelated(
-                        parent.baseType,
-                        parent.dimensionIn )
-
-                
-               return
-                    DimensionDictionary(
-                        [.sideSupport],
-                        allOccupantRelated.defaultDimensions,
-                        parent.twinSitOnOption,
-                        parent.dimensionIn
-                    ).forPart
-        }
          
-         //MARK:- REDUCE CODE
-        func getDictionary() {
-            
+
+        func getDictionary(
+            _ fromPartAndDimensions: PartDimension)
+        -> Part3DimensionDictionary {
+            DimensionDictionary(
+                fromPartAndDimensions.parts,
+                fromPartAndDimensions.defaultDimensions,
+                parent.twinSitOnOption,
+                parent.dimensionIn
+            ).forPart
         }
     }
 }
+
+
 

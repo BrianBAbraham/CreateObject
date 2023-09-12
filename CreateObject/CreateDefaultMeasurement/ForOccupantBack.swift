@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AllOccupantBackRelated {
+struct AllOccupantBackRelated: PartDimension {
     var parts: [Part] = []
     let defaultDimensions: [Dimension3d]
 //    var rotatedDimensions: RotatedInXxDimensions = []

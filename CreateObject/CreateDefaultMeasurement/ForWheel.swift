@@ -1,5 +1,5 @@
 //
-//  ForBase.swift
+//  ForWheel.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 05/06/2023.
@@ -9,43 +9,49 @@ import Foundation
 
 
 
-struct AllBaseRelated {
+struct AllWheelRelated: PartDimension  {
     var parts: [Part] = []
-    var dimensions: [Dimension3d] = []
+    var defaultDimensions: [Dimension3d] = []
     let wheelDefaultDimension: WheelDefaultDimension
     
     init(_ baseType: BaseObjectTypes) {
         wheelDefaultDimension = WheelDefaultDimension(baseType)
         let fourCaster =
         getDimensionsForFourCaster(PartGroup.fourCasterParts)
-        
+
         switch baseType {
         case .allCasterBed:
             parts = PartGroup.fourCasterParts
-            dimensions = fourCaster
+            defaultDimensions = fourCaster
+//print(defaultDimensions)
+//print(parts)
         case .allCasterChair:
             parts = PartGroup.fourCasterParts
-            dimensions = fourCaster
+            defaultDimensions = fourCaster
         case .allCasterHoist:
             parts = PartGroup.fourCasterParts
-            dimensions = fourCaster
+            defaultDimensions = fourCaster
         case .allCasterSixHoist:
             parts = PartGroup.sixCasterParts
         case .allCasterTiltInSpaceShowerChair:
             parts = PartGroup.fourCasterParts
-            dimensions = fourCaster
+            defaultDimensions = fourCaster
         case .allCasterStandAid:
             parts = PartGroup.fourCasterParts
-            dimensions = fourCaster
+            defaultDimensions = fourCaster
         case .allCasterStretcher:
             parts = PartGroup.fourCasterParts
-            dimensions = fourCaster
+            defaultDimensions = fourCaster
         case .fixedWheelFrontDrive:
             parts = PartGroup.twoCasterTwoWheelParts
         case .fixedWheelMidDrive:
             parts = PartGroup.twoCasterTwoFixedWheelTwoCasterParts
         case .fixedWheelRearDrive:
             parts = PartGroup.twoFixedWheelsTwoCasterParts
+            defaultDimensions =
+            getTwoFixedWheels() +
+                getTwoCaster(
+                    wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
         case .fixedWheelManualRearDrive:
             parts = PartGroup.twoCasterTwoWheelPropllerParts
             //        case .fixedWheelSolo:

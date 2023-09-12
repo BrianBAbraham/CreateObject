@@ -102,6 +102,7 @@ struct BaseObjectGroups {
     let twinSitOnAbility: [BaseObjectTypes] =
         [ .fixedWheelManualRearDrive,
           .fixedWheelRearDrive,
+          .fixedWheelMidDrive,
           .fixedWheelFrontDrive,
           .scooterRearDrive3Wheeler,
           .scooterRearDrive4Wheeler,
@@ -118,6 +119,8 @@ struct BaseObjectGroups {
         [
         .allCasterSixHoist,
         .fixedWheelMidDrive]
+    
+    let hasFootSupport: [BaseObjectTypes]
     
     let fourWheels: [BaseObjectTypes]
     let threeWheels: [BaseObjectTypes]
@@ -172,6 +175,10 @@ struct BaseObjectGroups {
             allCaster +
             [.fixedWheelMidDrive, .fixedWheelFrontDrive]
         
+        hasFootSupport =
+        twinSitOnAbility + [.allCasterChair,
+                            .allCasterStandAid,
+                            .allCasterTiltInSpaceShowerChair]
         
     }
 }
