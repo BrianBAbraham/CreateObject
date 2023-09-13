@@ -116,11 +116,7 @@ enum Part: String {
     case width = "Width"
 }
 
-enum MeasurementParts: String {
-    case base = "Base"
-    case body = "BodySupport"
-    case foot = "FootSupport"
-}
+
 
 struct PartGroup {
     static let sideSupport: [Part] =

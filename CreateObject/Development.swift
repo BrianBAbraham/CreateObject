@@ -11,6 +11,6 @@ import Foundation
 struct Print {
     static func this <T>(_ functionName: String, _ data: T = "", callingMethod: String = #function ){
       
-       print ("CALLED \(functionName) \(data) from \(callingMethod)")
+       print("CALLED \(functionName) \(data) from \(callingMethod)")
     }
 }

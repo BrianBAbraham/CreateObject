@@ -72,7 +72,7 @@
 /* Begin PBXFileReference section */
 		FD0260192A1FB39700E6504A /* CreateOccupantTiltSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantTiltSupport.swift; sourceTree = "<group>"; };
 		FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerOptionsView.swift; sourceTree = "<group>"; };
-		FD0DE3902AA9FC3A00D416CD /* DimensionDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionDictionary.swift; sourceTree = "<group>"; };
+		FD0DE3902AA9FC3A00D416CD /* DimensionDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionDictionary.swift; sourceTree = "<group>"; usesTabs = 0; };
 		FD0FD1E82A20D7BE0096B984 /* CreateOccupantHeadSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOccupantHeadSupport.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		FD4B8BCC29E6EECF00FCE4DB /* EditFootSupportLeftRightPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFootSupportLeftRightPosition.swift; sourceTree = "<group>"; };
