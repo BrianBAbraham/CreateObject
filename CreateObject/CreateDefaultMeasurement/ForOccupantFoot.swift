@@ -19,42 +19,44 @@ import Foundation
 /// so you edit positions of 1 or 3 to change hangerLink
 /// and hangerLink only exists to create default position and not future editiing
 struct AllOccupantFootRelated: PartDimension {
+    
     let parts: [Part]
-    let defaultDimensions: [Dimension3d]
-    //var rotatedDimensions: RotatedInXxDimensions = []
+    var defaultDimensions: [Dimension3d] = []
+   
     init(
-        _ baseType: BaseObjectTypes//,
-        //_ modifiedPartDictionary: Part3DimensionDictionary
-    ) {
-        parts =
-            [.footSupportHangerJoint,
-             //.footSupportHangerLink,
-             .footSupportJoint,
-             .footSupport,
-             .footSupportInOnePiece
-        ]
-            
+        _ baseType: BaseObjectTypes,
+        _ nodes: [Part] ) {
+        self.parts = nodes
         let defaults =
             OccupantFootSupportDefaultDimension(baseType)
         
-        defaultDimensions =
-        [
-        defaults.getHangerJoint(),
-        defaults.getFootJoint(),
-        defaults.getFootSupportInTwoPieces(),
-        defaults.getFootSupportInOnePiece()]
-            
-//        let angle =
-//            OccupantBodySupportDefaultAngleChange(baseType).value
-        
-//        for dimension in defaultDimensions {
-//            rotatedDimensions.append(
-//                RotatedPartCorners(
-//                    dimensionIn: dimension,
-//                    angleChangeIn:  angle
-//                ).lengthAlteredForRotationDimension
-//            )
-//        }
+        for part in parts {
+            defaultDimensions.append(getDefaultDimensions(part))
+        }
+       
+    
+        func getDefaultDimensions (
+            _ part: Part)
+            -> Dimension3d {
+                var dimension: Dimension3d = ZeroValue.dimension3D
+            switch part {
+                case .footSupportHangerJoint:
+                    dimension =
+                    defaults.getHangerJoint()
+                case .footSupportJoint:
+                    dimension =
+                    defaults.getFootJoint()
+                case .footSupport:
+                    dimension =
+                    defaults.getFootSupportInTwoPieces()
+                case .footSupportInOnePiece:
+                    dimension =
+                    defaults.getFootSupportInOnePiece()
+                default: break
+            }
+            return dimension
+        }
+
     }
 }
 

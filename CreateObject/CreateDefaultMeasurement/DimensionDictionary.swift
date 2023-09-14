@@ -9,55 +9,50 @@ import Foundation
 
 
 enum DimensionGroup {
-    case wheel
+    case rearWheel
+    case midWheel
+    case frontWheel
     case body
     case foot
     case side
     case back
 }
 
+/// <#Description#>
 struct DimensionDictionary {
     var forPart: Part3DimensionDictionary = [:]
     
-    /// uses UI editable dimensionIn value
-    /// else uses defaultDimension value
-    /// - Parameters:
-    ///   - parts: all the parts associated with that section of the object
-    ///   - defaultDimensions: default
-    ///   - twinSitOnOptions:
-    ///   - dimensionIn: no value or  default value or  edited value
+    
     init(
-        _ parts: [Part],
+        _ originIdNodes: [OriginIdNodes],
         _ defaultDimensions: [Dimension3d],
-        _ twinSitOnOptions: TwinSitOnOptionDictionary,
-        _ dimensionIn: Part3DimensionDictionary) {
+        _ dimensionIn: Part3DimensionDictionary,
+        _ sitOnIndex: Int) {
             
-        var idsForPart: [Part] = [.id0, .id1]
-        let idsForSitOn: [Part] =  TwinSitOn(twinSitOnOptions).state ? [.id0, .id1]: [.id0]
-        
-        // any part with backSupport in the name will only have one item per sitOn
-        let onlyOneExists = [Part.backSupport.rawValue]
-        let enumCodedSoAnyMemberCanBeUsed = 0
-        idsForPart =
-            onlyOneExists.contains(where: parts[enumCodedSoAnyMemberCanBeUsed].rawValue.contains) ? [.id0]: idsForPart
-//print(parts)
-//print(defaultDimensions)
-//print("\n\n")
-        for index in 0..<parts.count{
-            for partId in  idsForPart {
-                for sitOnId in idsForSitOn {
-                    let nameStart: [Part] =
-                    [.object, .id0, .stringLink]
-                    let nameEnd: [Part] = parts[index] == .sitOn ?
-                    [sitOnId, .stringLink, .sitOn, .id0] : [partId, .stringLink, .sitOn, sitOnId]
-                    let x = nameStart + [ parts[index]] + nameEnd
-                    let partName = CreateNameFromParts(x).name
-                    let dimension = dimensionIn[partName] ?? defaultDimensions[index]
-                    self.forPart +=
-                    [partName: dimension ]
+       
+  
+           // for sitOnIndex in 0..<originIdNodes.count {//provides sitOn number
+                let sitOnId: Part = [.id0,.id1][sitOnIndex]
+                let parts = originIdNodes[sitOnIndex].nodes
+
+                for partIndex in 0..<parts.count{
+                    let idsForPart: [Part] = originIdNodes[sitOnIndex].ids[partIndex]
+                    for partIdIndex in  0..<idsForPart.count {
+                
+                        let nameStart: [Part] =
+                        [.object, .id0, .stringLink]
+                        
+                        let nameEnd: [Part] = parts[partIndex] == .sitOn ?
+                            [sitOnId, .stringLink, .sitOn, sitOnId] : [idsForPart[partIdIndex], .stringLink, .sitOn, sitOnId]
+                        
+                        let x = nameStart + [ parts[partIndex]] + nameEnd
+                        let partName = CreateNameFromParts(x).name
+                        let dimension = dimensionIn[partName] ?? defaultDimensions[partIndex]
+                        self.forPart +=
+                        [partName: dimension ]
                 }
             }
-        }
+       // }
     }
 }
 
@@ -67,7 +62,8 @@ struct DimensionDictionary {
 struct OccupantSupportDimensionDictionary {
     let parent: DimensionOriginCornerDictionaries
     let preTiltOccupantSupportOrigin: DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin?
-    let preTiltWheelOrigin: DimensionOriginCornerDictionaries.PreTiltWheelOrigin?
+    let preTiltWheelOrigin:
+        DimensionOriginCornerDictionaries.PreTiltWheelOrigin?
     var forBack:  Part3DimensionDictionary = [:]
     var forBody:  Part3DimensionDictionary = [:]
     var forFoot:  Part3DimensionDictionary = [:]
@@ -81,162 +77,147 @@ struct OccupantSupportDimensionDictionary {
             
         preTiltOccupantSupportOrigin =
         parent.preTiltOccupantFootBackSideSupportOrigin as? DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin
-            
-            preTiltWheelOrigin =
-            parent.preTiltWheelOrigin as? DimensionOriginCornerDictionaries.PreTiltWheelOrigin
-        
-        forBack = getDictionary(
-            AllOccupantBackRelated(
-                parent.baseType) )
-        forBody = getDictionaryForBody()
-            
-        forFoot =
-            getDictionary(
-                AllOccupantFootRelated(
-                    parent.baseType) )
-            
-        forSide = getDictionary(
-            AllOccupantSideRelated(
-                parent.baseType) )
-            
-            getPartAndId(.back, preTiltOccupantSupportOrigin)
-            getPartAndId(.wheel, preTiltWheelOrigin)
-            
-        let allWheelRelated =
-            AllWheelRelated(
-                parent.baseType)
-  
-            
-/// I have structs which conform to a protocol
-            ///
-            //            if let preTiltOccupantSupportOrigin {
-            //                let ids = (preTiltOccupantSupportOrigin.allOriginIdNodesForSideSupportForBothSitOn[0].ids)
-            //                 let parts = (preTiltOccupantSupportOrigin.allOriginIdNodesForSideSupportForBothSitOn[0].nodes)
-            //
-            
-        func getPartAndId (
-            _ dimensionGroup: DimensionGroup,
-            _ anyInputForDictionary: InputForDictionary?)
-           // -> [OriginIdNodes]
-            {
-                var supportInputForDictionary: DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin?
-                var wheelInputForDictionary:
-                DimensionOriginCornerDictionaries.PreTiltWheelOrigin?
- 
-                if dimensionGroup == DimensionGroup.back {
-                    supportInputForDictionary = DimensionOriginCornerDictionaries.preTiltOccupantFootBackSideSupportOrigin
-                                        as? DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin
-                    if inputForDictionary == nil {
-print ("still nil")
-                    }
 
-print (type(of: inputForDictionary))
-                }
-                
-                if dimensionGroup == DimensionGroup.wheel {
-                    inputForDictionary = parent.preTiltWheelOrigin as? DimensionOriginCornerDictionaries.PreTiltWheelOrigin
-                    
-print (type(of: inputForDictionary))
-                }
-                
-            var originIdNodes: [OriginIdNodes] = []
-                
-                
-//            if let inputForDictionary {
-//
-//                switch dimensionGroup {
-//                case .back:
-//                    originIdNodes =
-//                        inputForDictionary
-//                            .allOriginIdNodesForBackSupportForBothSitOn
-//                case .side:
-//                    originIdNodes =
-//                        preTiltOccupantSupportOrigin.allOriginIdNodesForSideSupportForBothSitOn
-//                case .foot:
-//                    originIdNodes =
-//                        preTiltOccupantSupportOrigin.allOriginIdNodesForFootSupportForBothSitOn
-//
-//
-//                default:
-//                    break
-//                }
-            }
-//            if let preTiltOccupantSupportOrigin {
-//
-//                switch dimensionGroup {
-//                case .back:
-//                    originIdNodes =
-//                        preTiltOccupantSupportOrigin.allOriginIdNodesForBackSupportForBothSitOn
-//                case .side:
-//                    originIdNodes =
-//                        preTiltOccupantSupportOrigin.allOriginIdNodesForSideSupportForBothSitOn
-//                case .foot:
-//                    originIdNodes =
-//                        preTiltOccupantSupportOrigin.allOriginIdNodesForFootSupportForBothSitOn
-//
-//
-//                default:
-//                    break
-//                }
-            //}
-
-//                if ids.count != parts.count {
-//                    checkCondition(false)
-//                }
-//            }
-                    //return originIdNodes
-        //}
-
- 
+        preTiltWheelOrigin =
+        parent.preTiltWheelOrigin as? DimensionOriginCornerDictionaries.PreTiltWheelOrigin
             
-            func checkCondition(_ nonEqualCount: Bool) {
-                guard nonEqualCount else {
-                    fatalError("Id count and part count do not match")
-                }
-                
-                // Continue with your program if the condition is met.
-            }
+        let originIdNodesForFoot =
+            getOriginIdNodesForSupport(.foot)
 
 
+        let footDimensions =
+            AllOccupantFootRelated(
+                parent.baseType,
+                originIdNodesForFoot[0].nodes
+            ).defaultDimensions
             
-//print(parent.preTiltOccupantFootBackSideSupportOrigin.allOriginIdNodesForSideSupportForBothSitOn)
-//print(allWheelRelated.parts.count)
-//        forWheels = getDictionary(
-//            allWheelRelated
-//            )
-//print(forWheels)
-        func  getDictionaryForBody()
-            -> Part3DimensionDictionary {
-                let dimension =
-                    OccupantBodySupportDefaultDimension(
-                        parent.baseType).value
-                
-
-                let parts: [Part] =
-                    parent.twinSitOnState ? [.sitOn, .sitOn]: [.sitOn]
-                
-                return
-                    DimensionDictionary(
-                        parts,
-                        [dimension],
-                        parent.twinSitOnOption,
-                        parent.dimensionIn
-                    ).forPart
+            forFoot +=
+            DimensionDictionary(
+                originIdNodesForFoot,
+                footDimensions,
+                parent.dimensionIn,
+                0
+            ).forPart
+            
+            
+            
+            let allWheelRelated =
+                AllWheelRelated(
+                    parent.baseType)
+            
+            
+            
+print (allWheelRelated)
+print(preTiltWheelOrigin!.allOriginIdNodesForRear.ids)
+print(preTiltWheelOrigin!.allOriginIdNodesForMid.ids)
+print(preTiltWheelOrigin!.allOriginIdNodesForFront.nodes)
+print(preTiltWheelOrigin!.allOriginIdNodesForFront.ids)
+            
+                   
         }
+
+//print (getPartAndIdForWheel(.rearWheel))
+//
+//print (getPartAndIdForSupport(.back))
+
+
+  
+//            forBack =
+//                getDictionary(
+//                AllOccupantBackRelated(
+//                    parent.baseType,
+//                ) )
+                
+            //forBody = getDictionaryForBody()
+                
+           
+                
+//            forSide = getDictionary(
+//                AllOccupantSideRelated(
+//                    parent.baseType) )
+//
+
+            
+        func getOriginIdNodesForSupport (
+            _ dimensionGroup: DimensionGroup)
+            -> [OriginIdNodes] {
+            var originIdNodes: [OriginIdNodes] = []
+            
+            if let unwrappedPreTiltSupport = preTiltOccupantSupportOrigin  {
+                switch dimensionGroup {
+                case .back:
+                    originIdNodes =
+                    unwrappedPreTiltSupport.allOriginIdNodesForBackSupportForBothSitOn
+                case .foot:
+                    originIdNodes =
+                    unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
+                case .side:
+                    originIdNodes =
+                    unwrappedPreTiltSupport.allOriginIdNodesForSideSupportForBothSitOn
+                default: break
+                }
+            }
+            return originIdNodes
+        }
+            
+            
+        func getPartAndIdForWheel (
+            _ dimensionGroup: DimensionGroup)
+            -> OriginIdNodes {
+                var originIdNode:OriginIdNodes = ZeroValue.originIdNodes
+            if let unwrappedWheel = preTiltWheelOrigin  {
+                switch dimensionGroup {
+                case .frontWheel:
+                    originIdNode =
+                    unwrappedWheel.allOriginIdNodesForFront
+                case .midWheel:
+                    originIdNode =
+                    unwrappedWheel.allOriginIdNodesForMid
+                case .rearWheel:
+                    originIdNode =
+                    unwrappedWheel.allOriginIdNodesForRear
+                default: break
+                }
+            }
+            return originIdNode
+        }
+
+
+//        func  getDictionaryForBody()
+//            -> Part3DimensionDictionary {
+//                let dimension =
+//                    OccupantBodySupportDefaultDimension(
+//                        parent.baseType).value
+//
+//
+//                let parts: [Part] =
+//                    parent.twinSitOnState ? [.sitOn, .sitOn]: [.sitOn]
+//                let ids: [Part] =
+//                    parent.twinSitOnState ? [.id0, .id1]: [.id0]
+//
+//                return
+//                    DimensionDictionary(
+//                        parts,
+//                        ids,
+//                        [dimension],
+//                        parent.twinSitOnOption,
+//                        parent.dimensionIn
+//                    ).forPart
+//        }
             
          
 
-        func getDictionary(
-            _ fromPartAndDimensions: PartDimension)
-        -> Part3DimensionDictionary {
-            DimensionDictionary(
-                fromPartAndDimensions.parts,
-                fromPartAndDimensions.defaultDimensions,
-                parent.twinSitOnOption,
-                parent.dimensionIn
-            ).forPart
-        }
-    }
+//        func getDictionary(
+//            _ originIdNodes: [OriginIdNodes],
+//            _ dimensions: [Dimension3d])
+//        -> Part3DimensionDictionary {
+//            DimensionDictionary(
+//                originIdNodes,
+//                dimensions,
+//                parent.dimensionIn
+//            ).forPart
+//        }
+    
 }
 
 

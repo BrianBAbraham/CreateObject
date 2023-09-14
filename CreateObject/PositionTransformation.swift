@@ -16,6 +16,7 @@ struct ZeroValue {
     (origin: [],
      ids: [[]],
      nodes: [])
+    
     static let rearMidFrontOriginIdNodes: RearMidFrontOriginIdNodes =
     (rear: ZeroValue.originIdNodes,
      mid: ZeroValue.originIdNodes,

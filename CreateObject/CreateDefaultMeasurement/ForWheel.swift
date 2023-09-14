@@ -13,9 +13,14 @@ struct AllWheelRelated: PartDimension  {
     var parts: [Part] = []
     var defaultDimensions: [Dimension3d] = []
     let wheelDefaultDimension: WheelDefaultDimension
+    let doubleJointDimension =
+        [Joint.dimension3d, Joint.dimension3d]
     
     init(_ baseType: BaseObjectTypes) {
         wheelDefaultDimension = WheelDefaultDimension(baseType)
+        
+
+        
         let fourCaster =
         getDimensionsForFourCaster(PartGroup.fourCasterParts)
 
@@ -123,6 +128,22 @@ struct AllWheelRelated: PartDimension  {
             return dimensions
     }
     
+    func getForfixedWheelRearDrive ()
+    -> Dimension3dFrontMidRear {
+        let rear =
+            [
+            doubleJointDimension,
+            [wheelDefaultDimension.getFixed(), wheelDefaultDimension.getFixed()] ]
+        
+        let mid: [[Dimension3d]] = [[]]
+        let front =
+            [
+            doubleJointDimension,
+            [wheelDefaultDimension.getFrontCasterFork()],
+            [wheelDefaultDimension.getFrontCasterWheel()] ]
+        return
+            (front: front,  mid: mid, rear: rear)
+    }
     
     func getTwoCaster(
         _ fork: () -> Dimension3d,
