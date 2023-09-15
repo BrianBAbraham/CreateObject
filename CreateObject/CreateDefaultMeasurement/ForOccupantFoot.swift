@@ -38,7 +38,7 @@ struct AllOccupantFootRelated: PartDimension {
         func getDefaultDimensions (
             _ part: Part)
             -> Dimension3d {
-                var dimension: Dimension3d = ZeroValue.dimension3D
+                var dimension: Dimension3d = ZeroValue.dimension3d
             switch part {
                 case .footSupportHangerJoint:
                     dimension =

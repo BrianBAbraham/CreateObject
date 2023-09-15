@@ -32,6 +32,7 @@ CREATE CORNER DICTIONARY
  'ForOccupantBody'
  'ForOccupantSide'
  'ForOccupantFoot'
+ note: bilateral parts have common default dimension edited parts may differ
  
  
  ONE LEVEL

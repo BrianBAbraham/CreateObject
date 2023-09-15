@@ -94,7 +94,7 @@ struct GetDimensionFromDictionary {
                 -> Dimension3d {
                 let name = CreateNameFromParts(parts).name
 //print(name)
-                let dimension = dictionary[name] ?? ZeroValue.dimension3D
+                let dimension = dictionary[name] ?? ZeroValue.dimension3d
                 
                 return dimension
         }
@@ -127,7 +127,7 @@ struct GetPositionFromDictionary {
                 -> Dimension3d {
                 let name = CreateNameFromParts(parts).name
 //print(name)
-                let dimension = dictionary[name] ?? ZeroValue.dimension3D
+                let dimension = dictionary[name] ?? ZeroValue.dimension3d
                 
                 return dimension
         }
@@ -161,7 +161,7 @@ struct GetValueFromDictionary <T> {
             }
 
                 if wrappedDimension is Dimension3d {
-                value = wrappedDimension ?? ZeroValue.dimension3D as! T
+                value = wrappedDimension ?? ZeroValue.dimension3d as! T
             }
         }
     }

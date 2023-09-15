@@ -11,34 +11,36 @@
 
 struct AllOccupantSideRelated: PartDimension {
     let parts: [Part]
-    let defaultDimensions: [Dimension3d]
+    var defaultDimensions: [Dimension3d] = []
 //    var rotatedDimensions: RotatedInXxDimensions = []
     init(
-        _ baseType: BaseObjectTypes//,
-       // _ modifiedPartDictionary: Part3DimensionDictionary
-    ) {
-        parts =
-            [
-            .sideSupport]
+        _ baseType: BaseObjectTypes,
+        _ nodes: [Part]) {
+        self.parts = nodes
             
         let defaults =
             OccupantSideSupportDefaultDimension(baseType)
         
-        defaultDimensions =
-        [
-        defaults.value]
+        for part in parts {
+            defaultDimensions.append(getDefaultDimensions(part))
+        }
             
-//        let angle =
-//            OccupantBodySupportDefaultAngleChange(baseType).value
-        
-//        for dimension in defaultDimensions {
-//            rotatedDimensions.append(
-//                RotatedPartCorners(
-//                    dimensionIn: dimension,
-//                    angleChangeIn:  angle
-//                ).lengthAlteredForRotationDimension
-//            )
-//        }
+        func getDefaultDimensions (
+            _ part: Part)
+            -> Dimension3d {
+                var dimension: Dimension3d = ZeroValue.dimension3d
+            switch part {
+                case .sideSupportRotationJoint:
+                    dimension =
+                        Joint.dimension3d
+                case .sideSupport:
+                    dimension =
+                    defaults.value
+                
+                default: break
+            }
+            return dimension
+        }
     }
 }
 

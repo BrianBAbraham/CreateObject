@@ -9,45 +9,44 @@ import Foundation
 
 struct AllOccupantBackRelated: PartDimension {
     var parts: [Part] = []
-    let defaultDimensions: [Dimension3d]
+    var defaultDimensions: [Dimension3d] = []
 //    var rotatedDimensions: RotatedInXxDimensions = []
 
-    init(_ baseType: BaseObjectTypes) {
-         parts =
-            [.backSupportAdditionalPart,
-            .backSupportHeadSupport,
-            .backSupportHeadSupportLink,
-            .backSupportHeadLinkRotationJoint,
-            //.backSupportAssistantHandle,
-            //.backSupportAssistantHandleInOnePiece,
-            //.backSupportAssistantJoystick,
-            .backSupport,
-            .backSupporRotationJoint]
+    init(
+        _ baseType: BaseObjectTypes,
+        _ nodes: [Part] ) {
+        self.parts = nodes
         
-    let defaults =
-        OccupantBackSupportDefaultDimension(baseType)
-        
-    defaultDimensions =
-        [
-            defaults.getAdditionalObject(),
-            defaults.getHeadSupport(),
-            defaults.getHeadSupportLink() ,
-            defaults.getHeadSupportRotationJoint(),
-            defaults.getBackSupport(),
-            defaults.getBackSupportRotationJoint()]
-
-//        let angle =
-//            OccupantBackSupportDefaultAngleChange(baseType).value +
-//            OccupantBodySupportDefaultAngleChange(baseType).value
-        
-//        for dimension in defaultDimensions {
-//            rotatedDimensions.append(
-//                RotatedPartCorners(
-//                    dimensionIn: dimension,
-//                    angleChangeIn:  angle
-//                ).lengthAlteredForRotationDimension
-//            )
-//        }
+        let defaults =
+            OccupantBackSupportDefaultDimension(baseType)
+        for part in parts {
+            defaultDimensions.append(getDefaultDimensions(part))
+        }
+       
+        func getDefaultDimensions (
+            _ part: Part)
+            -> Dimension3d {
+                var dimension: Dimension3d = ZeroValue.dimension3d
+            switch part {
+                case .backSupportHeadSupport:
+                    dimension =
+                        defaults.getHeadSupport()
+                case .backSupportHeadSupportJoint:
+                    dimension =
+                    defaults.getHeadSupportRotationJoint()
+                case .backSupportHeadSupportLink:
+                    dimension =
+                    defaults.getHeadSupportLink()
+                case .backSupport:
+                    dimension =
+                    defaults.getBackSupport()
+            case .backSupporRotationJoint:
+                dimension =
+                defaults.getBackSupportRotationJoint()
+                default: break
+            }
+            return dimension
+        }
     }
 }
 

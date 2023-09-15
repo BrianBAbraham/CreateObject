@@ -182,7 +182,7 @@ extension ObjectEditViewModel {
             color = .white
         } else {
         
-            if uniquePartName.contains(Part.armSupport.rawValue) {
+            if uniquePartName.contains(Part.sideSupport.rawValue) {
                 color = .green
             }
             if uniquePartName.contains(Part.fixedWheel.rawValue) {

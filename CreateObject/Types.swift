@@ -36,8 +36,8 @@ typealias OriginDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (length: Double, width: Double)
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
-typealias Dimension3dFrontMidRear =
-    (front: [[Dimension3d]], mid: [[Dimension3d]], rear: [[Dimension3d]])
+typealias Dimension3dRearMidFront =
+    (rear: [Dimension3d], mid: [Dimension3d], front: [Dimension3d])
 typealias WheelSize = (radius: Double, width: Double)
 
 //typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)

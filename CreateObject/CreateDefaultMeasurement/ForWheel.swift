@@ -12,163 +12,185 @@ import Foundation
 struct AllWheelRelated: PartDimension  {
     var parts: [Part] = []
     var defaultDimensions: [Dimension3d] = []
+    var defaultRearMidFrontDimension = ZeroValue.dimension3dRearMidFront
     let wheelDefaultDimension: WheelDefaultDimension
-    let doubleJointDimension =
-        [Joint.dimension3d, Joint.dimension3d]
+    
+    let rearCasterForkDimension: Dimension3d
+    let rearCasterWheelDimension: Dimension3d
+    let rearCaster: [Dimension3d]
+    let frontCasterForkDimension: Dimension3d
+    let frontCasterWheelDimension: Dimension3d
+    let frontCaster: [Dimension3d]
+    
+
     
     init(_ baseType: BaseObjectTypes) {
         wheelDefaultDimension = WheelDefaultDimension(baseType)
         
+        
+        rearCasterForkDimension = wheelDefaultDimension.getRearCasterFork()
+        rearCasterWheelDimension = wheelDefaultDimension.getRearCasterWheel()
+        rearCaster =
+            [Joint.dimension3d, rearCasterForkDimension, rearCasterWheelDimension]
+        frontCasterForkDimension = wheelDefaultDimension.getFrontCasterFork()
+        frontCasterWheelDimension = wheelDefaultDimension.getFrontCasterWheel()
+        frontCaster =
+            [Joint.dimension3d, frontCasterForkDimension, frontCasterWheelDimension]
 
         
-        let fourCaster =
-        getDimensionsForFourCaster(PartGroup.fourCasterParts)
+//        let fourCaster =
+//        getDimensionsForFourCaster(PartGroup.fourCasterParts)
 
         switch baseType {
         case .allCasterBed:
-            parts = PartGroup.fourCasterParts
-            defaultDimensions = fourCaster
-//print(defaultDimensions)
-//print(parts)
-        case .allCasterChair:
-            parts = PartGroup.fourCasterParts
-            defaultDimensions = fourCaster
-        case .allCasterHoist:
-            parts = PartGroup.fourCasterParts
-            defaultDimensions = fourCaster
-        case .allCasterSixHoist:
-            parts = PartGroup.sixCasterParts
-        case .allCasterTiltInSpaceShowerChair:
-            parts = PartGroup.fourCasterParts
-            defaultDimensions = fourCaster
-        case .allCasterStandAid:
-            parts = PartGroup.fourCasterParts
-            defaultDimensions = fourCaster
+            defaultRearMidFrontDimension =
+                getForFourCaster()
+            case .allCasterChair:
+            defaultRearMidFrontDimension =
+                getForFourCaster()
+            case .allCasterHoist:
+            defaultRearMidFrontDimension =
+                getForFourCaster()
+//        case .allCasterSixHoist:
+//            parts = PartGroup.sixCasterParts
+//        case .allCasterTiltInSpaceShowerChair:
+//            parts = PartGroup.fourCasterParts
+//            defaultDimensions = fourCaster
+//        case .allCasterStandAid:
+//            parts = PartGroup.fourCasterParts
+//            defaultDimensions = fourCaster
         case .allCasterStretcher:
-            parts = PartGroup.fourCasterParts
-            defaultDimensions = fourCaster
-        case .fixedWheelFrontDrive:
-            parts = PartGroup.twoCasterTwoWheelParts
-        case .fixedWheelMidDrive:
-            parts = PartGroup.twoCasterTwoFixedWheelTwoCasterParts
+            defaultRearMidFrontDimension =
+                getForFourCaster()
+//        case .fixedWheelFrontDrive:
+//            parts = PartGroup.twoCasterTwoWheelParts
+//        case .fixedWheelMidDrive:
+//            parts = PartGroup.twoCasterTwoFixedWheelTwoCasterParts
+        
         case .fixedWheelRearDrive:
-            parts = PartGroup.twoFixedWheelsTwoCasterParts
-            defaultDimensions =
-            getTwoFixedWheels() +
-                getTwoCaster(
-                    wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
-        case .fixedWheelManualRearDrive:
-            parts = PartGroup.twoCasterTwoWheelPropllerParts
-            //        case .fixedWheelSolo:
-            //            <#code#>
-            //        case .fixedWheelTransfer:
-            //            <#code#>
-            //        case .scooterFrontDrive4Wheeler:
-            //            <#code#>
-            //        case .scooterFrontDrive3Wheeler:
-            //            <#code#>
-            //        case .scooterRearDrive4Wheeler:
-            //            <#code#>
-            //        case .scooterRearDrive3Wheeler:
-            //            <#code#>
-            //        case .seatThatTilts:
-            //            <#code#>
-            //        case .showerTray:
-            //            <#code#>
-            //        case .stairLiftStraight:
-            //            <#code#>
-            //        case .stairLiftInternalRadius:
-            //            <#code#>
-            //        case .stairLiftExternalRaidus:
-            //            <#code#>
-            //        case .verticalLift:
-            //            <#code#>
+            defaultRearMidFrontDimension =
+                getForFixedWheelRearDrive ()
+        
+//        case .fixedWheelManualRearDrive:
+//            parts = PartGroup.twoCasterTwoWheelPropllerParts
+//            //        case .fixedWheelSolo:
+//            //            <#code#>
+//            //        case .fixedWheelTransfer:
+//            //            <#code#>
+//            //        case .scooterFrontDrive4Wheeler:
+//            //            <#code#>
+//            //        case .scooterFrontDrive3Wheeler:
+//            //            <#code#>
+//            //        case .scooterRearDrive4Wheeler:
+//            //            <#code#>
+//            //        case .scooterRearDrive3Wheeler:
+//            //            <#code#>
+//            //        case .seatThatTilts:
+//            //            <#code#>
+//            //        case .showerTray:
+//            //            <#code#>
+//            //        case .stairLiftStraight:
+//            //            <#code#>
+//            //        case .stairLiftInternalRadius:
+//            //            <#code#>
+//            //        case .stairLiftExternalRaidus:
+//            //            <#code#>
+//            //        case .verticalLift:
+//            //            <#code#>
         default:
             break
         }
     }
         
-    func getDimensionsForFourCaster(_ parts: [Part])
-        -> [Dimension3d] {
-            getTwoCaster(
-                wheelDefaultDimension.getRearCasterFork, wheelDefaultDimension.getRearCasterWheel)
-            +
-            getTwoCaster(
-                wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
-    }
+//    func getDimensionsForFourCaster(_ parts: [Part])
+//        -> [Dimension3d] {
+//            getTwoCaster(
+//                wheelDefaultDimension.getRearCasterFork, wheelDefaultDimension.getRearCasterWheel)
+//            +
+//            getTwoCaster(
+//                wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
+//    }
+//
+//    func getDimensionsForSixCaster(_ parts: [Part])
+//        -> [Dimension3d] {
+//            getTwoCaster(
+//                wheelDefaultDimension.getRearCasterFork, wheelDefaultDimension.getRearCasterWheel)
+//            +
+//            getTwoCaster(
+//                wheelDefaultDimension.getMidCasterFork, wheelDefaultDimension.getMidCasterWheel)
+//            +
+//            getTwoCaster(
+//                wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
+//    }
+//
+//    func getTwoFixedWheels()
+//        -> [Dimension3d] {
+//        var dimensions: [Dimension3d] = []
+//        for part in PartGroup.twoFixedWheelParts {
+//            switch part {
+//            case .baseWheelJoint:
+//                dimensions.append(Joint.dimension3d)
+//
+//            case .fixedWheel:
+//                dimensions.append(wheelDefaultDimension.getFixed())
+//
+//            default:
+//                break
+//            }
+//
+//        }
+//            return dimensions
+//    }
     
-    func getDimensionsForSixCaster(_ parts: [Part])
-        -> [Dimension3d] {
-            getTwoCaster(
-                wheelDefaultDimension.getRearCasterFork, wheelDefaultDimension.getRearCasterWheel)
-            +
-            getTwoCaster(
-                wheelDefaultDimension.getMidCasterFork, wheelDefaultDimension.getMidCasterWheel)
-            +
-            getTwoCaster(
-                wheelDefaultDimension.getFrontCasterFork, wheelDefaultDimension.getFrontCasterWheel)
-    }
-    
-    func getTwoFixedWheels()
-        -> [Dimension3d] {
-        var dimensions: [Dimension3d] = []
-        for part in PartGroup.twoFixedWheelParts {
-            switch part {
-            case .baseWheelJoint:
-                dimensions.append(Joint.dimension3d)
-            
-            case .fixedWheel:
-                dimensions.append(wheelDefaultDimension.getFixed())
-
-            default:
-                break
-            }
-
-        }
-            return dimensions
-    }
-    
-    func getForfixedWheelRearDrive ()
-    -> Dimension3dFrontMidRear {
+    func getForFixedWheelRearDrive ()
+    -> Dimension3dRearMidFront {
         let rear =
             [
-            doubleJointDimension,
-            [wheelDefaultDimension.getFixed(), wheelDefaultDimension.getFixed()] ]
+            Joint.dimension3d,
+             wheelDefaultDimension.getFixed() ]
         
-        let mid: [[Dimension3d]] = [[]]
+        let mid: [Dimension3d] = []
         let front =
-            [
-            doubleJointDimension,
-            [wheelDefaultDimension.getFrontCasterFork()],
-            [wheelDefaultDimension.getFrontCasterWheel()] ]
+            frontCaster
         return
-            (front: front,  mid: mid, rear: rear)
+            (rear: rear,  mid: mid, front: front )
     }
     
-    func getTwoCaster(
-        _ fork: () -> Dimension3d,
-        _ wheel: () -> Dimension3d)
-        -> [Dimension3d] {
-        var dimensions: [Dimension3d] = []
-        for part in PartGroup.twoCasterParts {
-            switch part {
-            case .baseWheelJoint:
-                dimensions.append(Joint.dimension3d)
-            
-            case .casterFork:
-                dimensions.append(fork())
-                
-            case .casterWheel:
-                dimensions.append(wheel())
-
-            default:
-                break
-            }
-
+        func getForFourCaster ()
+        -> Dimension3dRearMidFront {
+            let rear =
+                rearCaster
+            let mid: [Dimension3d] = []
+            let front =
+                frontCaster
+            return
+                (rear: rear,  mid: mid, front: front )
         }
-            return dimensions
-    }
     
+//    func getTwoCaster(
+//        _ fork: () -> Dimension3d,
+//        _ wheel: () -> Dimension3d)
+//        -> [Dimension3d] {
+//        var dimensions: [Dimension3d] = []
+//        for part in PartGroup.twoCasterParts {
+//            switch part {
+//            case .baseWheelJoint:
+//                dimensions.append(Joint.dimension3d)
+//
+//            case .casterFork:
+//                dimensions.append(fork())
+//
+//            case .casterWheel:
+//                dimensions.append(wheel())
+//
+//            default:
+//                break
+//            }
+//
+//        }
+//            return dimensions
+//    }
+//
 }
 
 
@@ -398,7 +420,7 @@ struct WheelDefaultDimension {
     func getRearCasterRadius()  -> WheelSize {
         let dictionary: BaseObjectWheelSizeDictionary =
         [.allCasterStandAid: (radius: 25.0, width: 10.0)]
-        let general = (radius: 40.0, width: 20.0)
+        let general = (radius: 40.0, width: 40.0)
         return
             dictionary[baseType] ?? general
     }

@@ -121,6 +121,7 @@ struct BaseObjectGroups {
         .fixedWheelMidDrive]
     
     let hasFootSupport: [BaseObjectTypes]
+    let hasBackSupport: [BaseObjectTypes]
     
     let fourWheels: [BaseObjectTypes]
     let threeWheels: [BaseObjectTypes]
@@ -180,6 +181,7 @@ struct BaseObjectGroups {
                             .allCasterStandAid,
                             .allCasterTiltInSpaceShowerChair]
         
+        hasBackSupport = hasFootSupport
     }
 }
 
