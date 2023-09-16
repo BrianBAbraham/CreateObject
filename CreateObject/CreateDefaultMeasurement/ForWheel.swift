@@ -21,6 +21,7 @@ struct AllWheelRelated: PartDimension  {
     let frontCasterForkDimension: Dimension3d
     let frontCasterWheelDimension: Dimension3d
     let frontCaster: [Dimension3d]
+    let fixedWheelAndJoint: [Dimension3d]
     
 
     
@@ -36,7 +37,7 @@ struct AllWheelRelated: PartDimension  {
         frontCasterWheelDimension = wheelDefaultDimension.getFrontCasterWheel()
         frontCaster =
             [Joint.dimension3d, frontCasterForkDimension, frontCasterWheelDimension]
-
+        fixedWheelAndJoint = [Joint.dimension3d, wheelDefaultDimension.getFixed()]
         
 //        let fourCaster =
 //        getDimensionsForFourCaster(PartGroup.fourCasterParts)
@@ -62,41 +63,21 @@ struct AllWheelRelated: PartDimension  {
         case .allCasterStretcher:
             defaultRearMidFrontDimension =
                 getForFourCaster()
-//        case .fixedWheelFrontDrive:
-//            parts = PartGroup.twoCasterTwoWheelParts
-//        case .fixedWheelMidDrive:
-//            parts = PartGroup.twoCasterTwoFixedWheelTwoCasterParts
+        case .fixedWheelFrontDrive:
+            defaultRearMidFrontDimension =
+                getForFixedWheelFrontDrive ()
+        case .fixedWheelMidDrive:
+            defaultRearMidFrontDimension =
+                getForFixedWheelMidDrive ()
         
         case .fixedWheelRearDrive:
             defaultRearMidFrontDimension =
                 getForFixedWheelRearDrive ()
         
-//        case .fixedWheelManualRearDrive:
-//            parts = PartGroup.twoCasterTwoWheelPropllerParts
-//            //        case .fixedWheelSolo:
-//            //            <#code#>
-//            //        case .fixedWheelTransfer:
-//            //            <#code#>
-//            //        case .scooterFrontDrive4Wheeler:
-//            //            <#code#>
-//            //        case .scooterFrontDrive3Wheeler:
-//            //            <#code#>
-//            //        case .scooterRearDrive4Wheeler:
-//            //            <#code#>
-//            //        case .scooterRearDrive3Wheeler:
-//            //            <#code#>
-//            //        case .seatThatTilts:
-//            //            <#code#>
-//            //        case .showerTray:
-//            //            <#code#>
-//            //        case .stairLiftStraight:
-//            //            <#code#>
-//            //        case .stairLiftInternalRadius:
-//            //            <#code#>
-//            //        case .stairLiftExternalRaidus:
-//            //            <#code#>
-//            //        case .verticalLift:
-//            //            <#code#>
+        case .fixedWheelManualRearDrive:
+            defaultRearMidFrontDimension =
+                getForFixedWheelRearDrive ()
+
         default:
             break
         }
@@ -142,12 +123,32 @@ struct AllWheelRelated: PartDimension  {
 //            return dimensions
 //    }
     
+    
+    func getForFixedWheelFrontDrive ()
+    -> Dimension3dRearMidFront {
+        let rear = rearCaster
+        let mid: [Dimension3d] = []
+        let front =
+            fixedWheelAndJoint
+        return
+            (rear: rear,  mid: mid, front: front )
+    }
+    
+    func getForFixedWheelMidDrive ()
+    -> Dimension3dRearMidFront {
+        let rear =
+                rearCaster
+        let mid = fixedWheelAndJoint
+        let front =
+                frontCaster
+        return
+            (rear: rear,  mid: mid, front: front )
+    }
+    
     func getForFixedWheelRearDrive ()
     -> Dimension3dRearMidFront {
         let rear =
-            [
-            Joint.dimension3d,
-             wheelDefaultDimension.getFixed() ]
+            fixedWheelAndJoint
         
         let mid: [Dimension3d] = []
         let front =
@@ -478,7 +479,8 @@ struct WheelDefaultDimension {
     
     func getFixedRadius() -> WheelSize {
         let dictionary: BaseObjectWheelSizeDictionary =
-        [.fixedWheelManualRearDrive: (radius: 300.0, width: 20.0)]
+        [.fixedWheelManualRearDrive: (radius: 300.0, width: 20.0),
+         ]
         let general = (radius: 125.0, width: 40.0)
         return
             dictionary[baseType] ?? general
@@ -569,7 +571,7 @@ struct WheelAndCasterVerticalJointOrigin {
     func getRearCasterWhenMidPrimaryOrigin()
     -> PositionAsIosAxes {
             (
-            x: widthBetweeenWheelsOnOrigin/2,
+                x: widthBetweeenWheelsOnOrigin/2.5,
             y: -lengthBetweenFrontAndRearWheels/2,
             z: rearCasterJointAboveFloor)
     }

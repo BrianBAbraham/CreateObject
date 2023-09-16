@@ -15,7 +15,8 @@ struct PickInitialObjectView: View {
     @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
     
     var objectNames: [String] {
-        BaseObjectTypes.allCases.map{$0.rawValue}
+        DimensionOriginCornerDictionaries.objects.map{$0.rawValue            
+        }
     }
 
     @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue

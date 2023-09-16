@@ -29,7 +29,7 @@ struct DimensionDictionary {
         _ dimensionIn: Part3DimensionDictionary,
         _ sitOnIndex: Int) {
             
-       
+//print (originIdNodes)
   
            // for sitOnIndex in 0..<originIdNodes.count {//provides sitOn number
                 let sitOnId: Part = [.id0,.id1][sitOnIndex]
@@ -83,49 +83,38 @@ struct OccupantSupportDimensionDictionary {
         preTiltWheelOrigin =
         parent.preTiltWheelOrigin as? DimensionOriginCornerDictionaries.PreTiltWheelOrigin
             
+        // for... are empty if not present on object
+        forFoot += getOriginIdNodesForSupport(.foot, 0)
+        forSide += getOriginIdNodesForSupport(.side, 0)
+        forBack += getOriginIdNodesForSupport(.back, 0)
             
+        let preTiltBodySupportOrigin =
+            parent.preTiltOccupantBodySupportOrigin as?
+            DimensionOriginCornerDictionaries.PreTiltOccupantBodySupportOrigin
             
+           // preTiltBodySupportOrigin?.allOriginIdNodes
             
-            
-            
-//        let originIdNodesForFoot =
-//            getOriginIdNodesForSupport(.foot)
-//
-//        let footDimensions =
-//            AllOccupantFootRelated(
-//                parent.baseType,
-//                originIdNodesForFoot[0].nodes
-//            ).defaultDimensions
-            
-           
-            
-            //if BaseObjectGroups().hasFootSupport.contains(parent.baseType) {
-                forFoot += getOriginIdNodesForSupport(.foot, 0)
-            //}
-                forSide += getOriginIdNodesForSupport(.side, 0)
-//print (forSide)
-            //if BaseObjectGroups().hasBackSupport.contains(parent.baseType) {
-                forBack += getOriginIdNodesForSupport(.back, 0)
-            //}
-            
+            if let preTiltBodySupportOrigin {
+                let dimension = OccupantBodySupportDefaultDimension(parent.baseType).value
+                forBody +=
+                DimensionDictionary(
+                    preTiltBodySupportOrigin.allOriginIdNodes[0],
+                    [dimension, dimension],
+                    parent.dimensionIn,
+                    0).forPart
+            }
 
-//            DimensionDictionary(
-//                originIdNodesForFoot,
-//                footDimensions,
-//                parent.dimensionIn,
-//                0
-//            ).forPart
-            
-            
             
         let allWheelRelated =
             AllWheelRelated(
                 parent.baseType)
         let originIdNodesForWheelRear =
             getOriginIdNodesForWheel(.rearWheel)
+        let originIdNodesForWheelMid =
+            getOriginIdNodesForWheel(.midWheel)
         let originIdNodesForWheelFront =
             getOriginIdNodesForWheel(.frontWheel)
-        
+            
         let onlyOneWheelSet = 0
         forWheels +=
         DimensionDictionary(
@@ -135,6 +124,18 @@ struct OccupantSupportDimensionDictionary {
             onlyOneWheelSet
         ).forPart
         
+        if BaseObjectGroups().sixWheels.contains(parent.baseType) {
+
+        forWheels +=
+        DimensionDictionary(
+            [originIdNodesForWheelMid],
+            allWheelRelated.defaultRearMidFrontDimension.mid,
+            parent.dimensionIn,
+            onlyOneWheelSet
+            ).forPart
+        }
+
+            
         forWheels +=
         DimensionDictionary(
             [originIdNodesForWheelFront],
@@ -142,101 +143,75 @@ struct OccupantSupportDimensionDictionary {
             parent.dimensionIn,
             onlyOneWheelSet
         ).forPart
-           
-            
-            
-//            print(allWheelRelated.defaultRearMidFrontDimension.front)
-//            print("\n\n")
-//            print(preTiltWheelOrigin!.allOriginIdNodesForFront.nodes)
-//            print(preTiltWheelOrigin!.allOriginIdNodesForFront.ids)
-//print(preTiltWheelOrigin!.allOriginIdNodesForRear.ids)
-//print(preTiltWheelOrigin!.allOriginIdNodesForMid.ids)
-//
-//print(preTiltWheelOrigin!.allOriginIdNodesForFront.ids)
-            
-                   
         }
 
+        
+    
+    func getOriginIdNodesForSupport(
+        _ dimensionGroup: DimensionGroup,
+        _ sitOnIndex: Int
+    ) -> Part3DimensionDictionary {
+        var originIdNodesForBothSitOn: [OriginIdNodes] = []
+        var dimensions: [Dimension3d] = []
+        var dictionary: Part3DimensionDictionary = [:]
 
-
-            
-        func getOriginIdNodesForSupport (
-            _ dimensionGroup: DimensionGroup,
-            _ sitOnIndex: Int)
-            -> Part3DimensionDictionary {
-            var originIdNodes: [OriginIdNodes] = []
-            var dimensions: [Dimension3d] = []
-            var dictionary: Part3DimensionDictionary = [:]
-            // objects which do not have a part have a originIdNode.count = 0
-            if let unwrappedPreTiltSupport = preTiltOccupantSupportOrigin  {
-                switch dimensionGroup {
-                case .back:
-                    originIdNodes =
-                    unwrappedPreTiltSupport.allOriginIdNodesForBackSupportForBothSitOn
-                    if originIdNodes.count > 0 {
-                        dimensions =
-                            AllOccupantBackRelated(
-                                parent.baseType,
-                                originIdNodes[sitOnIndex].nodes
-                            ).defaultDimensions
-
-                        dictionary =
-                            DimensionDictionary(
-                                originIdNodes,
-                                dimensions,
-                                parent.dimensionIn,
-                                sitOnIndex
-                            ).forPart
-                    } else {
-                        dictionary = [:]
-                    }
-                    
-                        
-                case .foot:
-                    originIdNodes =
-                    unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
-                    if originIdNodes.count > 0 {
-                        dimensions =
-                            AllOccupantFootRelated(
-                                parent.baseType,
-                                originIdNodes[sitOnIndex].nodes
-                            ).defaultDimensions
-
-                        dictionary =
-                        DimensionDictionary(
-                            originIdNodes,
-                            dimensions,
-                            parent.dimensionIn,
-                            sitOnIndex
-                        ).forPart
-                    } else {
-                        dictionary = [:]
-                    }
-
-                case .side:
-                    originIdNodes =
-                        unwrappedPreTiltSupport.allOriginIdNodesForSideSupportForBothSitOn
-                    if originIdNodes.count > 0 {
-                        dimensions =
-                            AllOccupantSideRelated(
-                                parent.baseType,
-                                originIdNodes[sitOnIndex].nodes
-                            ).defaultDimensions
-                        dictionary =
-                            DimensionDictionary(
-                                originIdNodes,
-                                dimensions,
-                                parent.dimensionIn,
-                                sitOnIndex
-                            ).forPart
-                    } else {
-                        dictionary = [:]
-                    }
-                default: break
+        if let unwrappedPreTiltSupport = preTiltOccupantSupportOrigin {
+            switch dimensionGroup {
+            case .back:
+                originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForBackSupportForBothSitOn
+                if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+                    dimensions = AllOccupantBackRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex].nodes).defaultDimensions
                 }
+            case .foot:
+                originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
+                if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+                    let relevantOriginIdNodes = originIdNodesForBothSitOn[sitOnIndex]
+                    dimensions = AllOccupantFootRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex].nodes).defaultDimensions
+                }
+            case .side:
+                originIdNodesForBothSitOn =
+                    unwrappedPreTiltSupport.allOriginIdNodesForSideSupportForBothSitOn
+                if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+                   
+                    dimensions =
+                    AllOccupantSideRelated(
+                        parent.baseType,
+                        originIdNodesForBothSitOn[sitOnIndex]
+                            .nodes )
+                                .defaultDimensions
+//                    AllOccupantSideRelated(
+//                        parent.baseType,
+//                        removeSitOn(originIdNodesForBothSitOn, sitOnIndex)[sitOnIndex]
+//                            .nodes)
+//                                .defaultDimensions
+                }
+            default: break
             }
-            return dictionary
+            if originIdNodesForBothSitOn.count > 0 {
+                dictionary = DimensionDictionary(originIdNodesForBothSitOn, dimensions, parent.dimensionIn, sitOnIndex).forPart
+            }
         }
+        
+        func removeSitOn(
+            _ originIdNodesForBothSitOn: [OriginIdNodes],
+            _ sitOnIndex: Int)
+            -> [OriginIdNodes] {
+                var withoutSitOn = originIdNodesForBothSitOn
+                let changedElement =
+                    (
+                    origin: [withoutSitOn[sitOnIndex].origin.removeFirst()],
+                    ids: [withoutSitOn[sitOnIndex].ids.removeFirst()],
+                    nodes: [withoutSitOn[sitOnIndex].nodes.removeFirst()])
+                withoutSitOn[sitOnIndex] = changedElement
+                return withoutSitOn
+        }
+        
+        return dictionary
+    }
+    
+
+    
+    
             
             
         func getOriginIdNodesForWheel (

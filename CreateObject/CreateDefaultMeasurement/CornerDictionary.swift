@@ -8,12 +8,13 @@
 import Foundation
 
 
-/// do I want the object to be passed to an origin provider which
-/// determines which origins to provide
-/// OR
-/// do I want the obect to request a speicific origins from an origin provider
+
 
 //MARK: - PARENT
+///This provides
+///The array of objects available
+///Dictionary for objects
+///An input for edited dimensions to replace default dimensions
 struct DimensionOriginCornerDictionaries {
     
     static let sitOnHeight = 500.0
@@ -51,6 +52,12 @@ struct DimensionOriginCornerDictionaries {
     var postTiltObjectToPartOrigin: PositionDictionary = [:]
     
     var angle: AngleDictionary = [:]
+    
+    ///the objects available, that is for which all code is present are included here
+    static let objects: [BaseObjectTypes] = [
+        .allCasterBed,.allCasterChair,.allCasterStretcher,
+        .fixedWheelFrontDrive, .fixedWheelMidDrive, .fixedWheelRearDrive]
+    
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -278,31 +285,24 @@ struct DimensionOriginCornerDictionaries {
         func createOccupantSupportDimensionDictionary() {
             let occupantSupportDimensionDictionary =
                 OccupantSupportDimensionDictionary(parent: self)
+            
+            dimension += occupantSupportDimensionDictionary.forWheels
             dimension +=
                 occupantSupportDimensionDictionary.forBack
-            dimension += occupantSupportDimensionDictionary.forBody
             dimension += occupantSupportDimensionDictionary.forFoot
             dimension += occupantSupportDimensionDictionary.forSide
-            dimension += occupantSupportDimensionDictionary.forWheels
+            
+            ///dimensionForBody must be subsequent to for... which have sitOn in their nodes
+            ///otherwise
+            let dimensionForBody  = occupantSupportDimensionDictionary.forBody
+            dimension += dimensionForBody
         }
       
 
-        func creatPostTiltObjectToPartOriginDictionary() {
-            //replace the part origin positions which are rotated with the rotated values
-            postTiltObjectToPartOrigin +=
-            Replace(
-                initial:
-                    preTiltObjectToPartOrigin,
-                replacement:
-                    OriginPostTilt(parent: self).forObjectToPartOrigin
-                ).intialWithReplacements
-        }
-        
      
         func createPreTiltCornerDictionary () {
             let nameToBeRemovedCharacterCount = CreateNameFromParts([.object, .id0, .stringLink]).name.count
             for (key, value) in dimension {
-
                 let originValue = preTiltObjectToPartOrigin[key]
                 if let originValue {
                     let corners = CreateIosPosition.getCornersFromDimension( value)
@@ -329,6 +329,16 @@ struct DimensionOriginCornerDictionaries {
                 }
 
             }
+        }
+        func creatPostTiltObjectToPartOriginDictionary() {
+            //replace the part origin positions which are rotated with the rotated values
+            postTiltObjectToPartOrigin +=
+            Replace(
+                initial:
+                    preTiltObjectToPartOrigin,
+                replacement:
+                    OriginPostTilt(parent: self).forObjectToPartOrigin
+                ).intialWithReplacements
         }
     }
     
@@ -418,6 +428,7 @@ struct DimensionOriginCornerDictionaries {
         
         let lengthBetweenWheels: DistanceBetweenWheels
         var allOriginIdNodesForBodySupportForBothSitOn:  [OriginIdNodes] = []
+        //used externally
         var allOriginIdNodes: [[OriginIdNodes]] = []
         
         init(
@@ -862,6 +873,8 @@ struct DimensionOriginCornerDictionaries {
         var allOriginIdNodesForRear: OriginIdNodes = ZeroValue.originIdNodes
         var allOriginIdNodesForMid: OriginIdNodes = ZeroValue.originIdNodes
         var allOriginIdNodesForFront: OriginIdNodes = ZeroValue.originIdNodes
+        
+
         
 
         init(
