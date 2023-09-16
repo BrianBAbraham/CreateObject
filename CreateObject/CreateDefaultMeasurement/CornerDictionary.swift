@@ -293,7 +293,7 @@ struct DimensionOriginCornerDictionaries {
             dimension += occupantSupportDimensionDictionary.forSide
             
             ///dimensionForBody must be subsequent to for... which have sitOn in their nodes
-            ///otherwise
+            ///otherwise§
             let dimensionForBody  = occupantSupportDimensionDictionary.forBody
             dimension += dimensionForBody
         }

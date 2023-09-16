@@ -64,6 +64,7 @@ struct OccupantSupportDimensionDictionary {
     let preTiltOccupantSupportOrigin: DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin?
     let preTiltWheelOrigin:
         DimensionOriginCornerDictionaries.PreTiltWheelOrigin?
+    let allWheelRelated: AllWheelRelated
     
     //individual dictionaries permit easy exclusion
     var forBack:  Part3DimensionDictionary = [:]
@@ -76,76 +77,91 @@ struct OccupantSupportDimensionDictionary {
     init(
         parent: DimensionOriginCornerDictionaries) {
             self.parent = parent
-            
+            allWheelRelated =
+                 AllWheelRelated(
+                     parent.baseType)
         preTiltOccupantSupportOrigin =
         parent.preTiltOccupantFootBackSideSupportOrigin as? DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin
 
         preTiltWheelOrigin =
         parent.preTiltWheelOrigin as? DimensionOriginCornerDictionaries.PreTiltWheelOrigin
             
-        // for... are empty if not present on object
-        forFoot += getOriginIdNodesForSupport(.foot, 0)
-        forSide += getOriginIdNodesForSupport(.side, 0)
-        forBack += getOriginIdNodesForSupport(.back, 0)
-            
         let preTiltBodySupportOrigin =
             parent.preTiltOccupantBodySupportOrigin as?
             DimensionOriginCornerDictionaries.PreTiltOccupantBodySupportOrigin
             
-           // preTiltBodySupportOrigin?.allOriginIdNodes
-            
+        for index in 0..<parent.oneOrTwoIds.count {
+            // for... are empty if not present on object
+            forFoot += getOriginIdNodesForSupport(.foot, index)
+            forSide += getOriginIdNodesForSupport(.side, index)
+            forBack += getOriginIdNodesForSupport(.back, index)
+                
+                
             if let preTiltBodySupportOrigin {
                 let dimension = OccupantBodySupportDefaultDimension(parent.baseType).value
                 forBody +=
                 DimensionDictionary(
-                    preTiltBodySupportOrigin.allOriginIdNodes[0],
+                    preTiltBodySupportOrigin.allOriginIdNodes[index],
                     [dimension, dimension],
                     parent.dimensionIn,
-                    0).forPart
+                    index).forPart
             }
+        }
+        
 
             
-        let allWheelRelated =
-            AllWheelRelated(
-                parent.baseType)
-        let originIdNodesForWheelRear =
-            getOriginIdNodesForWheel(.rearWheel)
-        let originIdNodesForWheelMid =
-            getOriginIdNodesForWheel(.midWheel)
-        let originIdNodesForWheelFront =
-            getOriginIdNodesForWheel(.frontWheel)
-            
-        let onlyOneWheelSet = 0
-        forWheels +=
-        DimensionDictionary(
-            [originIdNodesForWheelRear],
-            allWheelRelated.defaultRearMidFrontDimension.rear,
-            parent.dimensionIn,
-            onlyOneWheelSet
-        ).forPart
-        
+        forWheels += getDictionaryForWheel(.rearWheel)
         if BaseObjectGroups().sixWheels.contains(parent.baseType) {
-
-        forWheels +=
-        DimensionDictionary(
-            [originIdNodesForWheelMid],
-            allWheelRelated.defaultRearMidFrontDimension.mid,
-            parent.dimensionIn,
-            onlyOneWheelSet
+            forWheels += getDictionaryForWheel(.midWheel)
+        }
+        forWheels += getDictionaryForWheel(.frontWheel)
+    }
+    
+    func getDictionaryForWheel (
+        _ dimensionGroup: DimensionGroup)
+        -> Part3DimensionDictionary{
+        let onlyOneWheelSet = 0
+        var dimensions: [Dimension3d] = []
+        let originIdNodes = getOriginIdNodesForWheel(dimensionGroup)
+        switch dimensionGroup {
+        case .rearWheel:
+            dimensions =  allWheelRelated.defaultRearMidFrontDimension.rear
+        case .midWheel:
+            dimensions =  allWheelRelated.defaultRearMidFrontDimension.mid
+        case .frontWheel:
+            dimensions =  allWheelRelated.defaultRearMidFrontDimension.front
+        default: break
+        }
+        return
+            DimensionDictionary(
+                [originIdNodes],
+                dimensions,
+                parent.dimensionIn,
+                onlyOneWheelSet
             ).forPart
+    }
+    
+    
+    func getOriginIdNodesForWheel (
+        _ dimensionGroup: DimensionGroup)
+        -> OriginIdNodes {
+        var originIdNode:OriginIdNodes = ZeroValue.originIdNodes
+        if let unwrappedWheel = preTiltWheelOrigin  {
+            switch dimensionGroup {
+            case .frontWheel:
+                originIdNode =
+                unwrappedWheel.allOriginIdNodesForFront
+            case .midWheel:
+                originIdNode =
+                unwrappedWheel.allOriginIdNodesForMid
+            case .rearWheel:
+                originIdNode =
+                unwrappedWheel.allOriginIdNodesForRear
+            default: break
+            }
         }
-
-            
-        forWheels +=
-        DimensionDictionary(
-            [originIdNodesForWheelFront],
-            allWheelRelated.defaultRearMidFrontDimension.front,
-            parent.dimensionIn,
-            onlyOneWheelSet
-        ).forPart
-        }
-
-        
+        return originIdNode
+    }
     
     func getOriginIdNodesForSupport(
         _ dimensionGroup: DimensionGroup,
@@ -165,14 +181,15 @@ struct OccupantSupportDimensionDictionary {
             case .foot:
                 originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
                 if originIdNodesForBothSitOn.count > 0 {//object may not have this part
-                    let relevantOriginIdNodes = originIdNodesForBothSitOn[sitOnIndex]
+                    //let relevantOriginIdNodes = originIdNodesForBothSitOn[sitOnIndex]
                     dimensions = AllOccupantFootRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex].nodes).defaultDimensions
                 }
             case .side:
                 originIdNodesForBothSitOn =
                     unwrappedPreTiltSupport.allOriginIdNodesForSideSupportForBothSitOn
+                
+                
                 if originIdNodesForBothSitOn.count > 0 {//object may not have this part
-                   
                     dimensions =
                     AllOccupantSideRelated(
                         parent.baseType,
@@ -214,51 +231,9 @@ struct OccupantSupportDimensionDictionary {
     
             
             
-        func getOriginIdNodesForWheel (
-            _ dimensionGroup: DimensionGroup)
-            -> OriginIdNodes {
-            var originIdNode:OriginIdNodes = ZeroValue.originIdNodes
-            if let unwrappedWheel = preTiltWheelOrigin  {
-                switch dimensionGroup {
-                case .frontWheel:
-                    originIdNode =
-                    unwrappedWheel.allOriginIdNodesForFront
-                case .midWheel:
-                    originIdNode =
-                    unwrappedWheel.allOriginIdNodesForMid
-                case .rearWheel:
-                    originIdNode =
-                    unwrappedWheel.allOriginIdNodesForRear
-                default: break
-                }
-            }
-            return originIdNode
-        }
 
 
-//        func  getDictionaryForBody()
-//            -> Part3DimensionDictionary {
-//                let dimension =
-//                    OccupantBodySupportDefaultDimension(
-//                        parent.baseType).value
-//
-//
-//                let parts: [Part] =
-//                    parent.twinSitOnState ? [.sitOn, .sitOn]: [.sitOn]
-//                let ids: [Part] =
-//                    parent.twinSitOnState ? [.id0, .id1]: [.id0]
-//
-//                return
-//                    DimensionDictionary(
-//                        parts,
-//                        ids,
-//                        [dimension],
-//                        parent.twinSitOnOption,
-//                        parent.dimensionIn
-//                    ).forPart
-//        }
-            
-         
+
 
 
     
