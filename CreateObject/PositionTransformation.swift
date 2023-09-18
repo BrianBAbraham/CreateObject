@@ -118,14 +118,14 @@ struct CreateIosPosition {
             let (w,l,h) = dimension
             let initialCorners: Corners =
             [
-            (x: -w/2,  y: -l/2, z: -h/2 ),
-            (x: w/2,   y: -l/2, z: -h/2 ),
-            (x: w/2,   y: l/2, z: -h/2 ),
-            (x: -w/2,  y: l/2, z: -h/2),
-            (x: -w/2,  y: -l/2, z: h/2 ),
-            (x: w/2,   y: -l/2, z: h/2 ),
-            (x: w/2,   y: l/2, z: h/2 ),
-            (x: -w/2,  y: l/2, z: h/2) ]
+            (x: -w/2,  y: -l/2, z: -h/2 ),//c0
+            (x: w/2,   y: -l/2, z: -h/2 ),//c1
+            (x: w/2,   y: l/2, z: -h/2 ),//c2
+            (x: -w/2,  y: l/2, z: -h/2),//c3
+            (x: -w/2,  y: -l/2, z: h/2 ),//c4
+            (x: w/2,   y: -l/2, z: h/2 ),//c5
+            (x: w/2,   y: l/2, z: h/2 ),//c6
+            (x: -w/2,  y: l/2, z: h/2) ]//c7
             return
                 initialCorners
     }

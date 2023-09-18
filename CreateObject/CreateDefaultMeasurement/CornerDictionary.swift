@@ -32,6 +32,7 @@ struct DimensionOriginCornerDictionaries {
     let oneOrTwoIds: [Part]
     
     var dimension: Part3DimensionDictionary = [:]
+  
     
     var preTiltWheelOriginIdNodes: RearMidFrontOriginIdNodes = ZeroValue.rearMidFrontOriginIdNodes
     
@@ -47,6 +48,9 @@ struct DimensionOriginCornerDictionaries {
     var preTiltParentToPartOrigin: PositionDictionary = [:]
     var preTiltObjectToPartOrigin: PositionDictionary = [:]
     var preTiltObjectToCornerOrigin: PositionDictionary = [:]
+    var uniqueNames: [String] = []
+    var pretTiltObjectToAllPartCornerOrigin: PositionCornerDictionary = [:]
+    
     
     //post-tilt
     var postTiltObjectToPartOrigin: PositionDictionary = [:]
@@ -122,13 +126,15 @@ struct DimensionOriginCornerDictionaries {
 
             
             
-//MARK:= DIMENSIONS
+//MARK: - DIMENSIONS
         createOccupantSupportDimensionDictionary()
 
 
         createPreTiltCornerDictionary()
 
-       
+//MARK: - CHANGE USE DIMENSIONS
+            //requires GetUniquesNames to be changed
+        uniqueNames = GetUniqueNames(preTiltObjectToCornerOrigin).forPart
             
         //POST TILT
         creatPostTiltObjectToPartOriginDictionary()
@@ -319,13 +325,16 @@ struct DimensionOriginCornerDictionaries {
                     //of the name
                     let nameWithoutObject =
                     String(key[startIndex...])
-//print(key)
-//print(nameWithoutObject)
+
 
                     for index in 0..<topViewCorners.count {
                         preTiltObjectToCornerOrigin +=
                         [nameWithoutObject + Part.stringLink.rawValue + "corner" + String(index): topViewCorners[index]]
+                       
                     }
+//    print (nameWithoutObject)
+//    print (topViewCorners)
+                    pretTiltObjectToAllPartCornerOrigin += [nameWithoutObject: topViewCorners]
                 }
 
             }

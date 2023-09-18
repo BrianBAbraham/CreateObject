@@ -204,6 +204,10 @@ struct DictionaryInArrayOut {
                 description = "\(key): \(position.length), \(position.width), \(position.height)"
             }
             
+            if let position = value as? Corners {
+                description = "\(key): \(position[0].x), \(position[0].y), \(position[0].z)"
+            }
+            
             namesAndMeasurements.append(
                 description
             )

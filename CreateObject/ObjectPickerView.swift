@@ -173,7 +173,10 @@ struct PickSavedObjectView: View {
                 .onDelete(perform: coreDataVM.deleteObject)
             }
             Text("\(objectPickVM.getCurrentObjectName())")
-            ObjectView(uniquePartNames, loadedDictionary, name)
+            ObjectView(
+                uniquePartNames,
+                //loadedDictionary,
+                name)
                 .scaleEffect(0.25)
         }
  

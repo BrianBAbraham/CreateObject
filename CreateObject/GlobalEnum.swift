@@ -288,3 +288,10 @@ extension Array where Element: Hashable {
         self = self.removingDuplicates()
     }
 }
+
+
+enum DictionaryVersion {
+    case useCurrent
+    case useInitial
+    case useLoaded
+}

@@ -50,9 +50,7 @@ extension ObjectEditViewModel {
         
     }
     
-    
-  
-    
+
     
     func getPrimaryAxisToFootSupportEndLength (
         dictionary: PositionDictionary,
@@ -98,24 +96,24 @@ extension ObjectEditViewModel {
     
     
     
-    func getPrimaryAxisToFootPlateEndLengthMaximum (
-        _ dictionaryForMeasurement: PositionDictionary,
-        _ sitOnId: Part)
-        -> Double {
-        
-        let defaultMinimumLength =
-            getPrimaryAxisToFootSupportEndLengthMinimum(
-                dictionaryForMeasurement,
-                sitOnId)
-            
-//print("min \(Int(defaultMinimumLength))")
-        let maximumLength =
-        InitialOccupantFootSupportMeasure.footSupportHangerMaximumLength +
-        InitialOccupantFootSupportMeasure.footSupport.length/2 +
-        defaultMinimumLength
-
-        return maximumLength
-    }
+//    func getPrimaryAxisToFootPlateEndLengthMaximum (
+//        _ dictionaryForMeasurement: PositionDictionary,
+//        _ sitOnId: Part)
+//        -> Double {
+//
+//        let defaultMinimumLength =
+//            getPrimaryAxisToFootSupportEndLengthMinimum(
+//                dictionaryForMeasurement,
+//                sitOnId)
+//
+//
+//        let maximumLength =
+//        InitialOccupantFootSupportMeasure.footSupportHangerMaximumLength +
+//        InitialOccupantFootSupportMeasure.footSupport.length/2 +
+//        defaultMinimumLength
+//
+//        return maximumLength
+//    }
     
     
     
@@ -134,39 +132,39 @@ extension ObjectEditViewModel {
 
         let defaultMinimumLength =
             (itemFromFilteredDictionary?.value.y ?? 0.0 +
-             InitialOccupantFootSupportMeasure.footSupportHangerMinimumLength)
+             100.0)
 
         return
           defaultMinimumLength
     }
     
     
-    func getPrimaryAxisToFootSupportEndExtrema(
-        _ currentObjectDictionary: PositionDictionary,
-        _ defaultDictionary: PositionDictionary,
-        _ onePieceOrLeftRightFootSupport: Part,
-        _ sitOnId: Part)
-        -> ClosedRange<Double> {
-            var range: ClosedRange<Double>
-            if onePieceOrLeftRightFootSupport == .footSupport {
-                let rangeStart =
-                getPrimaryAxisToFootSupportEndLengthMinimum(
-                    currentObjectDictionary,
-                    sitOnId)
-                let rangeEnd =
-                getPrimaryAxisToFootPlateEndLengthMaximum(
-                    defaultDictionary,
-                    sitOnId)
-                range = rangeStart...rangeEnd
-                
-            } else {
-                let initialLength = InitialOccupantFootSupportMeasure.footShowerSupport.length
-                range =
-                initialLength...initialLength + InitialOccupantFootSupportMeasure.footShowerSupportMaximumIncrease.length
-                
-            }
-        return range
-    }
+//    func getPrimaryAxisToFootSupportEndExtrema(
+//        _ currentObjectDictionary: PositionDictionary,
+//        _ defaultDictionary: PositionDictionary,
+//        _ onePieceOrLeftRightFootSupport: Part,
+//        _ sitOnId: Part)
+//        -> ClosedRange<Double> {
+//            var range: ClosedRange<Double>
+//            if onePieceOrLeftRightFootSupport == .footSupport {
+//                let rangeStart =
+//                getPrimaryAxisToFootSupportEndLengthMinimum(
+//                    currentObjectDictionary,
+//                    sitOnId)
+//                let rangeEnd =
+//                getPrimaryAxisToFootPlateEndLengthMaximum(
+//                    defaultDictionary,
+//                    sitOnId)
+//                range = rangeStart...rangeEnd
+//
+//            } else {
+//                let initialLength = InitialOccupantFootSupportMeasure.footShowerSupport.length
+//                range =
+//                initialLength...initialLength + InitialOccupantFootSupportMeasure.footShowerSupportMaximumIncrease.length
+//
+//            }
+//        return range
+//    }
     
     
 
@@ -284,15 +282,15 @@ extension ObjectEditViewModel {
             let supportIndex = sitOnId == .id0 ?  0 : 1
                 
             // add link entries
-            let hangerLinkDictionary =
-                CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
-                    .footSupportHangerJoint,
-                    .footSupportJoint,
-                    .footSupportHangerLink,
-                    editedDictionary,
-                    supportIndex).newCornerDictionary
-            
-            editedDictionary += hangerLinkDictionary
+//            let hangerLinkDictionary =
+//                CreateCornerDictionaryForLinkBetweenTwoPartsOnOneOrTWoSides(
+//                    .footSupportHangerJoint,
+//                    .footSupportJoint,
+//                    .footSupportHangerLink,
+//                    editedDictionary,
+//                    supportIndex).newCornerDictionary
+//            
+//            editedDictionary += hangerLinkDictionary
                 
             return editedDictionary
     }

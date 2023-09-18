@@ -128,11 +128,11 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
         
 
         
-        let minToMax = objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
-            initialDictionary,
-            curentDictionary,
-            .footSupportInOnePiece,
-            sitOnId)
+//        let minToMax = objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
+//            initialDictionary,
+//            curentDictionary,
+//            .footSupportInOnePiece,
+//            sitOnId)
         
         let boundLength = Binding(
             get: {currentLength.value},
@@ -141,16 +141,16 @@ struct FootSupportWithoutHangerInOnePieceSlider: View {
         
         HStack {
             Text("length")
-            Slider(value: boundLength, in: minToMax, step: 100
+            Slider(value: boundLength, in: 0.0...500.0, step: 100
             )
             .onChange(of: proposedLength) { value in
 
-                editedDictionary =
-                objectEditVM.setPrimaryToFootSupportFrontLengthWhenNoFootHanger(
-                    curentDictionary,
-                    .id0,
-                    proposedLength - currentLength.value
-                )
+//                editedDictionary =
+//                objectEditVM.setPrimaryToFootSupportFrontLengthWhenNoFootHanger(
+//                    curentDictionary,
+//                    .id0,
+//                    proposedLength - currentLength.value
+//                )
                 
 //                objectPickVM.setCurrentObjectWithInitialOrEditedDictionary(
 //                    objectPickVM.getCurrentObjectName(),
@@ -210,12 +210,12 @@ struct FootSupportWithHangerLinkLengthSlider: View {
         
         let initialDictionary = objectPickVM.getInitialObjectDictionary()
         
-        let minToMax =
-            objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
-                initialDictionary,
-                curentDictionary,
-                onePieceOrLeftRightFootSupport,
-                sitOnId)
+//        let minToMax =
+//            objectEditVM.getPrimaryAxisToFootSupportEndExtrema(
+//                initialDictionary,
+//                curentDictionary,
+//                onePieceOrLeftRightFootSupport,
+//                sitOnId)
         
         let displayLength = String(format: "%.0f",currentLength.value)
         //String(format: "%.1f", currentLength.converted(to: UnitLength.inches).value) + "\""
@@ -229,7 +229,7 @@ struct FootSupportWithHangerLinkLengthSlider: View {
         
         HStack {
             Text(leftOrRight)
-            Slider(value: boundLength, in: minToMax, step: 1
+            Slider(value: boundLength, in: 0.0...500.0, step: 1
             )
             .onChange(of: proposedLength) { value in
 

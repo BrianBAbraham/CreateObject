@@ -15,6 +15,10 @@ struct PartNameAndItsCornerLocations {
         _ forScreenOrMeasurment: DictionaryTypes,
         _ dictionary: PositionDictionary) {
         
+            
+//if uniquePartName = "baseWheelJoint_id1_sitOn_id0" {
+// print()
+//}
         dictionaryFromPrimaryOrigin = getPartNameAndItsCornerLocationsFromPrimaryOrigin(
             uniquePartName,
             forScreenOrMeasurment,
@@ -63,7 +67,8 @@ struct PartNameAndItsCornerLocations {
                 }
             }
 
-           // return [generalPartName: uniqueCornerLocations]
+//print ( [uniquePartName: uniqueCornerLocations])
+//print ("\n\n\n")
             return [uniquePartName: uniqueCornerLocations]
         }
     }

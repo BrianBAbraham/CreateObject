@@ -97,11 +97,10 @@ struct ObjectView: View {
     private var  minimumZoom = 0.1
     private var maximimumZoom = 3.0
     
-    let dictionary: PositionDictionary
+    var dictionary: PositionDictionary {
+        objectPickVM.getCurrentObjectDictionary()
+    }
     
-//    var defaultDictionary: PositionDictionary {
-//        objectPickVM.getRelevantDictionary(.forMeasurement)
-//    }
     var objectOptionsDictionary: OptionDictionary {
         objectPickVM.getObjectOptionsDictionary()
     }
@@ -112,12 +111,7 @@ struct ObjectView: View {
     }
     
     var initialDictionary: PositionDictionary {
-        CreateInitialObject(
-            baseName: objectName,
-            objectOptionsDictionary,
-            twinSitOnOptionsDictionary,
-            [:])  //TWIN
-        .dictionary
+        objectPickVM.getObjectDictionary()
     }
     
     var defaultScale: Double {
@@ -140,11 +134,9 @@ struct ObjectView: View {
     
     init(
         _ names: [String],
-        _ dictionary: PositionDictionary,
         _ objectName: String,
         _ objectManipulationIsActive: Bool = false) {
         uniquePartNames = names
-        self.dictionary = dictionary
         self.objectName = objectName
         self.objectManipulationIsActive = objectManipulationIsActive
     }

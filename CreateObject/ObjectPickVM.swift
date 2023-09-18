@@ -42,13 +42,22 @@ class ObjectPickViewModel: ObservableObject {
     
 
     static let dictionary =
-        CreateInitialObject(
-            baseName: initialObjectName,
-            optionDictionary,
-            twinSitOnDictionary//,
-            //ObjectDefaultDimension(initialObject, twinSitOnDictionary).dictionary//    [:]
-        )
-            .dictionary
+            DimensionOriginCornerDictionaries(
+                    .fixedWheelRearDrive,
+                twinSitOnDictionary,
+                [optionDictionary, optionDictionary]).preTiltObjectToCornerOrigin
+         
+
+  
+    
+    
+//        CreateInitialObject(
+//            objectName: initialObjectName,
+//            optionDictionary,
+//            twinSitOnDictionary//,
+//
+//        )
+//            .dictionary
     
     @Published private var objectPickModel: ObjectPickModel =
         ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
@@ -314,27 +323,23 @@ extension ObjectPickViewModel {
         _ forScreenOrMeasurment: DictionaryTypes,
         _ dictionaryVersion: DictionaryVersion = .useCurrent)
             -> [String: PositionAsIosAxes] {
-        
                 var relevantDictionary: PositionDictionary = [:]
-//        getLoadedDictionary().keys.count == 0 ? getCurrentObjectDictionary(): getLoadedDictionary()
+
                 switch dictionaryVersion {
                 case .useCurrent:
                     relevantDictionary = getCurrentObjectDictionary()
                 case .useLoaded:
                     relevantDictionary = getLoadedDictionary()
-//print("use loaded")
                 default:
                     break
                 }
-     
-        
-        let originDictionary =
-        DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
-            .viewOrigin,
-            .objectOrigin,
-            [getOffset()])
-        
-        relevantDictionary += originDictionary
+//        let originDictionary =
+//        DimensionsBetweenFirstAndSecondOrigin.dictionaryForOneToMany(
+//            .viewOrigin,
+//            .objectOrigin,
+//            [getOffset()])
+//
+//        relevantDictionary += originDictionary
 
         switch forScreenOrMeasurment {
         case .forScreen:
@@ -387,10 +392,11 @@ extension ObjectPickViewModel {
    
         //let uniquePartNames =  GetUniqueNames(getCurrentObjectDictionary()).forPart
         let uniquePartNames =  GetUniqueNames(getLoadedDictionary()).forPart
-
+//print (uniquePartNames)
         return  uniquePartNames
     }
     
+
     func getUniquePartNamesFromObjectDictionary() -> [String] {
         
         let uniquePartNames = GetUniqueNames(getObjectDictionary()).forPart
@@ -434,15 +440,22 @@ extension ObjectPickViewModel {
     }
     
     func setInitialObjectDictionary(_ objectName: String) {
-        let defaultDictionary = getDefaultObjectDictionary()
+        //let defaultDictionary = getDefaultObjectDictionary()
  
         let initialDictionary =
-            CreateInitialObject(
-                baseName: objectName,
-                getObjectOptionsDictionary(),
-                [:],
-                defaultDictionary)
-                .dictionary
+        DimensionOriginCornerDictionaries(
+            BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
+                ObjectPickViewModel.twinSitOnDictionary,
+                [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCornerOrigin
+        
+//
+//        let initialDictionary =
+//            CreateInitialObject(
+//                objectName: objectName,
+//                getObjectOptionsDictionary(),
+//                [:],
+//                defaultDictionary)
+//                .dictionary
         
 //DictionaryInArrayOut().getNameValue(initialDictionary).forEach{print($0)}
 //print(initialDictionary)
@@ -465,18 +478,25 @@ extension ObjectPickViewModel {
         //_ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ twinSitOnDictionary: TwinSitOnOptionDictionary) {
             
-            let optionsDictionary = getObjectOptionsDictionary()
-            
-            let defaultDictionary = getDefaultObjectDictionary()
+//            let optionsDictionary = getObjectOptionsDictionary()
+//
+//            let defaultDictionary = getDefaultObjectDictionary()
           let objectName = getCurrentObjectName()
         
             objectPickModel.currentObjectDictionary =
-            CreateInitialObject(
-                baseName: objectName,
-                optionsDictionary,
-                twinSitOnDictionary,
-                defaultDictionary
-            ).dictionary
+            
+            DimensionOriginCornerDictionaries(
+                BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
+                    ObjectPickViewModel.twinSitOnDictionary,
+                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCornerOrigin
+            
+            
+//            CreateInitialObject(
+//                objectName: objectName,
+//                optionsDictionary,
+//                twinSitOnDictionary,
+//                defaultDictionary
+//            ).dictionary
     }
     
     func setCurrentObjectByCreatingFromName2(
@@ -484,18 +504,23 @@ extension ObjectPickViewModel {
             
             let objectName = getCurrentObjectName ()
           
-            let optionsDictionary = getObjectOptionsDictionary()
-            
-            let defaultDictionary = getDefaultObjectDictionary()
+//            let optionsDictionary = getObjectOptionsDictionary()
+//
+//            let defaultDictionary = getDefaultObjectDictionary()
           
         
             objectPickModel.currentObjectDictionary =
-            CreateInitialObject(
-                baseName: objectName,
-                optionsDictionary,
-                twinSitOnDictionary,
-                defaultDictionary
-            ).dictionary
+            DimensionOriginCornerDictionaries(
+                BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
+                    ObjectPickViewModel.twinSitOnDictionary,
+                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCornerOrigin
+            
+//            CreateInitialObject(
+//                objectName: objectName,
+//                optionsDictionary,
+//                twinSitOnDictionary,
+//                defaultDictionary
+//            ).dictionary
     }
     
     

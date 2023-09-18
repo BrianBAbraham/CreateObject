@@ -154,7 +154,10 @@ struct ContentView: View {
                         }
                     HStack(alignment: .center) {
                    
-                        ObjectView(uniquePartNames, currentDictionary, name)
+                        ObjectView(
+                            uniquePartNames,
+                            //currentDictionary,
+                            name)
     //                        .modifier(
     //                            ForObjectInDefaultView (
     //                                frameSize: frameSize)
@@ -182,7 +185,11 @@ struct ContentView: View {
                     VStack {
                     Text( objectPickVM.getCurrentObjectName())
 
-                    ObjectView(uniquePartNames, currentDictionary, name, objectManipulationIsActive)
+                    ObjectView(
+                        uniquePartNames,
+                        //currentDictionary,
+                        name,
+                        objectManipulationIsActive)
                         .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
                             self.globalPosition = value
                         })

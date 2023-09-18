@@ -35,12 +35,12 @@ struct EditObjectMenuView: View {
         let dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
     
         if objectPickVM.getCurrentObjectName().contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) {
-            EditFootSupportLeftRightPosition(dictionary)
+            //EditFootSupportLeftRightPosition(dictionary)
         } else {
             EmptyView()
         }
         if objectPickVM.getCurrentObjectName().contains(BaseObjectTypes.showerTray.rawValue) {
-            FootSupportWithoutHangerInOnePieceSlider(dictionary)
+            //FootSupportWithoutHangerInOnePieceSlider(dictionary)
         } else {
             EmptyView()
         }

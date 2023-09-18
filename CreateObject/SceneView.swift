@@ -54,7 +54,7 @@ struct SceneView: View {
                     HStack {
                         ObjectView(
                             GetUniqueNames(objectAndId.object).forPart,
-                            objectAndId.object,
+                            //objectAndId.object,
                             objectAndId.name)
                         Text(objectAndId.name)
                     }

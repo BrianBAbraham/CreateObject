@@ -23,6 +23,8 @@ rear: PositionAsIosAxes)
 
 typealias OptionDictionary = [ObjectOptions: Bool]
 typealias PositionDictionary = [String: PositionAsIosAxes]
+///the positions for the four corners are as Corners type
+typealias PositionCornerDictionary = [String: Corners]
 typealias MeasurementDictionary = [String: Double]
 typealias BaseObjectDoubleDictionary = [BaseObjectTypes: Double]
 typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
