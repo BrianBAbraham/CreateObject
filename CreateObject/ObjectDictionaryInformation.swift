@@ -23,6 +23,11 @@ struct PartNameAndItsCornerLocations {
             uniquePartName,
             forScreenOrMeasurment,
             dictionary)
+            
+print ()
+//DictionaryInArrayOut().getNameValue( dictionaryFromPrimaryOrigin).forEach{print($0)}
+print (dictionary)
+                        
         
         func getPartNameAndItsCornerLocationsFromPrimaryOrigin(
             _ uniquePartName: String,

@@ -98,7 +98,8 @@ struct OccupantFootSupportDefaultDimension {
     }
     
     func getFootSupportInOnePiece() -> Dimension3d {
-        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let dictionary: BaseObject3DimensionDictionary =
+        [.showerTray: (width: 900.0, length: 1200.0, height: 100.0)]
         let general =       (
             width: OccupantBodySupportDefaultDimension.general.width,
             length: 100.0,

@@ -118,6 +118,100 @@ enum Part: String {
 
 
 
+
+
+
+
+enum ObjectOptions: String, CaseIterable  {
+    
+    case angleBackSupport = "reclining back support"
+    case angleFootSupport = "angle leg support"
+    case assistant = "assistant"
+    
+    case backSupportAssistantHandles = "back support assistant handles"
+    case backSupportAdditionalObject = "bacl support additional object"
+    case backSupportAssistantHandlesInOnPiece = "back support assistant handle in one piece"
+    case backSupportAssistantJoystick = "back support assistant joystick"
+    case bumper = "bumper"
+    case door = "door"
+    case footSupportInOnePiece = "foot support in one piece"
+    case headSupport = "head support"
+
+    case occupant = "occupant"
+
+    case tiltInSpace = "tilt in space"
+    case tiltAndRecline = "tilt in space and reclining back support"
+    case selfPropellers = "self propllers"
+    case singleFootSupport = "single foot support"
+    case sixCaster = "six caster"
+    
+}
+
+enum Toggles {
+    case twinSitOn
+    case sitOnPosition
+}
+
+///Tilt acts on one or more part
+///The parts affected by the tilt are placed in an array
+struct TiltGroupsFor {
+    
+    var foot: [String] {
+        [Part.footSupport.rawValue, Part.footSupportJoint.rawValue]
+    }
+    let sitOnAngle: [Part] =
+        [
+        .sitOn,
+        .sideSupport,
+        .sideSupportRotationJoint,
+        .joyStickForOccupant,
+        .lieOnSupport,
+        .sleepOnSupport,
+        .backSupporRotationJoint,
+        .footSupportHangerJoint
+        ]
+    
+    let footAngle: [Part] =
+        [
+        .footSupport,
+        .footSupportHangerLink,
+        .footSupportJoint,
+        .footSupportInOnePiece
+        ]
+    let backAngle: [Part] =
+        [
+        .backSupport,
+        .backSupportAssistantJoystick,
+        .backSupportAdditionalPart,
+        .backSupportAssistantHandle,
+        .backSupportHeadSupportJoint
+        ]
+    let headAngle: [Part] =
+        [
+        .backSupportHeadSupport,
+        .backSupportHeadSupportLink,
+        .backSupportHeadLinkRotationJoint
+        ]
+    let leftAndRight: [Part] =
+        [
+        .sideSupport,
+        .sideSupportRotationJoint,
+        .footSupport,
+        .footSupportHangerLink,
+        .footSupportJoint,
+        ]
+    var backAndHead: [Part]
+        {backAngle + headAngle}
+    var sitOnAndBackAngle: [Part]
+        {sitOnAngle + backAndHead}
+    var allAngle: [Part]
+        {sitOnAndBackAngle + footAngle}
+    
+}
+
+
+///objects are comprised of  groups of associated parts
+///each property povides an array of parts relevant to the group
 struct PartGroup {
     static let sideSupport: [Part] =
             [
@@ -173,98 +267,11 @@ struct PartGroup {
         fourCasterParts + twoCasterParts
     static let twoCasterTwoFixedWheelTwoCasterParts: [Part] =
         twoCasterTwoWheelParts + twoCasterParts
-
-    
-    
-    
 }
 
 
-
-enum ObjectOptions: String, CaseIterable  {
-    
-    case angleBackSupport = "reclining back support"
-    case angleFootSupport = "angle leg support"
-    case assistant = "assistant"
-    
-    case backSupportAssistantHandles = "back support assistant handles"
-    case backSupportAdditionalObject = "bacl support additional object"
-    case backSupportAssistantHandlesInOnPiece = "back support assistant handle in one piece"
-    case backSupportAssistantJoystick = "back support assistant joystick"
-    case bumper = "bumper"
-    case door = "door"
-    case footSupportInOnePiece = "foot support in one piece"
-    case headSupport = "head support"
-
-    case occupant = "occupant"
-
-    case tiltInSpace = "tilt in space"
-    case tiltAndRecline = "tilt in space and reclining back support"
-    case selfPropellers = "self propllers"
-    case singleFootSupport = "single foot support"
-    case sixCaster = "six caster"
-    
-}
-
-enum Toggles {
-    case twinSitOn
-    case sitOnPosition
-}
-
-struct PartGroupsFor {
-    
-    var foot: [String] {
-        [Part.footSupport.rawValue, Part.footSupportJoint.rawValue]
-    }
-    let sitOnAngle: [Part] =
-        [
-        .sitOn,
-        .sideSupport,
-        .sideSupportRotationJoint,
-        .joyStickForOccupant,
-        .lieOnSupport,
-        .sleepOnSupport,
-        .backSupporRotationJoint,
-        .footSupportHangerJoint
-        ]
-    
-    let footAngle: [Part] =
-        [
-        .footSupport,
-        .footSupportHangerLink,
-        .footSupportJoint,
-        .footSupportInOnePiece
-        ]
-    let backAngle: [Part] =
-        [
-        .backSupport,
-        .backSupportAssistantJoystick,
-        .backSupportAdditionalPart,
-        .backSupportAssistantHandle,
-        .backSupportHeadSupportJoint
-        ]
-    let headAngle: [Part] =
-        [
-        .backSupportHeadSupport,
-        .backSupportHeadSupportLink,
-        .backSupportHeadLinkRotationJoint
-        ]
-    let leftAndRight: [Part] =
-        [
-        .sideSupport,
-        .sideSupportRotationJoint,
-        .footSupport,
-        .footSupportHangerLink,
-        .footSupportJoint,
-        ]
-    var backAndHead: [Part]
-        {backAngle + headAngle}
-    var sitOnAndBackAngle: [Part]
-        {sitOnAngle + backAndHead}
-    var allAngle: [Part]
-        {sitOnAndBackAngle + footAngle}
-    
-}
+///an objects's inclusion of a part group is indicated by memmbership
+///of the object 
 
 
 

@@ -67,7 +67,8 @@ enum GroupsDerivedFromRawValueOfPartTypes: String {
 case sitOn = "hair"
 }
 
-
+///object creation includes features if the object is containted
+///in the feature group
 struct BaseObjectGroups {
     let allFourCaster: [BaseObjectTypes] =
         [.allCasterBed,
@@ -120,8 +121,11 @@ struct BaseObjectGroups {
         .allCasterSixHoist,
         .fixedWheelMidDrive]
     
-    let hasFootSupport: [BaseObjectTypes]
-    let hasBackSupport: [BaseObjectTypes]
+    let noWheel: [BaseObjectTypes] = [.showerTray]
+    let noBodySupport: [BaseObjectTypes] = [.showerTray]
+    
+    let footSupport: [BaseObjectTypes]
+    let backSupport: [BaseObjectTypes]
     
     let fourWheels: [BaseObjectTypes]
     let threeWheels: [BaseObjectTypes]
@@ -176,12 +180,15 @@ struct BaseObjectGroups {
             allCaster +
             [.fixedWheelMidDrive, .fixedWheelFrontDrive]
         
-        hasFootSupport =
-        twinSitOnAbility + [.allCasterChair,
-                            .allCasterStandAid,
-                            .allCasterTiltInSpaceShowerChair]
+        footSupport =
+            twinSitOnAbility + [.allCasterChair,
+                                .allCasterStandAid,
+                                .allCasterTiltInSpaceShowerChair]
         
-        hasBackSupport = hasFootSupport
+        backSupport =
+            twinSitOnAbility + [.allCasterChair,
+                                .allCasterStandAid,
+                                .allCasterTiltInSpaceShowerChair]
     }
 }
 

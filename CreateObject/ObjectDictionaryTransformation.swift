@@ -72,6 +72,12 @@ struct DictionaryElementIn {
         
         return points
     }
+    
+    func maximumHeightOut()
+    -> Double {
+       
+        CreateIosPosition.getArrayFromPositions(locationsFromPrimaryOrigin).z.max() ?? 0.0
+    }
 
 }
 

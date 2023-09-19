@@ -102,8 +102,8 @@ struct OriginPostTilt {
         _ changeOfAngle: Measurement<UnitAngle>,
         _ sitOnId: Part) {
             
-        let allPartsSubjectToAngle = PartGroupsFor().allAngle
-        let partsOnLeftAndRight = PartGroupsFor().leftAndRight
+        let allPartsSubjectToAngle = TiltGroupsFor().allAngle
+        let partsOnLeftAndRight = TiltGroupsFor().leftAndRight
         
         for part in  allPartsSubjectToAngle {
             let partIds: [Part] =  partsOnLeftAndRight.contains(part) ? [.id0, .id1]: [.id0]
@@ -136,8 +136,8 @@ struct OriginPostTilt {
          _ changeOfAngle: Measurement<UnitAngle>,
          _ sitOnId: Part) {
              
-         let allPartsSubjectToAngle = PartGroupsFor().backAndHead
-         let partsOnLeftAndRight = PartGroupsFor().leftAndRight
+         let allPartsSubjectToAngle = TiltGroupsFor().backAndHead
+         let partsOnLeftAndRight = TiltGroupsFor().leftAndRight
          
          for part in  allPartsSubjectToAngle {
              let partIds: [Part] =  partsOnLeftAndRight.contains(part) ? [.id0, .id1]: [.id0]

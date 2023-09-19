@@ -18,6 +18,9 @@ import Foundation
 struct DimensionOriginCornerDictionaries {
     
     static let sitOnHeight = 500.0
+    var objectGroups: BaseObjectGroups {
+        BaseObjectGroups()
+    }
     
     //UI amended dictionary
     let dimensionIn: Part3DimensionDictionary
@@ -60,7 +63,7 @@ struct DimensionOriginCornerDictionaries {
     ///the objects available, that is for which all code is present are included here
     static let objects: [BaseObjectTypes] = [
         .allCasterBed,.allCasterChair,.allCasterStretcher,
-        .fixedWheelFrontDrive, .fixedWheelMidDrive, .fixedWheelRearDrive]
+        .fixedWheelFrontDrive, .fixedWheelMidDrive, .fixedWheelRearDrive, .showerTray]
     
 
     /// using values taken from dictionaries
@@ -115,14 +118,19 @@ struct DimensionOriginCornerDictionaries {
             PreTiltOccupantSupportOrigin(parent: self)
         getPreTiltFootSideBackOriginDictionary()
         
-        preTiltWheelOrigin = getPreTiltWheelOrigin()
-            if let preTiltWheelOrigin {
-                preTiltWheelOriginIdNodes =
-                getPreTiltWheelOriginIdNodes(
-                    preTiltWheelOrigin as!
-                        DimensionOriginCornerDictionaries.PreTiltWheelOrigin)
-            }
-        getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes)
+        
+        //do not add wheels to for example a shower tray
+        if !objectGroups.noWheel.contains( baseType) {
+            preTiltWheelOrigin = getPreTiltWheelOrigin()
+                if let preTiltWheelOrigin {
+                    preTiltWheelOriginIdNodes =
+                    getPreTiltWheelOriginIdNodes(
+                        preTiltWheelOrigin as!
+                            DimensionOriginCornerDictionaries.PreTiltWheelOrigin)
+                }
+            getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes)
+        }
+
 
             
             
@@ -467,20 +475,20 @@ struct DimensionOriginCornerDictionaries {
                     occupantBodySupportsDimension,
                     occupantFootSupportHangerLinksDimension)
                 
-            if BaseObjectGroups().rearFixedWheel.contains(parent.baseType) {
+            if parent.objectGroups.rearFixedWheel.contains(parent.baseType) {
             forRearPrimaryOrigin()
             }
                 
-            if BaseObjectGroups().frontFixedWheel.contains(parent.baseType) {
+            if parent.objectGroups.frontFixedWheel.contains(parent.baseType) {
             forFrontPrimaryOrgin()
             }
                 
-            if BaseObjectGroups().midFixedWheel.contains(parent.baseType) {
+            if parent.objectGroups.midFixedWheel.contains(parent.baseType) {
             forMidPrimaryOrigin()
             }
             
                 
-            if BaseObjectGroups().allFourCaster.contains(parent.baseType) {
+            if parent.objectGroups.allFourCaster.contains(parent.baseType) {
             forRearPrimaryOrigin()
                 
 //                print("\n\n")
@@ -739,13 +747,13 @@ struct DimensionOriginCornerDictionaries {
                      allOriginIdNodesForSideSupportForBothSitOn,
                     ]
                     
-                    if BaseObjectGroups().hasBackSupport.contains(parent.baseType) {
+                    if BaseObjectGroups().backSupport.contains(parent.baseType) {
                         allOriginIdNodesForBackSupportForBothSitOn.append( getOriginIdNodesForBackSupport(sitOnIndex) )
                         
                         allOriginIdNodes.append(allOriginIdNodesForBackSupportForBothSitOn)
                     }
                     
-                    if BaseObjectGroups().hasFootSupport.contains(parent.baseType) {
+                    if BaseObjectGroups().footSupport.contains(parent.baseType) {
                         allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
                         
                         allOriginIdNodes.append(allOriginIdNodesForFootSupportForBothSitOn)

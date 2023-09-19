@@ -62,14 +62,8 @@ struct PartView: View {
     }
   
     var zPosition: Double {
-        var z = 0.0
-      
-        if partName.contains(Part.sideSupport.rawValue) {z = 9}
-        if partName.contains(Part.footSupport.rawValue) {z = 0}
-       if partName.contains(Part.sitOn.rawValue) {z = 3}
-        if partName.contains("Joint") {z = 10}
-        if partName.contains("heel") {z = 0}
-    return z
+        //ensures objects drawn in order of height
+        DictionaryElementIn(partCornersDictionary).maximumHeightOut()
     }
     
     var body: some View {
