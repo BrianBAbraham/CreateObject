@@ -39,37 +39,30 @@ struct PartView: View {
     @EnvironmentObject var partEditVM: ObjectEditViewModel
     let uniquePartName: String
     var dictionary: PositionDictionary
-    var partCornersDictionary: [String: [PositionAsIosAxes]] {
-
-        PartNameAndItsCornerLocations(
-            uniquePartName,
-                .forScreen,
-            dictionary).dictionaryFromPrimaryOrigin
+    var pretTiltObjectToAllPartCorner: CornerDictionary {
+        objectPickVM.getCornerDictionary()
     }
         
     let onlyOneDictionaryMember = 0
-    
-    var partCorners: [CGPoint] {
-        DictionaryElementIn(partCornersDictionary).cgPointsOut()
-    }
-    
-    var partName: String {
-        partCornersDictionary.map {$0.0}[onlyOneDictionaryMember]
-    }
-    
+       
     var color: Color {
         partEditVM.getColorForPart(uniquePartName)
+    }
+    
+    var partCorners: [CGPoint] {
+        DictionaryElementIn(
+            [uniquePartName:
+            pretTiltObjectToAllPartCorner[uniquePartName] ??  [ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation] ]).cgPointsOut()
     }
   
     var zPosition: Double {
         //ensures objects drawn in order of height
-        DictionaryElementIn(partCornersDictionary).maximumHeightOut()
+        DictionaryElementIn(pretTiltObjectToAllPartCorner).maximumHeightOut()
     }
     
     var body: some View {
-        
       LocalOutlineRectangle.path(corners: partCorners, color)
-            .zIndex(zPosition)
+        .zIndex(zPosition)
 
         .onTapGesture {
             partEditVM.setCurrentPartToEditName(uniquePartName)
@@ -126,6 +119,9 @@ struct ObjectView: View {
     
     let objectManipulationIsActive: Bool
     
+    var pretTiltObjectToAllPartCorner: CornerDictionary {
+        objectPickVM.cornerDictionary
+    }
     init(
         _ names: [String],
         _ objectName: String,
@@ -162,7 +158,9 @@ struct ObjectView: View {
 
     
     var body: some View {
-        let currentDictionary = objectPickVM.getCurrentObjectDictionary()
+        let currentDictionary =
+        objectPickVM.getCurrentObjectDictionary()
+        //objectPickVM.getCurrentObjectDictionary()
         
         let dictionaryForScreen =
             objectPickVM.getObjectDictionaryForScreen(currentDictionary)
@@ -175,7 +173,8 @@ struct ObjectView: View {
             ForEach(uniquePartNames, id: \.self) { name in
                 PartView(
                     uniquePartName: name,
-                    dictionary: dictionaryForScreen
+                    dictionary: dictionaryForScreen//,
+//                    pretTiltObjectToAllPartCorner: pretTiltObjectToAllPartCorner
                 )
             }
         }

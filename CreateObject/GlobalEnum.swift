@@ -301,4 +301,5 @@ enum DictionaryVersion {
     case useCurrent
     case useInitial
     case useLoaded
+    case useDimension
 }

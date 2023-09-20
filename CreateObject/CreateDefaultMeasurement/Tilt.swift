@@ -61,7 +61,7 @@ struct OriginPostTilt {
     var forDimension: Part3DimensionDictionary = [:]
 
     init(
-        parent: DimensionOriginCornerDictionaries ) {
+        parent: DictionaryProvider ) {
         for sitOnId in parent.oneOrTwoIds {
             let tiltOriginPart: [Part] =
                 [.object, .id0, .stringLink, .bodySupportRotationJoint, .id0, .stringLink, .sitOn, sitOnId]
@@ -97,7 +97,7 @@ struct OriginPostTilt {
     */
     
    mutating func forSitOnWithFootTilt (
-        _ parent: DimensionOriginCornerDictionaries,
+        _ parent: DictionaryProvider,
         _ originOfRotation: PositionAsIosAxes,
         _ changeOfAngle: Measurement<UnitAngle>,
         _ sitOnId: Part) {
@@ -131,7 +131,7 @@ struct OriginPostTilt {
     mutating func forSitOnWithoutFootTilt() {}
     
     mutating func forBackRecline (
-         _ parent: DimensionOriginCornerDictionaries,
+         _ parent: DictionaryProvider,
          _ originOfRotation: PositionAsIosAxes,
          _ changeOfAngle: Measurement<UnitAngle>,
          _ sitOnId: Part) {

@@ -43,8 +43,7 @@ struct OriginPartInDictionariesOut {
                     partNodes,
                     partIds,
                     usingIdZeroOrOne: 0)
-//print(namesForRightOrUnilateral)
-            
+
         let numberOfNodesTillOnlyOneId =
             getNumberOfNodesTillOnlyOneId(partIds)
         let partIdsForLeft = Array(partIds.prefix(numberOfNodesTillOnlyOneId))
@@ -55,8 +54,7 @@ struct OriginPartInDictionariesOut {
                         partNodesForLeft,
                         partIdsForLeft,
                         usingIdZeroOrOne: 1)
-//print(namesToBeUSedToCreateLeftName)
-//print("\n\n")
+
         } else {
             namesForLeft = []
         }
@@ -64,9 +62,7 @@ struct OriginPartInDictionariesOut {
         allNames =
             namesForRightOrUnilateral +
             namesForLeft
-//print(namesForRightOrUnilateral)
-//print(namesForLeft)
-//print("\n\n")
+
         createLeftOrigin()
         
         /// for [id0], [id1, id0],  [id1, id0], [id1]  ] for

@@ -15,7 +15,7 @@ import Foundation
 ///The array of objects available
 ///Dictionary for objects
 ///An input for edited dimensions to replace default dimensions
-struct DimensionOriginCornerDictionaries {
+struct DictionaryProvider {
     
     static let sitOnHeight = 500.0
     var objectGroups: BaseObjectGroups {
@@ -50,9 +50,9 @@ struct DimensionOriginCornerDictionaries {
     //pre-tilt
     var preTiltParentToPartOrigin: PositionDictionary = [:]
     var preTiltObjectToPartOrigin: PositionDictionary = [:]
-    var preTiltObjectToCornerOrigin: PositionDictionary = [:]
+    var preTiltObjectToCorner: PositionDictionary = [:]
     var uniqueNames: [String] = []
-    var pretTiltObjectToAllPartCornerOrigin: PositionCornerDictionary = [:]
+    var pretTiltObjectToAllPartCorner: PositionCornerDictionary = [:]
     
     
     //post-tilt
@@ -126,7 +126,7 @@ struct DimensionOriginCornerDictionaries {
                     preTiltWheelOriginIdNodes =
                     getPreTiltWheelOriginIdNodes(
                         preTiltWheelOrigin as!
-                            DimensionOriginCornerDictionaries.PreTiltWheelOrigin)
+                            DictionaryProvider.PreTiltWheelOrigin)
                 }
             getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes)
         }
@@ -139,11 +139,15 @@ struct DimensionOriginCornerDictionaries {
 
 
         createPreTiltCornerDictionary()
+//print ("preTiltObjectToCorner")
+//print (pretTiltObjectToAllPartCorner)
+//print ("\n\n\n")
 
 //MARK: - CHANGE USE DIMENSIONS
             //requires GetUniquesNames to be changed
-        uniqueNames = GetUniqueNames(preTiltObjectToCornerOrigin).forPart
-            
+        uniqueNames = GetUniqueNames(preTiltObjectToCorner).forDimensions
+ 
+//print (uniqueNames)
         //POST TILT
         creatPostTiltObjectToPartOriginDictionary()
 
@@ -336,13 +340,12 @@ struct DimensionOriginCornerDictionaries {
 
 
                     for index in 0..<topViewCorners.count {
-                        preTiltObjectToCornerOrigin +=
+                        preTiltObjectToCorner +=
                         [nameWithoutObject + Part.stringLink.rawValue + "corner" + String(index): topViewCorners[index]]
-                       
                     }
 //    print (nameWithoutObject)
 //    print (topViewCorners)
-                    pretTiltObjectToAllPartCornerOrigin += [nameWithoutObject: topViewCorners]
+                    pretTiltObjectToAllPartCorner += [nameWithoutObject: topViewCorners]
                 }
 
             }
@@ -390,7 +393,7 @@ struct DimensionOriginCornerDictionaries {
         var dictionary: AngleDictionary = [:]
         
         init(
-            parent: DimensionOriginCornerDictionaries) {
+            parent: DictionaryProvider) {
             
                 for id in parent.oneOrTwoIds {
                     setAngleDictionary( id)
@@ -449,7 +452,7 @@ struct DimensionOriginCornerDictionaries {
         var allOriginIdNodes: [[OriginIdNodes]] = []
         
         init(
-            parent: DimensionOriginCornerDictionaries) {
+            parent: DictionaryProvider) {
                 objectType = parent.baseType
             stability = Stability(parent.baseType)
             
@@ -578,7 +581,7 @@ struct DimensionOriginCornerDictionaries {
                 y:
                 stability.atRear +
                  occupantBodySupportsDimension[0].length/2,
-                 z: DimensionOriginCornerDictionaries.sitOnHeight)
+                 z: DictionaryProvider.sitOnHeight)
             )
             if frontAndRearState {
                 origin.append(
@@ -588,7 +591,7 @@ struct DimensionOriginCornerDictionaries {
                         occupantBodySupportsDimension[0].length +
                         occupantFootSupportHangerLinksDimension[0].length +
                         occupantBodySupportsDimension[1].length/2,
-                         z: DimensionOriginCornerDictionaries.sitOnHeight)
+                         z: DictionaryProvider.sitOnHeight)
                 )
             }
             if leftandRightState {
@@ -603,7 +606,7 @@ struct DimensionOriginCornerDictionaries {
                   z: 0.0),
                 (x: xOrigin1,
                  y: origin[0].y,
-                 z: DimensionOriginCornerDictionaries.sitOnHeight)
+                 z: DictionaryProvider.sitOnHeight)
                 ]
             }
         }
@@ -615,7 +618,7 @@ struct DimensionOriginCornerDictionaries {
             origin.append(
             (x: 0.0,
              y: 0.5 * (baseLength - occupantBodySupportsDimension[0].length),
-             z: DimensionOriginCornerDictionaries.sitOnHeight)
+             z: DictionaryProvider.sitOnHeight)
             )
             
             if frontAndRearState {
@@ -623,11 +626,11 @@ struct DimensionOriginCornerDictionaries {
                 [
                 (x: 0.0,
                  y: -origin[0].y,
-                 z: DimensionOriginCornerDictionaries.sitOnHeight)
+                 z: DictionaryProvider.sitOnHeight)
                  ,
                 (x: 0.0,
                  y: origin[0].y,
-                z: DimensionOriginCornerDictionaries.sitOnHeight)
+                z: DictionaryProvider.sitOnHeight)
                 ]
             }
             
@@ -636,11 +639,11 @@ struct DimensionOriginCornerDictionaries {
                 [
                 (x: 0.0,
                  y: -origin[0].y,
-                 z: DimensionOriginCornerDictionaries.sitOnHeight)
+                 z: DictionaryProvider.sitOnHeight)
                  ,
                 (x: 0.0,
                  y: origin[0].y,
-                z: DimensionOriginCornerDictionaries.sitOnHeight)
+                z: DictionaryProvider.sitOnHeight)
                 ]
             }
         }
@@ -652,7 +655,7 @@ struct DimensionOriginCornerDictionaries {
                  y:
                 -(stability.atFront +
                     occupantBodySupportsDimension[0].length/2),
-                 z: DimensionOriginCornerDictionaries.sitOnHeight )
+                 z: DictionaryProvider.sitOnHeight )
                  )
             
             if frontAndRearState {
@@ -663,7 +666,7 @@ struct DimensionOriginCornerDictionaries {
                         occupantBodySupportsDimension[0].length -
                         occupantFootSupportHangerLinksDimension[1].length -
                         occupantBodySupportsDimension[1].length/2,
-                     z: DimensionOriginCornerDictionaries.sitOnHeight
+                     z: DictionaryProvider.sitOnHeight
                      ),
                     origin[0]
                 ]
@@ -673,10 +676,10 @@ struct DimensionOriginCornerDictionaries {
                 origin = [
                     (x: -leftAndRightX(),
                      y: origin[0].y,
-                     z: DimensionOriginCornerDictionaries.sitOnHeight),
+                     z: DictionaryProvider.sitOnHeight),
                     (x: leftAndRightX(),
                      y: origin[0].y,
-                     z: DimensionOriginCornerDictionaries.sitOnHeight)
+                     z: DictionaryProvider.sitOnHeight)
                 ]
             }
         }
@@ -696,7 +699,7 @@ struct DimensionOriginCornerDictionaries {
     
     //MARK: FOOT/SIDE/BACK/ROTATE ORIGIN
     struct PreTiltOccupantSupportOrigin: InputForDictionary {
-        let parent: DimensionOriginCornerDictionaries
+        let parent: DictionaryProvider
         var partGroup: PartGroup.Type = PartGroup.self
         let objectType: BaseObjectTypes
         let bilateralWidthPositionId: [Part] = [.id1, .id0]
@@ -714,7 +717,7 @@ struct DimensionOriginCornerDictionaries {
         var allOriginIdNodes: [[OriginIdNodes]] = []
 
         init(
-            parent: DimensionOriginCornerDictionaries) {
+            parent: DictionaryProvider) {
                 self.parent = parent
                 objectType = parent.baseType
                 defaultFootOrigin =
@@ -883,7 +886,7 @@ struct DimensionOriginCornerDictionaries {
         var allOriginIdNodes: [[OriginIdNodes]] = []
         
         let lengthBetweenFrontAndRearWheels: Double
-        let parent: DimensionOriginCornerDictionaries
+        let parent: DictionaryProvider
         let bodySupportOrigin: PreTiltOccupantBodySupportOrigin
         let wheelAndCasterVerticalJointOrigin: WheelAndCasterVerticalJointOrigin
         let casterOrigin: CasterOrigin
@@ -895,7 +898,7 @@ struct DimensionOriginCornerDictionaries {
         
 
         init(
-            parent: DimensionOriginCornerDictionaries,
+            parent: DictionaryProvider,
             bodySupportOrigin: PreTiltOccupantBodySupportOrigin ) {
                 
             self.parent = parent
@@ -985,7 +988,7 @@ struct DimensionOriginCornerDictionaries {
 } //Parent struct ends
 
 // MARK: WHEEL ORIGINIDNODES EXTENSION
-extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
+extension DictionaryProvider.PreTiltWheelOrigin {
     func getOriginIdNodesForRear()
         -> OriginIdNodes {
         let allRearNodes =
@@ -1043,7 +1046,7 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
 
 
 // MARK: WHEEL NODES EXTENSION
-extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
+extension DictionaryProvider.PreTiltWheelOrigin {
     func getRearNodes()
         -> [Part] {
         var nodes: [Part] = []
@@ -1094,7 +1097,7 @@ extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
 }
 
 //MARK: EXTENSION PreTiltOccupantSupportOrigin DIMENSION
-extension DimensionOriginCornerDictionaries.PreTiltOccupantBodySupportOrigin {
+extension DictionaryProvider.PreTiltOccupantBodySupportOrigin {
     
     
 }
@@ -1103,7 +1106,7 @@ extension DimensionOriginCornerDictionaries.PreTiltOccupantBodySupportOrigin {
 // MARK: WHEEL ORIGIN EXTENSION
 /// wheelPartOrigin for rear or mid or front are required
 /// and values depend on the object origin: rear, mid or front
-extension DimensionOriginCornerDictionaries.PreTiltWheelOrigin {
+extension DictionaryProvider.PreTiltWheelOrigin {
     
     func getRearOrigin()
         -> [PositionAsIosAxes]{

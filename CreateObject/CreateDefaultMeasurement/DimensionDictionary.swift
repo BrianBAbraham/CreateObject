@@ -60,10 +60,10 @@ struct DimensionDictionary {
 //MARK: GET DIMENSIONS
 //retrieves a passed value if extant else a default value
 struct OccupantSupportDimensionDictionary {
-    let parent: DimensionOriginCornerDictionaries
-    let preTiltOccupantSupportOrigin: DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin?
+    let parent: DictionaryProvider
+    let preTiltOccupantSupportOrigin: DictionaryProvider.PreTiltOccupantSupportOrigin?
     let preTiltWheelOrigin:
-        DimensionOriginCornerDictionaries.PreTiltWheelOrigin?
+        DictionaryProvider.PreTiltWheelOrigin?
     let allWheelRelated: AllWheelRelated
     
     //individual dictionaries permit easy exclusion
@@ -75,20 +75,20 @@ struct OccupantSupportDimensionDictionary {
 
     
     init(
-        parent: DimensionOriginCornerDictionaries) {
+        parent: DictionaryProvider) {
             self.parent = parent
             allWheelRelated =
                  AllWheelRelated(
                      parent.baseType)
         preTiltOccupantSupportOrigin =
-        parent.preTiltOccupantFootBackSideSupportOrigin as? DimensionOriginCornerDictionaries.PreTiltOccupantSupportOrigin
+        parent.preTiltOccupantFootBackSideSupportOrigin as? DictionaryProvider.PreTiltOccupantSupportOrigin
 
         preTiltWheelOrigin =
-        parent.preTiltWheelOrigin as? DimensionOriginCornerDictionaries.PreTiltWheelOrigin
+        parent.preTiltWheelOrigin as? DictionaryProvider.PreTiltWheelOrigin
             
         let preTiltBodySupportOrigin =
             parent.preTiltOccupantBodySupportOrigin as?
-            DimensionOriginCornerDictionaries.PreTiltOccupantBodySupportOrigin
+            DictionaryProvider.PreTiltOccupantBodySupportOrigin
             
         for index in 0..<parent.oneOrTwoIds.count {
             // for... are empty if not present on object

@@ -15,7 +15,7 @@ struct PickInitialObjectView: View {
     @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
     
     var objectNames: [String] {
-        DimensionOriginCornerDictionaries.objects.map{$0.rawValue            
+        DictionaryProvider.objects.map{$0.rawValue            
         }
     }
 

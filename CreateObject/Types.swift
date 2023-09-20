@@ -102,5 +102,5 @@ typealias OriginIdNode =
 ///c7 top left,
 typealias Corners = [PositionAsIosAxes]
 
-/// each key has eight corners as per Corners
+/// each key has eight corners as per Corners [PositionAsIosAxes]
 typealias CornerDictionary = [String: Corners]

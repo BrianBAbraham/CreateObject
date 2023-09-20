@@ -13,19 +13,19 @@ struct ObjectPickModel {
     var currentObjectDictionary: PositionDictionary
     var initialDictionary: PositionDictionary
     var loadedDictionary: PositionDictionary = [:]
+    var eightCornerPerNameDictionary: CornerDictionary = [:]
+    ///var oneCornerPerNameDictionary: PositionDictionary = [:]
+    var dimensionDictionary: Part3DimensionDictionary
     var objectOptionDictionary: OptionDictionary
+    
 
-        
-    
-    
-    
     mutating func setObjectOptionDictionary(
         _ option: ObjectOptions,
         _ state: Bool) {
             objectOptionDictionary[option] = state
         }
-    }
-    //var editOccuring = true
+}
+    
     
 
 
@@ -41,34 +41,56 @@ class ObjectPickViewModel: ObservableObject {
     static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
     
 
-    static let dictionary =
-            DimensionOriginCornerDictionaries(
-                    .fixedWheelRearDrive,
-                twinSitOnDictionary,
-                [optionDictionary, optionDictionary]).preTiltObjectToCornerOrigin
-         
+    let dictionary: PositionDictionary// =
+//        DictionaryProvider(
+//            .fixedWheelRearDrive,
+//            ObjectPickViewModel.twinSitOnDictionary,
+//            [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCorner
 
-  
+
+    let cornerDictionary: CornerDictionary
+    let dimensionDictionary: Part3DimensionDictionary
+
     
-    
-//        CreateInitialObject(
-//            objectName: initialObjectName,
-//            optionDictionary,
-//            twinSitOnDictionary//,
-//
-//        )
-//            .dictionary
-    
-    @Published private var objectPickModel: ObjectPickModel =
-        ObjectPickModel(currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
-                        currentObjectDictionary: dictionary,
-                        initialDictionary: dictionary,
-                        objectOptionDictionary: optionDictionary)
+    @Published private var objectPickModel: ObjectPickModel
+    let dictionaryProvider: DictionaryProvider
     
     init() {
-//        setDefaultObjectDictionary(
-//
-//            Self.twinSitOnDictionary)
+        
+        dictionaryProvider = setDictionaryProvider(nil)
+        dictionary = dictionaryProvider.preTiltObjectToCorner
+        cornerDictionary = dictionaryProvider.pretTiltObjectToAllPartCorner
+        dimensionDictionary =
+            dictionaryProvider.dimension
+        
+        objectPickModel =
+            ObjectPickModel(
+                currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
+                currentObjectDictionary: dictionary,
+                initialDictionary: dictionary,
+                eightCornerPerNameDictionary: cornerDictionary,
+                dimensionDictionary: dimensionDictionary,
+                objectOptionDictionary: ObjectPickViewModel.optionDictionary)
+       
+        func setDictionaryProvider(
+            _ objectName: String?)
+        -> DictionaryProvider {
+            var objectType: BaseObjectTypes
+            if let unwrappedObjectName = objectName {
+                objectType = BaseObjectTypes(rawValue: unwrappedObjectName) ?? BaseObjectTypes.fixedWheelRearDrive
+            } else {
+                objectType = .fixedWheelRearDrive
+            }
+            
+
+            return
+                DictionaryProvider(
+                    objectType,
+                    ObjectPickViewModel.twinSitOnDictionary,
+                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]
+                    )
+
+        }
     }
 }
 
@@ -100,6 +122,11 @@ extension ObjectPickViewModel {
     
     func getCurrentObjectDictionary()->[String: PositionAsIosAxes] {
         objectPickModel.currentObjectDictionary
+    }
+    
+    
+    func getCornerDictionary() -> CornerDictionary {
+        objectPickModel.eightCornerPerNameDictionary
     }
     
     
@@ -156,30 +183,27 @@ extension ObjectPickViewModel {
     }
     
     
-    func getList(_  version: DictionaryVersion) -> [String] {
-        
-        let dictionary: PositionDictionary = getVersion()
-        
-        func getVersion() -> PositionDictionary {
+    func getList (_  version: DictionaryVersion) -> [String] {
+        var list: [String] = []
             switch version  {
             case .useCurrent:
-                
-
-                
-                
-              return  objectPickModel.currentObjectDictionary
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                    objectPickModel.currentObjectDictionary)
             case .useInitial:
-//print("TEST")
-//let dic = objectPickModel.initialDictionary
-//DictionaryInArrayOut().getNameValue(dic).forEach{print($0)}
-                
-              return  objectPickModel.initialDictionary
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                        objectPickModel.initialDictionary)
             case .useLoaded:
-              return  objectPickModel.loadedDictionary
-            }
-        }
-        return
-            DictionaryInArrayOut().getNameValue(dictionary)
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                        objectPickModel.loadedDictionary)
+            case .useDimension:
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                        objectPickModel.dimensionDictionary)
+                    }
+        return list
     }
     
     
@@ -443,10 +467,10 @@ extension ObjectPickViewModel {
         //let defaultDictionary = getDefaultObjectDictionary()
  
         let initialDictionary =
-        DimensionOriginCornerDictionaries(
+        DictionaryProvider(
             BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
                 ObjectPickViewModel.twinSitOnDictionary,
-                [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCornerOrigin
+                [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCorner
         
 //
 //        let initialDictionary =
@@ -483,45 +507,22 @@ extension ObjectPickViewModel {
 //            let defaultDictionary = getDefaultObjectDictionary()
           let objectName = getCurrentObjectName()
         
-            objectPickModel.currentObjectDictionary =
+           
+            let dictionaryProvider =
+                DictionaryProvider(
+                    BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
+                        ObjectPickViewModel.twinSitOnDictionary,
+                        [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary])
             
-            DimensionOriginCornerDictionaries(
-                BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
-                    ObjectPickViewModel.twinSitOnDictionary,
-                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCornerOrigin
+            objectPickModel.currentObjectDictionary = dictionaryProvider.preTiltObjectToCorner
             
+            objectPickModel.eightCornerPerNameDictionary = dictionaryProvider.pretTiltObjectToAllPartCorner
             
-//            CreateInitialObject(
-//                objectName: objectName,
-//                optionsDictionary,
-//                twinSitOnDictionary,
-//                defaultDictionary
-//            ).dictionary
+            objectPickModel.dimensionDictionary =
+                dictionaryProvider.dimension
+
     }
-    
-    func setCurrentObjectByCreatingFromName2(
-        _ twinSitOnDictionary: TwinSitOnOptionDictionary) {
-            
-            let objectName = getCurrentObjectName ()
-          
-//            let optionsDictionary = getObjectOptionsDictionary()
-//
-//            let defaultDictionary = getDefaultObjectDictionary()
-          
-        
-            objectPickModel.currentObjectDictionary =
-            DimensionOriginCornerDictionaries(
-                BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
-                    ObjectPickViewModel.twinSitOnDictionary,
-                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCornerOrigin
-            
-//            CreateInitialObject(
-//                objectName: objectName,
-//                optionsDictionary,
-//                twinSitOnDictionary,
-//                defaultDictionary
-//            ).dictionary
-    }
+
     
     
     
@@ -542,5 +543,6 @@ extension ObjectPickViewModel {
 //print(getObjectOptionsDictionary())
     }
 
-
+   
 }
+

@@ -77,6 +77,9 @@ struct ContentView: View {
         objectPickVM.getList(.useLoaded)
     }
     
+    var dimensionsAsList: [String] {
+        objectPickVM.getList(.useDimension)
+    }
     
     var equipmentName: String  {
         objectPickVM.getCurrentObjectName()
@@ -209,7 +212,12 @@ struct ContentView: View {
                 NavigationLink(destination: ListView(equipmentName, initialObjectDictionaryAsList)){
                  Text("View initial dictionary")
                 }
-
+                
+                NavigationLink(destination: ListView(equipmentName, dimensionsAsList)){
+                 Text("View initial dimensions")
+                }
+                
+                
                 NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
                  Text("View saved dictionary")
                 }

@@ -150,7 +150,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             let general =
             (x: 0.0,
                  y: defaultFootSupportDimension.getHangerLink().length,
-                 z:  -(DimensionOriginCornerDictionaries.sitOnHeight -
+                 z:  -(DictionaryProvider.sitOnHeight -
                        footSupportHeightAboveFloor +
                       jointBelowSeat)
             )
