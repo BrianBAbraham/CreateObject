@@ -37,7 +37,43 @@ struct ForScreen {
     }
 }
 
-
+struct ForScreen2 {
+    var dictionary: CornerDictionary = [:]
+    
+    init( _ actualSize: CornerDictionary,
+          _ offset: PositionAsIosAxes,
+          _ scale: Double
+    ) {
+        dictionary = createDictionaryForScreen(actualSize, scale, offset)
+    }
+    
+    func createDictionaryForScreen(
+        _ actualSize: CornerDictionary,
+        _ scale: Double,
+        _ offset: PositionAsIosAxes)
+    -> CornerDictionary {
+        let scaleFactor = scale/scale
+//print (scale)
+//print (offset)
+        var dictionaryForScreen: CornerDictionary = [:]
+        for item in actualSize {
+            var screenValues: [PositionAsIosAxes] = []
+            
+            for position in item.value {
+//print (position)
+                screenValues.append(
+                (x: (position.x + offset.x) * scaleFactor,
+                 y: (position.y + offset.y) * scaleFactor,
+                 z: (position.z * scaleFactor) )  )
+            }
+//print (screenValues)
+            dictionaryForScreen[item.key] = screenValues
+        }
+        
+        //print (dictionaryForScreen)
+        return dictionaryForScreen
+    }
+}
 
 ///input unique name
 ///get four cornefor unique name
@@ -429,4 +465,25 @@ struct Replace {
         return initialWithReplacements
     }
     
+}
+
+
+struct ConvertFourCornerPerKeyToOne {
+    var oneCornerPerKey: PositionDictionary = [:]
+    
+    init (fourCornerPerElement: CornerDictionary) {
+        oneCornerPerKey = convert(fourCornerPerElement)
+    }
+
+    
+  func convert(_ fourCornerPerElement: CornerDictionary)
+    -> PositionDictionary {
+      var oneCornerPerKey: PositionDictionary = [:]
+        for (key, value) in fourCornerPerElement {
+            for index in 0..<value.count {
+                oneCornerPerKey += [key + Part.stringLink.rawValue + Part.corner.rawValue + String(index): value[index]]
+            }
+        }
+        return oneCornerPerKey
+    }
 }

@@ -191,7 +191,7 @@ struct CreateIosPosition {
     }
     
 
-    static func minus(_ touple:
+    static func negative(_ touple:
     PositionAsIosAxes)
     -> PositionAsIosAxes {
         (x: -touple.x, y: -touple.y, z: touple.z)
@@ -205,35 +205,35 @@ struct CreateIosPosition {
             y: right.y,
             z: right.z)
     }
+//    
+//    static func forLeftRight(
+//        x: Double = 0.0,
+//        y: Double = 0.0,
+//        z: Double = 0.0)
+//    -> LeftRightPositionAsIosAxis{
+//            (left:  (x: -x, y: y, z: 0.0 ),
+//             right: (x: x, y: y, z: 0.0 )
+//            )
+//            
+//        }
     
-    static func forLeftRight(
-        x: Double = 0.0,
-        y: Double = 0.0,
-        z: Double = 0.0)
-    -> LeftRightPositionAsIosAxis{
-            (left:  (x: -x, y: y, z: 0.0 ),
-             right: (x: x, y: y, z: 0.0 )
-            )
-            
-        }
-    
-    static func forLeftRightFromPosition(
-        _ position: PositionAsIosAxes)
-    -> LeftRightPositionAsIosAxis{
-        (left:  (x: -position.x, y: position.y, z: position.z ),
-         right: (x: position.x, y: position.y, z: position.z)
-            )
-        }
-    
-    static func forLeftRightAsArray(
-        x: Double = 0.0,
-        y: Double = 0.0,
-        z: Double = 0.0)
-    -> [PositionAsIosAxes]{
-            [(x: -x, y: y, z: 0.0 ),
-             (x: x, y: y, z: 0.0 )
-            ]
-        }
+//    static func forLeftRightFromPosition(
+//        _ position: PositionAsIosAxes)
+//    -> LeftRightPositionAsIosAxis{
+//        (left:  (x: -position.x, y: position.y, z: position.z ),
+//         right: (x: position.x, y: position.y, z: position.z)
+//            )
+//        }
+//
+//    static func forLeftRightAsArray(
+//        x: Double = 0.0,
+//        y: Double = 0.0,
+//        z: Double = 0.0)
+//    -> [PositionAsIosAxes]{
+//            [(x: -x, y: y, z: 0.0 ),
+//             (x: x, y: y, z: 0.0 )
+//            ]
+//        }
     
 //    static func forSinglePartAsArrayFromPosition(
 //        _ p: PositionAsIosAxes )
@@ -241,12 +241,12 @@ struct CreateIosPosition {
 //            [(x: p.x, y: p.y, z: p.z)]
 //        }
     
-    static func forLeftRightAsArrayFromPosition(
-        _ p: PositionAsIosAxes )
-    -> [PositionAsIosAxes]{
-            [(x: -p.x, y: p.y, z: p.z ),
-             (x: p.x, y: p.y, z: p.z)]
-        }
+//    static func forLeftRightAsArrayFromPosition(
+//        _ p: PositionAsIosAxes )
+//    -> [PositionAsIosAxes]{
+//            [(x: -p.x, y: p.y, z: p.z ),
+//             (x: p.x, y: p.y, z: p.z)]
+//        }
     
 //    static func forLeftRightAsArrayFromPositionIfNonZeroX(
 //        _ p: PositionAsIosAxes )
@@ -273,17 +273,17 @@ struct CreateIosPosition {
         return newPositions
     }
     
-    static func orderLeftThenRightmost(
-        _ positions: [PositionAsIosAxes])
-    -> [PositionAsIosAxes] {
-        var leftThenRightmost = positions
-        
-        if positions[1].x < positions[0].x {
-            leftThenRightmost.reverse()
-        }
-            
-            return leftThenRightmost
-    }
+//    static func orderLeftThenRightmost(
+//        _ positions: [PositionAsIosAxes])
+//    -> [PositionAsIosAxes] {
+//        var leftThenRightmost = positions
+//
+//        if positions[1].x < positions[0].x {
+//            leftThenRightmost.reverse()
+//        }
+//
+//            return leftThenRightmost
+//    }
     
 //    static func convertToXY (_ positions: [PositionAsIosAxes])
 //        -> [(x: Double, y: Double)]
@@ -307,23 +307,27 @@ struct CreateIosPosition {
     
     
 
-    static func minMaxPositionY (
-        _ corners: [PositionAsIosAxes])
+    static func minMaxPosition(
+        _ corners: PositionDictionary)
         -> [PositionAsIosAxes] {
-       
-        let cornersAsArray = CreateIosPosition
-            .getArrayFromPositions(corners)
-       
-        let yValues = cornersAsArray.y
-        let minValue = yValues.min() ?? 0.0
-        let maxValue = yValues.max() ?? 0.0
-        let minIndex = yValues.firstIndex(of: minValue) ?? 0
-        let maxIndex = yValues.firstIndex(of: maxValue) ?? 0
-        let minCorner = corners[minIndex]
-        let maxCorner = corners[maxIndex]
-        return [minCorner, maxCorner]
+        let values = corners.map { $0.value }
+        let valuesAsArray = CreateIosPosition
+            .getArrayFromPositions(values)
+        let yValues = minMax(valuesAsArray.y)
+        let xValues = minMax(valuesAsArray.x)
+
+            func minMax(_ values: [Double]) -> [Double] {
+                let minValue = values.min() ?? 0.0
+                let maxValue = values.max() ?? 0.0
+                let minIndex = values.firstIndex(of: minValue) ?? 0
+                let maxIndex = values.firstIndex(of: maxValue) ?? 0
+                let minCorner = values[minIndex]
+                let maxCorner = values[maxIndex]
+                return [minCorner, maxCorner]
+            }
+            return  [(x: xValues[0], y: yValues[0], z: 0.0), (x: xValues[1], y: yValues[1], z: 0.0)]
     }
-    //}
+
     
     
    

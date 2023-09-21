@@ -341,7 +341,7 @@ struct DictionaryProvider {
 
                     for index in 0..<topViewCorners.count {
                         preTiltObjectToCorner +=
-                        [nameWithoutObject + Part.stringLink.rawValue + "corner" + String(index): topViewCorners[index]]
+                        [nameWithoutObject + Part.stringLink.rawValue + Part.corner.rawValue + String(index): topViewCorners[index]]
                     }
 //    print (nameWithoutObject)
 //    print (topViewCorners)

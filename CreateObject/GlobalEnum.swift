@@ -32,7 +32,7 @@ enum Part: String {
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
     case backSupportHeadLinkRotationJoint = "backSupportHeadSupportLinkHorizontalJoint"
     case backSupportReclineAngle = "backSupportReclineAngle"
-    
+    //case corner = "corner"
     
     case baseToCarryBarConnector = "baseToCarryBarConnector"
     case baseWheelJoint = "baseWheelJoint"

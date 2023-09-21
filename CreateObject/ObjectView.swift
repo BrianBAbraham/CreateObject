@@ -10,7 +10,6 @@ import SwiftUI
 
 struct LocalOutlineRectangle {
     static func path(corners: [CGPoint], _ color: Color = .black) -> some View {
-        
         ZStack {
             Path { path in
                 path.move(to: corners[0])
@@ -38,13 +37,10 @@ struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var partEditVM: ObjectEditViewModel
     let uniquePartName: String
-    var dictionary: PositionDictionary
-    var pretTiltObjectToAllPartCorner: CornerDictionary {
-        objectPickVM.getCornerDictionary()
-    }
-        
-    let onlyOneDictionaryMember = 0
-       
+    var pretTiltObjectToAllPartCorner: CornerDictionary //{
+//        objectPickVM.getObjectDictionaryForScreen()
+//    }
+    
     var color: Color {
         partEditVM.getColorForPart(uniquePartName)
     }
@@ -158,12 +154,12 @@ struct ObjectView: View {
 
     
     var body: some View {
-        let currentDictionary =
-        objectPickVM.getCurrentObjectDictionary()
+        let dictionaryForScreen =
+            objectPickVM.getObjectDictionaryForScreen()
         //objectPickVM.getCurrentObjectDictionary()
         
-        let dictionaryForScreen =
-            objectPickVM.getObjectDictionaryForScreen(currentDictionary)
+//        let dictionaryForScreen =
+//            objectPickVM.getObjectDictionaryForScreen(currentDictionary)
         
         let frameSize =
             objectPickVM.getScreenFrameSize()
@@ -173,7 +169,7 @@ struct ObjectView: View {
             ForEach(uniquePartNames, id: \.self) { name in
                 PartView(
                     uniquePartName: name,
-                    dictionary: dictionaryForScreen//,
+                    pretTiltObjectToAllPartCorner: dictionaryForScreen//,
 //                    pretTiltObjectToAllPartCorner: pretTiltObjectToAllPartCorner
                 )
             }

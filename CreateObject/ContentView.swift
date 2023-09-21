@@ -109,9 +109,9 @@ struct ContentView: View {
         objectPickVM.getUniquePartNamesFromObjectDictionary()
     }
 
-    var originDictionary: [String] {
-        DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary())
-    }
+//    var originDictionary: [String] {
+//        DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary())
+//    }
 
     var currentDictionary: PositionDictionary {
         objectPickVM.getCurrentObjectDictionary()
