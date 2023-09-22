@@ -24,13 +24,14 @@ rear: PositionAsIosAxes)
 typealias OptionDictionary = [ObjectOptions: Bool]
 typealias PositionDictionary = [String: PositionAsIosAxes]
 ///the positions for the four corners are as Corners type
-typealias PositionCornerDictionary = [String: Corners]
+//typealias PositionCornerDictionary = [String: Corners]
 typealias MeasurementDictionary = [String: Double]
 typealias BaseObjectDoubleDictionary = [BaseObjectTypes: Double]
 typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
 //. Input BaseObjectType to get Dimension3d
 typealias BaseObject3DimensionDictionary = [BaseObjectTypes: Dimension3d]
 typealias PartDimensionDictionary = [String: Dimension]
+///[String: Dimension3d aka (width: Double, length: Double,  height: Double)]
 typealias Part3DimensionDictionary = [String: Dimension3d]
 typealias BaseObjectOriginDictionary = [BaseObjectTypes: PositionAsIosAxes]
 /// Input BaseObjectTypes to get default value for that object

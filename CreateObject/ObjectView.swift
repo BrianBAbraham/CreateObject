@@ -80,17 +80,13 @@ struct ObjectView: View {
     private var  minimumZoom = 0.1
     private var maximimumZoom = 3.0
     
+    
+    
+    
+    
+  //MARK: - ALWAYS UNIT SCALE 
     var dictionary: PositionDictionary {
         objectPickVM.getCurrentObjectDictionary()
-    }
-    
-    var objectOptionsDictionary: OptionDictionary {
-        objectPickVM.getObjectOptionsDictionary()
-    }
-    
-    
-    var twinSitOnOptionsDictionary: TwinSitOnOptionDictionary {
-        twinSitOnVM.getTwinSitOnOptions()  //TWIN
     }
     
     var initialDictionary: PositionDictionary {
@@ -104,6 +100,28 @@ struct ObjectView: View {
     var measurementScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(initialDictionary)
     }
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+    var objectOptionsDictionary: OptionDictionary {
+        objectPickVM.getObjectOptionsDictionary()
+    }
+    
+    
+    var twinSitOnOptionsDictionary: TwinSitOnOptionDictionary {
+        twinSitOnVM.getTwinSitOnOptions()  //TWIN
+    }
+    
+
+    
+
     
     var zoom: CGFloat {
         getZoom()
@@ -165,16 +183,19 @@ struct ObjectView: View {
             objectPickVM.getScreenFrameSize()
         
        // GeometryReader { reader in
-        ZStack{
-            ForEach(uniquePartNames, id: \.self) { name in
-                PartView(
-                    uniquePartName: name,
-                    pretTiltObjectToAllPartCorner: dictionaryForScreen//,
-//                    pretTiltObjectToAllPartCorner: pretTiltObjectToAllPartCorner
-                )
+        //VStack{
+            ZStack{
+                ForEach(uniquePartNames, id: \.self) { name in
+                    PartView(
+                        uniquePartName: name,
+                        pretTiltObjectToAllPartCorner: dictionaryForScreen//,
+                        //                    pretTiltObjectToAllPartCorner: pretTiltObjectToAllPartCorner
+                    )
+                }
             }
-        }
-
+//            Text(String(Int(defaultScale/measurementScale)))
+//                .font(.largeTitle)
+//        }
         //}
         .border(.red, width: 5)
         //.frame(width: frameSize.width, height: frameSize.length)

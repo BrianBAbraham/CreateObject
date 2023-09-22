@@ -199,33 +199,29 @@ struct DictionaryInStringOut {
 }
 
 
+struct FindGeneralPart {
+    let specificPartName: String
+    let partCase: Part
+    
+    init(_ specificPartName: String) {
+        self.specificPartName = specificPartName
+        partCase = getPartCase()
+        
+        func getPartCase() -> Part{
+            var partCase = Part.notFound
+            let components = specificPartName.components(separatedBy: "_")
+            if components.count >= 3 {
+                let generalPartName = components[2]
+//print (Part(rawValue: generalPartName)!)
+                partCase = Part(rawValue: generalPartName) ??  Part.notFound
+//print (partCase)
+            }
+            return partCase
+        }
+    }
+}
 
-//struct DictionaryInArrayOut2 {
-//    func getNameValue (_ dictionary: [String: PositionAsIosAxes ], _ sender: String = "") -> [String]{
-//        var namesAndMeasurements: [String] = []
-//        var values: PositionAsIosAxes
-//        for key in dictionary.keys {
-//            values = dictionary[key]!
-//            namesAndMeasurements.append(
-//                key + ": " +
-//                String(Int(values.x)) + Part.stringLink.rawValue +
-//                String(Int(values.y)) + Part.stringLink.rawValue +
-//                String(Int(values.z))
-//            )
-//        }
-//        let sortedNamesAndMeasurements = namesAndMeasurements.sorted(by: <)
-//        return sortedNamesAndMeasurements
-//    }
-//
-//    
-//    func getAllOriginNamesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{
-//        DictionaryInStringOut(myDictionary).stringOfNamesOut
-//    }
-//    
-//    func getAllOriginValuesAsString(_ myDictionary: [String: PositionAsIosAxes ]) -> String{
-//        DictionaryInStringOut(myDictionary).stringOfValuesOut
-//    }
-//}
+
 
 struct DictionaryInArrayOut {
     
@@ -444,21 +440,24 @@ extension Dictionary {
 }
 
 struct Replace {
-    var intialWithReplacements: PositionDictionary = [:]
+    var intialWithReplacements: CornerDictionary = [:]
     
-    init( initial: PositionDictionary, replacement: PositionDictionary) {
-        
+    init( initial: CornerDictionary, replacement: CornerDictionary) {
+//print( replacement)
         intialWithReplacements =
         replace(initial, replacement)
+//print (initial)
     }
 
     func replace(
-        _ initial: PositionDictionary,
-        _ replacement: PositionDictionary) -> PositionDictionary{
+        _ initial: CornerDictionary,
+        _ replacement: CornerDictionary) -> CornerDictionary{
+            let nameWithoutObject = RemoveObjectName()
         var initialWithReplacements = initial
         for (key, value) in replacement {
-            if let oldValue = initial[key] {
-                
+           let keyWithoutObject = nameWithoutObject.remove(key)
+            if initial[keyWithoutObject] != nil {
+//print ("FOUND")
                 initialWithReplacements[key] = value
             }
         }

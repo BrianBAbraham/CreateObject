@@ -40,6 +40,18 @@ struct ConnectStrings {
 }
 
 
+struct RemoveObjectName {
+    let nameToBeRemovedCharacterCount = CreateNameFromParts([.object, .id0, .stringLink]).name.count
+    
+    func remove(_ name: String)
+        -> String {
+        let startIndex =
+           name.index(name.startIndex, offsetBy: nameToBeRemovedCharacterCount)
+        
+        return
+         String(name[startIndex...])
+    }
+}
 
 
 struct CreateNameFromParts {

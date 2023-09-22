@@ -7,7 +7,11 @@
 
 
 /*
-CREATE CORNER DICTIONARY
+ PickInitialObjectView: Default equipment
+ -> DictionaryProvider -> currentDictionary
+ 
+ 
+ DictionaryProvider
 
  INPUTS from UI/load
   dimensionIn / preTiltOriginIn/ /angleIn:  dictionary for parts
@@ -114,15 +118,35 @@ CREATE CORNER DICTIONARY
  
 
  
-     
-
-     
-     
-
+ DictionaryProvider DICTIONARY NAMES
+ IN
+ ...DicIn: empty or populated, edited in UI and passed in
+ dimensionDicIn: provides a 3d dimension for each specific part, sides can be different
+ 
+ preTilt...all angle at zero
+ preTiltParentToPartOriginDicIn: origin from parent
+ preTiltObjectToPartOriginDicIn: aorigin from object origin
+ 
+ angleDicIn: all angles for part or part collections which angle
  
  
+ DEFAULT
+ angleDic: all angles for part or part collections which angle
+ dimensionDic: the default dimensions
+ 
+ preTiltParentToPartOriginDic: default origin from parent
+ preTiltObjectToPartOriginDic: default origin from object origin
+     
+ preTiltObjectToCornerDic: default object origin to corner0...corner3 with unique key for each corner, used for determining dimensions
+ pretTiltObjectToPartFourCornerPerKeyDic: default default object origin to corner0...corner3 with common key for all corner,
+ 
+ postTiltObjectToCornerDic:
+ postTiltObjectToPartFourCornerPerKey: used by UI
 
-
+ 
+ currentDic -> UI
+ 
+ 
  */
 
 

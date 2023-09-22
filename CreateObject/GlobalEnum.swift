@@ -102,7 +102,7 @@ enum Part: String {
     case object = "object"
     case objectOrigin = "objectOrigin"
     case viewOrigin = "viewOrigin"
-
+case notFound = "notAnyPart"
     case sitOn = "sitOn"
     case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"

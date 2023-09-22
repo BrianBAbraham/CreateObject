@@ -54,7 +54,9 @@ struct AllWheelRelated: PartDimension  {
                 getForFourCaster()
 //        case .allCasterSixHoist:
 //            parts = PartGroup.sixCasterParts
-//        case .allCasterTiltInSpaceShowerChair:
+        case .allCasterTiltInSpaceShowerChair:
+            defaultRearMidFrontDimension =
+                getForFourCaster()
 //            parts = PartGroup.fourCasterParts
 //            defaultDimensions = fourCaster
 //        case .allCasterStandAid:

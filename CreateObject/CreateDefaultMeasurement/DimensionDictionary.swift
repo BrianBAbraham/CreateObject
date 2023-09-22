@@ -103,7 +103,7 @@ struct OccupantSupportDimensionDictionary {
                 DimensionDictionary(
                     preTiltBodySupportOrigin.allOriginIdNodes[index],
                     [dimension, dimension],
-                    parent.dimensionIn,
+                    parent.dimensionDicIn,
                     index).forPart
             }
         }
@@ -136,7 +136,7 @@ struct OccupantSupportDimensionDictionary {
             DimensionDictionary(
                 [originIdNodes],
                 dimensions,
-                parent.dimensionIn,
+                parent.dimensionDicIn,
                 onlyOneWheelSet
             ).forPart
     }
@@ -205,7 +205,7 @@ struct OccupantSupportDimensionDictionary {
             default: break
             }
             if originIdNodesForBothSitOn.count > 0 {
-                dictionary = DimensionDictionary(originIdNodesForBothSitOn, dimensions, parent.dimensionIn, sitOnIndex).forPart
+                dictionary = DimensionDictionary(originIdNodesForBothSitOn, dimensions, parent.dimensionDicIn, sitOnIndex).forPart
             }
         }
         
