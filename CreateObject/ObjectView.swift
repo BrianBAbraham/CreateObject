@@ -37,7 +37,7 @@ struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var partEditVM: ObjectEditViewModel
     let uniquePartName: String
-    var pretTiltObjectToAllPartCorner: CornerDictionary //{
+    var objectToFourCornerPerKeyDic: CornerDictionary //{
 //        objectPickVM.getObjectDictionaryForScreen()
 //    }
     
@@ -48,12 +48,12 @@ struct PartView: View {
     var partCorners: [CGPoint] {
         DictionaryElementIn(
             [uniquePartName:
-            pretTiltObjectToAllPartCorner[uniquePartName] ??  [ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation] ]).cgPointsOut()
+            objectToFourCornerPerKeyDic[uniquePartName] ??  [ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation] ]).cgPointsOut()
     }
   
     var zPosition: Double {
         //ensures objects drawn in order of height
-        DictionaryElementIn(pretTiltObjectToAllPartCorner).maximumHeightOut()
+        DictionaryElementIn(objectToFourCornerPerKeyDic).maximumHeightOut()
     }
     
     var body: some View {
@@ -100,14 +100,6 @@ struct ObjectView: View {
     var measurementScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(initialDictionary)
     }
-    
-  
-    
-    
-    
-    
-    
-    
     
     
     var objectOptionsDictionary: OptionDictionary {
@@ -172,7 +164,7 @@ struct ObjectView: View {
 
     
     var body: some View {
-        let dictionaryForScreen =
+        let dictionaryForScreen: CornerDictionary =
             objectPickVM.getObjectDictionaryForScreen()
         //objectPickVM.getCurrentObjectDictionary()
         
@@ -188,7 +180,7 @@ struct ObjectView: View {
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(
                         uniquePartName: name,
-                        pretTiltObjectToAllPartCorner: dictionaryForScreen//,
+                        objectToFourCornerPerKeyDic: dictionaryForScreen//,
                         //                    pretTiltObjectToAllPartCorner: pretTiltObjectToAllPartCorner
                     )
                 }

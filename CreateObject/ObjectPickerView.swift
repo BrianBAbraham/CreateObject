@@ -24,8 +24,8 @@ struct PickInitialObjectView: View {
     @State private var recline = false
     //@State private var reclineToggle = false
     
-    var defaultObjectDictionary: Part3DimensionDictionary {
-        objectPickVM.getDefaultObjectDictionary()}
+//    var defaultObjectDictionary: Part3DimensionDictionary {
+//        objectPickVM.getDefaultObjectDictionary()}
     
     var currentEqipmentType: String {
         getCurrentEquipmentType()

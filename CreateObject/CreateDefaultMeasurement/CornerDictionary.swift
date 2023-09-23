@@ -139,18 +139,26 @@ struct DictionaryProvider {
 //MARK: - DIMENSIONS
         createOccupantSupportDimensionDictionary()
 
-
-        createPreTiltCornerDictionary()
+        preTiltObjectToPartFourCornerPerKeyDic =
+            createCornerDictionary(
+                   preTiltObjectToPartOriginDic,
+                   dimensionDic,
+                   .preTilt)
+            
+            
 //print ("preTiltObjectToCorner")
-//print (pretTiltObjectToAllPartCorner)
+//print (preTiltObjectToPartFourCornerPerKeyDic)
 //print ("\n\n\n")
 
 //MARK: - CHANGE USE DIMENSIONS
             //requires GetUniquesNames to be changed
-        uniqueNames = GetUniqueNames(preTiltObjectToCornerDic).forDimensions
+        uniqueNames = UniqueNamesForDimensions(dimensionDic).are
             
-            postTiltObjectToPartFourCornerPerKeyDic = creatPostTiltObjectToPartOriginDictionary()
- 
+            postTiltObjectToPartFourCornerPerKeyDic =             createCornerDictionary(
+                preTiltObjectToPartOriginDic,
+                dimensionDic,
+                .postTilt)
+//print (postTiltObjectToPartFourCornerPerKeyDic)
 //print (uniqueNames)
         //POST TILT
       //  creatPostTiltObjectToPartOriginDictionary()
@@ -160,7 +168,7 @@ struct DictionaryProvider {
 //DictionaryInArrayOut().getNameValue(postTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
             
             //print("\n\n\n")
-DictionaryInArrayOut().getNameValue( preTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue( postTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
                 //print("/n ORIGIN")
 //DictionaryInArrayOut().getNameValue( preTiltObjectToPartOrigin).forEach{print($0)}
 //DictionaryInArrayOut().getNameValue( preTiltObjectToCornerOrigin).forEach{print($0)}
@@ -320,38 +328,68 @@ DictionaryInArrayOut().getNameValue( preTiltObjectToPartFourCornerPerKeyDic).for
             dimensionDic += dimensionForBody
         }
       
-
+enum Tilt {
+    case preTilt
+    case postTilt
+}
      
-        func createPreTiltCornerDictionary () {
-            //let nameToBeRemovedCharacterCount = CreateNameFromParts([.object, .id0, .stringLink]).name.count
-            let nameWithoutObject = RemoveObjectName()
-            for (key, value) in dimensionDic {
-                let originValue = preTiltObjectToPartOriginDic[key]
+        func createCornerDictionary
+            (_ dictionary: PositionDictionary,
+             _ dimension: Part3DimensionDictionary,
+            _ tilt: Tilt)
+            -> CornerDictionary{
+            let removeObjectName = RemoveObjectName() // key starts object_id0, remove
+            var cornerDictionary: CornerDictionary = [:]//pre and post tilt
+            var corners: [PositionAsIosAxes] = []
+            for (key, value) in dimension {
+                let originValue = dictionary[key]
                 if let originValue {
-                    let corners = CreateIosPosition.getCornersFromDimension( value)
+                    switch tilt {
+                    case .preTilt:
+                        corners =
+                            CreateIosPosition
+                            .getCornersFromDimension( value)
+                        
+                    case .postTilt:
+                        let part = FindGeneralPart(key).partCase
+                        
+                        if TiltGroupsFor().allAngle.contains( part) {
+                            let angleChange =
+                                //parent.angleDic[angleName] ??
+                            Measurement(value: 10.0 , unit: UnitAngle.degrees)
+                                //ZeroValue.angle
+                            corners =
+                                PartToCornersPostTilt(
+                                    dimensionIn: value,
+                                    angleChangeIn: angleChange).aferRotationAre
+                        } else {
+                            corners = CreateIosPosition.getCornersFromDimension( value)
+                        }
+//                        corners = CreateIosPosition.getCornersFromDimension( value)
+                    }
+                   
                     let cornersFromObject =
                         CreateIosPosition.addToupleToArrayOfTouples(
-                            originValue,corners)
+                            originValue,
+                            corners)
                     let topViewCorners = [4,5,6,7].map {cornersFromObject[$0]}
                     let sideViewCorners = [4,7,3,0].map {cornersFromObject[$0]}
                     
-//                    let startIndex =
-//                    key.index(key.startIndex, offsetBy: nameToBeRemovedCharacterCount)
                     // for compatability with prevous code
                     //object_id0_ is removed from the start
                     //of the name
-                    let nameWithoutObject = nameWithoutObject.remove(key)
-                    //String(key[startIndex...])
-
-
-                    for index in 0..<topViewCorners.count {
-                        preTiltObjectToCornerDic +=
-                        [nameWithoutObject + Part.stringLink.rawValue + Part.corner.rawValue + String(index): topViewCorners[index]]
-                    }
-                    preTiltObjectToPartFourCornerPerKeyDic += [nameWithoutObject: topViewCorners]
+                    let nameWithoutObject = removeObjectName.remove(key)
+                    
+//                    for index in 0..<topViewCorners.count {
+//                        preTiltObjectToCornerDic +=
+//                        [nameWithoutObject + Part.stringLink.rawValue + Part.corner.rawValue + String(index): topViewCorners[index]]
+//                    }
+                    cornerDictionary += [nameWithoutObject: topViewCorners]
                 }
             }
+            return cornerDictionary
         }
+            
             
         func creatPostTiltObjectToPartOriginDictionary()
             -> CornerDictionary{
@@ -457,7 +495,7 @@ extension DictionaryProvider {
                 if let originOfRotation = parent.preTiltObjectToPartOriginDic[originOfRotationName] {
                     let angleChange =
                         //parent.angleDic[angleName] ??
-                    Measurement(value: 45.0 , unit: UnitAngle.degrees)
+                    Measurement(value: 85.0 , unit: UnitAngle.degrees)
                         //ZeroValue.angle
                     
                     forSitOnWithFootTilt(

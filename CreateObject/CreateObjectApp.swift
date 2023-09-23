@@ -144,7 +144,16 @@
  postTiltObjectToPartFourCornerPerKey: used by UI
 
  
- currentDic -> UI
+ UI
+ ObjectView
+    objectPickVM.getObjectDictionaryForScreen()
+ 
+ ObjectPicViewModel
+ objectPickModel.fourCornerPerKeyDic
+    getCurrentObjectAsOneCornerPerKey
+ 
+ getFourCornerPerKeyDic()
+ 
  
  
  */

@@ -58,8 +58,11 @@ class ObjectPickViewModel: ObservableObject {
     init() {
         
         dictionaryProvider = setDictionaryProvider(nil)
-        dictionary = dictionaryProvider.preTiltObjectToCornerDic
+//        dictionary =
+//        dictionaryProvider.preTiltObjectToCornerDic
         cornerDictionary = dictionaryProvider.postTiltObjectToPartFourCornerPerKeyDic
+        dictionary =
+        ConvertFourCornerPerKeyToOne(fourCornerPerElement: cornerDictionary).oneCornerPerKey
         dimensionDictionary =
             dictionaryProvider.dimensionDic
         
@@ -74,22 +77,19 @@ class ObjectPickViewModel: ObservableObject {
        
         func setDictionaryProvider(
             _ objectName: String?)
-        -> DictionaryProvider {
+            -> DictionaryProvider {
             var objectType: BaseObjectTypes
             if let unwrappedObjectName = objectName {
                 objectType = BaseObjectTypes(rawValue: unwrappedObjectName) ?? BaseObjectTypes.fixedWheelRearDrive
             } else {
                 objectType = .fixedWheelRearDrive
             }
-            
-
             return
                 DictionaryProvider(
                     objectType,
                     ObjectPickViewModel.twinSitOnDictionary,
                     [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]
                     )
-
         }
     }
 }
@@ -120,8 +120,11 @@ extension ObjectPickViewModel {
 //    }
     
     
-    func getCurrentObjectDictionary()->[String: PositionAsIosAxes] {
-        objectPickModel.currentObjectDictionary
+    func getCurrentObjectDictionary()
+        ->PositionDictionary{
+        //objectPickModel.currentObjectDictionary
+        
+        ConvertFourCornerPerKeyToOne(fourCornerPerElement: objectPickModel.fourCornerPerKeyDic).oneCornerPerKey
     }
     
     
@@ -330,53 +333,29 @@ extension ObjectPickViewModel {
         //setCurrentObjectWithInitialOrEditedDictionary(objectName)
     }
     
+
     
-//    func createDefaultObjectDictionary(
-//        _ baseType: BaseObjectTypes,
-//        _ twinSitOnOptions: TwinSitOnOptionDictionary)
-//        -> Part3DimensionDictionary {
-//            return
-//                ObjectDefaultDimension(baseType,twinSitOnOptions).dictionary
-//
+    
+//    func setEditedObjectDictionary(_ editedDictionary: PositionDictionary) {
+//        objectPickModel.currentObjectDictionary = editedDictionary
 //    }
     
-//    func setDefaultObjectDictionary(
-//
-//            _ twinSitOnOptions: TwinSitOnOptionDictionary) {
-//             let baseType = getCurrentObjectType()
-//            objectPickModel.defaultObjectDictionary =
-//            createDefaultObjectDictionary(
-//                baseType,
-//                twinSitOnOptions)
-//
-//    }
-    
-    
-    func setEditedObjectDictionary(_ editedDictionary: PositionDictionary) {
-        objectPickModel.currentObjectDictionary = editedDictionary
-    }
     
     func setInitialObjectDictionary(_ objectName: String) {
         //let defaultDictionary = getDefaultObjectDictionary()
+  print("OBJECT SET")
+        let dictionaryProvider =
+            DictionaryProvider(
+                BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
+                    ObjectPickViewModel.twinSitOnDictionary,
+                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary] )
  
         let initialDictionary =
-        DictionaryProvider(
-            BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
-                ObjectPickViewModel.twinSitOnDictionary,
-                [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).postTiltObjectToCornerDic
+            dictionaryProvider.postTiltObjectToCornerDic
         
-//
-//        let initialDictionary =
-//            CreateInitialObject(
-//                objectName: objectName,
-//                getObjectOptionsDictionary(),
-//                [:],
-//                defaultDictionary)
-//                .dictionary
-        
-//DictionaryInArrayOut().getNameValue(initialDictionary).forEach{print($0)}
-//print(initialDictionary)
+
         objectPickModel.initialDictionary = initialDictionary
+        objectPickModel.fourCornerPerKeyDic = dictionaryProvider.preTiltObjectToPartFourCornerPerKeyDic
     }
     
     
@@ -394,10 +373,7 @@ extension ObjectPickViewModel {
     func setCurrentObjectByCreatingFromName(
         //_ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
         _ twinSitOnDictionary: TwinSitOnOptionDictionary) {
-            
-//            let optionsDictionary = getObjectOptionsDictionary()
-//
-//            let defaultDictionary = getDefaultObjectDictionary()
+
           let objectName = getCurrentObjectName()
         
            
@@ -407,9 +383,13 @@ extension ObjectPickViewModel {
                         ObjectPickViewModel.twinSitOnDictionary,
                         [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary])
             
-            objectPickModel.currentObjectDictionary = dictionaryProvider.preTiltObjectToCornerDic
+
             
-            objectPickModel.fourCornerPerKeyDic = dictionaryProvider.preTiltObjectToPartFourCornerPerKeyDic
+            objectPickModel.fourCornerPerKeyDic = dictionaryProvider.postTiltObjectToPartFourCornerPerKeyDic
+            
+            objectPickModel.currentObjectDictionary =
+                ConvertFourCornerPerKeyToOne(fourCornerPerElement: objectPickModel.fourCornerPerKeyDic )
+                    .oneCornerPerKey
             
             objectPickModel.dimensionDictionary =
                 dictionaryProvider.dimensionDic
@@ -419,11 +399,11 @@ extension ObjectPickViewModel {
     
     
     
-    func setCurrentObjectWithEditedDictionary(
-        _ editedDictionary: PositionDictionary) {
-            objectPickModel.currentObjectDictionary = editedDictionary
-            
-        }
+//    func setCurrentObjectWithEditedDictionary(
+//        _ editedDictionary: PositionDictionary) {
+//            objectPickModel.currentObjectDictionary = editedDictionary
+//
+//        }
     
     
     
@@ -472,12 +452,13 @@ extension ObjectPickViewModel {
     }
     
 
-    func getObjectDictionaryForScreen (
-        )
+    func getObjectDictionaryForScreen ()
         -> CornerDictionary {
-
+            
+        let currentDic =  objectPickModel.fourCornerPerKeyDic
         let currentObjectAsOneCornerPerKeyDic =
-            getCurrentObjectAsOneCornerPerKey()
+            ConvertFourCornerPerKeyToOne(
+                fourCornerPerElement: currentDic).oneCornerPerKey
 
         let minThenMax =
              CreateIosPosition
@@ -494,7 +475,7 @@ extension ObjectPickViewModel {
 
         let screenDictionary =
             ForScreen2(
-                getFourCornerPerKeyDic(),
+                currentDic,
                 offset,
                 scale
             ).dictionary
@@ -504,8 +485,11 @@ extension ObjectPickViewModel {
     
     func getScreenFrameSize ()
         -> Dimension{
+            
+        let currentDic =  objectPickModel.fourCornerPerKeyDic
         let objectInitialDimension =
-            getObjectDimension( getCurrentObjectAsOneCornerPerKey())
+            getObjectDimension( ConvertFourCornerPerKeyToOne(
+                fourCornerPerElement: currentDic).oneCornerPerKey)
             
         let objectDimensionWithLengthIncrease =
             (length: objectInitialDimension.length //+
@@ -533,9 +517,12 @@ extension ObjectPickViewModel {
     }
     
     
-    func getCurrentObjectAsOneCornerPerKey()
-        -> PositionDictionary {
-            ConvertFourCornerPerKeyToOne(
-                fourCornerPerElement: getFourCornerPerKeyDic()).oneCornerPerKey
-    }
+//    func getCurrentObjectAsOneCornerPerKey()
+//        -> PositionDictionary {
+//print(getFourCornerPerKeyDic()["object_id0_sitOn_id0_sitOn_id0"] ?? "none")
+            
+//            return
+//            ConvertFourCornerPerKeyToOne(
+//                fourCornerPerElement: getFourCornerPerKeyDic()).oneCornerPerKey
+//    }
 }

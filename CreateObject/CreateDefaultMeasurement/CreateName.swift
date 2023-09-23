@@ -75,12 +75,12 @@ struct CreateNameFromParts {
 
 struct GetUniqueNames {
     let forPart: [String]
-    var forDimensions: [String] = []
+  
     
     
     init(_ dictionary: PositionDictionary) {
         forPart = getUniquePartNamesOfCornerItems(dictionary)
-        forDimensions = getUniqueNameForDimensions(dictionary)
+       
         
         func getUniquePartNamesOfCornerItems(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
             var uniqueNames: [String] = []
@@ -102,7 +102,22 @@ struct GetUniqueNames {
             return uniqueNames.removingDuplicates()
         }
         
-        func getUniqueNameForDimensions(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
+
+    }
+}
+
+struct UniqueNamesForDimensions {
+    
+    var are: [String] = []
+    
+    
+    init(_ dictionary: Part3DimensionDictionary) {
+        
+        are = getUniqueNameForDimensions(dictionary)
+        
+        
+        
+        func getUniqueNameForDimensions(_ dictionary: Part3DimensionDictionary ) -> [String] {
             var uniqueNames: [String] = []
             for (key, _) in dictionary {
                 let components =
