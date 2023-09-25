@@ -114,7 +114,7 @@ struct ContentView: View {
 //    }
 
     var currentDictionary: PositionDictionary {
-        objectPickVM.getCurrentObjectDictionary()
+        objectPickVM.getPostTiltOneCornerPerKeyDic()
     }
     
     var name: String {
@@ -152,7 +152,7 @@ struct ContentView: View {
                             PickInitialObjectView()
 
 
-                            AddToSceneView(objectPickVM.getCurrentObjectDictionary(), name)
+                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
                             Spacer()
                         }
                     HStack(alignment: .center) {

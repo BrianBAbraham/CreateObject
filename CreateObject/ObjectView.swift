@@ -37,9 +37,8 @@ struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var partEditVM: ObjectEditViewModel
     let uniquePartName: String
-    var objectToFourCornerPerKeyDic: CornerDictionary //{
-//        objectPickVM.getObjectDictionaryForScreen()
-//    }
+    var preTiltFourCornerPerKeyDic: CornerDictionary
+    var postTiltObjectToFourCornerPerKeyDic: CornerDictionary
     
     var color: Color {
         partEditVM.getColorForPart(uniquePartName)
@@ -48,12 +47,12 @@ struct PartView: View {
     var partCorners: [CGPoint] {
         DictionaryElementIn(
             [uniquePartName:
-            objectToFourCornerPerKeyDic[uniquePartName] ??  [ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation] ]).cgPointsOut()
+            postTiltObjectToFourCornerPerKeyDic[uniquePartName] ??  [ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation] ]).cgPointsOut()
     }
   
     var zPosition: Double {
         //ensures objects drawn in order of height
-        DictionaryElementIn(objectToFourCornerPerKeyDic).maximumHeightOut()
+        DictionaryElementIn(preTiltFourCornerPerKeyDic).maximumHeightOut()
     }
     
     var body: some View {
@@ -85,20 +84,17 @@ struct ObjectView: View {
     
     
   //MARK: - ALWAYS UNIT SCALE 
-    var dictionary: PositionDictionary {
-        objectPickVM.getCurrentObjectDictionary()
-    }
     
-    var initialDictionary: PositionDictionary {
-        objectPickVM.getObjectDictionary()
+    var postTiltOneCornerPerKeyDic: PositionDictionary {
+        objectPickVM.getPostTiltOneCornerPerKeyDic()
     }
     
     var defaultScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(dictionary)
+        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
     }
 
     var measurementScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(initialDictionary)
+        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
     }
     
     
@@ -111,10 +107,6 @@ struct ObjectView: View {
         twinSitOnVM.getTwinSitOnOptions()  //TWIN
     }
     
-
-    
-
-    
     var zoom: CGFloat {
         getZoom()
     }
@@ -125,8 +117,8 @@ struct ObjectView: View {
     
     let objectManipulationIsActive: Bool
     
-    var pretTiltObjectToAllPartCorner: CornerDictionary {
-        objectPickVM.cornerDictionary
+    var preTiltFourCornerPerKeyDic: CornerDictionary {
+        objectPickVM.getPreTiltFourCornerPerKeyDic()
     }
     init(
         _ names: [String],
@@ -180,7 +172,8 @@ struct ObjectView: View {
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(
                         uniquePartName: name,
-                        objectToFourCornerPerKeyDic: dictionaryForScreen//,
+                        preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
+                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen//,
                         //                    pretTiltObjectToAllPartCorner: pretTiltObjectToAllPartCorner
                     )
                 }

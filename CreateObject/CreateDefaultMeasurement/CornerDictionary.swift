@@ -57,7 +57,7 @@ struct DictionaryProvider {
     var postTiltObjectToPartOriginDicIn: PositionDictionary = [:]
     var postTiltObjectToPartOriginDic: PositionDictionary = [:]
     var postTiltObjectToCornerDic: PositionDictionary = [:]
-    var postTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
+    var postTiltObjectToFourCornerPerKeyDic: CornerDictionary = [:]
     
     
    
@@ -148,7 +148,7 @@ struct DictionaryProvider {
             
             
 //MARK: - POST-TILT
-        postTiltObjectToPartFourCornerPerKeyDic =
+        postTiltObjectToFourCornerPerKeyDic =
             createPostTiltObjectToPartFourCornerPerKeyDic()
 
 //DictionaryInArrayOut().getNameValue(postTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}

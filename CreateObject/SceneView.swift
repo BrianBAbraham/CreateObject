@@ -28,7 +28,7 @@ struct AddToSceneView: View {
     
     var body: some View {
             Button(action: {
-                sceneVM.addObject(objectPickVM.getCurrentObjectDictionary(), name)
+                sceneVM.addObject(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
 
             }, label: {
                 Text("add to scene")
