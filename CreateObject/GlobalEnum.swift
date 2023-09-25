@@ -26,7 +26,7 @@ enum Part: String {
     case backSupportAssistantHandle = "backSupportRearHandle"
     case backSupportAssistantHandleInOnePiece = "backSupportRearHandleInOnePiece"
     case backSupportAssistantJoystick = "backSupportJoyStick"
-    case backSupporRotationJoint = "backSupportAngleJoint"
+    case backSupporRotationJoint = "backSupportRotationJoint"
     case backSupportHeadSupport = "backSupportHeadSupport"
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
@@ -162,12 +162,10 @@ struct TiltGroupsFor {
     let sitOnAngle: [Part] =
         [
         .sitOn,
-        .sideSupport,
-        .sideSupportRotationJoint,
         .joyStickForOccupant,
         .lieOnSupport,
         .sleepOnSupport,
-        .backSupporRotationJoint,
+       
         .footSupportHangerJoint
         ]
     
@@ -183,7 +181,7 @@ struct TiltGroupsFor {
         .backSupport,
         .backSupportAssistantJoystick,
         .backSupportAdditionalPart,
-        .backSupportAssistantHandle,
+        //.backSupportAssistantHandle,
         .backSupportHeadSupportJoint
         ]
     let headAngle: [Part] =
@@ -197,8 +195,10 @@ struct TiltGroupsFor {
         .sideSupport,
         .sideSupportRotationJoint,
         .footSupport,
+        .footSupportHangerJoint,
         .footSupportHangerLink,
         .footSupportJoint,
+        .backSupportAssistantHandle,
         ]
     var backAndHead: [Part]
         {backAngle + headAngle}
@@ -206,6 +206,13 @@ struct TiltGroupsFor {
         {sitOnAngle + backAndHead}
     var allAngle: [Part]
         {sitOnAndBackAngle + footAngle}
+    var sitOnWithFootAndBackTiltForTwoSides: [Part] {
+        leftAndRight
+    }
+    var sitOnWithFootAndBackTiltForUnilateral: [Part] {
+        sitOnAngle + backAngle + headAngle
+    }
+    
     
 }
 
@@ -228,9 +235,8 @@ struct PartGroup {
     static let backWithHeadSupport: [Part] =
         backSupport +
             [
-            .backSupportHeadSupportJoint,
-            .backSupportHeadSupportLink,
             .backSupportHeadLinkRotationJoint,
+            .backSupportHeadSupportLink,
             .backSupportHeadSupport]
     static let casterWheelNodes: [Part] =
             [

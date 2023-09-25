@@ -207,6 +207,8 @@ struct SupportObjectGroups {
     
     let forBack: [BaseObjectTypes]
     
+    let canTilt:[BaseObjectTypes] = [ .allCasterTiltInSpaceShowerChair]
+    
     init() {
         forFoot = forSitOn
         forBack = forSitOn

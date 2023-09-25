@@ -452,18 +452,23 @@ struct Replace {
     func replace(
         _ initial: CornerDictionary,
         _ replacement: CornerDictionary) -> CornerDictionary{
-            let nameWithoutObject = RemoveObjectName()
+        let nameWithoutObject = RemoveObjectName()
         var initialWithReplacements = initial
         for (key, value) in replacement {
            let keyWithoutObject = nameWithoutObject.remove(key)
             if initial[keyWithoutObject] != nil {
-//print ("FOUND")
-                initialWithReplacements[key] = value
+//if keyWithoutObject == "backSupport_id0_sitOn_id0" {
+//    print (keyWithoutObject)
+//    print (initial[keyWithoutObject])
+//    print (value)
+//    print ("")
+//}
+                
+                initialWithReplacements[keyWithoutObject] = value
             }
         }
         return initialWithReplacements
     }
-    
 }
 
 

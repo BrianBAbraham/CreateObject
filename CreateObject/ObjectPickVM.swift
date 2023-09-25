@@ -41,12 +41,7 @@ class ObjectPickViewModel: ObservableObject {
     static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
     
 
-    let dictionary: PositionDictionary// =
-//        DictionaryProvider(
-//            .fixedWheelRearDrive,
-//            ObjectPickViewModel.twinSitOnDictionary,
-//            [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]).preTiltObjectToCorner
-
+    let dictionary: PositionDictionary
 
     let cornerDictionary: CornerDictionary
     let dimensionDictionary: Part3DimensionDictionary
@@ -58,9 +53,9 @@ class ObjectPickViewModel: ObservableObject {
     init() {
         
         dictionaryProvider = setDictionaryProvider(nil)
-//        dictionary =
-//        dictionaryProvider.preTiltObjectToCornerDic
-        cornerDictionary = dictionaryProvider.postTiltObjectToPartFourCornerPerKeyDic
+
+        cornerDictionary =
+        dictionaryProvider.postTiltObjectToPartFourCornerPerKeyDic
         dictionary =
         ConvertFourCornerPerKeyToOne(fourCornerPerElement: cornerDictionary).oneCornerPerKey
         dimensionDictionary =
@@ -105,20 +100,7 @@ extension ObjectPickViewModel {
         DictionaryInArrayOut().getAllOriginValuesAsString(objectPickModel.currentObjectDictionary)
     }
     
-//    func getAllPartFromPrimaryOriginDictionary() -> [String: PositionAsIosAxes] {
-//        let allUniquePartNames = getUniquePartNamesFromObjectDictionary()
-//
-//        let dictionary = getRelevantDictionary(.forScreen)
-//        var originDictionary: [String: PositionAsIosAxes] = [:]
-//        for uniqueName in allUniquePartNames {
-//            let entryName = "primaryOrigin_id0_" + uniqueName
-//            let found = dictionary[entryName] ?? ZeroValue.iosLocation
-//            originDictionary += [uniqueName: found]
-//        }
-//
-//        return originDictionary
-//    }
-    
+
     
     func getCurrentObjectDictionary()
         ->PositionDictionary{
@@ -159,17 +141,6 @@ extension ObjectPickViewModel {
             return optionStates
     }
     
-//    func getCurrentOptionThereAreDoubleSitOn()
-//        -> Bool {
-//            let state =
-//            getCurrentOptionState(
-//                [ObjectOptions.doubleSitOnFrontAndRear,
-//                 ObjectOptions.doubleSitOnLeftAndRight])
-//
-//            return
-//                state.contains(true) ? true: false
-//    }
-    
     
     func getDefaultObjectDictionary()
         -> Part3DimensionDictionary {
@@ -179,6 +150,7 @@ extension ObjectPickViewModel {
 
         return defaultDimensionDictionary
     }
+    
 
     func getInitialObjectDictionary()
     -> PositionDictionary {

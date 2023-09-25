@@ -97,7 +97,7 @@ struct OccupantBackSupportDefaultDimension {
     func getHeadSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-            (width: OccupantBodySupportDefaultDimension.general.width,
+            (width: 150.0,
             length: 100.0,
             height: 100.0)
         return
@@ -169,7 +169,18 @@ struct PreTiltOccupantBackSupportDefaultOrigin {
             dictionary[baseType] ?? general
     }
     
-    func getHeadLinkRotationJointToHeadSupport()
+    func getHeadLinkRotationJointToHeadLink()
+    -> PositionAsIosAxes {
+        let dictionary: OriginDictionary = [:]
+        let general =
+        (x: 0.0,
+         y: 0.0,
+         z: defaultBackSupportDimension.getHeadSupportLink().height/2)
+        return
+            dictionary[baseType] ?? general
+    }
+    
+    func getHeadSupportLinkToHeadSupport()
     -> PositionAsIosAxes {
         let dictionary: OriginDictionary = [:]
         let general =
@@ -189,6 +200,22 @@ struct OccupantBackSupportDefaultAngleChange {
     [:]
     
     static let general = Measurement(value: 0.0 , unit: UnitAngle.radians)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
+
+struct OccupantSitOnFootAndBackSupportDefaultAngleChange {
+    var dictionary: BaseObjectAngleDictionary =
+    [:]
+    
+    static let general = Measurement(value: 30.0 , unit: UnitAngle.degrees)
     
     let value: Measurement<UnitAngle>
     
