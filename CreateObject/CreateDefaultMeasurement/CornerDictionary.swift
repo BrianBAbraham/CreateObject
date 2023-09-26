@@ -91,7 +91,7 @@ struct DictionaryProvider {
         _ dimensionIn: Part3DimensionDictionary = [:],
         _ objectToPartOrigin: PositionDictionary = [:],
         _ parentToPartOrigin: PositionDictionary = [:],
-        _ angleIn: AngleDictionary = [:] ) {
+        angleIn: AngleDictionary = [:] ) {
             
         self.baseType = baseType
         self.twinSitOnOption = twinSitOnOption
@@ -107,15 +107,17 @@ struct DictionaryProvider {
         angleDic =
             ObjectAngleChange(parent: self).dictionary
 
-            
+//print(angleDic)
 //MARK: - ORIGIN/DICTIONARY
             
         // both parent to part and
         // object to part
-        preTiltOccupantBodySupportOrigin =
+        if !objectGroups.noWheel.contains( baseType) {
+            preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
-        getPreTiltBodyOriginDictionary()
-            
+            getPreTiltBodyOriginDictionary()
+        }
+        
         preTiltOccupantFootBackSideSupportOrigin =
             PreTiltOccupantSupportOrigin(parent: self)
         getPreTiltFootSideBackOriginDictionary()
@@ -462,10 +464,14 @@ extension DictionaryProvider {
                                partsOnLeftAndRight + TiltGroupsFor().sitOnWithFootAndBackTiltForUnilateral
            
             if let originOfRotation = parent.preTiltObjectToPartOriginDic[originOfRotationName] {
-                
+//print(parent.angleDicIn)
+//print(parent.angleDic)
                 let angleChange =
-                    OccupantSitOnFootAndBackSupportDefaultAngleChange(parent.baseType).value
-                
+                    parent.angleDicIn["tiltAngle_sitOn_id0"] ??
+                    parent.angleDic["tiltAngle_sitOn_id0"] ?? ZeroValue.angle
+
+//print(parent.angleDicIn["tiltAngle_sitOn_id0"])
+                print ("")
                 for part in  allParts {
                     let partIds: [Part] =  partsOnLeftAndRight.contains(part) ? [.id0, .id1]: [.id0]
                     
@@ -927,12 +933,16 @@ extension DictionaryProvider {
                         parent.preTiltParentToPartOriginDic,
                         [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
                     
-                    allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex) )
-
-                    allOriginIdNodes =
-                    [
-                     allOriginIdNodesForSideSupportForBothSitOn,
-                    ]
+                    
+                    if BaseObjectGroups().sideSupport.contains(parent.baseType) {
+                        allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex) )
+                        
+                        allOriginIdNodes =
+                        [
+                            allOriginIdNodesForSideSupportForBothSitOn,
+                        ]
+                        
+                    }
                     
                     if BaseObjectGroups().backSupport.contains(parent.baseType) {
                         allOriginIdNodesForBackSupportForBothSitOn.append( getOriginIdNodesForBackSupport(sitOnIndex) )
@@ -1018,7 +1028,8 @@ extension DictionaryProvider {
             -> OriginIdNodes {
             
             let footPlateInOnePieceState =
-            parent.objectOptions[sitOnIndex][.footSupportInOnePiece] ?? false
+                parent.objectOptions[sitOnIndex][.footSupportInOnePiece] ?? false ||
+                parent.baseType == .showerTray
             
             var footSupportInOneOrTwoPieces: Part
             var footJointToFootSupportOrigin: PositionAsIosAxes

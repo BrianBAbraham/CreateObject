@@ -51,7 +51,7 @@ struct PickInitialObjectView: View {
             .onChange(of: equipmentType) {tag in
 
                 self.equipmentType = tag
-                objectPickVM.setInitialObjectDictionary(tag)
+                //objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
    
 //print(objectPickVM.getInitialObjectDictionary())

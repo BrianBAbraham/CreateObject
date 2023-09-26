@@ -89,33 +89,41 @@ struct MeasurementsFrom {
 
 struct DictionaryElementIn {
 
-    let singleElementDictionary: [String: [PositionAsIosAxes]]
-    let onlyOneDictionaryMember = 0
-    let locationsFromPrimaryOrigin: [PositionAsIosAxes]
+    let dictionary: CornerDictionary
+    let uniqueName: String
+    let corners: Corners
     
-    init (_ element: [String: [PositionAsIosAxes]]) {
-        self.singleElementDictionary = element
-       locationsFromPrimaryOrigin = singleElementDictionary.map{$0.1}[onlyOneDictionaryMember]
-  
+    init (
+        _ dictionary: CornerDictionary,
+        _ uniqueName: String) {
 
+        self.dictionary = dictionary
+        self.uniqueName = uniqueName
+        corners =
+            dictionary[uniqueName] ??
+            [ZeroValue.iosLocation, ZeroValue.iosLocation, ZeroValue.iosLocation, ZeroValue.iosLocation]
     }
+    
+    
     func cgPointsOut() -> [CGPoint] {
-
         var points: [CGPoint] = []
-        for location in locationsFromPrimaryOrigin {
-            points.append(CGPoint(x: location.x , y: location.y))
+        for corner in corners {
+            points.append(CGPoint(x: corner.x , y: corner.y))
         }
         
         return points
     }
     
     func maximumHeightOut()
-    -> Double {
-       
-        CreateIosPosition.getArrayFromPositions(locationsFromPrimaryOrigin).z.max() ?? 0.0
+        -> Double {
+        let locations = CreateIosPosition.getArrayFromPositions(corners)
+        let maximumHeight = locations.z.max() ?? 0.0
+        return maximumHeight
     }
 
 }
+
+
 
 
 struct DictionaryWithValue {

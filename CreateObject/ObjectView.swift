@@ -44,15 +44,17 @@ struct PartView: View {
         partEditVM.getColorForPart(uniquePartName)
     }
     
+    var dictionaryElementIn: DictionaryElementIn {
+        DictionaryElementIn(postTiltObjectToFourCornerPerKeyDic, uniquePartName)
+    }
+    
     var partCorners: [CGPoint] {
-        DictionaryElementIn(
-            [uniquePartName:
-            postTiltObjectToFourCornerPerKeyDic[uniquePartName] ??  [ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation,ZeroValue.iosLocation] ]).cgPointsOut()
+        dictionaryElementIn.cgPointsOut()
     }
   
     var zPosition: Double {
         //ensures objects drawn in order of height
-        DictionaryElementIn(preTiltFourCornerPerKeyDic).maximumHeightOut()
+        dictionaryElementIn.maximumHeightOut()
     }
     
     var body: some View {
@@ -78,10 +80,6 @@ struct ObjectView: View {
     @State var lastCurrentZoom: CGFloat = 0.0
     private var  minimumZoom = 0.1
     private var maximimumZoom = 3.0
-    
-    
-    
-    
     
   //MARK: - ALWAYS UNIT SCALE 
     

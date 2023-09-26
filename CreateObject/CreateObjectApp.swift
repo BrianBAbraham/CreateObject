@@ -24,8 +24,9 @@
  angle (for editing)
  preTiltOrigin (for editing)
  postTiltOrigin (for editing)
- postTiltCorner for top view (for display)
- postTiltCorner for side view (for display)
+ preTiltFourCornerPerKeyDic for top view (for display zIndex)
+ postTiltFourCornerPerKeyDic for top view (for display)
+
   
   
  ZERO LEVEL

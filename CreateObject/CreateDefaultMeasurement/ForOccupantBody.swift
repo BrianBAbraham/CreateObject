@@ -51,7 +51,7 @@ struct OccupantBodySupportAngleJointDefaultDimension {
 
 // tilt as in tilted/rotated/angled
 // origins are described from the parent origin
-// and the object-orientation not the parent orientation
+// orientations from the object-orientation not the parent orientation
 
 struct PreTiltOccupantBodySupportDefaultOrigin {
     let baseType: BaseObjectTypes
@@ -74,12 +74,12 @@ struct PreTiltOccupantBodySupportDefaultOrigin {
 
 
 
-
+//only angle measurement is returned
 struct OccupantBodySupportDefaultAngleChange {
     let dictionary: BaseObjectAngleDictionary =
         [.allCasterTiltInSpaceShowerChair: Measurement(value: 30.0, unit: UnitAngle.degrees)]
     
-    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
+    static let general = Measurement(value: 0.0, unit: UnitAngle.degrees)
     
     let value: Measurement<UnitAngle>
     

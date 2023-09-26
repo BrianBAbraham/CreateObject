@@ -126,6 +126,7 @@ struct BaseObjectGroups {
     
     let footSupport: [BaseObjectTypes]
     let backSupport: [BaseObjectTypes]
+    let sideSupport: [BaseObjectTypes]
     
     let fourWheels: [BaseObjectTypes]
     let threeWheels: [BaseObjectTypes]
@@ -183,9 +184,15 @@ struct BaseObjectGroups {
         footSupport =
             twinSitOnAbility + [.allCasterChair,
                                 .allCasterStandAid,
-                                .allCasterTiltInSpaceShowerChair]
+                                .allCasterTiltInSpaceShowerChair,
+                                .showerTray]
         
         backSupport =
+            twinSitOnAbility + [.allCasterChair,
+                                .allCasterStandAid,
+                                .allCasterTiltInSpaceShowerChair]
+        
+        sideSupport =
             twinSitOnAbility + [.allCasterChair,
                                 .allCasterStandAid,
                                 .allCasterTiltInSpaceShowerChair]

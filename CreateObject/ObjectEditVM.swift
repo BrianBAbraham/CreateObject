@@ -208,7 +208,12 @@ extension ObjectEditViewModel {
             if uniquePartName.contains("HorizontalJoint") {
                 color = .red
             }
-            
+            if uniquePartName.contains("footSupportHangerSitOnVerticalJoint") {
+                color = .black
+            }
+            if uniquePartName.contains("footSupportHorizontalJoint") {
+                color = .black
+            }
             if uniquePartName.contains(Part.backSupport.rawValue) {
                 color = .gray
             }

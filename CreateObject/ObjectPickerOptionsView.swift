@@ -53,7 +53,7 @@ struct BackSupportRecline: View {
 }
 
 struct Tilt: View {
-    @State private var tiltToggle = false
+    @State private var tiltToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let showTilt: Bool
@@ -67,16 +67,13 @@ struct Tilt: View {
             Toggle("Tilt",isOn: $tiltToggle)
                 .onChange(of: tiltToggle) { value in
                     let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                   // let name = objectPickVM.getCurrentObjectName()
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.tiltInSpace,
                         tiltToggle)
                     objectPickVM.setCurrentObjectByCreatingFromName(
-                        //name,
-                        twinSitOnDictionary)
-                    //setCurrentObjectWithInitialOrEditedDictionary(
-                      //  name)
-                    
+                        twinSitOnDictionary,
+                        ["tiltAngle_sitOn_id0":
+                            Measurement(value: tiltToggle ? 30.0: 0.0, unit: UnitAngle.degrees)] )
                 }
         } else {
             EmptyView()

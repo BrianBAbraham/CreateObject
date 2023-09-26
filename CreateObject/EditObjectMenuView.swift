@@ -32,10 +32,12 @@ struct EditObjectMenuView: View {
     
     var body: some View {
         
-        let dictionary = objectPickVM.getRelevantDictionary(.forMeasurement)
+        let dictionary = objectPickVM.getAngleDic()
     
-        if objectPickVM.getCurrentObjectName().contains(GroupsDerivedFromRawValueOfPartTypes.sitOn.rawValue) {
-            //EditFootSupportLeftRightPosition(dictionary)
+        if objectPickVM.getCurrentObjectType() ==
+            .allCasterTiltInSpaceShowerChair {
+//            MyCircle(fillColor: .red, strokeColor: .black, 500.0 ,  CGPoint(x:100.0, y: 100.0))
+            
         } else {
             EmptyView()
         }
