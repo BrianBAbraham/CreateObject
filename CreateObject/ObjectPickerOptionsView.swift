@@ -64,16 +64,19 @@ struct Tilt: View {
     
     var body: some View {
         if showTilt {
-            Toggle("Tilt",isOn: $tiltToggle)
+            Toggle("Tilt", isOn: $tiltToggle)
                 .onChange(of: tiltToggle) { value in
                     let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+
                     objectPickVM.setObjectOptionDictionary(
                         ObjectOptions.tiltInSpace,
                         tiltToggle)
+
                     objectPickVM.setCurrentObjectByCreatingFromName(
                         twinSitOnDictionary,
                         ["tiltAngle_sitOn_id0":
                             Measurement(value: tiltToggle ? 30.0: 0.0, unit: UnitAngle.degrees)] )
+              
                 }
         } else {
             EmptyView()

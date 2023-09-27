@@ -120,7 +120,8 @@ struct DictionaryProvider {
         
         preTiltOccupantFootBackSideSupportOrigin =
             PreTiltOccupantSupportOrigin(parent: self)
-        getPreTiltFootSideBackOriginDictionary()
+        
+            getPreTiltFootSideBackOriginDictionary()
         
         
         //do not add wheels to for example a shower tray
@@ -152,8 +153,10 @@ struct DictionaryProvider {
 //MARK: - POST-TILT
         postTiltObjectToFourCornerPerKeyDic =
             createPostTiltObjectToPartFourCornerPerKeyDic()
-
-//DictionaryInArrayOut().getNameValue(postTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
+            //no dimension for
+//DictionaryInArrayOut().getNameValue(dimensionDic).forEach{print($0)}
+            // produces object_id0_tiltInSpaceHorizontalJoint_id1_sitOn_id0: 0.0, 250.0, 1500.0
+//DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic).forEach{print($0)}
             
       
         func getPreTiltWheelOrigin()
@@ -254,6 +257,18 @@ struct DictionaryProvider {
             if let data =
                 preTiltOccupantFootBackSideSupportOrigin
                     as? PreTiltOccupantSupportOrigin {
+                
+                if BaseObjectGroups().tiltInSpace.contains(baseType) {
+                    //print("TILT FOUND")
+                    let allOriginIdNodesForTiltInSpaceeForBothSitOn =
+                        data.allOriginIdNodesForTiltInSpaceForBothSitOn
+                    for allOriginIdNodesForTiltInSpace in
+                            allOriginIdNodesForTiltInSpaceeForBothSitOn {
+                                createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdNodesForTiltInSpace)
+                        //print (allOriginIdNodesForTiltInSpace)
+                    }
+                }
+
 
                 let allOriginIdNodesForSideForBothSitOn = data.allOriginIdNodesForSideSupportForBothSitOn
                 for allOriginIdNodesForSide in
@@ -284,6 +299,10 @@ struct DictionaryProvider {
                             parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
                         preTiltObjectToPartOriginDic +=
                             parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
+//                        if BaseObjectGroups().tiltInSpace.contains(baseType) {
+//
+//                            print ( parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart() )
+//                        }
                 }
             }
         }
@@ -291,14 +310,16 @@ struct DictionaryProvider {
       
         func createOccupantSupportDimensionDictionary() {
             let occupantSupportDimensionDictionary =
-                OccupantSupportDimensionDictionary(parent: self)
+                    OccupantSupportDimensionDictionary(parent: self)
             
             dimensionDic += occupantSupportDimensionDictionary.forWheels
             dimensionDic +=
                 occupantSupportDimensionDictionary.forBack
             dimensionDic += occupantSupportDimensionDictionary.forFoot
             dimensionDic += occupantSupportDimensionDictionary.forSide
-            
+//print(occupantSupportDimensionDictionary.forSide)
+            dimensionDic += occupantSupportDimensionDictionary.forTiltInSpace
+//print(occupantSupportDimensionDictionary.forTiltInSpace)
             ///dimensionForBody must be subsequent to for... which have sitOn in their nodes
             ///otherwise§
             let dimensionForBody  = occupantSupportDimensionDictionary.forBody
@@ -901,11 +922,13 @@ extension DictionaryProvider {
         let defaultFootOrigin: PreTiltOccupantFootSupportDefaultOrigin
         let defaultBackOrigin: PreTiltOccupantBackSupportDefaultOrigin
         let defaultSideOrigin: PreTiltOccupantSideSupportDefaultOrigin
+        var defaultTiltInSpaceOrigin: PositionAsIosAxes = ZeroValue.iosLocation
         var sitOnId: Part = .id0
         var objectToSitOn: PositionAsIosAxes = ZeroValue.iosLocation
         var allOriginIdNodesForFootSupportForBothSitOn:  [OriginIdNodes]  = []
         var allOriginIdNodesForSideSupportForBothSitOn:  [OriginIdNodes]  = []
         var allOriginIdNodesForBackSupportForBothSitOn:  [OriginIdNodes]  = []
+        var allOriginIdNodesForTiltInSpaceForBothSitOn:  [OriginIdNodes]  = []
      
         var allOriginIdNodes: [[OriginIdNodes]] = []
 
@@ -929,9 +952,16 @@ extension DictionaryProvider {
                     
                     //access sit on position from dictionary
                     objectToSitOn =
-                    GetValueFromDictionary(
-                        parent.preTiltParentToPartOriginDic,
-                        [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
+                        GetValueFromDictionary(
+                            parent.preTiltParentToPartOriginDic,
+                            [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
+                    
+                    if BaseObjectGroups().tiltInSpace.contains(parent.baseType) {
+                        defaultTiltInSpaceOrigin =
+                            PreTiltOccupantTiltInSpaceDefaultOrigin(parent.baseType).value
+                        allOriginIdNodesForTiltInSpaceForBothSitOn.append(
+                            getOriginIdNodesForTitltInSpace(sitOnIndex))
+                    }
                     
                     
                     if BaseObjectGroups().sideSupport.contains(parent.baseType) {
@@ -957,7 +987,27 @@ extension DictionaryProvider {
                     }
                 }
             }
+        
+        
+        func getOriginIdNodesForTitltInSpace(_ sitOnIndex: Int)
+        -> OriginIdNodes {
+            let allTiltInSpaceNodes: [Part] =
+                    partGroup.tiltInSpace
+            let allTiltInSpaceJointOrigin =
+                [objectToSitOn,
+                 defaultTiltInSpaceOrigin]
+             let allTiltInSpaceIds =
+                 [
+                 [sitOnId],
+                 bilateralWidthPositionId]
+            return
+               (
+                origin: allTiltInSpaceJointOrigin,
+                ids: allTiltInSpaceIds,
+                nodes: allTiltInSpaceNodes)
+        }
                 
+        
         func getOriginIdNodesForSideSupport(_ sitOnIndex: Int)
             -> OriginIdNodes {
             let allSideSupportNodes: [Part] =

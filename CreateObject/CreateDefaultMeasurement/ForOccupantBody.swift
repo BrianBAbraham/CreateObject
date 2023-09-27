@@ -17,7 +17,7 @@ struct OccupantBodySupportDefaultDimension {
      .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
      .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
         ]
-    static let general = (width: 400.0, length: 500.0, height: 50.0)
+    static let general = (width: 400.0, length: 400.0, height: 20.0)
     let value: Dimension3d
     
     init(
@@ -33,11 +33,11 @@ struct OccupantBodySupportAngleJointDefaultDimension {
     let dictionary: BaseObject3DimensionDictionary =
     [:
         ]
-   static let general =
-        (
-         width: OccupantBodySupportDefaultDimension.general.width * 1.5,
-         length: Joint.dimension.length,
-         height: Joint.dimension.length)
+    static let general = Joint.dimension3d
+//        (
+//         width: OccupantBodySupportDefaultDimension.general.width * 1.5,
+//         length: Joint.dimension.length,
+//         height: Joint.dimension.length)
     let value: Dimension3d
     
     init(
@@ -53,23 +53,33 @@ struct OccupantBodySupportAngleJointDefaultDimension {
 // origins are described from the parent origin
 // orientations from the object-orientation not the parent orientation
 
-struct PreTiltOccupantBodySupportDefaultOrigin {
+struct PreTiltOccupantTiltInSpaceDefaultOrigin {
     let baseType: BaseObjectTypes
+    //let sitOnLocation: PositionAsIosAxes
+    let value: PositionAsIosAxes
   
     
-    init ( _ baseType: BaseObjectTypes) {
+    init (
+            _ baseType: BaseObjectTypes//,
+           // _ sitOnLocation: PositionAsIosAxes
+    ) {
         self.baseType = baseType
+        //self.sitOnLocation = sitOnLocation
+                
+        value = getBodySupportToBodySupportRotationJoint()
+                
+    func getBodySupportToBodySupportRotationJoint()
+      -> PositionAsIosAxes {
+          let dictionary: OriginDictionary = [:]
+          let general =
+              (x: 0.0,
+               y: 0.0,
+               z: 1000.0)
+             
+          return
+              dictionary[baseType] ?? general
+                  }
         }
-    
-  func getBodySupportToBodySupportRotationJoint()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general = (x: 0.0, y: 0.0, z: -100.0)
-           
-        return
-            dictionary[baseType] ?? general
-    }
-    
 }
 
 

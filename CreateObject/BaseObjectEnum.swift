@@ -123,6 +123,7 @@ struct BaseObjectGroups {
     
     let noWheel: [BaseObjectTypes] = [.showerTray]
     let noBodySupport: [BaseObjectTypes] = [.showerTray]
+    let tiltInSpace: [BaseObjectTypes] = [.allCasterTiltInSpaceShowerChair]
     
     let footSupport: [BaseObjectTypes]
     let backSupport: [BaseObjectTypes]

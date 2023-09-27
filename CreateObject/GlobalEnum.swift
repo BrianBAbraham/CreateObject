@@ -219,6 +219,7 @@ struct TiltGroupsFor {
 
 ///objects are comprised of  groups of associated parts
 ///each property povides an array of parts relevant to the group
+///in order beginning with the part nearest to object origin
 struct PartGroup {
     static let sideSupport: [Part] =
             [
@@ -227,6 +228,9 @@ struct PartGroup {
             .sideSupport]
     static let sitOn: [Part] =
         [.sitOn]
+    static let tiltInSpace: [Part] =
+            [.sitOn,
+             .bodySupportRotationJoint]
     static let backSupport: [Part] =
             [
             .sitOn,
