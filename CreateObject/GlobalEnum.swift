@@ -111,7 +111,7 @@ case notFound = "notAnyPart"
     case sideSupportRotationJoint = "sideSupportRotatationJoint"
     case stringLink = "_"
     case bodySupportAngle = "tiltAngle"
-    case bodySupportRotationJoint = "tiltInSpaceHorizontalJoint" 
+    case sitOnBackFootTiltJoint = "tiltInSpaceHorizontalJoint" 
     case topToBottomDimension = "yIos"
     case width = "Width"
 }
@@ -220,7 +220,7 @@ struct TiltGroupsFor {
 ///objects are comprised of  groups of associated parts
 ///each property povides an array of parts relevant to the group
 ///in order beginning with the part nearest to object origin
-struct PartGroup {
+struct PartChainGroup {
     static let sideSupport: [Part] =
             [
             .sitOn,
@@ -228,9 +228,11 @@ struct PartGroup {
             .sideSupport]
     static let sitOn: [Part] =
         [.sitOn]
-    static let tiltInSpace: [Part] =
+//    static let tiltInSpaceFromObject: [Part] =
+//            [.bodySupportRotationJoint]
+    static let sitOnBackFootTiltJointFromSitOn: [Part] =
             [.sitOn,
-             .bodySupportRotationJoint]
+            .sitOnBackFootTiltJoint]
     static let backSupport: [Part] =
             [
             .sitOn,

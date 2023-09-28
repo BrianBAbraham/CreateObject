@@ -17,7 +17,7 @@ struct OccupantBodySupportDefaultDimension {
      .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
      .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
         ]
-    static let general = (width: 400.0, length: 400.0, height: 20.0)
+    static let general = (width: 400.0, length: 400.0, height: 1.0)
     let value: Dimension3d
     
     init(
@@ -74,7 +74,7 @@ struct PreTiltOccupantTiltInSpaceDefaultOrigin {
           let general =
               (x: 0.0,
                y: 0.0,
-               z: 1000.0)
+               z: -100.0)
              
           return
               dictionary[baseType] ?? general
@@ -92,6 +92,23 @@ struct OccupantBodySupportDefaultAngleChange {
     static let general = Measurement(value: 0.0, unit: UnitAngle.degrees)
     
     let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: BaseObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
+
+
+struct OccupantBodySupportDefaultAngleMinMax {
+    let dictionary: AngleMinMaxDictionary =
+    [.allCasterTiltInSpaceShowerChair: (min: Measurement(value: -5.0, unit: UnitAngle.degrees), max: Measurement(value: 35.0, unit: UnitAngle.degrees) ) ]
+    
+    static let general = (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 0.0, unit: UnitAngle.degrees) )
+    
+    let value: MinMaxAngle
     
     init(
         _ baseType: BaseObjectTypes) {

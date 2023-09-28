@@ -19,7 +19,10 @@ enum DimensionGroup {
     case tiltInSpace
 }
 
-/// <#Description#>
+/// it is acknowledged that the use of nodes, an array of parts in order from object to part repeated to end of node chairn
+/// creates a duplication since for example many parts have sitOn as a parent and therefore the sitOn dimension is created but
+/// adds no further elments to the dicitionary as it alreay exists
+/// However, this keeps the node chains intact
 struct DimensionDictionary {
     var forPart: Part3DimensionDictionary = [:]
     
@@ -42,7 +45,9 @@ struct DimensionDictionary {
                 
                 let nameEnd: [Part] = parts[partIndex] == .sitOn ?
                     [sitOnId, .stringLink, .sitOn, sitOnId] : [idsForPart[partIdIndex], .stringLink, .sitOn, sitOnId]
-                
+                if parts == PartChainGroup.sitOnBackFootTiltJointFromSitOn {
+                 
+                }
                 let x = nameStart + [ parts[partIndex]] + nameEnd
                 let partName = CreateNameFromParts(x).name
                 let dimension = dimensionIn[partName] ?? defaultDimensions[partIndex]
@@ -172,66 +177,74 @@ struct OccupantSupportDimensionDictionary {
         var dimensions: [Dimension3d] = []
         var dictionary: Part3DimensionDictionary = [:]
 
+        //check we have the data
         if let unwrappedPreTiltSupport = preTiltOccupantSupportOrigin {
             switch dimensionGroup {
-            case .back:
-                originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForBackSupportForBothSitOn
-                if originIdNodesForBothSitOn.count > 0 {//object may not have this part
-                    dimensions = AllOccupantBackRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex].nodes).defaultDimensions
-                }
-            case .foot:
-                originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
-                if originIdNodesForBothSitOn.count > 0 {//object may not have this part
-                    //let relevantOriginIdNodes = originIdNodesForBothSitOn[sitOnIndex]
-                    dimensions = AllOccupantFootRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex].nodes).defaultDimensions
-                }
-            case .side:
-                originIdNodesForBothSitOn =
-                    unwrappedPreTiltSupport.allOriginIdNodesForSideSupportForBothSitOn
-                if originIdNodesForBothSitOn.count > 0 {//object may not have this part
-                    dimensions =
-                    AllOccupantSideRelated(
-                        parent.baseType,
-                        originIdNodesForBothSitOn[sitOnIndex]
-                            .nodes )
-                                .defaultDimensions
-
-                }
-                
-            case .tiltInSpace:
-                originIdNodesForBothSitOn =
-                    unwrappedPreTiltSupport
-                    .allOriginIdNodesForTiltInSpaceForBothSitOn
-//MARK :- why is a zero dimension required
-                if originIdNodesForBothSitOn.count > 0 {
-                    dimensions =
-                    [ZeroValue.dimension3d, OccupantBodySupportAngleJointDefaultDimension (parent.baseType).value,
-                    ]
-                    
-                }
-                
-            default: break
+                case .back:
+                    originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForBackSupportForBothSitOn
+                    if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+                        dimensions =
+                            AllOccupantBackRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex]
+                                .nodes)
+                                    .defaultDimensions
+                    }
+                case .foot:
+                    originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
+                    if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+                        dimensions =
+                            AllOccupantFootRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex]
+                                .nodes)
+                                    .defaultDimensions
+                    }
+                case .side:
+                    originIdNodesForBothSitOn =
+                        unwrappedPreTiltSupport.allOriginIdNodesForSideSupportForBothSitOn
+                    if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+                        dimensions =
+                            AllOccupantSideRelated(
+                                parent.baseType,
+                                originIdNodesForBothSitOn[sitOnIndex]
+                                    .nodes )
+                                        .defaultDimensions
+                    }
+                case .tiltInSpace:
+                    originIdNodesForBothSitOn =
+                        unwrappedPreTiltSupport
+                        .allOriginIdNodesForTiltInSpaceForBothSitOn
+    
+                    if originIdNodesForBothSitOn.count > 0 {
+                        dimensions =
+                        [OccupantBodySupportDefaultDimension(parent.baseType).value,
+                        OccupantBodySupportAngleJointDefaultDimension (parent.baseType).value ]
+                    }
+                default: break
             }
             
             //Make the dictionary
             if originIdNodesForBothSitOn.count > 0 {
-                dictionary = DimensionDictionary(originIdNodesForBothSitOn, dimensions, parent.dimensionDicIn, sitOnIndex).forPart
+                dictionary =
+                    DimensionDictionary(
+                        originIdNodesForBothSitOn,
+                        dimensions,
+                        parent.dimensionDicIn,
+                        sitOnIndex)
+                            .forPart
             }
         }
         
-        func removeSitOn(
-            _ originIdNodesForBothSitOn: [OriginIdNodes],
-            _ sitOnIndex: Int)
-            -> [OriginIdNodes] {
-                var withoutSitOn = originIdNodesForBothSitOn
-                let changedElement =
-                    (
-                    origin: [withoutSitOn[sitOnIndex].origin.removeFirst()],
-                    ids: [withoutSitOn[sitOnIndex].ids.removeFirst()],
-                    nodes: [withoutSitOn[sitOnIndex].nodes.removeFirst()])
-                withoutSitOn[sitOnIndex] = changedElement
-                return withoutSitOn
-        }
+//        func removeSitOn(
+//            _ originIdNodesForBothSitOn: [OriginIdNodes],
+//            _ sitOnIndex: Int)
+//            -> [OriginIdNodes] {
+//                var withoutSitOn = originIdNodesForBothSitOn
+//                let changedElement =
+//                    (
+//                    origin: [withoutSitOn[sitOnIndex].origin.removeFirst()],
+//                    ids: [withoutSitOn[sitOnIndex].ids.removeFirst()],
+//                    nodes: [withoutSitOn[sitOnIndex].nodes.removeFirst()])
+//                withoutSitOn[sitOnIndex] = changedElement
+//                return withoutSitOn
+//        }
         
         return dictionary
     }

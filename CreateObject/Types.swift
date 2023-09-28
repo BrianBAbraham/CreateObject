@@ -47,7 +47,7 @@ typealias WheelSize = (radius: Double, width: Double)
 
 //typealias MinMax = (min: Double, max: Double)
 typealias AngleDictionary = [String: Measurement<UnitAngle>]
-typealias AngleMinMaxDictionary = [String: MinMaxAngle]
+typealias AngleMinMaxDictionary = [BaseObjectTypes: MinMaxAngle]
 ///input BaseObjectType to get angle
 typealias BaseObjectAngleDictionary = [BaseObjectTypes: Measurement<UnitAngle>]
 

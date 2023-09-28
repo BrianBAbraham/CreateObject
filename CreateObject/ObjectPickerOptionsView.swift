@@ -56,7 +56,10 @@ struct Tilt: View {
     @State private var tiltToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+    @State private var sliderValue: Double = 0.0
     let showTilt: Bool
+    var twinSitOnDictionary: TwinSitOnOptionDictionary {
+        twinSitOnVM.getTwinSitOnOptions()}
     
     init(_ name: String) {
         showTilt = name.contains("ilting") ? true: false
@@ -64,22 +67,45 @@ struct Tilt: View {
     
     var body: some View {
         if showTilt {
-            Toggle("Tilt", isOn: $tiltToggle)
-                .onChange(of: tiltToggle) { value in
-                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+            VStack {
+                Toggle("Tilt", isOn: $tiltToggle)
+                    .onChange(of: tiltToggle) { value in
+                        objectPickVM.setObjectOptionDictionary(
+                            ObjectOptions.tiltInSpace,
+                            tiltToggle)
+                        objectPickVM.setCurrentObjectByCreatingFromName(
+                            twinSitOnDictionary,
+                            ["tiltAngle_sitOn_id0":
+                                Measurement(value: tiltToggle ? 40.0: 0.0, unit: UnitAngle.degrees)] )
+                    }
+                Slider(value: $sliderValue, in: 0...40, step: 1.0)
+                                
+                Text("tilt-in-space angle: \(40 - Int(sliderValue))")
+                    .onChange(of: sliderValue) { newValue in
+                        objectPickVM.setCurrentObjectByCreatingFromName(
+                            twinSitOnDictionary,
+                            ["tiltAngle_sitOn_id0":
+                                Measurement(value: 40-sliderValue, unit: UnitAngle.degrees)] )
+                       }
 
-                    objectPickVM.setObjectOptionDictionary(
-                        ObjectOptions.tiltInSpace,
-                        tiltToggle)
-
-                    objectPickVM.setCurrentObjectByCreatingFromName(
-                        twinSitOnDictionary,
-                        ["tiltAngle_sitOn_id0":
-                            Measurement(value: tiltToggle ? 30.0: 0.0, unit: UnitAngle.degrees)] )
-              
-                }
+            }
         } else {
-            EmptyView()
+                EmptyView()
+            }
+        }
+    }
+
+
+struct SliderExample: View {
+    @State private var sliderValue: Double = 0.0
+
+    var body: some View {
+        VStack {
+            Slider(value: $sliderValue, in: 0...30, step: 1.0)
+                .padding()
+            
+            Text("Slider Value: \(Int(sliderValue))")
+                .font(.title)
         }
     }
 }

@@ -439,6 +439,45 @@ struct DictionaryProvider {
             }
         }
     }
+    
+//    struct ObjectAngleMinMax {
+//        var dictionary: AngleMinMaxDictionary = [:]
+//        
+//        init(
+//            parent: DictionaryProvider) {
+//            
+//                for id in parent.oneOrTwoIds {
+//                    setAngleDictionary( id)
+//                }
+//                
+//                
+//                func setAngleDictionary( _ id: Part) {
+//                let partForNames: [[Part]] =
+//                    [
+//                        [.bodySupportAngle, .stringLink, .sitOn, id],
+//                        [.backSupportReclineAngle, .stringLink, .sitOn, id],
+//                        [.legSupportAngle, .stringLink, .sitOn, id]
+//                    ]
+//                let defaultAngles =
+//                    [
+//                        OccupantBodySupportDefaultAngleChange(parent.baseType).value,
+//                        OccupantBackSupportDefaultAngleChange(parent.baseType).value,
+//                        OccupantFootSupportDefaultAngleChange(parent.baseType).value
+//                    ]
+//                var name: String
+//                var angle: Measurement<UnitAngle>
+//                for index in 0..<partForNames.count {
+//                    name =
+//                        CreateNameFromParts(partForNames[index]).name
+//                    angle =
+//                        parent.angleDicIn[name] ?? defaultAngles[index]
+//                    dictionary += [name: angle]
+//                }
+//            }
+//        }
+//    }
+    
+    
 } //Parent struct ends
 
 
@@ -477,7 +516,7 @@ extension DictionaryProvider {
             _ sitOnId: Part) {
                 
             let tiltOriginPart: [Part] =
-                [.object, .id0, .stringLink, .backSupporRotationJoint, .id0, .stringLink, .sitOn, sitOnId]
+                [.object, .id0, .stringLink, .sitOnBackFootTiltJoint, .id0, .stringLink, .sitOn, sitOnId]
             let originOfRotationName =
                     CreateNameFromParts(tiltOriginPart).name
             let partsOnLeftAndRight = TiltGroupsFor().sitOnWithFootAndBackTiltForTwoSides
@@ -492,7 +531,7 @@ extension DictionaryProvider {
                     parent.angleDic["tiltAngle_sitOn_id0"] ?? ZeroValue.angle
 
 //print(parent.angleDicIn["tiltAngle_sitOn_id0"])
-                print ("")
+                //print("")
                 for part in  allParts {
                     let partIds: [Part] =  partsOnLeftAndRight.contains(part) ? [.id0, .id1]: [.id0]
                     
@@ -820,7 +859,7 @@ extension DictionaryProvider.PreTiltWheelOrigin {
 extension DictionaryProvider {
     struct PreTiltWheelOrigin: InputForDictionary {
         //assignment form for static values
-        var partGroup: PartGroup.Type = PartGroup.self
+        var partGroup: PartChainGroup.Type = PartChainGroup.self
         
         //ObjectCreator
         let objectType: BaseObjectTypes
@@ -914,7 +953,7 @@ extension DictionaryProvider {
 extension DictionaryProvider {
     struct PreTiltOccupantSupportOrigin: InputForDictionary {
         let parent: DictionaryProvider
-        var partGroup: PartGroup.Type = PartGroup.self
+        var partGroup: PartChainGroup.Type = PartChainGroup.self
         let objectType: BaseObjectTypes
         let bilateralWidthPositionId: [Part] = [.id1, .id0]
         let unilateralWidthPositionId: [Part] = [.id0]
@@ -930,6 +969,10 @@ extension DictionaryProvider {
         var allOriginIdNodesForBackSupportForBothSitOn:  [OriginIdNodes]  = []
         var allOriginIdNodesForTiltInSpaceForBothSitOn:  [OriginIdNodes]  = []
      
+        /// an array in an arrray to allow use of protocol InputForDictionary
+        /// though not used in this struct
+        /// [ [OriginIdNodes] ] is used for wheels where there are three
+        /// to represent rear, mid, front
         var allOriginIdNodes: [[OriginIdNodes]] = []
 
         init(
@@ -959,47 +1002,60 @@ extension DictionaryProvider {
                     if BaseObjectGroups().tiltInSpace.contains(parent.baseType) {
                         defaultTiltInSpaceOrigin =
                             PreTiltOccupantTiltInSpaceDefaultOrigin(parent.baseType).value
+                        
                         allOriginIdNodesForTiltInSpaceForBothSitOn.append(
                             getOriginIdNodesForTitltInSpace(sitOnIndex))
+                    
+                        errorCheckForIdenticalOriginIdNodes(allOriginIdNodesForTiltInSpaceForBothSitOn)
                     }
                     
                     
                     if BaseObjectGroups().sideSupport.contains(parent.baseType) {
                         allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex) )
-                        
-                        allOriginIdNodes =
-                        [
-                            allOriginIdNodesForSideSupportForBothSitOn,
-                        ]
-                        
+                        errorCheckForIdenticalOriginIdNodes(allOriginIdNodesForSideSupportForBothSitOn)
                     }
                     
                     if BaseObjectGroups().backSupport.contains(parent.baseType) {
                         allOriginIdNodesForBackSupportForBothSitOn.append( getOriginIdNodesForBackSupport(sitOnIndex) )
-                        
-                        allOriginIdNodes.append(allOriginIdNodesForBackSupportForBothSitOn)
+                        errorCheckForIdenticalOriginIdNodes(allOriginIdNodesForBackSupportForBothSitOn)
                     }
                     
                     if BaseObjectGroups().footSupport.contains(parent.baseType) {
                         allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
-                        
-                        allOriginIdNodes.append(allOriginIdNodesForFootSupportForBothSitOn)
+                        errorCheckForIdenticalOriginIdNodes(allOriginIdNodesForFootSupportForBothSitOn)
                     }
                 }
             }
         
         
+        func errorCheckForIdenticalOriginIdNodes (
+            _ allOriginIdNodesForBothSitOn: [OriginIdNodes] ) {
+                for allOriginIdNode in allOriginIdNodesForBothSitOn {
+                    let originCount = allOriginIdNode.origin.count
+                    let idCount = allOriginIdNode.ids.count
+                    let nodeCount = allOriginIdNode.nodes.count
+                    let requiredCondition =
+                        originCount == idCount && idCount == nodeCount
+                
+                    if !requiredCondition {
+                        print("\(originCount)  \(idCount) \(nodeCount)")
+                        fatalError (
+                            "PreTiltOccupantSupportOrigin: originIdNodes must have equal count")
+                }
+            }
+        }
+        
         func getOriginIdNodesForTitltInSpace(_ sitOnIndex: Int)
         -> OriginIdNodes {
             let allTiltInSpaceNodes: [Part] =
-                    partGroup.tiltInSpace
+                partGroup.sitOnBackFootTiltJointFromSitOn
             let allTiltInSpaceJointOrigin =
-                [objectToSitOn,
+                [ objectToSitOn,
                  defaultTiltInSpaceOrigin]
              let allTiltInSpaceIds =
                  [
-                 [sitOnId],
-                 bilateralWidthPositionId]
+                unilateralWidthPositionId,
+                 unilateralWidthPositionId]
             return
                (
                 origin: allTiltInSpaceJointOrigin,
@@ -1064,7 +1120,7 @@ extension DictionaryProvider {
                 allBackSupportIds.append(unilateralWidthPositionId)
                 allBackSupportIds.append(unilateralWidthPositionId)
                 allBackSupportIds.append(unilateralWidthPositionId)
-                allBackSupportIds.append(unilateralWidthPositionId)
+              
             }
                 
             return
@@ -1143,7 +1199,7 @@ extension DictionaryProvider {
     /// to the body support, for example, front drive v rear drive
     /// requires the following considerable logic
     struct PreTiltOccupantBodySupportOrigin: InputForDictionary {
-        var partGroup: PartGroup.Type = PartGroup.self
+        var partGroup: PartChainGroup.Type = PartChainGroup.self
  
         let objectType: BaseObjectTypes
         let stability: Stability

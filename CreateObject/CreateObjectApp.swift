@@ -60,6 +60,8 @@
          OccupantFootSupportDefaultDimension
      
      THREE LEVEL
+ id may be 'unilateral' or 'bilateral'
+ 
      determines origin-id-nodes
      PreTiltOccupantSupportOrigin
      determines Foot/Back/Side from
@@ -198,6 +200,8 @@ struct CreateObjectApp: App {
 //        }
 //    }
 //}
+
+//sitOnBackFootTiltJoint
 
 
 ///objects are an array  of nodes
