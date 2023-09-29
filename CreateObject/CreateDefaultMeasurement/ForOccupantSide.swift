@@ -15,8 +15,8 @@ struct AllOccupantSideRelated: PartDimension {
 //    var rotatedDimensions: RotatedInXxDimensions = []
     init(
         _ baseType: BaseObjectTypes,
-        _ nodes: [Part]) {
-        self.parts = nodes
+        _ chain: [Part]) {
+        self.parts = chain
             
         let defaults =
             OccupantSideSupportDefaultDimension(baseType)

@@ -87,7 +87,7 @@ struct PreTiltOccupantTiltInSpaceDefaultOrigin {
 //only angle measurement is returned
 struct OccupantBodySupportDefaultAngleChange {
     let dictionary: BaseObjectAngleDictionary =
-        [.allCasterTiltInSpaceShowerChair: Measurement(value: 30.0, unit: UnitAngle.degrees)]
+    [.allCasterTiltInSpaceShowerChair: OccupantBodySupportDefaultAngleMinMax(.allCasterTiltInSpaceShowerChair).value.max]//Measurement(value: 90.0, unit: UnitAngle.degrees)]
     
     static let general = Measurement(value: 0.0, unit: UnitAngle.degrees)
     
@@ -103,12 +103,12 @@ struct OccupantBodySupportDefaultAngleChange {
 
 
 struct OccupantBodySupportDefaultAngleMinMax {
-    let dictionary: AngleMinMaxDictionary =
-    [.allCasterTiltInSpaceShowerChair: (min: Measurement(value: -5.0, unit: UnitAngle.degrees), max: Measurement(value: 35.0, unit: UnitAngle.degrees) ) ]
+    let dictionary: BaseObjectAngelMinMaxDictionary =
+    [.allCasterTiltInSpaceShowerChair: (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 45.0, unit: UnitAngle.degrees) ) ]
     
     static let general = (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 0.0, unit: UnitAngle.degrees) )
     
-    let value: MinMaxAngle
+    let value: AngleMinMax
     
     init(
         _ baseType: BaseObjectTypes) {

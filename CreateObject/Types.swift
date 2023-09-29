@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias MinMaxAngle = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle>)
+typealias AngleMinMax = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle>)
 typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
 typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
@@ -22,6 +22,13 @@ front: PositionAsIosAxes,
 rear: PositionAsIosAxes)
 
 typealias OptionDictionary = [ObjectOptions: Bool]
+
+
+///The dictionary provider uses the values to create the part
+///The UI  uses the values to remove the part from display
+typealias BaseOptionDictionary = [Part: Bool]
+
+
 typealias PositionDictionary = [String: PositionAsIosAxes]
 ///the positions for the four corners are as Corners type
 //typealias PositionCornerDictionary = [String: Corners]
@@ -47,10 +54,10 @@ typealias WheelSize = (radius: Double, width: Double)
 
 //typealias MinMax = (min: Double, max: Double)
 typealias AngleDictionary = [String: Measurement<UnitAngle>]
-typealias AngleMinMaxDictionary = [BaseObjectTypes: MinMaxAngle]
+typealias AngleMinMaxDictionary = [String: AngleMinMax]
 ///input BaseObjectType to get angle
 typealias BaseObjectAngleDictionary = [BaseObjectTypes: Measurement<UnitAngle>]
-
+typealias BaseObjectAngelMinMaxDictionary = [BaseObjectTypes: AngleMinMax]
 typealias BaseObjectWheelSizeDictionary = [BaseObjectTypes: WheelSize]
 
 typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
@@ -62,7 +69,7 @@ typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 /// origin: [PositionAsIosAxes]
 /// ids: [[Part]] : [.ida, .idb] where a,b is 0,1 or 2,3 or 4,5
 /// or [.id0] for a unilateral or centre part
-/// nodes: [part] where part is the part of the object
+/// chain: [part] where part is the part of the object
 /// nodes are ordered from .object to most distant node eg
 /// .sitOn,
 /// .backSupport.backSupporRotationJoint,
@@ -74,7 +81,7 @@ typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 typealias OriginIdNodes =
     (origin: [PositionAsIosAxes],
      ids: [[Part]],
-     nodes: [Part])
+     chain: [Part])
 
 ///OriginIdNodes type is assigned to
 ///'rear'', 'mid' and 'front'

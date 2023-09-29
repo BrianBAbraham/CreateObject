@@ -221,8 +221,40 @@ struct SupportObjectGroups {
         forFoot = forSitOn
         forBack = forSitOn
     }
+    
 }
+
+
+
+struct BaseObjectOptionProvider {
+    //let baseObject: BaseObjectTypes
+    var baseObjectOption: BaseOptionDictionary = [:]
+    
+    init ( _ baseObject: BaseObjectTypes) {
+        baseObjectOption = getBaseOptionOptions(baseObject)
+   
+    
+    
+    func getBaseOptionOptions (_ baseObject: BaseObjectTypes) -> BaseOptionDictionary{
+        switch baseObject {
+            
+            case .allCasterBed:
+                baseObjectOption =
+                    [.sideSupport: true,
+                     .sideSupportRotationJoint: true]
+            case .allCasterTiltInSpaceShowerChair:
+                baseObjectOption =
+                    [.backSupportHeadSupport: true,
+                     ]
+            default:
+                baseObjectOption = [:]
+        }
+        return baseObjectOption
+    }
+    }
+    
+}
+
 ///
-///allCaster
-///
-///
+///I need to have a system which
+///allows the UI to include/exlude partChains

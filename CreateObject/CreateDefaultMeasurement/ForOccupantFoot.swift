@@ -25,8 +25,8 @@ struct AllOccupantFootRelated: PartDimension {
    
     init(
         _ baseType: BaseObjectTypes,
-        _ nodes: [Part] ) {
-        self.parts = nodes
+        _ chain: [Part] ) {
+        self.parts = chain
         let defaults =
             OccupantFootSupportDefaultDimension(baseType)
         
@@ -99,7 +99,7 @@ struct OccupantFootSupportDefaultDimension {
     
     func getFootSupportInOnePiece() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary =
-        [.showerTray: (width: 900.0, length: 1200.0, height: 100.0)]
+        [.showerTray: (width: 900.0, length: 1200.0, height: 200.0)]
         let general =       (
             width: OccupantBodySupportDefaultDimension.general.width,
             length: 100.0,

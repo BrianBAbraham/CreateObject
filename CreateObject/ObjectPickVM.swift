@@ -22,6 +22,8 @@ struct ObjectPickModel {
     
     var angleDic: AngleDictionary
     
+    var angleMinMaxDic: AngleMinMaxDictionary
+    
 
     mutating func setObjectOptionDictionary(
         _ option: ObjectOptions,
@@ -49,6 +51,7 @@ class ObjectPickViewModel: ObservableObject {
     let postTiltFourCornerPerKeyDic: CornerDictionary
     let dimensionDic: Part3DimensionDictionary
     let angleDic: AngleDictionary
+    let angleMinMaxDic: AngleMinMaxDictionary
 
     
     @Published private var objectPickModel: ObjectPickModel
@@ -68,6 +71,8 @@ class ObjectPickViewModel: ObservableObject {
             dictionaryProvider.dimensionDic
         angleDic =
             dictionaryProvider.angleDic
+        angleMinMaxDic =
+            dictionaryProvider.angleMinMaxDic
         
         objectPickModel =
             ObjectPickModel(
@@ -76,7 +81,8 @@ class ObjectPickViewModel: ObservableObject {
                 postTiltFourCornerPerKeyDic: postTiltFourCornerPerKeyDic,
                 dimensionDic: dimensionDic,
                 objectOptionDictionary: ObjectPickViewModel.optionDictionary,
-                angleDic: angleDic)
+                angleDic: angleDic,
+                angleMinMaxDic: angleMinMaxDic)
        
         func setDictionaryProvider(
             _ objectName: String?)
@@ -115,6 +121,12 @@ extension ObjectPickViewModel {
     func getAngleDic()
     -> AngleDictionary {
             objectPickModel.angleDic
+    }
+    
+    
+    func getAngleMinMaxDic()
+    -> AngleMinMaxDictionary {
+            objectPickModel.angleMinMaxDic
     }
     
     
@@ -300,6 +312,8 @@ extension ObjectPickViewModel {
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
                 dictionaryProvider.dimensionDic
+            objectPickModel.angleMinMaxDic =
+                dictionaryProvider.angleMinMaxDic
         }
 
         

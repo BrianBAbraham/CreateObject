@@ -14,8 +14,8 @@ struct AllOccupantBackRelated: PartDimension {
 
     init(
         _ baseType: BaseObjectTypes,
-        _ nodes: [Part] ) {
-        self.parts = nodes
+        _ chain: [Part] ) {
+        self.parts = chain
         
         let defaults =
             OccupantBackSupportDefaultDimension(baseType)

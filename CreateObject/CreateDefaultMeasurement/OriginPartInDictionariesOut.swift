@@ -31,7 +31,7 @@ struct OriginPartInDictionariesOut {
         _ preTiltParentToPartOriginIn: PositionDictionary) {
         rightOrUnilateralOrigin = originIdNodes.origin
         partIds = originIdNodes.ids
-        partNodes = originIdNodes.nodes
+        partNodes = originIdNodes.chain
         self.preTiltParentToPartOriginIn =
             preTiltParentToPartOriginIn
         ///names are in order from object to part

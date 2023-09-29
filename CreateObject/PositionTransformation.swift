@@ -11,14 +11,14 @@ struct ZeroValue {
     static let iosLocation: PositionAsIosAxes = (x: 0.0, y: 0.0, z: 0.0 )
     static let dimension3d: Dimension3d = (width:  0.0,  length: 0.0, height:  0.0)
     static let angle: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.radians)
-    
+    static let angleMinMax: AngleMinMax = (min: angle, max: angle)
     static let dimension3dRearMidFront =
         (rear: [dimension3d], mid: [dimension3d], front: [dimension3d] )
     
     static let originIdNodes: OriginIdNodes =
     (origin: [],
      ids: [[]],
-     nodes: [])
+     chain: [])
     
     static let rearMidFrontOriginIdNodes: RearMidFrontOriginIdNodes =
     (rear: ZeroValue.originIdNodes,
@@ -205,73 +205,30 @@ struct CreateIosPosition {
             y: right.y,
             z: right.z)
     }
-//    
-//    static func forLeftRight(
-//        x: Double = 0.0,
-//        y: Double = 0.0,
-//        z: Double = 0.0)
-//    -> LeftRightPositionAsIosAxis{
-//            (left:  (x: -x, y: y, z: 0.0 ),
-//             right: (x: x, y: y, z: 0.0 )
-//            )
-//            
-//        }
-    
-//    static func forLeftRightFromPosition(
-//        _ position: PositionAsIosAxes)
-//    -> LeftRightPositionAsIosAxis{
-//        (left:  (x: -position.x, y: position.y, z: position.z ),
-//         right: (x: position.x, y: position.y, z: position.z)
-//            )
-//        }
-//
-//    static func forLeftRightAsArray(
-//        x: Double = 0.0,
-//        y: Double = 0.0,
-//        z: Double = 0.0)
-//    -> [PositionAsIosAxes]{
-//            [(x: -x, y: y, z: 0.0 ),
-//             (x: x, y: y, z: 0.0 )
-//            ]
-//        }
-    
-//    static func forSinglePartAsArrayFromPosition(
-//        _ p: PositionAsIosAxes )
-//    -> [PositionAsIosAxes]{
-//            [(x: p.x, y: p.y, z: p.z)]
-//        }
-    
-//    static func forLeftRightAsArrayFromPosition(
-//        _ p: PositionAsIosAxes )
-//    -> [PositionAsIosAxes]{
-//            [(x: -p.x, y: p.y, z: p.z ),
-//             (x: p.x, y: p.y, z: p.z)]
-//        }
-    
-//    static func forLeftRightAsArrayFromPositionIfNonZeroX(
-//        _ p: PositionAsIosAxes )
-//    -> [PositionAsIosAxes]{
-//        p.x == 0.0 ?
-//            [p]:
-//            [(x: -p.x, y: p.y, z: p.z ),
-//             (x: p.x, y: p.y, z: p.z)]
-//        }
     
     static func byExtractingLeftRightOfAsArray(_ position: LeftRightPositionAsIosAxis  ) -> [PositionAsIosAxes] {
         [position.left, position.right]
     }
     
-
-    static func forDisplacementOfBaseOriginTopToBottomBy (_ lengthChange: Double, from positions: BasePositionAsIosAxes)
-    -> BasePositionAsIosAxes {
-        var newPositions = positions
-
-        newPositions.centre.y +=  -lengthChange
-        newPositions.front.y +=  -lengthChange
-        newPositions.rear.y +=  -lengthChange
-        
-        return newPositions
+    static func swapXY (_ positions: [PositionAsIosAxes]) -> [PositionAsIosAxes] {
+        var swapped: [PositionAsIosAxes] = []
+        for position in positions {
+            swapped.append((x: position.y, y: 1500 - position.z, z:  position.x))
+        }
+        return swapped
     }
+    
+
+//    static func forDisplacementOfBaseOriginTopToBottomBy (_ lengthChange: Double, from positions: BasePositionAsIosAxes)
+//    -> BasePositionAsIosAxes {
+//        var newPositions = positions
+//
+//        newPositions.centre.y +=  -lengthChange
+//        newPositions.front.y +=  -lengthChange
+//        newPositions.rear.y +=  -lengthChange
+//
+//        return newPositions
+//    }
     
 //    static func orderLeftThenRightmost(
 //        _ positions: [PositionAsIosAxes])

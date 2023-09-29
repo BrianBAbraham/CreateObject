@@ -60,55 +60,47 @@ struct Tilt: View {
     let showTilt: Bool
     var twinSitOnDictionary: TwinSitOnOptionDictionary {
         twinSitOnVM.getTwinSitOnOptions()}
-    
+    var angleName: String {
+        CreateNameFromParts( [.sitOnBackFootTiltJointAngle, .stringLink, .sitOn, .id0]).name    }
+//    var angleMinMax: AngleMinMax {
+//        objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.angleMinMax
+//    }
     init(_ name: String) {
         showTilt = name.contains("ilting") ? true: false
     }
     
     var body: some View {
+        let angleMinMax =
+            objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.angleMinMax
+        let angleMax = angleMinMax.max.value
+        let angleMin = angleMinMax.min.value
         if showTilt {
-            VStack {
-                Toggle("Tilt", isOn: $tiltToggle)
-                    .onChange(of: tiltToggle) { value in
-                        objectPickVM.setObjectOptionDictionary(
-                            ObjectOptions.tiltInSpace,
-                            tiltToggle)
-                        objectPickVM.setCurrentObjectByCreatingFromName(
-                            twinSitOnDictionary,
-                            ["tiltAngle_sitOn_id0":
-                                Measurement(value: tiltToggle ? 40.0: 0.0, unit: UnitAngle.degrees)] )
-                    }
-                Slider(value: $sliderValue, in: 0...40, step: 1.0)
-                                
-                Text("tilt-in-space angle: \(40 - Int(sliderValue))")
+            //VStack {
+//                Toggle("Tilt", isOn: $tiltToggle)
+//                    .onChange(of: tiltToggle) { value in
+//                        objectPickVM.setObjectOptionDictionary(
+//                            ObjectOptions.tiltInSpace,
+//                            tiltToggle)
+//                        objectPickVM.setCurrentObjectByCreatingFromName(
+//                            twinSitOnDictionary,
+//                            [angleName:
+//                                Measurement(value: tiltToggle ? 40.0: 0.0, unit: UnitAngle.degrees)] )
+                    //}
+                Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
+                Text("tilt-in-space angle: \(Int(angleMax - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
                         objectPickVM.setCurrentObjectByCreatingFromName(
                             twinSitOnDictionary,
-                            ["tiltAngle_sitOn_id0":
-                                Measurement(value: 40-sliderValue, unit: UnitAngle.degrees)] )
+                            [angleName:
+                                Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees)] )
                        }
-
-            }
+            //}
         } else {
                 EmptyView()
             }
         }
     }
 
-
-struct SliderExample: View {
-    @State private var sliderValue: Double = 0.0
-
-    var body: some View {
-        VStack {
-            Slider(value: $sliderValue, in: 0...30, step: 1.0)
-                .padding()
-            
-            Text("Slider Value: \(Int(sliderValue))")
-                .font(.title)
-        }
-    }
-}
 
 struct HeadSupport: View {
     @State private var headSuppportToggle = false

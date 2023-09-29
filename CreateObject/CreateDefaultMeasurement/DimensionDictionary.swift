@@ -34,7 +34,7 @@ struct DimensionDictionary {
         _ sitOnIndex: Int) {
             
         let sitOnId: Part = [.id0,.id1][sitOnIndex]
-        let parts = originIdNodes[sitOnIndex].nodes
+        let parts = originIdNodes[sitOnIndex].chain
 
         for partIndex in 0..<parts.count{
             let idsForPart: [Part] = originIdNodes[sitOnIndex].ids[partIndex]
@@ -45,7 +45,7 @@ struct DimensionDictionary {
                 
                 let nameEnd: [Part] = parts[partIndex] == .sitOn ?
                     [sitOnId, .stringLink, .sitOn, sitOnId] : [idsForPart[partIdIndex], .stringLink, .sitOn, sitOnId]
-                if parts == PartChainGroup.sitOnBackFootTiltJointFromSitOn {
+                if parts == PartChain.sitOnBackFootTiltJointFromSitOn {
                  
                 }
                 let x = nameStart + [ parts[partIndex]] + nameEnd
@@ -185,7 +185,7 @@ struct OccupantSupportDimensionDictionary {
                     if originIdNodesForBothSitOn.count > 0 {//object may not have this part
                         dimensions =
                             AllOccupantBackRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex]
-                                .nodes)
+                                .chain)
                                     .defaultDimensions
                     }
                 case .foot:
@@ -193,7 +193,7 @@ struct OccupantSupportDimensionDictionary {
                     if originIdNodesForBothSitOn.count > 0 {//object may not have this part
                         dimensions =
                             AllOccupantFootRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex]
-                                .nodes)
+                                .chain)
                                     .defaultDimensions
                     }
                 case .side:
@@ -204,7 +204,7 @@ struct OccupantSupportDimensionDictionary {
                             AllOccupantSideRelated(
                                 parent.baseType,
                                 originIdNodesForBothSitOn[sitOnIndex]
-                                    .nodes )
+                                    .chain )
                                         .defaultDimensions
                     }
                 case .tiltInSpace:
@@ -241,7 +241,7 @@ struct OccupantSupportDimensionDictionary {
 //                    (
 //                    origin: [withoutSitOn[sitOnIndex].origin.removeFirst()],
 //                    ids: [withoutSitOn[sitOnIndex].ids.removeFirst()],
-//                    nodes: [withoutSitOn[sitOnIndex].nodes.removeFirst()])
+//                    chain: [withoutSitOn[sitOnIndex].nodes.removeFirst()])
 //                withoutSitOn[sitOnIndex] = changedElement
 //                return withoutSitOn
 //        }

@@ -110,8 +110,11 @@ case notFound = "notAnyPart"
     case sideSupport = "sideSupport"
     case sideSupportRotationJoint = "sideSupportRotatationJoint"
     case stringLink = "_"
-    case bodySupportAngle = "tiltAngle"
+    
+    case sitOnBackFootTiltJointAngle = "tiltInSpaceAngle"
     case sitOnBackFootTiltJoint = "tiltInSpaceHorizontalJoint" 
+    
+    
     case topToBottomDimension = "yIos"
     case width = "Width"
 }
@@ -154,7 +157,7 @@ enum Toggles {
 
 ///Tilt acts on one or more part
 ///The parts affected by the tilt are placed in an array
-struct TiltGroupsFor {
+struct TiltPartChain {
     
     var foot: [String] {
         [Part.footSupport.rawValue, Part.footSupportJoint.rawValue]
@@ -220,7 +223,7 @@ struct TiltGroupsFor {
 ///objects are comprised of  groups of associated parts
 ///each property povides an array of parts relevant to the group
 ///in order beginning with the part nearest to object origin
-struct PartChainGroup {
+struct PartChain {
     static let sideSupport: [Part] =
             [
             .sitOn,
