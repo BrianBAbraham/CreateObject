@@ -28,7 +28,7 @@ struct DimensionDictionary {
     
     
     init(
-        _ originIdNodes: [OriginIdNodes],
+        _ originIdNodes: [OriginIdPartChain],
         _ defaultDimensions: [Dimension3d],
         _ dimensionIn: Part3DimensionDictionary,
         _ sitOnIndex: Int) {
@@ -45,7 +45,7 @@ struct DimensionDictionary {
                 
                 let nameEnd: [Part] = parts[partIndex] == .sitOn ?
                     [sitOnId, .stringLink, .sitOn, sitOnId] : [idsForPart[partIdIndex], .stringLink, .sitOn, sitOnId]
-                if parts == PartChain.sitOnBackFootTiltJointFromSitOn {
+                if parts == PartChainProvider.sitOnBackFootTiltJointFromSitOn {
                  
                 }
                 let x = nameStart + [ parts[partIndex]] + nameEnd
@@ -150,8 +150,8 @@ struct OccupantSupportDimensionDictionary {
     
     func getOriginIdNodesForWheel (
         _ dimensionGroup: DimensionGroup)
-        -> OriginIdNodes {
-        var originIdNode:OriginIdNodes = ZeroValue.originIdNodes
+        -> OriginIdPartChain {
+        var originIdNode:OriginIdPartChain = ZeroValue.originIdPartChain
         if let unwrappedWheel = preTiltWheelOrigin  {
             switch dimensionGroup {
             case .frontWheel:
@@ -173,7 +173,7 @@ struct OccupantSupportDimensionDictionary {
         _ dimensionGroup: DimensionGroup,
         _ sitOnIndex: Int)
     -> Part3DimensionDictionary {
-        var originIdNodesForBothSitOn: [OriginIdNodes] = []
+        var originIdNodesForBothSitOn: [OriginIdPartChain] = []
         var dimensions: [Dimension3d] = []
         var dictionary: Part3DimensionDictionary = [:]
 
@@ -181,7 +181,7 @@ struct OccupantSupportDimensionDictionary {
         if let unwrappedPreTiltSupport = preTiltOccupantSupportOrigin {
             switch dimensionGroup {
                 case .back:
-                    originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForBackSupportForBothSitOn
+                    originIdNodesForBothSitOn = unwrappedPreTiltSupport.originIdPartChainForBackForBothSitOn
                     if originIdNodesForBothSitOn.count > 0 {//object may not have this part
                         dimensions =
                             AllOccupantBackRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex]
@@ -210,7 +210,7 @@ struct OccupantSupportDimensionDictionary {
                 case .tiltInSpace:
                     originIdNodesForBothSitOn =
                         unwrappedPreTiltSupport
-                        .allOriginIdNodesForTiltInSpaceForBothSitOn
+                        .allOriginIdPartChainForSitOnBackFootTiltJointForBothSitOn
     
                     if originIdNodesForBothSitOn.count > 0 {
                         dimensions =

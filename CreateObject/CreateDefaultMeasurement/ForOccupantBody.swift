@@ -53,7 +53,7 @@ struct OccupantBodySupportAngleJointDefaultDimension {
 // origins are described from the parent origin
 // orientations from the object-orientation not the parent orientation
 
-struct PreTiltOccupantTiltInSpaceDefaultOrigin {
+struct PreTiltSitOnBackFootTiltJointDefaultOrigin {
     let baseType: BaseObjectTypes
     //let sitOnLocation: PositionAsIosAxes
     let value: PositionAsIosAxes

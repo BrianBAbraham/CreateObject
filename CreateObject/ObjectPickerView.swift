@@ -76,7 +76,7 @@ objectPickVM.setCurrentObjectByCreatingFromName(
                 .padding(.horizontal)
             Tilt(objectPickVM.getCurrentObjectName())
                 .padding(.horizontal)
-            BackSupportRecline(objectPickVM.getCurrentObjectName())
+            //BackSupportRecline(objectPickVM.getCurrentObjectName())
 //                .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
 //                    self.recline = value
 //                })

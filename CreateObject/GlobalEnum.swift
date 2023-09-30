@@ -31,7 +31,7 @@ enum Part: String {
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
     case backSupportHeadLinkRotationJoint = "backSupportHeadSupportLinkHorizontalJoint"
-    case backSupportReclineAngle = "backSupportReclineAngle"
+    case backSupportTiltJoint = "backSupportReclineAngle"
     //case corner = "corner"
     
     case baseToCarryBarConnector = "baseToCarryBarConnector"
@@ -111,8 +111,8 @@ case notFound = "notAnyPart"
     case sideSupportRotationJoint = "sideSupportRotatationJoint"
     case stringLink = "_"
     
-    case sitOnBackFootTiltJointAngle = "tiltInSpaceAngle"
-    case sitOnBackFootTiltJoint = "tiltInSpaceHorizontalJoint" 
+    //case sitOnTiltJoint = "tiltInSpaceAngle"
+    case sitOnTiltJoint = "tiltInSpaceHorizontalJoint"
     
     
     case topToBottomDimension = "yIos"
@@ -127,7 +127,7 @@ case notFound = "notAnyPart"
 
 enum ObjectOptions: String, CaseIterable  {
     
-    case angleBackSupport = "reclining back support"
+    //case angleBackSupport = "reclining back support"
     case angleFootSupport = "angle leg support"
     case assistant = "assistant"
     
@@ -223,31 +223,31 @@ struct TiltPartChain {
 ///objects are comprised of  groups of associated parts
 ///each property povides an array of parts relevant to the group
 ///in order beginning with the part nearest to object origin
-struct PartChain {
-    static let sideSupport: [Part] =
+struct PartChainProvider {
+    static let sideSupport: PartChain =
             [
             .sitOn,
             .sideSupportRotationJoint,
             .sideSupport]
-    static let sitOn: [Part] =
+    static let sitOn: PartChain =
         [.sitOn]
 //    static let tiltInSpaceFromObject: [Part] =
 //            [.bodySupportRotationJoint]
-    static let sitOnBackFootTiltJointFromSitOn: [Part] =
+    static let sitOnBackFootTiltJointFromSitOn: PartChain =
             [.sitOn,
-            .sitOnBackFootTiltJoint]
-    static let backSupport: [Part] =
+            .sitOnTiltJoint]
+    static let backSupport: PartChain =
             [
             .sitOn,
             .backSupporRotationJoint,
             .backSupport]
-    static let backWithHeadSupport: [Part] =
+    static let backWithHeadSupport: PartChain =
         backSupport +
             [
             .backSupportHeadLinkRotationJoint,
             .backSupportHeadSupportLink,
             .backSupportHeadSupport]
-    static let casterWheelNodes: [Part] =
+    static let casterWheelPartChain: PartChain =
             [
             .baseWheelJoint,
             .casterFork,
@@ -263,11 +263,11 @@ struct PartChain {
     
     
     static let twoCasterParts: [Part] =
-        Array( repeating: casterWheelNodes, count:  2 ).flatMap {$0}
+        Array( repeating: casterWheelPartChain, count:  2 ).flatMap {$0}
     static let fourCasterParts: [Part] =
-        Array( repeating: casterWheelNodes, count:  4 ).flatMap {$0}
+        Array( repeating: casterWheelPartChain, count:  4 ).flatMap {$0}
     static let sixCasterParts: [Part] =
-        Array( repeating: casterWheelNodes, count:  6 ).flatMap {$0}
+        Array( repeating: casterWheelPartChain, count:  6 ).flatMap {$0}
     static let twoFixedWheelParts =
         Array( repeating: fixedWheelNodes, count:  2 ).flatMap {$0}
     static let twoFixedWheelAndPropellerParts =
@@ -285,8 +285,7 @@ struct PartChain {
 }
 
 
-///an objects's inclusion of a part group is indicated by memmbership
-///of the object 
+
 
 
 

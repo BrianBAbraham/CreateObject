@@ -24,6 +24,11 @@ rear: PositionAsIosAxes)
 typealias OptionDictionary = [ObjectOptions: Bool]
 
 
+///an array of one or more part that form
+///a ccnnection chain from the object origin
+///where the object origin is assumed and not included
+typealias PartChain = [Part]
+
 ///The dictionary provider uses the values to create the part
 ///The UI  uses the values to remove the part from display
 typealias BaseOptionDictionary = [Part: Bool]
@@ -35,6 +40,7 @@ typealias PositionDictionary = [String: PositionAsIosAxes]
 typealias MeasurementDictionary = [String: Double]
 typealias BaseObjectDoubleDictionary = [BaseObjectTypes: Double]
 typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
+
 //. Input BaseObjectType to get Dimension3d
 typealias BaseObject3DimensionDictionary = [BaseObjectTypes: Dimension3d]
 typealias PartDimensionDictionary = [String: Dimension]
@@ -78,7 +84,7 @@ typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 /// an origin is the relative origin from part to next part
 /// nodes excludes first node .object
 /// each of the three data elements contains n members
-typealias OriginIdNodes =
+typealias OriginIdPartChain =
     (origin: [PositionAsIosAxes],
      ids: [[Part]],
      chain: [Part])
@@ -87,7 +93,7 @@ typealias OriginIdNodes =
 ///'rear'', 'mid' and 'front'
 ///for absent values ZeroValue.rearMidOriginIdNodes is used
 typealias RearMidFrontOriginIdNodes =
-    (rear: OriginIdNodes, mid: OriginIdNodes, front: OriginIdNodes)
+    (rear: OriginIdPartChain, mid: OriginIdPartChain, front: OriginIdPartChain)
 
 
 ///While OriginIdNodes (s at end)

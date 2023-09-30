@@ -15,15 +15,15 @@ struct ZeroValue {
     static let dimension3dRearMidFront =
         (rear: [dimension3d], mid: [dimension3d], front: [dimension3d] )
     
-    static let originIdNodes: OriginIdNodes =
+    static let originIdPartChain: OriginIdPartChain =
     (origin: [],
      ids: [[]],
      chain: [])
     
     static let rearMidFrontOriginIdNodes: RearMidFrontOriginIdNodes =
-    (rear: ZeroValue.originIdNodes,
-     mid: ZeroValue.originIdNodes,
-     front: ZeroValue.originIdNodes)
+    (rear: ZeroValue.originIdPartChain,
+     mid: ZeroValue.originIdPartChain,
+     front: ZeroValue.originIdPartChain)
     
     static let originIdNode: OriginIdNode =
         (
@@ -31,7 +31,7 @@ struct ZeroValue {
         id: [],
         node: Part.objectOrigin)
     
-    //static let 
+    
     
 }
     

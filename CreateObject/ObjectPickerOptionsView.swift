@@ -15,42 +15,42 @@ import SwiftUI
 //    }
 //}
 
-struct BackSupportRecline: View {
-    @State private var reclineToggle = false
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-    let showRecline: Bool
-    
-    init(_ name: String) {
-        showRecline =
-        (name.contains("air") && !name.contains("ilting")) ?
-            true: false
-    }
-    
-    var body: some View {
-        if showRecline {
-            Toggle("Reclining back",isOn: $reclineToggle)
-                .onChange(of: reclineToggle) { value in
-                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                    //let name = objectPickVM.getCurrentObjectName()
-                    objectPickVM.setObjectOptionDictionary(
-                        ObjectOptions.angleBackSupport,
-                        reclineToggle) //RECLINE
-                    objectPickVM.setCurrentObjectByCreatingFromName(
-                        //name,
-                        twinSitOnDictionary)
-                        
-                        //.setCurrentObjectWithInitialOrEditedDictionary(
-                        //name,
-                         //twinSitOnOptions: dictionary)
-                    
-                }
-//                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
-        } else {
-            EmptyView()
-        }
-    }
-}
+//struct BackSupportRecline: View {
+//    @State private var reclineToggle = false
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+//    let showRecline: Bool
+//    
+//    init(_ name: String) {
+//        showRecline =
+//        (name.contains("air") && !name.contains("ilting")) ?
+//            true: false
+//    }
+//    
+//    var body: some View {
+//        if showRecline {
+//            Toggle("Reclining back",isOn: $reclineToggle)
+//                .onChange(of: reclineToggle) { value in
+//                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+//                    //let name = objectPickVM.getCurrentObjectName()
+//                    objectPickVM.setObjectOptionDictionary(
+//                        ObjectOptions.angleBackSupport,
+//                        reclineToggle) //RECLINE
+//                    objectPickVM.setCurrentObjectByCreatingFromName(
+//                        //name,
+//                        twinSitOnDictionary)
+//                        
+//                        //.setCurrentObjectWithInitialOrEditedDictionary(
+//                        //name,
+//                         //twinSitOnOptions: dictionary)
+//                    
+//                }
+////                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//}
 
 struct Tilt: View {
     @State private var tiltToggle = true
@@ -61,7 +61,7 @@ struct Tilt: View {
     var twinSitOnDictionary: TwinSitOnOptionDictionary {
         twinSitOnVM.getTwinSitOnOptions()}
     var angleName: String {
-        CreateNameFromParts( [.sitOnBackFootTiltJointAngle, .stringLink, .sitOn, .id0]).name    }
+        CreateNameFromParts( [.sitOnTiltJoint, .stringLink, .sitOn, .id0]).name    }
 //    var angleMinMax: AngleMinMax {
 //        objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.angleMinMax
 //    }

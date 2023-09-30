@@ -27,7 +27,7 @@ struct OriginPartInDictionariesOut {
     let allNames: [String]
     
     init(
-        _ originIdNodes: OriginIdNodes,
+        _ originIdNodes: OriginIdPartChain,
         _ preTiltParentToPartOriginIn: PositionDictionary) {
         rightOrUnilateralOrigin = originIdNodes.origin
         partIds = originIdNodes.ids
