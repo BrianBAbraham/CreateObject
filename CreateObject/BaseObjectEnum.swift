@@ -49,23 +49,23 @@ enum BaseObjectTypes: String, CaseIterable {
     case verticalLift = "Vertical Lift"
 }
 
-enum GroupsDerivedFromRawValueOfBaseObjectTypes: String {
-    case caster = "caster"
-    case bath = "Bath"
-    case fixedWheel = "wheel"
-    case door = "Door"
-    case power = "Power"
-    case selfPropelling = "Self-propelling"
-    case scooter = "Scooter"
-    case stairLift = "stairLift"
-    case verticalLift = "VerticaLift"
+//enum GroupsDerivedFromRawValueOfBaseObjectTypes: String {
+//    case caster = "caster"
+//    case bath = "Bath"
+//    case fixedWheel = "wheel"
+//    case door = "Door"
+//    case power = "Power"
+//    case selfPropelling = "Self-propelling"
+//    case scooter = "Scooter"
+//    case stairLift = "stairLift"
+//    case verticalLift = "VerticaLift"
+//
+//}
 
-}
 
-
-enum GroupsDerivedFromRawValueOfPartTypes: String {
-case sitOn = "hair"
-}
+//enum GroupsDerivedFromRawValueOfPartTypes: String {
+//case sitOn = "hair"
+//}
 
 ///object creation includes features if the object is containted
 ///in the feature group
@@ -200,60 +200,91 @@ struct BaseObjectGroups {
     }
 }
 
-
-
-struct SupportObjectGroups {
+struct ObjectPartChain {
+    //let object: BaseObjectTypes
+    var partChains: [PartChain] = []
     
-    let forSitOn: [BaseObjectTypes] =
-        [
-            .allCasterChair,
-            .allCasterStandAid,
-            .allCasterTiltInSpaceShowerChair,
-        ] + BaseObjectGroups().twinSitOnAbility
-    
-    let forFoot: [BaseObjectTypes]
-    
-    let forBack: [BaseObjectTypes]
-    
-    let canTilt:[BaseObjectTypes] = [ .allCasterTiltInSpaceShowerChair]
-    
-    init() {
-        forFoot = forSitOn
-        forBack = forSitOn
-    }
-    
-}
-
-
-
-struct BaseObjectOptionProvider {
-    //let baseObject: BaseObjectTypes
-    var baseObjectOption: BaseOptionDictionary = [:]
-    
-    init ( _ baseObject: BaseObjectTypes) {
-        baseObjectOption = getBaseOptionOptions(baseObject)
-   
-    
-    
-    func getBaseOptionOptions (_ baseObject: BaseObjectTypes) -> BaseOptionDictionary{
-        switch baseObject {
+    init(_ object: BaseObjectTypes) {
+        partChains = getPartChains(object)
+        
+        func getPartChains (_ object: BaseObjectTypes)
+        -> [PartChain] {
+            let typicalWheeledChair =
+            PartChainProvider2 ([
+                .backSupport,
+                .backSupportHeadSupport,
+                .footSupport,
+                .sideSupport,
+                .sitOnTiltJoint
+            ]).partChains
             
-            case .allCasterBed:
-                baseObjectOption =
-                    [.sideSupport: true,
-                     .sideSupportRotationJoint: true]
+            switch object {
             case .allCasterTiltInSpaceShowerChair:
-                baseObjectOption =
-                    [.backSupportHeadSupport: true,
-                     ]
+                return
+                    typicalWheeledChair
+            case .showerTray:
+                return
+                    [[.footSupport]]
             default:
-                baseObjectOption = [:]
+                return
+                    typicalWheeledChair
+            }
         }
-        return baseObjectOption
     }
-    }
-    
 }
+
+//struct SupportObjectGroups {
+//
+//    let forSitOn: [BaseObjectTypes] =
+//        [
+//            .allCasterChair,
+//            .allCasterStandAid,
+//            .allCasterTiltInSpaceShowerChair,
+//        ] + BaseObjectGroups().twinSitOnAbility
+//
+//    let forFoot: [BaseObjectTypes]
+//
+//    let forBack: [BaseObjectTypes]
+//
+//    let canTilt:[BaseObjectTypes] = [ .allCasterTiltInSpaceShowerChair]
+//
+//    init() {
+//        forFoot = forSitOn
+//        forBack = forSitOn
+//    }
+//
+//}
+
+
+
+//struct BaseObjectOptionProvider {
+//    //let baseObject: BaseObjectTypes
+//    var baseObjectOption: BaseOptionDictionary = [:]
+//
+//    init ( _ baseObject: BaseObjectTypes) {
+//        baseObjectOption = getBaseOptionOptions(baseObject)
+//
+//
+//
+//    func getBaseOptionOptions (_ baseObject: BaseObjectTypes) -> BaseOptionDictionary{
+//        switch baseObject {
+//
+//            case .allCasterBed:
+//                baseObjectOption =
+//                    [.sideSupport: true,
+//                     .sideSupportRotationJoint: true]
+//            case .allCasterTiltInSpaceShowerChair:
+//                baseObjectOption =
+//                    [.backSupportHeadSupport: true,
+//                     ]
+//            default:
+//                baseObjectOption = [:]
+//        }
+//        return baseObjectOption
+//    }
+//    }
+//
+//}
 
 ///
 ///I need to have a system which

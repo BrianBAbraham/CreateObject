@@ -27,12 +27,14 @@ struct DictionaryProvider {
     let preTiltObjectToPartOriginDicIn: PositionDictionary
     let angleDicIn: AngleDictionary
     let angleMinMaxDicIn: AngleMinMaxDictionary
+    let partChainsIn: [PartChain]
     
     let baseType: BaseObjectTypes
     let twinSitOnOption: TwinSitOnOptionDictionary
     let objectOptions: [OptionDictionary]
     var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
+    var partChains: [PartChain] = []
     
     var dimensionDic: Part3DimensionDictionary = [:]
     var angleDic: AngleDictionary = [:]
@@ -95,7 +97,8 @@ struct DictionaryProvider {
         _ objectToPartOrigin: PositionDictionary = [:],
         _ parentToPartOrigin: PositionDictionary = [:],
         angleIn: AngleDictionary = [:],
-        minMaxAngleIn: AngleMinMaxDictionary = [:] ) {
+        minMaxAngleIn: AngleMinMaxDictionary = [:],
+        partChainsIn: [PartChain] = [] ) {
             
         self.baseType = baseType
         self.twinSitOnOption = twinSitOnOption
@@ -105,10 +108,15 @@ struct DictionaryProvider {
         self.preTiltParentToPartOriginDicIn = parentToPartOrigin
         self.angleDicIn = angleIn
         self.angleMinMaxDicIn = minMaxAngleIn
-      
+        self.partChainsIn = partChainsIn
+            print (partChainsIn)
         twinSitOnState = TwinSitOn(twinSitOnOption).state
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
-        
+            
+            
+//       print (baseType)
+//            print (oneOrTwoIds)
+//            print ("")
         angleDic =
             ObjectAngleChange(parent: self).dictionary
         angleMinMaxDic =
@@ -127,7 +135,7 @@ struct DictionaryProvider {
         
         preTiltOccupantFootBackSideSupportOrigin =
             PreTiltOccupantSupportOrigin(parent: self)
-        
+            //partChains = preTiltOccupantFootBackSideSupportOrigin.partChains
             getPreTiltFootSideBackOriginDictionary()
         
         
@@ -265,6 +273,8 @@ struct DictionaryProvider {
                 preTiltOccupantFootBackSideSupportOrigin
                     as? PreTiltOccupantSupportOrigin {
                 
+                partChains = data.partChains
+                
                 if BaseObjectGroups().sitOnBackFootTiltJoint.contains(baseType) {
                     //print("TILT FOUND")
                     let allOriginIdNodesForTiltInSpaceeForBothSitOn =
@@ -306,10 +316,7 @@ struct DictionaryProvider {
                             parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
                         preTiltObjectToPartOriginDic +=
                             parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
-//                        if BaseObjectGroups().tiltInSpace.contains(baseType) {
-//
-//                            print ( parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart() )
-//                        }
+
                 }
             }
         }
@@ -369,35 +376,38 @@ struct DictionaryProvider {
             
         func createPostTiltObjectToPartFourCornerPerKeyDic()
             -> CornerDictionary{
-            //replace the part origin positions with the rotated values
-            // and rotate the corners of the part
-            let tilted =
-                OriginPostTilt(
-                    parent: self,
-                    originIdPartChainForBackForBothSitOn,
-                    .sitOnTiltJoint).objectToTiltedCorners
-                //print(tilted)
-            return
-                Replace(
-                    initial:
-                        preTiltObjectToPartFourCornerPerKeyDic,
-                    replacement: tilted
-                       
+                //replace the part origin positions with the rotated values
+                // and rotate the corners of the part
+            var tilted: CornerDictionary = [:]
+                if BaseObjectGroups().backSupport.contains(baseType) {
+                    tilted =
+                    OriginPostTilt(
+                        parent: self,
+                        originIdPartChainForBackForBothSitOn,
+                        .sitOnTiltJoint).objectToTiltedCorners
+                }
+                
+                return
+                    Replace(
+                        initial:
+                            preTiltObjectToPartFourCornerPerKeyDic,
+                        replacement: tilted
+                        
                     ).intialWithReplacements
-        }
+            }
             
     } // Init ends
     
 
-    func rotationIsRequired (
-        _ key: String)
-        -> Bool {
-        let part = FindGeneralPart(key).partCase
-        return
-            TiltPartChain().allAngle.contains( part) &&
-            SupportObjectGroups().canTilt.contains(baseType)
-    }
- 
+//    func rotationIsRequired (
+//        _ key: String)
+//        -> Bool {
+//        let part = FindGeneralPart(key).partCase
+//        return
+//            TiltPartChain().allAngle.contains( part) &&
+//            SupportObjectGroups().canTilt.contains(baseType)
+//    }
+//
     
     
     
@@ -514,6 +524,7 @@ extension DictionaryProvider {
             parent: DictionaryProvider,
               _ originIdPartChain: [OriginIdPartChain],
               _ rotationJoint: Part) {
+//print(originIdPartChain)
             self.parent = parent
                   for index in 0..<parent.oneOrTwoIds.count {
                 forTilt(
@@ -579,7 +590,7 @@ extension DictionaryProvider {
                     }
                 }
             } else {
-                print ("no such origin of rotation as \(originOfRotationName)")
+                print("no such origin of rotation as \(originOfRotationName)")
             }
         }
         
@@ -943,6 +954,8 @@ extension DictionaryProvider {
         var allOriginIdNodesForSideSupportForBothSitOn:  [OriginIdPartChain]  = []
         var originIdPartChainForBackForBothSitOn:  [OriginIdPartChain]  = []
         var allOriginIdPartChainForSitOnBackFootTiltJointForBothSitOn:  [OriginIdPartChain]  = []
+        var partChains: [PartChain] = []
+        //let partChainProvider: PartChainProvider2
      
         /// an array in an arrray to allow use of protocol InputForDictionary
         /// though not used in this struct
@@ -962,6 +975,12 @@ extension DictionaryProvider {
                 
                 defaultSideOrigin =
                     PreTiltOccupantSideSupportDefaultOrigin(parent.baseType)
+                
+                partChains = parent.partChainsIn != [] ?
+                    parent.partChainsIn: ObjectPartChain(objectType).partChains
+                
+                print (parent.partChainsIn)
+                print ("")
                 
                 let sitOnIds = parent.oneOrTwoIds
                 
@@ -984,14 +1003,21 @@ extension DictionaryProvider {
                         errorCheckForIdenticalOriginIdNodes(allOriginIdPartChainForSitOnBackFootTiltJointForBothSitOn)
                     }
                     
-                    //SIDE
-                    if BaseObjectGroups().sideSupport.contains(parent.baseType) {
-                        allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex) )
+//SIDE
+                    let sideSupport = PartChainProvider2.sideSupport
+                    if partChains.contains(sideSupport) {
+                        allOriginIdNodesForSideSupportForBothSitOn.append( getOriginIdNodesForSideSupport(sitOnIndex, sideSupport) )
                         errorCheckForIdenticalOriginIdNodes(allOriginIdNodesForSideSupportForBothSitOn)
                     }
-                    //BACK
-                    if BaseObjectGroups().backSupport.contains(parent.baseType) {
-                        originIdPartChainForBackForBothSitOn.append( getOriginIdPartChainForBackSupport(sitOnIndex) )
+//BACK
+                    /// any of the partChain which are used for parts attached to back
+                    let backRelatedSupport: [PartChain] =
+                        PartChainProvider2([
+                            .backSupport,
+                            .backSupportHeadSupport]).partChains
+                    if partChains.contains(where: { element in return backRelatedSupport.contains(element) }){
+                        originIdPartChainForBackForBothSitOn.append( getOriginIdPartChainForBackSupport(
+                            sitOnIndex, backRelatedSupport) )
                         errorCheckForIdenticalOriginIdNodes(originIdPartChainForBackForBothSitOn)
                     }
                     //FOOT
@@ -1023,7 +1049,7 @@ extension DictionaryProvider {
         func getOriginIdPartChainForTitltInSpace(_ sitOnIndex: Int)
         -> OriginIdPartChain {
             let tiltInSpacePartChain: [Part] =
-                partChain.sitOnBackFootTiltJointFromSitOn
+                partChain.sitOnTiltJoint
             let allTiltInSpaceJointOrigin =
                 [ objectToSitOn,
                  defaultSitOnBackFootTiltJointOrigin]
@@ -1039,10 +1065,12 @@ extension DictionaryProvider {
         }
                 
         
-        func getOriginIdNodesForSideSupport(_ sitOnIndex: Int)
+        func getOriginIdNodesForSideSupport(
+            _ sitOnIndex: Int,
+            _ sideSupport: PartChain)
             -> OriginIdPartChain {
-            let sideSupportPartChain: [Part] =
-                    partChain.sideSupport
+//            let sideSupportPartChain: [Part] =
+//                    partChain.sideSupport
             let allSideSupportOrigin =
                 [
                 objectToSitOn,
@@ -1057,14 +1085,16 @@ extension DictionaryProvider {
                (
                 origin: allSideSupportOrigin,
                 ids: allSideSupportIds,
-                chain: sideSupportPartChain)
+                chain: sideSupport)
         }
 
         
-        func getOriginIdPartChainForBackSupport(_ sitOnIndex: Int)
+        func getOriginIdPartChainForBackSupport(
+            _ sitOnIndex: Int,
+            _ backRelated: [PartChain] )
             -> OriginIdPartChain {
-            let headSupportState = true
-               // parent.objectOptions[sitOnIndex][.headSupport] ?? false
+           
+               
             var backSupportPartChain = partChain.backSupport
             var allBackSupportOrigin =
                 [
@@ -1078,10 +1108,12 @@ extension DictionaryProvider {
                 unilateralWidthPositionId
                 ]
                 
-            if headSupportState {
+                let backSupportHeadSupport = PartChainProvider2(
+                    [.backSupportHeadSupport]).partChains[0]
+                if partChains.contains(backSupportHeadSupport) {
 //print ("HEAD SUPPORT")
                 backSupportPartChain =
-                    partChain.backWithHeadSupport
+                    backSupportHeadSupport
                 allBackSupportOrigin
                     .append(
                         defaultBackOrigin.getBackSupportToHeadLinkRotationJoint())
@@ -1104,6 +1136,9 @@ extension DictionaryProvider {
                 ids: allBackSupportIds,
                 chain: backSupportPartChain)
         }
+        
+        
+
         
         func getOriginIdNodesForFootSupport(_ sitOnIndex: Int)
             -> OriginIdPartChain {

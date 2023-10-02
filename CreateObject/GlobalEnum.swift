@@ -233,7 +233,7 @@ struct PartChainProvider {
         [.sitOn]
 //    static let tiltInSpaceFromObject: [Part] =
 //            [.bodySupportRotationJoint]
-    static let sitOnBackFootTiltJointFromSitOn: PartChain =
+    static let sitOnTiltJoint: PartChain =
             [.sitOn,
             .sitOnTiltJoint]
     static let backSupport: PartChain =
@@ -286,13 +286,73 @@ struct PartChainProvider {
 
 
 
+struct PartChainProvider2  {
+    static let backSupport: PartChain =
+        [
+        .sitOn,
+        .backSupporRotationJoint,
+        .backSupport]
+    let foot: PartChain =
+        [
+        .sitOn,
+        .footSupportHangerJoint,
+        .footSupportJoint]
+    let headSupport: PartChain =
+        [
+        .backSupportHeadLinkRotationJoint,
+        .backSupportHeadSupportLink,
+        .backSupportHeadSupport]
+   static let sideSupport: PartChain =
+        [
+        .sitOn,
+        .sideSupportRotationJoint,
+        .sideSupport]
+    let sitOntiltJoint: PartChain =
+           [.sitOn,
+           .sitOnTiltJoint]
 
+    var partChains: [PartChain] = []
+    init(_ parts: [Part]) {
+        for part in parts {
+            partChains.append (getPartChain(part))
+        }
+    }
 
-
-enum ViewFrom {
-    case side
-    case top
+    
+   mutating func getPartChain (
+    _ part: Part)
+        -> PartChain {
+        switch part {
+            case .backSupport:
+                return
+                    Self.backSupport
+            case .backSupportHeadSupport:
+                return
+                    Self.backSupport + headSupport
+            case .footSupport:
+                return
+                    foot + [.footSupport]
+            case .footSupportInOnePiece:
+                return
+                    foot + [.footSupportInOnePiece]
+            case .sideSupport:
+                return
+                    Self.sideSupport
+            case .sitOnTiltJoint:
+                return
+                    sitOntiltJoint
+            default:
+                return []
+        }
+    }
+    
 }
+
+
+//enum ViewFrom {
+//    case side
+//    case top
+//}
 
 
 //InterOrigin().names

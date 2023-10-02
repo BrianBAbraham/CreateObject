@@ -103,7 +103,7 @@ struct Tilt: View {
 
 
 struct HeadSupport: View {
-    @State private var headSuppportToggle = false
+    @State private var headSuppportToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let showTilt: Bool
@@ -117,13 +117,17 @@ struct HeadSupport: View {
             Toggle("Headrest",isOn: $headSuppportToggle)
                 .onChange(of: headSuppportToggle) { value in
                     let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                    //let name = objectPickVM.getCurrentObjectName()
-                    objectPickVM.setObjectOptionDictionary(
-                        ObjectOptions.headSupport,
-                        headSuppportToggle)
-                    objectPickVM.setCurrentObjectByCreatingFromName(
-                        //name,
-                        twinSitOnDictionary)
+                    let name = objectPickVM.getCurrentObjectName()
+                    let partChain = PartChainProvider2([.backSupportHeadSupport]).partChains[0]
+                    objectPickVM.setPartChain(partChain)
+                    
+                    ///if corner dic contains a headrest
+//                    objectPickVM.setObjectOptionDictionary(
+//                        ObjectOptions.headSupport,
+//                        headSuppportToggle)
+//                    objectPickVM.setCurrentObjectByCreatingFromName(
+//
+//                        twinSitOnDictionary)
                     //.setCurrentObjectWithInitialOrEditedDictionary(
                        // name)
                     
