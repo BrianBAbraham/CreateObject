@@ -224,29 +224,28 @@ struct TiltPartChain {
 ///each property povides an array of parts relevant to the group
 ///in order beginning with the part nearest to object origin
 struct PartChainProvider {
-    static let sideSupport: PartChain =
-            [
-            .sitOn,
-            .sideSupportRotationJoint,
-            .sideSupport]
-    static let sitOn: PartChain =
-        [.sitOn]
-//    static let tiltInSpaceFromObject: [Part] =
-//            [.bodySupportRotationJoint]
-    static let sitOnTiltJoint: PartChain =
-            [.sitOn,
-            .sitOnTiltJoint]
-    static let backSupport: PartChain =
-            [
-            .sitOn,
-            .backSupporRotationJoint,
-            .backSupport]
-    static let backWithHeadSupport: PartChain =
-        backSupport +
-            [
-            .backSupportHeadLinkRotationJoint,
-            .backSupportHeadSupportLink,
-            .backSupportHeadSupport]
+//    static let sideSupport: PartChain =
+//            [
+//            .sitOn,
+//            .sideSupportRotationJoint,
+//            .sideSupport]
+//    static let sitOn: PartChain =
+//        [.sitOn]
+//
+//    static let sitOnTiltJoint: PartChain =
+//            [.sitOn,
+//            .sitOnTiltJoint]
+//    static let backSupport: PartChain =
+//            [
+//            .sitOn,
+//            .backSupporRotationJoint,
+//            .backSupport]
+//    static let backWithHeadSupport: PartChain =
+//        backSupport +
+//            [
+//            .backSupportHeadLinkRotationJoint,
+//            .backSupportHeadSupportLink,
+//            .backSupportHeadSupport]
     static let casterWheelPartChain: PartChain =
             [
             .baseWheelJoint,
@@ -307,7 +306,7 @@ struct PartChainProvider2  {
         .sitOn,
         .sideSupportRotationJoint,
         .sideSupport]
-    let sitOntiltJoint: PartChain =
+    static let sitOnTiltJoint: PartChain =
            [.sitOn,
            .sitOnTiltJoint]
 
@@ -340,7 +339,7 @@ struct PartChainProvider2  {
                     Self.sideSupport
             case .sitOnTiltJoint:
                 return
-                    sitOntiltJoint
+                    Self.sitOnTiltJoint
             default:
                 return []
         }

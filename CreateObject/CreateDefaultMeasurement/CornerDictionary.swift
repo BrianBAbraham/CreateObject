@@ -109,7 +109,7 @@ struct DictionaryProvider {
         self.angleDicIn = angleIn
         self.angleMinMaxDicIn = minMaxAngleIn
         self.partChainsIn = partChainsIn
-            print (partChainsIn)
+           // print (partChainsIn)
         twinSitOnState = TwinSitOn(twinSitOnOption).state
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
             
@@ -668,13 +668,13 @@ extension DictionaryProvider.PreTiltWheelOrigin {
         var chain: [Part] = []
         if BaseObjectGroups().rearCaster.contains(parent.baseType) {
             chain =
-                partGroup.casterWheelPartChain
+                partChainProvider.casterWheelPartChain
 //print(parent.baseType)
         }
         
         if BaseObjectGroups().rearFixedWheel.contains(parent.baseType) {
             chain =
-                partGroup.fixedWheelNodes
+                partChainProvider.fixedWheelNodes
         }
             return chain
     }
@@ -684,12 +684,12 @@ extension DictionaryProvider.PreTiltWheelOrigin {
         var chain: [Part] = []
         if BaseObjectGroups().midCaster.contains(parent.baseType) {
             chain =
-                partGroup.casterWheelPartChain
+                partChainProvider.casterWheelPartChain
         }
         
         if BaseObjectGroups().midFixedWheel.contains(parent.baseType) {
             chain =
-                partGroup.fixedWheelNodes
+                partChainProvider.fixedWheelNodes
         }
             return chain
     }
@@ -700,12 +700,12 @@ extension DictionaryProvider.PreTiltWheelOrigin {
         var chain: [Part] = []
         if BaseObjectGroups().frontCaster.contains(parent.baseType) {
             chain =
-                partGroup.casterWheelPartChain
+                partChainProvider.casterWheelPartChain
         }
         
         if BaseObjectGroups().frontFixedWheel.contains(parent.baseType) {
             chain =
-                partGroup.fixedWheelNodes
+                partChainProvider.fixedWheelNodes
         }
             return chain
     }
@@ -845,7 +845,7 @@ extension DictionaryProvider.PreTiltWheelOrigin {
 extension DictionaryProvider {
     struct PreTiltWheelOrigin: InputForDictionary {
         //assignment form for static values
-        var partGroup: PartChainProvider.Type = PartChainProvider.self
+        var partChainProvider: PartChainProvider.Type = PartChainProvider.self
         
         //ObjectCreator
         let objectType: BaseObjectTypes
@@ -939,7 +939,7 @@ extension DictionaryProvider {
 extension DictionaryProvider {
     struct PreTiltOccupantSupportOrigin: InputForDictionary {
         let parent: DictionaryProvider
-        var partChain: PartChainProvider.Type = PartChainProvider.self
+        var partChainProvider: PartChainProvider2.Type = PartChainProvider2.self
         let objectType: BaseObjectTypes
         let bilateralWidthPositionId: [Part] = [.id1, .id0]
         let unilateralWidthPositionId: [Part] = [.id0]
@@ -979,8 +979,8 @@ extension DictionaryProvider {
                 partChains = parent.partChainsIn != [] ?
                     parent.partChainsIn: ObjectPartChain(objectType).partChains
                 
-                print (parent.partChainsIn)
-                print ("")
+//                print(parent.partChainsIn)
+//                print("")
                 
                 let sitOnIds = parent.oneOrTwoIds
                 
@@ -1049,7 +1049,7 @@ extension DictionaryProvider {
         func getOriginIdPartChainForTitltInSpace(_ sitOnIndex: Int)
         -> OriginIdPartChain {
             let tiltInSpacePartChain: [Part] =
-                partChain.sitOnTiltJoint
+                partChainProvider.sitOnTiltJoint
             let allTiltInSpaceJointOrigin =
                 [ objectToSitOn,
                  defaultSitOnBackFootTiltJointOrigin]
@@ -1095,7 +1095,7 @@ extension DictionaryProvider {
             -> OriginIdPartChain {
            
                
-            var backSupportPartChain = partChain.backSupport
+            var backSupportPartChain = partChainProvider.backSupport
             var allBackSupportOrigin =
                 [
                 objectToSitOn,
@@ -1209,7 +1209,7 @@ extension DictionaryProvider {
     /// to the body support, for example, front drive v rear drive
     /// requires the following considerable logic
     struct PreTiltOccupantBodySupportOrigin: InputForDictionary {
-        var partGroup: PartChainProvider.Type = PartChainProvider.self
+        //var partChainProvider: PartChainProvider.Type = PartChainProvider.self
  
         let objectType: BaseObjectTypes
         let stability: Stability

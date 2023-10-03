@@ -116,21 +116,10 @@ struct HeadSupport: View {
         if showTilt {
             Toggle("Headrest",isOn: $headSuppportToggle)
                 .onChange(of: headSuppportToggle) { value in
-                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                    let name = objectPickVM.getCurrentObjectName()
-                    let partChain = PartChainProvider2([.backSupportHeadSupport]).partChains[0]
-                    objectPickVM.setPartChain(partChain)
-                    
-                    ///if corner dic contains a headrest
-//                    objectPickVM.setObjectOptionDictionary(
-//                        ObjectOptions.headSupport,
-//                        headSuppportToggle)
-//                    objectPickVM.setCurrentObjectByCreatingFromName(
-//
-//                        twinSitOnDictionary)
-                    //.setCurrentObjectWithInitialOrEditedDictionary(
-                       // name)
-                    
+                    let onlyOne = 0
+                    let partChain =
+                        PartChainProvider2([.backSupportHeadSupport]).partChains[onlyOne]
+                    objectPickVM.setCurrentObjectWithToggledPartChain(partChain)
                 }
         } else {
             EmptyView()

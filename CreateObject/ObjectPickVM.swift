@@ -56,6 +56,7 @@ class ObjectPickViewModel: ObservableObject {
     let dimensionDic: Part3DimensionDictionary
     let angleDic: AngleDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
+    let partChains: [PartChain]
 
     
     @Published private var objectPickModel: ObjectPickModel
@@ -77,6 +78,8 @@ class ObjectPickViewModel: ObservableObject {
             dictionaryProvider.angleDic
         angleMinMaxDic =
             dictionaryProvider.angleMinMaxDic
+        partChains =
+            dictionaryProvider.partChains
         
         objectPickModel =
             ObjectPickModel(
@@ -86,7 +89,8 @@ class ObjectPickViewModel: ObservableObject {
                 dimensionDic: dimensionDic,
                 objectOptionDictionary: ObjectPickViewModel.optionDictionary,
                 angleDic: angleDic,
-                angleMinMaxDic: angleMinMaxDic)
+                angleMinMaxDic: angleMinMaxDic,
+                partChains: partChains)
        
         func setDictionaryProvider(
             _ objectName: String?)
@@ -301,10 +305,19 @@ extension ObjectPickViewModel {
         
         
         func setCurrentObjectByCreatingFromName(
-            //_ objectName: String = BaseObjectTypes.fixedWheelRearDrive.rawValue,
             _ twinSitOnDictionary: TwinSitOnOptionDictionary,
             _ angleInDic: AngleDictionary = [:],
-    _  partChainsIn: [PartChain] = []) {
+            _  partChainsIn: [PartChain] = []) {
+            
+                var partChainsToUse: [PartChain] = []
+                if partChainsIn == [] {
+                    partChainsToUse =
+                        getObjectPartChains()
+                } else {
+                    partChainsToUse = partChainsIn
+                    setPartChains(partChainsToUse)
+                }
+        
             let objectName = getCurrentObjectName()
             let dictionaryProvider =
                 DictionaryProvider(
@@ -312,15 +325,13 @@ extension ObjectPickViewModel {
                     ObjectPickViewModel.twinSitOnDictionary,
                     [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary],
                     angleIn: angleInDic,
-                partChainsIn: partChainsIn)
+                partChainsIn: partChainsToUse)
                 
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
                 dictionaryProvider.dimensionDic
             objectPickModel.angleMinMaxDic =
                 dictionaryProvider.angleMinMaxDic
-            objectPickModel.partChains =
-                dictionaryProvider.partChains
                 objectPickModel.angleInDic =
                     angleInDic
         }
@@ -332,21 +343,21 @@ extension ObjectPickViewModel {
                 objectPickModel.setObjectOptionDictionary(option, state)
         }
     
-        func setPartChain(_ partChain: PartChain) {
-            
+        func setCurrentObjectWithToggledPartChain(_ partChain: PartChain) {
             var partChains = getObjectPartChains()
-         //   print (partChains)
             if partChains.contains(partChain) {
                 partChains.removeAll {$0 == partChain}
             } else {
                 partChains += [partChain]
             }
-//            print (partChains)
-//            print ("")
             
             setCurrentObjectByCreatingFromName(ObjectPickViewModel.twinSitOnDictionary,
                objectPickModel.angleInDic,
                 partChains)
+        }
+    
+        func setPartChains(_ partChains: [PartChain]){
+            objectPickModel.partChains = partChains
         }
     
 }

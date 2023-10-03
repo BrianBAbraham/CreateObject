@@ -45,7 +45,7 @@ struct DimensionDictionary {
                 
                 let nameEnd: [Part] = parts[partIndex] == .sitOn ?
                     [sitOnId, .stringLink, .sitOn, sitOnId] : [idsForPart[partIdIndex], .stringLink, .sitOn, sitOnId]
-                if parts == PartChainProvider.sitOnTiltJoint {
+                if parts == PartChainProvider2.sitOnTiltJoint {
                  
                 }
                 let x = nameStart + [ parts[partIndex]] + nameEnd
