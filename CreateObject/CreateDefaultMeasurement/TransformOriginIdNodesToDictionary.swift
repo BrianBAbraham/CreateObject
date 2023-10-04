@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TransformOriginIdNodeForDictionary {
+struct TransformOriginIdPartChainForDictionary {
     func getNodePairsToDeepestRoot (
         _ allNodesFromObject: [Part])
         -> [[Part]] {
@@ -87,19 +87,19 @@ struct TransformOriginIdNodeForDictionary {
     /// [ [part_0, part1] , [part_1, part_2]...[part_n, part_n+1] ]
     /// idForFirstAndSecondNodeToDeepestRoot has id0 nserted as first
     /// element to correspond to allNodesFromObject
-    func getNamesFromNodePairsToDeepestRoot (
+    func getNamesFromPartChainPairsToDeepestRoot (
         _ allNodes: [Part],
         _ partIds: [[Part]],
        usingIdZeroOrOne: Int)
         -> [String] {
         let sitOnId = allNodes.contains(.sitOn) ?
             partIds[0][0]: .id0 // some roots, eg wheels exclude sitOn so use id0
-        let allNodeFromObject = [Part.object] + allNodes // first node is always object
+        let partChainFromObject = [Part.object] + allNodes // first node is always object
         
         /// [ [part_0, part_1, part_2, part_3, part_4] ] would be transformed to
         /// [ [part_0, part_1], [part_1, part_2], [ part_2, part_3], [ part_3, part_4] ]
         let nodePairsToDeepestRoot =
-            getNodePairsToDeepestRoot(allNodeFromObject)
+            getNodePairsToDeepestRoot(partChainFromObject)
 //print(nodePairsToDeepestRoot)
         /// [ [id0] ,[id0], [id1, id0],  [id1, id0], [id1]  ] transforms to
         /// [[id0, id0],  [id0, id1], [id1, id1], [id1, id1]
@@ -109,11 +109,13 @@ struct TransformOriginIdNodeForDictionary {
                 nodePairsToDeepestRoot,
                 partIds,
                 usingIdZeroOrOne)
-            
+//print (idForFirstAndSecondNodeToDeepestRoot)
         let names = getNamesFromNodePairs(
             nodePairsToDeepestRoot,
             idForFirstAndSecondNodeToDeepestRoot,
             sitOnId)
+//print (names)
+//            print ("")
         return
             names
     }

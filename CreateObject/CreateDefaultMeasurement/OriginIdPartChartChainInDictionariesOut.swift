@@ -16,42 +16,47 @@ import Foundation
 ///  for object to part
 
 //MARK:- DICTIONARY
-struct OriginPartInDictionariesOut {
+struct OriginIdPartChartChainInDictionariesOut {
     let rightOrUnilateralOrigin: [PositionAsIosAxes]
     var leftOrigin: [PositionAsIosAxes] = []
+    //var rightOrigin: [PositionAsIosAxes] = []
     let partIds: [[Part]]
-    let partNodes: [Part]
+    let partChain: [Part]
     let preTiltParentToPartOriginIn: PositionDictionary
     let namesForRightOrUnilateral: [String]
     let namesForLeft: [String]
     let allNames: [String]
     
     init(
-        _ originIdNodes: OriginIdPartChain,
+        _ originIdPartChain: OriginIdPartChain,
         _ preTiltParentToPartOriginIn: PositionDictionary) {
-        rightOrUnilateralOrigin = originIdNodes.origin
-        partIds = originIdNodes.ids
-        partNodes = originIdNodes.chain
+        rightOrUnilateralOrigin = originIdPartChain.origin
+        partIds = originIdPartChain.ids
+        partChain = originIdPartChain.chain
         self.preTiltParentToPartOriginIn =
             preTiltParentToPartOriginIn
         ///names are in order from object to part
         ///so these can be used to determine
         ///object to part origin
+        ///Only one name is printed using an even id from id0
         namesForRightOrUnilateral =
-            TransformOriginIdNodeForDictionary()
-                .getNamesFromNodePairsToDeepestRoot(
-                    partNodes,
+            TransformOriginIdPartChainForDictionary()
+                .getNamesFromPartChainPairsToDeepestRoot(
+                    partChain,
                     partIds,
                     usingIdZeroOrOne: 0)
 
-        let numberOfNodesTillOnlyOneId =
+        //when you come to a part in a partChain
+        // which has one id  the model assumes
+        // that all subsequent part have one id, that is they are not bilateral
+        let numberOfPartChainTillOnlyOneId =
             getNumberOfNodesTillOnlyOneId(partIds)
-        let partIdsForLeft = Array(partIds.prefix(numberOfNodesTillOnlyOneId))
-        let partNodesForLeft = Array(partNodes.prefix(numberOfNodesTillOnlyOneId))
-        if numberOfNodesTillOnlyOneId > 0 {
+        let partIdsForLeft = Array(partIds.prefix(numberOfPartChainTillOnlyOneId))
+        let partChainForLeft = Array(partChain.prefix(numberOfPartChainTillOnlyOneId))
+        if numberOfPartChainTillOnlyOneId > 0 {
            namesForLeft =
-                TransformOriginIdNodeForDictionary().getNamesFromNodePairsToDeepestRoot(
-                        partNodesForLeft,
+                TransformOriginIdPartChainForDictionary().getNamesFromPartChainPairsToDeepestRoot(
+                        partChainForLeft,
                         partIdsForLeft,
                         usingIdZeroOrOne: 1)
 
@@ -59,6 +64,18 @@ struct OriginPartInDictionariesOut {
             namesForLeft = []
         }
 
+            ///in originIdPartChain one or two id are associated with a part
+            ///if unilateral one id if bilateral two id
+            ///origins are intially created for origin x > 0 that is the right side
+            ///for parts withh bilateral id a symmetrical set is created for the left side
+            ///for unilateral if the single id is even it is on the left or centre
+            ///if it is odd it is on the right
+            ///HOWEVER, unilateral id are always have an id0 in their name
+            ///as there is only one of them so irrespective of being left or right its string
+            ///identifier is "id0"
+            
+            
+            
         allNames =
             namesForRightOrUnilateral +
             namesForLeft
@@ -91,9 +108,11 @@ struct OriginPartInDictionariesOut {
         {
         let rightUnilateralAndLeftOrigin =
                 LeftAndRightOrigin(
+                    names: [""],
                     rightAndUnilateralOrigin: rightOrUnilateralOrigin,
                     partIds: partIds)
         leftOrigin = rightUnilateralAndLeftOrigin.left
+//            rightOrigin = rightUnilateralAndLeftOrigin.right
     }
     
     
@@ -169,6 +188,7 @@ struct OriginPartInDictionariesOut {
             namesForRightOrUnilateral + namesForLeft
         let rightUnilateralAndLeftOrigin =
                 LeftAndRightOrigin(
+                    names: namesForRightOrUnilateral,
                     rightAndUnilateralOrigin: rightOrUnilateralOrigin,
                     partIds: partIds)
             let leftOrigin = rightUnilateralAndLeftOrigin.left

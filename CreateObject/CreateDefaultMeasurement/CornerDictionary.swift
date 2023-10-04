@@ -226,7 +226,7 @@ struct DictionaryProvider {
 
                     
                 let preTiltParentToPartBodyOrigin =
-                        OriginPartInDictionariesOut(
+                        OriginIdPartChartChainInDictionariesOut(
                             allOriginIdNodesForSitOn,
                             preTiltParentToPartOriginDicIn
                     ).makeAndGetForParentToPart()
@@ -254,7 +254,7 @@ struct DictionaryProvider {
             func createPreTiltWheelOriginDictionary(
                 _ originIdNodes: OriginIdPartChain ) {
                 let parentAndObjectToPartOriginDictionary =
-                    OriginPartInDictionariesOut(
+                    OriginIdPartChartChainInDictionariesOut(
                         originIdNodes,
                         preTiltParentToPartOriginDicIn
                         )
@@ -308,7 +308,7 @@ struct DictionaryProvider {
                 func createPreTiltParentToPartFootSideBackOriginDictionary (
                     _ allOriginIdNodes: OriginIdPartChain){
                         let parentAndObjectToPartOriginDictionary =
-                            OriginPartInDictionariesOut(
+                            OriginIdPartChartChainInDictionariesOut(
                             allOriginIdNodes,
                             preTiltParentToPartOriginDicIn
                             )
@@ -943,7 +943,7 @@ extension DictionaryProvider {
         let objectType: BaseObjectTypes
         let bilateralWidthPositionId: [Part] = [.id1, .id0]
         let unilateralWidthPositionId: [Part] = [.id0]
-        let allPartIds:[Part] = [.id0, .id1]
+       // let allPartIds:[Part] = [.id0, .id1]
         let defaultFootOrigin: PreTiltOccupantFootSupportDefaultOrigin
         let defaultBackOrigin: PreTiltOccupantBackSupportDefaultOrigin
         let defaultSideOrigin: PreTiltOccupantSideSupportDefaultOrigin
@@ -1150,19 +1150,21 @@ extension DictionaryProvider {
             var footSupportInOneOrTwoPieces: Part
             var footJointToFootSupportOrigin: PositionAsIosAxes
             var footSupportIds: [Part]
-            
+                
+                let unilateralOnLeft: [Part]? = nil//[Part.id1]
+                
             if footPlateInOnePieceState {
                 footSupportInOneOrTwoPieces =
                     .footSupportInOnePiece
                 footJointToFootSupportOrigin =
-                    defaultFootOrigin.getJointToOnePieceFoot()
+                    defaultFootOrigin.getJointToOnePieceFoot( unilateralOnLeft)
                 footSupportIds =
                     unilateralWidthPositionId
             } else {
                 footSupportInOneOrTwoPieces =
                     .footSupport
                 footJointToFootSupportOrigin =
-                    defaultFootOrigin.getJointToTwoPieceFoot()
+                defaultFootOrigin.getJointToTwoPieceFoot(unilateralOnLeft)
                 footSupportIds =
                     bilateralWidthPositionId
             }
@@ -1175,16 +1177,16 @@ extension DictionaryProvider {
             let allFootSupportOrigin =
                 [
                 objectToSitOn,
-                defaultFootOrigin.getSitOnToHangerJoint(),
-                defaultFootOrigin.getHangerJointToFootJoint(),
+                defaultFootOrigin.getSitOnToHangerJoint( unilateralOnLeft),
+                defaultFootOrigin.getHangerJointToFootJoint( unilateralOnLeft),
                 footJointToFootSupportOrigin]
      
             let uniOrBilateralWidthPositionIdForFootSupport =
                 [
                 [sitOnId],
-                bilateralWidthPositionId,
-                bilateralWidthPositionId,
-                footSupportIds]
+                [.id0],
+                [.id0],
+                [.id0]]
                 
             return
                 (

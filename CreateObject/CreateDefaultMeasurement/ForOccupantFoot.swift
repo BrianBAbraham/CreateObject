@@ -131,24 +131,25 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             OccupantBodySupportDefaultDimension(baseType)
     }
     
-    func getSitOnToHangerJoint()
+    func getSitOnToHangerJoint(_ ids: [Part]?)
         -> PositionAsIosAxes {
+            
             let dictionary: OriginDictionary =
                 [:]
             let general =
-            (x: defaultBodySupportDimension.value.width/2 * 0.95,
+            (x: defaultBodySupportDimension.value.width/2 * 0.95 * reverseSide(ids),
              y: defaultBodySupportDimension.value.length/2 * 0.95,
              z: jointBelowSeat)
         return
             dictionary[baseType] ?? general
     }
     
-    func getHangerJointToFootJoint()
+    func getHangerJointToFootJoint(_ ids: [Part]?)
         -> PositionAsIosAxes {
             let dictionary: OriginDictionary =
                 [:]
             let general =
-            (x: 0.0,
+            (x: 0.0 * reverseSide(ids),
                  y: defaultFootSupportDimension.getHangerLink().length,
                  z:  -(DictionaryProvider.sitOnHeight -
                        footSupportHeightAboveFloor +
@@ -158,29 +159,41 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             dictionary[baseType] ?? general
     }
     
-    func getJointToTwoPieceFoot()
+    func getJointToTwoPieceFoot(_ ids: [Part]?)
     -> PositionAsIosAxes {
+
         let dictionary: OriginDictionary =
             [:]
         let general =
             (x:   -(defaultFootSupportDimension.getFootJoint().width +
-                   defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2,
+                   defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2 * reverseSide(ids),
              y: 0.0,
              z: jointBelowSeat)
     return
         dictionary[baseType] ?? general
     }
     
-    func getJointToOnePieceFoot()
+    func getJointToOnePieceFoot(_ ids: [Part]?)
     -> PositionAsIosAxes {
         let dictionary: OriginDictionary =
             [:]
         let general =
-            (x: 0.0,
+            (x: 0.0 * reverseSide(ids),
              y: 0.0,
              z: jointBelowSeat)
     return
         dictionary[baseType] ?? general
+    }
+    
+    func reverseSide(_ ids: [Part]?)
+        -> Double {
+            var unilateralOnLeftSide: Double
+            if let ids {
+              unilateralOnLeftSide =  ids == [.id1] ? -1.0: 1.0
+            } else {
+              unilateralOnLeftSide = 1.0
+            }
+            return unilateralOnLeftSide
     }
 }
 
