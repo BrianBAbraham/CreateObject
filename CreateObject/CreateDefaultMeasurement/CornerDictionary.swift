@@ -169,7 +169,7 @@ struct DictionaryProvider {
         postTiltObjectToFourCornerPerKeyDic =
             createPostTiltObjectToPartFourCornerPerKeyDic()
             //no dimension for
-//DictionaryInArrayOut().getNameValue(dimensionDic).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic).forEach{print($0)}
             // produces object_id0_tiltInSpaceHorizontalJoint_id1_sitOn_id0: 0.0, 250.0, 1500.0
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic).forEach{print($0)}
             
@@ -226,7 +226,7 @@ struct DictionaryProvider {
 
                     
                 let preTiltParentToPartBodyOrigin =
-                        OriginIdPartChartChainInDictionariesOut(
+                        OriginIdPartChainInDictionariesOut(
                             allOriginIdNodesForSitOn,
                             preTiltParentToPartOriginDicIn
                     ).makeAndGetForParentToPart()
@@ -254,7 +254,7 @@ struct DictionaryProvider {
             func createPreTiltWheelOriginDictionary(
                 _ originIdNodes: OriginIdPartChain ) {
                 let parentAndObjectToPartOriginDictionary =
-                    OriginIdPartChartChainInDictionariesOut(
+                    OriginIdPartChainInDictionariesOut(
                         originIdNodes,
                         preTiltParentToPartOriginDicIn
                         )
@@ -308,12 +308,14 @@ struct DictionaryProvider {
                 func createPreTiltParentToPartFootSideBackOriginDictionary (
                     _ allOriginIdNodes: OriginIdPartChain){
                         let parentAndObjectToPartOriginDictionary =
-                            OriginIdPartChartChainInDictionariesOut(
+                            OriginIdPartChainInDictionariesOut(
                             allOriginIdNodes,
                             preTiltParentToPartOriginDicIn
                             )
                         preTiltParentToPartOriginDic +=
                             parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
+                        
+                        //DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print($0)}
                         preTiltObjectToPartOriginDic +=
                             parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
 

@@ -23,9 +23,24 @@ struct LeftAndRightOrigin {
         rightAndUnilateralOrigin + left
     }
 
+    
     func getLeftOrigin ()
         -> [PositionAsIosAxes] {
-print (names)
+//print (names)
+        var leftOrigin: [PositionAsIosAxes] = []
+        for index in 0..<rightAndUnilateralOrigin.count {
+            
+                let left = CreateIosPosition.getLeftFromRight(rightAndUnilateralOrigin[index])
+                leftOrigin.append(left)
+  
+        }
+           // print (leftOrigin)
+        return leftOrigin
+    }
+    
+    func getLeftOrigin2 ()
+        -> [PositionAsIosAxes] {
+//print(names)
         var leftOrigin: [PositionAsIosAxes] = []
         for index in 0..<rightAndUnilateralOrigin.count {
             if partIds[index].count == 2 {
@@ -34,11 +49,11 @@ print (names)
             } else {
                 
                 if partIds[index] == [.id0] {
-                    print ("detection")
+                    //print("detection")
                 let left =
                     CreateIosPosition.getLeftFromRight(rightAndUnilateralOrigin[index])
-                    print (left)
-                    print ("")
+//                    print(left)
+//                    print("")
                     leftOrigin.append(left)
                 } else {
                     /// this adds redundant right values since values
@@ -49,6 +64,7 @@ print (names)
                 }
             }
         }
+            //print(leftOrigin)
         return leftOrigin
     }
 }
