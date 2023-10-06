@@ -231,8 +231,8 @@ struct DictionaryProvider {
                             preTiltParentToPartOriginDicIn
                     ).makeAndGetForParentToPart()
 
-                //for the body origin
-                //parent and object are identical
+//                for the body origin
+//                parent and object are identical
                 preTiltObjectToPartOriginDic += preTiltParentToPartBodyOrigin
                 preTiltParentToPartOriginDic += preTiltParentToPartBodyOrigin
                 }
@@ -276,13 +276,13 @@ struct DictionaryProvider {
                 partChains = data.partChains
                 
                 if BaseObjectGroups().sitOnBackFootTiltJoint.contains(baseType) {
-                    //print("TILT FOUND")
+                    
                     let allOriginIdNodesForTiltInSpaceeForBothSitOn =
                         data.allOriginIdPartChainForSitOnBackFootTiltJointForBothSitOn
                     for allOriginIdNodesForTiltInSpace in
                             allOriginIdNodesForTiltInSpaceeForBothSitOn {
                                 createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdNodesForTiltInSpace)
-                        //print (allOriginIdNodesForTiltInSpace)
+                       
                     }
                 }
 
@@ -307,15 +307,17 @@ struct DictionaryProvider {
                 
                 func createPreTiltParentToPartFootSideBackOriginDictionary (
                     _ allOriginIdNodes: OriginIdPartChain){
-                        let parentAndObjectToPartOriginDictionary =
-                            OriginIdPartChainInDictionariesOut(
-                            allOriginIdNodes,
-                            preTiltParentToPartOriginDicIn
-                            )
+
+
+                    let parentAndObjectToPartOriginDictionary =
+                        OriginIdPartChainInDictionariesOut(
+                        allOriginIdNodes,
+                        preTiltParentToPartOriginDicIn
+                        )
+                        
                         preTiltParentToPartOriginDic +=
                             parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
                         
-                        //DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print($0)}
                         preTiltObjectToPartOriginDic +=
                             parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
 
@@ -333,9 +335,9 @@ struct DictionaryProvider {
                 occupantSupportDimensionDictionary.forBack
             dimensionDic += occupantSupportDimensionDictionary.forFoot
             dimensionDic += occupantSupportDimensionDictionary.forSide
-//print(occupantSupportDimensionDictionary.forSide)
+
             dimensionDic += occupantSupportDimensionDictionary.forTiltInSpace
-//print(occupantSupportDimensionDictionary.forTiltInSpace)
+
             ///dimensionForBody must be subsequent to for... which have sitOn in their nodes
             ///otherwise§
             let dimensionForBody  = occupantSupportDimensionDictionary.forBody
@@ -943,7 +945,7 @@ extension DictionaryProvider {
         let parent: DictionaryProvider
         var partChainProvider: PartChainProvider2.Type = PartChainProvider2.self
         let objectType: BaseObjectTypes
-        let bilateralWidthPositionId: [Part] = [.id1, .id0]
+        let bilateralWidthPositionId: [Part] = [.id0, .id1]
         let unilateralWidthPositionId: [Part] = [.id0]
        // let allPartIds:[Part] = [.id0, .id1]
         let defaultFootOrigin: PreTiltOccupantFootSupportDefaultOrigin
@@ -1186,9 +1188,9 @@ extension DictionaryProvider {
             let uniOrBilateralWidthPositionIdForFootSupport =
                 [
                 [sitOnId],
-                [.id0],
-                [.id0],
-                [.id0]]
+                [.id1],
+                [.id1],
+                [.id1]]
                 
             return
                 (

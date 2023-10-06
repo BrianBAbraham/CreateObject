@@ -8,7 +8,7 @@
 import Foundation
 
 struct TransformOriginIdPartChainForDictionary {
-    func getNodePairsToDeepestRoot (
+    func getPartChainPairsToDeepestRoot (
         _ allNodesFromObject: [Part])
         -> [[Part]] {
         var nodePairs: [[Part]] = []
@@ -20,48 +20,50 @@ struct TransformOriginIdPartChainForDictionary {
     }
     
     
-    func getNamesFromNodePairs(
-        _ nodePairs: [[Part]],
-        _ idForFirstAndSecondNode: [[Part]],
+    func getNamesFromPartChainPairs(
+        _ partPairs: [[Part]],
+        _ idForFirstAndSecondPartPair: [[Part]],
         _ sitOnId: Part)
         -> [String]{
-            var nodePairNames: [String] = []
-            for index in 0..<nodePairs.count {
+            var partPairNames: [String] = []
+            for index in 0..<partPairs.count {
                 let name =
                     CreateNameFromParts( [
-                        nodePairs[index][0],
-                        idForFirstAndSecondNode[index][0],
+                        partPairs[index][0],
+                        idForFirstAndSecondPartPair[index][0],
                         .stringLink,
-                        nodePairs[index][1],
-                        idForFirstAndSecondNode[index][1],
+                        partPairs[index][1],
+                        idForFirstAndSecondPartPair[index][1],
                         .stringLink,
                         .sitOn,
                         sitOnId
                     ]).name
-                nodePairNames.append(name)
+                partPairNames.append(name)
             }
-        return nodePairNames
+        return partPairNames
     }
-   
-    func getIdForFirstAndSecondNode(
+   // arrayOfParts
+// for n parts in chain so i...n
+// pair comprises (part_i, part_i+1)
+    func getIdForFirstAndSecondPartPairOfChain(
         _ sitOnId: Part,
-        _ nodePairsToDeepestRoot: [[Part]],
+        _ partPairsToEndofChain: [[Part]],
         _ partIdsForSecondOfNodePair: [[Part]],
         _ usingIdZeroOrOne: Int)
         -> [[Part]] {
         var idForFirstAndSecondNode: [[Part]] = []
         var idZeroOrOne: Int
-            for index in 0..<nodePairsToDeepestRoot.count {
+            for index in 0..<partPairsToEndofChain.count {
                 idZeroOrOne =
                     partIdsForSecondOfNodePair[index].count == 2 && usingIdZeroOrOne == 1 ? 1: 0
                 
                 let firstId =
-                nodePairsToDeepestRoot[index][0] == .sitOn ?
-                    sitOnId: (nodePairsToDeepestRoot[index][0] == .object ?
+                partPairsToEndofChain[index][0] == .sitOn ?
+                    sitOnId: (partPairsToEndofChain[index][0] == .object ?
                 .id0: partIdsForSecondOfNodePair[index][idZeroOrOne] )
                 
                 let secondId =
-                    nodePairsToDeepestRoot[index][1] == .sitOn ? sitOnId: partIdsForSecondOfNodePair[index][idZeroOrOne]
+                    partPairsToEndofChain[index][1] == .sitOn ? sitOnId: partIdsForSecondOfNodePair[index][idZeroOrOne]
 
             idForFirstAndSecondNode.append([firstId,secondId])
         }
@@ -88,46 +90,9 @@ struct TransformOriginIdPartChainForDictionary {
     /// idForFirstAndSecondNodeToDeepestRoot has id0 nserted as first
     /// element to correspond to allNodesFromObject
     func getNamesFromPartChainPairsToDeepestRoot (
-        _ allNodes: [Part],
-        _ partIds: [[Part]],
-       usingIdZeroOrOne: Int)
-        -> [String] {
-        let sitOnId = allNodes.contains(.sitOn) ?
-            partIds[0][0]: .id0 // some roots, eg wheels exclude sitOn so use id0
-        let partChainFromObject = [Part.object] + allNodes // first node is always object
-        
-        /// [ [part_0, part_1, part_2, part_3, part_4] ] would be transformed to
-        /// [ [part_0, part_1], [part_1, part_2], [ part_2, part_3], [ part_3, part_4] ]
-        let nodePairsToDeepestRoot =
-            getNodePairsToDeepestRoot(partChainFromObject)
-//            if usingIdZeroOrOne == 0 {
-//                print(nodePairsToDeepestRoot)
-//            }
-//print(nodePairsToDeepestRoot)
-        /// [ [id0] ,[id0], [id1, id0],  [id1, id0], [id1]  ] transforms to
-        /// [[id0, id0],  [id0, id1], [id1, id1], [id1, id1]
-        let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
-            getIdForFirstAndSecondNode(
-                sitOnId,
-                nodePairsToDeepestRoot,
-                partIds,
-                usingIdZeroOrOne)
-//print (idForFirstAndSecondNodeToDeepestRoot)
-        let names = getNamesFromNodePairs(
-            nodePairsToDeepestRoot,
-            idForFirstAndSecondNodeToDeepestRoot,
-            sitOnId)
-//print (names)
-//            print ("")
-        return
-            names
-    }
-    
-    
-    func getNamesFromPartChainPairsToDeepestRoot2 (
         _ partChain: [Part],
         _ partIds: [[Part]],
-        usingEvenOrOddId: Int)
+       usingIdZeroOrOne: Int)
         -> [String] {
         let sitOnId = partChain.contains(.sitOn) ?
             partIds[0][0]: .id0 // some roots, eg wheels exclude sitOn so use id0
@@ -135,28 +100,27 @@ struct TransformOriginIdPartChainForDictionary {
         
         /// [ [part_0, part_1, part_2, part_3, part_4] ] would be transformed to
         /// [ [part_0, part_1], [part_1, part_2], [ part_2, part_3], [ part_3, part_4] ]
-        let nodePairsToDeepestRoot =
-            getNodePairsToDeepestRoot(partChainFromObject)
-//            if usingEvenOrOddId == 0 {
-//                print (nodePairsToDeepestRoot)
-//            }
-//print(nodePairsToDeepestRoot)
+        let partPairsToEndOfChain =
+            getPartChainPairsToDeepestRoot(partChainFromObject)
+
         /// [ [id0] ,[id0], [id1, id0],  [id1, id0], [id1]  ] transforms to
         /// [[id0, id0],  [id0, id1], [id1, id1], [id1, id1]
-        let idForFirstAndSecondNodeToDeepestRoot: [[Part]] =
-            getIdForFirstAndSecondNode(
+        let idForFirstAndSecondOfAllPartPairToChainEnd: [[Part]] =
+            getIdForFirstAndSecondPartPairOfChain(
                 sitOnId,
-                nodePairsToDeepestRoot,
+                partPairsToEndOfChain,
                 partIds,
-                usingEvenOrOddId)
+                usingIdZeroOrOne)
 
-        let names = getNamesFromNodePairs(
-            nodePairsToDeepestRoot,
-            idForFirstAndSecondNodeToDeepestRoot,
+        let names = getNamesFromPartChainPairs(
+            partPairsToEndOfChain,
+            idForFirstAndSecondOfAllPartPairToChainEnd,
             sitOnId)
 
         return
             names
     }
+    
+
     
 }

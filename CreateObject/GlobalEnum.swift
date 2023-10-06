@@ -344,7 +344,6 @@ struct PartChainProvider2  {
                 return []
         }
     }
-    
 }
 
 

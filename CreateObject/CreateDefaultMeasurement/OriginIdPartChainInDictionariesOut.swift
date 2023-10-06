@@ -8,7 +8,7 @@
 import Foundation
 
 ///first step create names for dictionary
-/// get origin for left parts
+/// x >= 0 origins are reflected for for x < 0
 /// create parentToPartDic
 ///  use names to extract origin in correct order from parentToPartDic
 ///  func to create new  object to part orgiins
@@ -17,20 +17,23 @@ import Foundation
 
 //MARK:- DICTIONARY
 struct OriginIdPartChainInDictionariesOut {
-    let rightOrUnilateralOrigin: [PositionAsIosAxes]
-    var leftOrigin: [PositionAsIosAxes] = []
-    //var rightOrigin: [PositionAsIosAxes] = []
+    var xGreaterThanOrEqualZeroOriginIn: [PositionAsIosAxes]
+    var xLessThanZeroOrigin: [PositionAsIosAxes] = []
+    
+    ///xGreaterThanZeroOriginIn provides seed for xLessThanOrEqualZeroOrigin
+    ///but if there is only an even id, xGreaterThanZeroOriginOut = []
+    var xGreaterThanOrEqualZeroOriginOut: [PositionAsIosAxes] = []
     let partIds: [[Part]]
     let partChain: [Part]
     let preTiltParentToPartOriginIn: PositionDictionary
-    var namesForRightOrUnilateral: [String] = []
-    var namesForLeft: [String] = []
+    var xGreaterThanOrEqualZeroNames: [String] = []
+    var xLessThanZeroNames: [String] = []
     let allNames: [String]
     
     init(
         _ originIdPartChain: OriginIdPartChain,
         _ preTiltParentToPartOriginIn: PositionDictionary) {
-        rightOrUnilateralOrigin = originIdPartChain.origin
+        xGreaterThanOrEqualZeroOriginIn = originIdPartChain.origin
         partIds = originIdPartChain.ids
         partChain = originIdPartChain.chain
         self.preTiltParentToPartOriginIn =
@@ -38,81 +41,58 @@ struct OriginIdPartChainInDictionariesOut {
         ///names are in order from object to part
         ///so these can be used to determine
         ///object to part origin
-        ///Only one name is printed using an even id from id0
-//        namesForRightOrUnilateral =
-//            TransformOriginIdPartChainForDictionary()
-//                .getNamesFromPartChainPairsToDeepestRoot(
-//                    partChain,
-//                    partIds,
-//                    usingIdZeroOrOne: 0)
-            
-
-            
-            let finalPartId = partIds[partIds.count - 1]
-            var evenOdd: [Int] = []
-            for id in finalPartId {
-                if let lastCharacter = id.rawValue.last,
-                    let digitValue = Int(String(lastCharacter)) {
-                    if digitValue % 2 == 0 {
-                        evenOdd.append(0)
-                    } else {
-                        evenOdd.append(1)
-                    }
+        
+        /// even id, eg id0, id2, indicate x <=0, odd id indicate x>0
+        /// the id of the final part in the chain indicates
+        ///  if there are x<0, x>=0 or both
+        ///  x is the origin of the part from object or parent
+        var evenOdd: [Int] = []
+        let finalPartId = partIds[partIds.count - 1]
+        for id in finalPartId {
+            if let lastCharacter = id.rawValue.last,
+                let digitValue = Int(String(lastCharacter)) {
+                if digitValue % 2 == 0 {
+                    evenOdd.append(0)
+                } else {
+                    evenOdd.append(1)
                 }
             }
-//            print (partChain)
-//            print (partIds)
-            if evenOdd.contains(0) {
-               // print ("x<=0 required")
-                let names =
-                TransformOriginIdPartChainForDictionary()
-                    .getNamesFromPartChainPairsToDeepestRoot(
-                        partChain,
-                        partIds,
-                        usingIdZeroOrOne: 1)
-                
-                namesForLeft = names
-              
-                //print (names)
-            
-               // print ("")
-            }
-            if evenOdd.contains(1) {
-               // print ("x>0 required")
-                
-                let names =
-                TransformOriginIdPartChainForDictionary()
-                    .getNamesFromPartChainPairsToDeepestRoot(
-                        partChain,
-                        partIds,
-                        usingIdZeroOrOne: 0)
-            print (names)
-                namesForRightOrUnilateral = names
-                //print ("")
-            }
+        }
 
-
+        // names have different id depending on
+        // x<=0 or x>0
+        if evenOdd.contains(0) {
+            let names =
+            TransformOriginIdPartChainForDictionary()
+                .getNamesFromPartChainPairsToDeepestRoot(
+                    partChain,
+                    partIds,
+                    usingIdZeroOrOne: 0)
             
-
-
-            ///in originIdPartChain one or two id are associated with a part
-            ///if unilateral one id if bilateral two id
-            ///origins are intially created for origin x > 0 that is the right side
-            ///for parts withh bilateral id a symmetrical set is created for the left side
-            ///for unilateral if the single id is even it is on the left or centre
-            ///if it is odd it is on the right
-            ///HOWEVER, unilateral id are always have an id0 in their name
-            ///as there is only one of them so irrespective of being left or right its string
-            ///identifier is "id0"
-            
-            
+            xLessThanZeroNames = names
+        }
+        if evenOdd.contains(1) {
+            let names =
+            TransformOriginIdPartChainForDictionary()
+                .getNamesFromPartChainPairsToDeepestRoot(
+                    partChain,
+                    partIds,
+                    usingIdZeroOrOne: 1)
+            xGreaterThanOrEqualZeroNames = names
+        }
+        // test to see if the seed orgin for x>0 is required
+        // if only on right, nor required
+        if !evenOdd.contains(1) {
+            xGreaterThanOrEqualZeroOriginOut = []
+        } else {
+            xGreaterThanOrEqualZeroOriginOut = xGreaterThanOrEqualZeroOriginIn
+        }
             
         allNames =
-            namesForRightOrUnilateral +
-            namesForLeft
-
-        createLeftOrigin(namesForLeft)
-        
+            xGreaterThanOrEqualZeroNames +
+            xLessThanZeroNames
+        createLeftOrigin(xLessThanZeroNames)
+            
         /// for [id0], [id1, id0],  [id1, id0], [id1]  ] for
         /// the left side there is no part at the fourth deepest
         /// node, the terminal node so the node position at which
@@ -126,7 +106,6 @@ struct OriginIdPartChainInDictionariesOut {
             -> Int {
             var numberOfNodesTillOnlyOneId = 0
             let correctForCountStartAtZero = 1
-                
                 if let lastIndex = partIds.indices.reversed().first(where: { partIds[$0].count == 2 }) {
                     numberOfNodesTillOnlyOneId =
                         lastIndex + correctForCountStartAtZero
@@ -140,25 +119,17 @@ struct OriginIdPartChainInDictionariesOut {
         let rightUnilateralAndLeftOrigin =
                 LeftAndRightOrigin(
                     names: names,
-                    rightAndUnilateralOrigin: rightOrUnilateralOrigin,
+                    rightAndUnilateralOrigin: xGreaterThanOrEqualZeroOriginIn,
                     partIds: partIds)
-//            print(names)
-//            print( rightUnilateralAndLeftOrigin.left)
-//            print("")
-        leftOrigin = rightUnilateralAndLeftOrigin.left
-            //print(names)
-            //print(leftOrigin)
-//            rightOrigin = rightUnilateralAndLeftOrigin.right
+        xLessThanZeroOrigin = rightUnilateralAndLeftOrigin.left
     }
     
     
     func makeAndGetForParentToPart()
         -> PositionDictionary {
         let allOrigin =
-            rightOrUnilateralOrigin +
-            leftOrigin
-            
-            print (allOrigin)
+                        xGreaterThanOrEqualZeroOriginOut +
+            xLessThanZeroOrigin
         var dictionary: PositionDictionary = [:]
         for (index, key) in allNames.enumerated() {
             dictionary[key] =
@@ -173,9 +144,9 @@ struct OriginIdPartChainInDictionariesOut {
         _ preTiltObjectToPartOriginIn: PositionDictionary )
         -> PositionDictionary {
         let rightOrUnilateralOrigin =
-            createObjectToPartOrigin(rightOrUnilateralOrigin)
+            createObjectToPartOrigin(            xGreaterThanOrEqualZeroOriginOut)
         let leftOrigin =
-            createObjectToPartOrigin(leftOrigin)
+            createObjectToPartOrigin(xLessThanZeroOrigin)
         let allOrigin =
             rightOrUnilateralOrigin +
             leftOrigin
@@ -185,8 +156,7 @@ struct OriginIdPartChainInDictionariesOut {
             preTiltObjectToPartOriginIn[key] ??
                 allOrigin[index]
         }
-//DictionaryInArrayOut().getNameValue( dictionary).forEach{print($0)}
-//print("\n\n")
+
         return dictionary
     }
     
@@ -221,27 +191,14 @@ struct OriginIdPartChainInDictionariesOut {
     
     func makeAndGetForObjectToPart()
         -> PositionDictionary {
-
         let allNames =
-            namesForRightOrUnilateral + namesForLeft
-        let rightUnilateralAndLeftOrigin =
-                LeftAndRightOrigin(
-                    names: namesForRightOrUnilateral,
-                    rightAndUnilateralOrigin: rightOrUnilateralOrigin,
-                    partIds: partIds)
-            let leftOrigin = rightUnilateralAndLeftOrigin.left
-
+            xGreaterThanOrEqualZeroNames + xLessThanZeroNames
         let allOrigin =
-            createObjectToPartOrigin(rightOrUnilateralOrigin) + createObjectToPartOrigin(leftOrigin)
+            createObjectToPartOrigin(            xGreaterThanOrEqualZeroOriginOut) + createObjectToPartOrigin(xLessThanZeroOrigin)
         var dictionary: PositionDictionary = [:]
-//print(allNames)
-//print(allOrigin)
-//print("")
         for (index, key) in allNames.enumerated() {
             let objectToPartName =    ParentToPartName().convertedToObjectToPart(key)
             dictionary[objectToPartName] = allOrigin[index]
-            //preTiltObjectToPartOriginIn[key] ??
-                
         }
         return dictionary
     }

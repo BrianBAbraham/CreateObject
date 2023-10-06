@@ -26,7 +26,6 @@ struct LeftAndRightOrigin {
     
     func getLeftOrigin ()
         -> [PositionAsIosAxes] {
-//print (names)
         var leftOrigin: [PositionAsIosAxes] = []
         for index in 0..<rightAndUnilateralOrigin.count {
             
@@ -34,13 +33,12 @@ struct LeftAndRightOrigin {
                 leftOrigin.append(left)
   
         }
-           // print (leftOrigin)
         return leftOrigin
     }
     
     func getLeftOrigin2 ()
         -> [PositionAsIosAxes] {
-//print(names)
+
         var leftOrigin: [PositionAsIosAxes] = []
         for index in 0..<rightAndUnilateralOrigin.count {
             if partIds[index].count == 2 {
