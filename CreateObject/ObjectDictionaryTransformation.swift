@@ -254,6 +254,11 @@ struct DictionaryInArrayOut {
                 description = "\(key): \(position[0].x), \(position[0].y), \(position[0].z)"
             }
             
+            if let position = value as? [String] {
+               
+                description = "\(key): \(position)"
+            }
+            
             namesAndMeasurements.append(
                 description
             )

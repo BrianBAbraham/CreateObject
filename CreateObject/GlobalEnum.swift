@@ -346,7 +346,84 @@ struct PartChainProvider2  {
     }
 }
 
+struct PartChainDictionaryProvider  {
+    var dic: PartChainDictionary = [:]
+    let partChainLabel: [Part] =
+        [
+        .backSupport,
+        .backSupportHeadSupport,
+        .footSupport,
+        .sideSupport,
+        .sitOnTiltJoint]
+    
+    let backSupport: PartChain =
+        [
+        .sitOn,
+        .backSupporRotationJoint,
+        .backSupport]
+    let foot: PartChain =
+        [
+        .sitOn,
+        .footSupportHangerJoint,
+        .footSupportJoint]
+    let headSupport: PartChain =
+        [
+        .backSupportHeadLinkRotationJoint,
+        .backSupportHeadSupportLink,
+        .backSupportHeadSupport]
+   let sideSupport: PartChain =
+        [
+        .sitOn,
+        .sideSupportRotationJoint,
+        .sideSupport]
+    let sitOnTiltJoint: PartChain =
+           [.sitOn,
+           .sitOnTiltJoint]
 
+    init() {
+        getPartChainDic()
+       
+    }
+
+    mutating func getPartChainDic (){
+        var partChainName: [String] = []
+        for chain in partChainLabel {
+            let partChain =
+                getPartChain(chain)
+            for part in partChain {
+                partChainName.append(part.rawValue)
+            }
+            dic += [chain.rawValue: partChainName]
+        }
+    }
+    
+   mutating func getPartChain (
+    _ part: Part)
+        -> PartChain {
+        switch part {
+            case .backSupport:
+                return
+                    backSupport
+            case .backSupportHeadSupport:
+                return
+                    backSupport + headSupport
+            case .footSupport:
+                return
+                    foot + [.footSupport]
+            case .footSupportInOnePiece:
+                return
+                    foot + [.footSupportInOnePiece]
+            case .sideSupport:
+                return
+                    sideSupport
+            case .sitOnTiltJoint:
+                return
+                    sitOnTiltJoint
+            default:
+                return []
+        }
+    }
+}
 //enum ViewFrom {
 //    case side
 //    case top

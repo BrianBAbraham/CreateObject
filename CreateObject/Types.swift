@@ -118,3 +118,5 @@ typealias Corners = [PositionAsIosAxes]
 
 /// each key has eight corners as per Corners [PositionAsIosAxes]
 typealias CornerDictionary = [String: Corners]
+
+typealias PartChainDictionary = [String: [String]]

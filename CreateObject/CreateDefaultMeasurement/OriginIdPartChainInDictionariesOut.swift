@@ -60,7 +60,8 @@ struct OriginIdPartChainInDictionariesOut {
         }
 
         // names have different id depending on
-        // x<=0 or x>0
+        // x<=0 have an even or zero id digit
+        // or x>0 have an odd id digit
         if evenOdd.contains(0) {
             let names =
             TransformOriginIdPartChainForDictionary()

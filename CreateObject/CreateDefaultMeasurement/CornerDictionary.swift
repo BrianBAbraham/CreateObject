@@ -35,6 +35,7 @@ struct DictionaryProvider {
     var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
     var partChains: [PartChain] = []
+    var partChainDictionary: PartChainDictionary = [:]
     
     var dimensionDic: Part3DimensionDictionary = [:]
     var angleDic: AngleDictionary = [:]
@@ -98,7 +99,8 @@ struct DictionaryProvider {
         _ parentToPartOrigin: PositionDictionary = [:],
         angleIn: AngleDictionary = [:],
         minMaxAngleIn: AngleMinMaxDictionary = [:],
-        partChainsIn: [PartChain] = [] ) {
+        partChainsIn: [PartChain] = [],
+        partChainDictionaryIn: PartChainDictionary = [:]) {
             
         self.baseType = baseType
         self.twinSitOnOption = twinSitOnOption
@@ -109,7 +111,7 @@ struct DictionaryProvider {
         self.angleDicIn = angleIn
         self.angleMinMaxDicIn = minMaxAngleIn
         self.partChainsIn = partChainsIn
-           // print (partChainsIn)
+  
         twinSitOnState = TwinSitOn(twinSitOnOption).state
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
             
@@ -122,7 +124,8 @@ struct DictionaryProvider {
         angleMinMaxDic =
             ObjectAngleMinMax(parent: self).dictionary
 //fprint(objectOptions)
-
+            partChainDictionary = partChainDictionaryIn == [:] ? PartChainDictionaryProvider().dic: partChainDictionaryIn
+            
 //MARK: - ORIGIN/DICTIONARY
             
         // both parent to part and
@@ -169,7 +172,7 @@ struct DictionaryProvider {
         postTiltObjectToFourCornerPerKeyDic =
             createPostTiltObjectToPartFourCornerPerKeyDic()
             //no dimension for
-//DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic).forEach{print($0)}
+DictionaryInArrayOut().getNameValue(partChainDictionary).forEach{print($0)}
             // produces object_id0_tiltInSpaceHorizontalJoint_id1_sitOn_id0: 0.0, 250.0, 1500.0
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic).forEach{print($0)}
             
