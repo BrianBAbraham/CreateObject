@@ -120,3 +120,8 @@ typealias Corners = [PositionAsIosAxes]
 typealias CornerDictionary = [String: Corners]
 
 typealias PartChainDictionary = [String: [String]]
+
+/// key is a PartChain and value is an array of id array
+///  where id array are either unilateral  or bilateral
+/// for sitOn id are unilateral id0 or id1 but for all other unilateral part id0
+typealias PartChainIdDictionary = [PartChain: [[Part]] ]

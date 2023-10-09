@@ -118,12 +118,44 @@ struct HeadSupport: View {
                 .onChange(of: headSuppportToggle) { value in
                     let onlyOne = 0
                     let partChain =
-                        PartChainProvider2([.backSupportHeadSupport]).partChains[onlyOne]
+                        LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne]
                     objectPickVM.setCurrentObjectWithToggledPartChain(partChain)
                 }
         } else {
             EmptyView()
         }
+    }
+}
+
+
+struct FootSupport: View {
+    //@State private var footSuppportToggle = true
+    @State private var laterality = "both"
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+    let objectNames = ["none", "both", "left", "right"]
+    
+    var body: some View {
+        
+//        Toggle("foot",isOn: $footSuppportToggle)
+//            .onChange(of: footSuppportToggle) { value in
+//
+//                objectPickVM.setCurrentObjectWithEditedPartChainsId()
+//            }
+        HStack {
+            Text("Footplate?")
+            Picker("foot",selection: $laterality ) {
+                ForEach(objectNames, id:  \.self)
+                        { equipment in
+                    Text(equipment)
+                }
+            }
+            .onChange(of: laterality) {tag in
+                objectPickVM.setCurrentObjectWithEditedPartChainsId(tag)
+            }
+        }
+
+        
     }
 }
 

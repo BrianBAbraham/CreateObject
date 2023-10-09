@@ -200,24 +200,24 @@ struct BaseObjectGroups {
     }
 }
 
-struct ObjectPartChain {
-    //let object: BaseObjectTypes
+struct ObjectPartChains {
+
     var partChains: [PartChain] = []
-    
+
     init(_ object: BaseObjectTypes) {
         partChains = getPartChains(object)
-        
+
         func getPartChains (_ object: BaseObjectTypes)
         -> [PartChain] {
             let typicalWheeledChair =
-            PartChainProvider2 ([
+            LabelInPartChainOut ([
                 .backSupport,
                 .backSupportHeadSupport,
                 .footSupport,
                 .sideSupport,
                 .sitOnTiltJoint
             ]).partChains
-            
+
             switch object {
             case .allCasterTiltInSpaceShowerChair:
                 return
@@ -228,6 +228,49 @@ struct ObjectPartChain {
             default:
                 return
                     typicalWheeledChair
+            }
+        }
+    }
+}
+
+//partChainLabel: ids for each part in partChain for that label
+struct PartChainsIdDictionary {
+    var dic: [PartChain : [[Part]] ] = [:]
+    let sitOnId : Part
+    let bilateral: [Part] = [.id0, .id1]
+    init (_ partChains: [PartChain], _ sitOnId: Part ) {
+        self.sitOnId = sitOnId
+        
+        getId(partChains)
+        
+        func getId (_ partChains: [PartChain]) {
+            for chain in partChains {
+                var ids: [[Part]] = []
+                for part in chain {
+                    ids.append(getId(part))
+                }
+                dic += [chain: ids]
+            }
+            
+            func getId(_ part: Part) -> [Part] {
+                var ids: [Part] = []
+                switch part {
+                case .sitOn:
+                        ids = [sitOnId]
+                    case .backSupporRotationJoint:
+                        ids = [.id0]
+                    case .backSupport:
+                        ids = [.id0]
+                    case .backSupportHeadLinkRotationJoint:
+                        ids = [.id0]
+                    case .backSupportHeadSupportLink:
+                        ids = [.id0]
+                    case .backSupportHeadSupport:
+                        ids = [.id0]
+                    default:
+                        ids = bilateral
+                }
+                return ids
             }
         }
     }

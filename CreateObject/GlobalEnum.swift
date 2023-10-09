@@ -285,7 +285,7 @@ struct PartChainProvider {
 
 
 
-struct PartChainProvider2  {
+struct LabelInPartChainOut  {
     static let backSupport: PartChain =
         [
         .sitOn,
@@ -346,15 +346,36 @@ struct PartChainProvider2  {
     }
 }
 
+
+struct ObjectPartChainLabelsDictionaryProvider {
+    let dic: [BaseObjectTypes: [Part]] = [:]
+    init () {
+        
+        
+        func getObjectPartChainLabelsDictionary() {
+            
+        }
+    }
+}
+
+
+/// ObjectPartChainLabelDictionary
+/// Object: [PartChainLabel]
+///
+/// PartChainDictionary
+/// PartChainLabel: PartChain
+///
+/// PartChainIdDictionary
+/// [PartChainLabel:  [Id]]
 struct PartChainDictionaryProvider  {
     var dic: PartChainDictionary = [:]
-    let partChainLabel: [Part] =
-        [
-        .backSupport,
-        .backSupportHeadSupport,
-        .footSupport,
-        .sideSupport,
-        .sitOnTiltJoint]
+//    let partChainLabel: [Part] =
+//        [
+//        .backSupport,
+//        .backSupportHeadSupport,
+//        .footSupport,
+//        .sideSupport,
+//        .sitOnTiltJoint]
     
     let backSupport: PartChain =
         [
@@ -371,7 +392,7 @@ struct PartChainDictionaryProvider  {
         .backSupportHeadLinkRotationJoint,
         .backSupportHeadSupportLink,
         .backSupportHeadSupport]
-   let sideSupport: PartChain =
+    let sideSupport: PartChain =
         [
         .sitOn,
         .sideSupportRotationJoint,
@@ -379,21 +400,20 @@ struct PartChainDictionaryProvider  {
     let sitOnTiltJoint: PartChain =
            [.sitOn,
            .sitOnTiltJoint]
-
-    init() {
-        getPartChainDic()
-       
+    
+    init(_ partChainLabels: [Part]) {
+        getPartChainDic(partChainLabels)
     }
 
-    mutating func getPartChainDic (){
-        var partChainName: [String] = []
-        for chain in partChainLabel {
+    mutating func getPartChainDic (_ partChainLabels: [Part]){
+        for partChainLabel in partChainLabels {
+            var partChainName: [String] = []
             let partChain =
-                getPartChain(chain)
+                getPartChain(partChainLabel)
             for part in partChain {
                 partChainName.append(part.rawValue)
             }
-            dic += [chain.rawValue: partChainName]
+            dic += [partChainLabel.rawValue: partChainName]
         }
     }
     

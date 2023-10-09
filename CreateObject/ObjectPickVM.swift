@@ -28,6 +28,8 @@ struct ObjectPickModel {
     
     var partChains: [PartChain] = []
     
+    var partChainsIdDic: PartChainIdDictionary
+    
 
     mutating func setObjectOptionDictionary(
         _ option: ObjectOptions,
@@ -57,6 +59,7 @@ class ObjectPickViewModel: ObservableObject {
     let angleDic: AngleDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
     let partChains: [PartChain]
+    let partChainsIdDic: PartChainIdDictionary
 
     
     @Published private var objectPickModel: ObjectPickModel
@@ -80,6 +83,8 @@ class ObjectPickViewModel: ObservableObject {
             dictionaryProvider.angleMinMaxDic
         partChains =
             dictionaryProvider.partChains
+        partChainsIdDic =
+            dictionaryProvider.partChainsIdDic
         
         objectPickModel =
             ObjectPickModel(
@@ -90,7 +95,8 @@ class ObjectPickViewModel: ObservableObject {
                 objectOptionDictionary: ObjectPickViewModel.optionDictionary,
                 angleDic: angleDic,
                 angleMinMaxDic: angleMinMaxDic,
-                partChains: partChains)
+                partChains: partChains,
+                partChainsIdDic: partChainsIdDic)
        
         func setDictionaryProvider(
             _ objectName: String?)
@@ -246,6 +252,11 @@ extension ObjectPickViewModel {
         return array
     }
     
+    func getPartChainIdDic()
+    -> PartChainIdDictionary {
+            objectPickModel.partChainsIdDic
+    }
+    
     
     func getRelevantDictionary(
         _ forScreenOrMeasurment: DictionaryTypes,
@@ -307,7 +318,8 @@ extension ObjectPickViewModel {
         func setCurrentObjectByCreatingFromName(
             _ twinSitOnDictionary: TwinSitOnOptionDictionary,
             _ angleInDic: AngleDictionary = [:],
-            _  partChainsIn: [PartChain] = []) {
+            _  partChainsIn: [PartChain] = [],
+            _ partChainIdDicIn: PartChainIdDictionary = [:]) {
             
                 var partChainsToUse: [PartChain] = []
                 if partChainsIn == [] {
@@ -325,15 +337,16 @@ extension ObjectPickViewModel {
                     ObjectPickViewModel.twinSitOnDictionary,
                     [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary],
                     angleIn: angleInDic,
-                partChainsIn: partChainsToUse)
+                partChainsIn: partChainsToUse,
+                partChainsIdDicIn: partChainIdDicIn)
                 
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
                 dictionaryProvider.dimensionDic
             objectPickModel.angleMinMaxDic =
                 dictionaryProvider.angleMinMaxDic
-                objectPickModel.angleInDic =
-                    angleInDic
+            objectPickModel.angleInDic =
+                angleInDic
         }
 
         
@@ -354,6 +367,31 @@ extension ObjectPickViewModel {
             setCurrentObjectByCreatingFromName(ObjectPickViewModel.twinSitOnDictionary,
                objectPickModel.angleInDic,
                 partChains)
+        }
+    
+    func setCurrentObjectWithEditedPartChainsId(_ option: String) {
+            var partChainIdDic = getPartChainIdDic()
+            let onlyOneElement = 0
+            let footChain = LabelInPartChainOut([.footSupport]).partChains[onlyOneElement]
+            //print(footChain)
+            //print (partChainIdDic[footChain])
+        
+            partChainIdDic[footChain] = [[Part.id0],[Part.id0], [Part.id0],getNewId(option)]
+            
+            setCurrentObjectByCreatingFromName(ObjectPickViewModel
+                .twinSitOnDictionary,
+                objectPickModel.angleInDic,
+                objectPickModel.partChains,
+               partChainIdDic)
+        
+        func getNewId (_ option: String)
+        -> [Part] {
+            var newId: [Part] = []
+            newId = option == "both" ? [.id0, .id1]: newId
+            newId = option == "left" ? [.id0]: newId
+            newId = option == "right" ? [.id1]: newId
+            return newId
+        }
         }
     
         func setPartChains(_ partChains: [PartChain]){

@@ -72,6 +72,7 @@ objectPickVM.setCurrentObjectByCreatingFromName(
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)
             
+           FootSupport()
             HeadSupport(objectPickVM.getCurrentObjectName())
                 .padding(.horizontal)
             Tilt(objectPickVM.getCurrentObjectName())
@@ -82,7 +83,7 @@ objectPickVM.setCurrentObjectByCreatingFromName(
 //                })
                 .padding(.horizontal)
             
-            TwinSitOnView(twinSitOnState, objectPickVM.getCurrentObjectName())
+            //TwinSitOnView(twinSitOnState, objectPickVM.getCurrentObjectName())
 //            DoubleSitOnOption(doubleSitOnState, objectPickVM.getCurrentObjectName())
 //                .onPreferenceChange(DoubleSitOnPreferenceKey.self, perform: {value in
 //                    self.recline = value
