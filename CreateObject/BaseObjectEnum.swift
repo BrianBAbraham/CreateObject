@@ -222,6 +222,12 @@ struct ObjectPartChains {
             case .allCasterTiltInSpaceShowerChair:
                 return
                     typicalWheeledChair
+            case .allCasterBed:
+                return
+                    [[.sideSupport]]
+            case .allCasterStretcher:
+                return
+                    [[.sideSupport]]
             case .showerTray:
                 return
                     [[.footSupport]]
@@ -243,6 +249,7 @@ struct PartChainsIdDictionary {
         
         getId(partChains)
         
+        //the number of id always match the partChain
         func getId (_ partChains: [PartChain]) {
             for chain in partChains {
                 var ids: [[Part]] = []

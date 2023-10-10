@@ -48,6 +48,14 @@ struct OriginIdPartChainInDictionariesOut {
         ///  x is the origin of the part from object or parent
         var evenOdd: [Int] = []
         let finalPartId = partIds[partIds.count - 1]
+            if finalPartId == [] {
+//                print ("empty id detected")
+//                print (partIds)
+//                print (partChain)
+//                print ("")
+            }
+        // id array with no id are ignored
+        // so the partChain will not appear in the dictionary
         for id in finalPartId {
             if let lastCharacter = id.rawValue.last,
                 let digitValue = Int(String(lastCharacter)) {
@@ -64,8 +72,8 @@ struct OriginIdPartChainInDictionariesOut {
         // or x>0 have an odd id digit
         if evenOdd.contains(0) {
             let names =
-            TransformOriginIdPartChainForDictionary()
-                .getNamesFromPartChainPairsToDeepestRoot(
+            OriginIdPartChainTransformed()
+                .createAnGetNames(
                     partChain,
                     partIds,
                     usingIdZeroOrOne: 0)
@@ -74,8 +82,8 @@ struct OriginIdPartChainInDictionariesOut {
         }
         if evenOdd.contains(1) {
             let names =
-            TransformOriginIdPartChainForDictionary()
-                .getNamesFromPartChainPairsToDeepestRoot(
+            OriginIdPartChainTransformed()
+                .createAnGetNames(
                     partChain,
                     partIds,
                     usingIdZeroOrOne: 1)

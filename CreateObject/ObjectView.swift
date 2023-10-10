@@ -96,9 +96,9 @@ struct ObjectView: View {
     }
     
     
-    var objectOptionsDictionary: OptionDictionary {
-        objectPickVM.getObjectOptionsDictionary()
-    }
+//    var objectOptionsDictionary: OptionDictionary {
+//        objectPickVM.getObjectOptionsDictionary()
+//    }
     
     
     var twinSitOnOptionsDictionary: TwinSitOnOptionDictionary {

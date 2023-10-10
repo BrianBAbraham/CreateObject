@@ -82,7 +82,7 @@ struct OccupantSupportDimensionDictionary {
             self.parent = parent
             allWheelRelated =
                  AllWheelRelated(
-                     parent.baseType)
+                     parent.objectType)
             
         preTiltOccupantSupportOrigin =
             parent.preTiltOccupantFootBackSideSupportOrigin as? DictionaryProvider.PreTiltOccupantSupportOrigin
@@ -103,10 +103,10 @@ struct OccupantSupportDimensionDictionary {
                 
                 
             if let preTiltBodySupportOrigin {
-                let dimension = OccupantBodySupportDefaultDimension(parent.baseType).value
+                let dimension = OccupantBodySupportDefaultDimension(parent.objectType).value
                 forBody +=
                 DimensionDictionary(
-                    preTiltBodySupportOrigin.allOriginIdNodes[index],
+                    preTiltBodySupportOrigin.allOriginIdPartChain[index],
                     [dimension, dimension],
                     parent.dimensionDicIn,
                     index).forPart
@@ -114,7 +114,7 @@ struct OccupantSupportDimensionDictionary {
         }
         
         forWheels += getDictionaryForWheel(.rearWheel)
-        if BaseObjectGroups().sixWheels.contains(parent.baseType) {
+        if BaseObjectGroups().sixWheels.contains(parent.objectType) {
             forWheels += getDictionaryForWheel(.midWheel)
         }
         forWheels += getDictionaryForWheel(.frontWheel)
@@ -184,7 +184,7 @@ struct OccupantSupportDimensionDictionary {
                     originIdNodesForBothSitOn = unwrappedPreTiltSupport.originIdPartChainForBackForBothSitOn
                     if originIdNodesForBothSitOn.count > 0 {//object may not have this part
                         dimensions =
-                            AllOccupantBackRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex]
+                            AllOccupantBackRelated(parent.objectType, originIdNodesForBothSitOn[sitOnIndex]
                                 .chain)
                                     .defaultDimensions
                     }
@@ -192,7 +192,7 @@ struct OccupantSupportDimensionDictionary {
                     originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
                     if originIdNodesForBothSitOn.count > 0 {//object may not have this part
                         dimensions =
-                            AllOccupantFootRelated(parent.baseType, originIdNodesForBothSitOn[sitOnIndex]
+                            AllOccupantFootRelated(parent.objectType, originIdNodesForBothSitOn[sitOnIndex]
                                 .chain)
                                     .defaultDimensions
                     }
@@ -202,7 +202,7 @@ struct OccupantSupportDimensionDictionary {
                     if originIdNodesForBothSitOn.count > 0 {//object may not have this part
                         dimensions =
                             AllOccupantSideRelated(
-                                parent.baseType,
+                                parent.objectType,
                                 originIdNodesForBothSitOn[sitOnIndex]
                                     .chain )
                                         .defaultDimensions
@@ -214,8 +214,8 @@ struct OccupantSupportDimensionDictionary {
     
                     if originIdNodesForBothSitOn.count > 0 {
                         dimensions =
-                        [OccupantBodySupportDefaultDimension(parent.baseType).value,
-                        OccupantBodySupportAngleJointDefaultDimension (parent.baseType).value ]
+                        [OccupantBodySupportDefaultDimension(parent.objectType).value,
+                        OccupantBodySupportAngleJointDefaultDimension (parent.objectType).value ]
                     }
                 default: break
             }

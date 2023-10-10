@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TransformOriginIdPartChainForDictionary {
+struct OriginIdPartChainTransformed {
     func getPartChainPairsToDeepestRoot (
         _ allNodesFromObject: [Part])
         -> [[Part]] {
@@ -89,7 +89,7 @@ struct TransformOriginIdPartChainForDictionary {
     /// [ [part_0, part1] , [part_1, part_2]...[part_n, part_n+1] ]
     /// idForFirstAndSecondNodeToDeepestRoot has id0 nserted as first
     /// element to correspond to allNodesFromObject
-    func getNamesFromPartChainPairsToDeepestRoot (
+    func createAnGetNames (
         _ partChain: [Part],
         _ partIds: [[Part]],
        usingIdZeroOrOne: Int)
@@ -111,7 +111,10 @@ struct TransformOriginIdPartChainForDictionary {
                 partPairsToEndOfChain,
                 partIds,
                 usingIdZeroOrOne)
-
+//            print (partChain)
+//            print (partIds)
+//            print ("")
+            
         let names = getNamesFromPartChainPairs(
             partPairsToEndOfChain,
             idForFirstAndSecondOfAllPartPairToChainEnd,

@@ -18,7 +18,7 @@ struct ObjectPickModel {
     
     var dimensionDic: Part3DimensionDictionary
     
-    var objectOptionDictionary: OptionDictionary
+    //var objectOptionDictionary: OptionDictionary
     
     var angleDic: AngleDictionary
     
@@ -31,11 +31,11 @@ struct ObjectPickModel {
     var partChainsIdDic: PartChainIdDictionary
     
 
-    mutating func setObjectOptionDictionary(
-        _ option: ObjectOptions,
-        _ state: Bool) {
-            objectOptionDictionary[option] = state
-        }
+//    mutating func setObjectOptionDictionary(
+//        _ option: ObjectOptions,
+//        _ state: Bool) {
+//            objectOptionDictionary[option] = state
+//        }
 }
     
     
@@ -92,7 +92,7 @@ class ObjectPickViewModel: ObservableObject {
                 preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
                 postTiltFourCornerPerKeyDic: postTiltFourCornerPerKeyDic,
                 dimensionDic: dimensionDic,
-                objectOptionDictionary: ObjectPickViewModel.optionDictionary,
+               // objectOptionDictionary: ObjectPickViewModel.optionDictionary,
                 angleDic: angleDic,
                 angleMinMaxDic: angleMinMaxDic,
                 partChains: partChains,
@@ -110,8 +110,8 @@ class ObjectPickViewModel: ObservableObject {
             return
                 DictionaryProvider(
                     objectType,
-                    ObjectPickViewModel.twinSitOnDictionary,
-                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]
+                    ObjectPickViewModel.twinSitOnDictionary//,
+                    //[ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]
                     )
         }
     }
@@ -174,16 +174,16 @@ extension ObjectPickViewModel {
     
     
     
-    func getCurrentOptionState(_ options: [ObjectOptions])
-        -> [Bool] {
-        let optionDictionary = getObjectOptionsDictionary()
-            var optionStates: [Bool] = []
-            for option in options {
-                optionStates
-                    .append(optionDictionary[option] ?? false)
-            }
-            return optionStates
-    }
+//    func getCurrentOptionState(_ options: [ObjectOptions])
+//        -> [Bool] {
+//        let optionDictionary = getObjectOptionsDictionary()
+//            var optionStates: [Bool] = []
+//            for option in options {
+//                optionStates
+//                    .append(optionDictionary[option] ?? false)
+//            }
+//            return optionStates
+//    }
 
     
     func getList (_  version: DictionaryVersion) -> [String] {
@@ -221,20 +221,21 @@ extension ObjectPickViewModel {
     }
     
 
-    func getObjectOptionDictionary(
-        _ option: ObjectOptions
-        )
-        -> Bool {
-            objectPickModel.objectOptionDictionary[option] ?? false
-    }
+//    func getObjectOptionDictionary(
+//        _ option: ObjectOptions
+//        )
+//        -> Bool {
+//            objectPickModel.objectOptionDictionary[option] ?? false
+//    }
     
     
-    func getObjectOptionsDictionary(
-        )
-        -> OptionDictionary {
-            objectPickModel.objectOptionDictionary
-            
-        }
+//    func getObjectOptionsDictionary(
+//        )
+//        -> OptionDictionary {
+//            objectPickModel.objectOptionDictionary
+//
+//        }
+    
     func getObjectPartChains()
         -> [PartChain] {
         objectPickModel.partChains
@@ -335,7 +336,7 @@ extension ObjectPickViewModel {
                 DictionaryProvider(
                     BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
                     ObjectPickViewModel.twinSitOnDictionary,
-                    [ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary],
+                    //[ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary],
                     angleIn: angleInDic,
                 partChainsIn: partChainsToUse,
                 partChainsIdDicIn: partChainIdDicIn)
@@ -350,11 +351,11 @@ extension ObjectPickViewModel {
         }
 
         
-        func setObjectOptionDictionary(
-            _ option: ObjectOptions,
-            _ state: Bool) {
-                objectPickModel.setObjectOptionDictionary(option, state)
-        }
+//        func setObjectOptionDictionary(
+//            _ option: ObjectOptions,
+//            _ state: Bool) {
+//                objectPickModel.setObjectOptionDictionary(option, state)
+//        }
     
         func setCurrentObjectWithToggledPartChain(_ partChain: PartChain) {
             var partChains = getObjectPartChains()

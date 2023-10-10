@@ -137,7 +137,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             let dictionary: OriginDictionary =
                 [:]
             let general =
-            (x: defaultBodySupportDimension.value.width/2 * 0.95 * reverseSide(ids),
+            (x: defaultBodySupportDimension.value.width/2 * 0.95,  //* reverseSide(ids),
              y: defaultBodySupportDimension.value.length/2 * 0.95,
              z: jointBelowSeat)
         return
@@ -149,7 +149,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             let dictionary: OriginDictionary =
                 [:]
             let general =
-            (x: 0.0 * reverseSide(ids),
+            (x: 0.0, // * reverseSide(ids),
                  y: defaultFootSupportDimension.getHangerLink().length,
                  z:  -(DictionaryProvider.sitOnHeight -
                        footSupportHeightAboveFloor +
@@ -166,7 +166,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             [:]
         let general =
             (x:   -(defaultFootSupportDimension.getFootJoint().width +
-                   defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2 * reverseSide(ids),
+                    defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2, // * reverseSide(ids),
              y: 0.0,
              z: jointBelowSeat)
     return
@@ -178,7 +178,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
         let dictionary: OriginDictionary =
             [:]
         let general =
-            (x: 0.0 * reverseSide(ids),
+            (x: 0.0, // * reverseSide(ids),
              y: 0.0,
              z: jointBelowSeat)
     return
