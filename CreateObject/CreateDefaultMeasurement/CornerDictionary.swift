@@ -289,8 +289,8 @@ struct DictionaryProvider {
             let objectPartChains = partChainsIn != [] ?
                 partChainsIn: ObjectPartChains(objectType).partChains
             
-            print (objectPartChains)
-            print ("")
+//            print(objectPartChains)
+//            print("")
             let onlyOne = 0
             for objectPartChain in objectPartChains {
                 let footChain =  LabelInPartChainOut([.footSupport]).partChains[onlyOne]
@@ -330,11 +330,43 @@ struct DictionaryProvider {
                             createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdNodesForSide)
                 }
                 
-                let allOriginIdNodesForFootForBothSitOn = data.allOriginIdNodesForFootSupportForBothSitOn
+                let chain = LabelInPartChainOut([.footSupport]).partChains[0]
+                                //print(chain)
+                
+                let allOriginIdNodesForFootForBothSitOn = //data.allOriginIdNodesForFootSupportForBothSitOn
+
+                PreTiltOccupantAnySupport(
+                    .id0,
+                    parent: self,
+                    chain: chain
+                ).allOriginIdPartChain[0]
+                
+                
+                
                 for allOriginIdNodesForFoot in
                         allOriginIdNodesForFootForBothSitOn {
                             createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdNodesForFoot)
+                    //print(allOriginIdNodesForFoot)
+                    
+                  var footDimension = OccupantFootSupportDefaultDimension2(objectType)
+                    var allDimensions: [Dimension3d] = []
+                    for part in chain {
+                        footDimension.reinitialise(part)
+                        allDimensions.append(footDimension.dimension)
+                        
+                        print(allDimensions)
+//                        dimensionDic +=
+//                        DimensionDictionary(
+//                            [allOriginIdNodesForFoot],
+//                            allDimensions,
+//                            dimensionDicIn,
+//                            0)
+//                                .forPart
+                       // print(allOrigin)
+                    }
                 }
+                
+                
                 
                 originIdPartChainForBackForBothSitOn = data.originIdPartChainForBackForBothSitOn
                 for originIdPartChainForBack in
@@ -371,6 +403,10 @@ struct DictionaryProvider {
             dimensionDic +=
                 occupantSupportDimensionDictionary.forBack
             dimensionDic += occupantSupportDimensionDictionary.forFoot
+            
+            //print(occupantSupportDimensionDictionary.forFoot)
+            
+            
             dimensionDic += occupantSupportDimensionDictionary.forSide
 
             dimensionDic += occupantSupportDimensionDictionary.forTiltInSpace
@@ -974,67 +1010,84 @@ extension DictionaryProvider {
         }
     }
 }
-
+//[
+//objectToSitOn,
+//defaultFootOrigin.getSitOnToHangerJoint( ),
+//defaultFootOrigin.getHangerJointToFootJoint( ),
+//footJointToFootSupportOrigin]
 
 //MARK: FOOT ONLY
-//extension DictionaryProvider {
-//    struct PreTiltOccupantFootSupport: InputForDictionary {
-//        var allOriginIdPartChain: [[OriginIdPartChain]]
-//
-//        let parent: DictionaryProvider
-//        var objectType: BaseObjectTypes
-//       // var allOriginIdPartChain: [[OriginIdPartChain]]
-//        let sitOnId: Part
-//
-//        init(
-//            _ sitOnId: Part = .id0,
-//            parent: DictionaryProvider,
-//            chain: PartChain){
-//            self.parent = parent
-//            self.sitOnId = sitOnId
-//            objectType = parent.objectType
-//
-//                func getOriginIdPartChain(_ chain: [Part])
-//                -> OriginIdPartChain {
-//                let objectPartChains =
-//                    parent.partChainsIn != [] ?
-//                    parent.partChainsIn:
-//                    ObjectPartChains(objectType).partChains
-//
-//                let objectId =
-//                    parent.partChainsIdDicIn != [:] ?
-//                    parent.partChainsIdDicIn:
-//                    PartChainsIdDictionary([chain], sitOnId).dic
-//
-//                let defaultFootOrigin =
-//                    PreTiltOccupantFootSupportDefaultOrigin(parent.objectType)
-//
-//                    let objectToSitOn =
-//                    GetValueFromDictionary(
-//                        parent.preTiltParentToPartOriginDic,
-//                        [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
-//
-//
-//                    let allFootSupportOrigin =
-//                        [
-//                        objectToSitOn,
-//                        defaultFootOrigin.getSitOnToHangerJoint( ),
-//                        defaultFootOrigin.getHangerJointToFootJoint( ),
-//                        footJointToFootSupportOrigin]
-//
-//
-//                return
-//                    (
-//                    origin: ,
-//                    ids: objectId,
-//                    chain: chain)
-//            }
-//
-//
-//        }
-//
-//    }
-//}
+extension DictionaryProvider {
+    struct PreTiltOccupantAnySupport: InputForDictionary {
+        var allOriginIdPartChain: [[OriginIdPartChain]] = []
+        
+        
+        let parent: DictionaryProvider
+        var objectType: BaseObjectTypes
+       // var allOriginIdPartChain: [[OriginIdPartChain]]
+        let sitOnId: Part
+
+        init(
+            _ sitOnId: Part = .id0,
+            parent: DictionaryProvider,
+            chain: PartChain){
+            self.parent = parent
+            self.sitOnId = sitOnId
+            objectType = parent.objectType
+                allOriginIdPartChain = [[getOriginIdPartChain(chain)]]
+
+
+
+                func getOriginIdPartChain(_ chain: [Part])
+                -> OriginIdPartChain {
+
+                let objectId =
+                    parent.partChainsIdDicIn [chain] ??
+                    PartChainsIdDictionary([chain], sitOnId).dic[chain]!
+             
+
+                    var defaultFootOrigin =
+                    PreTiltOccupantFootSupportDefaultOrigin2(parent.objectType)
+                   // print (defaultFootOrigin.part)
+
+                let objectToSitOn =
+                GetValueFromDictionary(
+                    parent.preTiltParentToPartOriginDic,
+                    [.object, .id0, .stringLink,.sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).value
+//print(objectToSitOn)
+                    var allOrigin: [PositionAsIosAxes] = []
+                    for part in chain {
+                       defaultFootOrigin.reinitialise(part)
+                        allOrigin.append(defaultFootOrigin.origin)
+                       // print(allOrigin)
+                    }
+                    allOrigin[0] = objectToSitOn
+                    
+//                    print(allOrigin)
+//                    print (objectId)
+//                    print(chain.count)
+                
+                let allFootSupportOrigin = allOrigin
+//                    [
+//                    objectToSitOn,
+//                    defaultFootOrigin.getSitOnToHangerJoint(),
+//                    defaultFootOrigin.getHangerJointToFootJoint( ),
+//                    defaultFootOrigin.getJointToTwoPieceFoot( )]
+                    
+                    //print(allFootSupportOrigin)
+
+                return
+                    (
+                    origin: allFootSupportOrigin,
+                    ids: objectId,
+                    chain: chain)
+            }
+
+
+        }
+
+    }
+}
 
 //MARK: FOOT/SIDE/BACK/ROTATE ORIGIN
 extension DictionaryProvider {
@@ -1130,11 +1183,11 @@ extension DictionaryProvider {
                         errorCheckForIdenticalOriginIdNodes(originIdPartChainForBackForBothSitOn)
                     }
 //FOOT
-                    if BaseObjectGroups().footSupport.contains(parent.objectType) {
-                        allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
-                        //print(allOriginIdNodesForFootSupportForBothSitOn)
-                        errorCheckForIdenticalOriginIdNodes(allOriginIdNodesForFootSupportForBothSitOn)
-                    }
+//                    if BaseObjectGroups().footSupport.contains(parent.objectType) {
+//                        allOriginIdNodesForFootSupportForBothSitOn.append( getOriginIdNodesForFootSupport(sitOnIndex) )
+//                        //print(allOriginIdNodesForFootSupportForBothSitOn)
+//                        errorCheckForIdenticalOriginIdNodes(allOriginIdNodesForFootSupportForBothSitOn)
+//                    }
                 }
             }
         
@@ -1267,14 +1320,14 @@ extension DictionaryProvider {
                 footSupportInOneOrTwoPieces =
                     .footSupportInOnePiece
                 footJointToFootSupportOrigin =
-                    defaultFootOrigin.getJointToOnePieceFoot( unilateralOnLeft)
+                    defaultFootOrigin.getJointToOnePieceFoot( )
                 footSupportIds =
                     unilateralWidthPositionId
             } else {
                 footSupportInOneOrTwoPieces =
                     .footSupport
                 footJointToFootSupportOrigin =
-                defaultFootOrigin.getJointToTwoPieceFoot(unilateralOnLeft)
+                defaultFootOrigin.getJointToTwoPieceFoot()
                 footSupportIds =
                     bilateralWidthPositionId
             }
@@ -1287,8 +1340,8 @@ extension DictionaryProvider {
             let allFootSupportOrigin =
                 [
                 objectToSitOn,
-                defaultFootOrigin.getSitOnToHangerJoint( unilateralOnLeft),
-                defaultFootOrigin.getHangerJointToFootJoint( unilateralOnLeft),
+                defaultFootOrigin.getSitOnToHangerJoint( ),
+                defaultFootOrigin.getHangerJointToFootJoint( ),
                 footJointToFootSupportOrigin]
      //print(idsDictionary[allFootSupportNodes])
             let uniOrBilateralWidthPositionIdForFootSupport =

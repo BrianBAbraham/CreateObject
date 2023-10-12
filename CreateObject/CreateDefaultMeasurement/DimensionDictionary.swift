@@ -190,12 +190,15 @@ struct OccupantSupportDimensionDictionary {
                     }
                 case .foot:
                     originIdNodesForBothSitOn = unwrappedPreTiltSupport.allOriginIdNodesForFootSupportForBothSitOn
-                    if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+                   // if originIdNodesForBothSitOn.count > 0 {//object may not have this part
+             
+                        let chain = LabelInPartChainOut([.footSupport]).partChains[0]
+                //print(chain)
                         dimensions =
-                            AllOccupantFootRelated(parent.objectType, originIdNodesForBothSitOn[sitOnIndex]
-                                .chain)
+                            AllOccupantFootRelated(parent.objectType, chain)
                                     .defaultDimensions
-                    }
+                //print(dimensions)
+                    //}
                 case .side:
                     originIdNodesForBothSitOn =
                         unwrappedPreTiltSupport.allOriginIdNodesForSideSupportForBothSitOn
@@ -232,19 +235,6 @@ struct OccupantSupportDimensionDictionary {
             }
         }
         
-//        func removeSitOn(
-//            _ originIdNodesForBothSitOn: [OriginIdNodes],
-//            _ sitOnIndex: Int)
-//            -> [OriginIdNodes] {
-//                var withoutSitOn = originIdNodesForBothSitOn
-//                let changedElement =
-//                    (
-//                    origin: [withoutSitOn[sitOnIndex].origin.removeFirst()],
-//                    ids: [withoutSitOn[sitOnIndex].ids.removeFirst()],
-//                    chain: [withoutSitOn[sitOnIndex].nodes.removeFirst()])
-//                withoutSitOn[sitOnIndex] = changedElement
-//                return withoutSitOn
-//        }
         
         return dictionary
     }

@@ -293,9 +293,11 @@ struct LabelInPartChainOut  {
         .backSupport]
     let foot: PartChain =
         [
-        .sitOn,
+            .sitOn,
         .footSupportHangerJoint,
-        .footSupportJoint]
+        .footSupportJoint,
+                .footSupport
+        ]
     let headSupport: PartChain =
         [
         .backSupportHeadLinkRotationJoint,
@@ -330,7 +332,7 @@ struct LabelInPartChainOut  {
                     Self.backSupport + headSupport
             case .footSupport:
                 return
-                    foot + [.footSupport]
+                    foot //+ [.footSupport]
             case .footSupportInOnePiece:
                 return
                     foot + [.footSupportInOnePiece]

@@ -110,9 +110,196 @@ struct OccupantFootSupportDefaultDimension {
     
 }
 
+struct OccupantFootSupportDefaultDimension2 {
+    let baseType: BaseObjectTypes
+    var dimension: Dimension3d = ZeroValue.dimension3d
+    var part: Part?
+    
+    init ( _ baseType: BaseObjectTypes) {
+        self.baseType = baseType
+    }
+    
+    mutating func reinitialise(_ part: Part) {
+        //print( part)
+        self.part = part
+        
+        switch part {
+        case .footSupportHangerJoint:
+            dimension = getHangerJoint()
+            
 
+        case .footSupportJoint:
+            dimension = getFootJoint()
+        
+        case .footSupport:
+            dimension = getFootSupportInTwoPieces()
+        
+        case .footSupportInOnePiece:
+            dimension = getFootSupportInOnePiece()
+        default:
+           break
+        }
+        //print (origin)
+    }
+    
+    func getOrigin() -> Dimension3d {
+        
+        dimension
+    }
+    
+    func getHangerJoint() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = Joint.dimension3d
+        return
+        dictionary[baseType] ?? general
+    }
+    
+    func getHangerLink() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = (width: 20.0, length: 200.0, height: 20.0)
+        return
+        dictionary[baseType] ?? general
+    }
+    
+    func getFootJoint () -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = Joint.dimension3d
+        return
+        dictionary[baseType] ?? general
+    }
+    
+    func getFootSupportInTwoPieces() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary  = [:]
+        let general = (width: 150.0, length: 100.0, height: 10.0)
+        return
+        dictionary[baseType] ?? general
+    }
+    
+    func getFootSupportInOnePiece() -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary =
+        [.showerTray: (width: 900.0, length: 1200.0, height: 200.0)]
+        let general =       (
+            width: OccupantBodySupportDefaultDimension.general.width,
+            length: 100.0,
+            height: 10.0)
+        return
+        dictionary[baseType] ?? general
+    }
+}
+   
 
 //MARK: ORIGIN FOOT
+struct PreTiltOccupantFootSupportDefaultOrigin2 {
+    let baseType: BaseObjectTypes
+    let jointBelowSeat = -50.0
+    let footSupportHeightAboveFloor = 100.0
+    let defaultFootSupportDimension:
+        OccupantFootSupportDefaultDimension
+    let defaultBodySupportDimension:
+        OccupantBodySupportDefaultDimension
+    var origin: PositionAsIosAxes = ZeroValue.iosLocation
+    var part: Part?
+    
+    
+    init (
+        _ baseType: BaseObjectTypes) {
+        self.baseType = baseType
+        defaultFootSupportDimension =
+            OccupantFootSupportDefaultDimension(baseType)
+        defaultBodySupportDimension =
+            OccupantBodySupportDefaultDimension(baseType)
+           
+    }
+    
+    
+    mutating func reinitialise(_ part: Part) {
+        //print( part)
+        self.part = part
+        
+        switch part {
+        case .footSupportHangerJoint:
+            origin = getSitOnToHangerJoint()
+            
+
+        case .footSupportJoint:
+            origin = getHangerJointToFootJoint()
+        
+        case .footSupport:
+            origin = getJointToTwoPieceFoot()
+        
+        case .footSupportInOnePiece:
+            origin = getJointToOnePieceFoot()
+        default:
+           break
+        }
+        //print (origin)
+    }
+    
+    func getOrigin() -> PositionAsIosAxes {
+        
+        
+        
+        origin
+    }
+    
+    func getSitOnToHangerJoint()
+        -> PositionAsIosAxes {
+            
+            let dictionary: OriginDictionary =
+                [:]
+            let general =
+            (x: defaultBodySupportDimension.value.width/2 * 0.95,
+             y: defaultBodySupportDimension.value.length/2 * 0.95,
+             z: jointBelowSeat)
+        return
+            dictionary[baseType] ?? general
+    }
+    
+    func getHangerJointToFootJoint()
+        -> PositionAsIosAxes {
+            let dictionary: OriginDictionary =
+                [:]
+            let general =
+            (x: 0.0,
+             y: defaultFootSupportDimension.getHangerLink().length,
+                 z:  -(DictionaryProvider.sitOnHeight -
+                       footSupportHeightAboveFloor +
+                      jointBelowSeat)
+            )
+        return
+            dictionary[baseType] ?? general
+    }
+    
+    func getJointToTwoPieceFoot()
+    -> PositionAsIosAxes {
+
+        let dictionary: OriginDictionary =
+            [:]
+        let general =
+            (x:   -(defaultFootSupportDimension.getFootJoint().width +
+                    defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2,
+             y: 0.0,
+             z: jointBelowSeat)
+    return
+        dictionary[baseType] ?? general
+    }
+    
+    func getJointToOnePieceFoot()
+    -> PositionAsIosAxes {
+        let dictionary: OriginDictionary =
+            [:]
+        let general =
+            (x: 0.0,
+             y: 0.0,
+             z: jointBelowSeat)
+    return
+        dictionary[baseType] ?? general
+    }
+    
+}
+
+
+
 struct PreTiltOccupantFootSupportDefaultOrigin {
     let baseType: BaseObjectTypes
     let jointBelowSeat = -50.0
@@ -131,26 +318,26 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             OccupantBodySupportDefaultDimension(baseType)
     }
     
-    func getSitOnToHangerJoint(_ ids: [Part]?)
+    func getSitOnToHangerJoint()
         -> PositionAsIosAxes {
             
             let dictionary: OriginDictionary =
                 [:]
             let general =
-            (x: defaultBodySupportDimension.value.width/2 * 0.95,  //* reverseSide(ids),
+            (x: defaultBodySupportDimension.value.width/2 * 0.95,
              y: defaultBodySupportDimension.value.length/2 * 0.95,
              z: jointBelowSeat)
         return
             dictionary[baseType] ?? general
     }
     
-    func getHangerJointToFootJoint(_ ids: [Part]?)
+    func getHangerJointToFootJoint()
         -> PositionAsIosAxes {
             let dictionary: OriginDictionary =
                 [:]
             let general =
-            (x: 0.0, // * reverseSide(ids),
-                 y: defaultFootSupportDimension.getHangerLink().length,
+            (x: 0.0,
+             y: defaultFootSupportDimension.getHangerLink().length,
                  z:  -(DictionaryProvider.sitOnHeight -
                        footSupportHeightAboveFloor +
                       jointBelowSeat)
@@ -159,42 +346,32 @@ struct PreTiltOccupantFootSupportDefaultOrigin {
             dictionary[baseType] ?? general
     }
     
-    func getJointToTwoPieceFoot(_ ids: [Part]?)
+    func getJointToTwoPieceFoot()
     -> PositionAsIosAxes {
 
         let dictionary: OriginDictionary =
             [:]
         let general =
             (x:   -(defaultFootSupportDimension.getFootJoint().width +
-                    defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2, // * reverseSide(ids),
+                    defaultFootSupportDimension.getFootSupportInTwoPieces().width)/2,
              y: 0.0,
              z: jointBelowSeat)
     return
         dictionary[baseType] ?? general
     }
     
-    func getJointToOnePieceFoot(_ ids: [Part]?)
+    func getJointToOnePieceFoot()
     -> PositionAsIosAxes {
         let dictionary: OriginDictionary =
             [:]
         let general =
-            (x: 0.0, // * reverseSide(ids),
+            (x: 0.0,
              y: 0.0,
              z: jointBelowSeat)
     return
         dictionary[baseType] ?? general
     }
     
-    func reverseSide(_ ids: [Part]?)
-        -> Double {
-            var unilateralOnLeftSide: Double
-            if let ids {
-              unilateralOnLeftSide =  ids == [.id1] ? -1.0: 1.0
-            } else {
-              unilateralOnLeftSide = 1.0
-            }
-            return unilateralOnLeftSide
-    }
 }
 
 
