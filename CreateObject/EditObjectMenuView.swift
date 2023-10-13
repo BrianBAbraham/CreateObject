@@ -41,7 +41,7 @@ struct EditObjectMenuView: View {
         } else {
             EmptyView()
         }
-        if objectPickVM.getCurrentObjectName().contains(BaseObjectTypes.showerTray.rawValue) {
+        if objectPickVM.getCurrentObjectName().contains(ObjectTypes.showerTray.rawValue) {
             //FootSupportWithoutHangerInOnePieceSlider(dictionary)
         } else {
             EmptyView()

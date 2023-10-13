@@ -35,8 +35,10 @@ struct DimensionDictionary {
             
         let sitOnId: Part = [.id0,.id1][sitOnIndex]
         let parts = originIdNodes[sitOnIndex].chain
-
-        for partIndex in 0..<parts.count{
+//print(defaultDimensions)
+//print(parts)
+//print(parts.count)
+        for partIndex in 0..<parts.count  {
             let idsForPart: [Part] = originIdNodes[sitOnIndex].ids[partIndex]
             for partIdIndex in  0..<idsForPart.count {
         
@@ -209,6 +211,7 @@ struct OccupantSupportDimensionDictionary {
                                 originIdNodesForBothSitOn[sitOnIndex]
                                     .chain )
                                         .defaultDimensions
+
                     }
                 case .tiltInSpace:
                     originIdNodesForBothSitOn =
@@ -222,7 +225,17 @@ struct OccupantSupportDimensionDictionary {
                     }
                 default: break
             }
-            
+//            if dimensionGroup == .side {
+//                print ("SIDE")
+//                let test =
+//                DimensionDictionary(
+//                    originIdNodesForBothSitOn,
+//                    dimensions,
+//                    parent.dimensionDicIn,
+//                    sitOnIndex)
+//                print (test.forPart)
+//                print ("")
+//            }
             //Make the dictionary
             if originIdNodesForBothSitOn.count > 0 {
                 dictionary =

@@ -38,17 +38,17 @@ typealias PositionDictionary = [String: PositionAsIosAxes]
 ///the positions for the four corners are as Corners type
 //typealias PositionCornerDictionary = [String: Corners]
 typealias MeasurementDictionary = [String: Double]
-typealias BaseObjectDoubleDictionary = [BaseObjectTypes: Double]
-typealias BaseObjectDimensionDictionary = [BaseObjectTypes: Dimension]
+typealias BaseObjectDoubleDictionary = [ObjectTypes: Double]
+typealias BaseObjectDimensionDictionary = [ObjectTypes: Dimension]
 
 //. Input BaseObjectType to get Dimension3d
-typealias BaseObject3DimensionDictionary = [BaseObjectTypes: Dimension3d]
+typealias BaseObject3DimensionDictionary = [ObjectTypes: Dimension3d]
 typealias PartDimensionDictionary = [String: Dimension]
 ///[String: Dimension3d aka (width: Double, length: Double,  height: Double)]
 typealias Part3DimensionDictionary = [String: Dimension3d]
-typealias BaseObjectOriginDictionary = [BaseObjectTypes: PositionAsIosAxes]
+typealias BaseObjectOriginDictionary = [ObjectTypes: PositionAsIosAxes]
 /// Input BaseObjectTypes to get default value for that object
-typealias OriginDictionary = [ BaseObjectTypes : PositionAsIosAxes ]
+typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (length: Double, width: Double)
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
@@ -62,9 +62,9 @@ typealias WheelSize = (radius: Double, width: Double)
 typealias AngleDictionary = [String: Measurement<UnitAngle>]
 typealias AngleMinMaxDictionary = [String: AngleMinMax]
 ///input BaseObjectType to get angle
-typealias BaseObjectAngleDictionary = [BaseObjectTypes: Measurement<UnitAngle>]
-typealias BaseObjectAngelMinMaxDictionary = [BaseObjectTypes: AngleMinMax]
-typealias BaseObjectWheelSizeDictionary = [BaseObjectTypes: WheelSize]
+typealias BaseObjectAngleDictionary = [ObjectTypes: Measurement<UnitAngle>]
+typealias BaseObjectAngelMinMaxDictionary = [ObjectTypes: AngleMinMax]
+typealias BaseObjectWheelSizeDictionary = [ObjectTypes: WheelSize]
 
 typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 

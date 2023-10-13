@@ -21,7 +21,7 @@ struct OccupantBodySupportDefaultDimension {
     let value: Dimension3d
     
     init(
-        _ baseType: BaseObjectTypes) {
+        _ baseType: ObjectTypes) {
             value =
                 dictionary[baseType] ??
                 Self.general
@@ -41,7 +41,7 @@ struct OccupantBodySupportAngleJointDefaultDimension {
     let value: Dimension3d
     
     init(
-        _ baseType: BaseObjectTypes) {
+        _ baseType: ObjectTypes) {
             value =
                 dictionary[baseType] ??
                 Self.general
@@ -54,13 +54,13 @@ struct OccupantBodySupportAngleJointDefaultDimension {
 // orientations from the object-orientation not the parent orientation
 
 struct PreTiltSitOnBackFootTiltJointDefaultOrigin {
-    let baseType: BaseObjectTypes
+    let baseType: ObjectTypes
     //let sitOnLocation: PositionAsIosAxes
     let value: PositionAsIosAxes
   
     
     init (
-            _ baseType: BaseObjectTypes//,
+            _ baseType: ObjectTypes//,
            // _ sitOnLocation: PositionAsIosAxes
     ) {
         self.baseType = baseType
@@ -94,7 +94,7 @@ struct OccupantBodySupportDefaultAngleChange {
     let value: Measurement<UnitAngle>
     
     init(
-        _ baseType: BaseObjectTypes) {
+        _ baseType: ObjectTypes) {
             value =
                 dictionary[baseType] ??
                 Self.general
@@ -111,7 +111,7 @@ struct OccupantBodySupportDefaultAngleMinMax {
     let value: AngleMinMax
     
     init(
-        _ baseType: BaseObjectTypes) {
+        _ baseType: ObjectTypes) {
             value =
                 dictionary[baseType] ??
                 Self.general

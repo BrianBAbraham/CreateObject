@@ -19,7 +19,7 @@ struct PickInitialObjectView: View {
         }
     }
 
-    @State private var equipmentType = BaseObjectTypes.fixedWheelRearDrive.rawValue
+    @State private var equipmentType = ObjectTypes.fixedWheelRearDrive.rawValue
     
     @State private var recline = false
     //@State private var reclineToggle = false
@@ -29,7 +29,7 @@ struct PickInitialObjectView: View {
     }
 
     func getCurrentEquipmentType() -> String {
-        BaseObjectTypes.fixedWheelRearDrive.rawValue
+        ObjectTypes.fixedWheelRearDrive.rawValue
     }
     
     var body: some View {

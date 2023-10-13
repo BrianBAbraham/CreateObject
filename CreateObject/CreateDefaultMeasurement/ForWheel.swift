@@ -9,7 +9,7 @@ import Foundation
 
 
 
-struct AllWheelRelated: PartDimension  {
+struct AllWheelRelated {
     var parts: [Part] = []
     var defaultDimensions: [Dimension3d] = []
     var defaultRearMidFrontDimension = ZeroValue.dimension3dRearMidFront
@@ -25,7 +25,7 @@ struct AllWheelRelated: PartDimension  {
     
 
     
-    init(_ baseType: BaseObjectTypes) {
+    init(_ baseType: ObjectTypes) {
         wheelDefaultDimension = WheelDefaultDimension(baseType)
         
         
@@ -230,7 +230,7 @@ struct AllWheelRelated: PartDimension  {
 
 
 
-typealias BaseSizeDictionary = [BaseObjectTypes: Double]
+typealias BaseSizeDictionary = [ObjectTypes: Double]
 
 
 
@@ -241,9 +241,9 @@ typealias BaseSizeDictionary = [BaseObjectTypes: Double]
         let atFront = 0.0
         let atLeft = 0.0
         let atRight = 0.0
-        let baseType: BaseObjectTypes
+        let baseType: ObjectTypes
         
-        init(_ baseType: BaseObjectTypes) {
+        init(_ baseType: ObjectTypes) {
             self.baseType = baseType
         }
     }
@@ -259,10 +259,10 @@ struct DistanceBetweenWheels {
     let occupantBodySupport: [Dimension3d]
     let occupantFootSupportHangerLink: [Dimension3d]
     let stability: Stability
-    let baseType: BaseObjectTypes
+    let baseType: ObjectTypes
     
     init (
-        _ baseType: BaseObjectTypes,
+        _ baseType: ObjectTypes,
         _ occupantBodySupportsDimension: [Dimension3d],
         _ occupantFootSupportHangerLinksDimension: [Dimension3d] ){
             self.baseType = baseType
@@ -371,9 +371,9 @@ struct DistanceBetweenWheels {
 //MARK: DIMENSION
 struct WheelDefaultDimension {
     
-    let baseType: BaseObjectTypes
+    let baseType: ObjectTypes
         
-    init ( _ baseType: BaseObjectTypes) {
+    init ( _ baseType: ObjectTypes) {
         self.baseType = baseType
     }
     
@@ -496,7 +496,7 @@ struct WheelDefaultDimension {
 /// is ordered rearmost left (UI left top screen as viewed), rearmost right
 /// moving towards bottom of screen
 struct WheelAndCasterVerticalJointOrigin {
-    let baseType: BaseObjectTypes
+    let baseType: ObjectTypes
     let lengthBetweenFrontAndRearWheels: Double
     let widthBetweeenWheelsOnOrigin: Double
     let wheelDimension: WheelDefaultDimension
@@ -504,7 +504,7 @@ struct WheelAndCasterVerticalJointOrigin {
     let frontCasterJointAboveFloor: Double
     
     init (
-            _ baseType: BaseObjectTypes,
+            _ baseType: ObjectTypes,
             _ lengthBetweenFrontRearWheels: Double,
             _ widthBetweeenWheelsOnOrigin: Double) {
         
@@ -598,9 +598,9 @@ struct WheelAndCasterVerticalJointOrigin {
 
 struct CasterOrigin {
     
-    let baseType: BaseObjectTypes
+    let baseType: ObjectTypes
         
-    init ( _ baseType: BaseObjectTypes) {
+    init ( _ baseType: ObjectTypes) {
         self.baseType = baseType
     }
     
@@ -693,9 +693,9 @@ struct WheelId {
     let atRear: [Part]
     let atFront: [Part]
     var allIds: [[Part]] = []
-    let baseType: BaseObjectTypes
+    let baseType: ObjectTypes
     
-    init( _ baseType: BaseObjectTypes) {
+    init( _ baseType: ObjectTypes) {
         
         self.baseType = baseType
         

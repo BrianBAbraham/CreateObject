@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum BaseObjectTypes: String, CaseIterable {
+enum ObjectTypes: String, CaseIterable {
     
     case allCasterBed = "Bed with caster base"
     case allCasterChair = "Chair with caster base"
@@ -70,7 +70,7 @@ enum BaseObjectTypes: String, CaseIterable {
 ///object creation includes features if the object is containted
 ///in the feature group
 struct BaseObjectGroups {
-    let allFourCaster: [BaseObjectTypes] =
+    let allFourCaster: [ObjectTypes] =
         [.allCasterBed,
          .allCasterChair,
          .allCasterHoist,
@@ -78,29 +78,29 @@ struct BaseObjectGroups {
          .allCasterStretcher,
          .allCasterTiltInSpaceShowerChair]
     
-    var rearFixedWheel: [BaseObjectTypes] =
+    var rearFixedWheel: [ObjectTypes] =
         [
          .fixedWheelManualRearDrive,
          .fixedWheelRearDrive,
          .scooterRearDrive3Wheeler,
          .scooterRearDrive4Wheeler]
    
-    let oneRearWheel: [BaseObjectTypes] =
+    let oneRearWheel: [ObjectTypes] =
         [
         .scooterFrontDrive3Wheeler]
     
-    let midCaster: [BaseObjectTypes]
+    let midCaster: [ObjectTypes]
         = [.allCasterSixHoist]
     
-    let midFixedWheel: [BaseObjectTypes] =
+    let midFixedWheel: [ObjectTypes] =
         [.fixedWheelMidDrive]
     
-    let frontFixedWheel: [BaseObjectTypes] =
+    let frontFixedWheel: [ObjectTypes] =
         [.fixedWheelFrontDrive,
         .scooterFrontDrive3Wheeler,
         .scooterFrontDrive4Wheeler]
     
-    let twinSitOnAbility: [BaseObjectTypes] =
+    let twinSitOnAbility: [ObjectTypes] =
         [ .fixedWheelManualRearDrive,
           .fixedWheelRearDrive,
           .fixedWheelMidDrive,
@@ -110,35 +110,35 @@ struct BaseObjectGroups {
           .scooterFrontDrive3Wheeler,
           .scooterFrontDrive4Wheeler]
     
-    let singleWheelAtRear: [BaseObjectTypes] =
+    let singleWheelAtRear: [ObjectTypes] =
         [ .scooterRearDrive3Wheeler]
     
-    let singleWheelAtFront: [BaseObjectTypes] =
+    let singleWheelAtFront: [ObjectTypes] =
         [ .scooterRearDrive3Wheeler]
     
-    let sixWheels: [BaseObjectTypes] =
+    let sixWheels: [ObjectTypes] =
         [
         .allCasterSixHoist,
         .fixedWheelMidDrive]
     
-    let noWheel: [BaseObjectTypes] = [.showerTray]
-    let noBodySupport: [BaseObjectTypes] = [.showerTray]
-    let sitOnBackFootTiltJoint: [BaseObjectTypes] = [.allCasterTiltInSpaceShowerChair]
+    let noWheel: [ObjectTypes] = [.showerTray]
+    let noBodySupport: [ObjectTypes] = [.showerTray]
+    let sitOnBackFootTiltJoint: [ObjectTypes] = [.allCasterTiltInSpaceShowerChair]
     
-    let footSupport: [BaseObjectTypes]
-    let backSupport: [BaseObjectTypes]
-    let sideSupport: [BaseObjectTypes]
+    let footSupport: [ObjectTypes]
+    let backSupport: [ObjectTypes]
+    let sideSupport: [ObjectTypes]
     
-    let fourWheels: [BaseObjectTypes]
-    let threeWheels: [BaseObjectTypes]
-    let midWheels: [BaseObjectTypes]
-    let allCaster: [BaseObjectTypes]
-    let frontPrimaryOrigin: [BaseObjectTypes]
-    let midPrimaryOrigin: [BaseObjectTypes]
-    let rearPrimaryOrigin: [BaseObjectTypes]
-    let frontCaster: [BaseObjectTypes]
-    let rearCaster: [BaseObjectTypes]
-    let allDriveOrigin: [BaseObjectTypes]
+    let fourWheels: [ObjectTypes]
+    let threeWheels: [ObjectTypes]
+    let midWheels: [ObjectTypes]
+    let allCaster: [ObjectTypes]
+    let frontPrimaryOrigin: [ObjectTypes]
+    let midPrimaryOrigin: [ObjectTypes]
+    let rearPrimaryOrigin: [ObjectTypes]
+    let frontCaster: [ObjectTypes]
+    let rearCaster: [ObjectTypes]
+    let allDriveOrigin: [ObjectTypes]
     
     init() {
         fourWheels =
@@ -204,10 +204,10 @@ struct ObjectPartChains {
 
     var partChains: [PartChain] = []
 
-    init(_ object: BaseObjectTypes) {
+    init(_ object: ObjectTypes) {
         partChains = getPartChains(object)
 
-        func getPartChains (_ object: BaseObjectTypes)
+        func getPartChains (_ object: ObjectTypes)
         -> [PartChain] {
             let typicalWheeledChair =
             LabelInPartChainOut ([

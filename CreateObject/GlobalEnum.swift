@@ -350,7 +350,7 @@ struct LabelInPartChainOut  {
 
 
 struct ObjectPartChainLabelsDictionaryProvider {
-    let dic: [BaseObjectTypes: [Part]] = [:]
+    let dic: [ObjectTypes: [Part]] = [:]
     init () {
         
         

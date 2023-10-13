@@ -42,7 +42,7 @@ struct ObjectPickModel {
 
 
 class ObjectPickViewModel: ObservableObject {
-    static let initialObject = BaseObjectTypes.fixedWheelRearDrive
+    static let initialObject = ObjectTypes.fixedWheelRearDrive
     static let initialObjectName = initialObject.rawValue
    
    
@@ -88,7 +88,7 @@ class ObjectPickViewModel: ObservableObject {
         
         objectPickModel =
             ObjectPickModel(
-                currentObjectName: BaseObjectTypes.fixedWheelRearDrive.rawValue,
+                currentObjectName: ObjectTypes.fixedWheelRearDrive.rawValue,
                 preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
                 postTiltFourCornerPerKeyDic: postTiltFourCornerPerKeyDic,
                 dimensionDic: dimensionDic,
@@ -101,9 +101,9 @@ class ObjectPickViewModel: ObservableObject {
         func setDictionaryProvider(
             _ objectName: String?)
             -> DictionaryProvider {
-            var objectType: BaseObjectTypes
+            var objectType: ObjectTypes
             if let unwrappedObjectName = objectName {
-                objectType = BaseObjectTypes(rawValue: unwrappedObjectName) ?? BaseObjectTypes.fixedWheelRearDrive
+                objectType = ObjectTypes(rawValue: unwrappedObjectName) ?? ObjectTypes.fixedWheelRearDrive
             } else {
                 objectType = .fixedWheelRearDrive
             }
@@ -165,11 +165,11 @@ extension ObjectPickViewModel {
     
     
     func getCurrentObjectType()
-        ->BaseObjectTypes {
+        ->ObjectTypes {
         let objectName = getCurrentObjectName()
         
-        return BaseObjectTypes(rawValue: objectName) ??
-            BaseObjectTypes.fixedWheelRearDrive
+        return ObjectTypes(rawValue: objectName) ??
+            ObjectTypes.fixedWheelRearDrive
     }
     
     
@@ -334,7 +334,7 @@ extension ObjectPickViewModel {
             let objectName = getCurrentObjectName()
             let dictionaryProvider =
                 DictionaryProvider(
-                    BaseObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
+                    ObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
                     ObjectPickViewModel.twinSitOnDictionary,
                     //[ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary],
                     angleIn: angleInDic,
