@@ -300,9 +300,10 @@ struct LabelInPartChainOut  {
         ]
     let headSupport: PartChain =
         [
-        .backSupportHeadLinkRotationJoint,
+        .backSupportHeadSupportJoint,
         .backSupportHeadSupportLink,
-        .backSupportHeadSupport]
+        .backSupportHeadSupport
+        ]
    static let sideSupport: PartChain =
         [
         .sitOn,
@@ -339,6 +340,8 @@ struct LabelInPartChainOut  {
             case .sideSupport:
                 return
                     Self.sideSupport
+            case .sitOn:
+                return [.sitOn]
             case .sitOnTiltJoint:
                 return
                     Self.sitOnTiltJoint

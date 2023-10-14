@@ -11,7 +11,13 @@ import Foundation
 
 
 
-struct OccupantBodySupportDefaultDimension {
+struct OccupantBodySupportDefaultDimension: PartDimension {
+    var dimension: Dimension3d = ZeroValue.dimension3d
+    
+    mutating func reinitialise(_ part: Part?) {
+        dimension = value
+    }
+    
     let dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
      .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
@@ -29,7 +35,13 @@ struct OccupantBodySupportDefaultDimension {
 }
 
 
-struct OccupantBodySupportAngleJointDefaultDimension {
+struct OccupantBodySupportAngleJointDefaultDimension: PartDimension {
+    var dimension: Dimension3d = ZeroValue.dimension3d
+    
+    mutating func reinitialise(_ part: Part?) {
+        dimension = value
+    }
+    
     let dictionary: BaseObject3DimensionDictionary =
     [:
         ]
@@ -49,14 +61,16 @@ struct OccupantBodySupportAngleJointDefaultDimension {
 }
 
 
-// tilt as in tilted/rotated/angled
-// origins are described from the parent origin
-// orientations from the object-orientation not the parent orientation
-
-struct PreTiltSitOnBackFootTiltJointDefaultOrigin {
+struct PreTiltSitOnDefaultOrigin: PartOrigin {
+    var origin: PositionAsIosAxes = ZeroValue.iosLocation
+    
+    mutating func reinitialise(_ part: Part?) {
+        
+    }
+    
     let baseType: ObjectTypes
     //let sitOnLocation: PositionAsIosAxes
-    let value: PositionAsIosAxes
+    //let value: PositionAsIosAxes
   
     
     init (
@@ -66,7 +80,46 @@ struct PreTiltSitOnBackFootTiltJointDefaultOrigin {
         self.baseType = baseType
         //self.sitOnLocation = sitOnLocation
                 
-        value = getBodySupportToBodySupportRotationJoint()
+        origin = getBodySupportToBodySupportRotationJoint()
+                
+    func getBodySupportToBodySupportRotationJoint()
+      -> PositionAsIosAxes {
+          let dictionary: OriginDictionary = [:]
+          let general =
+              (x: 0.0,
+               y: 0.0,
+               z: 0.0)
+             
+          return
+              dictionary[baseType] ?? general
+                  }
+        }
+}
+
+// tilt as in tilted/rotated/angled
+// origins are described from the parent origin
+// orientations from the object-orientation not the parent orientation
+
+struct PreTiltSitOnBackFootTiltJointDefaultOrigin: PartOrigin {
+    var origin: PositionAsIosAxes = ZeroValue.iosLocation
+    
+    mutating func reinitialise(_ part: Part?) {
+        
+    }
+    
+    let baseType: ObjectTypes
+    //let sitOnLocation: PositionAsIosAxes
+    //let value: PositionAsIosAxes
+  
+    
+    init (
+            _ baseType: ObjectTypes//,
+           // _ sitOnLocation: PositionAsIosAxes
+    ) {
+        self.baseType = baseType
+        //self.sitOnLocation = sitOnLocation
+                
+        origin = getBodySupportToBodySupportRotationJoint()
                 
     func getBodySupportToBodySupportRotationJoint()
       -> PositionAsIosAxes {

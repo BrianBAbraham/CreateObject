@@ -96,7 +96,7 @@ struct OccupantBackSupportDefaultDimension2: PartDimension {
     func getBackSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-        (width: OccupantBodySupportDefaultDimension.general.width * 0.9,
+        (width: OccupantBodySupportDefaultDimension.general.width * 0.8,
             length: 10.0,
             height: 500.0)
         return
