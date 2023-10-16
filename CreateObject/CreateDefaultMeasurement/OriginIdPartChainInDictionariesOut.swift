@@ -136,10 +136,12 @@ struct OriginIdPartChainInDictionariesOut {
     
     func makeAndGetForParentToPart()
         -> PositionDictionary {
+            //print (Thread.callStackSymbols[1])
         let allOrigin =
                         xGreaterThanOrEqualZeroOriginOut +
             xLessThanZeroOrigin
         var dictionary: PositionDictionary = [:]
+            
         for (index, key) in allNames.enumerated() {
             dictionary[key] =
             preTiltParentToPartOriginIn[key] ??

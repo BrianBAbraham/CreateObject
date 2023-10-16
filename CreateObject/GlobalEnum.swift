@@ -286,14 +286,17 @@ struct PartChainProvider {
 
 
 struct LabelInPartChainOut  {
+    
+    
     static let backSupport: PartChain =
         [
-        .sitOn,
+       .sitOn,
+      // .sitOnTiltJoint,
         .backSupporRotationJoint,
         .backSupport]
     let foot: PartChain =
         [
-            .sitOn,
+         .sitOn,
         .footSupportHangerJoint,
         .footSupportJoint,
                 .footSupport
@@ -309,8 +312,12 @@ struct LabelInPartChainOut  {
         .sitOn,
         .sideSupportRotationJoint,
         .sideSupport]
+    let sitOn: PartChain =
+        [
+        .sitOn]
+    
     static let sitOnTiltJoint: PartChain =
-           [.sitOn,
+           [//.sitOn,
            .sitOnTiltJoint]
 
     var partChains: [PartChain] = []
@@ -341,7 +348,7 @@ struct LabelInPartChainOut  {
                 return
                     Self.sideSupport
             case .sitOn:
-                return [.sitOn]
+                return sitOn
             case .sitOnTiltJoint:
                 return
                     Self.sitOnTiltJoint

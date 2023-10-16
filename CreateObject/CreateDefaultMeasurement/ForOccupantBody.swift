@@ -23,7 +23,7 @@ struct OccupantBodySupportDefaultDimension: PartDimension {
      .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
      .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
         ]
-    static let general = (width: 400.0, length: 400.0, height: 1.0)
+    static let general = (width: 400.0, length: 400.0, height: 10.0)
     let value: Dimension3d
     
     init(

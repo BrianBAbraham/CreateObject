@@ -63,18 +63,12 @@ struct DimensionDictionary {
 
 //MARK: GET DIMENSIONS
 //retrieves a passed value if extant else a default value
-struct OccupantSupportDimensionDictionary {
+struct WheelDimensionDictionary {
     let parent: DictionaryProvider
-
     let preTiltWheelOrigin:
         DictionaryProvider.PreTiltWheelOrigin?
     let allWheelRelated: AllWheelRelated
-    
-    var forBody:  Part3DimensionDictionary = [:]
-
     var forWheels: Part3DimensionDictionary = [:]
-    var forTiltInSpace: Part3DimensionDictionary = [:]
-
     
     init(
         parent: DictionaryProvider) {
@@ -83,31 +77,10 @@ struct OccupantSupportDimensionDictionary {
                  AllWheelRelated(
                      parent.objectType)
             
-
-
         preTiltWheelOrigin =
             parent.preTiltWheelOrigin as? DictionaryProvider.PreTiltWheelOrigin
-            
-        let preTiltBodySupportOrigin =
-                parent.preTiltOccupantBodySupportOrigin as?
-                DictionaryProvider.PreTiltOccupantBodySupportOrigin
-            
-        for index in 0..<parent.oneOrTwoIds.count {
 
-                
-
-            if let preTiltBodySupportOrigin {
-                let dimension = OccupantBodySupportDefaultDimension(parent.objectType).value
-                forBody +=
-                DimensionDictionary(
-                    preTiltBodySupportOrigin.allOriginIdPartChain[index],
-                    [dimension, dimension],
-                    parent.dimensionDicIn,
-                    index).forPart
-            }
-        }
-        
-        forWheels += getDictionaryForWheel(.rearWheel)
+            forWheels += getDictionaryForWheel(.rearWheel)
         if BaseObjectGroups().sixWheels.contains(parent.objectType) {
             forWheels += getDictionaryForWheel(.midWheel)
         }
