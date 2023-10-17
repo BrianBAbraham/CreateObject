@@ -104,6 +104,7 @@ struct PreTiltSitOnBackFootTiltJointDefaultOrigin: PartOrigin {
     var origin: PositionAsIosAxes = ZeroValue.iosLocation
     
     mutating func reinitialise(_ part: Part?) {
+        origin = self.getBodySupportToBodySupportRotationJoint()
         
     }
     
@@ -113,14 +114,13 @@ struct PreTiltSitOnBackFootTiltJointDefaultOrigin: PartOrigin {
   
     
     init (
-            _ baseType: ObjectTypes//,
-           // _ sitOnLocation: PositionAsIosAxes
-    ) {
+            _ baseType: ObjectTypes) {
         self.baseType = baseType
-        //self.sitOnLocation = sitOnLocation
-                
+                        
         origin = getBodySupportToBodySupportRotationJoint()
                 
+
+        }
     func getBodySupportToBodySupportRotationJoint()
       -> PositionAsIosAxes {
           let dictionary: OriginDictionary = [:]
@@ -132,7 +132,6 @@ struct PreTiltSitOnBackFootTiltJointDefaultOrigin: PartOrigin {
           return
               dictionary[baseType] ?? general
                   }
-        }
 }
 
 

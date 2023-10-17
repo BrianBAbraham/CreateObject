@@ -81,7 +81,7 @@ enum Part: String {
     case fixedWheelPropeller = "fixedWheelPropeller"
     
     case footSupport = "footSupport"
-    
+    case footOnly = "footOnly"
     case footSupportInOnePiece = "footSupportInOnePiece"
     case footSupportJoint = "footSupportHorizontalJoint"
     //case footSupportHanger = "footSupportHanger"
@@ -121,35 +121,6 @@ case notFound = "notAnyPart"
 
 
 
-
-
-
-
-enum ObjectOptions: String, CaseIterable  {
-    
-    //case angleBackSupport = "reclining back support"
-    case angleFootSupport = "angle leg support"
-    case assistant = "assistant"
-    
-    case backSupportAssistantHandles = "back support assistant handles"
-    case backSupportAdditionalObject = "bacl support additional object"
-    case backSupportAssistantHandlesInOnPiece = "back support assistant handle in one piece"
-    case backSupportAssistantJoystick = "back support assistant joystick"
-    case bumper = "bumper"
-    case door = "door"
-    case footSupportInOnePiece = "foot support in one piece"
-    case headSupport = "head support"
-
-    case occupant = "occupant"
-
-    case tiltInSpace = "tilt in space"
-    case tiltAndRecline = "tilt in space and reclining back support"
-    case selfPropellers = "self propllers"
-    case singleFootSupport = "single foot support"
-    case sixCaster = "six caster"
-    
-}
-
 enum Toggles {
     case twinSitOn
     case sitOnPosition
@@ -171,7 +142,6 @@ struct TiltPartChain {
        
         .footSupportHangerJoint
         ]
-    
     let footAngle: [Part] =
         [
         .footSupport,
@@ -215,51 +185,24 @@ struct TiltPartChain {
     var sitOnWithFootAndBackTiltForUnilateral: [Part] {
         sitOnAngle + backAngle + headAngle
     }
-    
-    
 }
 
 
 ///objects are comprised of  groups of associated parts
 ///each property povides an array of parts relevant to the group
 ///in order beginning with the part nearest to object origin
-struct PartChainProvider {
-//    static let sideSupport: PartChain =
-//            [
-//            .sitOn,
-//            .sideSupportRotationJoint,
-//            .sideSupport]
-//    static let sitOn: PartChain =
-//        [.sitOn]
-//
-//    static let sitOnTiltJoint: PartChain =
-//            [.sitOn,
-//            .sitOnTiltJoint]
-//    static let backSupport: PartChain =
-//            [
-//            .sitOn,
-//            .backSupporRotationJoint,
-//            .backSupport]
-//    static let backWithHeadSupport: PartChain =
-//        backSupport +
-//            [
-//            .backSupportHeadLinkRotationJoint,
-//            .backSupportHeadSupportLink,
-//            .backSupportHeadSupport]
+struct PartChainWheelProvider {
     static let casterWheelPartChain: PartChain =
             [
             .baseWheelJoint,
             .casterFork,
             .casterWheel]
-    
-    
     static let fixedWheelNodes: [Part] =
             [
             .baseWheelJoint,
             .fixedWheel]
     static let fixedWheelWithPropllerNodes =
         fixedWheelNodes + [.fixedWheelPropeller]
-    
     
     static let twoCasterParts: [Part] =
         Array( repeating: casterWheelPartChain, count:  2 ).flatMap {$0}
@@ -284,14 +227,12 @@ struct PartChainProvider {
 }
 
 
-
+//Source of truth for partChain
 struct LabelInPartChainOut  {
-    
     
     static let backSupport: PartChain =
         [
-       .sitOn,
-      // .sitOnTiltJoint,
+        .sitOn,
         .backSupporRotationJoint,
         .backSupport]
     let foot: PartChain =
@@ -301,6 +242,9 @@ struct LabelInPartChainOut  {
         .footSupportJoint,
                 .footSupport
         ]
+    
+    let footOnly: PartChain =
+        [.footSupportInOnePiece]
     let headSupport: PartChain =
         [
         .backSupportHeadSupportJoint,
@@ -317,7 +261,7 @@ struct LabelInPartChainOut  {
         .sitOn]
     
     static let sitOnTiltJoint: PartChain =
-           [//.sitOn,
+           [.sitOn,
            .sitOnTiltJoint]
 
     var partChains: [PartChain] = []
@@ -359,16 +303,16 @@ struct LabelInPartChainOut  {
 }
 
 
-struct ObjectPartChainLabelsDictionaryProvider {
-    let dic: [ObjectTypes: [Part]] = [:]
-    init () {
-        
-        
-        func getObjectPartChainLabelsDictionary() {
-            
-        }
-    }
-}
+//struct ObjectPartChainLabelsDictionaryProvider {
+//    let dic: [ObjectTypes: [Part]] = [:]
+//    init () {
+//
+//
+//        func getObjectPartChainLabelsDictionary() {
+//
+//        }
+//    }
+//}
 
 
 /// ObjectPartChainLabelDictionary
@@ -379,83 +323,77 @@ struct ObjectPartChainLabelsDictionaryProvider {
 ///
 /// PartChainIdDictionary
 /// [PartChainLabel:  [Id]]
-struct PartChainDictionaryProvider  {
-    var dic: PartChainDictionary = [:]
-//    let partChainLabel: [Part] =
+//struct PartChainDictionaryProvider  {
+//    var dic: PartChainDictionary = [:]
+//
+//
+//    let backSupport: PartChain =
 //        [
-//        .backSupport,
-//        .backSupportHeadSupport,
-//        .footSupport,
-//        .sideSupport,
-//        .sitOnTiltJoint]
-    
-    let backSupport: PartChain =
-        [
-        .sitOn,
-        .backSupporRotationJoint,
-        .backSupport]
-    let foot: PartChain =
-        [
-        .sitOn,
-        .footSupportHangerJoint,
-        .footSupportJoint]
-    let headSupport: PartChain =
-        [
-        .backSupportHeadLinkRotationJoint,
-        .backSupportHeadSupportLink,
-        .backSupportHeadSupport]
-    let sideSupport: PartChain =
-        [
-        .sitOn,
-        .sideSupportRotationJoint,
-        .sideSupport]
-    let sitOnTiltJoint: PartChain =
-           [.sitOn,
-           .sitOnTiltJoint]
-    
-    init(_ partChainLabels: [Part]) {
-        getPartChainDic(partChainLabels)
-    }
-
-    mutating func getPartChainDic (_ partChainLabels: [Part]){
-        for partChainLabel in partChainLabels {
-            var partChainName: [String] = []
-            let partChain =
-                getPartChain(partChainLabel)
-            for part in partChain {
-                partChainName.append(part.rawValue)
-            }
-            dic += [partChainLabel.rawValue: partChainName]
-        }
-    }
-    
-   mutating func getPartChain (
-    _ part: Part)
-        -> PartChain {
-        switch part {
-            case .backSupport:
-                return
-                    backSupport
-            case .backSupportHeadSupport:
-                return
-                    backSupport + headSupport
-            case .footSupport:
-                return
-                    foot + [.footSupport]
-            case .footSupportInOnePiece:
-                return
-                    foot + [.footSupportInOnePiece]
-            case .sideSupport:
-                return
-                    sideSupport
-            case .sitOnTiltJoint:
-                return
-                    sitOnTiltJoint
-            default:
-                return []
-        }
-    }
-}
+//        .sitOn,
+//        .backSupporRotationJoint,
+//        .backSupport]
+//    let foot: PartChain =
+//        [
+//        .sitOn,
+//        .footSupportHangerJoint,
+//        .footSupportJoint]
+//    let headSupport: PartChain =
+//        [
+//        .backSupportHeadLinkRotationJoint,
+//        .backSupportHeadSupportLink,
+//        .backSupportHeadSupport]
+//    let sideSupport: PartChain =
+//        [
+//        .sitOn,
+//        .sideSupportRotationJoint,
+//        .sideSupport]
+//    let sitOnTiltJoint: PartChain =
+//           [.sitOn,
+//           .sitOnTiltJoint]
+//
+//    init(_ partChainLabels: [Part]) {
+//        getPartChainDic(partChainLabels)
+//    }
+//
+//    mutating func getPartChainDic (_ partChainLabels: [Part]){
+//        for partChainLabel in partChainLabels {
+//            var partChainName: [String] = []
+//            let partChain =
+//                getPartChain(partChainLabel)
+//            for part in partChain {
+//                partChainName.append(part.rawValue)
+//            }
+//            dic += [partChainLabel.rawValue: partChainName]
+//        }
+//    }
+//
+//   mutating func getPartChain (
+//    _ part: Part)
+//        -> PartChain {
+//        switch part {
+//            case .backSupport:
+//                return
+//                    backSupport
+//            case .backSupportHeadSupport:
+//                return
+//                    backSupport + headSupport
+//            case .footSupport:
+//                return
+//                    foot + [.footSupport]
+//            case .footSupportInOnePiece:
+//                return
+//                    foot + [.footSupportInOnePiece]
+//            case .sideSupport:
+//                return
+//                    sideSupport
+//            case .sitOnTiltJoint:
+//                return
+//                    sitOnTiltJoint
+//            default:
+//                return []
+//        }
+//    }
+//}
 
 
 //enum ViewFrom {
@@ -485,4 +423,50 @@ enum DictionaryVersion {
     case useInitial
     case useLoaded
     case useDimension
+}
+
+//partChainLabel: ids for each part in partChain for that label
+struct PartChainsIdDictionary {
+    var dic: [PartChain : [[Part]] ] = [:]
+    let sitOnId : Part
+    let bilateral: [Part] = [.id0, .id1]
+    init (_ partChains: [PartChain], _ sitOnId: Part ) {
+        self.sitOnId = sitOnId
+        
+        getId(partChains)
+        
+        //the number of id always match the partChain
+        func getId (_ partChains: [PartChain]) {
+            for chain in partChains {
+                var ids: [[Part]] = []
+                for part in chain {
+                    ids.append(getId(part))
+                }
+                dic += [chain: ids]
+            }
+            
+            func getId(_ part: Part) -> [Part] {
+                var ids: [Part] = []
+                switch part {
+                case .sitOn:
+                        ids = [sitOnId]
+                    case .backSupporRotationJoint:
+                        ids = [.id0]
+                    case .backSupport:
+                        ids = [.id0]
+                    case .backSupportHeadLinkRotationJoint:
+                        ids = [.id0]
+                    case .backSupportHeadSupportLink:
+                        ids = [.id0]
+                    case .backSupportHeadSupport:
+                        ids = [.id0]
+                    case .footOnly:
+                        ids = [.id0]
+                    default:
+                        ids = bilateral
+                }
+                return ids
+            }
+        }
+    }
 }

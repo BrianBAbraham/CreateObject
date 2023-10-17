@@ -163,14 +163,10 @@ struct PreTiltOccupantSideSupportDefaultOrigin: PartOrigin {
     
     init ( _ baseType: ObjectTypes) {
         self.baseType = baseType
-        //self.part = part
         }
 
     
     func getOrigin() -> PositionAsIosAxes {
-        
-    
-        
         origin
     }
     

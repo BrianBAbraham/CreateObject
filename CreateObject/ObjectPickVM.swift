@@ -44,13 +44,7 @@ struct ObjectPickModel {
 class ObjectPickViewModel: ObservableObject {
     static let initialObject = ObjectTypes.fixedWheelRearDrive
     static let initialObjectName = initialObject.rawValue
-   
-   
-    
-    static let optionDictionary =
-    Dictionary(uniqueKeysWithValues: ObjectOptions.allCases.map { $0 }.map { ($0, false) })
-    
-    static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
+   static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
     
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let postTiltOneCornerPerKeyDic: PositionDictionary
@@ -173,19 +167,6 @@ extension ObjectPickViewModel {
     }
     
     
-    
-//    func getCurrentOptionState(_ options: [ObjectOptions])
-//        -> [Bool] {
-//        let optionDictionary = getObjectOptionsDictionary()
-//            var optionStates: [Bool] = []
-//            for option in options {
-//                optionStates
-//                    .append(optionDictionary[option] ?? false)
-//            }
-//            return optionStates
-//    }
-
-    
     func getList (_  version: DictionaryVersion) -> [String] {
         var list: [String] = []
             switch version  {
@@ -220,21 +201,6 @@ extension ObjectPickViewModel {
             [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
     }
     
-
-//    func getObjectOptionDictionary(
-//        _ option: ObjectOptions
-//        )
-//        -> Bool {
-//            objectPickModel.objectOptionDictionary[option] ?? false
-//    }
-    
-    
-//    func getObjectOptionsDictionary(
-//        )
-//        -> OptionDictionary {
-//            objectPickModel.objectOptionDictionary
-//
-//        }
     
     func getObjectPartChains()
         -> [PartChain] {
@@ -350,25 +316,33 @@ extension ObjectPickViewModel {
                 angleInDic
         }
 
-        
-//        func setObjectOptionDictionary(
-//            _ option: ObjectOptions,
-//            _ state: Bool) {
-//                objectPickModel.setObjectOptionDictionary(option, state)
-//        }
     
-        func setCurrentObjectWithToggledPartChain(_ partChain: PartChain) {
-            var partChains = getObjectPartChains()
-            if partChains.contains(partChain) {
-                partChains.removeAll {$0 == partChain}
-            } else {
-                partChains += [partChain]
-            }
+    func setCurrentObjectWithToggledPartChain(
+        _ firstPartChainLabel: PartChain,
+        _ secondPartChainLabel: PartChain) {
+        var partChains = getObjectPartChains()
             
-            setCurrentObjectByCreatingFromName(ObjectPickViewModel.twinSitOnDictionary,
-               objectPickModel.angleInDic,
-                partChains)
-        }
+            if let index = partChains.firstIndex(of: firstPartChainLabel) {
+                partChains[index] = secondPartChainLabel
+                print ("replaced")
+            }
+//            if partChains.contains(firstPartChain) {
+//                print (firstPartChain)
+//                partChains.removeAll {$0 == firstPartChain}
+//                //partChains += [secondPartChain]
+//                print ("Detection with first")
+//            }
+//            if partChains.contains(secondPartChain) {
+//                print (secondPartChain)
+//                partChains.removeAll {$0 == secondPartChain}
+//                partChains += [firstPartChain]
+//                print ("Detection with second")
+//            }
+        print (partChains)
+        setCurrentObjectByCreatingFromName(ObjectPickViewModel.twinSitOnDictionary,
+           objectPickModel.angleInDic,
+            partChains)
+    }
     
     func setCurrentObjectWithEditedPartChainsId(_ option: String) {
             var partChainIdDic = getPartChainIdDic()

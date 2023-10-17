@@ -51,7 +51,7 @@ struct AllOccupantBackRelated {
 }
 
 
-struct OccupantBackSupportDefaultDimension2: PartDimension {
+struct OccupantBackSupportDefaultDimension: PartDimension {
     var dimension: Dimension3d = ZeroValue.dimension3d
     
     mutating func reinitialise(_ part: Part?) {
@@ -145,153 +145,15 @@ struct OccupantBackSupportDefaultDimension2: PartDimension {
 
 
 
-//MARK: DIMENSION
-
-struct OccupantBackSupportDefaultDimension {
-    let baseType: ObjectTypes
-    
-    init ( _ baseType: ObjectTypes) {
-        self.baseType = baseType
-    }
-    
-    func getBackSupportRotationJoint() -> Dimension3d {
-        let dictionary: BaseObject3DimensionDictionary  = [:]
-        let general = Joint.dimension3d
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getBackSupport() -> Dimension3d {
-        let dictionary: BaseObject3DimensionDictionary  = [:]
-        let general =
-        (width: OccupantBodySupportDefaultDimension.general.width * 0.9,
-            length: 10.0,
-            height: 500.0)
-        return
-            dictionary[baseType] ?? general
-    }
-
-    func getHeadSupportRotationJoint() -> Dimension3d {
-        let dictionary: BaseObject3DimensionDictionary  = [:]
-        let general = Joint.dimension3d
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getHeadSupportLink() -> Dimension3d {
-        let dictionary: BaseObject3DimensionDictionary  = [:]
-        let general =
-        (width: 20.0,
-         length: 20.0,
-         height: 100.0)
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getHeadSupport() -> Dimension3d {
-        let dictionary: BaseObject3DimensionDictionary  = [:]
-        let general =
-            (width: 150.0,
-            length: 100.0,
-            height: 100.0)
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getAdditionalObject() -> Dimension3d {
-        let dictionary: BaseObject3DimensionDictionary  = [:]
-        let general =
-            (width: OccupantBodySupportDefaultDimension.general.width,
-            length: 100.0,
-            height: 100.0)
-        return
-            dictionary[baseType] ?? general
-    }
-
-}
-
-
 
 //MARK: -ORIGIN
-// tilt as in tilted/rotated/angled
-// origins are described from the parent origin
-// and the object-orientation not the parent orientation
 
-struct PreTiltOccupantBackSupportDefaultOrigin {
-    let baseType: ObjectTypes
-    let defaultBackSupportDimension:
-        OccupantBackSupportDefaultDimension
-  
-    
-    init ( _ baseType: ObjectTypes) {
-        self.baseType = baseType
-        
-        defaultBackSupportDimension =
-            OccupantBackSupportDefaultDimension(baseType)
-    }
-    
-  func getSitOnToBackSupportRotationJoint()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-            (x: 0.0,
-             y: -OccupantBodySupportDefaultDimension(baseType).value.length/2,
-             z: 0.0)
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getRotationJointToBackSupport()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-            (x: 0.0,
-             y: 0.0,
-             z: defaultBackSupportDimension.getBackSupport().height/2)
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getBackSupportToHeadLinkRotationJoint()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-        (x: 0.0,
-         y: 0.0,
-         z: defaultBackSupportDimension.getBackSupport().height/2)
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getHeadLinkRotationJointToHeadLink()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-        (x: 0.0,
-         y: 0.0,
-         z: defaultBackSupportDimension.getHeadSupportLink().height/2)
-        return
-            dictionary[baseType] ?? general
-    }
-    
-    func getHeadSupportLinkToHeadSupport()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-            (x: 0.0,
-             y: 0.0,
-             z: defaultBackSupportDimension.getHeadSupportLink().height +
-                 defaultBackSupportDimension.getHeadSupport().height/2  )
-        return
-            dictionary[baseType] ?? general
-    }
-}
 
 // tilt as in tilted/rotated/angled
 // origins are described from the parent origin
 // and the object-orientation not the parent orientation
 
-struct PreTiltOccupantBackSupportDefaultOrigin2: PartOrigin {
+struct PreTiltOccupantBackSupportDefaultOrigin: PartOrigin {
     var origin: PositionAsIosAxes = ZeroValue.iosLocation
     var part: Part?
     mutating func reinitialise(_ part: Part?) {
@@ -301,12 +163,11 @@ struct PreTiltOccupantBackSupportDefaultOrigin2: PartOrigin {
         case .backSupporRotationJoint:
             origin = getSitOnToBackSupportRotationJoint()
             
-            
         case .backSupport:
             origin = getRotationJointToBackSupport()
             
-        case .backSupportHeadLinkRotationJoint:
-            origin = getBackSupportToHeadLinkRotationJoint()
+        case .backSupportHeadSupportJoint:
+            origin = getBackSupportToBackSupportHeadSupportJoint()
             
         case .backSupportHeadSupportLink:
             origin = getHeadLinkRotationJointToHeadLink()
@@ -348,6 +209,17 @@ struct PreTiltOccupantBackSupportDefaultOrigin2: PartOrigin {
             (x: 0.0,
              y: 0.0,
              z: defaultBackSupportDimension.getBackSupport().height/2)
+        return
+            dictionary[baseType] ?? general
+    }
+
+    func getBackSupportToBackSupportHeadSupportJoint()
+    -> PositionAsIosAxes {
+        let dictionary: OriginDictionary = [:]
+        let general =
+        (x: 0.0,
+         y: 0.0,
+         z: defaultBackSupportDimension.getBackSupport().height/2)
         return
             dictionary[baseType] ?? general
     }

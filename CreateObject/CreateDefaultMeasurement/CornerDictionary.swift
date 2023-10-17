@@ -32,10 +32,11 @@ struct DictionaryProvider {
     
     let objectType: ObjectTypes
     let twinSitOnOption: TwinSitOnOptionDictionary
-    //let objectOptions: [OptionDictionary]
+
     var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
     var partChains: [PartChain] = []
+    var partChainLabels: [Part] = []
     var partChainDictionary: PartChainDictionary = [:]
     var partChainsIdDic: PartChainIdDictionary  = [:]
     
@@ -68,12 +69,7 @@ struct DictionaryProvider {
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary = [:]
     
     
-   
-    
-    ///the objects available, that is for which all code is present are included here
-    static let objects: [ObjectTypes] = [
-        .allCasterBed,.allCasterChair,.allCasterStretcher, .allCasterTiltInSpaceShowerChair,
-        .fixedWheelFrontDrive, .fixedWheelMidDrive, .fixedWheelRearDrive, .showerTray]
+    let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
     
 
     /// using values taken from dictionaries
@@ -87,7 +83,6 @@ struct DictionaryProvider {
     /// - Parameters:
     ///   - baseType: as Enum
     ///   - twinSitOnOption: dictionary as [Enum: Bool] indicating a configuration with two seats
-    ///   - objectOptions: dictionary as [Enum: Bool] indicating options for object one per sitOn
     ///   - dimensionIn: empty or default or modified dictionary of part
     ///   - objectToPartOrigin: empty or default or modified dictionary as  [String: PositionAsIosAxes] indicating part origin, preTilt
     ///   - parentToPartOrigin: empty or default or modified dictionary as  [String: PositionAsIosAxes] indicating part origin, preTilt
@@ -95,14 +90,13 @@ struct DictionaryProvider {
     init(
         _ objectType: ObjectTypes,
         _ twinSitOnOption: TwinSitOnOptionDictionary,
-        //_ objectOptions: [OptionDictionary],
         _ dimensionIn: Part3DimensionDictionary = [:],
         _ objectToPartOrigin: PositionDictionary = [:],
         _ parentToPartOrigin: PositionDictionary = [:],
         angleIn: AngleDictionary = [:],
         minMaxAngleIn: AngleMinMaxDictionary = [:],
         partChainsIn: [PartChain] = [],
-        partChainDictionaryIn: PartChainDictionary = [:],
+        //partChainDictionaryIn: PartChainDictionary = [:],
         partChainsIdDicIn: PartChainIdDictionary = [:] ) {
             
         self.objectType = objectType
@@ -120,26 +114,15 @@ struct DictionaryProvider {
         twinSitOnState = TwinSitOn(twinSitOnOption).state
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
             
-            
-//       print (baseType)
-//            print (oneOrTwoIds)
-//            print ("")
         angleDic =
             ObjectAngleChange(parent: self).dictionary
         angleMinMaxDic =
             ObjectAngleMinMax(parent: self).dictionary
-//fprint(objectOptions)
-            partChainDictionary = partChainDictionaryIn == [:] ? PartChainDictionaryProvider([.footSupport,.backSupportHeadSupport,.sideSupport]).dic: partChainDictionaryIn
             
-            
-            //partChainsIdDic =  [:]
-            //DictionaryInArrayOut().getNameValue(partChainDictionaryIn).forEach{print($0)}
-            //print(partChainsIn)
-            
-          
+        partChainLabels = getPartChainLabels()
+        partChains = getPartChains()
             
 //MARK: - ORIGIN/DICTIONARY
-            
         // both parent to part and
         // object to part
         if !objectGroups.noWheel.contains( objectType) {
@@ -148,12 +131,7 @@ struct DictionaryProvider {
             getPreTiltBodyOriginDictionary()
         }
         
-//        preTiltOccupantFootBackSideSupportOrigin =
-//            PreTiltOccupantSupportOrigin(parent: self)
-            //partChains = preTiltOccupantFootBackSideSupportOrigin.partChains
-            getPreTiltFootSideBackOriginDictionary()
-   
-            //print(partChainsIdDic)
+        getPreTiltFootSideBackOriginDictionary()
         
         //do not add wheels to for example a shower tray
         if !objectGroups.noWheel.contains( objectType) {
@@ -170,7 +148,7 @@ struct DictionaryProvider {
            
 
 //MARK: - DIMENSIONS
-        createOccupantSupportDimensionDictionary()
+        createWheelDimensionDictionary()
 
             
 //MARK: - PRE-TILT
@@ -186,8 +164,7 @@ struct DictionaryProvider {
         postTiltObjectToFourCornerPerKeyDic =
             createPostTiltObjectToPartFourCornerPerKeyDic()
             //no dimension for
-
-            // produces object_id0_tiltInSpaceHorizontalJoint_id1_sitOn_id0: 0.0, 250.0, 1500.0
+            
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic).forEach{print($0)}
             
       
@@ -284,34 +261,48 @@ struct DictionaryProvider {
                 }
         }
             
+        func getPartChainLabels ()
+            -> [Part] {
+            let chainLabels:[Part] =
+                objectsAndTheirChainLabels[objectType] ?? [.sitOn]
+           
+                return chainLabels
+        }
+        
+        func getPartChains ()
+            -> [PartChain] {
+                
+            var partChains: [[Part]] = []
+            for partChainLabel in partChainLabels {
+                partChains.append(LabelInPartChainOut([partChainLabel]).partChains[0])
+            }
+                return partChains
+        }
             
         func getPreTiltFootSideBackOriginDictionary () {
-
-            createAnyOriginAndDimensionDic(
-                .footSupport
-            )
-
-            createAnyOriginAndDimensionDic(
-                .sideSupport
-            )
-            
-            createAnyOriginAndDimensionDic(
-                .backSupportHeadSupport
-            )
-
-//            createAnyOriginAndDimensionDic(
-//                .sitOnTiltJoint
-//            )
+                
+            //chainLabels are determined by the object
+//            let chainLabels:[Part] =
+//            objectsAndTheirChainLabels[objectType] ?? [.sitOn]//
+           
+//            for chainLabel in chainLabels {
+//                createAnyOriginAndDimensionDic(
+//                    chainLabel)
 //
-            createAnyOriginAndDimensionDic(
-                .sitOn
-            )
+                for index in 0..<partChainLabels.count {
+                    
+                    createAnyOriginAndDimensionDic(
+                        partChainLabels[index])
+                }
+            }
             
+
             func createAnyOriginAndDimensionDic(
                 _ chainLabel: Part) {
                 //Chain
-                let chain = LabelInPartChainOut([chainLabel]).partChains[0]
-                //OriginIdChain
+                let chain =
+                    LabelInPartChainOut([chainLabel]).partChains[0]
+                //OriginIdPartChain
                 let allOriginIdPartChainForBothSitOn =
                     PreTiltOccupantAnySupport(
                         .id0,
@@ -319,42 +310,37 @@ struct DictionaryProvider {
                         chainLabel: chainLabel
                     ).allOriginIdPartChain[0]
                     
-                    if chainLabel == .sideSupport {
-                       // print(allOriginIdPartChainForBothSitOn)
-                    }
-                    
-                    
                     var dimensionData: PartDimension?
-                    if chainLabel == .footSupport {
-                        dimensionData = OccupantFootSupportDefaultDimension2(objectType)
-                        //as PartDimension
+                    
+                    switch chainLabel {
+                        case .footSupport:
+                                dimensionData =
+                                    OccupantFootSupportDefaultDimension(objectType)
+                        case .footOnly:
+                            dimensionData =
+                                OccupantFootSupportDefaultDimension(objectType)
+                        case .sideSupport:
+                            dimensionData =
+                                OccupantSideSupportDefaultDimension2(objectType)
+                        case .backSupport:
+                            dimensionData =
+                                OccupantBackSupportDefaultDimension(objectType)
+                            //this is required for post tilt
+                            originIdPartChainForBackForBothSitOn = allOriginIdPartChainForBothSitOn
+                        case .backSupportHeadSupport:
+                            dimensionData =
+                                OccupantBackSupportDefaultDimension(objectType)
+                            //this is required for post tilt
+                            originIdPartChainForBackForBothSitOn = allOriginIdPartChainForBothSitOn
+                        case . sitOn:
+                            dimensionData =
+                            OccupantBodySupportDefaultDimension(objectType)
+                        case .sitOnTiltJoint:
+                            dimensionData = OccupantBodySupportAngleJointDefaultDimension(objectType)
+                        default:
+                            fatalError("Not yet defined for createAnyOriginAndDimensionDic")
                     }
-                    if chainLabel == .sideSupport {
-                        dimensionData = OccupantSideSupportDefaultDimension2(objectType)
-                        //as PartDimension
-                    }
-                    if chainLabel == .backSupport {
-                        dimensionData = OccupantBackSupportDefaultDimension2(objectType)
-                        
-                        //this is required for post tilt
-                        originIdPartChainForBackForBothSitOn = allOriginIdPartChainForBothSitOn
-                    }
-                    if chainLabel == .backSupportHeadSupport {
-                        dimensionData = OccupantBackSupportDefaultDimension2(objectType)
-                        //this is required for post tilt
-                        originIdPartChainForBackForBothSitOn = allOriginIdPartChainForBothSitOn
 
-                    }
-                    if chainLabel == .sitOn {
-                     dimensionData = OccupantBodySupportDefaultDimension(objectType)
-                    
-                    }
-                    
-                    if chainLabel == .sitOnTiltJoint {
-                     dimensionData = OccupantBodySupportAngleJointDefaultDimension(objectType)
-                        //as PartDimension
-                    }
-                    
                 //OriginDic
                 for allOriginIdPartChain in
                         allOriginIdPartChainForBothSitOn {
@@ -365,12 +351,7 @@ struct DictionaryProvider {
                         for part in chain {
                             dimensionData.reinitialise(part)
                             allDimensions.append(dimensionData.dimension)
-                            
-//                            print (part)
-//                            print (dimensionData.dimension)
-//                            print ("")
                         }
-                        //DimensionDic
                         dimensionDic +=
                         DimensionDictionary(
                             [allOriginIdPartChain],
@@ -381,6 +362,7 @@ struct DictionaryProvider {
                 }
             }
                 
+            
             func createPreTiltParentToPartFootSideBackOriginDictionary (
                 _ allOriginIdNodes: OriginIdPartChain){
                 let parentAndObjectToPartOriginDictionary =
@@ -396,31 +378,14 @@ struct DictionaryProvider {
                         parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
             }
 
-        }
+        //}
             
     
-        func createOccupantSupportDimensionDictionary() {
-            let occupantSupportDimensionDictionary =
+        func createWheelDimensionDictionary() {
+            let wheelDimensionDictionary =
             WheelDimensionDictionary(parent: self)
             
-            dimensionDic += occupantSupportDimensionDictionary.forWheels
-            
-//            let preTiltBodySupportOrigin =
-//                    preTiltOccupantBodySupportOrigin as?
-//                    DictionaryProvider.PreTiltOccupantBodySupportOrigin
-           
-            ///dimensionForBody must be subsequent to for... which have sitOn in their nodes
-//            for index in 0..<oneOrTwoIds.count {
-//                if let preTiltBodySupportOrigin {
-//                    let dimension = OccupantBodySupportDefaultDimension(objectType).value
-//                    dimensionDic +=
-//                    DimensionDictionary(
-//                        preTiltBodySupportOrigin.allOriginIdPartChain[index],
-//                        [dimension, dimension],
-//                        dimensionDicIn,
-//                        index).forPart
-//                }
-//            }
+            dimensionDic += wheelDimensionDictionary.forWheels
         }
       
             
@@ -752,13 +717,13 @@ extension DictionaryProvider.PreTiltWheelOrigin {
         var chain: [Part] = []
         if BaseObjectGroups().rearCaster.contains(parent.objectType) {
             chain =
-                partChainProvider.casterWheelPartChain
+                partChainWheelProvider.casterWheelPartChain
 //print(parent.baseType)
         }
         
         if BaseObjectGroups().rearFixedWheel.contains(parent.objectType) {
             chain =
-                partChainProvider.fixedWheelNodes
+                partChainWheelProvider.fixedWheelNodes
         }
             return chain
     }
@@ -768,12 +733,12 @@ extension DictionaryProvider.PreTiltWheelOrigin {
         var chain: [Part] = []
         if BaseObjectGroups().midCaster.contains(parent.objectType) {
             chain =
-                partChainProvider.casterWheelPartChain
+                partChainWheelProvider.casterWheelPartChain
         }
         
         if BaseObjectGroups().midFixedWheel.contains(parent.objectType) {
             chain =
-                partChainProvider.fixedWheelNodes
+                partChainWheelProvider.fixedWheelNodes
         }
             return chain
     }
@@ -784,12 +749,12 @@ extension DictionaryProvider.PreTiltWheelOrigin {
         var chain: [Part] = []
         if BaseObjectGroups().frontCaster.contains(parent.objectType) {
             chain =
-                partChainProvider.casterWheelPartChain
+                partChainWheelProvider.casterWheelPartChain
         }
         
         if BaseObjectGroups().frontFixedWheel.contains(parent.objectType) {
             chain =
-                partChainProvider.fixedWheelNodes
+                partChainWheelProvider.fixedWheelNodes
         }
             return chain
     }
@@ -929,7 +894,7 @@ extension DictionaryProvider.PreTiltWheelOrigin {
 extension DictionaryProvider {
     struct PreTiltWheelOrigin: InputForDictionary {
         //assignment form for static values
-        var partChainProvider: PartChainProvider.Type = PartChainProvider.self
+        var partChainWheelProvider: PartChainWheelProvider.Type = PartChainWheelProvider.self
         
         //ObjectCreator
         let objectType: ObjectTypes
@@ -943,9 +908,6 @@ extension DictionaryProvider {
         var allOriginIdNodesForRear: OriginIdPartChain = ZeroValue.originIdPartChain
         var allOriginIdNodesForMid: OriginIdPartChain = ZeroValue.originIdPartChain
         var allOriginIdNodesForFront: OriginIdPartChain = ZeroValue.originIdPartChain
-        
-
-        
 
         init(
             parent: DictionaryProvider,
@@ -969,7 +931,7 @@ extension DictionaryProvider {
             
             casterOrigin = CasterOrigin(parent.objectType)
             
-                let baseObjectGroups = BaseObjectGroups()
+               // let baseObjectGroups = BaseObjectGroups()
 
             allOriginIdNodesForRear =
                 getOriginIdNodesForRear()
@@ -1017,11 +979,7 @@ extension DictionaryProvider {
         }
     }
 }
-//[
-//objectToSitOn,
-//defaultFootOrigin.getSitOnToHangerJoint( ),
-//defaultFootOrigin.getHangerJointToFootJoint( ),
-//footJointToFootSupportOrigin]
+
 
 //MARK: ANY originIdPartChain
 extension DictionaryProvider {
@@ -1043,102 +1001,80 @@ extension DictionaryProvider {
             objectType = parent.objectType
             
             chain = LabelInPartChainOut([chainLabel]).partChains[0]
+                print (chain)
             allOriginIdPartChain = [[getOriginIdPartChain(chainLabel)]]
                 
-                func getOriginData(_ chainLabel: Part) {
-                    
-                    let sitOnOrigin = getSitOnOrigin()
-                    
-                    if chainLabel == .footSupport {
-                        getOrigin(PreTiltOccupantFootSupportDefaultOrigin2(parent.objectType))
-                    }
-                    
-                    if chainLabel  == .sideSupport {
-                        getOrigin(PreTiltOccupantSideSupportDefaultOrigin(parent.objectType))
-                    }
-                    if chainLabel  == .backSupport {
-                        var backSupport = PreTiltOccupantBackSupportDefaultOrigin2(parent.objectType)
-                        for part in chain {
-                            backSupport.reinitialise(part)
-                            allOrigin.append( backSupport.origin)
-                        }
-                        allOrigin[0] = getSitOnOrigin()
-                    }
-                    if chainLabel  == .backSupportHeadSupport {
-                        
-                        getOrigin(PreTiltOccupantBackSupportDefaultOrigin2(parent.objectType))
-
-                    }
-                    if chainLabel  == .sitOn {
-                        
-                        allOrigin.append(getSitOnOrigin())
-                        //print(sitOnSupport.origin)
-                    }
-                    if chainLabel  == .sitOnTiltJoint {
-                        
-                        getOrigin(PreTiltSitOnBackFootTiltJointDefaultOrigin(parent.objectType))
-//                        var sitOnTiltJoint =
-//                        PreTiltSitOnBackFootTiltJointDefaultOrigin(parent.objectType)
-//                        for part in chain {
-//                            sitOnTiltJoint.reinitialise(part)
-//                            allOrigin.append( sitOnTiltJoint.origin)
-//                        }
-//                        allOrigin[0] = getSitOnOrigin()
-                    }
-                    
-                    
-                func getOrigin(_ partOrigin: PartOrigin) {
-                    for part in chain {
-                        if part == .sitOn {
-                            allOrigin.append(sitOnOrigin)
-                        } else {
-                            var newPartOrigin = partOrigin
-                            newPartOrigin.reinitialise(part)
-                            allOrigin.append( newPartOrigin.origin)
-                        }
+            func getOriginData(_ chainLabel: Part) {
+                
+                let sitOnOrigin = getSitOnOrigin()
+                
+                if [.footSupport , .footOnly] .contains(chainLabel) {
+                    getOrigin(PreTiltOccupantFootSupportDefaultOrigin(parent.objectType))
+                }
+                if chainLabel  == .sideSupport {
+                    getOrigin(PreTiltOccupantSideSupportDefaultOrigin(parent.objectType))
+                }
+                if chainLabel  == .backSupport {
+                    getOrigin( PreTiltOccupantBackSupportDefaultOrigin(parent.objectType))
+                }
+                if chainLabel  == .backSupportHeadSupport {
+                    getOrigin(PreTiltOccupantBackSupportDefaultOrigin(parent.objectType))
+                }
+                if chainLabel  == .sitOn {
+                    allOrigin.append(getSitOnOrigin())
+                }
+                if chainLabel  == .sitOnTiltJoint {
+                    getOrigin(PreTiltSitOnBackFootTiltJointDefaultOrigin(parent.objectType))
+                }
+                
+                
+            func getOrigin(_ partOrigin: PartOrigin) {
+                for part in chain {
+                    if part == .sitOn {
+                        allOrigin.append(sitOnOrigin)
+                    } else {
+                        print ("detect")
+                        var newPartOrigin = partOrigin
+                        newPartOrigin.reinitialise(part)
+                        allOrigin.append( newPartOrigin.origin)
                     }
                 }
+            }
                   
                     
-                    func getSitOnOrigin() -> PositionAsIosAxes {
-                        var origin: PositionAsIosAxes = ZeroValue.iosLocation
-                        let sitOnSupport =                        parent.preTiltOccupantBodySupportOrigin as? PartOrigin
-                        if var sitOnSupport {
-                            sitOnSupport.reinitialise(Part.sitOn)
-                            
-                            origin = sitOnSupport.origin
-                            print (origin)
-                        }
-                        return origin
-                    }
+            func getSitOnOrigin() -> PositionAsIosAxes {
+                var origin: PositionAsIosAxes = ZeroValue.iosLocation
+                let sitOnSupport =                        parent.preTiltOccupantBodySupportOrigin as? PartOrigin
+                if var sitOnSupport {
+                    sitOnSupport.reinitialise(Part.sitOn)
+                    
+                    origin = sitOnSupport.origin
                 }
+                return origin
+                }
+            }
      
             
+          func getOriginIdPartChain(_ chainLabel: Part)
+                -> OriginIdPartChain {
+              
+                let objectId =
+                    parent.partChainsIdDicIn [chain] ??
+                    PartChainsIdDictionary([chain], sitOnId).dic[chain]!
 
-
-      func getOriginIdPartChain(_ chainLabel: Part)
-            -> OriginIdPartChain {
-          
-            let objectId =
-                parent.partChainsIdDicIn [chain] ??
-                PartChainsIdDictionary([chain], sitOnId).dic[chain]!
-
-            getOriginData(chainLabel)
-                
-                let originIdChain =
-                (
-                origin: allOrigin,
-                ids: objectId,
-                chain: chain)
-               print (originIdChain)
-                
-            return
-                originIdChain
+                getOriginData(chainLabel)
+                    
+                    let originIdPartChain =
+                    (
+                    origin: allOrigin,
+                    ids: objectId,
+                    chain: chain)
+                    
+                    print (originIdPartChain)
+                return
+                    originIdPartChain
             }
-
-
         }
-
     }
 }
 

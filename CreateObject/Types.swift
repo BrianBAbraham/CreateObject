@@ -21,7 +21,7 @@ typealias BasePositionAsIosAxes =
 front: PositionAsIosAxes,
 rear: PositionAsIosAxes)
 
-typealias OptionDictionary = [ObjectOptions: Bool]
+//typealias OptionDictionary = [ObjectOptions: Bool]
 
 
 ///an array of one or more part that form
@@ -125,3 +125,7 @@ typealias PartChainDictionary = [String: [String]]
 ///  where id array are either unilateral  or bilateral
 /// for sitOn id are unilateral id0 or id1 but for all other unilateral part id0
 typealias PartChainIdDictionary = [PartChain: [[Part]] ]
+
+/// Input an object type and get the chain labels associaed with that object type
+/// as defined in ObjectsAndTheirChainLabels
+typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]

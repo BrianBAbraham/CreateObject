@@ -123,11 +123,11 @@ struct BaseObjectGroups {
     
     let noWheel: [ObjectTypes] = [.showerTray]
     let noBodySupport: [ObjectTypes] = [.showerTray]
-    let sitOnBackFootTiltJoint: [ObjectTypes] = [.allCasterTiltInSpaceShowerChair]
-    
-    let footSupport: [ObjectTypes]
+//    let sitOnBackFootTiltJoint: [ObjectTypes] = [.allCasterTiltInSpaceShowerChair]
+//
+//    let footSupport: [ObjectTypes]
     let backSupport: [ObjectTypes]
-    let sideSupport: [ObjectTypes]
+//    let sideSupport: [ObjectTypes]
     
     let fourWheels: [ObjectTypes]
     let threeWheels: [ObjectTypes]
@@ -182,159 +182,89 @@ struct BaseObjectGroups {
             allCaster +
             [.fixedWheelMidDrive, .fixedWheelFrontDrive]
         
-        footSupport =
-            twinSitOnAbility + [.allCasterChair,
-                                .allCasterStandAid,
-                                .allCasterTiltInSpaceShowerChair,
-                                .showerTray]
-        
+//        footSupport =
+//            twinSitOnAbility + [.allCasterChair,
+//                                .allCasterStandAid,
+//                                .allCasterTiltInSpaceShowerChair,
+//                                .showerTray]
+//
         backSupport =
             twinSitOnAbility + [.allCasterChair,
                                 .allCasterStandAid,
                                 .allCasterTiltInSpaceShowerChair]
-        
-        sideSupport =
-            twinSitOnAbility + [.allCasterChair,
-                                .allCasterStandAid,
-                                .allCasterTiltInSpaceShowerChair]
+//
+//        sideSupport =
+//            twinSitOnAbility + [.allCasterChair,
+//                                .allCasterStandAid,
+//                                .allCasterTiltInSpaceShowerChair]
     }
 }
 
-struct ObjectPartChains {
+/// provides the object names for the picker
+/// provides the chainPartLabels for each object
+struct ObjectsAndTheirChainLabels {
+    static let typicalWheeledChairSupport: [Part] =
+    [
+        //.backSupport,
+        .backSupportHeadSupport,
+        .footSupport,
+        .sideSupport,
 
-    var partChains: [PartChain] = []
-
-    init(_ object: ObjectTypes) {
-        partChains = getPartChains(object)
-
-        func getPartChains (_ object: ObjectTypes)
-        -> [PartChain] {
-            let typicalWheeledChair =
-            LabelInPartChainOut ([
-                .backSupport,
-                .backSupportHeadSupport,
-                .footSupport,
-                .sideSupport,
-                .sitOnTiltJoint
-            ]).partChains
-
-            switch object {
-            case .allCasterTiltInSpaceShowerChair:
-                return
-                    typicalWheeledChair
-            case .allCasterBed:
-                return
-                    [[.sideSupport]]
-            case .allCasterStretcher:
-                return
-                    [[.sideSupport]]
-            case .showerTray:
-                return
-                    [[.footSupport]]
-            default:
-                return
-                    typicalWheeledChair
-            }
-        }
-    }
+        .sitOnTiltJoint,
+            .sitOn,]
+    
+    let dictionary: ObjectPartChainLabelsDictionary =
+    [ .allCasterBed: [ .sideSupport, .sitOn],
+      .allCasterChair: typicalWheeledChairSupport,
+      .allCasterTiltInSpaceShowerChair: typicalWheeledChairSupport,
+      .allCasterStretcher: [.sideSupport, .sitOn, ],
+      .fixedWheelFrontDrive: typicalWheeledChairSupport,
+      .fixedWheelMidDrive: typicalWheeledChairSupport ,
+      .fixedWheelRearDrive: typicalWheeledChairSupport,
+      .showerTray: [.footOnly]]
 }
 
-//partChainLabel: ids for each part in partChain for that label
-struct PartChainsIdDictionary {
-    var dic: [PartChain : [[Part]] ] = [:]
-    let sitOnId : Part
-    let bilateral: [Part] = [.id0, .id1]
-    init (_ partChains: [PartChain], _ sitOnId: Part ) {
-        self.sitOnId = sitOnId
-        
-        getId(partChains)
-        
-        //the number of id always match the partChain
-        func getId (_ partChains: [PartChain]) {
-            for chain in partChains {
-                var ids: [[Part]] = []
-                for part in chain {
-                    ids.append(getId(part))
-                }
-                dic += [chain: ids]
-            }
-            
-            func getId(_ part: Part) -> [Part] {
-                var ids: [Part] = []
-                switch part {
-                case .sitOn:
-                        ids = [sitOnId]
-                    case .backSupporRotationJoint:
-                        ids = [.id0]
-                    case .backSupport:
-                        ids = [.id0]
-                    case .backSupportHeadLinkRotationJoint:
-                        ids = [.id0]
-                    case .backSupportHeadSupportLink:
-                        ids = [.id0]
-                    case .backSupportHeadSupport:
-                        ids = [.id0]
-                    default:
-                        ids = bilateral
-                }
-                return ids
-            }
-        }
-    }
-}
-
-//struct SupportObjectGroups {
+//struct ObjectPartChains {
 //
-//    let forSitOn: [BaseObjectTypes] =
-//        [
-//            .allCasterChair,
-//            .allCasterStandAid,
-//            .allCasterTiltInSpaceShowerChair,
-//        ] + BaseObjectGroups().twinSitOnAbility
+//    var partChains: [PartChain] = []
 //
-//    let forFoot: [BaseObjectTypes]
+//    init(_ object: ObjectTypes) {
+//        partChains = getPartChains(object)
 //
-//    let forBack: [BaseObjectTypes]
+//        func getPartChains (_ object: ObjectTypes)
+//        -> [PartChain] {
+//            let typicalWheeledChair =
+//            LabelInPartChainOut ([
+//                .backSupport,
+//                .backSupportHeadSupport,
+//                .footSupport,
+//                .sideSupport,
+//                .sitOnTiltJoint
+//            ]).partChains
 //
-//    let canTilt:[BaseObjectTypes] = [ .allCasterTiltInSpaceShowerChair]
-//
-//    init() {
-//        forFoot = forSitOn
-//        forBack = forSitOn
-//    }
-//
-//}
-
-
-
-//struct BaseObjectOptionProvider {
-//    //let baseObject: BaseObjectTypes
-//    var baseObjectOption: BaseOptionDictionary = [:]
-//
-//    init ( _ baseObject: BaseObjectTypes) {
-//        baseObjectOption = getBaseOptionOptions(baseObject)
-//
-//
-//
-//    func getBaseOptionOptions (_ baseObject: BaseObjectTypes) -> BaseOptionDictionary{
-//        switch baseObject {
-//
-//            case .allCasterBed:
-//                baseObjectOption =
-//                    [.sideSupport: true,
-//                     .sideSupportRotationJoint: true]
+//            switch object {
 //            case .allCasterTiltInSpaceShowerChair:
-//                baseObjectOption =
-//                    [.backSupportHeadSupport: true,
-//                     ]
+//                return
+//                    typicalWheeledChair
+//            case .allCasterBed:
+//                return
+//                    [[.sideSupport]]
+//            case .allCasterStretcher:
+//                return
+//                    [[.sideSupport]]
+//            case .showerTray:
+//                return
+//                    [[.footSupport]]
 //            default:
-//                baseObjectOption = [:]
+//                return
+//                    typicalWheeledChair
+//            }
 //        }
-//        return baseObjectOption
 //    }
-//    }
-//
 //}
+
+
+
 
 ///
 ///I need to have a system which
