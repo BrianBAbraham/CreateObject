@@ -82,7 +82,7 @@ struct OccupantFootSupportDefaultDimension: PartDimension {
             
         case .footOnly:
             dimension = getFootSupportInOnePiece()
-            print("detect")
+           // print("detect")
         default:
             break
         }
@@ -162,7 +162,7 @@ struct PreTiltOccupantFootSupportDefaultOrigin: PartOrigin {
             
         case .footOnly:
             origin = getJointToOnePieceFoot()
-            print ("detect")
+            //print("detect")
         default:
            break
         }

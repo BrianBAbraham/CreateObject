@@ -204,14 +204,12 @@ struct BaseObjectGroups {
 /// provides the chainPartLabels for each object
 struct ObjectsAndTheirChainLabels {
     static let typicalWheeledChairSupport: [Part] =
-    [
-        //.backSupport,
+        [
         .backSupportHeadSupport,
         .footSupport,
         .sideSupport,
-
         .sitOnTiltJoint,
-            .sitOn,]
+        .sitOn,]
     
     let dictionary: ObjectPartChainLabelsDictionary =
     [ .allCasterBed: [ .sideSupport, .sitOn],

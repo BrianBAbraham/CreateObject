@@ -229,7 +229,6 @@ struct PartChainWheelProvider {
 
 //Source of truth for partChain
 struct LabelInPartChainOut  {
-    
     static let backSupport: PartChain =
         [
         .sitOn,
@@ -282,6 +281,9 @@ struct LabelInPartChainOut  {
             case .backSupportHeadSupport:
                 return
                     Self.backSupport + headSupport
+            case .footOnly:
+                return
+                    footOnly
             case .footSupport:
                 return
                     foot //+ [.footSupport]

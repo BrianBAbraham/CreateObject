@@ -27,7 +27,7 @@ struct DictionaryProvider {
     let preTiltObjectToPartOriginDicIn: PositionDictionary
     let angleDicIn: AngleDictionary
     let angleMinMaxDicIn: AngleMinMaxDictionary
-    let partChainsIn: [PartChain]
+   
     let partChainsIdDicIn: [PartChain: [[Part]]]
     
     let objectType: ObjectTypes
@@ -35,7 +35,8 @@ struct DictionaryProvider {
 
     var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
-    var partChains: [PartChain] = []
+    var objectPartChainLabelDic: ObjectPartChainLabelsDictionary = [:]
+
     var partChainLabels: [Part] = []
     var partChainDictionary: PartChainDictionary = [:]
     var partChainsIdDic: PartChainIdDictionary  = [:]
@@ -95,19 +96,16 @@ struct DictionaryProvider {
         _ parentToPartOrigin: PositionDictionary = [:],
         angleIn: AngleDictionary = [:],
         minMaxAngleIn: AngleMinMaxDictionary = [:],
-        partChainsIn: [PartChain] = [],
-        //partChainDictionaryIn: PartChainDictionary = [:],
+        objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:],
         partChainsIdDicIn: PartChainIdDictionary = [:] ) {
             
         self.objectType = objectType
         self.twinSitOnOption = twinSitOnOption
-       // self.objectOptions = objectOptions
         self.dimensionDicIn = dimensionIn
         self.preTiltObjectToPartOriginDicIn = objectToPartOrigin
         self.preTiltParentToPartOriginDicIn = parentToPartOrigin
         self.angleDicIn = angleIn
         self.angleMinMaxDicIn = minMaxAngleIn
-        self.partChainsIn = partChainsIn
         self.partChainsIdDicIn = partChainsIdDicIn
             
   
@@ -119,8 +117,11 @@ struct DictionaryProvider {
         angleMinMaxDic =
             ObjectAngleMinMax(parent: self).dictionary
             
+       //this order required start
+        objectPartChainLabelDic = getObjectPartChainLabelDic()
         partChainLabels = getPartChainLabels()
-        partChains = getPartChains()
+        //this order required end
+            
             
 //MARK: - ORIGIN/DICTIONARY
         // both parent to part and
@@ -143,12 +144,13 @@ struct DictionaryProvider {
                             DictionaryProvider.PreTiltWheelOrigin)
                 }
             getPreTiltWheelOriginDictionary(preTiltWheelOriginIdNodes)
+            //MARK: - DIMENSIONS
+                    createWheelDimensionDictionary()
         }
 
            
 
-//MARK: - DIMENSIONS
-        createWheelDimensionDictionary()
+
 
             
 //MARK: - PRE-TILT
@@ -263,20 +265,14 @@ struct DictionaryProvider {
             
         func getPartChainLabels ()
             -> [Part] {
-            let chainLabels:[Part] =
-                objectsAndTheirChainLabels[objectType] ?? [.sitOn]
-           
-                return chainLabels
+                objectPartChainLabelDic[objectType] ?? [.sitOn]
         }
         
-        func getPartChains ()
-            -> [PartChain] {
-                
-            var partChains: [[Part]] = []
-            for partChainLabel in partChainLabels {
-                partChains.append(LabelInPartChainOut([partChainLabel]).partChains[0])
-            }
-                return partChains
+       func getObjectPartChainLabelDic  ()
+        -> ObjectPartChainLabelsDictionary {
+            objectsAndTheirChainLabelsDicIn == [:] ?
+                ObjectsAndTheirChainLabels().dictionary:
+                objectsAndTheirChainLabelsDicIn
         }
             
         func getPreTiltFootSideBackOriginDictionary () {
@@ -302,6 +298,8 @@ struct DictionaryProvider {
                 //Chain
                 let chain =
                     LabelInPartChainOut([chainLabel]).partChains[0]
+                    
+                    //print(chainLabel)
                 //OriginIdPartChain
                 let allOriginIdPartChainForBothSitOn =
                     PreTiltOccupantAnySupport(
@@ -344,14 +342,16 @@ struct DictionaryProvider {
                 //OriginDic
                 for allOriginIdPartChain in
                         allOriginIdPartChainForBothSitOn {
+                   
                             createPreTiltParentToPartFootSideBackOriginDictionary(allOriginIdPartChain)
-                  
+                    //print(#function)
                     if var dimensionData {
                         var allDimensions: [Dimension3d] = []
                         for part in chain {
                             dimensionData.reinitialise(part)
                             allDimensions.append(dimensionData.dimension)
                         }
+
                         dimensionDic +=
                         DimensionDictionary(
                             [allOriginIdPartChain],
@@ -1001,7 +1001,9 @@ extension DictionaryProvider {
             objectType = parent.objectType
             
             chain = LabelInPartChainOut([chainLabel]).partChains[0]
-                print (chain)
+           if chain == [] {
+                fatalError("No LabelInPartChainOut defined for this label")
+            }
             allOriginIdPartChain = [[getOriginIdPartChain(chainLabel)]]
                 
             func getOriginData(_ chainLabel: Part) {
@@ -1033,7 +1035,7 @@ extension DictionaryProvider {
                     if part == .sitOn {
                         allOrigin.append(sitOnOrigin)
                     } else {
-                        print ("detect")
+                        //print("detect")
                         var newPartOrigin = partOrigin
                         newPartOrigin.reinitialise(part)
                         allOrigin.append( newPartOrigin.origin)
@@ -1070,7 +1072,7 @@ extension DictionaryProvider {
                     ids: objectId,
                     chain: chain)
                     
-                    print (originIdPartChain)
+                    //print(originIdPartChain)
                 return
                     originIdPartChain
             }

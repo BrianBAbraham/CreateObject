@@ -116,14 +116,11 @@ struct HeadSupport: View {
         if showTilt {
             Toggle("Headrest",isOn: $headSuppportToggle)
                 .onChange(of: headSuppportToggle) { value in
-                    let onlyOne = 0
-                    let firstPartChain =
-                        LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne]
-                    let secondPartChain =
-                        LabelInPartChainOut([.backSupport]).partChains[onlyOne]
-                    objectPickVM.setCurrentObjectWithToggledPartChain(
-                        firstPartChain,
-                        secondPartChain)
+                    //let onlyOne = 0
+                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
+                        Part.backSupportHeadSupport,
+                        Part.backSupport)
+
                 }
         } else {
             EmptyView()
