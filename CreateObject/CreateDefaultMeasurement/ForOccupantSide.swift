@@ -9,40 +9,40 @@
 //
 
 
-struct AllOccupantSideRelated {
-    let parts: [Part]
-    var defaultDimensions: [Dimension3d] = []
-//    var rotatedDimensions: RotatedInXxDimensions = []
-    init(
-        _ baseType: ObjectTypes,
-        _ chain: [Part]) {
-        self.parts = chain
-            
-        let defaults =
-            OccupantSideSupportDefaultDimension(baseType)
-        
-        for part in parts {
-            defaultDimensions.append(getDefaultDimensions(part))
-        }
-            
-        func getDefaultDimensions (
-            _ part: Part)
-            -> Dimension3d {
-                var dimension: Dimension3d = ZeroValue.dimension3d
-            switch part {
-                case .sideSupportRotationJoint:
-                    dimension =
-                        Joint.dimension3d
-                case .sideSupport:
-                    dimension =
-                    defaults.value
-                
-                default: break
-            }
-            return dimension
-        }
-    }
-}
+//struct AllOccupantSideRelated {
+//    let parts: [Part]
+//    var defaultDimensions: [Dimension3d] = []
+////    var rotatedDimensions: RotatedInXxDimensions = []
+//    init(
+//        _ baseType: ObjectTypes,
+//        _ chain: [Part]) {
+//        self.parts = chain
+//
+//        let defaults =
+//            OccupantSideSupportDefaultDimension(baseType)
+//
+//        for part in parts {
+//            defaultDimensions.append(getDefaultDimensions(part))
+//        }
+//
+//        func getDefaultDimensions (
+//            _ part: Part)
+//            -> Dimension3d {
+//                var dimension: Dimension3d = ZeroValue.dimension3d
+//            switch part {
+//                case .sideSupportRotationJoint:
+//                    dimension =
+//                        Joint.dimension3d
+//                case .sideSupport:
+//                    dimension =
+//                    defaults.value
+//
+//                default: break
+//            }
+//            return dimension
+//        }
+//    }
+//}
 
 struct OccupantSideSupportDefaultDimension2: PartDimension {
     mutating func reinitialise(_ part: Part?) {

@@ -48,24 +48,33 @@ enum Part: String {
     
     
     case carriedObjectAtRear = "objectCarriedAtRear"
+    
     case casterFork = "casterFork"
-    case casterForkAtCenter = "casterForkAtCenter"
-    case casterForkAtFront = "casterForkAtFront"
+    
+
+    
+    
+
+
+    case casterVerticalJointAtRear = "casterVerticalBaseJointAtRear"
+    case casterVerticalJointAtMid = "casterVerticalBaseJointAtMid"
+    case casterVerticalJointAtFront = "casterVerticalBaseJointAtFront"
+    
     case casterForkAtRear = "casterForkAtRear"
-    case casterFrontToRearLink = "casterFrontToRearLink"
-    case casterVerticalJointAtCenter = "casterVerticalJointAtCenter"
-    case casterVerticalJointAtFront = "casterVerticalJointAtFront"
-    case casterVerticalJointAtRear = "casterVerticalJointAtRear"
-    case casterWheelAtCenter = "casterWheelAtCenter"
-    case casterWheelAtFront = "casterWheelAtFront"
+    case casterForkAtMid = "casterForkAtMid"
+    case casterForkAtFront = "casterForkAtFront"
+    
     case casterWheelAtRear = "casterWheelAtRear"
+    case casterWheelAtMid = "casterWheelAtMid"
+    case casterWheelAtFront = "casterWheelAtFront"
+    
     case casterWheel = "casterWheel"
     case ceiling = "ceiling"
     
-    case centreToFront = "centreToFront"
-    case centreHalfWidth = "halfWidthAtCentre"
-    case rearToCentre = "rearToCentre"
-    case rearToFront = "rearToFront"
+    //case centreToFront = "centreToFront"
+   // case centreHalfWidth = "halfWidthAtCentre"
+    //case rearToCentre = "rearToCentre"
+   // case rearToFront = "rearToFront"
     case frameTube = "frameTube"
 
 
@@ -79,6 +88,20 @@ enum Part: String {
     case id5 = "_id5"
     case fixedWheel = "fixedWheel"
     case fixedWheelPropeller = "fixedWheelPropeller"
+    
+    
+    
+    case fixedWheelHorizontalJointAtRear = "fixedWheelHorizontalBaseJointAtRear"
+    case fixedWheelHorizontalJointAtMid = "fixedWheelHorizontalBaseJointAtMid"
+    case fixedWheelHorizontalJointAtFront = "fixedWheelHorizontalBaseJointAtFront"
+    case fixedWheelAtRear = "fixedWheelAtRear"
+    case fixedWheelAtMid = "fixedWheelAtMid"
+    case fixedWheelAtFront = "fixedWheelAtFront"
+    case fixedWheelAtRearWithPropeller = "fixedWheelAtRearithPropeller"
+    case fixedWheelAtMidWithPropeller = "fixedWheelAtMidithPropeller"
+    case fixedWheelAtFrontWithPropeller = "fixedWheelAtFrontithPropeller"
+    
+    
     
     case footSupport = "footSupport"
     case footOnly = "footOnly"
@@ -260,9 +283,24 @@ struct LabelInPartChainOut  {
         .sitOn]
     
     static let sitOnTiltJoint: PartChain =
-           [.sitOn,
+           [
+            .sitOn,
            .sitOnTiltJoint]
 
+    static let fixedWheelAtRear: PartChain =
+            [
+           .fixedWheelHorizontalJointAtRear,
+            .fixedWheelAtRear]
+    static let fixedWheelAtMid: PartChain =
+        [
+       // .baseWheelJoint,
+        .fixedWheel]
+    static let fixedWheelAtFront: PartChain =
+        [
+        //.fixedWheelHorizontalJointAtFront,
+        .fixedWheel]
+    
+    
     var partChains: [PartChain] = []
     init(_ parts: [Part]) {
         for part in parts {
@@ -298,6 +336,27 @@ struct LabelInPartChainOut  {
             case .sitOnTiltJoint:
                 return
                     Self.sitOnTiltJoint
+            
+            
+            case .fixedWheelAtRear:
+                return
+                    Self.fixedWheelAtRear
+            case .fixedWheelAtMid:
+                return
+                    Self.fixedWheelAtMid
+            case .fixedWheelAtFront:
+                return
+                    Self.fixedWheelAtFront
+            case .fixedWheelAtRearWithPropeller:
+                    return
+                Self.fixedWheelAtRear + [.fixedWheelPropeller]
+            case .fixedWheelAtMidWithPropeller:
+                return
+                    Self.fixedWheelAtMid + [.fixedWheelPropeller]
+            case .fixedWheelAtFrontWithPropeller:
+                return
+                    Self.fixedWheelAtFront + [.fixedWheelPropeller]
+         
             default:
                 return []
         }

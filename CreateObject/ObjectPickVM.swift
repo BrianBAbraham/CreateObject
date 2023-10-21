@@ -31,6 +31,8 @@ struct ObjectPickModel {
     
     var partChainsIdDic: PartChainIdDictionary
     
+    var currentObjectFrameSize: Dimension = ZeroValue.dimension
+    
 
 //    mutating func setObjectOptionDictionary(
 //        _ option: ObjectOptions,
@@ -152,6 +154,9 @@ extension ObjectPickViewModel {
         objectPickModel.postTiltFourCornerPerKeyDic
     }
     
+    func getCurrentObjectFrameSize() -> Dimension {
+        objectPickModel.currentObjectFrameSize
+    }
     
     func getCurrentObjectName() -> String{
         objectPickModel.currentObjectName
@@ -268,6 +273,11 @@ extension ObjectPickViewModel {
 //MARK: SET
 extension ObjectPickViewModel {
     
+    func setCurrentObjectFrameSize() {
+        objectPickModel.currentObjectFrameSize = getScreenFrameSize()
+    }
+    
+    
         func setCurrentObjectName(_ objectName: String){
             objectPickModel.currentObjectName = objectName
         }
@@ -306,6 +316,13 @@ extension ObjectPickViewModel {
                 dictionaryProvider.angleMinMaxDic
             objectPickModel.angleInDic =
                 angleInDic
+                
+                
+                let currentFrameSize = getCurrentObjectFrameSize().length
+            setCurrentObjectFrameSize()
+                let newFrameSize = getScreenFrameSize().length
+                
+                //print (newFrameSize - currentFrameSize)
         }
 
     
@@ -349,7 +366,6 @@ extension ObjectPickViewModel {
                 ObjectPickViewModel
                     .twinSitOnDictionary,
                 objectPickModel.angleInDic,
-                //objectPartChainLabelDicIn: getObjectPartChainLabelDic(),
                 partChainIdDicIn: partChainIdDic)
         
         func getNewId (_ option: String)
@@ -396,7 +412,7 @@ extension ObjectPickViewModel {
             
             
             let objectDimension =
-                    (length: minMax[1].y - minMax[0].y, width: minMax[1].x - minMax[0].x)
+                    (width: minMax[1].x - minMax[0].x,length: minMax[1].y - minMax[0].y )
             
            return
             objectDimension
@@ -418,7 +434,7 @@ extension ObjectPickViewModel {
         let offset = CreateIosPosition.negative(minThenMax[0])
 
         let objectDimension =
-            (length: minThenMax[1].y - minThenMax[0].y, width: minThenMax[1].x - minThenMax[0].x)
+            (width: minThenMax[1].x - minThenMax[0].x,length: minThenMax[1].y - minThenMax[0].y )
 
         let maximumObjectDimension = getMaximumOfObject(objectDimension)
         
@@ -443,27 +459,30 @@ extension ObjectPickViewModel {
                 fourCornerPerElement: currentDic).oneCornerPerKey)
             
         let objectDimensionWithLengthIncrease =
-            (length: objectInitialDimension.length //+
+            ( //+
              //maximumLengthIncrease * 0
-             ,
-            width: objectInitialDimension.width)
+            width: objectInitialDimension.width,length: objectInitialDimension.length)
 
         var frameSize: Dimension =
-            (length: Screen.smallestDimension,
-             width: Screen.smallestDimension)
+            (width: Screen.smallestDimension,
+            length: Screen.smallestDimension
+             )
 
         if objectDimensionWithLengthIncrease.length < objectDimensionWithLengthIncrease.width {
             frameSize =
-            (length: objectDimensionWithLengthIncrease.length,
-             width: Screen.smallestDimension)
+            (width: Screen.smallestDimension,
+            length: objectDimensionWithLengthIncrease.length
+             )
         }
     
         if objectDimensionWithLengthIncrease.length > objectDimensionWithLengthIncrease.width {
-            frameSize = (length: Screen.smallestDimension,
-                         width: objectDimensionWithLengthIncrease.width)
+            frameSize = (
+                        width: objectDimensionWithLengthIncrease.width,
+                        length: Screen.smallestDimension
+                                 )
         }
             frameSize = objectDimensionWithLengthIncrease
-            
+           
         return frameSize
     }
 }

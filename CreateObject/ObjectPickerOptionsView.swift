@@ -103,7 +103,7 @@ struct Tilt: View {
 
 
 struct HeadSupport: View {
-    @State private var headSuppportToggle = true
+    @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let showTilt: Bool
@@ -114,13 +114,35 @@ struct HeadSupport: View {
     
     var body: some View {
         if showTilt {
-            Toggle("Headrest",isOn: $headSuppportToggle)
-                .onChange(of: headSuppportToggle) { value in
-                    //let onlyOne = 0
+            Toggle("Headrest",isOn: $optionToggle)
+                .onChange(of: optionToggle) { value in
                     objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
                         Part.backSupportHeadSupport,
                         Part.backSupport)
+                }
+        } else {
+            EmptyView()
+        }
+    }
+}
 
+struct Propeller: View {
+    @State private var optionToggle = true
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+    let showTilt: Bool
+    
+    init(_ name: String) {
+        showTilt = name.contains("propel") ? true: false
+    }
+    
+    var body: some View {
+        if showTilt {
+            Toggle("Propellers",isOn: $optionToggle)
+                .onChange(of: optionToggle) { value in
+                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
+                        Part.backSupportHeadSupport,
+                        Part.backSupport)
                 }
         } else {
             EmptyView()

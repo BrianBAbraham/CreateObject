@@ -50,7 +50,7 @@ typealias BaseObjectOriginDictionary = [ObjectTypes: PositionAsIosAxes]
 /// Input BaseObjectTypes to get default value for that object
 typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 
-typealias Dimension = (length: Double, width: Double)
+typealias Dimension = (width: Double, length: Double)
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
 typealias Dimension3dRearMidFront =
     (rear: [Dimension3d], mid: [Dimension3d], front: [Dimension3d])

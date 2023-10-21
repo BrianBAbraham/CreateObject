@@ -7,48 +7,48 @@
 
 import Foundation
 
-struct AllOccupantBackRelated {
-    var parts: [Part] = []
-    var defaultDimensions: [Dimension3d] = []
-//    var rotatedDimensions: RotatedInXxDimensions = []
-
-    init(
-        _ baseType: ObjectTypes,
-        _ chain: [Part] ) {
-        self.parts = chain
-        
-        let defaults =
-            OccupantBackSupportDefaultDimension(baseType)
-        for part in parts {
-            defaultDimensions.append(getDefaultDimensions(part))
-        }
-       
-        func getDefaultDimensions (
-            _ part: Part)
-            -> Dimension3d {
-                var dimension: Dimension3d = ZeroValue.dimension3d
-            switch part {
-                case .backSupportHeadSupport:
-                    dimension =
-                        defaults.getHeadSupport()
-                case .backSupportHeadSupportJoint:
-                    dimension =
-                    defaults.getHeadSupportRotationJoint()
-                case .backSupportHeadSupportLink:
-                    dimension =
-                    defaults.getHeadSupportLink()
-                case .backSupport:
-                    dimension =
-                    defaults.getBackSupport()
-            case .backSupporRotationJoint:
-                dimension =
-                defaults.getBackSupportRotationJoint()
-                default: break
-            }
-            return dimension
-        }
-    }
-}
+//struct AllOccupantBackRelated {
+//    var parts: [Part] = []
+//    var defaultDimensions: [Dimension3d] = []
+////    var rotatedDimensions: RotatedInXxDimensions = []
+//
+//    init(
+//        _ baseType: ObjectTypes,
+//        _ chain: [Part] ) {
+//        self.parts = chain
+//        
+//        let defaults =
+//            OccupantBackSupportDefaultDimension(baseType)
+//        for part in parts {
+//            defaultDimensions.append(getDefaultDimensions(part))
+//        }
+//       
+//        func getDefaultDimensions (
+//            _ part: Part)
+//            -> Dimension3d {
+//                var dimension: Dimension3d = ZeroValue.dimension3d
+//            switch part {
+//                case .backSupportHeadSupport:
+//                    dimension =
+//                        defaults.getHeadSupport()
+//                case .backSupportHeadSupportJoint:
+//                    dimension =
+//                    defaults.getHeadSupportRotationJoint()
+//                case .backSupportHeadSupportLink:
+//                    dimension =
+//                    defaults.getHeadSupportLink()
+//                case .backSupport:
+//                    dimension =
+//                    defaults.getBackSupport()
+//            case .backSupporRotationJoint:
+//                dimension =
+//                defaults.getBackSupportRotationJoint()
+//                default: break
+//            }
+//            return dimension
+//        }
+//    }
+//}
 
 
 struct OccupantBackSupportDefaultDimension: PartDimension {

@@ -32,7 +32,8 @@ struct DimensionDictionary {
         _ defaultDimensions: [Dimension3d],
         _ dimensionIn: Part3DimensionDictionary,
         _ sitOnIndex: Int) {
-            
+//            print(originIdNodes)
+//            print(defaultDimensions)
         let sitOnId: Part = [.id0,.id1][sitOnIndex]
         let parts = originIdNodes[sitOnIndex].chain
 //print(defaultDimensions)
@@ -123,10 +124,10 @@ struct WheelDimensionDictionary {
             switch dimensionGroup {
             case .frontWheel:
                 originIdNode =
-                unwrappedWheel.allOriginIdNodesForFront
+                unwrappedWheel.allOriginIdPartChainForFront
             case .midWheel:
                 originIdNode =
-                unwrappedWheel.allOriginIdNodesForMid
+                unwrappedWheel.allOriginIdPartChainForMid
             case .rearWheel:
                 originIdNode =
                 unwrappedWheel.allOriginIdNodesForRear

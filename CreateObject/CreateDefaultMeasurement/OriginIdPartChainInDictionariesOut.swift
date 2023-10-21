@@ -41,8 +41,8 @@ struct OriginIdPartChainInDictionariesOut {
         ///names are in order from object to part
         ///so these can be used to determine
         ///object to part origin
-        
-        /// even id, eg id0, id2, indicate x <=0, odd id indicate x>0
+            //print(originIdPartChain)
+                /// even id, eg id0, id2, indicate x <=0, odd id indicate x>0
         /// the id of the final part in the chain indicates
         ///  if there are x<0, x>=0 or both
         ///  x is the origin of the part from object or parent

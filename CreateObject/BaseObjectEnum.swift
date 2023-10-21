@@ -82,6 +82,7 @@ struct BaseObjectGroups {
         [
          .fixedWheelManualRearDrive,
          .fixedWheelRearDrive,
+         .fixedWheelManualRearDrive,
          .scooterRearDrive3Wheeler,
          .scooterRearDrive4Wheeler]
    
@@ -144,7 +145,7 @@ struct BaseObjectGroups {
         fourWheels =
             [
             .fixedWheelRearDrive,
-            .fixedWheelRearDrive,
+            .fixedWheelFrontDrive,
             .scooterRearDrive4Wheeler,
             .scooterFrontDrive4Wheeler] +
             allFourCaster
@@ -176,7 +177,7 @@ struct BaseObjectGroups {
         
         frontCaster =
             allCaster +
-            [.fixedWheelMidDrive, .fixedWheelRearDrive]
+        [.fixedWheelMidDrive, .fixedWheelRearDrive,.fixedWheelManualRearDrive]
         
         rearCaster =
             allCaster +
@@ -219,6 +220,7 @@ struct ObjectsAndTheirChainLabels {
       .fixedWheelFrontDrive: typicalWheeledChairSupport,
       .fixedWheelMidDrive: typicalWheeledChairSupport ,
       .fixedWheelRearDrive: typicalWheeledChairSupport,
+      .fixedWheelManualRearDrive: typicalWheeledChairSupport + [.fixedWheelAtRear],
       .showerTray: [.footOnly]]
 }
 

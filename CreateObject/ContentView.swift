@@ -61,6 +61,7 @@ struct ContentView: View {
     @State var isActive = true
     @State var globalPosition: CGPoint?
     @State var position: CGPoint = .zero
+    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
    
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
@@ -141,8 +142,8 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 
-                NavigationLink(destination: SceneView() )
-                    { Text("Scene") }
+//                NavigationLink(destination: SceneView() )
+//                    { Text("Scene") }
 
                 
                 NavigationLink(destination:
@@ -175,27 +176,29 @@ struct ContentView: View {
                     { Text("Default equipment") }
 
                 
-                NavigationLink(destination:
-                                PickSavedObjectView()
-                                .environmentObject(objectPickVM)
-                                .environmentObject(coreDataVM)
-                              // , isActive: self.$isActive
-                )
-                    { Text("Saved equipment") }
+//                NavigationLink(destination:
+//                                PickSavedObjectView()
+//                                .environmentObject(objectPickVM)
+//                                .environmentObject(coreDataVM)
+//                              // , isActive: self.$isActive
+//                )
+//                    { Text("Saved equipment") }
                 
                 
                 NavigationLink(destination:
                     VStack {
                     Text( objectPickVM.getCurrentObjectName())
+//                    GeometryReader{ proxy in
+                        
+                        ObjectView(
+                            uniquePartNames,
+                            name,
+                            objectManipulationIsActive
+                           )
 
-                    ObjectView(
-                        uniquePartNames,
-                        //currentDictionary,
-                        name,
-                        objectManipulationIsActive)
-                        .onPreferenceChange(CustomPreferenceKey.self, perform: {value in
-                            self.globalPosition = value
-                        })
+                    
+                                   
+                                    
 
                     EditObjectMenuView()
                     saveButtonView
@@ -240,13 +243,7 @@ struct ContentView: View {
 
     }
 
-   
-struct CustomPreferenceKey: PreferenceKey {
-    static var defaultValue: CGPoint = .zero
-    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
-        value = nextValue()
-    }
-}
+
    
 //struct ContentView_Previews: PreviewProvider {
 //    static var previews: some View {

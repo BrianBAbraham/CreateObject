@@ -39,40 +39,34 @@ struct AddToSceneView: View {
     
 }
 
-struct SceneView: View {
-    @EnvironmentObject var sceneVM: SceneViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    
-    var allObjects: [SceneModel.Object]  {sceneVM.getAllObjects()}
-
-    var body: some View {
-        
-        ScrollView (.vertical, showsIndicators: true){
-//        if allObjects.count != 0 {
-            VStack {
-                ForEach(allObjects) { objectAndId in
-                    HStack {
-                        ObjectView(
-                            GetUniqueNames(objectAndId.object).forPart,
-                            //objectAndId.object,
-                            objectAndId.name)
-                        Text(objectAndId.name)
-                    }
-                   
-                }
-                .scaleEffect(0.5)
-            }
-//        } else {
-//            Text("no equipment added")
+//struct SceneView: View {
+//    @EnvironmentObject var sceneVM: SceneViewModel
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//
+//    var allObjects: [SceneModel.Object]  {sceneVM.getAllObjects()}
+//
+//    var body: some View {
+//
+//        ScrollView (.vertical, showsIndicators: true){
+//{
+//            VStack {
+//                ForEach(allObjects) { objectAndId in
+//                    HStack {
+//                        ObjectView(
+//                            GetUniqueNames(objectAndId.object).forPart,
+//
+//                            objectAndId.name)
+//                        Text(objectAndId.name)
+//                    }
+//
+//                }
+//                .scaleEffect(0.5)
+//            }
+//
+//
 //        }
-
-        }
-//        .frame(height: 350)
-
-
-
-    }
-}
+//    }
+//}
 
 //struct SceneView_Previews: PreviewProvider {
 //    static var previews: some View {

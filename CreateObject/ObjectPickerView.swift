@@ -75,6 +75,8 @@ objectPickVM.setCurrentObjectByCreatingFromName(
            FootSupport()
             HeadSupport(objectPickVM.getCurrentObjectName())
                 .padding(.horizontal)
+            Propeller(objectPickVM.getCurrentObjectName())
+                .padding(.horizontal)
             Tilt(objectPickVM.getCurrentObjectName())
                 .padding(.horizontal)
             //BackSupportRecline(objectPickVM.getCurrentObjectName())
@@ -103,84 +105,79 @@ objectPickVM.setCurrentObjectByCreatingFromName(
 //    }
 //}
 
-struct PickSavedObjectView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objecEditVM: ObjectEditViewModel
-    @EnvironmentObject var coreDataVM: CoreDataViewModel
-    @EnvironmentObject var sceneVM: SceneViewModel
-    
-//    init() {
-//        print(type(of: objectPickVM))
+//struct PickSavedObjectView: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var objecEditVM: ObjectEditViewModel
+//    @EnvironmentObject var coreDataVM: CoreDataViewModel
+//    @EnvironmentObject var sceneVM: SceneViewModel
+//    
+//
+//    
+//    var deleteAllButtonView: some View {
+//            Button(action: {
+//                coreDataVM.deleteAllObjects()
+//            }, label: {
+//                Text("delete all")
+//                    .foregroundColor(.blue)
+//            } )
 //    }
-    
-    var deleteAllButtonView: some View {
-            Button(action: {
-                coreDataVM.deleteAllObjects()
-            }, label: {
-                Text("delete all")
-                    .foregroundColor(.blue)
-            } )
-    }
-    
-    var addToEditButtonView: some View {
-            Button(action: {
-                
-            }, label: {
-                Text("add to edit")
-                    .foregroundColor(.blue)
-            } )
-    }
-    
-    var name: String {
-        objectPickVM.getCurrentObjectName()
-    }
-
-    var uniquePartNames: [String] {
-        objectPickVM.getUniquePartNamesFromLoadedDictionary()
-    }
-    
-    var loadedDictionary: PositionDictionary {
-        objectPickVM.getLoadedDictionary()
-    }
-    
-    var body: some View {
-        VStack {
-            HStack {
-                deleteAllButtonView
-                Spacer()
-             addToEditButtonView
-                Spacer()
-                AddToSceneView(loadedDictionary, name)
-            }
-            .padding()
-           
-            List {
-                ForEach(coreDataVM.savedEntities) {entity in
-                    Button {
-                        objectPickVM.setLoadedDictionary(entity)
-                           
-                    } label: {
-                        HStack{
-                            Text(entity.objectType ?? "")
-                            Text(entity.objectName ?? "")
-                        }
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .foregroundColor(.primary)
-                }
-                .onDelete(perform: coreDataVM.deleteObject)
-            }
-            Text("\(objectPickVM.getCurrentObjectName())")
-            ObjectView(
-                uniquePartNames,
-                //loadedDictionary,
-                name)
-                .scaleEffect(0.25)
-        }
- 
-    }
-
-    
-    
-    
-}
+//    
+//    var addToEditButtonView: some View {
+//            Button(action: {
+//                
+//            }, label: {
+//                Text("add to edit")
+//                    .foregroundColor(.blue)
+//            } )
+//    }
+//    
+//    var name: String {
+//        objectPickVM.getCurrentObjectName()
+//    }
+//
+//    var uniquePartNames: [String] {
+//        objectPickVM.getUniquePartNamesFromLoadedDictionary()
+//    }
+//    
+//    var loadedDictionary: PositionDictionary {
+//        objectPickVM.getLoadedDictionary()
+//    }
+//    
+//    var body: some View {
+//        VStack {
+//            HStack {
+//                deleteAllButtonView
+//                Spacer()
+//                addToEditButtonView
+//                Spacer()
+//                AddToSceneView(loadedDictionary, name)
+//            }
+//            .padding()
+//            
+//            List {
+//                ForEach(coreDataVM.savedEntities) {entity in
+//                    Button {
+//                        objectPickVM.setLoadedDictionary(entity)
+//                        
+//                    } label: {
+//                        HStack{
+//                            Text(entity.objectType ?? "")
+//                            Text(entity.objectName ?? "")
+//                        }
+//                    }
+//                    .buttonStyle(PlainButtonStyle())
+//                    .foregroundColor(.primary)
+//                }
+//                .onDelete(perform: coreDataVM.deleteObject)
+//            }
+//            Text("\(objectPickVM.getCurrentObjectName())")
+//            ObjectView(
+//                uniquePartNames,
+//                
+//                name)
+//            .scaleEffect(0.25)
+//        }
+//        
+//    }
+//    
+//}

@@ -80,6 +80,7 @@ struct ObjectView: View {
     @State var lastCurrentZoom: CGFloat = 0.0
     private var  minimumZoom = 0.1
     private var maximimumZoom = 3.0
+   
     
   //MARK: - ALWAYS UNIT SCALE 
     
@@ -121,10 +122,14 @@ struct ObjectView: View {
     init(
         _ names: [String],
         _ objectName: String,
+
         _ objectManipulationIsActive: Bool = false) {
+            
         uniquePartNames = names
         self.objectName = objectName
         self.objectManipulationIsActive = objectManipulationIsActive
+            
+            
     }
     
 
@@ -198,7 +203,7 @@ struct ObjectView: View {
 //            objectDrag
 //        )
         
-        
+        .offset(CGSize(width: 0, height:300))
         .scaleEffect(zoom)
         .gesture(MagnificationGesture()
         .onChanged { value in
@@ -235,3 +240,4 @@ struct ObjectView: View {
 //            )
 //    }
 //}
+
