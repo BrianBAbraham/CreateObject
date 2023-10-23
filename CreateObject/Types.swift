@@ -129,3 +129,11 @@ typealias PartChainIdDictionary = [PartChain: [[Part]] ]
 /// Input an object type and get the chain labels associaed with that object type
 /// as defined in ObjectsAndTheirChainLabels
 typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]
+
+///(onlyOne: [PositionAsIosAxes],
+///frontAndRear: [PositionAsIosAxes]
+///sideBySide: [PositionAsIosAxes])
+typealias TwinSitOnOrigins =
+    (onlyOne: [PositionAsIosAxes],
+     frontAndRear: [PositionAsIosAxes],
+     sideBySide: [PositionAsIosAxes])

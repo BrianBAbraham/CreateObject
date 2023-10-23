@@ -72,6 +72,8 @@ struct DictionaryProvider {
     
     let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
     
+    var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
+    
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -135,6 +137,7 @@ struct DictionaryProvider {
             
         getPreTiltFootSideBackOriginDictionary()
        
+        sitOnOrigin = PreTiltSitOnOrigin(objectType).sitOnOrigins.onlyOne[0]
 
             //do not add wheels to for example a shower tray
         if !objectGroups.noWheel.contains( objectType) {
@@ -1001,6 +1004,7 @@ extension DictionaryProvider {
             self.parent = parent
             self.sitOnId = sitOnId
             objectType = parent.objectType
+                
                 
                 
             let pretTiltWheelOrigin = parent.preTiltWheelOrigin as? PreTiltWheelOrigin

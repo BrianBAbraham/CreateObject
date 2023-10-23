@@ -14,7 +14,16 @@ struct ZeroValue {
     static let angle: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.radians)
     static let angleMinMax: AngleMinMax = (min: angle, max: angle)
     static let dimension3dRearMidFront =
-        (rear: [dimension3d], mid: [dimension3d], front: [dimension3d] )
+        (rear: [dimension3d], mid: [dimension3d], front:
+            [dimension3d] )
+    
+    static let sitOnOrigins: TwinSitOnOrigins =
+            (
+            onlyOne: [],
+            frontAndRear: [],
+            sideBySide: [])
+
+    
     
     static let originIdPartChain: OriginIdPartChain =
     (origin: [],

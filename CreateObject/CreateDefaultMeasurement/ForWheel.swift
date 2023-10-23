@@ -263,11 +263,13 @@ typealias BaseSizeDictionary = [ObjectTypes: Double]
 
 
     struct Stability {
-        
         let dictionary: BaseObjectDoubleDictionary = [:]
+        
         let atRear = 100.0
         let atFront = 0.0
         let atLeft = 0.0
+        let atLeftRear = 0.0
+        let atRightRear = 0.0
         let atRight = 0.0
         let baseType: ObjectTypes
         
