@@ -13,15 +13,24 @@ struct ZeroValue {
     static let dimension3d: Dimension3d = (width:  0.0,  length: 0.0, height:  0.0)
     static let angle: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.radians)
     static let angleMinMax: AngleMinMax = (min: angle, max: angle)
-    static let dimension3dRearMidFront =
+    static let dimensions3dRearMidFront =
         (rear: [dimension3d], mid: [dimension3d], front:
             [dimension3d] )
+    static let dimension3dRearMidFront =
+        (rear: dimension3d, mid: dimension3d, front:
+            dimension3d )
     
     static let sitOnOrigins: TwinSitOnOrigins =
             (
             onlyOne: [],
-            frontAndRear: [],
-            sideBySide: [])
+            rearAndFront: [],
+            leftAndRight: [])
+    
+    static let rearMidFrontPositions: RearMidFrontPositions =
+        (
+        rear: ZeroValue.iosLocation,
+        mid: ZeroValue.iosLocation,
+        front: ZeroValue.iosLocation)
 
     
     
@@ -229,48 +238,7 @@ struct CreateIosPosition {
     }
     
 
-//    static func forDisplacementOfBaseOriginTopToBottomBy (_ lengthChange: Double, from positions: BasePositionAsIosAxes)
-//    -> BasePositionAsIosAxes {
-//        var newPositions = positions
-//
-//        newPositions.centre.y +=  -lengthChange
-//        newPositions.front.y +=  -lengthChange
-//        newPositions.rear.y +=  -lengthChange
-//
-//        return newPositions
-//    }
-    
-//    static func orderLeftThenRightmost(
-//        _ positions: [PositionAsIosAxes])
-//    -> [PositionAsIosAxes] {
-//        var leftThenRightmost = positions
-//
-//        if positions[1].x < positions[0].x {
-//            leftThenRightmost.reverse()
-//        }
-//
-//            return leftThenRightmost
-//    }
-    
-//    static func convertToXY (_ positions: [PositionAsIosAxes])
-//        -> [(x: Double, y: Double)]
-//    {
-//        var twoD: [(x: Double, y: Double)] = []
-//        for position in positions {
-//            twoD.append((x: position.x, y: position.y))
-//        }
-//        return twoD
-//    }
-//
-//    static func convertToZY (_ positions: [PositionAsIosAxes])
-//        -> [(y: Double, z: Double)]
-//    {
-//        var twoD: [(y: Double, z: Double)] = []
-//        for position in positions {
-//            twoD.append((y: position.y, z: position.z))
-//        }
-//        return twoD
-//    }
+
     
     
 

@@ -72,8 +72,9 @@ struct DictionaryProvider {
     
     let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
     
+    var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
     var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
-    
+    var wheelBaseJointOrigin: RearMidFrontPositions = ZeroValue.rearMidFrontPositions
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -109,7 +110,7 @@ struct DictionaryProvider {
         self.angleDicIn = angleIn
         self.angleMinMaxDicIn = minMaxAngleIn
         self.partChainsIdDicIn = partChainsIdDicIn
-            
+        preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
   
         twinSitOnState = TwinSitOn(twinSitOnOption).state
         oneOrTwoIds = twinSitOnState ? [.id0, .id1]: [.id0]
@@ -132,12 +133,18 @@ struct DictionaryProvider {
             preTiltOccupantBodySupportOrigin =
             PreTiltOccupantBodySupportOrigin(parent: self)
             getPreTiltBodyOriginDictionary()
+            
+            sitOnOrigin = preTiltSitOnAndWheelBaseJointOrigin.sitOnOrigins.onlyOne[0]
         }
                     
             
         getPreTiltFootSideBackOriginDictionary()
        
-        sitOnOrigin = PreTiltSitOnOrigin(objectType).sitOnOrigins.onlyOne[0]
+
+            
+//            print(sitOnOrigin)
+            
+            wheelBaseJointOrigin = preTiltSitOnAndWheelBaseJointOrigin.wheelBaseJointOriginForOnlyOneSitOn
 
             //do not add wheels to for example a shower tray
         if !objectGroups.noWheel.contains( objectType) {
@@ -333,12 +340,12 @@ struct DictionaryProvider {
                         OccupantBodySupportDefaultDimension(objectType)
                     case .sitOnTiltJoint:
                         dimensionData = OccupantBodySupportAngleJointDefaultDimension(objectType)
-                    case  .fixedWheelHorizontalJointAtRear:
-                        dimensionData =
-                        ObjectWheelDefaultDimension(objectType)
                     case .fixedWheelAtRear:
                         dimensionData =
                             ObjectWheelDefaultDimension(objectType)
+                    case .casterWheelAtFront:
+                        dimensionData =
+                        ObjectWheelDefaultDimension(objectType)
                     default:
                         fatalError("Not yet defined for createAnyOriginAndDimensionDic")
                 }
@@ -1043,16 +1050,15 @@ extension DictionaryProvider {
                     allOrigin.append(getSitOnOrigin())
                 }
                 if chainLabel  == .sitOnTiltJoint {
-                    getOrigin(PreTiltSitOnBackFootTiltJointDefaultOrigin(parent.objectType))
+                    getOrigin(PreTiltWheelBaseJointDefaultOrigin(parent.objectType))
                 }
-                if chainLabel == .fixedWheelHorizontalJointAtRear {
-                    allOrigin.append((x: widthBetweenWheels/2, y:0.0, z:0.0))
-                    print (widthBetweenWheels)
-                    print( "DETECT fixedWheelHorizontalJointAtRear ")
-               }
                 
                 if chainLabel == .fixedWheelAtRear {
-                    getOrigin(WheelAndCasterDefaultOrigin(parent.objectType) )
+                    getOrigin(PreTiltWheelBaseJointDefaultOrigin(parent.objectType) )
+                }
+                
+                if chainLabel == .casterWheelAtFront {
+                    getOrigin(PreTiltWheelBaseJointDefaultOrigin(parent.objectType) )
                 }
                 
             func getOrigin(_ partOrigin: PartOrigin) {
@@ -1060,9 +1066,12 @@ extension DictionaryProvider {
                     if part == .sitOn {
                         allOrigin.append(sitOnOrigin)
                     } else {
-                        //print("detect")
+
                         var newPartOrigin = partOrigin
                         newPartOrigin.reinitialise(part)
+//                        if part == .fixedWheelHorizontalJointAtRear {
+//                            print (newPartOrigin.origin)
+//                        }
                         allOrigin.append( newPartOrigin.origin)
                     }
                 }

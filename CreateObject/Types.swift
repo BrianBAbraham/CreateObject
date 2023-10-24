@@ -16,10 +16,11 @@ typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
 typealias LeftRightPositionAsIosAxis = (
     left: PositionAsIosAxes, right: PositionAsIosAxes)
 
-typealias BasePositionAsIosAxes =
-(centre: PositionAsIosAxes,
-front: PositionAsIosAxes,
-rear: PositionAsIosAxes)
+typealias RearMidFrontPositions =
+    (
+    rear: PositionAsIosAxes,
+    mid: PositionAsIosAxes,
+    front: PositionAsIosAxes)
 
 //typealias OptionDictionary = [ObjectOptions: Bool]
 
@@ -52,8 +53,13 @@ typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (width: Double, length: Double)
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
-typealias Dimension3dRearMidFront =
+
+typealias Dimensions3dRearMidFront =
     (rear: [Dimension3d], mid: [Dimension3d], front: [Dimension3d])
+
+typealias Dimension3dRearMidFront =
+    (rear: Dimension3d, mid: Dimension3d, front: Dimension3d)
+
 typealias WheelSize = (radius: Double, width: Double)
 
 //typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
@@ -135,5 +141,5 @@ typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]
 ///sideBySide: [PositionAsIosAxes])
 typealias TwinSitOnOrigins =
     (onlyOne: [PositionAsIosAxes],
-     frontAndRear: [PositionAsIosAxes],
-     sideBySide: [PositionAsIosAxes])
+     rearAndFront: [PositionAsIosAxes],
+     leftAndRight: [PositionAsIosAxes])

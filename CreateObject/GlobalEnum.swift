@@ -285,12 +285,12 @@ struct LabelInPartChainOut  {
     static let sitOnTiltJoint: PartChain =
            [
             .sitOn,
-           .sitOnTiltJoint]
+            .sitOnTiltJoint]
 
     static let fixedWheelAtRear: PartChain =
             [
            .fixedWheelHorizontalJointAtRear,
-            .fixedWheelAtRear]
+           .fixedWheelAtRear]
     static let fixedWheelAtMid: PartChain =
         [
        // .baseWheelJoint,
@@ -299,7 +299,18 @@ struct LabelInPartChainOut  {
         [
         //.fixedWheelHorizontalJointAtFront,
         .fixedWheel]
-    
+    static let casterWheelAtRear: PartChain =
+        [
+        .casterVerticalJointAtRear,
+        .casterForkAtRear,
+        .casterWheelAtRear
+        ]
+    static let casterWheelAtFront: PartChain =
+        [
+        .casterVerticalJointAtFront,
+        .casterForkAtFront,
+        .casterWheelAtFront
+        ]
     
     var partChains: [PartChain] = []
     init(_ parts: [Part]) {
@@ -356,6 +367,12 @@ struct LabelInPartChainOut  {
             case .fixedWheelAtFrontWithPropeller:
                 return
                     Self.fixedWheelAtFront + [.fixedWheelPropeller]
+            case .casterWheelAtRear:
+                return
+                    Self.casterWheelAtRear
+            case .casterWheelAtFront:
+                return
+                    Self.casterWheelAtFront
          
             default:
                 return []
@@ -530,4 +547,10 @@ struct PartChainsIdDictionary {
             }
         }
     }
+}
+
+enum Drive {
+    case rear
+    case mid
+    case front
 }

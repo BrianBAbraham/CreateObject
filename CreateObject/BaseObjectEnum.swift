@@ -204,23 +204,25 @@ struct BaseObjectGroups {
 /// provides the object names for the picker
 /// provides the chainPartLabels for each object
 struct ObjectsAndTheirChainLabels {
-    static let typicalWheeledChairSupport: [Part] =
+    static let chairSupport: [Part] =
         [
         .backSupportHeadSupport,
         .footSupport,
         .sideSupport,
         .sitOnTiltJoint,
         .sitOn,]
+    static let chairSupportWithFixedRearWheel: [Part] =
+    chairSupport + [.fixedWheelAtRear]
     
     let dictionary: ObjectPartChainLabelsDictionary =
     [ .allCasterBed: [ .sideSupport, .sitOn],
-      .allCasterChair: typicalWheeledChairSupport,
-      .allCasterTiltInSpaceShowerChair: typicalWheeledChairSupport,
+      .allCasterChair: chairSupport + [.casterWheelAtFront],
+      .allCasterTiltInSpaceShowerChair: chairSupport + [.casterWheelAtFront],
       .allCasterStretcher: [.sideSupport, .sitOn, ],
-      .fixedWheelFrontDrive: typicalWheeledChairSupport,
-      .fixedWheelMidDrive: typicalWheeledChairSupport ,
-      .fixedWheelRearDrive: typicalWheeledChairSupport,
-      .fixedWheelManualRearDrive: typicalWheeledChairSupport + [.fixedWheelAtRear],
+      .fixedWheelFrontDrive: chairSupport,
+      .fixedWheelMidDrive: chairSupport ,
+      .fixedWheelRearDrive: chairSupportWithFixedRearWheel + [.casterWheelAtFront],
+      .fixedWheelManualRearDrive: chairSupportWithFixedRearWheel + [.casterWheelAtFront],
       .showerTray: [.footOnly]]
 }
 

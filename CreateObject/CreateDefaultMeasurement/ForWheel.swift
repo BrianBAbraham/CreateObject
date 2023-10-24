@@ -24,6 +24,14 @@ struct ObjectWheelDefaultDimension: PartDimension {
         case .fixedWheelHorizontalJointAtRear:
             dimension =
                 getHorizontalJoint()
+        case .casterVerticalJointAtFront:
+            dimension =
+                getVerticalJoint()
+        case .casterForkAtFront:
+            dimension =
+                getCasterForkAtFront()
+        case .casterWheelAtFront:
+            dimension = getCasterWheelAtFront()
         default:
             break
         }
@@ -72,6 +80,49 @@ struct ObjectWheelDefaultDimension: PartDimension {
         return
             dictionary[baseType] ??
             general
+    }
+    
+    func getVerticalJoint ()
+        -> Dimension3d {
+            Joint.dimension3d
+    }
+    
+    func getCasterForkAtFront()
+        -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary =
+            [.fixedWheelMidDrive:
+                (width: 40.0,
+                 length: 75.0,
+                 height: 40.0),
+             
+                ]
+        let general =
+            (width: 50.0,
+              length: 150.0,
+              height: 50.0)
+        return
+            dictionary[baseType] ??
+            general
+        
+    }
+    
+    func getCasterWheelAtFront()
+        -> Dimension3d {
+        let dictionary: BaseObject3DimensionDictionary =
+            [.fixedWheelMidDrive:
+                (width: 20.0,
+                 length: 50.0,
+                 height: 50.0),
+             
+                ]
+        let general =
+            (width: 50.0,
+              length: 100.0,
+              height: 100.0)
+        return
+            dictionary[baseType] ??
+            general
+        
     }
 
 }
@@ -133,7 +184,7 @@ struct WheelAndCasterDefaultOrigin: PartOrigin {
 struct AllWheelRelated {
     var parts: [Part] = []
     var defaultDimensions: [Dimension3d] = []
-    var defaultRearMidFrontDimension = ZeroValue.dimension3dRearMidFront
+    var defaultRearMidFrontDimension = ZeroValue.dimensions3dRearMidFront
     let wheelDefaultDimension: WheelDefaultDimension
     
     let rearCasterForkDimension: Dimension3d
@@ -209,7 +260,7 @@ struct AllWheelRelated {
    
     
     func getForFixedWheelFrontDrive ()
-    -> Dimension3dRearMidFront {
+    -> Dimensions3dRearMidFront {
         let rear = rearCaster
         let mid: [Dimension3d] = []
         let front =
@@ -219,7 +270,7 @@ struct AllWheelRelated {
     }
     
     func getForFixedWheelMidDrive ()
-    -> Dimension3dRearMidFront {
+    -> Dimensions3dRearMidFront {
         let rear =
                 rearCaster
         let mid = fixedWheelAndJoint
@@ -230,7 +281,7 @@ struct AllWheelRelated {
     }
     
     func getForFixedWheelRearDrive ()
-    -> Dimension3dRearMidFront {
+    -> Dimensions3dRearMidFront {
         let rear =
             fixedWheelAndJoint
         
@@ -242,7 +293,7 @@ struct AllWheelRelated {
     }
     
         func getForFourCaster ()
-        -> Dimension3dRearMidFront {
+        -> Dimensions3dRearMidFront {
             let rear =
                 rearCaster
             let mid: [Dimension3d] = []
@@ -265,11 +316,13 @@ typealias BaseSizeDictionary = [ObjectTypes: Double]
     struct Stability {
         let dictionary: BaseObjectDoubleDictionary = [:]
         
-        let atRear = 100.0
+        let atRear = 0.0
         let atFront = 0.0
         let atLeft = 0.0
         let atLeftRear = 0.0
         let atRightRear = 0.0
+        let atRightMid = 0.0
+        let atRightFront = 0.0
         let atRight = 0.0
         let baseType: ObjectTypes
         
@@ -277,6 +330,68 @@ typealias BaseSizeDictionary = [ObjectTypes: Double]
             self.baseType = objectType
         }
     }
+
+
+
+struct WheelDefaultDimensionForRearMidFront {
+    var dimensions: Dimension3dRearMidFront = ZeroValue.dimension3dRearMidFront
+    var baseObjectGroups: BaseObjectGroups {
+        BaseObjectGroups()
+    }
+    let wheelDefaultDimension: WheelDefaultDimension
+   
+    
+    init(_ object: ObjectTypes) {
+        wheelDefaultDimension = WheelDefaultDimension(object)
+        dimensions = getDimensions(object)
+        
+    }
+    
+    func getDimensions(_ object: ObjectTypes)
+        -> Dimension3dRearMidFront {
+            var wheelDimensions =
+                (
+                rear: ZeroValue.dimension3d,
+                mid: ZeroValue.dimension3d,
+                front: ZeroValue.dimension3d )
+            
+            if baseObjectGroups.allCaster.contains(object) {
+                wheelDimensions =
+                    (
+                    rear: wheelDefaultDimension.getRearCasterWheel(),
+                    mid: wheelDefaultDimension.getMidCasterWheel(),
+                    front: wheelDefaultDimension.getFrontCasterWheel() )
+            }
+            
+            if baseObjectGroups.midFixedWheel.contains(object) {
+                wheelDimensions =
+                    (
+                    rear: wheelDefaultDimension.getRearCasterWheel(),
+                    mid: wheelDefaultDimension.getFixed(),
+                    front: wheelDefaultDimension.getFrontCasterWheel() )
+            }
+            
+            if baseObjectGroups.rearFixedWheel.contains(object) {
+                wheelDimensions =
+                    (
+                    rear: wheelDefaultDimension.getFixed(),
+                    mid: wheelDefaultDimension.getMidCasterWheel() ,
+                    front: wheelDefaultDimension.getFrontCasterWheel() )
+            }
+            
+            if baseObjectGroups.frontFixedWheel.contains(object) {
+                wheelDimensions =
+                    (
+                    rear:  wheelDefaultDimension.getRearCasterWheel() ,
+                    mid: wheelDefaultDimension.getMidCasterWheel() ,
+                    front:  wheelDefaultDimension.getFixed())
+                
+            }
+            return wheelDimensions
+    }
+    
+}
+
 
 /// The length between wheels
 /// or the width between wheels
