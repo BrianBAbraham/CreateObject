@@ -49,23 +49,6 @@ enum ObjectTypes: String, CaseIterable {
     case verticalLift = "Vertical Lift"
 }
 
-//enum GroupsDerivedFromRawValueOfBaseObjectTypes: String {
-//    case caster = "caster"
-//    case bath = "Bath"
-//    case fixedWheel = "wheel"
-//    case door = "Door"
-//    case power = "Power"
-//    case selfPropelling = "Self-propelling"
-//    case scooter = "Scooter"
-//    case stairLift = "stairLift"
-//    case verticalLift = "VerticaLift"
-//
-//}
-
-
-//enum GroupsDerivedFromRawValueOfPartTypes: String {
-//case sitOn = "hair"
-//}
 
 ///object creation includes features if the object is containted
 ///in the feature group
@@ -215,59 +198,23 @@ struct ObjectsAndTheirChainLabels {
     chairSupport + [.fixedWheelAtRear]
     
     let dictionary: ObjectPartChainLabelsDictionary =
-    [ .allCasterBed: [ .sideSupport, .sitOn],
-      .allCasterChair: chairSupport + [.casterWheelAtFront],
-      .allCasterTiltInSpaceShowerChair: chairSupport + [.casterWheelAtFront],
-      .allCasterStretcher: [.sideSupport, .sitOn, ],
-      .fixedWheelFrontDrive: chairSupport,
-      .fixedWheelMidDrive: chairSupport ,
-      .fixedWheelRearDrive: chairSupportWithFixedRearWheel + [.casterWheelAtFront],
-      .fixedWheelManualRearDrive: chairSupportWithFixedRearWheel + [.casterWheelAtFront],
+    [ .allCasterBed:
+        [ .sideSupport, .sitOn],
+      .allCasterChair:
+        chairSupport + [.casterWheelAtFront],
+      .allCasterTiltInSpaceShowerChair:
+        chairSupport + [.casterWheelAtFront],
+      .allCasterStretcher:
+        [.sideSupport, .sitOn, ],
+      .fixedWheelMidDrive:
+        chairSupport + [.fixedWheelAtMid],
+      .fixedWheelFrontDrive:
+        chairSupport + [.fixedWheelAtFront],
+      .fixedWheelRearDrive:
+        chairSupportWithFixedRearWheel + [.casterWheelAtFront],
+      .fixedWheelManualRearDrive:
+        chairSupportWithFixedRearWheel + [.casterWheelAtFront],
       .showerTray: [.footOnly]]
 }
 
-//struct ObjectPartChains {
-//
-//    var partChains: [PartChain] = []
-//
-//    init(_ object: ObjectTypes) {
-//        partChains = getPartChains(object)
-//
-//        func getPartChains (_ object: ObjectTypes)
-//        -> [PartChain] {
-//            let typicalWheeledChair =
-//            LabelInPartChainOut ([
-//                .backSupport,
-//                .backSupportHeadSupport,
-//                .footSupport,
-//                .sideSupport,
-//                .sitOnTiltJoint
-//            ]).partChains
-//
-//            switch object {
-//            case .allCasterTiltInSpaceShowerChair:
-//                return
-//                    typicalWheeledChair
-//            case .allCasterBed:
-//                return
-//                    [[.sideSupport]]
-//            case .allCasterStretcher:
-//                return
-//                    [[.sideSupport]]
-//            case .showerTray:
-//                return
-//                    [[.footSupport]]
-//            default:
-//                return
-//                    typicalWheeledChair
-//            }
-//        }
-//    }
-//}
 
-
-
-
-///
-///I need to have a system which
-///allows the UI to include/exlude partChains

@@ -204,7 +204,13 @@ struct CreateObjectApp: App {
 //sitOnBackFootTiltJoint
 
 
-///objects are an array  of nodes
+///objects are an array  Part
+///where each Part is the terminal element in an array of Part
+///labelled as chainLabel and chain respectively
+///the chain are all the Part which connect the object primary origin
+///to the terminal Part
+///each Part has a dimension  and an origin and an id 
+///
 ///which are an array of parts
 ///in order of physical  fixing from the object origin
 ///how should the decision to include a node be made??

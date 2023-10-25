@@ -190,99 +190,7 @@ struct OccupantBodySupportDefaultAngleMinMax {
 }
 
 
-struct PreTiltWheelBaseJointDefaultOrigin: PartOrigin {
-    var origin: PositionAsIosAxes = ZeroValue.iosLocation
-    var part: Part?
-    var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
-    var wheelDefaultDimension: WheelDefaultDimension
-    
-    mutating func reinitialise(_ part: Part?) {
-        self.part = part
-        //print (part)
-        switch part {
-            case .fixedWheelHorizontalJointAtRear:
-                origin = getObjectToWheelHorizontalJointAtRear()
 
-            case .fixedWheelAtRear:
-                origin = getWheelHorizontalJointToFixedWheel()
-            
-            case .casterWheelAtFront:
-            
-                origin = getCasterWheelVerticalAxisAtFront()
-            //print (origin)
-        default:
-           break
-        }
-    }
-    
-    let objectType: ObjectTypes
-   
-    
-    init ( _ objectType: ObjectTypes) {
-        self.objectType = objectType
-        
-        preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
-        
-        wheelDefaultDimension = WheelDefaultDimension(objectType)
-        }
-
-    
-    func getOrigin() -> PositionAsIosAxes {
-        origin
-    }
-    
-    
-  func getObjectToWheelHorizontalJointAtRear()
-        -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general = preTiltSitOnAndWheelBaseJointOrigin.wheelBaseJointOriginForOnlyOneSitOn.rear
-            
-        return
-            dictionary[objectType] ?? general
-    }
-    
-    func getWheelHorizontalJointToFixedWheel()
-        -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-            (x: 0.0,
-             y: 0.0,
-             z: 0.0)
-        return
-            dictionary[objectType] ?? general
-    }
-    
-    func getCasterWheelVerticalAxisAtFront()
-        -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general = preTiltSitOnAndWheelBaseJointOrigin.wheelBaseJointOriginForOnlyOneSitOn.front
-            
-        return
-            dictionary[objectType] ?? general
-    }
-    
-    func getCasterForkAtFront()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-        (x: 0.0,
-         y: -wheelDefaultDimension.getFrontCasterFork().length/2,
-         z: 0.0)
-        return
-            dictionary[objectType] ?? general
-    }
-    
-    func getCasterWheelAtFront()
-    -> PositionAsIosAxes {
-        let dictionary: OriginDictionary = [:]
-        let general =
-        (x: 0.0,
-         y: 0.0,
-         z: -wheelDefaultDimension.getFrontCasterRadius().radius)
-        return
-            dictionary[objectType] ?? general
-    }
-}
     
 
 
@@ -297,11 +205,11 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     var origins: [PositionAsIosAxes] = []
     var objectGroups: BaseObjectGroups {
         BaseObjectGroups()}
-    var wheelDefaultDimension: WheelDefaultDimension
+    //var wheelDefaultDimension: WheelDefaultDimension
     let bilateralIds: [Part] = [.id0, .id1]
     let bothSitOnId: [Part] = [.id0, .id1]
-    let dimensionDicIn: Part3DimensionDictionary
-    let preTiltObjectToPartOriginDicIn: PositionDictionary //= [:]
+    //let dimensionDicIn: Part3DimensionDictionary
+    //let preTiltObjectToPartOriginDicIn: PositionDictionary = [:]
     var sitOnOriginsIn: TwinSitOnOrigins =  ZeroValue.sitOnOrigins
     var sitOnDimensions: [Dimension3d] = []
     var occupantSideSupportsDimensions: [[Dimension3d]] = []
@@ -329,15 +237,16 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     /// [[PositionAsIos]]
     
     init(
-        _ object: ObjectTypes,
-        _ dimensionIn: Part3DimensionDictionary = [:],
-        _ preTiltObjectToPartOriginDicIn: PositionDictionary = [:]) {
+        _ object: ObjectTypes//,
+//        _ dimensionIn: Part3DimensionDictionary = [:],
+//        _ preTiltObjectToPartOriginDicIn: PositionDictionary = [:]
+    ) {
             
         self.objectType = object
-        self.preTiltObjectToPartOriginDicIn = preTiltObjectToPartOriginDicIn
+        //self.preTiltObjectToPartOriginDicIn = preTiltObjectToPartOriginDicIn
         stability = Stability(objectType)
-        wheelDefaultDimension = WheelDefaultDimension(objectType)
-        dimensionDicIn = dimensionIn
+        //wheelDefaultDimension = WheelDefaultDimension(objectType)
+       // dimensionDicIn = dimensionIn
         bodySupportHeight = PreTiltBodySupportDefaultOriginHeight(objectType).height
             
         wheelDefaultDimensionForRearMidFront =
@@ -368,7 +277,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
         if baseObjectGroups.frontPrimaryOrigin.contains(objectType) {
             sitOnOrigins =  originsForDriveLocation(.front)
         }
-    
+            //print(wheelBaseJointOriginForOnlyOneSitOn)
     }
     
     //there may be none, or one or two edited sitOn origins
@@ -378,8 +287,9 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
         var sitOnOrigins: [PositionAsIosAxes?] = []
         var sitOnOriginsIn = ZeroValue.sitOnOrigins
         for id in bothSitOnId {
-            sitOnOrigins.append(
-                preTiltObjectToPartOriginDicIn [CreateNameFromParts([.sitOn, id, .stringLink, .sitOn, id]).name])
+            sitOnOrigins.append(nil
+//                preTiltObjectToPartOriginDicIn [CreateNameFromParts([.sitOn, id, .stringLink, .sitOn, id]).name]
+            )
         }
         // one or more nill
         if sitOnOrigins.contains(where: { $0 == nil }) {
@@ -421,7 +331,8 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
         let name =
             CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
         return
-            dimensionDicIn[name] ?? OccupantBodySupportDefaultDimension(objectType).value
+            //dimensionDicIn[name] ??
+            OccupantBodySupportDefaultDimension(objectType).value
     }
     
     
@@ -431,7 +342,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
             for sideId in bilateralIds {
                 let name =
                     CreateNameFromParts([.object, .id0, .stringLink, .sideSupport, sideId, .stringLink, .sitOn, sitOnId]).name
-                let dimension = dimensionDicIn[name] ??
+                let dimension = //dimensionDicIn[name] ??
                     OccupantSideSupportDefaultDimension(objectType).value
                 //sideSupportDefaultDimension
                 sideSupportDimension.append(dimension)
@@ -450,7 +361,8 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
             let name =
                 CreateNameFromParts([.footSupportHangerLink, id, .stringLink, .sitOn, sitOnId]).name
             lengths.append(
-                dimensionDicIn[name]?.length ?? hangerLinkLength)
+                //dimensionDicIn[name]?.length ??
+                hangerLinkLength)
         }
         return
             lengths.max() ?? hangerLinkLength
@@ -528,7 +440,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
                             stability.atFront,
                         z: wheelDefaultDimensionForRearMidFront.front.height/2 )
                     )
-            //print(wheelBaseJointOriginForOnlyOneSitOn.mid)
+           // print(wheelBaseJointOriginForOnlyOneSitOn)
                 
             case .mid:
                 originForOnlyOneSitOn =

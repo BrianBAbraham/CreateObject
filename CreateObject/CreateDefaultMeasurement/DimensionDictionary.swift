@@ -64,79 +64,79 @@ struct DimensionDictionary {
 
 //MARK: GET DIMENSIONS
 //retrieves a passed value if extant else a default value
-struct WheelDimensionDictionary {
-    let parent: DictionaryProvider
-    let preTiltWheelOrigin:
-        DictionaryProvider.PreTiltWheelOrigin?
-    let allWheelRelated: AllWheelRelated
-    var forWheels: Part3DimensionDictionary = [:]
-    
-    init(
-        parent: DictionaryProvider) {
-            self.parent = parent
-            allWheelRelated =
-                 AllWheelRelated(
-                     parent.objectType)
-            
-        preTiltWheelOrigin =
-            parent.preTiltWheelOrigin as? DictionaryProvider.PreTiltWheelOrigin
-
-            forWheels += getDictionaryForWheel(.rearWheel)
-        if BaseObjectGroups().sixWheels.contains(parent.objectType) {
-            forWheels += getDictionaryForWheel(.midWheel)
-        }
-        forWheels += getDictionaryForWheel(.frontWheel)
-    }
-    
-    func getDictionaryForWheel (
-        _ dimensionGroup: DimensionGroup)
-        -> Part3DimensionDictionary{
-        let onlyOneWheelSet = 0
-        var dimensions: [Dimension3d] = []
-        let originIdNodes = getOriginIdNodesForWheel(dimensionGroup)
-        switch dimensionGroup {
-        case .rearWheel:
-            dimensions =  allWheelRelated.defaultRearMidFrontDimension.rear
-        case .midWheel:
-            dimensions =  allWheelRelated.defaultRearMidFrontDimension.mid
-        case .frontWheel:
-            dimensions =  allWheelRelated.defaultRearMidFrontDimension.front
-
-            
-            
-        default: break
-        }
-        return
-            DimensionDictionary(
-                [originIdNodes],
-                dimensions,
-                parent.dimensionDicIn,
-                onlyOneWheelSet
-            ).forPart
-    }
-    
-    
-    func getOriginIdNodesForWheel (
-        _ dimensionGroup: DimensionGroup)
-        -> OriginIdPartChain {
-        var originIdNode:OriginIdPartChain = ZeroValue.originIdPartChain
-        if let unwrappedWheel = preTiltWheelOrigin  {
-            switch dimensionGroup {
-            case .frontWheel:
-                originIdNode =
-                unwrappedWheel.allOriginIdPartChainForFront
-            case .midWheel:
-                originIdNode =
-                unwrappedWheel.allOriginIdPartChainForMid
-            case .rearWheel:
-                originIdNode =
-                unwrappedWheel.allOriginIdNodesForRear
-            default: break
-            }
-        }
-        return originIdNode
-    }
-}
+//struct WheelDimensionDictionary {
+//    let parent: DictionaryProvider
+//    let preTiltWheelOrigin:
+//        DictionaryProvider.PreTiltWheelOrigin?
+//    let allWheelRelated: AllWheelRelated
+//    var forWheels: Part3DimensionDictionary = [:]
+//
+//    init(
+//        parent: DictionaryProvider) {
+//            self.parent = parent
+//            allWheelRelated =
+//                 AllWheelRelated(
+//                     parent.objectType)
+//
+//        preTiltWheelOrigin =
+//            parent.preTiltWheelOrigin as? DictionaryProvider.PreTiltWheelOrigin
+//
+//            forWheels += getDictionaryForWheel(.rearWheel)
+//        if BaseObjectGroups().sixWheels.contains(parent.objectType) {
+//            forWheels += getDictionaryForWheel(.midWheel)
+//        }
+//        forWheels += getDictionaryForWheel(.frontWheel)
+//    }
+//
+//    func getDictionaryForWheel (
+//        _ dimensionGroup: DimensionGroup)
+//        -> Part3DimensionDictionary{
+//        let onlyOneWheelSet = 0
+//        var dimensions: [Dimension3d] = []
+//        let originIdNodes = getOriginIdNodesForWheel(dimensionGroup)
+//        switch dimensionGroup {
+//        case .rearWheel:
+//            dimensions =  allWheelRelated.defaultRearMidFrontDimension.rear
+//        case .midWheel:
+//            dimensions =  allWheelRelated.defaultRearMidFrontDimension.mid
+//        case .frontWheel:
+//            dimensions =  allWheelRelated.defaultRearMidFrontDimension.front
+//
+//
+//
+//        default: break
+//        }
+//        return
+//            DimensionDictionary(
+//                [originIdNodes],
+//                dimensions,
+//                parent.dimensionDicIn,
+//                onlyOneWheelSet
+//            ).forPart
+//    }
+//
+//
+//    func getOriginIdNodesForWheel (
+//        _ dimensionGroup: DimensionGroup)
+//        -> OriginIdPartChain {
+//        var originIdNode:OriginIdPartChain = ZeroValue.originIdPartChain
+//        if let unwrappedWheel = preTiltWheelOrigin  {
+//            switch dimensionGroup {
+//            case .frontWheel:
+//                originIdNode =
+//                unwrappedWheel.allOriginIdPartChainForFront
+//            case .midWheel:
+//                originIdNode =
+//                unwrappedWheel.allOriginIdPartChainForMid
+//            case .rearWheel:
+//                originIdNode =
+//                unwrappedWheel.allOriginIdNodesForRear
+//            default: break
+//            }
+//        }
+//        return originIdNode
+//    }
+//}
 
 
 

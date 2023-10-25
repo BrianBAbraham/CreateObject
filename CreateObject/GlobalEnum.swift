@@ -264,7 +264,6 @@ struct LabelInPartChainOut  {
         .footSupportJoint,
                 .footSupport
         ]
-    
     let footOnly: PartChain =
         [.footSupportInOnePiece]
     let headSupport: PartChain =
@@ -281,7 +280,6 @@ struct LabelInPartChainOut  {
     let sitOn: PartChain =
         [
         .sitOn]
-    
     static let sitOnTiltJoint: PartChain =
            [
             .sitOn,
@@ -292,13 +290,12 @@ struct LabelInPartChainOut  {
            .fixedWheelHorizontalJointAtRear,
            .fixedWheelAtRear]
     static let fixedWheelAtMid: PartChain =
-        [
-       // .baseWheelJoint,
-        .fixedWheel]
+        [            .fixedWheelHorizontalJointAtMid,
+                     .fixedWheelAtMid]
     static let fixedWheelAtFront: PartChain =
         [
-        //.fixedWheelHorizontalJointAtFront,
-        .fixedWheel]
+            .fixedWheelHorizontalJointAtFront,
+        .fixedWheelAtFront]
     static let casterWheelAtRear: PartChain =
         [
         .casterVerticalJointAtRear,
@@ -347,8 +344,6 @@ struct LabelInPartChainOut  {
             case .sitOnTiltJoint:
                 return
                     Self.sitOnTiltJoint
-            
-            
             case .fixedWheelAtRear:
                 return
                     Self.fixedWheelAtRear
@@ -373,111 +368,140 @@ struct LabelInPartChainOut  {
             case .casterWheelAtFront:
                 return
                     Self.casterWheelAtFront
-         
             default:
                 return []
         }
     }
 }
 
+/// an array of tuples labelled 'part' giving Part
+/// and 'ids' giving [Part]
 
-//struct ObjectPartChainLabelsDictionaryProvider {
-//    let dic: [ObjectTypes: [Part]] = [:]
-//    init () {
-//
-//
-//        func getObjectPartChainLabelsDictionary() {
-//
-//        }
-//    }
-//}
+typealias PartIdChain = [(part: Part, ids: [Part] )]
 
+//Source of truth for partChainId
+struct LabelInPartChainIdOut  {
+    static let firstBilateral: [Part] = [.id0, .id1]
+    static let sitOnPartId =
+        (part: Part.sitOn, ids: [Part.id0])
+    static let backSupport: PartIdChain =
+        [
+            sitOnPartId,
+        (part: .backSupporRotationJoint, ids: [.id0]),
+        (part: .backSupport, ids: [.id0]) ]
+    let foot: PartIdChain =
+        [
+            sitOnPartId,
+        (part: .footSupportHangerJoint, ids: firstBilateral),
+        (part: .footSupportJoint, ids: firstBilateral),
+        (part:  .footSupport, ids: firstBilateral) ]
+    let footOnly: PartIdChain =
+          [ (part: .footSupportInOnePiece, ids: [.id0])]
+    let headSupport: PartIdChain =
+        [
+        (part: .backSupportHeadSupportJoint, ids: [.id0]),
+        (part: .backSupportHeadSupportLink, ids: [.id0]),
+        (part: .backSupportHeadSupport, ids: [.id0]) ]
+   static let sideSupport: PartIdChain =
+        [
+        sitOnPartId,
+        (part: .sideSupportRotationJoint, ids: firstBilateral),
+        (part: .sideSupport, ids: firstBilateral) ]
+    let sitOn: PartIdChain = [sitOnPartId]
+    static let sitOnTiltJoint: PartIdChain =
+           [
+            sitOnPartId,
+            (part: .sitOnTiltJoint, ids:  [.id0])]
+    
+    
+    static let fixedWheelAtRear: PartChain =
+            [
+           .fixedWheelHorizontalJointAtRear,
+           .fixedWheelAtRear]
+    static let fixedWheelAtMid: PartChain =
+        [            .fixedWheelHorizontalJointAtMid,
+                     .fixedWheelAtMid]
+    static let fixedWheelAtFront: PartChain =
+        [
+            .fixedWheelHorizontalJointAtFront,
+        .fixedWheelAtFront]
+    static let casterWheelAtRear: PartChain =
+        [
+        .casterVerticalJointAtRear,
+        .casterForkAtRear,
+        .casterWheelAtRear
+        ]
+    static let casterWheelAtFront: PartChain =
+        [
+        .casterVerticalJointAtFront,
+        .casterForkAtFront,
+        .casterWheelAtFront
+        ]
+    
+    var partIdChains: [PartIdChain] = []
+    init(_ parts: [Part]) {
+        for part in parts {
+            partIdChains.append (getPartIdChain(part))
+        }
+    }
 
-/// ObjectPartChainLabelDictionary
-/// Object: [PartChainLabel]
-///
-/// PartChainDictionary
-/// PartChainLabel: PartChain
-///
-/// PartChainIdDictionary
-/// [PartChainLabel:  [Id]]
-//struct PartChainDictionaryProvider  {
-//    var dic: PartChainDictionary = [:]
-//
-//
-//    let backSupport: PartChain =
-//        [
-//        .sitOn,
-//        .backSupporRotationJoint,
-//        .backSupport]
-//    let foot: PartChain =
-//        [
-//        .sitOn,
-//        .footSupportHangerJoint,
-//        .footSupportJoint]
-//    let headSupport: PartChain =
-//        [
-//        .backSupportHeadLinkRotationJoint,
-//        .backSupportHeadSupportLink,
-//        .backSupportHeadSupport]
-//    let sideSupport: PartChain =
-//        [
-//        .sitOn,
-//        .sideSupportRotationJoint,
-//        .sideSupport]
-//    let sitOnTiltJoint: PartChain =
-//           [.sitOn,
-//           .sitOnTiltJoint]
-//
-//    init(_ partChainLabels: [Part]) {
-//        getPartChainDic(partChainLabels)
-//    }
-//
-//    mutating func getPartChainDic (_ partChainLabels: [Part]){
-//        for partChainLabel in partChainLabels {
-//            var partChainName: [String] = []
-//            let partChain =
-//                getPartChain(partChainLabel)
-//            for part in partChain {
-//                partChainName.append(part.rawValue)
-//            }
-//            dic += [partChainLabel.rawValue: partChainName]
-//        }
-//    }
-//
-//   mutating func getPartChain (
-//    _ part: Part)
-//        -> PartChain {
-//        switch part {
-//            case .backSupport:
+    
+   mutating func getPartIdChain (
+    _ part: Part)
+        -> PartIdChain {
+        switch part {
+            case .backSupport:
+                return
+                    Self.backSupport
+            case .backSupportHeadSupport:
+                return
+                    Self.backSupport + headSupport
+            case .footOnly:
+                return
+                    footOnly
+            case .footSupport:
+                return
+                    foot //+ [.footSupport]
+            case .footSupportInOnePiece:
+                return
+            foot + [(part:.footSupportInOnePiece, ids: [.id0])]
+            case .sideSupport:
+                return
+                    Self.sideSupport
+            case .sitOn:
+                return sitOn
+            case .sitOnTiltJoint:
+                return
+                    Self.sitOnTiltJoint
+//            case .fixedWheelAtRear:
 //                return
-//                    backSupport
-//            case .backSupportHeadSupport:
+//                    Self.fixedWheelAtRear
+//            case .fixedWheelAtMid:
 //                return
-//                    backSupport + headSupport
-//            case .footSupport:
+//                    Self.fixedWheelAtMid
+//            case .fixedWheelAtFront:
 //                return
-//                    foot + [.footSupport]
-//            case .footSupportInOnePiece:
+//                    Self.fixedWheelAtFront
+//            case .fixedWheelAtRearWithPropeller:
+//                    return
+//                Self.fixedWheelAtRear + [.fixedWheelPropeller]
+//            case .fixedWheelAtMidWithPropeller:
 //                return
-//                    foot + [.footSupportInOnePiece]
-//            case .sideSupport:
+//                    Self.fixedWheelAtMid + [.fixedWheelPropeller]
+//            case .fixedWheelAtFrontWithPropeller:
 //                return
-//                    sideSupport
-//            case .sitOnTiltJoint:
+//                    Self.fixedWheelAtFront + [.fixedWheelPropeller]
+//            case .casterWheelAtRear:
 //                return
-//                    sitOnTiltJoint
-//            default:
-//                return []
-//        }
-//    }
-//}
-
-
-//enum ViewFrom {
-//    case side
-//    case top
-//}
+//                    Self.casterWheelAtRear
+//            case .casterWheelAtFront:
+//                return
+//                    Self.casterWheelAtFront
+            default:
+                return []
+        }
+    }
+}
 
 
 //InterOrigin().names
