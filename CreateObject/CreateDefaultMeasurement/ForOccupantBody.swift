@@ -343,7 +343,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
                 let name =
                     CreateNameFromParts([.object, .id0, .stringLink, .sideSupport, sideId, .stringLink, .sitOn, sitOnId]).name
                 let dimension = //dimensionDicIn[name] ??
-                    OccupantSideSupportDefaultDimension(objectType).value
+                    OccupantSideSupportDefaultDimensionOld(objectType).value
                 //sideSupportDefaultDimension
                 sideSupportDimension.append(dimension)
             }

@@ -44,7 +44,7 @@
 //    }
 //}
 
-struct OccupantSideSupportDefaultDimension2: PartDimension {
+struct OccupantSideSupportDefaultDimension: PartDimension {
     mutating func reinitialise(_ part: Part?) {
         self.part = part
         switch part {
@@ -104,7 +104,7 @@ struct OccupantSideSupportDefaultDimension2: PartDimension {
     
 }
 
-struct OccupantSideSupportDefaultDimension {
+struct OccupantSideSupportDefaultDimensionOld {
     var dictionary: BaseObject3DimensionDictionary =
     [.allCasterStretcher:
         (width: 20.0,
@@ -187,7 +187,7 @@ struct PreTiltOccupantSideSupportDefaultOrigin: PartOrigin {
         let dictionary: OriginDictionary = [:]
         let general =
             (x: 0.0,
-             y: OccupantSideSupportDefaultDimension(baseType).value.length/2,
+             y: OccupantSideSupportDefaultDimensionOld(baseType).value.length/2,
              z: 0.0)
         return
             dictionary[baseType] ?? general

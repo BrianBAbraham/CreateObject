@@ -235,7 +235,7 @@ struct DictionaryProvider {
                             OccupantFootSupportDefaultDimension(objectType)
                     case .sideSupport:
                         dimensionData =
-                            OccupantSideSupportDefaultDimension2(objectType)
+                            OccupantSideSupportDefaultDimension(objectType)
                     case .backSupport:
                         dimensionData =
                             OccupantBackSupportDefaultDimension(objectType)

@@ -377,42 +377,80 @@ struct LabelInPartChainOut  {
 /// an array of tuples labelled 'part' giving Part
 /// and 'ids' giving [Part]
 
-typealias PartIdChain = [(part: Part, ids: [Part] )]
+typealias PartDimensionOriginIdsChain =
+    [(
+    part: Part,
+    dimension: Dimension3d,
+    origin: PositionAsIosAxes,
+    ids: [Part] )]
 
-//Source of truth for partChainId
-struct LabelInPartChainIdOut  {
-    static let firstBilateral: [Part] = [.id0, .id1]
-    static let sitOnPartId =
-        (part: Part.sitOn, ids: [Part.id0])
-    static let backSupport: PartIdChain =
-        [
-            sitOnPartId,
-        (part: .backSupporRotationJoint, ids: [.id0]),
-        (part: .backSupport, ids: [.id0]) ]
-    let foot: PartIdChain =
-        [
-            sitOnPartId,
-        (part: .footSupportHangerJoint, ids: firstBilateral),
-        (part: .footSupportJoint, ids: firstBilateral),
-        (part:  .footSupport, ids: firstBilateral) ]
-    let footOnly: PartIdChain =
-          [ (part: .footSupportInOnePiece, ids: [.id0])]
-    let headSupport: PartIdChain =
-        [
-        (part: .backSupportHeadSupportJoint, ids: [.id0]),
-        (part: .backSupportHeadSupportLink, ids: [.id0]),
-        (part: .backSupportHeadSupport, ids: [.id0]) ]
-   static let sideSupport: PartIdChain =
-        [
-        sitOnPartId,
-        (part: .sideSupportRotationJoint, ids: firstBilateral),
-        (part: .sideSupport, ids: firstBilateral) ]
-    let sitOn: PartIdChain = [sitOnPartId]
-    static let sitOnTiltJoint: PartIdChain =
-           [
-            sitOnPartId,
-            (part: .sitOnTiltJoint, ids:  [.id0])]
+
+
+//Source of truth for partDimensionOriginIdsChain
+struct PartDimensionOriginIdChains {
+    var objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary {
+        ObjectsAndTheirChainLabels().dictionary
+    }
     
+    //DIMENSIONS
+    var occupantBodySupportDefaultDimension: OccupantBodySupportDefaultDimension
+    var occupantBackSupportDefaultDimension:
+        OccupantBackSupportDefaultDimension
+    var occupantSideSupportDefaultDimension:
+        OccupantSideSupportDefaultDimension
+    var occupantFootSupportDefaultDimension:
+        OccupantFootSupportDefaultDimension
+    var objectWheelDefaultDimension:
+        ObjectWheelDefaultDimension
+    
+    ///ORIGINS
+    var sitOnOrigin: PositionAsIosAxes
+    var preTiltOccupantBackSupportDefaultOrigin:
+        PreTiltOccupantBackSupportDefaultOrigin
+    var preTiltOccupantSideSupportDefaultOrigin:
+        PreTiltOccupantSideSupportDefaultOrigin
+    var preTiltOccupantFootSupportDefaultOrigin:
+        PreTiltOccupantFootSupportDefaultOrigin
+    var preTiltWheelBaseJointDefaultOrigin:
+        PreTiltWheelBaseJointDefaultOrigin
+    
+    let objectType: ObjectTypes
+    
+    
+    static let firstBilateral: [Part] = [.id0, .id1]
+
+    static let backSupport: PartChain =
+        [
+        .sitOn,
+        .backSupporRotationJoint,
+        .backSupport]
+    let foot: PartChain =
+        [
+         .sitOn,
+        .footSupportHangerJoint,
+        .footSupportJoint,
+                .footSupport
+        ]
+    let footOnly: PartChain =
+        [.footSupportInOnePiece]
+    let headSupport: PartChain =
+        [
+        .backSupportHeadSupportJoint,
+        .backSupportHeadSupportLink,
+        .backSupportHeadSupport
+        ]
+   static let sideSupport: PartChain =
+        [
+        .sitOn,
+        .sideSupportRotationJoint,
+        .sideSupport]
+    let sitOn: PartChain =
+        [
+        .sitOn]
+    static let sitOnTiltJoint: PartChain =
+           [
+            .sitOn,
+            .sitOnTiltJoint]
     
     static let fixedWheelAtRear: PartChain =
             [
@@ -438,41 +476,115 @@ struct LabelInPartChainIdOut  {
         .casterWheelAtFront
         ]
     
-    var partIdChains: [PartIdChain] = []
-    init(_ parts: [Part]) {
-        for part in parts {
-            partIdChains.append (getPartIdChain(part))
+    /// An arrray
+    /// containing an array of PartDimensionOriginIds
+    /// with data for parts from object origin to terminal part
+    var partDimensionOriginIdChains: [[PartDimensionOriginIdsChain]] = []
+   
+    init(_ objectType: ObjectTypes) {
+        self.objectType = objectType
+        
+        //Preliminary Initialisation of All Dimensions
+        occupantBodySupportDefaultDimension =
+            OccupantBodySupportDefaultDimension(objectType)
+        occupantBackSupportDefaultDimension =
+            OccupantBackSupportDefaultDimension(objectType)
+        occupantSideSupportDefaultDimension =
+            OccupantSideSupportDefaultDimension(objectType)
+        occupantFootSupportDefaultDimension =
+            OccupantFootSupportDefaultDimension(objectType)
+        objectWheelDefaultDimension =
+            ObjectWheelDefaultDimension(objectType)
+                
+        //Preliminary Initialisation of All Origins
+        let onlyOne = 0
+        sitOnOrigin =
+            PreTiltSitOnAndWheelBaseJointOrigin(objectType).sitOnOrigins.onlyOne [onlyOne]
+        preTiltOccupantBackSupportDefaultOrigin =
+            PreTiltOccupantBackSupportDefaultOrigin(objectType)
+        preTiltOccupantSideSupportDefaultOrigin =
+            PreTiltOccupantSideSupportDefaultOrigin(objectType)
+        preTiltOccupantFootSupportDefaultOrigin =
+            PreTiltOccupantFootSupportDefaultOrigin(objectType)
+        preTiltWheelBaseJointDefaultOrigin =
+            PreTiltWheelBaseJointDefaultOrigin(objectType)
+            
+            
+        //Build array of chain
+        if let chainLabels = objectsAndTheirChainLabels[objectType] {
+            for chainLabel in chainLabels {
+                
+                //WHY NOT USE LABEL IN PART CHAIN OUT
+                let partChain = getPartChain(chainLabel)
+                //empty chain for each chain label
+                var partDimensionOriginIdChain:
+                    [PartDimensionOriginIdsChain] = []
+                for part in partChain {
+                    partDimensionOriginIdChain.append (getPartDimensionOriginId(part ))
+                }
+                partDimensionOriginIdChains.append(partDimensionOriginIdChain)
+            }
         }
     }
+    
+
 
     
-   mutating func getPartIdChain (
+   mutating func getPartDimensionOriginId (
     _ part: Part)
-        -> PartIdChain {
+        -> PartDimensionOriginIdsChain {
         switch part {
-            case .backSupport:
+            case
+                .backSupporRotationJoint,
+                .backSupport,
+                .backSupportHeadSupportJoint,
+                .backSupportHeadSupportLink,
+                .backSupportHeadSupport:
+                preTiltOccupantBackSupportDefaultOrigin.reinitialise(part)
+                occupantBackSupportDefaultDimension.reinitialise(part)
                 return
-                    Self.backSupport
-            case .backSupportHeadSupport:
+                    [(
+                    part: part,
+                    dimension: occupantBackSupportDefaultDimension.dimension,
+                    origin: preTiltOccupantBackSupportDefaultOrigin.origin,
+                    ids: [.id0] )]
+            case
+                .footSupportHangerJoint,
+                .footSupportJoint,
+                .footSupport:
+                preTiltOccupantFootSupportDefaultOrigin.reinitialise(part)
+                occupantFootSupportDefaultDimension.reinitialise(part)
                 return
-                    Self.backSupport + headSupport
-            case .footOnly:
-                return
-                    footOnly
-            case .footSupport:
-                return
-                    foot //+ [.footSupport]
-            case .footSupportInOnePiece:
-                return
-            foot + [(part:.footSupportInOnePiece, ids: [.id0])]
-            case .sideSupport:
-                return
-                    Self.sideSupport
+                    [(
+                    part: part,
+                    dimension: occupantFootSupportDefaultDimension.dimension,
+                    origin: preTiltOccupantFootSupportDefaultOrigin.origin,
+                    ids: part == .footSupportInOnePiece ?
+                        [.id0]: Self.firstBilateral )]
+            case
+                .sideSupportRotationJoint,
+                .sideSupport:
+                preTiltOccupantSideSupportDefaultOrigin.reinitialise(part)
+                occupantSideSupportDefaultDimension.reinitialise(part)
+                 return
+                    [(
+                    part: part,
+                    dimension: occupantSideSupportDefaultDimension.dimension,
+                    origin: preTiltOccupantSideSupportDefaultOrigin.origin,
+                    ids: Self.firstBilateral )]
             case .sitOn:
-                return sitOn
-            case .sitOnTiltJoint:
+                occupantBodySupportDefaultDimension.reinitialise(.sitOn)
                 return
-                    Self.sitOnTiltJoint
+                    [(
+                    part: .sitOn,
+                    dimension: occupantBodySupportDefaultDimension.dimension,
+                    origin: sitOnOrigin,
+                    ids: [.id0] )]
+            
+            
+//            case .sitOnTiltJoint:
+//                return
+//                    Self.sitOnTiltJoint
 //            case .fixedWheelAtRear:
 //                return
 //                    Self.fixedWheelAtRear
@@ -501,6 +613,63 @@ struct LabelInPartChainIdOut  {
                 return []
         }
     }
+    
+    
+    mutating func getPartChain (
+     _ part: Part)
+         -> PartChain {
+         switch part {
+             case .backSupport:
+                 return
+                     Self.backSupport
+             case .backSupportHeadSupport:
+                 return
+                     Self.backSupport + headSupport
+             case .footOnly:
+                 return
+                     footOnly
+             case .footSupport:
+                 return
+                     foot //+ [.footSupport]
+             case .footSupportInOnePiece:
+                 return
+                     foot + [.footSupportInOnePiece]
+             case .sideSupport:
+                 return
+                     Self.sideSupport
+             case .sitOn:
+                 return sitOn
+             case .sitOnTiltJoint:
+                 return
+                     Self.sitOnTiltJoint
+             case .fixedWheelAtRear:
+                 return
+                     Self.fixedWheelAtRear
+             case .fixedWheelAtMid:
+                 return
+                     Self.fixedWheelAtMid
+             case .fixedWheelAtFront:
+                 return
+                     Self.fixedWheelAtFront
+             case .fixedWheelAtRearWithPropeller:
+                     return
+                 Self.fixedWheelAtRear + [.fixedWheelPropeller]
+             case .fixedWheelAtMidWithPropeller:
+                 return
+                     Self.fixedWheelAtMid + [.fixedWheelPropeller]
+             case .fixedWheelAtFrontWithPropeller:
+                 return
+                     Self.fixedWheelAtFront + [.fixedWheelPropeller]
+             case .casterWheelAtRear:
+                 return
+                     Self.casterWheelAtRear
+             case .casterWheelAtFront:
+                 return
+                     Self.casterWheelAtFront
+             default:
+                 return []
+         }
+     }
 }
 
 
@@ -578,3 +747,6 @@ enum Drive {
     case mid
     case front
 }
+                                           
+
+

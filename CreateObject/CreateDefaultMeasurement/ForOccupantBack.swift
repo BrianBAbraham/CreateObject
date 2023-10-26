@@ -7,48 +7,6 @@
 
 import Foundation
 
-//struct AllOccupantBackRelated {
-//    var parts: [Part] = []
-//    var defaultDimensions: [Dimension3d] = []
-////    var rotatedDimensions: RotatedInXxDimensions = []
-//
-//    init(
-//        _ baseType: ObjectTypes,
-//        _ chain: [Part] ) {
-//        self.parts = chain
-//        
-//        let defaults =
-//            OccupantBackSupportDefaultDimension(baseType)
-//        for part in parts {
-//            defaultDimensions.append(getDefaultDimensions(part))
-//        }
-//       
-//        func getDefaultDimensions (
-//            _ part: Part)
-//            -> Dimension3d {
-//                var dimension: Dimension3d = ZeroValue.dimension3d
-//            switch part {
-//                case .backSupportHeadSupport:
-//                    dimension =
-//                        defaults.getHeadSupport()
-//                case .backSupportHeadSupportJoint:
-//                    dimension =
-//                    defaults.getHeadSupportRotationJoint()
-//                case .backSupportHeadSupportLink:
-//                    dimension =
-//                    defaults.getHeadSupportLink()
-//                case .backSupport:
-//                    dimension =
-//                    defaults.getBackSupport()
-//            case .backSupporRotationJoint:
-//                dimension =
-//                defaults.getBackSupportRotationJoint()
-//                default: break
-//            }
-//            return dimension
-//        }
-//    }
-//}
 
 
 struct OccupantBackSupportDefaultDimension: PartDimension {
@@ -75,8 +33,6 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
         default:
             break
         }
-        
-        
     }
     
     let baseType: ObjectTypes
@@ -86,12 +42,14 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
         self.baseType = baseType
     }
     
+    
     func getBackSupportRotationJoint() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general = Joint.dimension3d
         return
             dictionary[baseType] ?? general
     }
+    
     
     func getBackSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
@@ -103,12 +61,14 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
             dictionary[baseType] ?? general
     }
 
+    
     func getHeadSupportRotationJoint() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general = Joint.dimension3d
         return
             dictionary[baseType] ?? general
     }
+    
     
     func getHeadSupportLink() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
@@ -120,6 +80,7 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
             dictionary[baseType] ?? general
     }
     
+    
     func getHeadSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
@@ -130,6 +91,7 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
             dictionary[baseType] ?? general
     }
     
+    
     func getAdditionalObject() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
@@ -139,7 +101,6 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
         return
             dictionary[baseType] ?? general
     }
-
 }
 
 
