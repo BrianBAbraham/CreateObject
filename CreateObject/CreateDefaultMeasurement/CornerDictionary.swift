@@ -126,8 +126,8 @@ struct DictionaryProvider {
 //MARK: - ORIGIN/DICTIONARY
         // both parent to part and
         // object to part
-
-                    
+//            print(
+//            PartDimensionOriginIdChains(objectType).partDimensionOriginIdChains )
             
         getPreTiltFootSideBackOriginDictionary()
        
@@ -254,10 +254,10 @@ struct DictionaryProvider {
                             OccupantBodySupportAngleJointDefaultDimension(objectType)
                     case .fixedWheelAtRear, .fixedWheelAtMid, .fixedWheelAtFront:
                         dimensionData =
-                            ObjectWheelDefaultDimension(objectType)
+                            ObjectBaseConnectionDefaultDimension(objectType)
                     case .casterWheelAtFront:
                         dimensionData =
-                        ObjectWheelDefaultDimension(objectType)
+                        ObjectBaseConnectionDefaultDimension(objectType)
                     default:
                         fatalError("Not yet defined for createAnyOriginAndDimensionDic")
                 }
@@ -612,10 +612,10 @@ extension DictionaryProvider {
                     allOrigin.append(sitOnOrigin)
                     
                 case .sitOnTiltJoint:
-                    getOrigin(PreTiltWheelBaseJointDefaultOrigin(parent.objectType))
+                    getOrigin(PreTiltBaseJointDefaultOrigin(parent.objectType))
                     
                 case .fixedWheelAtRear, .fixedWheelAtMid, .fixedWheelAtFront, .casterWheelAtFront:
-                    getOrigin(PreTiltWheelBaseJointDefaultOrigin(parent.objectType) )
+                    getOrigin(PreTiltBaseJointDefaultOrigin(parent.objectType) )
                
                     
                 default:

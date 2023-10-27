@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct ObjectWheelDefaultDimension: PartDimension {
+struct ObjectBaseConnectionDefaultDimension: PartDimension {
     mutating func reinitialise(_ part: Part?) {
         self.part = part
         switch part {
@@ -32,17 +32,19 @@ struct ObjectWheelDefaultDimension: PartDimension {
                 getCasterForkAtFront()
         case .casterWheelAtFront:
             dimension = getCasterWheelAtFront()
+        case .sitOnTiltJoint:
+            dimension = Joint.dimension3d
         default:
             break
         }
     }
     
-    let baseType: ObjectTypes
+    let objectType: ObjectTypes
     var dimension: Dimension3d = ZeroValue.dimension3d
     var part: Part?
 
-    init ( _ baseType: ObjectTypes) {
-        self.baseType = baseType
+    init ( _ objectType: ObjectTypes) {
+        self.objectType = objectType
     }
     func geFixedWheelFrontDrive ()
     -> Dimension3d {
@@ -78,7 +80,7 @@ struct ObjectWheelDefaultDimension: PartDimension {
               length: 200.0,
               height: 200.0)
         return
-            dictionary[baseType] ??
+            dictionary[objectType] ??
             general
     }
     
@@ -101,7 +103,7 @@ struct ObjectWheelDefaultDimension: PartDimension {
               length: 100.0,
               height: 50.0)
         return
-            dictionary[baseType] ??
+            dictionary[objectType] ??
             general
         
     }
@@ -120,7 +122,7 @@ struct ObjectWheelDefaultDimension: PartDimension {
               length: 150.0,
               height: 100.0)
         return
-            dictionary[baseType] ??
+            dictionary[objectType] ??
             general
         
     }
@@ -155,11 +157,11 @@ struct WheelDefaultDimensionForRearMidFront {
     var baseObjectGroups: BaseObjectGroups {
         BaseObjectGroups()
     }
-   var wheelDefaultDimension: ObjectWheelDefaultDimension
+   var wheelDefaultDimension: ObjectBaseConnectionDefaultDimension
    
     
     init(_ object: ObjectTypes) {
-        wheelDefaultDimension = ObjectWheelDefaultDimension(object)
+        wheelDefaultDimension = ObjectBaseConnectionDefaultDimension(object)
         dimensions = getDimensions(object)
         
     }
@@ -298,16 +300,115 @@ struct WheelId {
 
 
 
+struct BaseConnectionId {
+    mutating func reinialise (_ part: Part?) {
+        self.part = part
+        switch part {
+        case .fixedWheelAtRear:
+            ids = fixedWheelAtRear()
+        case .fixedWheelAtMid:
+            ids = fixedWheelAtMid()
+        case .fixedWheelAtFront:
+            ids = fixedWheelAtFront()
+        case .casterWheelAtRear:
+            break
+        default:
+            break
+        }
+    }
+    let objectType: ObjectTypes
+    var part: Part?
+    var ids: [Part] = [.id0]
+    
+    init ( _ objectType: ObjectTypes) {
+        self.objectType = objectType
+    }
+    
+    func fixedWheelAtRear()
+    -> [Part]{
+        [.id0, .id1]
+    }
+    
+    
+    func fixedWheelAtMid()
+    -> [Part]{
+        [.id0, .id1]
+    }
+    
+    func fixedWheelAtFront()
+    -> [Part]{
+        [.id0, .id1]
+        
+    }
+    
+    func  casterWWheelAtRear ()
+    -> [Part] {
+        [.id0, .id1]
+    }
+    
+    
+    func  casterWWheelAtFront ()
+    -> [Part] {
+        
+        switch objectType {
+        case
+                .allCasterBed,
+                .allCasterChair,
+                .allCasterHoist,
+                .allCasterTiltInSpaceShowerChair,
+                .allCasterStandAid,
+                .fixedWheelMidDrive:
+            return [.id2, .id3]
+        case
+                .fixedWheelRearDrive,
+                .fixedWheelManualRearDrive:
+            return [.id0,.id1]
+        case .allCasterSixHoist:
+            return [.id4, .id5]
+            //            case
+            //                <#code#>
+            //            case .fixedWheelSolo:
+            //                <#code#>
+            //            case .fixedWheelTransfer:
+            //                <#code#>
+            //            case .scooterFrontDrive4Wheeler:
+            //                <#code#>
+            //            case .scooterFrontDrive3Wheeler:
+            //                <#code#>
+            //            case .scooterRearDrive4Wheeler:
+            //                <#code#>
+            //            case .scooterRearDrive3Wheeler:
+            //                <#code#>
+            //            case .seatThatTilts:
+            //                <#code#>
+            //            case .showerTray:
+            //                <#code#>
+            //            case .stairLiftStraight:
+            //                <#code#>
+            //            case .stairLiftInternalRadius:
+            //                <#code#>
+            //            case .stairLiftExternalRaidus:
+            //                <#code#>
+            //            case .verticalLift:
+            //                <#code#>
+            //            }
+        default:
+            return [.id0]
+            
+        }
+        
+    }
+    
+}
 
 
 
 
-
-struct PreTiltWheelBaseJointDefaultOrigin: PartOrigin {
+struct PreTiltBaseJointDefaultOrigin: PartOrigin {
     var origin: PositionAsIosAxes = ZeroValue.iosLocation
     var part: Part?
     var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
-    var wheelDefaultDimension: ObjectWheelDefaultDimension
+    var wheelDefaultDimension: ObjectBaseConnectionDefaultDimension
     
     mutating func reinitialise(_ part: Part?) {
         self.part = part
@@ -315,10 +416,10 @@ struct PreTiltWheelBaseJointDefaultOrigin: PartOrigin {
         switch part {
             case .fixedWheelHorizontalJointAtRear:
                 origin = getObjectToWheelHorizontalJointAtRear()
-        case .fixedWheelHorizontalJointAtMid:
-            origin = getObjectToWheelHorizontalJointAtMid()
-        case .fixedWheelHorizontalJointAtFront:
-            origin = getObjectToWheelHorizontalJointAtFront()
+            case .fixedWheelHorizontalJointAtMid:
+                origin = getObjectToWheelHorizontalJointAtMid()
+            case .fixedWheelHorizontalJointAtFront:
+                origin = getObjectToWheelHorizontalJointAtFront()
             case .fixedWheelAtRear:
                 origin = getWheelHorizontalJointToFixedWheelAtRear()
             case .fixedWheelAtMid:
@@ -329,6 +430,8 @@ struct PreTiltWheelBaseJointDefaultOrigin: PartOrigin {
                 origin = getCasterForkAtFront()
             case .casterWheelAtFront:
                 origin = getCasterWheelAtFront()
+            case .sitOnTiltJoint:
+                origin = getSitOnTiltJoint()
         default:
            break
         }
@@ -341,7 +444,7 @@ struct PreTiltWheelBaseJointDefaultOrigin: PartOrigin {
         self.objectType = objectType
         
         preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
-        wheelDefaultDimension = ObjectWheelDefaultDimension(objectType)
+        wheelDefaultDimension = ObjectBaseConnectionDefaultDimension(objectType)
     }
 
     
@@ -430,6 +533,15 @@ struct PreTiltWheelBaseJointDefaultOrigin: PartOrigin {
         return
             dictionary[objectType] ?? general
     }
+    
+    func getSitOnTiltJoint()
+    -> PositionAsIosAxes {
+        return
+            (x: 0.0,
+             y: -100.0,
+             z: 0.0)
+        }
+    
 }
 
 
