@@ -77,7 +77,7 @@ struct BaseObjectGroups {
         = [.allCasterSixHoist]
     
     let midFixedWheel: [ObjectTypes] =
-        [.fixedWheelMidDrive]
+    [.fixedWheelMidDrive, .fixedWheelSolo]
     
     let frontFixedWheel: [ObjectTypes] =
         [.fixedWheelFrontDrive,
@@ -198,23 +198,36 @@ struct ObjectsAndTheirChainLabels {
     chairSupport + [.fixedWheelAtRear]
     
     let dictionary: ObjectPartChainLabelsDictionary =
-    [ .allCasterBed:
+    [
+    .allCasterBed:
         [ .sideSupport, .sitOn],
-      .allCasterChair:
+      
+    .allCasterChair:
         chairSupport + [.casterWheelAtFront],
-      .allCasterTiltInSpaceShowerChair:
+      
+    .allCasterTiltInSpaceShowerChair:
         chairSupport + [.casterWheelAtFront],
-      .allCasterStretcher:
-        [.sideSupport, .sitOn, ],
-      .fixedWheelMidDrive:
+    
+    .allCasterStretcher:
+        [ .sitOn, .casterWheelAtRear, .casterWheelAtFront],
+    
+    .fixedWheelMidDrive:
         chairSupport + [.fixedWheelAtMid],
-      .fixedWheelFrontDrive:
+    
+    .fixedWheelFrontDrive:
         chairSupport + [.fixedWheelAtFront],
-      .fixedWheelRearDrive:
+    
+    .fixedWheelRearDrive:
         chairSupportWithFixedRearWheel + [.casterWheelAtFront],
-      .fixedWheelManualRearDrive:
+    
+    .fixedWheelManualRearDrive:
         chairSupportWithFixedRearWheel + [.casterWheelAtFront],
-      .showerTray: [.footOnly]]
+    
+    .showerTray: [.footOnly],
+    
+    .fixedWheelSolo: [.fixedWheelAtMid] + [.sitOn]
+    ]
+        
 }
 
 

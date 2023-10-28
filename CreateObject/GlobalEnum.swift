@@ -302,6 +302,12 @@ struct LabelInPartChainOut  {
         .casterForkAtRear,
         .casterWheelAtRear
         ]
+    static let casterWheelAtMid: PartChain =
+        [
+        .casterVerticalJointAtMid,
+        .casterForkAtMid,
+        .casterWheelAtMid
+        ]
     static let casterWheelAtFront: PartChain =
         [
         .casterVerticalJointAtFront,
@@ -443,7 +449,7 @@ struct PartDimensionOriginIdChains {
         PreTiltOccupantFootSupportDefaultOrigin
     var preTiltBaseJointDefaultOrigin:
         PreTiltBaseJointDefaultOrigin
-    
+    var baseConnectionId: BaseConnectionId
     let objectType: ObjectTypes
     
     
@@ -539,6 +545,7 @@ struct PartDimensionOriginIdChains {
         preTiltBaseJointDefaultOrigin =
             PreTiltBaseJointDefaultOrigin(objectType)
             
+        baseConnectionId = BaseConnectionId(objectType)
             
         //Build array of chain
         if let chainLabels = objectsAndTheirChainLabels[objectType] {
@@ -555,7 +562,6 @@ struct PartDimensionOriginIdChains {
                     if partDimensionOriginId.count != 0 {
                         partDimensionOriginIdChain.append (partDimensionOriginId)
                     }
-                    
                 }
                 if partDimensionOriginIdChain.count != 0 {
                     partDimensionOriginIdChains.append(partDimensionOriginIdChain)
@@ -586,9 +592,9 @@ struct PartDimensionOriginIdChains {
                     origin: preTiltOccupantBackSupportDefaultOrigin.origin,
                     ids: [.id0] )]
             case
-                .footSupportHangerJoint,
-                .footSupportJoint,
-                .footSupport:
+            .footSupportHangerJoint,
+            .footSupportJoint,
+            .footSupport:
                 preTiltOccupantFootSupportDefaultOrigin.reinitialise(part)
                 occupantFootSupportDefaultDimension.reinitialise(part)
                 return
@@ -599,8 +605,8 @@ struct PartDimensionOriginIdChains {
                     ids: part == .footSupportInOnePiece ?
                         [.id0]: Self.firstBilateral )]
             case
-                .sideSupportRotationJoint,
-                .sideSupport:
+            .sideSupportRotationJoint,
+            .sideSupport:
                 preTiltOccupantSideSupportDefaultOrigin.reinitialise(part)
                 occupantSideSupportDefaultDimension.reinitialise(part)
                  return
@@ -618,42 +624,42 @@ struct PartDimensionOriginIdChains {
                     origin: sitOnOrigin,
                     ids: [.id0] )]
             case
-                .sitOnTiltJoint
-            
-            :
+            .sitOnTiltJoint:
                 preTiltBaseJointDefaultOrigin.reinitialise(part)
                 objectBaseConnectionDefaultDimension.reinitialise(part)
-            return
-                [(
-                part: part,
-                dimension: occupantBodySupportDefaultDimension.dimension,
-                origin: preTiltBaseJointDefaultOrigin.origin,
-                ids: [.id0] )]
-//            case .fixedWheelAtRear:
-//                return
-//                    Self.fixedWheelAtRear
-//            case .fixedWheelAtMid:
-//                return
-//                    Self.fixedWheelAtMid
-//            case .fixedWheelAtFront:
-//                return
-//                    Self.fixedWheelAtFront
-//            case .fixedWheelAtRearWithPropeller:
-//                    return
-//                Self.fixedWheelAtRear + [.fixedWheelPropeller]
-//            case .fixedWheelAtMidWithPropeller:
-//                return
-//                    Self.fixedWheelAtMid + [.fixedWheelPropeller]
-//            case .fixedWheelAtFrontWithPropeller:
-//                return
-//                    Self.fixedWheelAtFront + [.fixedWheelPropeller]
-//            case .casterWheelAtRear:
-//                return
-//                    Self.casterWheelAtRear
-//            case .casterWheelAtFront:
-//                return
-//                    Self.casterWheelAtFront
+                return
+                    [(
+                    part: part,
+                    dimension: occupantBodySupportDefaultDimension.dimension,
+                    origin: preTiltBaseJointDefaultOrigin.origin,
+                    ids: [.id0] )]
+            case
+            .fixedWheelAtRear,
+            .fixedWheelHorizontalJointAtRear,
+            .fixedWheelHorizontalJointAtMid,
+            .fixedWheelAtMid,
+            .fixedWheelHorizontalJointAtFront,
+            .fixedWheelAtFront,
+            .casterVerticalJointAtRear,
+            .casterForkAtRear,
+            .casterWheelAtRear,
+            .casterVerticalJointAtMid,
+            .casterForkAtMid,
+            .casterWheelAtMid,
+            .casterVerticalJointAtFront,
+            .casterForkAtFront,
+            .casterWheelAtFront:
+                preTiltBaseJointDefaultOrigin.reinitialise(part)
+                objectBaseConnectionDefaultDimension.reinitialise(part)
+                baseConnectionId.reinialise(part)
+                return
+                    [(
+                    part: part,
+                    dimension: occupantBodySupportDefaultDimension.dimension,
+                    origin: preTiltBaseJointDefaultOrigin.origin,
+                    ids: baseConnectionId.ids )]
             default:
+                print("\(#function) \(part.rawValue) not found")
                 return []
         }
     }

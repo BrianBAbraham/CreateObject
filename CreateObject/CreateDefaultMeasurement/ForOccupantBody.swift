@@ -241,8 +241,9 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
 //        _ dimensionIn: Part3DimensionDictionary = [:],
 //        _ preTiltObjectToPartOriginDicIn: PositionDictionary = [:]
     ) {
-            
+
         self.objectType = object
+
         //self.preTiltObjectToPartOriginDicIn = preTiltObjectToPartOriginDicIn
         stability = Stability(objectType)
         //wheelDefaultDimension = WheelDefaultDimension(objectType)
@@ -251,19 +252,20 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
             
         wheelDefaultDimensionForRearMidFront =
             WheelDefaultDimensionForRearMidFront(object).dimensions
-            
+
         for id in bothSitOnId {
             sitOnDimensions.append(
                 getEditedOrDefaultSitOnDimension(id))
+            
             occupantFootSupportHangerLinksMaxLengths.append(
                 getEditedOrDefaultMaximumHangerLinkLength(id))
-            occupantSideSupportsDimensions.append(
-                getEditedOrDefaultSideSupportDimensions(id)
-            )
-        }
-        
-        sitOnOriginsIn = getEditedSitOnOrigins()
             
+            occupantSideSupportsDimensions.append(
+                getEditedOrDefaultSideSupportDimensions(id))
+        }
+
+        sitOnOriginsIn = getEditedSitOnOrigins()
+
         if baseObjectGroups.rearPrimaryOrigin.contains(objectType) {
             sitOnOrigins = originsForDriveLocation(.rear)
             
@@ -277,7 +279,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
         if baseObjectGroups.frontPrimaryOrigin.contains(objectType) {
             sitOnOrigins =  originsForDriveLocation(.front)
         }
-            //print(wheelBaseJointOriginForOnlyOneSitOn)
+       
     }
     
     //there may be none, or one or two edited sitOn origins
@@ -328,8 +330,8 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     
     func getEditedOrDefaultSitOnDimension(_ sitOnId: Part)
         -> Dimension3d {
-        let name =
-            CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
+//        let name =
+//            CreateNameFromParts([.object, .id0, .stringLink, .sitOn, sitOnId, .stringLink, .sitOn, sitOnId]).name
         return
             //dimensionDicIn[name] ??
             OccupantBodySupportDefaultDimension(objectType).value
@@ -340,8 +342,8 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
         -> [Dimension3d] {
             var sideSupportDimension: [Dimension3d] = []
             for sideId in bilateralIds {
-                let name =
-                    CreateNameFromParts([.object, .id0, .stringLink, .sideSupport, sideId, .stringLink, .sitOn, sitOnId]).name
+//                let name =
+//                    CreateNameFromParts([.object, .id0, .stringLink, .sideSupport, sideId, .stringLink, .sitOn, sitOnId]).name
                 let dimension = //dimensionDicIn[name] ??
                     OccupantSideSupportDefaultDimensionOld(objectType).value
                 //sideSupportDefaultDimension
@@ -358,8 +360,8 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
         var lengths:[Double] = []
         let hangerLinkLength = OccupantFootSupportDefaultDimension(objectType).getHangerLink().length
         for id in bilateralIds {
-            let name =
-                CreateNameFromParts([.footSupportHangerLink, id, .stringLink, .sitOn, sitOnId]).name
+//            let name =
+//                CreateNameFromParts([.footSupportHangerLink, id, .stringLink, .sitOn, sitOnId]).name
             lengths.append(
                 //dimensionDicIn[name]?.length ??
                 hangerLinkLength)
