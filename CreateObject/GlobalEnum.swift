@@ -630,7 +630,7 @@ struct PartDimensionOriginIdChains {
                 return
                     [(
                     part: part,
-                    dimension: occupantBodySupportDefaultDimension.dimension,
+                    dimension: Joint.dimension3d,
                     origin: preTiltBaseJointDefaultOrigin.origin,
                     ids: [.id0] )]
             case
@@ -652,10 +652,12 @@ struct PartDimensionOriginIdChains {
                 preTiltBaseJointDefaultOrigin.reinitialise(part)
                 objectBaseConnectionDefaultDimension.reinitialise(part)
                 baseConnectionId.reinialise(part)
+            
+//            print ("\(#function) \(objectBaseConnectionDefaultDimension.dimension) \(part)")
                 return
                     [(
                     part: part,
-                    dimension: occupantBodySupportDefaultDimension.dimension,
+                    dimension: objectBaseConnectionDefaultDimension.dimension,
                     origin: preTiltBaseJointDefaultOrigin.origin,
                     ids: baseConnectionId.ids )]
             default:

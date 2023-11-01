@@ -14,7 +14,7 @@ struct ObjectBaseConnectionDefaultDimension: PartDimension {
         switch part {
             
             
-        case .fixedWheelHorizontalJointAtRear:
+        case .fixedWheelHorizontalJointAtRear, .fixedWheelHorizontalJointAtMid:
             dimension =
                 getHorizontalJoint()
         case .fixedWheelAtRear:
@@ -24,7 +24,8 @@ struct ObjectBaseConnectionDefaultDimension: PartDimension {
         case .fixedWheelAtMid:
             dimension =
                 getFixedWheelMidDrive()
-            
+//            print("DETECTION")
+//            print(dimension)
         case .fixedWheelAtFront:
             dimension =
                 geFixedWheelFrontDrive()

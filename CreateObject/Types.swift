@@ -94,7 +94,11 @@ typealias OriginIdPartChain =
     (origin: [PositionAsIosAxes],
      ids: [[Part]],
      chain: [Part])
-
+typealias OriginIdPartDimensionChain =
+    (origin: [PositionAsIosAxes],
+     ids: [[Part]],
+     chain: [Part],
+     dimension: [Dimension3d])
 ///OriginIdNodes type is assigned to
 ///'rear'', 'mid' and 'front'
 ///for absent values ZeroValue.rearMidOriginIdNodes is used
