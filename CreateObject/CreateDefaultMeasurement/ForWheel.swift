@@ -280,82 +280,27 @@ struct WheelDefaultDimensionForRearMidFront {
 
 
 
-struct WheelId {
-    let atMid: [Part] = [.id2, .id3]
-    let atRear: [Part]
-    let atFront: [Part]
-    var allIds: [[Part]] = []
-    let baseType: ObjectTypes
-    
-    init( _ baseType: ObjectTypes) {
-        
-        self.baseType = baseType
-        
-        atRear = getAtRear()
-        atFront = getAtFront()
-        
-        // id locations are assigned as follows
-        // as visually layed out
-        //
-        // id0...id1 for two
-        //
-        // id0...id1 for three front
-        //    id2
-        //
-        //    id0    for three rear
-        // id1...id2
-        //
-        // id0...id1 for four
-        // id2...id3
-        //
-        // id0...id1 for six
-        // id2...id3
-        // id4...id5
-        //
-        func getAllIds() {
-           allIds = [getAtRear()]
-            if BaseObjectGroups().sixWheels.contains(baseType) {
-                allIds.append(atMid)
-            }
-            allIds.append(getAtFront())
-        }
-        
-        func getAtRear() -> [Part] {
-            BaseObjectGroups().singleWheelAtRear
-                    .contains(baseType) ?
-                        [.id0]: [.id0, .id1]
-        }
-        
-       
-        func getAtFront ()
-            -> [Part] {
-                var ids: [Part] = [.id2, .id3]
-                
-            if BaseObjectGroups().singleWheelAtRear
-                .contains(baseType) {
-               ids = [.id1, .id2]
-            }
-            if BaseObjectGroups().singleWheelAtFront
-                .contains(baseType) {
-               ids = [.id2]
-            }
-            if BaseObjectGroups().sixWheels
-                .contains(baseType) {
-             ids =  [.id4, .id5]
-            }
-                
-            if BaseObjectGroups().singleWheelAtFront
-                .contains(baseType) {
-              ids =  [ .id2]
-            }
-            return ids
-        }
-    }
-}
-
 
 
 struct BaseConnectionId {
+    // id locations are assigned as follows
+    // as visually layed out
+    //
+    // id0...id1 for two
+    //
+    // id0...id1 for three front
+    //    id2
+    //
+    //    id0    for three rear
+    // id1...id2
+    //
+    // id0...id1 for four
+    // id2...id3
+    //
+    // id0...id1 for six
+    // id2...id3
+    // id4...id5
+    //
     mutating func reinialise (_ part: Part?) {
         self.part = part
         switch part {

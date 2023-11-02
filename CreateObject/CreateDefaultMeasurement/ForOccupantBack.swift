@@ -238,21 +238,7 @@ struct OccupantBackSupportDefaultAngleChange {
     }
 }
 
-//struct OccupantSitOnFootAndBackSupportDefaultAngleChange {
-//    var dictionary: BaseObjectAngleDictionary =
-//    [:]
-//
-//    static let general = Measurement(value: 30.0 , unit: UnitAngle.degrees)
-//
-//    let value: Measurement<UnitAngle>
-//
-//    init(
-//        _ baseType: BaseObjectTypes) {
-//            value =
-//                dictionary[baseType] ??
-//                Self.general
-//    }
-//}
+
 
 struct OccupantBackSupportHeadLinkDefaultAngleChange {
     var dictionary: BaseObjectAngleDictionary =

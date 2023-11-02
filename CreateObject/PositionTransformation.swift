@@ -34,15 +34,15 @@ struct ZeroValue {
 
     
     
-    static let originIdPartChain: OriginIdPartChain =
-    (origin: [],
-     ids: [[]],
-     chain: [])
+//    static let originIdPartChain: OriginIdPartChain =
+//    (origin: [],
+//     ids: [[]],
+//     chain: [])
     
-    static let rearMidFrontOriginIdNodes: RearMidFrontOriginIdNodes =
-    (rear: ZeroValue.originIdPartChain,
-     mid: ZeroValue.originIdPartChain,
-     front: ZeroValue.originIdPartChain)
+//    static let rearMidFrontOriginIdNodes: RearMidFrontOriginIdNodes =
+//    (rear: ZeroValue.originIdPartChain,
+//     mid: ZeroValue.originIdPartChain,
+//     front: ZeroValue.originIdPartChain)
     
     static let originIdNode: OriginIdNode =
         (

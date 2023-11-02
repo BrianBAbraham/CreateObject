@@ -106,30 +106,30 @@ struct GetUniqueNames {
     }
 }
 
-struct UniqueNamesForDimensions {
-    
-    var are: [String] = []
-    
-    
-    init(_ dictionary: Part3DimensionDictionary) {
-        
-        are = getUniqueNameForDimensions(dictionary)
-        
-        
-        
-        func getUniqueNameForDimensions(_ dictionary: Part3DimensionDictionary ) -> [String] {
-            var uniqueNames: [String] = []
-            for (key, _) in dictionary {
-                let components =
-                key.split(separator: "_")
-                if let firstPart = components.first {
-                    uniqueNames.append(String(firstPart) )
-                }
-            }
-            return uniqueNames
-        }
-    }
-}
+//struct UniqueNamesForDimensions {
+//
+//    var are: [String] = []
+//    
+//
+//    init(_ dictionary: Part3DimensionDictionary) {
+//
+//        are = getUniqueNameForDimensions(dictionary)
+//
+//
+//
+//        func getUniqueNameForDimensions(_ dictionary: Part3DimensionDictionary ) -> [String] {
+//            var uniqueNames: [String] = []
+//            for (key, _) in dictionary {
+//                let components =
+//                key.split(separator: "_")
+//                if let firstPart = components.first {
+//                    uniqueNames.append(String(firstPart) )
+//                }
+//            }
+//            return uniqueNames
+//        }
+//    }
+//}
 
 //struct GetGeneralName {
 //    let fromUniquePartName: String

@@ -35,30 +35,27 @@ struct OccupantBodySupportDefaultDimension: PartDimension {
 }
 
 
-struct OccupantBodySupportAngleJointDefaultDimension: PartDimension {
-    var dimension: Dimension3d = ZeroValue.dimension3d
-    
-    mutating func reinitialise(_ part: Part?) {
-        dimension = value
-    }
-    
-    let dictionary: BaseObject3DimensionDictionary =
-    [:
-        ]
-    static let general = Joint.dimension3d
-//        (
-//         width: OccupantBodySupportDefaultDimension.general.width * 1.5,
-//         length: Joint.dimension.length,
-//         height: Joint.dimension.length)
-    let value: Dimension3d
-    
-    init(
-        _ baseType: ObjectTypes) {
-            value =
-                dictionary[baseType] ??
-                Self.general
-    }
-}
+//struct OccupantBodySupportAngleJointDefaultDimension: PartDimension {
+//    var dimension: Dimension3d = ZeroValue.dimension3d
+//
+//    mutating func reinitialise(_ part: Part?) {
+//        dimension = value
+//    }
+//
+//    let dictionary: BaseObject3DimensionDictionary =
+//    [:
+//        ]
+//    static let general = Joint.dimension3d
+//
+//    let value: Dimension3d
+//
+//    init(
+//        _ baseType: ObjectTypes) {
+//            value =
+//                dictionary[baseType] ??
+//                Self.general
+//    }
+//}
 
 
 struct PreTiltBodySupportDefaultOriginHeight {
@@ -82,76 +79,6 @@ struct PreTiltBodySupportDefaultOriginHeight {
 
 
 
-//struct PreTiltSitOnDefaultOrigin: PartOrigin {
-//    var origin: PositionAsIosAxes = ZeroValue.iosLocation
-//
-//    mutating func reinitialise(_ part: Part?) {
-//
-//    }
-//
-//    let baseType: ObjectTypes
-//
-//
-//
-//    init (
-//            _ objectType: ObjectTypes//,
-//
-//    ) {
-//        self.baseType = objectType
-//
-//        origin = getBodySupportToBodySupportRotationJoint()
-//
-//    func getBodySupportToBodySupportRotationJoint()
-//      -> PositionAsIosAxes {
-//          let dictionary: OriginDictionary = [:]
-//          let general =
-//              (x: 0.0,
-//               y: 0.0,
-//               z: 0.0)
-//
-//          return
-//              dictionary[objectType] ?? general
-//                  }
-//        }
-//}
-
-// tilt as in tilted/rotated/angled
-// origins are described from the parent origin
-// orientations from the object-orientation not the parent orientation
-
-struct PreTiltSitOnBackFootTiltJointDefaultOrigin: PartOrigin {
-    var origin: PositionAsIosAxes = ZeroValue.iosLocation
-    
-    mutating func reinitialise(_ part: Part?) {
-        origin = self.getBodySupportToBodySupportRotationJoint()
-        
-    }
-    
-    let baseType: ObjectTypes
-    //let sitOnLocation: PositionAsIosAxes
-    //let value: PositionAsIosAxes
-  
-    
-    init (
-            _ baseType: ObjectTypes) {
-        self.baseType = baseType
-                        
-        origin = getBodySupportToBodySupportRotationJoint()
-                
-
-        }
-    func getBodySupportToBodySupportRotationJoint()
-      -> PositionAsIosAxes {
-          let dictionary: OriginDictionary = [:]
-          let general =
-              (x: 0.0,
-               y: 0.0,
-               z: -100.0)
-             
-          return
-              dictionary[baseType] ?? general
-                  }
-}
 
 
 

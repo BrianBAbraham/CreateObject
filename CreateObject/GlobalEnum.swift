@@ -380,15 +380,6 @@ struct LabelInPartChainOut  {
     }
 }
 
-/// an array of tuples labelled 'part' giving Part
-/// and 'ids' giving [Part]
-
-typealias PartDimensionOriginIdsChain =
-    [(
-    part: Part,
-    dimension: Dimension3d,
-    origin: PositionAsIosAxes,
-    ids: [Part] )]
 
 
 
@@ -396,30 +387,21 @@ typealias PartDimensionOriginIdsChain =
 
 //[
 //    [first chain
-//        [
-//        (part: start of chain, dimension: , origin: , ids: )
-//        ],
+//        (part: start of chain, dimension: , origin: , ids: ),
 //        .
 //        .
 //        .
-//        [
 //        (part: end of chain , dimension: , origin: , ids: )
-//        ],
 //    ],
 //    .
 //    .
 //    .
-//
 //    [last chain
-//        [
-//        (part: start of chain, dimension: , origin: , ids: )
-//        ],
+//        (part: start of chain, dimension: , origin: , ids: ),
 //        .
 //        .
 //        .
-//        [
 //        (part: end of chain , dimension: , origin: , ids: )
-//        ],
 //    ],
 //]
 //Source of truth for partDimensionOriginIdsChain
@@ -440,7 +422,7 @@ struct PartDimensionOriginIdChains {
         ObjectBaseConnectionDefaultDimension
     
     ///ORIGINS
-    var sitOnOrigin: PositionAsIosAxes
+    var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
     var preTiltOccupantBackSupportDefaultOrigin:
         PreTiltOccupantBackSupportDefaultOrigin
     var preTiltOccupantSideSupportDefaultOrigin:
@@ -515,7 +497,8 @@ struct PartDimensionOriginIdChains {
     /// An arrray
     /// containing an array of PartDimensionOriginIds
     /// with data for parts from object origin to terminal part
-    var partDimensionOriginIdChains: [[PartDimensionOriginIdsChain]] = []
+    
+    var partDimensionOriginIdChains: [PartDimensionOriginIdsChain] = []
    
     init(_ objectType: ObjectTypes) {
         self.objectType = objectType
@@ -534,8 +517,7 @@ struct PartDimensionOriginIdChains {
                 
         //Preliminary Initialisation of All Origins
 
-        sitOnOrigin =
-            PreTiltSitOnAndWheelBaseJointOrigin(objectType).sitOnOrigins.onlyOne [onlyOne]
+     
         preTiltOccupantBackSupportDefaultOrigin =
             PreTiltOccupantBackSupportDefaultOrigin(objectType)
         preTiltOccupantSideSupportDefaultOrigin =
@@ -549,20 +531,24 @@ struct PartDimensionOriginIdChains {
             
         //Build array of chain
         if let chainLabels = objectsAndTheirChainLabels[objectType] {
+            
+            if chainLabels.contains(.sitOn){
+                sitOnOrigin =
+                    PreTiltSitOnAndWheelBaseJointOrigin(objectType).sitOnOrigins.onlyOne [onlyOne]
+            }
             for chainLabel in chainLabels {
                 let partChain =
                 LabelInPartChainOut([chainLabel]).partChains[onlyOne]
-                
+
                 
                 //empty chain for each chain label
-                var partDimensionOriginIdChain:
-                    [PartDimensionOriginIdsChain] = []
-                for part in partChain {
-                    let partDimensionOriginId = getPartDimensionOriginId(part)
-                    if partDimensionOriginId.count != 0 {
-                        partDimensionOriginIdChain.append (partDimensionOriginId)
+                var partDimensionOriginIdChain: PartDimensionOriginIdsChain = []
+                    for part in partChain {
+                        let partDimensionOriginId = getPartDimensionOriginId(part)
+                        if partDimensionOriginId.count != 0 {
+                            partDimensionOriginIdChain.append (partDimensionOriginId[0])
+                        }
                     }
-                }
                 if partDimensionOriginIdChain.count != 0 {
                     partDimensionOriginIdChains.append(partDimensionOriginIdChain)
                 }
@@ -594,7 +580,8 @@ struct PartDimensionOriginIdChains {
             case
             .footSupportHangerJoint,
             .footSupportJoint,
-            .footSupport:
+            .footSupport,
+            .footSupportInOnePiece:
                 preTiltOccupantFootSupportDefaultOrigin.reinitialise(part)
                 occupantFootSupportDefaultDimension.reinitialise(part)
                 return

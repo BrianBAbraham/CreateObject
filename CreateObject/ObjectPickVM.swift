@@ -394,6 +394,7 @@ extension ObjectPickViewModel {
     func getMaximumDimensionOfObject (
         _ dictionary: PositionDictionary)
         -> Double {
+
             let minMax =
             CreateIosPosition
                .minMaxPosition(dictionary)
@@ -421,12 +422,13 @@ extension ObjectPickViewModel {
 
     func getObjectDictionaryForScreen ()
         -> CornerDictionary {
-        // print("FOR SCREEN REQUESTED")
+         
         let currentDic =  objectPickModel.postTiltFourCornerPerKeyDic
         let currentObjectAsOneCornerPerKeyDic =
             ConvertFourCornerPerKeyToOne(
                 fourCornerPerElement: currentDic).oneCornerPerKey
-
+//print (currentDic )
+//print (currentObjectAsOneCornerPerKeyDic)
         let minThenMax =
              CreateIosPosition
                 .minMaxPosition(currentObjectAsOneCornerPerKeyDic)

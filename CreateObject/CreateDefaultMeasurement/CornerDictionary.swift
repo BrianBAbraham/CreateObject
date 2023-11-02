@@ -20,7 +20,7 @@ struct DictionaryProvider {
     var objectGroups: BaseObjectGroups {
         BaseObjectGroups()
     }
-    //var originIdsPartChainDimension: [[OriginIdPartDimensionChain]] = []
+   
     //UI amended dictionary
     let dimensionDicIn: Part3DimensionDictionary
     let preTiltParentToPartOriginDicIn: PositionDictionary
@@ -45,15 +45,10 @@ struct DictionaryProvider {
     var angleDic: AngleDictionary = [:]
     var angleMinMaxDic: AngleMinMaxDictionary = [:]
     
-    var preTiltWheelOriginIdNodes: RearMidFrontOriginIdNodes = ZeroValue.rearMidFrontOriginIdNodes
-    var originIdPartChainForBackForBothSitOn: [OriginIdPartChain]  = [ZeroValue.originIdPartChain]
-    
 
-    var preTiltWheelOrigin: InputForDictionary?
-
-    var uniqueNames: [String] = []
+    var originIdPartChainForBackForBothSitOn: PartDimensionOriginIdsChain = []
     
-   var partDimensionOriginIdChains: [[PartDimensionOriginIdsChain]] = []
+   var partDimensionOriginIdChains: [PartDimensionOriginIdsChain] = []
     
     //pre-tilt
     var preTiltParentToPartOriginDic: PositionDictionary = [:]
@@ -130,124 +125,105 @@ struct DictionaryProvider {
         partDimensionOriginIdChains =
             PartDimensionOriginIdChains(objectType).partDimensionOriginIdChains
          
-
-       
-            
-            
-            
         for item in partDimensionOriginIdChains {
-            
-            createPreTiltParentToPartDictionary2(trial: item)
-            
+            createPreTiltParentToPartDictionary(trial: item)
             dimensionDic +=
-            DimensionDictionary2(
-                item,
-                dimensionDicIn,
-                0).forPart
-            
-            
+                DimensionDictionary(
+                    item,
+                    dimensionDicIn,
+                    0).forPart
             if (item.last != nil)  {
-                if [Part.backSupportHeadSupport, Part.backSupport].contains(item.last![0].part) {
-                    print ("TILT REQUIRERD")
+                if [Part.backSupportHeadSupport,
+                    Part.backSupport].contains(item.last!.part) {
+                    originIdPartChainForBackForBothSitOn = item
                 }
             }
-           
         }
 
            
-            
 //MARK: - PRE-TILT
         preTiltObjectToPartFourCornerPerKeyDic =
             createCornerDictionary(
                    preTiltObjectToPartOriginDic,
                    dimensionDic)
 
-        uniqueNames = UniqueNamesForDimensions(dimensionDic).are
-            
+//            DictionaryInArrayOut().getNameValue(preTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
+//print(preTiltObjectToPartFourCornerPerKeyDic)
+
             
 //MARK: - POST-TILT
-        postTiltObjectToFourCornerPerKeyDic =
-            createPostTiltObjectToPartFourCornerPerKeyDic()
-
-            
-//DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic).forEach{print($0)}
-                      
-
-            
-
-        func prepareObjectDataForCreationOfOriginAndDimensionDic(
-            _ originIdPartDimensionChain: OriginIdPartDimensionChain) {
-
-            let chain =
-                originIdPartDimensionChain.chain
-
-            let allOriginIdPartChainForBothSitOn =
-                    [(origin: originIdPartDimensionChain.origin,
-                      ids: originIdPartDimensionChain.ids,
-                      chain: originIdPartDimensionChain.chain)]
-            
-            let chainLabel = originIdPartDimensionChain.chain.last
-     
-            switch chainLabel {
-                case .backSupport, .backSupportHeadSupport:
-                //this is required for post tilt
-                originIdPartChainForBackForBothSitOn = allOriginIdPartChainForBothSitOn
-                default:
-                    break
+//            for item in partDimensionOriginIdChains {
+//
+//                if (item.last != nil)  {
+//                    if [Part.backSupportHeadSupport,
+//                        Part.backSupport].contains(item.last!.part) {
+//                        //originIdPartChainForBackForBothSitOn = item
+//                        postTiltObjectToFourCornerPerKeyDic =
+//                        createPostTiltObjectToPartFourCornerPerKeyDic(item)
+//                    } else {
+//                        postTiltObjectToFourCornerPerKeyDic =
+//                        preTiltObjectToPartFourCornerPerKeyDic
+//                    }
+//                }
+//            }
+            let newArray = objectPartChainLabelDic.map { $0.value
             }
-           
-            for allOriginIdPartChain in
-                    allOriginIdPartChainForBothSitOn {
-//                        createPreTiltParentToPartDictionary(
-//                            allOriginIdPartChain)
+            let flatArray = newArray.flatMap {$0}
+            print (flatArray)
+            
+            if  flatArray.contains(Part.sitOnTiltJoint) {
+                for item in partDimensionOriginIdChains {
+                    if (item.last != nil)  {
+                        if [Part.backSupportHeadSupport,
+                            Part.backSupport].contains(item.last!.part) {
+                            //originIdPartChainForBackForBothSitOn = item
+                            postTiltObjectToFourCornerPerKeyDic =
+                            createPostTiltObjectToPartFourCornerPerKeyDic(item)
+                        }
+                    }
+                }
+            } else {
+//                print ("DETECT")
+//                print (objectPartChainLabelDic.map({$0.value}))
+    postTiltObjectToFourCornerPerKeyDic =
+    preTiltObjectToPartFourCornerPerKeyDic
+}
+            
+//
+//            if objectPartChainLabelDic[objectType]?.contains(.sitOnTiltJoint) != nil {
+//               print ( objectPartChainLabelDic[objectType])
+//                print ("first")
+//                for item in partDimensionOriginIdChains {
+//                    if (item.last != nil)  {
+//                        if [Part.backSupportHeadSupport,
+//                            Part.backSupport].contains(item.last!.part) {
+//
+//                            postTiltObjectToFourCornerPerKeyDic =
+//                            createPostTiltObjectToPartFourCornerPerKeyDic(item)
+//                        }
+//                    }
+//                }
+//            } else {
+//                            print ("DETECT")
+//                postTiltObjectToFourCornerPerKeyDic =
+//                preTiltObjectToPartFourCornerPerKeyDic
+//            }
 
-//                    dimensionDic +=
-//                    DimensionDictionary(
-//                        [allOriginIdPartChain],
-//                        originIdPartDimensionChain.dimension,
-//                        dimensionDicIn,
-//                        0).forPart
-            }
-        }
+
+//            print( postTiltObjectToFourCornerPerKeyDic)
+            
+        func createPreTiltParentToPartDictionary (
+            trial: PartDimensionOriginIdsChain){
                 
-
-            
-//        func createPreTiltParentToPartDictionary (
-//            _ allOriginIdPartChain: OriginIdPartChain){
-//
-//            let parentAndObjectToPartOriginDictionary =
-//                OriginIdPartChainInDictionariesOut(
-//                allOriginIdPartChain,
-//                preTiltParentToPartOriginDicIn
-//                )
-//
-//                preTiltParentToPartOriginDic +=
-//                    parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-//
-//                preTiltObjectToPartOriginDic +=
-//                    parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
-//        }
-
-            
-            
-        func createPreTiltParentToPartDictionary2 (
-            
-            trial: [PartDimensionOriginIdsChain]){
-                
-            
             let parentAndObjectToPartOriginDictionary =
-                OriginIdPartChainInDictionariesOut2(
-               trial,
-                preTiltParentToPartOriginDicIn
-                )
+                ObjectOriginDictionary(
+                    trial,
+                    preTiltParentToPartOriginDicIn)
                 preTiltParentToPartOriginDic +=
                     parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-                
                 preTiltObjectToPartOriginDic +=
                     parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
         }
-            
-            
             
             
         func getObjectPartChainLabelDic  ()
@@ -291,19 +267,19 @@ struct DictionaryProvider {
         }
             
             
-        func createPostTiltObjectToPartFourCornerPerKeyDic()
+        func createPostTiltObjectToPartFourCornerPerKeyDic(
+           _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain)
             -> CornerDictionary{
                 //replace the part origin positions with the rotated values
                 // and rotate the corners of the part
             var tilted: CornerDictionary = [:]
                 if BaseObjectGroups().backSupport.contains(objectType) {
                     tilted =
-                    OriginPostTilt(
-                        parent: self,
-                        originIdPartChainForBackForBothSitOn,
-                        .sitOnTiltJoint).objectToTiltedCorners
+                        OriginPostTilt(
+                            parent: self,
+                            partDimensionOriginIdsChain,
+                            .sitOnTiltJoint).objectToTiltedCorners
                 }
-                
                 return
                     Replace(
                         initial:
@@ -313,25 +289,9 @@ struct DictionaryProvider {
                     ).intialWithReplacements
         }
             
+            
+            
     } // Init ends
-    
-
-//    func rotationIsRequired (
-//        _ key: String)
-//        -> Bool {
-//        let part = FindGeneralPart(key).partCase
-//        return
-//            TiltPartChain().allAngle.contains( part) &&
-//            SupportObjectGroups().canTilt.contains(baseType)
-//    }
-//
-    
-    
-    
-
-
-    
-   
 } //Parent struct ends
 
 
@@ -429,27 +389,40 @@ extension DictionaryProvider {
     struct OriginPostTilt {
         let parent: DictionaryProvider
         var objectToTiltedCorners: CornerDictionary = [:]
+        var partIds: [[Part]] = []
+        var partChain: [Part] = []
+        var partOrigin: [PositionAsIosAxes] = []
         
         init(
             parent: DictionaryProvider,
-              _ originIdPartChain: [OriginIdPartChain],
+            _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain,
               _ rotationJoint: Part) {
-//print(originIdPartChain)
+
             self.parent = parent
+                  
+              for item in partDimensionOriginIdsChain {
+                  partChain.append(item.part)
+                  partIds.append(item.ids)
+                  partOrigin.append(item.origin)
+              }
                   
                   for index in 0..<parent.oneOrTwoIds.count {
                 forTilt(
                     parent,
                     parent.oneOrTwoIds[index],
-                    originIdPartChain[index],
+                    (origin: partOrigin, ids: partIds, chain: partChain),
                     rotationJoint)
             }
+                  
+                  
         }
         
         mutating func forTilt (
             _ parent: DictionaryProvider,
             _ sitOnId: Part,
-            _ originIdPartChain: OriginIdPartChain,
+            _ originIdPartChain:                       (origin: [PositionAsIosAxes],
+                                                        ids: [[Part]],
+                                                        chain: [Part]),
             _ rotationJoint: Part) {
             let tiltOriginPart: [Part] =
                 [.object, .id0, .stringLink, rotationJoint, .id0, .stringLink, .sitOn, sitOnId]
@@ -468,6 +441,7 @@ extension DictionaryProvider {
                     let partIds: [Part] =  originIdPartChain.ids[index]
                     
                     for partId in partIds {
+ 
                         var tiltedCornersFromObject: Corners = []
                         let partName =
                             CreateNameFromParts([
@@ -507,16 +481,6 @@ extension DictionaryProvider {
         
     }
     
-}
-
-///Provides the origin and id and nodes (an array of parts in order from  object origin to end part for the relevant parts where id is a one or two element array indicating that the part is unilateral or bilateral respectively).   Example nodes is [.wheelJoint, .casterFork, .casterWheel] , ids is [[id0, id1], [id0, id1], [id0, id1]] indicating two caster wheels
-protocol InputForDictionary {
-    // the input value
-    var objectType: ObjectTypes {get}
-    // the return value
-    // An array of array as some structs
-    // provide more than one array of OriginIdNodes
-    var allOriginIdPartChain: [[OriginIdPartChain]] {get}
 }
 
 

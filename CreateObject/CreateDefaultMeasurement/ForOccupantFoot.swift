@@ -11,57 +11,6 @@ import Foundation
 
 
 
-/// links are:
-/// 1footSupportHangerSitOnVerticalJoint
-/// 2 footSupportHorizontalJoint
-/// 3 footSupport OR footSupportInOnePiece
-/// footSupportHangerLink is derived from 1 and 2 when the final dictionary is available
-/// so you edit positions of 1 or 3 to change hangerLink
-/// and hangerLink only exists to create default position and not future editiing
-//struct AllOccupantFootRelated{
-//
-//    let parts: [Part]
-//    var defaultDimensions: [Dimension3d] = []
-//
-//    init(
-//        _ baseType: ObjectTypes,
-//        _ chain: [Part] ) {
-//        self.parts = chain
-//        let defaults =
-//            OccupantFootSupportDefaultDimension(baseType)
-//
-//        for part in parts {
-//            defaultDimensions.append(getDefaultDimensions(part))
-//        }
-//
-//
-//        func getDefaultDimensions (
-//            _ part: Part)
-//            -> Dimension3d {
-//                var dimension: Dimension3d = ZeroValue.dimension3d
-//            switch part {
-//                case .footSupportHangerJoint:
-//                    dimension =
-//                    defaults.getHangerJoint()
-//                case .footSupportJoint:
-//                    dimension =
-//                    defaults.getFootJoint()
-//                case .footSupport:
-//                    dimension =
-//                    defaults.getFootSupportInTwoPieces()
-//                case .footSupportInOnePiece:
-//                    dimension =
-//                    defaults.getFootSupportInOnePiece()
-//                default: break
-//            }
-//            return dimension
-//        }
-//
-//    }
-//}
-
-
-
 struct OccupantFootSupportDefaultDimension: PartDimension {
 
   mutating  func reinitialise(_ part: Part?) {
@@ -137,6 +86,7 @@ struct OccupantFootSupportDefaultDimension: PartDimension {
             width: OccupantBodySupportDefaultDimension.general.width,
             length: 100.0,
             height: 10.0)
+       
         return
             dictionary[baseType] ?? general
     }

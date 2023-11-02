@@ -110,11 +110,7 @@ struct OriginIdPartChainTransformed {
                 sitOnId,
                 partPairsToEndOfChain,
                 partIds,
-                usingIdZeroOrOne)
-//            print (partChain)
-//            print (partIds)
-//            print ("")
-            
+                usingIdZeroOrOne)            
         let names = getNamesFromPartChainPairs(
             partPairsToEndOfChain,
             idForFirstAndSecondOfAllPartPairToChainEnd,
