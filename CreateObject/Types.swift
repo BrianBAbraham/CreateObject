@@ -11,7 +11,7 @@ typealias AngleMinMax = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle
 typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
 typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
-typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
+//typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
 
 typealias LeftRightPositionAsIosAxis = (
     left: PositionAsIosAxes, right: PositionAsIosAxes)
@@ -22,7 +22,6 @@ typealias RearMidFrontPositions =
     mid: PositionAsIosAxes,
     front: PositionAsIosAxes)
 
-//typealias OptionDictionary = [ObjectOptions: Bool]
 
 
 ///an array of one or more part that form
@@ -54,15 +53,15 @@ typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 typealias Dimension = (width: Double, length: Double)
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
 
-typealias Dimensions3dRearMidFront =
-    (rear: [Dimension3d], mid: [Dimension3d], front: [Dimension3d])
+//typealias Dimensions3dRearMidFront =
+//    (rear: [Dimension3d], mid: [Dimension3d], front: [Dimension3d])
 
 typealias Dimension3dRearMidFront =
     (rear: Dimension3d, mid: Dimension3d, front: Dimension3d)
 
 typealias WheelSize = (radius: Double, width: Double)
 
-//typealias Edit = (corner: Bool, origin: Bool, side: Bool, lengthOnly: Bool, widthOnly: Bool, widthSymmetry: Bool)
+
 
 //typealias MinMax = (min: Double, max: Double)
 typealias AngleDictionary = [String: Measurement<UnitAngle>]
@@ -76,7 +75,10 @@ typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 
 
 
-
+typealias RotationAngles =
+    (x: Measurement<UnitAngle>,
+     y: Measurement<UnitAngle>,
+     z: Measurement<UnitAngle>)
 
 
 typealias PartDimensionOriginIds =
@@ -84,8 +86,8 @@ typealias PartDimensionOriginIds =
     part: Part,
     dimension: Dimension3d,
     origin: PositionAsIosAxes,
-    ids: [Part] )
-
+    ids: [Part],
+    angles: RotationAngles)
 
 typealias PartDimensionOriginIdsChain =
     [PartDimensionOriginIds]

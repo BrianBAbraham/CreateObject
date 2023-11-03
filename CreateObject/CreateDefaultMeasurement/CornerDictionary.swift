@@ -68,7 +68,7 @@ struct DictionaryProvider {
     
     var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
     var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
-    var wheelBaseJointOrigin: RearMidFrontPositions = ZeroValue.rearMidFrontPositions
+    //var wheelBaseJointOrigin: RearMidFrontPositions = ZeroValue.rearMidFrontPositions
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,

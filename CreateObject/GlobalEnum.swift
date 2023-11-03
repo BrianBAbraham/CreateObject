@@ -383,11 +383,10 @@ struct LabelInPartChainOut  {
 
 
 
-
-
-//[
-//    [first chain
-//        (part: start of chain, dimension: , origin: , ids: ),
+//
+//[ // last part is the chainLabel
+//    [//first PartDimensionOriginIdsChain
+//        (part: start of chain, dimension: , origin: , ids: ), //PartDimensionOriginIds
 //        .
 //        .
 //        .
@@ -396,7 +395,7 @@ struct LabelInPartChainOut  {
 //    .
 //    .
 //    .
-//    [last chain
+//    [//last PartDimensionOriginIdsChain
 //        (part: start of chain, dimension: , origin: , ids: ),
 //        .
 //        .
@@ -544,9 +543,9 @@ struct PartDimensionOriginIdChains {
                 //empty chain for each chain label
                 var partDimensionOriginIdChain: PartDimensionOriginIdsChain = []
                     for part in partChain {
-                        let partDimensionOriginId = getPartDimensionOriginId(part)
-                        if partDimensionOriginId.count != 0 {
-                            partDimensionOriginIdChain.append (partDimensionOriginId[0])
+                        let partDimensionOriginId = getPartDimensionOriginIds(part)
+                        if partDimensionOriginId.part != ZeroValue.partDimensionOriginIds.part {
+                            partDimensionOriginIdChain.append (partDimensionOriginId)
                         }
                     }
                 if partDimensionOriginIdChain.count != 0 {
@@ -559,24 +558,25 @@ struct PartDimensionOriginIdChains {
 
 
     
-   mutating func getPartDimensionOriginId (
+   mutating func getPartDimensionOriginIds (
     _ part: Part)
-        -> PartDimensionOriginIdsChain {
+        -> PartDimensionOriginIds {
         switch part {
             case
-                .backSupporRotationJoint,
-                .backSupport,
-                .backSupportHeadSupportJoint,
-                .backSupportHeadSupportLink,
-                .backSupportHeadSupport:
+            .backSupporRotationJoint,
+            .backSupport,
+            .backSupportHeadSupportJoint,
+            .backSupportHeadSupportLink,
+            .backSupportHeadSupport:
                 preTiltOccupantBackSupportDefaultOrigin.reinitialise(part)
                 occupantBackSupportDefaultDimension.reinitialise(part)
                 return
-                    [(
+                    (
                     part: part,
                     dimension: occupantBackSupportDefaultDimension.dimension,
                     origin: preTiltOccupantBackSupportDefaultOrigin.origin,
-                    ids: [.id0] )]
+                    ids: [.id0],
+                    angles: ZeroValue.rotationAhgles)
             case
             .footSupportHangerJoint,
             .footSupportJoint,
@@ -585,41 +585,49 @@ struct PartDimensionOriginIdChains {
                 preTiltOccupantFootSupportDefaultOrigin.reinitialise(part)
                 occupantFootSupportDefaultDimension.reinitialise(part)
                 return
-                    [(
+                    (
                     part: part,
                     dimension: occupantFootSupportDefaultDimension.dimension,
                     origin: preTiltOccupantFootSupportDefaultOrigin.origin,
                     ids: part == .footSupportInOnePiece ?
-                        [.id0]: Self.firstBilateral )]
+                        [.id0]: Self.firstBilateral,
+                    angles: ZeroValue.rotationAhgles)
             case
             .sideSupportRotationJoint,
             .sideSupport:
                 preTiltOccupantSideSupportDefaultOrigin.reinitialise(part)
                 occupantSideSupportDefaultDimension.reinitialise(part)
                  return
-                    [(
+                    (
                     part: part,
                     dimension: occupantSideSupportDefaultDimension.dimension,
                     origin: preTiltOccupantSideSupportDefaultOrigin.origin,
-                    ids: Self.firstBilateral )]
-            case .sitOn:
+                    ids: Self.firstBilateral,
+                    angles: ZeroValue.rotationAhgles)
+
+            case
+            .sitOn:
                 occupantBodySupportDefaultDimension.reinitialise(.sitOn)
                 return
-                    [(
+                    (
                     part: .sitOn,
                     dimension: occupantBodySupportDefaultDimension.dimension,
                     origin: sitOnOrigin,
-                    ids: [.id0] )]
+                    ids: [.id0] ,
+                    angles: ZeroValue.rotationAhgles)
+
             case
             .sitOnTiltJoint:
                 preTiltBaseJointDefaultOrigin.reinitialise(part)
                 objectBaseConnectionDefaultDimension.reinitialise(part)
                 return
-                    [(
+                    (
                     part: part,
                     dimension: Joint.dimension3d,
                     origin: preTiltBaseJointDefaultOrigin.origin,
-                    ids: [.id0] )]
+                    ids: [.id0],
+                    angles: ZeroValue.rotationAhgles )
+
             case
             .fixedWheelAtRear,
             .fixedWheelHorizontalJointAtRear,
@@ -640,16 +648,17 @@ struct PartDimensionOriginIdChains {
                 objectBaseConnectionDefaultDimension.reinitialise(part)
                 baseConnectionId.reinialise(part)
             
-//            print ("\(#function) \(objectBaseConnectionDefaultDimension.dimension) \(part)")
                 return
-                    [(
+                    (
                     part: part,
                     dimension: objectBaseConnectionDefaultDimension.dimension,
                     origin: preTiltBaseJointDefaultOrigin.origin,
-                    ids: baseConnectionId.ids )]
+                    ids: baseConnectionId.ids,
+                    angles: ZeroValue.rotationAhgles )
+
             default:
                 print("\(#function) \(part.rawValue) not found")
-                return []
+                return ZeroValue.partDimensionOriginIds
         }
     }
 }

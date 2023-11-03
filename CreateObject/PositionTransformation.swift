@@ -32,25 +32,19 @@ struct ZeroValue {
         mid: ZeroValue.iosLocation,
         front: ZeroValue.iosLocation)
 
+    static let partDimensionOriginIds: PartDimensionOriginIds =
+    (
+    part: Part.notFound,
+    dimension: Self.dimension3d,
+    origin: Self.iosLocation,
+    ids: [],
+    angles: Self.rotationAhgles)
     
-    
-//    static let originIdPartChain: OriginIdPartChain =
-//    (origin: [],
-//     ids: [[]],
-//     chain: [])
-    
-//    static let rearMidFrontOriginIdNodes: RearMidFrontOriginIdNodes =
-//    (rear: ZeroValue.originIdPartChain,
-//     mid: ZeroValue.originIdPartChain,
-//     front: ZeroValue.originIdPartChain)
-    
-    static let originIdNode: OriginIdNode =
+    static let rotationAhgles: RotationAngles =
         (
-        origin: iosLocation,
-        id: [],
-        node: Part.objectOrigin)
-    
-    
+        x: Self.angle,
+        y: Self.angle,
+        z: Self.angle)
     
 }
     
@@ -163,8 +157,9 @@ struct CreateIosPosition {
             return maxMeasurement - minMeasurement
         }
         return
-            (length: getDimension(yArray),
-            width: getDimension(xArray))
+            (
+            width: getDimension(xArray),
+            length: getDimension(yArray))
     }
     
     static func getArrayFromPositions( _ positions: [PositionAsIosAxes])
