@@ -38,9 +38,9 @@ struct ZeroValue {
     dimension: Self.dimension3d,
     origin: Self.iosLocation,
     ids: [],
-    angles: Self.rotationAhgles)
+    angles: Self.rotationAngles)
     
-    static let rotationAhgles: RotationAngles =
+    static let rotationAngles: RotationAngles =
         (
         x: Self.angle,
         y: Self.angle,

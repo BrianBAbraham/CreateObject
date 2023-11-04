@@ -39,51 +39,53 @@ struct PartToCornersPostTilt {
 
 
 
-struct OccupantDefaultAhgle {
-    var angles: RotationAngles = ZeroValue.rotationAhgles
-    
-    mutating func reinitialise(_ part: Part?) {
-        self.part = part
-        
-        switch part {
-        case .backSupporRotationJoint:
-            angles = getBackSupportRotationJointAngle()
-            
-        case .sitOnTiltJoint:
-            angles = getSitOnTiltJointAngle()
-            
-       
-        default:
-            print("\(#function) \(part!.rawValue) not found")
-            break
-        }
-    }
-    
-    let baseType: ObjectTypes
-    var part: Part?
-    
-    init ( _ baseType: ObjectTypes) {
-        self.baseType = baseType
-    }
-    
-    
-    
-    
-    func getBackSupportRotationJointAngle() -> RotationAngles {
-        let dictionary: [ObjectTypes: RotationAngles] = [:]
-        let general =
-            ZeroValue.rotationAhgles
-        return
-            dictionary[baseType] ?? general
-    }
+//struct OccupantDefaultAhgle {
+//    var angles: RotationAngles = ZeroValue.rotationAhgles
+//
+//    mutating func reinitialise(_ part: Part?) {
+//        self.part = part
+//
+//        switch part {
+//        case .backSupporRotationJoint:
+//            angles = getBackSupportRotationJointAngle()
+//
+//        case .sitOnTiltJoint:
+//            angles = getSitOnTiltJointAngle()
+//
+//
+//        default:
+//            print("\(#function) \(part!.rawValue) not found")
+//            break
+//        }
+//    }
+//
+//    let baseType: ObjectTypes
+//    var part: Part?
+//
+//    init ( _ baseType: ObjectTypes) {
+//        self.baseType = baseType
+//    }
+//
+//
+//
+//
+//    func getBackSupportRotationJointAngle() -> RotationAngles {
+//        let dictionary: [ObjectTypes: RotationAngles] = [:]
+//        let general =
+//            ZeroValue.rotationAhgles
+//        return
+//            dictionary[baseType] ?? general
+//    }
+//
+//
+//    func getSitOnTiltJointAngle() -> RotationAngles {
+//        let dictionary: [ObjectTypes: RotationAngles] = [:]
+//        let general = ZeroValue.rotationAhgles
+//        return
+//            dictionary[baseType] ?? general
+//    }
+//
+//
+//}
 
-    
-    func getSitOnTiltJointAngle() -> RotationAngles {
-        let dictionary: [ObjectTypes: RotationAngles] = [:]
-        let general = ZeroValue.rotationAhgles
-        return
-            dictionary[baseType] ?? general
-    }
-    
 
-}

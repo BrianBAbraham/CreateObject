@@ -194,6 +194,8 @@ struct ObjectsAndTheirChainLabels {
         .sideSupport,
         .sitOnTiltJoint,
         .sitOn,]
+    static let rearAndFrontCasterWheels: [Part] =
+        [.casterWheelAtRear, .casterWheelAtFront]
     static let chairSupportWithFixedRearWheel: [Part] =
     chairSupport + [.fixedWheelAtRear]
     
@@ -203,16 +205,16 @@ struct ObjectsAndTheirChainLabels {
         [ .sideSupport, .sitOn],
       
     .allCasterChair:
-        chairSupport + [.casterWheelAtFront],
+        chairSupport + rearAndFrontCasterWheels,
       
     .allCasterTiltInSpaceShowerChair:
-        chairSupport + [.casterWheelAtFront],
+        chairSupport + rearAndFrontCasterWheels,
     
     .allCasterStretcher:
-        [ .sitOn, .casterWheelAtRear, .casterWheelAtFront],
+        [ .sitOn] + rearAndFrontCasterWheels,
     
     .fixedWheelMidDrive:
-        chairSupport + [.fixedWheelAtMid],
+        chairSupport + [.fixedWheelAtMid] + rearAndFrontCasterWheels,
     
     .fixedWheelFrontDrive:
         chairSupport + [.fixedWheelAtFront],

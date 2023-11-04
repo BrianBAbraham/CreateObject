@@ -383,28 +383,9 @@ struct LabelInPartChainOut  {
 
 
 
-//
-//[ // last part is the chainLabel
-//    [//first PartDimensionOriginIdsChain
-//        (part: start of chain, dimension: , origin: , ids: ), //PartDimensionOriginIds
-//        .
-//        .
-//        .
-//        (part: end of chain , dimension: , origin: , ids: )
-//    ],
-//    .
-//    .
-//    .
-//    [//last PartDimensionOriginIdsChain
-//        (part: start of chain, dimension: , origin: , ids: ),
-//        .
-//        .
-//        .
-//        (part: end of chain , dimension: , origin: , ids: )
-//    ],
-//]
-//Source of truth for partDimensionOriginIdsChain
-struct PartDimensionOriginIdChains {
+/// Object.chains: [ [ObjectValues]  ]
+/// where ObjectValues has object properties
+struct Object {
     var objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary {
         ObjectsAndTheirChainLabels().dictionary
     }
@@ -497,8 +478,18 @@ struct PartDimensionOriginIdChains {
     /// containing an array of PartDimensionOriginIds
     /// with data for parts from object origin to terminal part
     
-    var partDimensionOriginIdChains: [PartDimensionOriginIdsChain] = []
-   
+    var objectValues: ObjectValues =
+        ObjectValues(
+            part: .notFound,
+            dimension: ZeroValue.dimension3d,
+            origin: ZeroValue.iosLocation,
+            ids:  [],
+            angles: ZeroValue.rotationAngles)
+    var objectChain: [ObjectValues] = []
+    
+    ///[Object.Chain]
+    var chains: [Chain] = []
+    
     init(_ objectType: ObjectTypes) {
         self.objectType = objectType
         
@@ -541,16 +532,31 @@ struct PartDimensionOriginIdChains {
 
                 
                 //empty chain for each chain label
-                var partDimensionOriginIdChain: PartDimensionOriginIdsChain = []
+             
                     for part in partChain {
                         let partDimensionOriginId = getPartDimensionOriginIds(part)
+                        
+                        objectValues =
+                            ObjectValues(
+                                part: partDimensionOriginId.part,
+                                dimension: partDimensionOriginId.dimension,
+                                origin: partDimensionOriginId.origin,
+                                ids:  partDimensionOriginId.ids,
+                                angles: ZeroValue.rotationAngles)
+                        
+                        
                         if partDimensionOriginId.part != ZeroValue.partDimensionOriginIds.part {
-                            partDimensionOriginIdChain.append (partDimensionOriginId)
+                           
+                            objectChain.append(objectValues)
                         }
                     }
-                if partDimensionOriginIdChain.count != 0 {
-                    partDimensionOriginIdChains.append(partDimensionOriginIdChain)
+                                  
+                if objectChain.count != 0 {
+                    chains.append(Chain(objectChain))
+                    
+                    
                 }
+                objectChain = []
             }
         }
     }
@@ -576,7 +582,7 @@ struct PartDimensionOriginIdChains {
                     dimension: occupantBackSupportDefaultDimension.dimension,
                     origin: preTiltOccupantBackSupportDefaultOrigin.origin,
                     ids: [.id0],
-                    angles: ZeroValue.rotationAhgles)
+                    angles: ZeroValue.rotationAngles)
             case
             .footSupportHangerJoint,
             .footSupportJoint,
@@ -591,7 +597,7 @@ struct PartDimensionOriginIdChains {
                     origin: preTiltOccupantFootSupportDefaultOrigin.origin,
                     ids: part == .footSupportInOnePiece ?
                         [.id0]: Self.firstBilateral,
-                    angles: ZeroValue.rotationAhgles)
+                    angles: ZeroValue.rotationAngles)
             case
             .sideSupportRotationJoint,
             .sideSupport:
@@ -603,7 +609,7 @@ struct PartDimensionOriginIdChains {
                     dimension: occupantSideSupportDefaultDimension.dimension,
                     origin: preTiltOccupantSideSupportDefaultOrigin.origin,
                     ids: Self.firstBilateral,
-                    angles: ZeroValue.rotationAhgles)
+                    angles: ZeroValue.rotationAngles)
 
             case
             .sitOn:
@@ -614,7 +620,7 @@ struct PartDimensionOriginIdChains {
                     dimension: occupantBodySupportDefaultDimension.dimension,
                     origin: sitOnOrigin,
                     ids: [.id0] ,
-                    angles: ZeroValue.rotationAhgles)
+                    angles: ZeroValue.rotationAngles)
 
             case
             .sitOnTiltJoint:
@@ -626,7 +632,7 @@ struct PartDimensionOriginIdChains {
                     dimension: Joint.dimension3d,
                     origin: preTiltBaseJointDefaultOrigin.origin,
                     ids: [.id0],
-                    angles: ZeroValue.rotationAhgles )
+                    angles: ZeroValue.rotationAngles )
 
             case
             .fixedWheelAtRear,
@@ -654,11 +660,31 @@ struct PartDimensionOriginIdChains {
                     dimension: objectBaseConnectionDefaultDimension.dimension,
                     origin: preTiltBaseJointDefaultOrigin.origin,
                     ids: baseConnectionId.ids,
-                    angles: ZeroValue.rotationAhgles )
+                    angles: ZeroValue.rotationAngles )
 
             default:
                 print("\(#function) \(part.rawValue) not found")
                 return ZeroValue.partDimensionOriginIds
+        }
+    }
+}
+
+
+extension Object {
+    struct ObjectValues {
+        let part: Part
+        let dimension: Dimension3d
+        let origin:PositionAsIosAxes
+        let ids: [Part]
+        let angles: RotationAngles
+    }
+
+    struct Chain {
+        let chain: [ObjectValues]
+        let lastPart: Part
+        init(_ chain: [ObjectValues]) {
+            self.chain = chain
+            lastPart = chain.last?.part ?? .notFound
         }
     }
 }
