@@ -132,6 +132,7 @@ case notFound = "notAnyPart"
     
     case sideSupport = "sideSupport"
     case sideSupportRotationJoint = "sideSupportRotatationJoint"
+    case sideSupportJoystick = "sideSupportJoystick"
     case stringLink = "_"
     
     //case sitOnTiltJoint = "tiltInSpaceAngle"
@@ -262,11 +263,11 @@ struct LabelInPartChainOut  {
          .sitOn,
         .footSupportHangerJoint,
         .footSupportJoint,
-                .footSupport
+        .footSupport
         ]
     let footOnly: PartChain =
         [.footSupportInOnePiece]
-    let headSupport: PartChain =
+   static let headSupport: PartChain =
         [
         .backSupportHeadSupportJoint,
         .backSupportHeadSupportLink,
@@ -332,7 +333,7 @@ struct LabelInPartChainOut  {
                     Self.backSupport
             case .backSupportHeadSupport:
                 return
-                    Self.backSupport + headSupport
+            Self.backSupport + Self.headSupport
             case .footOnly:
                 return
                     footOnly
@@ -345,6 +346,9 @@ struct LabelInPartChainOut  {
             case .sideSupport:
                 return
                     Self.sideSupport
+            case .sideSupportJoystick:
+                return
+                    Self.sideSupport + [.sideSupportJoystick]
             case .sitOn:
                 return sitOn
             case .sitOnTiltJoint:

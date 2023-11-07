@@ -104,7 +104,7 @@ struct OccupantBodySupportDefaultAngleMinMax {
     let dictionary: BaseObjectAngelMinMaxDictionary =
     [.allCasterTiltInSpaceShowerChair: (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 45.0, unit: UnitAngle.degrees) ) ]
     
-    static let general = (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 0.0, unit: UnitAngle.degrees) )
+    static let general = (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 30.0, unit: UnitAngle.degrees) )
     
     let value: AngleMinMax
     
@@ -485,7 +485,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
                     y: 0.0,
                     z: wheelDefaultDimensionForRearMidFront.rear.height )
                 )
-            
+           // print(wheelBaseJointOriginForOnlyOneSitOn.front.x)
         }
         
         return

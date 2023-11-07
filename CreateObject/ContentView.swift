@@ -147,13 +147,16 @@ struct ContentView: View {
 
                 
                 NavigationLink(destination:
+                       
                     ZStack{
                         VStack {
                         
                             PickInitialObjectView()
+                               // .environmentObject(objectPickVM)
 
 
                             AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
+                                .environmentObject(objectPickVM)
                             Spacer()
                         }
                     HStack(alignment: .center) {
@@ -162,6 +165,7 @@ struct ContentView: View {
                             uniquePartNames,
                             //currentDictionary,
                             name)
+                       // .environmentObject(objectPickVM)
     //                        .modifier(
     //                            ForObjectInDefaultView (
     //                                frameSize: frameSize)
@@ -173,7 +177,9 @@ struct ContentView: View {
                     }
   
                 )
-                    { Text("Default equipment") }
+                    { Text("Default equipment")
+                           // .environmentObject(objectPickVM)
+                    }
 
                 
 //                NavigationLink(destination:

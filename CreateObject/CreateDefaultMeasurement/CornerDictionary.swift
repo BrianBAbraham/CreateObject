@@ -190,44 +190,72 @@ struct DictionaryProvider {
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
 
+///if a rotation joint is present rotate about joint option in UI
+///Options for scope of joint
+/// dictiionary joint: scope where scope is [[Part]]
             
 //MARK: - POST-TILT
+        let rotationAndTheirScope =
+           RotationsAndTheirScope()
+        var partsInScope: [Part] = []
+        if let sitOnTiltJointScopes =
+            rotationAndTheirScope.dictionary[.sitOnTiltJoint] {
+            
+            partsInScope =
+                rotationAndTheirScope.getScope(sitOnTiltJointScopes[0]  )
+            
+            //print(partsInScope)
+        }
+            
+            
+            
+            
         var lastParts: [Part] = []
         for chain in chainsFromStruct {
             lastParts.append(chain.lastPart)
         }
             
-            
-            let backPresent = [Part.backSupportHeadSupport,
-                                  Part.backSupport].contains(where: { element in
-                                  return lastParts.contains(element) })
-        
         if lastParts.contains(.sitOnTiltJoint) {
             for item in chainsWithTouple {
-                    if [Part.backSupportHeadSupport,
-                        Part.backSupport].contains(item.last!.part) {
+                    if partsInScope.contains(item.last!.part) {
                         postTiltObjectToFourCornerPerKeyDic =
                             createPostTiltObjectToPartFourCornerPerKeyDic(item)
-                        print("DETECT 1 ")
                     }
             }
         } else {
             postTiltObjectToFourCornerPerKeyDic =
                 preTiltObjectToPartFourCornerPerKeyDic
         }
-
+            
+       
+            
           
             
-//
-//            if lastParts.contains(.sitOnTiltJoint) {
-//                if backPresent
-//                {
-//                    print("DETECT 2")
-//                }
-//            }
             
-            
-            
+        func createPostTiltObjectToPartFourCornerPerKeyDic(
+           _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain)
+            -> CornerDictionary{
+                print (partDimensionOriginIdsChain)
+                print("")
+                //replace the part origin positions with the rotated values
+                // and rotate the corners of the part
+            var tilted: CornerDictionary = [:]
+              //  if BaseObjectGroups().backSupport.contains(objectType) {
+                    tilted =
+                        OriginPostTilt(
+                            parent: self,
+                            partDimensionOriginIdsChain,
+                            .sitOnTiltJoint).objectToTiltedCorners
+              //  }
+                return
+                    Replace(
+                        initial:
+                            preTiltObjectToPartFourCornerPerKeyDic,
+                        replacement: tilted
+                        
+                    ).intialWithReplacements
+        }
+        
             
         func createPreTiltParentToPartDictionary (
             trial: PartDimensionOriginIdsChain){
@@ -284,27 +312,7 @@ struct DictionaryProvider {
         }
             
             
-        func createPostTiltObjectToPartFourCornerPerKeyDic(
-           _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain)
-            -> CornerDictionary{
-                //replace the part origin positions with the rotated values
-                // and rotate the corners of the part
-            var tilted: CornerDictionary = [:]
-                if BaseObjectGroups().backSupport.contains(objectType) {
-                    tilted =
-                        OriginPostTilt(
-                            parent: self,
-                            partDimensionOriginIdsChain,
-                            .sitOnTiltJoint).objectToTiltedCorners
-                }
-                return
-                    Replace(
-                        initial:
-                            preTiltObjectToPartFourCornerPerKeyDic,
-                        replacement: tilted
-                        
-                    ).intialWithReplacements
-        }
+
             
             
             
@@ -422,7 +430,9 @@ extension DictionaryProvider {
               partIds.append(item.ids)
               partOrigin.append(item.origin)
             }
-                  
+            
+            print (partChain.last)
+                
             for index in 0..<parent.oneOrTwoIds.count {
                 forTilt(
                     parent,

@@ -172,6 +172,14 @@ extension ObjectPickViewModel {
     }
     
     
+    func getCurrentObjectChainLabels()
+    -> [Part] {
+        let objectType = getCurrentObjectType()
+        let objectPartChainLabelDic = getObjectPartChainLabelDic()
+        return objectPartChainLabelDic[objectType] ?? []
+    }
+    
+    
     func getList (_  version: DictionaryVersion) -> [String] {
         var list: [String] = []
             switch version  {

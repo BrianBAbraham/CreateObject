@@ -424,9 +424,11 @@ struct PreTiltBaseJointDefaultOrigin: PartOrigin {
             case .fixedWheelHorizontalJointAtFront:
                 origin = getObjectToWheelHorizontalJointAtFront()
             case .fixedWheelAtRear:
-                origin = getWheelHorizontalJointToFixedWheelAtRear()
+                origin = getWheelHorizontalJointToFixedWheelAtFront()
             case .fixedWheelAtMid:
                 origin = getWheelHorizontalJointToFixedWheelAtMid()
+            case .fixedWheelAtFront:
+            origin = getWheelHorizontalJointToFixedWheelAtFront()
             case .casterVerticalJointAtRear:
                 origin = getCasterWheelVerticalAxisAtRear()
             case .casterForkAtRear:
@@ -482,7 +484,8 @@ struct PreTiltBaseJointDefaultOrigin: PartOrigin {
     func getObjectToWheelHorizontalJointAtFront()
         -> PositionAsIosAxes {
         let dictionary: OriginDictionary = [:]
-        let general = preTiltSitOnAndWheelBaseJointOrigin.wheelBaseJointOriginForOnlyOneSitOn.front
+        let general =
+            preTiltSitOnAndWheelBaseJointOrigin.wheelBaseJointOriginForOnlyOneSitOn.front
         return
             dictionary[objectType] ?? general
     }
@@ -499,6 +502,17 @@ struct PreTiltBaseJointDefaultOrigin: PartOrigin {
     }
     
     func getWheelHorizontalJointToFixedWheelAtMid()
+        -> PositionAsIosAxes {
+        let dictionary: OriginDictionary = [:]
+        let general =
+            (x: 0.0,
+             y: 0.0,
+             z: 0.0)
+        return
+            dictionary[objectType] ?? general
+    }
+    
+    func getWheelHorizontalJointToFixedWheelAtFront()
         -> PositionAsIosAxes {
         let dictionary: OriginDictionary = [:]
         let general =

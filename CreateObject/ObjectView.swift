@@ -8,29 +8,54 @@
 import SwiftUI
 
 
+//struct LocalOutlineRectangle {
+//    static func path(corners: [CGPoint], _ color: Color = .black) -> some View {
+//        ZStack {
+//            Path { path in
+//                path.move(to: corners[0])
+//                path.addLine(to: corners[1])
+//                path.addLine(to: corners[2])
+//                path.addLine(to: corners[3])
+//                path.closeSubpath()
+//            }
+//            .fill(color)
+//            .opacity(0.9)
+//
+//            Path { path in
+//                path.move(to: corners[0])
+//                path.addLine(to: corners[1])
+//                path.addLine(to: corners[2])
+//                path.addLine(to: corners[3])
+//                path.closeSubpath()
+//            }
+//            .stroke(.black)
+//        }
+//   }
+//}
+
 struct LocalOutlineRectangle {
     static func path(corners: [CGPoint], _ color: Color = .black) -> some View {
         ZStack {
-            Path { path in
-                path.move(to: corners[0])
-                path.addLine(to: corners[1])
-                path.addLine(to: corners[2])
-                path.addLine(to: corners[3])
-                path.closeSubpath()
-            }
-            .fill(color)
-            .opacity(0.9)
-        
-            Path { path in
-                path.move(to: corners[0])
-                path.addLine(to: corners[1])
-                path.addLine(to: corners[2])
-                path.addLine(to: corners[3])
-                path.closeSubpath()
-            }
-            .stroke(.black)
+            RoundedRectangle(cornerRadius: 30) // Adjust the cornerRadius as needed
+                .path(in: CGRect(
+                    x: corners[0].x,
+                    y: corners[0].y,
+                    width: corners[2].x - corners[0].x,
+                    height: corners[2].y - corners[0].y
+                ))
+                .fill(color)
+                .opacity(0.9)
+            
+            RoundedRectangle(cornerRadius: 10) // Adjust the cornerRadius as needed
+                .path(in: CGRect(
+                    x: corners[0].x,
+                    y: corners[0].y,
+                    width: corners[2].x - corners[0].x,
+                    height: corners[2].y - corners[0].y
+                ))
+                .stroke(Color.black)
         }
-   }
+    }
 }
 
 struct PartView: View {

@@ -233,3 +233,72 @@ struct ObjectsAndTheirChainLabels {
 }
 
 
+
+
+struct RotationsAndTheirScope {
+    static let onlyOne = 0
+    static let back: [Part] =
+        [.backSupport] + [.backSupportHeadSupport]
+    static let side: [Part] =
+        
+            back + [.sideSupport]
+    static let foot: [Part] =
+            [.footSupport]
+    static let backAndSeat = back + [.sitOn]
+    static let backAndSide = back + side
+    static let backSeatAndSide = backAndSeat + side
+    static let backSeatAndFoot = backAndSeat + foot
+    static let backSeatFootAndSide = backSeatAndFoot + side
+    
+    
+//   static func removeSitOn(_ parts: [Part])
+//    -> [Part] {
+//        var mutatingParts = parts
+//        mutatingParts.removeAll {$0 == Part.sitOn}
+//        return
+//            mutatingParts
+//    }
+    
+    let dictionary: [Part: [Cases]] =
+        [
+        .sitOnTiltJoint:
+            [.back, .backAndSeat, .backAndSide, .backSeatAndSide, .backSeatAndFoot, .backSeatFootAndSide, .foot],
+        
+        
+        ]
+
+    func getScope(_ myCase: Cases)
+    -> [Part]
+    {
+        switch myCase{
+        case .back:
+            return Self.back
+        case .backAndSeat:
+            return Self.backAndSeat
+        case .backAndSide:
+            return Self.backSeatAndSide
+        case .backSeatAndSide:
+            return Self.backSeatAndSide
+        case .backSeatAndFoot:
+            return Self.backSeatAndFoot
+        case .backSeatFootAndSide:
+            return Self.backSeatFootAndSide
+        case .foot:
+            return Self.foot
+        }
+    }
+    
+    enum Cases: String  {
+        case back
+        case backAndSeat
+        case backAndSide
+        case backSeatAndSide
+        case backSeatAndFoot
+        case backSeatFootAndSide
+        case foot
+        
+        var rawValue: String {
+                return String(describing: self)
+            }
+    }
+}

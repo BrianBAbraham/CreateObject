@@ -57,7 +57,8 @@ struct Tilt: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     @State private var sliderValue: Double = 0.0
-    let showTilt: Bool
+    //var partChainLabels: [Part] = []
+    var showTilt: Bool = false
     var twinSitOnDictionary: TwinSitOnOptionDictionary {
         twinSitOnVM.getTwinSitOnOptions()}
     var angleName: String {
@@ -65,8 +66,9 @@ struct Tilt: View {
 //    var angleMinMax: AngleMinMax {
 //        objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.angleMinMax
 //    }
-    init(_ name: String) {
-        showTilt = name.contains("ilting") ? true: false
+ 
+    init (_ partChainLabels: [Part]){
+        showTilt = partChainLabels.contains(.sitOnTiltJoint) ? true: false
     }
     
     var body: some View {
