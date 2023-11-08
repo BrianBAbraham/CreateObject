@@ -46,7 +46,7 @@ struct LocalOutlineRectangle {
                 .fill(color)
                 .opacity(0.9)
             
-            RoundedRectangle(cornerRadius: 10) // Adjust the cornerRadius as needed
+            RoundedRectangle(cornerRadius: 30) // Adjust the cornerRadius as needed
                 .path(in: CGRect(
                     x: corners[0].x,
                     y: corners[0].y,

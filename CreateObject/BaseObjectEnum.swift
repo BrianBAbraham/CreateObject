@@ -189,6 +189,7 @@ struct BaseObjectGroups {
 struct ObjectsAndTheirChainLabels {
     static let chairSupport: [Part] =
         [
+        .backSupport,
         .backSupportHeadSupport,
         .footSupport,
         .sideSupport,
@@ -236,11 +237,10 @@ struct ObjectsAndTheirChainLabels {
 
 
 struct RotationsAndTheirScope {
-    static let onlyOne = 0
+    let onlyOne = 0
     static let back: [Part] =
         [.backSupport] + [.backSupportHeadSupport]
     static let side: [Part] =
-        
             back + [.sideSupport]
     static let foot: [Part] =
             [.footSupport]
@@ -251,13 +251,16 @@ struct RotationsAndTheirScope {
     static let backSeatFootAndSide = backSeatAndFoot + side
     
     
-//   static func removeSitOn(_ parts: [Part])
-//    -> [Part] {
-//        var mutatingParts = parts
-//        mutatingParts.removeAll {$0 == Part.sitOn}
-//        return
-//            mutatingParts
-//    }
+    static func removeParts(_ parts: [Part], _ toBeRemoved: [Part])
+    -> [Part] {
+        var mutatingParts = parts
+        for item in toBeRemoved {
+            mutatingParts.removeAll {$0 == item}
+        }
+       
+        return
+            mutatingParts
+    }
     
     let dictionary: [Part: [Cases]] =
         [
@@ -267,9 +270,9 @@ struct RotationsAndTheirScope {
         
         ]
 
-    func getScope(_ myCase: Cases)
-    -> [Part]
-    {
+    func getScopeLabel (
+    _ myCase: Cases)
+        -> [Part] {
         switch myCase{
         case .back:
             return Self.back
@@ -287,6 +290,36 @@ struct RotationsAndTheirScope {
             return Self.foot
         }
     }
+    
+    func getScopeOfParts (
+    _ myCase: Cases )
+        -> [Part] {
+        switch myCase{
+        case .back:
+            return
+                Self.removeParts(
+                LabelInPartChainOut([.backSupport]).partChains[onlyOne],
+                [.sitOn,   .backSupporRotationJoint]) +
+            Self.removeParts(
+                LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne], [.sitOn])
+        case .backAndSeat:
+            return
+                LabelInPartChainOut([.backSupport]).partChains[onlyOne] +
+                LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne]
+        case .backAndSide:
+            return Self.backSeatAndSide
+        case .backSeatAndSide:
+            return Self.backSeatAndSide
+        case .backSeatAndFoot:
+            return Self.backSeatAndFoot
+        case .backSeatFootAndSide:
+            return Self.backSeatFootAndSide
+        case .foot:
+            return Self.foot
+        }
+    }
+    
+    
     
     enum Cases: String  {
         case back

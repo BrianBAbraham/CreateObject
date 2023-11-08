@@ -333,7 +333,7 @@ struct LabelInPartChainOut  {
                     Self.backSupport
             case .backSupportHeadSupport:
                 return
-            Self.backSupport + Self.headSupport
+                    Self.backSupport + Self.headSupport
             case .footOnly:
                 return
                     footOnly

@@ -122,6 +122,7 @@ struct DictionaryProvider {
         // object to part
         
         let chainsFromStruct = Object(objectType).chains
+        
         chainsWithTouple = objectChainInChainAsToupleOut(chainsFromStruct)
     
         // chainAsTouple
@@ -187,6 +188,8 @@ struct DictionaryProvider {
                    preTiltObjectToPartOriginDic,
                    dimensionDic)
 
+            
+            
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
 
@@ -200,15 +203,12 @@ struct DictionaryProvider {
         var partsInScope: [Part] = []
         if let sitOnTiltJointScopes =
             rotationAndTheirScope.dictionary[.sitOnTiltJoint] {
-            
+//            print (sitOnTiltJointScopes[0])
+//            print ("")
             partsInScope =
-                rotationAndTheirScope.getScope(sitOnTiltJointScopes[0]  )
-            
-            //print(partsInScope)
+                rotationAndTheirScope.getScopeOfParts(sitOnTiltJointScopes[0]  )
+//            print(partsInScope)
         }
-            
-            
-            
             
         var lastParts: [Part] = []
         for chain in chainsFromStruct {
@@ -217,7 +217,11 @@ struct DictionaryProvider {
             
         if lastParts.contains(.sitOnTiltJoint) {
             for item in chainsWithTouple {
+             
                     if partsInScope.contains(item.last!.part) {
+                        
+                        //print (item.last!.part)
+                        
                         postTiltObjectToFourCornerPerKeyDic =
                             createPostTiltObjectToPartFourCornerPerKeyDic(item)
                     }
@@ -226,17 +230,104 @@ struct DictionaryProvider {
             postTiltObjectToFourCornerPerKeyDic =
                 preTiltObjectToPartFourCornerPerKeyDic
         }
-            
-       
-            
           
+            
+        print(
+            getNoDuplicateTupleFromChainsFiltredToRotationScope (
+                getTupleFromChainsFiltredToRotationScope(
+                    chainsFromStruct,
+                    partsInScope)
+                )
+            )
+            
+            
+        // Define a type alias for your data
+        typealias PartData = (part: Part, dimension: (width: Double, length: Double, height: Double), origin: (x: Double, y: Double, z: Double), ids: [Part], angles: (x: Measurement<UnitAngle>, y: Measurement<UnitAngle>, z: Measurement<UnitAngle>))
+            
+        //generally chains are not rotated
+        //as the scope of the rotation is not necessarily
+        //the whole chain, therefore parts out of scope
+        // are filitered out
+        func getTupleFromChainsFiltredToRotationScope(
+            _ chainsFromStruct: [Object.Chain],
+            _ partsInScope: [Part])
+            -> [PartData] {
+            var inScopeFromStruct: [Object.Chain] = []
+            
+            for chain in chainsFromStruct {
+                let filteredChain = Object.Chain(chain.chain.filter { item in
+                    return partsInScope.contains(item.part)
+                })
+                
+                if !filteredChain.chain.isEmpty {
+                    inScopeFromStruct.append(filteredChain)
+                }
+            }
+           
+            let filteredChains =  objectChainInChainAsToupleOut(inScopeFromStruct)[0]
+           
+            let inputData: [PartData] = filteredChains
+        
+            func areEqual(_ lhs: PartData, _ rhs: PartData)
+                -> Bool {
+          
+                return lhs.part == rhs.part
+            }
+
+            var uniqueData: [PartData] = []
+
+            for item in inputData {
+                if !uniqueData.contains(where: { areEqual($0, item) }) {
+                    uniqueData.append(item)
+                }
+            }
+            
+                    //print (uniqueData)
+
+        
+//            func getChainsWithToupleModifiedForRotation(
+//                _ chainsFromStruct: [Object.Chain],
+//                _ partsInScope: [Part]) {
+//                    var inScopeFromStruct: [Object.ObjectValues] = []
+//                    for chain in chainsFromStruct {
+//                        for item in chain.chain {
+//                            if partsInScope.contains(item.part) {
+//                                inScopeFromStruct.append(Object.Chain([item]))
+//                            }
+//                        }
+//                    }
+                return uniqueData
+        }
+         
+        func getNoDuplicateTupleFromChainsFiltredToRotationScope (
+            _ filteredChains: [PartData])
+            -> [PartData]{
+                
+                let inputData: [PartData] = filteredChains
+                // Create a custom comparator function
+                func areEqual(_ lhs: PartData, _ rhs: PartData)
+                    -> Bool {
+                    // Implement your comparison logic here
+                    return lhs.part == rhs.part
+                }
+
+                var uniqueData: [PartData] = []
+
+                for item in inputData {
+                    if !uniqueData.contains(where: { areEqual($0, item) }) {
+                        uniqueData.append(item)
+                    }
+                }
+                return uniqueData
+                //print (uniqueData
+    }
             
             
         func createPostTiltObjectToPartFourCornerPerKeyDic(
            _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain)
             -> CornerDictionary{
-                print (partDimensionOriginIdsChain)
-                print("")
+//print(partDimensionOriginIdsChain)
+//print("")
                 //replace the part origin positions with the rotated values
                 // and rotate the corners of the part
             var tilted: CornerDictionary = [:]
@@ -431,7 +522,7 @@ extension DictionaryProvider {
               partOrigin.append(item.origin)
             }
             
-            print (partChain.last)
+            //print(partChain)
                 
             for index in 0..<parent.oneOrTwoIds.count {
                 forTilt(
