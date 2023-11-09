@@ -297,11 +297,11 @@ struct RotationsAndTheirScope {
         switch myCase{
         case .back:
             return
-                Self.removeParts(
-                LabelInPartChainOut([.backSupport]).partChains[onlyOne],
-                [.sitOn,   .backSupporRotationJoint]) +
+//                Self.removeParts(
+//                LabelInPartChainOut([.backSupport]).partChains[onlyOne],
+//                [.sitOn,   .backSupporRotationJoint]) +
             Self.removeParts(
-                LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne], [.sitOn])
+                LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne], [.sitOn, .backSupporRotationJoint])
         case .backAndSeat:
             return
                 LabelInPartChainOut([.backSupport]).partChains[onlyOne] +

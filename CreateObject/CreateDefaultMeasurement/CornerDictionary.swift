@@ -206,9 +206,12 @@ struct DictionaryProvider {
 //            print (sitOnTiltJointScopes[0])
 //            print ("")
             partsInScope =
-                rotationAndTheirScope.getScopeOfParts(sitOnTiltJointScopes[0]  )
+                rotationAndTheirScope.getScopeOfParts(sitOnTiltJointScopes[1]  )
 //            print(partsInScope)
         }
+            
+            
+            
             
         var lastParts: [Part] = []
         for chain in chainsFromStruct {
@@ -217,13 +220,9 @@ struct DictionaryProvider {
             
         if lastParts.contains(.sitOnTiltJoint) {
             for item in chainsWithTouple {
-             
                     if partsInScope.contains(item.last!.part) {
-                        
-                        //print (item.last!.part)
-                        
-                        postTiltObjectToFourCornerPerKeyDic =
-                            createPostTiltObjectToPartFourCornerPerKeyDic(item)
+//                        postTiltObjectToFourCornerPerKeyDic =
+//                            createPostTiltObjectToPartFourCornerPerKeyDic(item)
                     }
             }
         } else {
@@ -231,14 +230,17 @@ struct DictionaryProvider {
                 preTiltObjectToPartFourCornerPerKeyDic
         }
           
+        
             
-        print(
-            getNoDuplicateTupleFromChainsFiltredToRotationScope (
-                getTupleFromChainsFiltredToRotationScope(
-                    chainsFromStruct,
-                    partsInScope)
-                )
-            )
+        let chainsScopedToRotation =
+                            
+                    getTupleFromStructOnlyForRotatedParts(
+                        chainsFromStruct,
+                        partsInScope)
+               
+            
+            postTiltObjectToFourCornerPerKeyDic =
+            createPostTiltObjectToPartFourCornerPerKeyDic(chainsScopedToRotation)
             
             
         // Define a type alias for your data
@@ -247,63 +249,30 @@ struct DictionaryProvider {
         //generally chains are not rotated
         //as the scope of the rotation is not necessarily
         //the whole chain, therefore parts out of scope
-        // are filitered out
-        func getTupleFromChainsFiltredToRotationScope(
+        //are filitered out
+        func getTupleFromStructOnlyForRotatedParts(
             _ chainsFromStruct: [Object.Chain],
             _ partsInScope: [Part])
             -> [PartData] {
-            var inScopeFromStruct: [Object.Chain] = []
+    
+            var uniquePartData: [PartData] = []
             
             for chain in chainsFromStruct {
-                let filteredChain = Object.Chain(chain.chain.filter { item in
-                    return partsInScope.contains(item.part)
-                })
-                
-                if !filteredChain.chain.isEmpty {
-                    inScopeFromStruct.append(filteredChain)
-                }
-            }
-           
-            let filteredChains =  objectChainInChainAsToupleOut(inScopeFromStruct)[0]
-           
-            let inputData: [PartData] = filteredChains
-        
-            func areEqual(_ lhs: PartData, _ rhs: PartData)
-                -> Bool {
-          
-                return lhs.part == rhs.part
-            }
-
-            var uniqueData: [PartData] = []
-
-            for item in inputData {
-                if !uniqueData.contains(where: { areEqual($0, item) }) {
-                    uniqueData.append(item)
+                for item in chain.chain {
+                    if partsInScope.contains(item.part) {
+                        uniquePartData.append(
+                            (part: item.part,
+                             dimension: item.dimension,
+                             origin: item.origin,
+                             ids: item.ids,
+                             angles: item.angles))
+                    }
                 }
             }
             
-                    //print (uniqueData)
-
-        
-//            func getChainsWithToupleModifiedForRotation(
-//                _ chainsFromStruct: [Object.Chain],
-//                _ partsInScope: [Part]) {
-//                    var inScopeFromStruct: [Object.ObjectValues] = []
-//                    for chain in chainsFromStruct {
-//                        for item in chain.chain {
-//                            if partsInScope.contains(item.part) {
-//                                inScopeFromStruct.append(Object.Chain([item]))
-//                            }
-//                        }
-//                    }
-                return uniqueData
-        }
-         
-        func getNoDuplicateTupleFromChainsFiltredToRotationScope (
-            _ filteredChains: [PartData])
-            -> [PartData]{
-                
-                let inputData: [PartData] = filteredChains
+            func dataWithDuplicatesRemoved ()
+                -> [PartData]{
+                let inputData: [PartData] = uniquePartData
                 // Create a custom comparator function
                 func areEqual(_ lhs: PartData, _ rhs: PartData)
                     -> Bool {
@@ -319,15 +288,16 @@ struct DictionaryProvider {
                     }
                 }
                 return uniqueData
-                //print (uniqueData
-    }
+            }
+            return dataWithDuplicatesRemoved()
+        }
+         
+
             
             
         func createPostTiltObjectToPartFourCornerPerKeyDic(
            _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain)
             -> CornerDictionary{
-//print(partDimensionOriginIdsChain)
-//print("")
                 //replace the part origin positions with the rotated values
                 // and rotate the corners of the part
             var tilted: CornerDictionary = [:]
