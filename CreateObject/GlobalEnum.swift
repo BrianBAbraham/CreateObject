@@ -450,20 +450,20 @@ struct Object {
         [
         .sitOn]
     static let sitOnTiltJoint: PartChain =
-           [
-            .sitOn,
-            .sitOnTiltJoint]
-    
+       [
+        .sitOn,
+        .sitOnTiltJoint]
     static let fixedWheelAtRear: PartChain =
-            [
-           .fixedWheelHorizontalJointAtRear,
-           .fixedWheelAtRear]
+        [
+       .fixedWheelHorizontalJointAtRear,
+       .fixedWheelAtRear]
     static let fixedWheelAtMid: PartChain =
-        [            .fixedWheelHorizontalJointAtMid,
-                     .fixedWheelAtMid]
+        [
+        .fixedWheelHorizontalJointAtMid,
+        .fixedWheelAtMid]
     static let fixedWheelAtFront: PartChain =
         [
-            .fixedWheelHorizontalJointAtFront,
+        .fixedWheelHorizontalJointAtFront,
         .fixedWheelAtFront]
     static let casterWheelAtRear: PartChain =
         [
@@ -478,10 +478,10 @@ struct Object {
         .casterWheelAtFront
         ]
     let onlyOne = 0
+    
     /// An arrray
     /// containing an array of PartDimensionOriginIds
     /// with data for parts from object origin to terminal part
-    
     var partData: PartData =
         PartData(
             part: .notFound,
@@ -493,6 +493,7 @@ struct Object {
     
     ///[PartDataChain]
     var allPartDataChain: [PartDataChain] = []
+    
     ///all partDataTuple but not organised as chain
     var allPartDataTuple: [PartDataTuple] = []
     ///all partDataTuple orgainised into chain
@@ -567,6 +568,8 @@ struct Object {
         }
         
         allPartDataTuple = getAllPartDataTuple()
+        partDataTupleChain = getAllPartDataChainAsTuple()
+        
         func getAllPartDataTuple()
             -> [PartDataTuple] {
             var allPartDataTuple: [PartDataTuple] = []
@@ -595,7 +598,46 @@ struct Object {
                     return uniqueData
                 }
                 return getAllPartDataWithNoDuplicates()
-               
+        }
+        
+        
+        // chainAsTouple
+        //[ // last part is the chainLabel
+        //    [//first [PartDataTuple]]
+        //        (part: start of chain, dimension: , origin: , ids: ), //PartDimensionOriginIds
+        //        .
+        //        .
+        //        .
+        //        (part: end of chain , dimension: , origin: , ids: )
+        //    ],
+        //    .
+        //    .
+        //    .
+        //    [//last [PartDataTuple]]
+        //        (part: start of chain, dimension: , origin: , ids: ),
+        //        .
+        //        .
+        //        .
+        //        (part: end of chain , dimension: , origin: , ids: )
+        //    ],
+        //]
+        func getAllPartDataChainAsTuple()
+            -> [[PartDataTuple]] {
+            let objectChains = allPartDataChain
+            var chainsAsTouple: [[PartDataTuple]] = []
+            for objectChain in objectChains {
+                var chainAsTouple: [PartDataTuple] = []
+                for part in objectChain.chain {
+                    chainAsTouple.append( (
+                        part: part.part,
+                        dimension: part.dimension,
+                        origin: part.origin,
+                        ids: part.ids,
+                        angles: part.angles) )
+                }
+                chainsAsTouple.append(chainAsTouple)
+            }
+            return chainsAsTouple
         }
         
     }

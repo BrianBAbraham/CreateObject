@@ -118,97 +118,41 @@ struct DictionaryProvider {
         angleMinMaxDic =
             ObjectAngleMinMax(parent: self).dictionary
             
-
         objectPartChainLabelDic = getObjectPartChainLabelDic()
 
-//MARK: - ORIGIN/DICTIONARY
+        chainsWithTouple = object.partDataTupleChain
+            
+//MARK: - ORIGIN/DIMENSION DICTIONARY
         // both parent to part and
         // object to part
-        
-        
-        chainsWithTouple = objectChainInChainAsToupleOut()
-    
-        // chainAsTouple
-        //[ // last part is the chainLabel
-        //    [//first [PartDataTuple]]
-        //        (part: start of chain, dimension: , origin: , ids: ), //PartDimensionOriginIds
-        //        .
-        //        .
-        //        .
-        //        (part: end of chain , dimension: , origin: , ids: )
-        //    ],
-        //    .
-        //    .
-        //    .
-        //    [//last [PartDataTuple]]
-        //        (part: start of chain, dimension: , origin: , ids: ),
-        //        .
-        //        .
-        //        .
-        //        (part: end of chain , dimension: , origin: , ids: )
-        //    ],
-        //]
-        func objectChainInChainAsToupleOut(
-            //_ objectChains: [Object.PartDataChain]
-        )
-            -> [[PartDataTuple]] {
-                let objectChains = object.allPartDataChain
-                var chainsAsTouple: [[PartDataTuple]] = []
-                for objectChain in objectChains {
-                    var chainAsTouple: [PartDataTuple] = []
-                    for part in objectChain.chain {
-                        chainAsTouple.append( (
-                            part: part.part,
-                            dimension: part.dimension,
-                            origin: part.origin,
-                            ids: part.ids,
-                            angles: part.angles) )
-                    }
-                    chainsAsTouple.append(chainAsTouple)
-                }
-                return chainsAsTouple
-        }
-            
-    
         for chain in chainsWithTouple {
-            createPreTiltParentToPartDictionary(trial: chain)
-
+            createPreTiltParentToPartOriginDictionary(trial: chain)
+            
             dimensionDic +=
                 DimensionDictionary(
                     chain,
                     dimensionDicIn,
                     0).forPart
-            
-            if (chain.last != nil)  {
-                if [Part.backSupportHeadSupport,
-                    Part.backSupport].contains(chain.last!.part) {
-                    originIdPartChainForBackForBothSitOn = chain
-                }
-            }
         }
 
            
-//MARK: - PRE-TILT
+//MARK: - PRE-TILT CORNERS
         preTiltObjectToPartFourCornerPerKeyDic =
             createCornerDictionary(
                    preTiltObjectToPartOriginDic,
                    dimensionDic)
-
-            
             
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
 
-
-            
 //MARK: - POST-TILT
         let rotatableParts =
-           RotatableParts()
+            RotatableParts()
         var partsToRotate: [Part] = []
         if let partsRotatedBySitOnTiltJoint =
-            rotatableParts.dictionary[.sitOnTiltJoint] {
-            partsToRotate =
-                rotatableParts.getScopeOfParts(partsRotatedBySitOnTiltJoint[0]  )
+            rotatableParts.dictionary[.sitOnTiltJoint] {// get lable
+            partsToRotate = // use label to select rotated parts
+                rotatableParts.getScopeOfParts(partsRotatedBySitOnTiltJoint[0])
         }
         
         // initially set postTilt to preTilt
@@ -234,7 +178,6 @@ struct DictionaryProvider {
                         uniquePartData.append(partDataTouple)
                     }
                 }
-                
             return uniquePartData
         }
          
@@ -262,7 +205,7 @@ struct DictionaryProvider {
         }
         
             
-        func createPreTiltParentToPartDictionary (
+        func createPreTiltParentToPartOriginDictionary (
             trial: [PartDataTuple]){
                 
             let parentAndObjectToPartOriginDictionary =
