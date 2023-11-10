@@ -19,7 +19,7 @@ struct DimensionDictionary {
     var partDimensions: [Dimension3d] = []
     
     init(
-        _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain,
+        _ partDimensionOriginIdsChain: [PartDataTuple],
         _ dimensionIn: Part3DimensionDictionary,
         _ sitOnIndex: Int = 0) {
 //            print(originIdNodes)

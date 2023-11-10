@@ -236,7 +236,7 @@ struct ObjectsAndTheirChainLabels {
 
 
 
-struct RotationsAndTheirScope {
+struct RotatableParts {
     let onlyOne = 0
     static let back: [Part] =
         [.backSupport] + [.backSupportHeadSupport]

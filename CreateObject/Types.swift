@@ -81,17 +81,17 @@ typealias RotationAngles =
      z: Measurement<UnitAngle>)
 
 
-typealias PartDimensionOriginIds =
-    (
-    part: Part,
-    dimension: Dimension3d,
-    origin: PositionAsIosAxes,
-    ids: [Part],
-    angles: RotationAngles)
+//typealias PartDimensionOriginIds =
+//    (
+//    part: Part,
+//    dimension: Dimension3d,
+//    origin: PositionAsIosAxes,
+//    ids: [Part],
+//    angles: RotationAngles)
 
-typealias PartDimensionOriginIdsChain =
-    [PartDimensionOriginIds]
 
+
+typealias PartDataTuple = (part: Part, dimension: (width: Double, length: Double, height: Double), origin: (x: Double, y: Double, z: Double), ids: [Part], angles: (x: Measurement<UnitAngle>, y: Measurement<UnitAngle>, z: Measurement<UnitAngle>))
 
 ///OriginIdNodes type is assigned to
 ///'rear'', 'mid' and 'front'
@@ -141,3 +141,5 @@ typealias TwinSitOnOrigins =
     (onlyOne: [PositionAsIosAxes],
      rearAndFront: [PositionAsIosAxes],
      leftAndRight: [PositionAsIosAxes])
+
+

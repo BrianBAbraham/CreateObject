@@ -32,7 +32,7 @@ struct ZeroValue {
         mid: ZeroValue.iosLocation,
         front: ZeroValue.iosLocation)
 
-    static let partDimensionOriginIds: PartDimensionOriginIds =
+    static let partDataTouple: PartDataTuple =
     (
     part: Part.notFound,
     dimension: Self.dimension3d,

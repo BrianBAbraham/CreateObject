@@ -482,17 +482,21 @@ struct Object {
     /// containing an array of PartDimensionOriginIds
     /// with data for parts from object origin to terminal part
     
-    var objectValues: ObjectValues =
-        ObjectValues(
+    var partData: PartData =
+        PartData(
             part: .notFound,
             dimension: ZeroValue.dimension3d,
             origin: ZeroValue.iosLocation,
             ids:  [],
             angles: ZeroValue.rotationAngles)
-    var objectChain: [ObjectValues] = []
+    var partDataChain: [PartData] = []
     
-    ///[Object.Chain]
-    var chains: [Chain] = []
+    ///[PartDataChain]
+    var allPartDataChain: [PartDataChain] = []
+    ///all partDataTuple but not organised as chain
+    var allPartDataTuple: [PartDataTuple] = []
+    ///all partDataTuple orgainised into chain
+    var partDataTupleChain: [[PartDataTuple]] = []
     
     init(_ objectType: ObjectTypes) {
         self.objectType = objectType
@@ -510,8 +514,6 @@ struct Object {
             ObjectBaseConnectionDefaultDimension(objectType)
                 
         //Preliminary Initialisation of All Origins
-
-     
         preTiltOccupantBackSupportDefaultOrigin =
             PreTiltOccupantBackSupportDefaultOrigin(objectType)
         preTiltOccupantSideSupportDefaultOrigin =
@@ -538,10 +540,10 @@ struct Object {
                 //empty chain for each chain label
              
                     for part in partChain {
-                        let partDimensionOriginId = getPartDimensionOriginIds(part)
+                        let partDimensionOriginId = getPartDataTuple(part)
                         
-                        objectValues =
-                            ObjectValues(
+                        partData =
+                            PartData(
                                 part: partDimensionOriginId.part,
                                 dimension: partDimensionOriginId.dimension,
                                 origin: partDimensionOriginId.origin,
@@ -549,28 +551,61 @@ struct Object {
                                 angles: ZeroValue.rotationAngles)
                         
                         
-                        if partDimensionOriginId.part != ZeroValue.partDimensionOriginIds.part {
+                        if partDimensionOriginId.part != ZeroValue.partDataTouple.part {
                            
-                            objectChain.append(objectValues)
+                            partDataChain.append(partData)
                         }
                     }
                                   
-                if objectChain.count != 0 {
-                    chains.append(Chain(objectChain))
+                if partDataChain.count != 0 {
+                    allPartDataChain.append(PartDataChain(partDataChain))
                     
                     
                 }
-                objectChain = []
+                partDataChain = []
             }
         }
+        
+        allPartDataTuple = getAllPartDataTuple()
+        func getAllPartDataTuple()
+            -> [PartDataTuple] {
+            var allPartDataTuple: [PartDataTuple] = []
+            for partDataChain in allPartDataChain {
+               allPartDataTuple +=
+                    partDataChain.manyPartDataTuple
+            }
+                
+                func getAllPartDataWithNoDuplicates ()
+                    -> [PartDataTuple]{
+                    let inputData: [PartDataTuple] = allPartDataTuple
+                    // Create a custom comparator function
+                    func areEqual(_ lhs: PartDataTuple, _ rhs: PartDataTuple)
+                        -> Bool {
+                        // Implement your comparison logic here
+                        return lhs.part == rhs.part
+                    }
+
+                    var uniqueData: [PartDataTuple] = []
+
+                    for item in inputData {
+                        if !uniqueData.contains(where: { areEqual($0, item) }) {
+                            uniqueData.append(item)
+                        }
+                    }
+                    return uniqueData
+                }
+                return getAllPartDataWithNoDuplicates()
+               
+        }
+        
     }
     
 
 
     
-   mutating func getPartDimensionOriginIds (
+   mutating func getPartDataTuple (
     _ part: Part)
-        -> PartDimensionOriginIds {
+        -> PartDataTuple {
         switch part {
             case
             .backSupporRotationJoint,
@@ -668,27 +703,48 @@ struct Object {
 
             default:
                 print("\(#function) \(part.rawValue) not found")
-                return ZeroValue.partDimensionOriginIds
+                return ZeroValue.partDataTouple
         }
     }
 }
 
 
 extension Object {
-    struct ObjectValues {
+    ///all data for the part
+    struct PartData {
         let part: Part
         let dimension: Dimension3d
         let origin:PositionAsIosAxes
         let ids: [Part]
         let angles: RotationAngles
+        
+        ///Alternative data strructure
+        var partDataTuple: PartDataTuple {
+            (part: part,
+             dimension: dimension,
+             origin: origin,
+             ids: ids,
+             angles: angles)
+        }
     }
-
-    struct Chain {
-        let chain: [ObjectValues]
+    
+    
+    ///A array of partData in a chain
+    ///from origin to the part
+    struct PartDataChain {
+        let chain: [PartData]
         let lastPart: Part
-        init(_ chain: [ObjectValues]) {
+        var manyPartDataTuple: [PartDataTuple] = []
+        init(_ chain: [PartData]) {
             self.chain = chain
             lastPart = chain.last?.part ?? .notFound
+            getManyPartDataTuple()
+            
+            func getManyPartDataTuple() {
+                for partData in chain {
+                    manyPartDataTuple.append(partData.partDataTuple)
+                }
+            }
         }
     }
 }

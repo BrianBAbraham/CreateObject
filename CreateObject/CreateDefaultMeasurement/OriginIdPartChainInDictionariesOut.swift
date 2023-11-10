@@ -35,7 +35,7 @@ struct ObjectOriginDictionary {
     
     init(
         //_ originIdPartChain: OriginIdPartChain,
-        _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain,
+        _ partDimensionOriginIdsChain: [PartDataTuple],
         _ preTiltParentToPartOriginIn: PositionDictionary) {
 
             

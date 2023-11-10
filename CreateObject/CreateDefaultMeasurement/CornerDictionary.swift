@@ -46,9 +46,9 @@ struct DictionaryProvider {
     var angleMinMaxDic: AngleMinMaxDictionary = [:]
     
 
-    var originIdPartChainForBackForBothSitOn: PartDimensionOriginIdsChain = []
+    var originIdPartChainForBackForBothSitOn: [PartDataTuple] = []
     
-   var chainsWithTouple: [PartDimensionOriginIdsChain] = []
+   var chainsWithTouple: [[PartDataTuple]] = []
     
     //pre-tilt
     var preTiltParentToPartOriginDic: PositionDictionary = [:]
@@ -68,7 +68,8 @@ struct DictionaryProvider {
     
     var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
     var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
-    //var wheelBaseJointOrigin: RearMidFrontPositions = ZeroValue.rearMidFrontPositions
+
+    var object: Object
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -104,6 +105,9 @@ struct DictionaryProvider {
         self.angleDicIn = angleIn
         self.angleMinMaxDicIn = minMaxAngleIn
         self.partChainsIdDicIn = partChainsIdDicIn
+            
+        object = (Object(objectType))
+            
         preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
   
         twinSitOnState = TwinSitOn(twinSitOnOption).state
@@ -121,13 +125,12 @@ struct DictionaryProvider {
         // both parent to part and
         // object to part
         
-        let chainsFromStruct = Object(objectType).chains
         
-        chainsWithTouple = objectChainInChainAsToupleOut(chainsFromStruct)
+        chainsWithTouple = objectChainInChainAsToupleOut()
     
         // chainAsTouple
         //[ // last part is the chainLabel
-        //    [//first PartDimensionOriginIdsChain
+        //    [//first [PartDataTuple]]
         //        (part: start of chain, dimension: , origin: , ids: ), //PartDimensionOriginIds
         //        .
         //        .
@@ -137,7 +140,7 @@ struct DictionaryProvider {
         //    .
         //    .
         //    .
-        //    [//last PartDimensionOriginIdsChain
+        //    [//last [PartDataTuple]]
         //        (part: start of chain, dimension: , origin: , ids: ),
         //        .
         //        .
@@ -145,11 +148,14 @@ struct DictionaryProvider {
         //        (part: end of chain , dimension: , origin: , ids: )
         //    ],
         //]
-        func objectChainInChainAsToupleOut(_ objectChains: [Object.Chain])
-            -> [PartDimensionOriginIdsChain] {
-                var chainsAsTouple: [PartDimensionOriginIdsChain] = []
+        func objectChainInChainAsToupleOut(
+            //_ objectChains: [Object.PartDataChain]
+        )
+            -> [[PartDataTuple]] {
+                let objectChains = object.allPartDataChain
+                var chainsAsTouple: [[PartDataTuple]] = []
                 for objectChain in objectChains {
-                    var chainAsTouple: PartDimensionOriginIdsChain = []
+                    var chainAsTouple: [PartDataTuple] = []
                     for part in objectChain.chain {
                         chainAsTouple.append( (
                             part: part.part,
@@ -193,121 +199,59 @@ struct DictionaryProvider {
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
 
-///if a rotation joint is present rotate about joint option in UI
-///Options for scope of joint
-/// dictiionary joint: scope where scope is [[Part]]
+
             
 //MARK: - POST-TILT
-        let rotationAndTheirScope =
-           RotationsAndTheirScope()
-        var partsInScope: [Part] = []
-        if let sitOnTiltJointScopes =
-            rotationAndTheirScope.dictionary[.sitOnTiltJoint] {
-//            print (sitOnTiltJointScopes[0])
-//            print ("")
-            partsInScope =
-                rotationAndTheirScope.getScopeOfParts(sitOnTiltJointScopes[1]  )
-//            print(partsInScope)
+        let rotatableParts =
+           RotatableParts()
+        var partsToRotate: [Part] = []
+        if let partsRotatedBySitOnTiltJoint =
+            rotatableParts.dictionary[.sitOnTiltJoint] {
+            partsToRotate =
+                rotatableParts.getScopeOfParts(partsRotatedBySitOnTiltJoint[0]  )
         }
-            
-            
-            
-            
-        var lastParts: [Part] = []
-        for chain in chainsFromStruct {
-            lastParts.append(chain.lastPart)
-        }
-            
-        if lastParts.contains(.sitOnTiltJoint) {
-            for item in chainsWithTouple {
-                    if partsInScope.contains(item.last!.part) {
-//                        postTiltObjectToFourCornerPerKeyDic =
-//                            createPostTiltObjectToPartFourCornerPerKeyDic(item)
-                    }
-            }
-        } else {
-            postTiltObjectToFourCornerPerKeyDic =
-                preTiltObjectToPartFourCornerPerKeyDic
-        }
-          
         
+        // initially set postTilt to preTilt
+        postTiltObjectToFourCornerPerKeyDic =
+            preTiltObjectToPartFourCornerPerKeyDic
             
-        let chainsScopedToRotation =
-                            
-                    getTupleFromStructOnlyForRotatedParts(
-                        chainsFromStruct,
-                        partsInScope)
-               
+        postTiltObjectToFourCornerPerKeyDic =
+            createPostTiltObjectToPartFourCornerPerKeyDic(            getRotatingPartDataTupleFromStruct(
+                    partsToRotate))
             
-            postTiltObjectToFourCornerPerKeyDic =
-            createPostTiltObjectToPartFourCornerPerKeyDic(chainsScopedToRotation)
-            
-            
-        // Define a type alias for your data
-        typealias PartData = (part: Part, dimension: (width: Double, length: Double, height: Double), origin: (x: Double, y: Double, z: Double), ids: [Part], angles: (x: Measurement<UnitAngle>, y: Measurement<UnitAngle>, z: Measurement<UnitAngle>))
-            
-        //generally chains are not rotated
-        //as the scope of the rotation is not necessarily
-        //the whole chain, therefore parts out of scope
+                    
+        //generally all parts in a chain are not rotated
+        //therefore parts out of scope
         //are filitered out
-        func getTupleFromStructOnlyForRotatedParts(
-            _ chainsFromStruct: [Object.Chain],
-            _ partsInScope: [Part])
-            -> [PartData] {
-    
-            var uniquePartData: [PartData] = []
+        func getRotatingPartDataTupleFromStruct(
+            _ partsToRotate: [Part])
+            -> [PartDataTuple] {
+            var uniquePartData: [PartDataTuple] = []
             
-            for chain in chainsFromStruct {
-                for item in chain.chain {
-                    if partsInScope.contains(item.part) {
-                        uniquePartData.append(
-                            (part: item.part,
-                             dimension: item.dimension,
-                             origin: item.origin,
-                             ids: item.ids,
-                             angles: item.angles))
+            let allPartDataTuple = object.allPartDataTuple
+                for partDataTouple in allPartDataTuple {
+                    if partsToRotate.contains(partDataTouple.part) {
+                        uniquePartData.append(partDataTouple)
                     }
                 }
-            }
-            
-            func dataWithDuplicatesRemoved ()
-                -> [PartData]{
-                let inputData: [PartData] = uniquePartData
-                // Create a custom comparator function
-                func areEqual(_ lhs: PartData, _ rhs: PartData)
-                    -> Bool {
-                    // Implement your comparison logic here
-                    return lhs.part == rhs.part
-                }
-
-                var uniqueData: [PartData] = []
-
-                for item in inputData {
-                    if !uniqueData.contains(where: { areEqual($0, item) }) {
-                        uniqueData.append(item)
-                    }
-                }
-                return uniqueData
-            }
-            return dataWithDuplicatesRemoved()
+                
+            return uniquePartData
         }
          
 
             
             
         func createPostTiltObjectToPartFourCornerPerKeyDic(
-           _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain)
+           _ partDimensionOriginIdsChain: [PartDataTuple])
             -> CornerDictionary{
                 //replace the part origin positions with the rotated values
                 // and rotate the corners of the part
             var tilted: CornerDictionary = [:]
-              //  if BaseObjectGroups().backSupport.contains(objectType) {
                     tilted =
                         OriginPostTilt(
                             parent: self,
                             partDimensionOriginIdsChain,
                             .sitOnTiltJoint).objectToTiltedCorners
-              //  }
                 return
                     Replace(
                         initial:
@@ -319,7 +263,7 @@ struct DictionaryProvider {
         
             
         func createPreTiltParentToPartDictionary (
-            trial: PartDimensionOriginIdsChain){
+            trial: [PartDataTuple]){
                 
             let parentAndObjectToPartOriginDictionary =
                 ObjectOriginDictionary(
@@ -481,7 +425,7 @@ extension DictionaryProvider {
         
         init(
             parent: DictionaryProvider,
-            _ partDimensionOriginIdsChain: PartDimensionOriginIdsChain,
+            _ partDimensionOriginIdsChain: [PartDataTuple],
             _ rotationJoint: Part) {
 
             self.parent = parent
