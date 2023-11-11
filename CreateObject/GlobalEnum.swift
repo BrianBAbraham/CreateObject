@@ -501,6 +501,7 @@ struct Object {
     
     init(_ objectType: ObjectTypes) {
         self.objectType = objectType
+   
         
         //Preliminary Initialisation of All Dimensions
         occupantBodySupportDefaultDimension =
@@ -535,42 +536,33 @@ struct Object {
             }
             for chainLabel in chainLabels {
                 let partChain =
-                LabelInPartChainOut([chainLabel]).partChains[onlyOne]
-
-                
+                    LabelInPartChainOut([chainLabel]).partChains[onlyOne]
                 //empty chain for each chain label
-             
-                    for part in partChain {
-                        let partDimensionOriginId = getPartDataTuple(part)
-                        
-                        partData =
-                            PartData(
-                                part: partDimensionOriginId.part,
-                                dimension: partDimensionOriginId.dimension,
-                                origin: partDimensionOriginId.origin,
-                                ids:  partDimensionOriginId.ids,
-                                angles: ZeroValue.rotationAngles)
-                        
-                        
-                        if partDimensionOriginId.part != ZeroValue.partDataTouple.part {
-                           
-                            partDataChain.append(partData)
-                        }
+                for part in partChain {
+                    let partDimensionOriginId = getPartDataTuple(part)
+                    partData =
+                        PartData(
+                            part: partDimensionOriginId.part,
+                            dimension: partDimensionOriginId.dimension,
+                            origin: partDimensionOriginId.origin,
+                            ids:  partDimensionOriginId.ids,
+                            angles: ZeroValue.rotationAngles)
+                    if partDimensionOriginId.part != ZeroValue.partDataTouple.part {
+                        partDataChain.append(partData)
                     }
-                                  
+                }
                 if partDataChain.count != 0 {
                     allPartDataChain.append(PartDataChain(partDataChain))
-                    
-                    
                 }
                 partDataChain = []
             }
         }
         
-        allPartDataTuple = getAllPartDataTuple()
+        allPartDataTuple = getAllPartDataTupleWithNoDuplicates()
         partDataTupleChain = getAllPartDataChainAsTuple()
         
-        func getAllPartDataTuple()
+        
+        func getAllPartDataTupleWithNoDuplicates()
             -> [PartDataTuple] {
             var allPartDataTuple: [PartDataTuple] = []
             for partDataChain in allPartDataChain {
@@ -578,7 +570,7 @@ struct Object {
                     partDataChain.manyPartDataTuple
             }
                 
-                func getAllPartDataWithNoDuplicates ()
+                func removeDuplicates ()
                     -> [PartDataTuple]{
                     let inputData: [PartDataTuple] = allPartDataTuple
                     // Create a custom comparator function
@@ -597,7 +589,7 @@ struct Object {
                     }
                     return uniqueData
                 }
-                return getAllPartDataWithNoDuplicates()
+                return removeDuplicates()
         }
         
         
@@ -642,8 +634,9 @@ struct Object {
         
     }
     
-
-
+//MARK: -NEW
+///this would be come a for loop for an array of the part in object without duplicates
+    /// only object woudl be passed
     
    mutating func getPartDataTuple (
     _ part: Part)
@@ -790,6 +783,81 @@ extension Object {
         }
     }
 }
+
+protocol PartValues {
+    var part: Part {get set}
+    var dimension: Dimension3d  {get set}
+    var origin: PositionAsIosAxes  {get set}
+    var minAngle: RotationAngle  {get set}
+    var maxAngle: RotationAngle  {get set}
+    var ids: [Part]  {get set}
+}
+
+//WORKING ON CHAINS IS REQUIRED IF I USE RELATIVE ORIGINS
+//CAN I PASS A CHAIN OF PartValue conforming struct
+//to instatiate them all?
+extension Object {
+    
+    func getInitialiseParts(_ partValues: [PartValues]) {
+        var intialisedParts: [PartValues] = []
+        for partValue in partValues {
+            intialisedParts.append(<#T##newElement: PartValues##PartValues#>)
+        }
+    }
+}
+
+
+extension Object {
+    
+    struct BackSupport: PartValues {
+        var part: Part = .backSupport
+        
+        var dimension: Dimension3d
+        
+        var origin: PositionAsIosAxes
+        
+        var minAngle: RotationAngle
+        
+        var maxAngle: RotationAngle
+        
+        var ids: [Part]
+        
+
+    }
+    
+    struct BackSupportRotationJoint: PartValues {
+        var part: Part = .backSupporRotationJoint
+        
+        var dimension: Dimension3d
+        
+        var origin: PositionAsIosAxes
+        
+        var minAngle: RotationAngle
+        
+        var maxAngle: RotationAngle
+        
+        var ids: [Part]
+        
+       
+        
+    }
+    
+
+//
+//    struct HeadSupportRotationJoint {
+//
+//    }
+//
+//    struct HeadSupportLink {
+//
+//    }
+//
+//    struct HeadSupport {
+//
+//    }
+    
+}
+
 
 
 //InterOrigin().names

@@ -493,21 +493,6 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
              rearAndFront: originForRearAndFrontSitOn,
              leftAndRight: originForLeftAndRightSitOn)
     }
-    
-    
-    
-  
-    
-
-    
-//
-    
-
-    
-
-    
-    
-
 }
 
 /// dic ?? dimensions -> origins ->  wheelBaseJoint

@@ -155,53 +155,52 @@ struct DictionaryProvider {
                 rotatableParts.getScopeOfParts(partsRotatedBySitOnTiltJoint[0])
         }
         
-        // initially set postTilt to preTilt
+        // initially set postTilt to preTilt values
         postTiltObjectToFourCornerPerKeyDic =
             preTiltObjectToPartFourCornerPerKeyDic
             
+//        postTiltObjectToFourCornerPerKeyDic =
+//            createPostTiltObjectToPartFourCornerPerKeyDic(            getRotatingPartDataTupleFromStruct(
+//                    partsToRotate))
         postTiltObjectToFourCornerPerKeyDic =
-            createPostTiltObjectToPartFourCornerPerKeyDic(            getRotatingPartDataTupleFromStruct(
+            Replace(
+                initial:
+                    preTiltObjectToPartFourCornerPerKeyDic,
+                replacement:             getRotatedObjectToPartFourCornerPerKeyDic(            getRotatingPartDataTupleFromStruct(
                     partsToRotate))
+            ).intialWithReplacements
             
                     
         //generally all parts in a chain are not rotated
-        //therefore parts out of scope
+        //therefore non-rotated parts
         //are filitered out
         func getRotatingPartDataTupleFromStruct(
-            _ partsToRotate: [Part])
+        _ partsToRotate: [Part])
             -> [PartDataTuple] {
-            var uniquePartData: [PartDataTuple] = []
+            var rotatedPartData: [PartDataTuple] = []
             
             let allPartDataTuple = object.allPartDataTuple
                 for partDataTouple in allPartDataTuple {
                     if partsToRotate.contains(partDataTouple.part) {
-                        uniquePartData.append(partDataTouple)
+                        rotatedPartData.append(partDataTouple)
                     }
                 }
-            return uniquePartData
+            return rotatedPartData
         }
          
 
             
-            
-        func createPostTiltObjectToPartFourCornerPerKeyDic(
+        func getRotatedObjectToPartFourCornerPerKeyDic(
            _ partDimensionOriginIdsChain: [PartDataTuple])
             -> CornerDictionary{
-                //replace the part origin positions with the rotated values
-                // and rotate the corners of the part
+                // rotate the corners of the part
             var tilted: CornerDictionary = [:]
-                    tilted =
-                        OriginPostTilt(
-                            parent: self,
-                            partDimensionOriginIdsChain,
-                            .sitOnTiltJoint).objectToTiltedCorners
-                return
-                    Replace(
-                        initial:
-                            preTiltObjectToPartFourCornerPerKeyDic,
-                        replacement: tilted
-                        
-                    ).intialWithReplacements
+                tilted =
+                    OriginPostTilt(
+                        parent: self,
+                        partDimensionOriginIdsChain,
+                        .sitOnTiltJoint).objectToTiltedCorners
+            return tilted
         }
         
             
@@ -474,4 +473,10 @@ protocol PartOrigin{
     //var part: Part? {get}
     var origin: PositionAsIosAxes {get}
     mutating func reinitialise(_ part: Part?)
+}
+
+protocol RotationAngle {
+    var minAngle: RotationAngle {get}
+    var maxAngle: RotationAngle {get}
+    
 }

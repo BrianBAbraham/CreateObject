@@ -54,7 +54,8 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
     func getBackSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-        (width: OccupantBodySupportDefaultDimension.general.width * 0.8,
+            (
+            width: OccupantBodySupportDefaultDimension.general.width * 0.8,
             length: 10.0,
             height: 500.0)
         return
@@ -73,9 +74,10 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
     func getHeadSupportLink() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-        (width: 20.0,
-         length: 20.0,
-         height: 100.0)
+            (
+            width: 20.0,
+            length: 20.0,
+            height: 100.0)
         return
             dictionary[baseType] ?? general
     }
@@ -84,7 +86,8 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
     func getHeadSupport() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-            (width: 150.0,
+            (
+            width: 150.0,
             length: 100.0,
             height: 100.0)
         return
@@ -95,7 +98,8 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
     func getAdditionalObject() -> Dimension3d {
         let dictionary: BaseObject3DimensionDictionary  = [:]
         let general =
-            (width: OccupantBodySupportDefaultDimension.general.width,
+            (
+            width: OccupantBodySupportDefaultDimension.general.width,
             length: 100.0,
             height: 100.0)
         return
