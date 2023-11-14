@@ -159,9 +159,7 @@ struct DictionaryProvider {
         postTiltObjectToFourCornerPerKeyDic =
             preTiltObjectToPartFourCornerPerKeyDic
             
-//        postTiltObjectToFourCornerPerKeyDic =
-//            createPostTiltObjectToPartFourCornerPerKeyDic(            getRotatingPartDataTupleFromStruct(
-//                    partsToRotate))
+
         postTiltObjectToFourCornerPerKeyDic =
             Replace(
                 initial:
@@ -169,6 +167,48 @@ struct DictionaryProvider {
                 replacement:             getRotatedObjectToPartFourCornerPerKeyDic(            getRotatingPartDataTupleFromStruct(
                     partsToRotate))
             ).intialWithReplacements
+    
+            
+            
+            
+            
+            
+            
+            
+//MARK: sitOn
+//let preliminarySitOnStruct =
+//        StructFactory.createSitOn(
+//            objectType,
+//            nil,
+//            nil)
+//let sideSupportStruct =
+//        StructFactory.createGenericPart(
+//            objectType,
+//            preliminarySitOnStruct,
+//            .sideSupport)
+//let footSupportHangerLinkStruct =
+//        StructFactory.createGenericPart(
+//                objectType,
+//                preliminarySitOnStruct,
+//                .footSupportHangerLink)
+//let sitOnStruct =
+//        StructFactory.createSitOn(
+//            objectType,
+//            sideSupportStruct,
+//            nil)
+            
+
+//            print("StructFactoryTest")
+//            print(sideSupportStruct.dimension)
+//            print(sitOnStruct.dimension)
+//            print(sitOnStruct.occupantSideSupportsDimensions)
+//            print("")
+            
+            
+            
+            
+            
+            
             
                     
         //generally all parts in a chain are not rotated

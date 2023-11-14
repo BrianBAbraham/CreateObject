@@ -788,77 +788,294 @@ protocol PartValues {
     var part: Part {get set}
     var dimension: Dimension3d  {get set}
     var origin: PositionAsIosAxes  {get set}
-    var minAngle: RotationAngle  {get set}
-    var maxAngle: RotationAngle  {get set}
+    var minAngle: RotationAngles  {get set}
+    var maxAngle: RotationAngles {get set}
     var ids: [Part]  {get set}
 }
 
 //WORKING ON CHAINS IS REQUIRED IF I USE RELATIVE ORIGINS
 //CAN I PASS A CHAIN OF PartValue conforming struct
 //to instatiate them all?
-extension Object {
+//extension Object {
+//
+//    func getInitialiseParts(_ partValues: [PartValues]) {
+//        var intialisedParts: [PartValues] = []
+//        for partValue in partValues {
+//            intialisedParts.append(<#T##newElement: PartValues##PartValues#>)
+//        }
+//    }
+//}
+
+
+
+//MARK: SitOn
+struct SitOn: PartValues {
+    var part: Part = .sitOn
     
-    func getInitialiseParts(_ partValues: [PartValues]) {
-        var intialisedParts: [PartValues] = []
-        for partValue in partValues {
-            intialisedParts.append(<#T##newElement: PartValues##PartValues#>)
+    var dimension: Dimension3d
+    
+    var origin: PositionAsIosAxes
+    
+    var minAngle: RotationAngles
+    
+    var maxAngle: RotationAngles
+    
+    var ids: [Part]
+    
+    var sideSupportStruct: GenericPart?
+    
+    var occupantSideSupportsDimensions: [[Dimension3d]]
+}
+
+extension StructFactory {
+    static func createSitOn(
+    _ objectType: ObjectTypes,
+    _ sideSupport: GenericPart?,
+    _ footSupportHangerLink: GenericPart?)
+        -> SitOn {
+            
+        let bilateralIds: [Part] = [.id0, .id1]
+        let sitOnIds: [Part] = [.id0, .id1]
+        var occupantSideSupportsDimensions: [[Dimension3d]] = []
+            
+        let dimensionDic: BaseObject3DimensionDictionary =
+            [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
+             .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
+             .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
+                ]
+        let dimension =
+                dimensionDic[objectType] ??
+            (width: 400.0, length: 400.0, height: 10.0)
+            
+            
+        let heightAboveFloorDic: [ObjectTypes: Double] =
+            [.allCasterStretcher: 900.00,
+             .allCasterBed: 900.0
+            ]
+        let heightAboveFloor =
+        heightAboveFloorDic[objectType] ?? 500.0
+            
+            
+        for _ in sitOnIds {
+            occupantSideSupportsDimensions.append(getSideSupportDimensions())
+        }
+    
+        return SitOn(
+            dimension: dimension,
+            origin: getSitOnOrigin(),
+            minAngle: ZeroValue.rotationAngles ,
+            maxAngle: ZeroValue.rotationAngles,
+            ids: [],
+            occupantSideSupportsDimensions: occupantSideSupportsDimensions)
+            
+            
+        func getSideSupportDimensions()
+            -> [Dimension3d] {
+                var sideSupportDimension: [Dimension3d] = []
+                for _ in bilateralIds {
+                    let dimension =
+                        sideSupport?.dimension ?? ZeroValue.dimension3d
+                    sideSupportDimension.append(dimension)
+                }
+            return
+                sideSupportDimension
+        }
+            
+            
+        func getSitOnOrigin() -> PositionAsIosAxes {
+            let origin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
+            let onlyOne = 0
+            return origin.sitOnOrigins.onlyOne[onlyOne]
         }
     }
 }
 
 
-extension Object {
+//MARK: SideSupport
+struct GenericPart: PartValues {
+    var part: Part
     
-    struct BackSupport: PartValues {
-        var part: Part = .backSupport
-        
-        var dimension: Dimension3d
-        
-        var origin: PositionAsIosAxes
-        
-        var minAngle: RotationAngle
-        
-        var maxAngle: RotationAngle
-        
-        var ids: [Part]
-        
+    var dimension: Dimension3d
+    
+    var origin: PositionAsIosAxes
+    
+    var minAngle: RotationAngles
+    
+    var maxAngle: RotationAngles
+    
+    var ids: [Part]
+}
 
+/// I would like to pass the partChain label
+/// the partChain label then creates the structs for those parts
+
+extension StructFactory {
+    static func createGenericPart(
+    _ objectType: ObjectTypes,
+    _ sitOn: SitOn,
+    _ part: Part)
+        -> GenericPart {
+        var dimension = ZeroValue.dimension3d
+        switch part {
+            case .sideSupport:
+                dimension =
+                    [.allCasterStretcher:
+                        (width: 20.0,
+                         length: sitOn.dimension.length,
+                         height: 20.0),
+                     
+                        .allCasterBed:
+                        (width: 20.0,
+                         length: sitOn.dimension.length,
+                         height: 20.0),
+                     .fixedWheelRearDrive:
+                        (width: 20.0,
+                         length: sitOn.dimension.length,
+                         height: 20.0) ][objectType]
+                        ??
+                        (width: 400.0, length: 400.0, height: 10.0)
+                
+            case .footSupportInOnePiece:
+                dimension =
+                    [.showerTray: (width: 900.0, length: 1200.0, height: 200.0)] [objectType]
+                    ??
+                    (width: OccupantBodySupportDefaultDimension.general.width,
+                    length: 100.0,
+                    height: 10.0)
+            case .footSupportHangerLink:
+                dimension =
+                    (width: 20.0, length: 200.0, height: 20.0)
+                
+            default:
+                break
+        }
+            return GenericPart(
+                part: part,
+                dimension: dimension,
+                origin: ZeroValue.iosLocation,
+                minAngle: ZeroValue.rotationAngles,
+                maxAngle: ZeroValue.rotationAngles,
+                ids: [])
     }
     
-    struct BackSupportRotationJoint: PartValues {
-        var part: Part = .backSupporRotationJoint
-        
-        var dimension: Dimension3d
-        
-        var origin: PositionAsIosAxes
-        
-        var minAngle: RotationAngle
-        
-        var maxAngle: RotationAngle
-        
-        var ids: [Part]
-        
-       
-        
-    }
-    
+//    func initalizeStructs(_ structs: [PartValues] ) {
+//        for _ in structs {
+//
+//        }
+//    }
+}
 
+//MARK: FootSupport
+//struct FeetSupport: PartValues {
+//    var part: Part?
 //
-//    struct HeadSupportRotationJoint {
+//    var dimension: Dimension3d
 //
+//    var origin: PositionAsIosAxes
+//
+//    var minAngle: RotationAngles
+//
+//    var maxAngle: RotationAngles
+//
+//    var ids: [Part]
+//
+//    let objectType: ObjectTypes
+//
+//    mutating  func reinitialise(_ part: Part?) {
+//          self.part = part
+//
+//          switch part {
+//              case .footSupport:
+//                  dimension = getFootSupportInTwoPieces()
+//
+//              case .footSupportInOnePiece:
+//                  dimension = getFootSupportInOnePiece()
+//
+//              case .footOnly:
+//                  dimension = getFootSupportInOnePiece()
+//
+//          default:
+//              break
+//          }
+//      }
+//
+//
+//
+//
+//
+//}
+
+//extension StructFactory {
+//    func createFootSupport(
+//    _ objectType: ObjectTypes,
+//    _ part: Part)
+//        -> FeetSupport {
+//
+//
+//        return FeetSupport(
+//            dimension: dimension,
+//            origin: ZeroValue.iosLocation,
+//            minAngle: ZeroValue.rotationAngles,
+//            maxAngle: ZeroValue.rotationAngles,
+//            ids: [],
+//            objectType: objectType)
+//
+//
+//        func getHangerLink() -> Dimension3d {
+//            let dictionary: BaseObject3DimensionDictionary  = [:]
+//            let general = (width: 20.0, length: 200.0, height: 20.0)
+//            return
+//                dictionary[objectType] ?? general
+//        }
+//
+//        func getFootSupportInTwoPieces() -> Dimension3d {
+//            let dictionary: BaseObject3DimensionDictionary  = [:]
+//            let general = (width: 150.0, length: 100.0, height: 10.0)
+//            return
+//                dictionary[objectType] ?? general
+//        }
+//
+//        func getFootSupportInOnePiece() -> Dimension3d {
+//            let dictionary: BaseObject3DimensionDictionary =
+//            [.showerTray: (width: 900.0, length: 1200.0, height: 200.0)]
+//            let general =       (
+//                width: OccupantBodySupportDefaultDimension.general.width,
+//                length: 100.0,
+//                height: 10.0)
+//
+//            return
+//                dictionary[objectType] ?? general
+//        }
 //    }
-//
-//    struct HeadSupportLink {
-//
-//    }
-//
-//    struct HeadSupport {
-//
-//    }
+//}
+
+
+
+struct WheelBaseJoint: PartValues {
+    var part: Part = .sitOn
     
+    var dimension: Dimension3d
+    
+    var origin: PositionAsIosAxes
+    
+    var minAngle: RotationAngles
+    
+    var maxAngle: RotationAngles
+    
+    var ids: [Part]
+    
+    var rearMidFront: Drive
 }
 
 
+struct StructFactory {
+    
+
+    
+    
+    
+    
+}
 
 //InterOrigin().names
 extension Array where Element: Hashable {

@@ -71,35 +71,7 @@ struct OccupantSideSupportDefaultDimension: PartDimension {
     
 }
 
-struct OccupantSideSupportDefaultDimensionOld {
-    var dictionary: BaseObject3DimensionDictionary =
-    [.allCasterStretcher:
-        (width: 20.0,
-         length: OccupantBodySupportDefaultDimension(.allCasterStretcher).value.length,
-         height: 20.0),
 
-     .allCasterBed:
-        (width: 20.0,
-         length: OccupantBodySupportDefaultDimension(.allCasterBed).value.length,
-         height: 20.0)
-        ]
-    
-    let value: Dimension3d
-    var general: Dimension3d
-        
-    init(
-        _ baseType: ObjectTypes) {
-        general =
-        (width: 40.0,
-        length: OccupantBodySupportDefaultDimension(baseType).value.length,
-        height: 30.0)
-        
-    value =
-        dictionary[baseType] ??
-        general
-    }
-    
-}
 
 // tilt as in tilted/rotated/angled
 // origins are described from the parent origin
@@ -151,10 +123,13 @@ struct PreTiltOccupantSideSupportDefaultOrigin: PartOrigin {
     
     func getSideSupportRotationJointToSideSupport()
     -> PositionAsIosAxes {
+        var occupantSideSupportDefaultDimension = OccupantSideSupportDefaultDimension(baseType)
+        occupantSideSupportDefaultDimension.reinitialise(.sideSupport)
+                
         let dictionary: OriginDictionary = [:]
         let general =
             (x: 0.0,
-             y: OccupantSideSupportDefaultDimensionOld(baseType).value.length/2,
+             y: occupantSideSupportDefaultDimension.dimension.length/2,
              z: 0.0)
         return
             dictionary[baseType] ?? general
