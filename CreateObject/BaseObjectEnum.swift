@@ -49,6 +49,36 @@ enum ObjectTypes: String, CaseIterable {
     case verticalLift = "Vertical Lift"
 }
 
+struct MiscObjectParameters {
+    let objectType: ObjectTypes
+
+    init(_ objectType: ObjectTypes) {
+        self.objectType = objectType
+    }
+    
+    func getDriveLocation()
+    ->Drive {
+        let forDriveLocation: [ObjectTypes: Drive] =
+            [
+            .fixedWheelMidDrive: .mid,
+            .fixedWheelFrontDrive:.front]
+        return
+            forDriveLocation[objectType] ?? .rear
+    }
+    
+    
+    func getMainBodySupportAboveFloor()
+    -> Double {
+        let forMainBodySupportAboveFloor: [ObjectTypes: Double] =
+            [
+            .allCasterStretcher: 900.0,
+            .allCasterBed: 800.0]
+        return
+            forMainBodySupportAboveFloor[objectType] ?? 500.0
+    }
+}
+
+
 
 ///object creation includes features if the object is containted
 ///in the feature group

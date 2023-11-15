@@ -176,33 +176,33 @@ struct DictionaryProvider {
             
             
 //MARK: sitOn
-//let preliminarySitOnStruct =
-//        StructFactory.createSitOn(
-//            objectType,
-//            nil,
-//            nil)
-//let sideSupportStruct =
-//        StructFactory.createGenericPart(
-//            objectType,
-//            preliminarySitOnStruct,
-//            .sideSupport)
-//let footSupportHangerLinkStruct =
-//        StructFactory.createGenericPart(
-//                objectType,
-//                preliminarySitOnStruct,
-//                .footSupportHangerLink)
-//let sitOnStruct =
-//        StructFactory.createSitOn(
-//            objectType,
-//            sideSupportStruct,
-//            nil)
+let preliminarySitOnStruct =
+        StructFactory.createSitOn(
+            objectType,
+            nil,
+            nil)
+let sideSupportStruct =
+        StructFactory.createGenericPart(
+            objectType,
+            preliminarySitOnStruct,
+            .sideSupport)
+let footSupportHangerLinkStruct =
+        StructFactory.createGenericPart(
+                objectType,
+                preliminarySitOnStruct,
+                .footSupportHangerLink)
+let sitOnStruct =
+        StructFactory.createSitOn(
+            objectType,
+            sideSupportStruct,
+            nil)
             
 
-//            print("StructFactoryTest")
-//            print(sideSupportStruct.dimension)
-//            print(sitOnStruct.dimension)
-//            print(sitOnStruct.occupantSideSupportsDimensions)
-//            print("")
+            print("StructFactoryTest")
+            print(sideSupportStruct.dimension)
+            print(sitOnStruct.dimension)
+            //print(sitOnStruct.occupantSideSupportsDimensions)
+            print("")
             
             
             

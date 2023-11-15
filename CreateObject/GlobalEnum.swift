@@ -822,12 +822,14 @@ struct SitOn: PartValues {
     
     var ids: [Part]
     
-    var sideSupportStruct: GenericPart?
-    
-    var occupantSideSupportsDimensions: [[Dimension3d]]
+//    var sideSupportStruct: GenericPart?
+//
+//    var occupantSideSupportsDimensions: [[Dimension3d]]
 }
 
 extension StructFactory {
+    
+    
     static func createSitOn(
     _ objectType: ObjectTypes,
     _ sideSupport: GenericPart?,
@@ -847,15 +849,6 @@ extension StructFactory {
                 dimensionDic[objectType] ??
             (width: 400.0, length: 400.0, height: 10.0)
             
-            
-        let heightAboveFloorDic: [ObjectTypes: Double] =
-            [.allCasterStretcher: 900.00,
-             .allCasterBed: 900.0
-            ]
-        let heightAboveFloor =
-        heightAboveFloorDic[objectType] ?? 500.0
-            
-            
         for _ in sitOnIds {
             occupantSideSupportsDimensions.append(getSideSupportDimensions())
         }
@@ -865,8 +858,9 @@ extension StructFactory {
             origin: getSitOnOrigin(),
             minAngle: ZeroValue.rotationAngles ,
             maxAngle: ZeroValue.rotationAngles,
-            ids: [],
-            occupantSideSupportsDimensions: occupantSideSupportsDimensions)
+            ids: [.id0]//,
+//            occupantSideSupportsDimensions: occupantSideSupportsDimensions
+        )
             
             
         func getSideSupportDimensions()

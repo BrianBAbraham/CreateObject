@@ -36,24 +36,24 @@ struct OccupantBodySupportDefaultDimension: PartDimension {
 
 
 
-struct PreTiltBodySupportDefaultOriginHeight {
-    let objectType: ObjectTypes
-    let dictionary: [ObjectTypes: Double] =
-    [
-        .allCasterStretcher: 900.0,
-        .allCasterBed: 800.0]
-    let general = 500.0
-    let height: Double
-    
-    init (
-        _ objectType: ObjectTypes//,
-        
-    ) {
-        self.objectType = objectType
-        
-        height = dictionary[objectType] ?? general
-    }
-}
+//struct PreTiltBodySupportDefaultOriginHeight {
+//    let objectType: ObjectTypes
+//    let dictionary: [ObjectTypes: Double] =
+//    [
+//        .allCasterStretcher: 900.0,
+//        .allCasterBed: 800.0]
+//    let general = 500.0
+//    let height: Double
+//
+//    init (
+//        _ objectType: ObjectTypes//,
+//
+//    ) {
+//        self.objectType = objectType
+//
+//        height = dictionary[objectType] ?? general
+//    }
+//}
 
 
 
@@ -109,8 +109,6 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     let objectType: ObjectTypes
     let stability: Stability
     var origins: [PositionAsIosAxes] = []
-    var objectGroups: BaseObjectGroups {
-        BaseObjectGroups()}
 
     let bilateralIds: [Part] = [.id0, .id1]
     let bothSitOnId: [Part] = [.id0, .id1]
@@ -120,17 +118,13 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     var occupantSideSupportsDimensions: [[Dimension3d]] = []
     var occupantFootSupportHangerLinksMaxLengths: [Double] = []
     var sitOnOrigins: TwinSitOnOrigins = ZeroValue.sitOnOrigins
-    var baseObjectGroups: BaseObjectGroups {
-        BaseObjectGroups()
-    }
+
     let wheelDefaultDimensionForRearMidFront: Dimension3dRearMidFront
     var wheelBaseJointOriginForOnlyOneSitOn: RearMidFrontPositions = ZeroValue.rearMidFrontPositions
     
     var wheelBaseJointOrigins: TwinSitOnOrigins = ZeroValue.sitOnOrigins
     let onlyOne = 0
     let rear = 0
-    let mid = 1
-    
     let front = 1
     let left = 0
     let right = 1
@@ -144,14 +138,13 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     /// [[PositionAsIos]]
     
     init(
-        _ object: ObjectTypes
-    ) {
+        _ object: ObjectTypes) {
 
         self.objectType = object
 
         stability = Stability(objectType)
 
-        bodySupportHeight = PreTiltBodySupportDefaultOriginHeight(objectType).height
+            bodySupportHeight = MiscObjectParameters(objectType).getMainBodySupportAboveFloor()
             
         wheelDefaultDimensionForRearMidFront =
             WheelDefaultDimensionForRearMidFront(object).dimensions
@@ -169,39 +162,27 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
 
         sitOnOriginsIn = getEditedSitOnOrigins()
 
-        let wheelBaseJointOrigin = getWheelBaseJointOrigin()
+        let wheelBaseJointOrigin = getWheelBaseJointOriginForOneSitOn()
         
-        if baseObjectGroups.rearPrimaryOrigin.contains(objectType) {
-            setOriginsWithDrive(location: .rear)
-        }
+        setOriginsWithDriveAtDifferentLocations()
         
-        if baseObjectGroups.midPrimaryOrigin.contains(objectType) {
-            setOriginsWithDrive(location: .mid)
-        }
-        
-        if baseObjectGroups.frontPrimaryOrigin.contains(objectType) {
-            setOriginsWithDrive(location: .front)
-        }
-        
-        
-        func setOriginsWithDrive(location at: Drive) {
-//            sitOnOrigins =
-//                getOriginsForSitOnWithDrive(location: at)
-//
+        func setOriginsWithDriveAtDifferentLocations() {
+            let withThisLocation: Drive = MiscObjectParameters(objectType).getDriveLocation()
+            
             let leftAndRight = getOriginForLeftAndRightSitOn()
             let rearAndFront = getOriginForRearAndFrontSitOn()
             
             sitOnOrigins = (
-                onlyOne: [getDataForDrive(at,getOriginForOneSitOn() )],
+                onlyOne: [getDataForDrive(withThisLocation,getOriginForOneSitOn() )],
                 rearAndFront: [
-                    getDataForDrive(at,rearAndFront.rear ),
-                    getDataForDrive(at,rearAndFront.front )],
+                    getDataForDrive(withThisLocation,rearAndFront.rear ),
+                    getDataForDrive(withThisLocation,rearAndFront.front )],
                 leftAndRight: [
-                    getDataForDrive(at,leftAndRight.left),
-                    getDataForDrive(at,leftAndRight.right)] )
+                    getDataForDrive(withThisLocation,leftAndRight.left),
+                    getDataForDrive(withThisLocation,leftAndRight.right)] )
             
             wheelBaseJointOriginForOnlyOneSitOn =
-                getDataForDrive( at, wheelBaseJointOrigin )
+                getDataForDrive( withThisLocation, wheelBaseJointOrigin )
         }
        
     }
@@ -282,126 +263,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
         return
             lengths.max() ?? hangerLinkLength
     }
-        
-
-
-//   mutating func getOriginsForSitOnWithDrive(location at: Drive)
-//    -> TwinSitOnOrigins {
-//        var originForOnlyOneSitOn: [PositionAsIosAxes] = []
-//        var originForLeftAndRightSitOn: [PositionAsIosAxes] = []
-//        var originForRearAndFrontSitOn: [PositionAsIosAxes] = []
-//        //var distanceBetweenSitOn: Double = 0.0
-//
-//        let lengthBetweenRearAndFrontSitOn  =
-//        sitOnDimensions[rear].length +
-//        occupantFootSupportHangerLinksMaxLengths[rear] +
-//        sitOnDimensions[front].length/2
-//        let totalExternalWidthBetweenLeftandRightSideSupport =
-//            occupantSideSupportsDimensions[left][left].width +
-//            sitOnDimensions[left].width +
-//            occupantSideSupportsDimensions[right][right].width +
-//            sitOnDimensions[right].width
-//        let xLeftOriginForLeftAndRightSitOn =
-//            -totalExternalWidthBetweenLeftandRightSideSupport/2 + occupantSideSupportsDimensions[left][left].width +
-//                sitOnDimensions[left].width/2
-//        let xRightOriginForLeftAndRightSitOn =
-//            totalExternalWidthBetweenLeftandRightSideSupport/2 -  occupantSideSupportsDimensions[right][right].width +
-//                sitOnDimensions[right].width/2
-//
-//
-//        switch at {
-//            case .rear:
-//                originForOnlyOneSitOn =
-//                    sitOnOrigins.onlyOne.count == 0 ?
-//                        [(
-//                        x: 0.0,
-//                        y: sitOnDimensions[onlyOne].length/2,
-//                        z: bodySupportHeight )]: sitOnOrigins.onlyOne
-//
-//                originForLeftAndRightSitOn =
-//                    sitOnOrigins.leftAndRight.count == 0 ?
-//                        [(
-//                        x: xLeftOriginForLeftAndRightSitOn,
-//                        y: sitOnDimensions[left].length/2,
-//                        z: bodySupportHeight),
-//                        (
-//                        x: xRightOriginForLeftAndRightSitOn,
-//                        y: sitOnDimensions[right].length/2,
-//                        z: bodySupportHeight)        ]: sitOnOrigins.leftAndRight
-//
-//                originForRearAndFrontSitOn =
-//                    sitOnOrigins.rearAndFront.count == 0 ?
-//                    [
-//                    (x: 0.0,
-//                     y: sitOnDimensions[rear].length/2,
-//                     z: bodySupportHeight),
-//                    (x:0.0,
-//                     y: lengthBetweenRearAndFrontSitOn,
-//                     z: bodySupportHeight)      ] : sitOnOrigins.rearAndFront
-//
-//            case .mid:
-//                originForOnlyOneSitOn =
-//                    sitOnOrigins.onlyOne.count == 0 ?
-//                    [(
-//                    x: 0.0,
-//                    y: 0.0,
-//                    z: bodySupportHeight )] : sitOnOrigins.onlyOne
-//
-//                originForLeftAndRightSitOn =
-//                    sitOnOrigins.leftAndRight.count == 0 ?
-//                    [
-//                    (x: xLeftOriginForLeftAndRightSitOn,
-//                     y: 0,
-//                     z:bodySupportHeight),
-//                    (x: xRightOriginForLeftAndRightSitOn,
-//                     y: 0.0,
-//                     z:bodySupportHeight)        ] : sitOnOrigins.leftAndRight
-//
-//                originForRearAndFrontSitOn =
-//                    sitOnOrigins.rearAndFront.count == 0 ?
-//                    [
-//                    (x: 0.0,
-//                     y: -lengthBetweenRearAndFrontSitOn/2,
-//                     z: bodySupportHeight),
-//                    (x:0.0,
-//                     y: lengthBetweenRearAndFrontSitOn/2,
-//                     z: bodySupportHeight)      ] : sitOnOrigins.rearAndFront
-//
-//            case .front:
-//                originForOnlyOneSitOn =
-//                   sitOnOrigins.onlyOne.count == 0 ?
-//                       [(
-//                       x: 0.0,
-//                       y: -sitOnDimensions[onlyOne].length/2,
-//                       z: bodySupportHeight )]: sitOnOrigins.onlyOne
-//
-//                originForLeftAndRightSitOn =
-//                    sitOnOrigins.leftAndRight.count == 0 ?
-//                        [(
-//                        x: xLeftOriginForLeftAndRightSitOn,
-//                        y: -sitOnDimensions[left].length/2,
-//                        z: bodySupportHeight), (
-//                        x: xRightOriginForLeftAndRightSitOn,
-//                        y: -sitOnDimensions[right].length/2,
-//                        z: bodySupportHeight)        ]: sitOnOrigins.leftAndRight
-//
-//                originForRearAndFrontSitOn =
-//                        sitOnOrigins.rearAndFront.count == 0 ?
-//                        [
-//                        (x: 0.0,
-//                         y: -lengthBetweenRearAndFrontSitOn,
-//                         z: bodySupportHeight),
-//                        (x:0.0,
-//                         y: -sitOnDimensions[front].length/2,
-//                         z: bodySupportHeight)      ] : sitOnOrigins.rearAndFront
-//        }
-//
-//        return
-//            (onlyOne: originForOnlyOneSitOn,
-//             rearAndFront: originForRearAndFrontSitOn,
-//             leftAndRight: originForLeftAndRightSitOn)
-//    }
-    
+          
     
     func getOriginForOneSitOn()
      -> [PositionAsIosAxes] {
@@ -504,7 +366,7 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     
     
         
-    func getWheelBaseJointOrigin() -> [RearMidFrontPositions]{
+    func getWheelBaseJointOriginForOneSitOn() -> [RearMidFrontPositions]{
         let rear =
             (rear: (
                  x: sitOnDimensions[onlyOne].width/2 +
