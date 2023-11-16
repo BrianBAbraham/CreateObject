@@ -458,4 +458,329 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
     
 }
 
-/// dic ?? dimensions -> origins ->  wheelBaseJoint
+
+struct UserEditedValue {
+    let dimensionDicIn: Part3DimensionDictionary
+    let part: Part
+    let sitOnId: Part
+    let partId: Part
+    var name: String {
+        CreateNameFromParts ( [
+            .sitOn,
+            sitOnId,
+            part,
+            partId]
+        ).name}
+    var dimension: Dimension3d? {
+        dimensionDicIn[name]}
+    
+    init(
+        _ dimensionDicIn: Part3DimensionDictionary,
+        _ sitOnId: Part,
+        _ part: Part,
+        _ partId: Part) {
+            self.dimensionDicIn = dimensionDicIn
+            self.sitOnId = sitOnId
+            self.part = part
+            self.partId = partId
+    }
+}
+
+
+
+
+///origin for one sitOn, and frontAndRear and sideBySide
+///are provided by sitOnOrigins
+///dicttionary dimension and origin are psssed to make use
+///of edited values if extant
+struct PreTiltSitOnAOrigin {
+    var originForOnlyOneSitOn = [ZeroValue.iosLocation]
+    let objectType: ObjectTypes
+    let stability: Stability
+    var origins: [PositionAsIosAxes] = []
+
+    let bilateralIds: [Part] = [.id0, .id1]
+    let bothSitOnId: [Part] = [.id0, .id1]
+
+    var sitOnOriginsIn: TwinSitOnOrigins =  ZeroValue.sitOnOrigins
+    var sitOnDimensions: [Dimension3d] = []
+    var occupantSideSupportsDimensions: [[Dimension3d]] = []
+    var occupantFootSupportHangerLinksMaxLengths: [Double] = []
+    var sitOnOrigins: TwinSitOnOrigins = ZeroValue.sitOnOrigins
+    
+    let onlyOne = 0
+    let rear = 0
+    let front = 1
+    let left = 0
+    let right = 1
+    let bodySupportHeight: Double
+
+  
+    /// 1) rearAndFront && sleftAndRight == false: one origin .id0
+    /// 2) rearAndFront == true && sideBySide == false: two origin .id0 (rear), .id1 (front)
+    /// 3) rearAndFront == false && leftAndRight == true: two origin .id0 (left), .id1 (right)
+    /// locations as per viewing screen
+    /// [[PositionAsIos]]
+    
+    init(
+        _ object: ObjectTypes,
+        _ sitOn: GenericPart,
+        _ sideSupport: GenericPart?, //sitOn dependent, unknown at first call
+        _ footSupportHangerLink: GenericPart?,
+        _ dimensionDicIn: Part3DimensionDictionary = [:],
+        _ maxDimensionDicIn: Part3DimensionDictionary = [:] ) {
+
+        self.objectType = object
+
+        stability = Stability(objectType)
+
+        bodySupportHeight = MiscObjectParameters(objectType).getMainBodySupportAboveFloor()
+
+
+            for sitOnId in bothSitOnId {
+               
+                sitOnDimensions.append(
+                    UserEditedValue(
+                        dimensionDicIn,
+                        sitOnId,
+                        .sitOn,
+                        sitOnId).dimension ?? sitOn.dimension)
+                
+                
+                var sideSupportDimensionsForOneSitOn: [Dimension3d] = []
+                for partId in bilateralIds {
+                    occupantFootSupportHangerLinksMaxLengths.append(
+                        UserEditedValue(
+                            maxDimensionDicIn,
+                            sitOnId,
+                            .sitOn,
+                            partId).dimension?.length ?? footSupportHangerLink?.dimension.length ??
+                                0.0)
+                    sideSupportDimensionsForOneSitOn.append(
+                        UserEditedValue(
+                        dimensionDicIn,
+                        sitOnId,
+                        .sideSupport,
+                        partId).dimension ??
+                        sideSupport?.dimension ??
+                        ZeroValue.dimension3d )
+                }
+                
+                occupantSideSupportsDimensions.append(sideSupportDimensionsForOneSitOn)
+        }
+
+        sitOnOriginsIn = getEditedSitOnOrigins()
+
+        setOriginsWithDriveAtDifferentLocations()
+        
+        func setOriginsWithDriveAtDifferentLocations() {
+            let withThisLocation: Drive = MiscObjectParameters(objectType).getDriveLocation()
+            
+            let leftAndRight = getOriginForLeftAndRightSitOn()
+            let rearAndFront = getOriginForRearAndFrontSitOn()
+            
+            sitOnOrigins = (
+                onlyOne: [getDataForDrive(withThisLocation,getOriginForOneSitOn() )],
+                rearAndFront: [
+                    getDataForDrive(withThisLocation,rearAndFront.rear ),
+                    getDataForDrive(withThisLocation,rearAndFront.front )],
+                leftAndRight: [
+                    getDataForDrive(withThisLocation,leftAndRight.left),
+                    getDataForDrive(withThisLocation,leftAndRight.right)] )
+            
+        }
+       
+    }
+    
+    //there may be none, or one or two edited sitOn origins
+    //if two these may be frontAndRear or sideBySide
+    func getEditedSitOnOrigins()
+        -> TwinSitOnOrigins {
+        var sitOnOrigins: [PositionAsIosAxes?] = []
+        var sitOnOriginsIn = ZeroValue.sitOnOrigins
+            for _ in bothSitOnId {
+            sitOnOrigins.append(nil
+            )
+        }
+        // one or more nill
+        if sitOnOrigins.contains(where: { $0 == nil }) {
+            ///two nil
+            if sitOnOrigins.allSatisfy({ $0 == nil }) {
+            // do nothing
+            } else { //one nil
+                if let nonNilElement = sitOnOrigins.first(where: { $0 != nil } ) {
+                    sitOnOriginsIn =
+                        (onlyOne: [nonNilElement!],
+                         rearAndFront: [],
+                         leftAndRight: [])
+                }
+            }
+        } else {
+            // No elements are nil so check for frontAndRear and sideBySide
+            let first = sitOnOrigins[0]!
+            let second = sitOnOrigins[1]!
+            
+            // if x origins difference is greatest must be side by side
+            if abs(first.x - second.x) > abs(first.y - second.y) {
+                sitOnOriginsIn =
+                    (onlyOne: [],
+                     rearAndFront: [],
+                     leftAndRight: [first, second])
+            } else {
+                sitOnOriginsIn =
+                    (onlyOne: [],
+                     rearAndFront: [first, second],
+                     leftAndRight: [])
+            }
+        }
+            return sitOnOriginsIn
+    }
+    
+    
+    func getEditedOrDefaultSideSupportDimensions(_ sitOnId: Part)
+        -> [Dimension3d] {
+            var sideSupportDimension: [Dimension3d] = []
+            for _ in bilateralIds {
+                let dimension =
+                    OccupantSideSupportDefaultDimension(objectType).dimension
+                sideSupportDimension.append(dimension)
+            }
+        return
+            sideSupportDimension
+    }
+    
+    
+    func getEditedOrDefaultMaximumHangerLinkLength(
+            _ sitOnId: Part)
+    -> Double{
+        var lengths:[Double] = []
+        let hangerLinkLength = OccupantFootSupportDefaultDimension(objectType).getHangerLink().length
+        for _ in bilateralIds {
+            lengths.append(
+                hangerLinkLength)
+        }
+        return
+            lengths.max() ?? hangerLinkLength
+    }
+          
+    
+    func getOriginForOneSitOn()
+     -> [PositionAsIosAxes] {
+         [ (
+            x: 0.0,
+            y: sitOnDimensions[onlyOne].length/2,
+            z: bodySupportHeight ),
+          (
+            x: 0.0,
+            y: 0.0,
+            z: bodySupportHeight ),
+         (
+            x: 0.0,
+            y: -sitOnDimensions[onlyOne].length/2,
+            z: bodySupportHeight ) ]
+     }
+    
+    
+    func getOriginForRearAndFrontSitOn()
+    -> (rear: [PositionAsIosAxes], front: [PositionAsIosAxes]) {
+        let lengthBetweenRearAndFrontSitOn  =
+            sitOnDimensions[rear].length +
+            occupantFootSupportHangerLinksMaxLengths[rear] +
+            sitOnDimensions[front].length/2
+        let rear =
+            [ (
+                x: 0.0,
+                y: sitOnDimensions[rear].length/2,
+                z: bodySupportHeight),
+                (
+                x: 0.0,
+                y: -lengthBetweenRearAndFrontSitOn/2,
+                z: bodySupportHeight),
+                (
+                x: 0.0,
+                y: -lengthBetweenRearAndFrontSitOn,
+                z: bodySupportHeight) ]
+            
+        let front =
+            [ (
+                x:0.0,
+                 y: lengthBetweenRearAndFrontSitOn,
+                 z: bodySupportHeight),
+                (
+                x:0.0,
+                 y: lengthBetweenRearAndFrontSitOn/2,
+                 z: bodySupportHeight),
+                (
+                x:0.0,
+                y: -sitOnDimensions[front].length/2,
+                z: bodySupportHeight) ]
+        return (rear: rear, front: front)
+    }
+    
+    
+    func getOriginForLeftAndRightSitOn()
+    -> (left: [PositionAsIosAxes], right: [PositionAsIosAxes]){
+        let totalExternalWidthBetweenLeftandRightSideSupport =
+            occupantSideSupportsDimensions[left][left].width +
+            sitOnDimensions[left].width +
+            occupantSideSupportsDimensions[right][right].width +
+            sitOnDimensions[right].width
+        let xLeftOriginForLeftAndRightSitOn =
+            -totalExternalWidthBetweenLeftandRightSideSupport/2 +
+            occupantSideSupportsDimensions[left][left].width +
+                sitOnDimensions[left].width/2
+        let xRightOriginForLeftAndRightSitOn =
+            totalExternalWidthBetweenLeftandRightSideSupport/2 -
+            occupantSideSupportsDimensions[right][right].width -
+                sitOnDimensions[right].width/2
+        let left =
+            [ (
+                x: xLeftOriginForLeftAndRightSitOn,
+                y: sitOnDimensions[left].length/2,
+                z: bodySupportHeight),
+              (
+                x: xLeftOriginForLeftAndRightSitOn,
+                y: 0.0,
+                z:bodySupportHeight),
+             (
+                x: xLeftOriginForLeftAndRightSitOn,
+                y: -sitOnDimensions[left].length/2,
+                z: bodySupportHeight) ]
+        let right =
+            [ (
+                x: xRightOriginForLeftAndRightSitOn,
+                y: sitOnDimensions[right].length/2,
+                z: bodySupportHeight),
+              (
+                x: xRightOriginForLeftAndRightSitOn,
+                y: 0.0,
+                z:bodySupportHeight),
+              (
+                x: xRightOriginForLeftAndRightSitOn,
+                y: -sitOnDimensions[right].length/2,
+                z: bodySupportHeight) ]
+        return ( left: left, right: right)
+      
+    }
+    
+    
+        
+ 
+    
+    
+    func getDataForDrive<T> (_ at: Drive, _ originsForThisCall: [T])
+    -> T {
+        
+        switch at {
+        case .rear:
+            return originsForThisCall[0]
+        case .mid:
+            return originsForThisCall[1]
+        case .front:
+            return originsForThisCall[2]
+            
+        }
+    }
+
+    
+}

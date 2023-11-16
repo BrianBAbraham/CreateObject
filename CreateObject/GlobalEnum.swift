@@ -838,7 +838,7 @@ extension StructFactory {
             
         let bilateralIds: [Part] = [.id0, .id1]
         let sitOnIds: [Part] = [.id0, .id1]
-        var occupantSideSupportsDimensions: [[Dimension3d]] = []
+        //var occupantSideSupportsDimensions: [[Dimension3d]] = []
             
         let dimensionDic: BaseObject3DimensionDictionary =
             [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
@@ -849,10 +849,10 @@ extension StructFactory {
                 dimensionDic[objectType] ??
             (width: 400.0, length: 400.0, height: 10.0)
             
-        for _ in sitOnIds {
-            occupantSideSupportsDimensions.append(getSideSupportDimensions())
-        }
-    
+//        for _ in sitOnIds {
+//            occupantSideSupportsDimensions.append(getSideSupportDimensions())
+//        }
+//
         return SitOn(
             dimension: dimension,
             origin: getSitOnOrigin(),
@@ -863,21 +863,25 @@ extension StructFactory {
         )
             
             
-        func getSideSupportDimensions()
-            -> [Dimension3d] {
-                var sideSupportDimension: [Dimension3d] = []
-                for _ in bilateralIds {
-                    let dimension =
-                        sideSupport?.dimension ?? ZeroValue.dimension3d
-                    sideSupportDimension.append(dimension)
-                }
-            return
-                sideSupportDimension
-        }
+//        func getSideSupportDimensions()
+//            -> [Dimension3d] {
+//                var sideSupportDimension: [Dimension3d] = []
+//                for _ in bilateralIds {
+//                    let dimension =
+//                        sideSupport?.dimension ?? ZeroValue.dimension3d
+//                    sideSupportDimension.append(dimension)
+//                }
+//            return
+//                sideSupportDimension
+//        }
             
             
         func getSitOnOrigin() -> PositionAsIosAxes {
-            let origin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
+            let origin =
+                PreTiltSitOnAOrigin(
+                    objectType,
+                    sideSupport,
+                    footSupportHangerLink)
             let onlyOne = 0
             return origin.sitOnOrigins.onlyOne[onlyOne]
         }
