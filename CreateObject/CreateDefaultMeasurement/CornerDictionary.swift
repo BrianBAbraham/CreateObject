@@ -70,6 +70,8 @@ struct DictionaryProvider {
     var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
 
     var object: Object
+    
+    var objectPartDic: [Part: GenericPart] = [:]
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -171,40 +173,110 @@ struct DictionaryProvider {
             
             
             
+            initialiseAllPart()
             
             
             
+//MARK: InitialiseAllPart
             
-//MARK: sitOn
-let preliminarySitOnStruct =
-        StructFactory.createSitOn(
-            objectType,
-            nil,
-            nil)
-let sideSupportStruct =
-        StructFactory.createGenericPart(
-            objectType,
-            preliminarySitOnStruct,
-            .sideSupport)
-let footSupportHangerLinkStruct =
-        StructFactory.createGenericPart(
-                objectType,
-                preliminarySitOnStruct,
-                .footSupportHangerLink)
-let sitOnStruct =
-        StructFactory.createSitOn(
-            objectType,
-            sideSupportStruct,
-            nil)
+            func initialiseAllPart() {
+                
+                let oneOfEachPartInAllChainLabel =  getOneOfEachPartInAllChainLabel()
+                
+               
+                let allChainLabelOderedForInitialisation: [Part] =
+                [.sitOn, .sideSupport, .footSupportHangerLink, .sideSupport]
+                
+                var oneOfEachPartInAllChainLabelOrderedForInitialisation: [Part] = []
+                
+                
+                for part in allChainLabelOderedForInitialisation {
+                    oneOfEachPartInAllChainLabelOrderedForInitialisation +=
+                    oneOfEachPartInAllChainLabel.contains(part) ?
+                    [part]: []
+                }
+                
+                
+            for part in oneOfEachPartInAllChainLabelOrderedForInitialisation {
+                switch part {
+                case .sitOn:
+                    objectPartDic +=
+                        [.sitOn: initialilseSitOn()]
+                case .sideSupport:
+                    initialiseGenericSupport(.sideSupport)
+                case .footSupportHangerLink:
+                    initialiseGenericSupport(.footSupportHangerLink)
+                     
+                default:
+                    print ("no initialisation defined for this part: \(part)")
+                    break
+                
+                }
+            }
+                
+                
+            func getOneOfEachPartInAllChainLabel() -> [Part]{
+                let chainLabels =
+                    objectsAndTheirChainLabelsDicIn[objectType] ??
+                    ObjectsAndTheirChainLabels().dictionary[objectType]
+                var oneOfEachPartInAllChainLabel: [Part] = []
+                if let chainLabels{
+                    var allPartInThisObject: [Part] = []
+                    let onlyOne = 0
+                    for label in chainLabels {
+                        allPartInThisObject +=
+                        LabelInPartChainOut([label]).partChains[onlyOne]
+                    }
+                   oneOfEachPartInAllChainLabel =
+                    Array(Set(allPartInThisObject))
+                }
+                return oneOfEachPartInAllChainLabel
+            }
+                
+                
+            func initialilseSitOn () -> GenericPart {
+                let preliminarySitOn =
+                        StructFactory.createSitOn(
+                            objectType,
+                            nil,
+                            nil)
+                let peliminarySideSupport =
+                        StructFactory.createGenericPart(
+                            objectType,
+                            preliminarySitOn,
+                            Part.sideSupport)
+                let preliminaryFootSupportHangerLink =
+                        StructFactory.createGenericPart(
+                            objectType,
+                            preliminarySitOn,
+                            .footSupportHangerLink)
+                return
+                    StructFactory.createSitOn(
+                        objectType,
+                        peliminarySideSupport,
+                        preliminaryFootSupportHangerLink)
+                }
+                
+                func initialiseGenericSupport(_ support: Part) {
+                    if let sitOn = objectPartDic[Part.sitOn] {
+                        objectPartDic +=
+                        [support:  StructFactory.createGenericPart(
+                            objectType,
+                            sitOn,
+                            support)]
+                    }
+                       
+                }
+                
+                
+            }
             
+            
+   // let sitOnGenericPart = initialilseSitOn()
+           // print(sitOnGenericPart.origin)
+            
+    
 
-            print("StructFactoryTest")
-            print(sideSupportStruct.dimension)
-            print(sitOnStruct.dimension)
-            //print(sitOnStruct.occupantSideSupportsDimensions)
-            print("")
-            
-            
             
             
             

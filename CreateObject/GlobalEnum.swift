@@ -431,7 +431,7 @@ struct Object {
          .sitOn,
         .footSupportHangerJoint,
         .footSupportJoint,
-                .footSupport
+        .footSupport
         ]
     let footOnly: PartChain =
         [.footSupportInOnePiece]
@@ -806,11 +806,18 @@ protocol PartValues {
 //    }
 //}
 
+struct StructFactory {
+    
+
+    
+    
+    
+    
+}
 
 
-//MARK: SitOn
-struct SitOn: PartValues {
-    var part: Part = .sitOn
+struct GenericPart: PartValues {
+    var part: Part
     
     var dimension: Dimension3d
     
@@ -821,20 +828,15 @@ struct SitOn: PartValues {
     var maxAngle: RotationAngles
     
     var ids: [Part]
-    
-//    var sideSupportStruct: GenericPart?
-//
-//    var occupantSideSupportsDimensions: [[Dimension3d]]
 }
 
+
 extension StructFactory {
-    
-    
     static func createSitOn(
     _ objectType: ObjectTypes,
     _ sideSupport: GenericPart?,
     _ footSupportHangerLink: GenericPart?)
-        -> SitOn {
+        -> GenericPart {
             
         let bilateralIds: [Part] = [.id0, .id1]
         let sitOnIds: [Part] = [.id0, .id1]
@@ -853,33 +855,20 @@ extension StructFactory {
 //            occupantSideSupportsDimensions.append(getSideSupportDimensions())
 //        }
 //
-        return SitOn(
+        return GenericPart(
+            part: .sitOn,
             dimension: dimension,
             origin: getSitOnOrigin(),
             minAngle: ZeroValue.rotationAngles ,
             maxAngle: ZeroValue.rotationAngles,
-            ids: [.id0]//,
-//            occupantSideSupportsDimensions: occupantSideSupportsDimensions
+            ids: [.id0]
         )
-            
-            
-//        func getSideSupportDimensions()
-//            -> [Dimension3d] {
-//                var sideSupportDimension: [Dimension3d] = []
-//                for _ in bilateralIds {
-//                    let dimension =
-//                        sideSupport?.dimension ?? ZeroValue.dimension3d
-//                    sideSupportDimension.append(dimension)
-//                }
-//            return
-//                sideSupportDimension
-//        }
-            
             
         func getSitOnOrigin() -> PositionAsIosAxes {
             let origin =
-                PreTiltSitOnAOrigin(
+                PreTiltSitOnOrigin(
                     objectType,
+                    dimension,
                     sideSupport,
                     footSupportHangerLink)
             let onlyOne = 0
@@ -889,20 +878,7 @@ extension StructFactory {
 }
 
 
-//MARK: SideSupport
-struct GenericPart: PartValues {
-    var part: Part
-    
-    var dimension: Dimension3d
-    
-    var origin: PositionAsIosAxes
-    
-    var minAngle: RotationAngles
-    
-    var maxAngle: RotationAngles
-    
-    var ids: [Part]
-}
+
 
 /// I would like to pass the partChain label
 /// the partChain label then creates the structs for those parts
@@ -910,7 +886,7 @@ struct GenericPart: PartValues {
 extension StructFactory {
     static func createGenericPart(
     _ objectType: ObjectTypes,
-    _ sitOn: SitOn,
+    _ sitOn: GenericPart,
     _ part: Part)
         -> GenericPart {
         var dimension = ZeroValue.dimension3d
@@ -1066,14 +1042,7 @@ struct WheelBaseJoint: PartValues {
 }
 
 
-struct StructFactory {
-    
 
-    
-    
-    
-    
-}
 
 //InterOrigin().names
 extension Array where Element: Hashable {

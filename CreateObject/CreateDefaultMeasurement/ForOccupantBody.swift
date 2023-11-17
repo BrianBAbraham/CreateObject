@@ -493,7 +493,7 @@ struct UserEditedValue {
 ///are provided by sitOnOrigins
 ///dicttionary dimension and origin are psssed to make use
 ///of edited values if extant
-struct PreTiltSitOnAOrigin {
+struct PreTiltSitOnOrigin {
     var originForOnlyOneSitOn = [ZeroValue.iosLocation]
     let objectType: ObjectTypes
     let stability: Stability
@@ -524,7 +524,7 @@ struct PreTiltSitOnAOrigin {
     
     init(
         _ object: ObjectTypes,
-        _ sitOn: GenericPart,
+        _ sitOnDimension: Dimension3d,
         _ sideSupport: GenericPart?, //sitOn dependent, unknown at first call
         _ footSupportHangerLink: GenericPart?,
         _ dimensionDicIn: Part3DimensionDictionary = [:],
@@ -544,7 +544,7 @@ struct PreTiltSitOnAOrigin {
                         dimensionDicIn,
                         sitOnId,
                         .sitOn,
-                        sitOnId).dimension ?? sitOn.dimension)
+                        sitOnId).dimension ?? sitOnDimension)
                 
                 
                 var sideSupportDimensionsForOneSitOn: [Dimension3d] = []
