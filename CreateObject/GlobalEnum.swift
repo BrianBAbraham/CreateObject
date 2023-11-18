@@ -821,6 +821,10 @@ struct GenericPart: PartValues {
     
     var dimension: Dimension3d
     
+    var maxDimension: Dimension3d
+    
+    var minDimension: Dimension3d
+    
     var origin: PositionAsIosAxes
     
     var minAngle: RotationAngles
@@ -828,6 +832,25 @@ struct GenericPart: PartValues {
     var maxAngle: RotationAngles
     
     var ids: [Part]
+    
+    init (
+        part: Part,
+        dimension: Dimension3d,
+        maxDimension: Dimension3d? = nil,
+        minDimension: Dimension3d? = nil,
+        origin: PositionAsIosAxes,
+        minAngle: RotationAngles,
+        maxAngle: RotationAngles,
+        ids: [Part]) {
+            self.part = part
+            self.dimension = dimension
+            self.maxDimension = maxDimension ?? dimension
+            self.minDimension = minDimension ?? dimension
+            self.origin = origin
+            self.minAngle = minAngle
+            self.maxAngle = maxAngle
+            self.ids = ids
+        }
 }
 
 
@@ -835,7 +858,7 @@ extension StructFactory {
     static func createSitOn(
     _ objectType: ObjectTypes,
     _ sideSupport: GenericPart?,
-    _ footSupportHangerLink: GenericPart?)
+    _ footSupportHangerLink: GenericPart)
         -> GenericPart {
             
         let bilateralIds: [Part] = [.id0, .id1]
@@ -884,7 +907,7 @@ extension StructFactory {
 /// the partChain label then creates the structs for those parts
 
 extension StructFactory {
-    static func createGenericPart(
+    static func createSitOnDependentPart(
     _ objectType: ObjectTypes,
     _ sitOn: GenericPart,
     _ part: Part)
@@ -919,6 +942,16 @@ extension StructFactory {
             case .footSupportHangerLink:
                 dimension =
                     (width: 20.0, length: 200.0, height: 20.0)
+            case .baseWheelJoint:
+                dimension = Joint.dimension3d
+            /// dep on TwinSitOn
+            /// dep on Stability
+            /// dep on Drive
+            /// dep on id
+            /// dep SideSupport
+            /// dep on Wheel
+            
+            
                 
             default:
                 break
@@ -931,12 +964,33 @@ extension StructFactory {
                 maxAngle: ZeroValue.rotationAngles,
                 ids: [])
     }
-    
-//    func initalizeStructs(_ structs: [PartValues] ) {
-//        for _ in structs {
-//
-//        }
-//    }
+}
+
+extension StructFactory {
+    static func createIndependentPart(
+    _ objectType: ObjectTypes,
+    _ part: Part)
+        -> GenericPart {
+        var dimension = ZeroValue.dimension3d
+            var maxDimension: Dimension3d? = nil
+        switch part {
+            case .footSupportHangerLink:
+                dimension =
+                    (width: 20.0, length: 200.0, height: 20.0)
+                maxDimension =
+                    (width: 20.0, length: 1200.0, height: 20.0)
+            default:
+                break
+        }
+            return GenericPart(
+                part: part,
+                dimension: dimension,
+                maxDimension: maxDimension,
+                origin: ZeroValue.iosLocation,
+                minAngle: ZeroValue.rotationAngles,
+                maxAngle: ZeroValue.rotationAngles,
+                ids: [])
+    }
 }
 
 //MARK: FootSupport

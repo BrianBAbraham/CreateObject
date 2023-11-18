@@ -142,4 +142,8 @@ typealias TwinSitOnOrigins =
      rearAndFront: [PositionAsIosAxes],
      leftAndRight: [PositionAsIosAxes])
 
+typealias TwinSitOn =
+    (onlyOne: [GenericPart],
+     rearAndFront: [GenericPart],
+     leftAndRight: [GenericPart])
 
