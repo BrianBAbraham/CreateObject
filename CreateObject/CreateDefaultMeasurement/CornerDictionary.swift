@@ -22,6 +22,7 @@ struct DictionaryProvider {
     }
    
     //UI amended dictionary
+    let userEditedDictionary: UserEditedDictionary
     let dimensionDicIn: Part3DimensionDictionary
     let preTiltParentToPartOriginDicIn: PositionDictionary
     let preTiltObjectToPartOriginDicIn: PositionDictionary
@@ -108,6 +109,14 @@ struct DictionaryProvider {
         self.angleMinMaxDicIn = minMaxAngleIn
         self.partChainsIdDicIn = partChainsIdDicIn
             
+        userEditedDictionary =
+            UserEditedDictionary(
+                dimension: dimensionDicIn,
+                parentToPartOrigin :preTiltParentToPartOriginDicIn,
+                objectToPartOrigin :preTiltObjectToPartOriginDicIn,
+                angle: angleDicIn,
+                partChainsId: partChainsIdDicIn)
+            
         object = (Object(objectType))
             
         preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
@@ -182,78 +191,73 @@ struct DictionaryProvider {
             
         func initialiseAllPart() {
             
-            let oneOfEachPartInAllPartChain =  getOneOfEachPartInAllPartChain()
+        let oneOfEachPartInAllPartChain =  getOneOfEachPartInAllPartChain()
+        
+       
+        let allPartOderedForInitialisation: [Part] =
+        [.footSupportHangerLink, .sitOn, .sideSupport, .sideSupport]
+        
+        var oneOfEachPartInAllPartChainInInitialisationOrder: [Part] = []
+        
+        
+        for part in allPartOderedForInitialisation {
+            oneOfEachPartInAllPartChainInInitialisationOrder +=
+            oneOfEachPartInAllPartChain.contains(part) ?
+            [part]: []
+        }
+        
             
-           
-            let allPartOderedForInitialisation: [Part] =
-            [.footSupportHangerLink, .sitOn, .sideSupport, .sideSupport]
-            
-            var oneOfEachPartInAllPartChainInInitialisationOrder: [Part] = []
-            
-            
-            for part in allPartOderedForInitialisation {
-                oneOfEachPartInAllPartChainInInitialisationOrder +=
-                oneOfEachPartInAllPartChain.contains(part) ?
-                [part]: []
-            }
             
             
         for part in oneOfEachPartInAllPartChainInInitialisationOrder {
             switch part {
                 case .sitOn:
-                    initialilseSitOn()
+                        initialilseSitOn()
                 case .sideSupport:
-                   initialiseSitOnDependantPart(part)
+                       initialiseSitOnDependantPart(part)
                 case .footSupportHangerLink:
-                    initialiseIndependantPart(part)
-            default:
-                print ("no initialisation defined for this part: \(part)")
-                break
+                        initialiseSitOnDependantPart(part)
+                case .fixedWheelAtRear, .fixedWheelAtMid, .fixedWheelAtFront:
+                initialiseBaseWheelJointPart(part)
+                case .casterWheelAtRear, .casterForkAtMid, .casterForkAtFront:
+                initialiseBaseWheelJointPart(part)
+                default:
+                    print ("no initialisation defined for this part: \(part)")
+                    break
             }
         }
             
-            
-        func getOneOfEachPartInAllPartChain() -> [Part]{
-            let chainLabels =
-                objectsAndTheirChainLabelsDicIn[objectType] ??
-                ObjectsAndTheirChainLabels().dictionary[objectType]
-            var oneOfEachPartInAllChainLabel: [Part] = []
-            if let chainLabels{
-                var allPartInThisObject: [Part] = []
-                let onlyOne = 0
-                for label in chainLabels {
-                    allPartInThisObject +=
-                    LabelInPartChainOut([label]).partChains[onlyOne]
-                }
-               oneOfEachPartInAllChainLabel =
-                Array(Set(allPartInThisObject))
-            }
-            return oneOfEachPartInAllChainLabel
-        }
-                
                 
         func initialilseSitOn () //-> GenericPart
             {
-            let footSupportHangerLink =
-                    StructFactory.createIndependentPart(
-                        objectType,
-                        .footSupportHangerLink)
+
             let preliminarySitOn =
                     StructFactory.createSitOn(
                         objectType,
+                        userEditedDictionary,
                         nil,
-                        footSupportHangerLink)
+                        nil)
+            let preliminaryFootSupportHangerLink =
+                    StructFactory.createSitOnDependentPart(
+                        objectType,
+                        userEditedDictionary,
+                        preliminarySitOn,
+                      
+                        .footSupportHangerLink)
             let peliminarySideSupport =
                     StructFactory.createSitOnDependentPart(
                         objectType,
+                        userEditedDictionary,
                         preliminarySitOn,
-                        Part.sideSupport)
+                        
+                        .sideSupport)
             objectPartDic +=
                 [.sitOn:
                 StructFactory.createSitOn(
                     objectType,
+                    userEditedDictionary,
                     peliminarySideSupport,
-                    footSupportHangerLink) ]
+                    preliminaryFootSupportHangerLink) ]
             }
             
             
@@ -262,31 +266,47 @@ struct DictionaryProvider {
                     objectPartDic +=
                     [support:  StructFactory.createSitOnDependentPart(
                         objectType,
+                        userEditedDictionary,
                         sitOn,
+                        
                         support)]
                 }
-                   
             }
                 
-                
-            func initialiseIndependantPart(_ support: Part) {
+                   
+            func initialiseBaseWheelJointPart(_ wheel: Part) {
                 if let sitOn = objectPartDic[Part.sitOn] {
                     objectPartDic +=
-                    [support:  StructFactory.createIndependentPart(
+                    [wheel:  StructFactory.createBaseWheelJointPart(
                         objectType,
-                        support)]
+                        wheel,
+                        userEditedDictionary,
+                        sitOn,
+                        nil)]
                 }
+                
+            }
+                
+                
+            func getOneOfEachPartInAllPartChain() -> [Part]{
+                let chainLabels =
+                    objectsAndTheirChainLabelsDicIn[objectType] ??
+                    ObjectsAndTheirChainLabels().dictionary[objectType]
+                var oneOfEachPartInAllChainLabel: [Part] = []
+                if let chainLabels{
+                    var allPartInThisObject: [Part] = []
+                    let onlyOne = 0
+                    for label in chainLabels {
+                        allPartInThisObject +=
+                        LabelInPartChainOut([label]).partChains[onlyOne]
+                    }
+                   oneOfEachPartInAllChainLabel =
+                    Array(Set(allPartInThisObject))
+                }
+                return oneOfEachPartInAllChainLabel
             }
         }
-            
-            
-   // let sitOnGenericPart = initialilseSitOn()
-           // print(sitOnGenericPart.origin)
-            
-    
-
-            
-            
+                     
             
             
             

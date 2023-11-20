@@ -460,7 +460,11 @@ struct PreTiltSitOnAndWheelBaseJointOrigin {
 
 
 struct UserEditedValue {
-    let dimensionDicIn: Part3DimensionDictionary
+    let dimensionDic: Part3DimensionDictionary
+    let parentToPartOriginDic: PositionDictionary
+    let objectToPartOriginDic: PositionDictionary
+    let angleDic: AngleDictionary
+    let partChainsIdDic: [PartChain: [[Part]]]
     let part: Part
     let sitOnId: Part
     let partId: Part
@@ -471,22 +475,44 @@ struct UserEditedValue {
             part,
             partId]
         ).name}
-    var dimension: Dimension3d? {
-        dimensionDicIn[name]}
+    let dimension: Dimension3d?
+    let origin: PositionAsIosAxes?
+    
+  
     
     init(
-        _ dimensionDicIn: Part3DimensionDictionary,
+        _ userEditedDictionary: UserEditedDictionary,
         _ sitOnId: Part,
         _ part: Part,
         _ partId: Part) {
-            self.dimensionDicIn = dimensionDicIn
+            dimensionDic = userEditedDictionary.dimension
+            parentToPartOriginDic = userEditedDictionary.parentToPartOrigin
+            objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
+            angleDic = userEditedDictionary.angle
+            partChainsIdDic = userEditedDictionary.partChainsId
+           
             self.sitOnId = sitOnId
             self.part = part
             self.partId = partId
+            
+            dimension = dimensionDic[name]
+            origin = parentToPartOriginDic[name]
+            
+            
     }
 }
 
-
+///parts edited by the UI are stored in dictionary
+///these dictiionaries are used for parts,
+///where extant, instead of default values
+///during intitialisation
+struct UserEditedDictionary {
+    let dimension: Part3DimensionDictionary
+    let parentToPartOrigin: PositionDictionary
+    let objectToPartOrigin: PositionDictionary
+    let angle: AngleDictionary
+    let partChainsId: [PartChain: [[Part]]]
+}
 
 
 ///origin for one sitOn, and frontAndRear and sideBySide
@@ -526,7 +552,7 @@ struct PreTiltSitOnOrigin {
         _ object: ObjectTypes,
         _ sitOnDimension: Dimension3d,
         _ sideSupport: GenericPart?, //sitOn dependent, unknown at first call
-        _ footSupportHangerLink: GenericPart,
+        _ footSupportHangerLink: GenericPart?, //ditto
         _ dimensionDicIn: Part3DimensionDictionary = [:],
         _ maxDimensionDicIn: Part3DimensionDictionary = [:] ) {
 
@@ -553,7 +579,7 @@ struct PreTiltSitOnOrigin {
                         maxDimensionDicIn,
                         sitOnId,
                         .sitOn,
-                        partId).dimension?.length ?? footSupportHangerLink.maxDimension.length )
+                        partId).dimension?.length ?? footSupportHangerLink?.maxDimension.length ?? 0.0)
                 sideSupportDimensionsForOneSitOn.append(
                     UserEditedValue(
                     dimensionDicIn,
