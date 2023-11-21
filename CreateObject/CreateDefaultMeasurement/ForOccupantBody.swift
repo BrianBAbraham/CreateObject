@@ -475,8 +475,8 @@ struct UserEditedValue {
             part,
             partId]
         ).name}
-    let dimension: Dimension3d?
-    let origin: PositionAsIosAxes?
+    var dimension: Dimension3d?
+    var origin: PositionAsIosAxes?
     
   
     
@@ -534,6 +534,8 @@ struct PreTiltSitOnOrigin {
     var occupantFootSupportHangerLinksMaxLengths: [Double] = []
     var sitOnOrigins: TwinSitOnOrigins = ZeroValue.sitOnOrigins
     
+    var footSuportMaxLength = 0.0
+    
     let onlyOne = 0
     let rear = 0
     let front = 1
@@ -551,66 +553,103 @@ struct PreTiltSitOnOrigin {
     init(
         _ object: ObjectTypes,
         _ sitOnDimension: Dimension3d,
-        _ sideSupport: GenericPart?, //sitOn dependent, unknown at first call
-        _ footSupportHangerLink: GenericPart?, //ditto
-        _ dimensionDicIn: Part3DimensionDictionary = [:],
-        _ maxDimensionDicIn: Part3DimensionDictionary = [:] ) {
-
+        _ sideSupport: Symmetry<GenericPartValues>?, //sitOn dependent, unknown at first call
+        _ footSupportHangerLink: Symmetry<GenericPartValues>?, //ditto
+        _ userEditedDictionary: UserEditedDictionary
+//        _ dimensionDicIn: Part3DimensionDictionary = [:],
+//        _ maxDimensionDicIn: Part3DimensionDictionary = [:]
+    ) {
+        //sitOnDimension = sitOnDimensions[onlyOne]
         self.objectType = object
 
         stability = Stability(objectType)
-
+        var sideSupportDimensionsForOneSitOn: [Dimension3d] = []
+        
+        switch sideSupport {
+            case .one (let oneSideSupport):
+                break
+            case .leftRight(let leftSideSupport, let rightSideSupport):
+                for sideSupport in [leftSideSupport, rightSideSupport] {
+                    sideSupportDimensionsForOneSitOn.append(
+                        UserEditedValue(
+                            userEditedDictionary,
+                            .id0,
+                            .sideSupport,
+                            sideSupport.id).dimension ??
+                        sideSupport.dimension )
+                }
+                
+            case .none:
+                break
+        }
+        
+        
+        switch footSupportHangerLink {
+            case .one (let one):
+                footSuportMaxLength = one.maxDimension.length
+            case .leftRight(let left, let right):
+                footSuportMaxLength =
+                    [left.maxDimension.length , right.maxDimension.length ].max() ?? 0.0
+            case .none:
+                break
+        }
+        
+        
         bodySupportHeight = MiscObjectParameters(objectType).getMainBodySupportAboveFloor()
 
         for sitOnId in bothSitOnId {
            
             sitOnDimensions.append(
                 UserEditedValue(
-                    dimensionDicIn,
+                    userEditedDictionary,
                     sitOnId,
                     .sitOn,
                     sitOnId).dimension ?? sitOnDimension)
             
             
-            var sideSupportDimensionsForOneSitOn: [Dimension3d] = []
+            
+            
             for partId in bilateralIds {
                 occupantFootSupportHangerLinksMaxLengths.append(
                     UserEditedValue(
-                        maxDimensionDicIn,
+                        userEditedDictionary,
                         sitOnId,
                         .sitOn,
-                        partId).dimension?.length ?? footSupportHangerLink?.maxDimension.length ?? 0.0)
-                sideSupportDimensionsForOneSitOn.append(
-                    UserEditedValue(
-                    dimensionDicIn,
-                    sitOnId,
-                    .sideSupport,
-                    partId).dimension ??
-                    sideSupport?.dimension ??
-                    ZeroValue.dimension3d )
+                        partId).dimension?.length ?? footSuportMaxLength)
+                
+//                sideSupportDimensionsForOneSitOn.append(
+//                    UserEditedValue(
+//                        userEditedDictionary,
+//                        sitOnId,
+//                        .sideSupport,
+//                        partId).dimension ??
+//                        sideSupport?.dimension ??
+//                        ZeroValue.dimension3d )
             }
             
             occupantSideSupportsDimensions.append(sideSupportDimensionsForOneSitOn)
         }
 
-        sitOnOriginsIn = getEditedSitOnOrigins()
+       // sitOnOriginsIn = getEditedSitOnOrigins()
 
         setOriginsWithDriveAtDifferentLocations()
         
         func setOriginsWithDriveAtDifferentLocations() {
             let withThisLocation: Drive = MiscObjectParameters(objectType).getDriveLocation()
             
-            let leftAndRight = getOriginForLeftAndRightSitOn()
-            let rearAndFront = getOriginForRearAndFrontSitOn()
+//            let leftAndRight = getOriginForLeftAndRightSitOn()
+//            let rearAndFront = getOriginForRearAndFrontSitOn()
             
             sitOnOrigins = (
                 onlyOne: [getDataForDrive(withThisLocation,getOriginForOneSitOn() )],
                 rearAndFront: [
-                    getDataForDrive(withThisLocation,rearAndFront.rear ),
-                    getDataForDrive(withThisLocation,rearAndFront.front )],
+//                    getDataForDrive(withThisLocation,rearAndFront.rear ),
+//                    getDataForDrive(withThisLocation,rearAndFront.front )
+                ],
                 leftAndRight: [
-                    getDataForDrive(withThisLocation,leftAndRight.left),
-                    getDataForDrive(withThisLocation,leftAndRight.right)] )
+//                    getDataForDrive(withThisLocation,leftAndRight.left),
+//                    getDataForDrive(withThisLocation,leftAndRight.right)
+                ] )
             
         }
        

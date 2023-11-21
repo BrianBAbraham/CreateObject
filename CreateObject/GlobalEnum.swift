@@ -838,7 +838,7 @@ protocol PartValues {
     var origin: PositionAsIosAxes  {get set}
     var minAngle: RotationAngles  {get set}
     var maxAngle: RotationAngles {get set}
-    var ids: [Part]  {get set}
+    var id: Part  {get set}
 }
 
 //WORKING ON CHAINS IS REQUIRED IF I USE RELATIVE ORIGINS
@@ -863,8 +863,13 @@ struct StructFactory {
     
 }
 
+enum Symmetry <T> {
+    case leftRight (left: T, right: T)
+    case one (one: T)
+}
 
-struct GenericPart: PartValues {
+
+struct GenericPartValues: PartValues {
     var part: Part
     
     var dimension: Dimension3d
@@ -879,7 +884,9 @@ struct GenericPart: PartValues {
     
     var maxAngle: RotationAngles
     
-    var ids: [Part]
+    var id: Part
+    
+    //var dimension2: Symmetry<Dimension3d>
     
     init (
         part: Part,
@@ -889,7 +896,7 @@ struct GenericPart: PartValues {
         origin: PositionAsIosAxes,
         minAngle: RotationAngles,
         maxAngle: RotationAngles,
-        ids: [Part]) {
+        id: Part) {
             self.part = part
             self.dimension = dimension
             self.maxDimension = maxDimension ?? dimension
@@ -897,7 +904,7 @@ struct GenericPart: PartValues {
             self.origin = origin
             self.minAngle = minAngle
             self.maxAngle = maxAngle
-            self.ids = ids
+            self.id = id
         }
 }
 
@@ -905,13 +912,12 @@ struct GenericPart: PartValues {
 extension StructFactory {
     static func createSitOn(
     _ objectType: ObjectTypes,
-    _ userEditedDictionary: UserEditedDictionary
-    _ sideSupport: GenericPart?,
-    _ footSupportHangerLink: GenericPart?)
-        -> GenericPart {
+    _ userEditedDictionary: UserEditedDictionary,
+    _ sideSupport: Symmetry<GenericPartValues>?,
+    _ footSupportHangerLink: Symmetry<GenericPartValues>?)
+        -> Symmetry<GenericPartValues> {
             
-        let bilateralIds: [Part] = [.id0, .id1]
-        let sitOnIds: [Part] = [.id0, .id1]
+       
         //var occupantSideSupportsDimensions: [[Dimension3d]] = []
             
         let dimensionDic: BaseObject3DimensionDictionary =
@@ -927,14 +933,14 @@ extension StructFactory {
 //            occupantSideSupportsDimensions.append(getSideSupportDimensions())
 //        }
 //
-        return GenericPart(
+            return
+                .one(one: GenericPartValues(
             part: .sitOn,
             dimension: dimension,
             origin: getSitOnOrigin(),
             minAngle: ZeroValue.rotationAngles ,
             maxAngle: ZeroValue.rotationAngles,
-            ids: [.id0]
-        )
+            id: .id0) )
             
         func getSitOnOrigin() -> PositionAsIosAxes {
             let origin =
@@ -942,7 +948,8 @@ extension StructFactory {
                     objectType,
                     dimension,
                     sideSupport,
-                    footSupportHangerLink)
+                    footSupportHangerLink,
+                userEditedDictionary)
             let onlyOne = 0
             return origin.sitOnOrigins.onlyOne[onlyOne]
         }
@@ -959,55 +966,68 @@ extension StructFactory {
     static func createSitOnDependentPart(
     _ objectType: ObjectTypes,
 
-    _ userEditedDictionary: UserEditedDictionary
-    _ sitOn: GenericPart,
+    _ userEditedDictionary: UserEditedDictionary,
+    _ sitOn: Symmetry<GenericPartValues>,
 //    _ sideSupport: GenericPart?,
     _ part: Part)
-        -> GenericPart {
-        var dimension = ZeroValue.dimension3d
-        var maxDimension: Dimension3d? = nil
+        -> Symmetry<GenericPartValues> {
+        //var dimension: Dimension3d = ZeroValue.dimension3d
+        var defaultDimension: Dimension3d = ZeroValue.dimension3d
+        var maxDimension: Dimension3d = defaultDimension
+            var leftRightDimension:  (left: Dimension3d, right: Dimension3d) = (left: ZeroValue.dimension3d, right: ZeroValue.dimension3d)
+        var sitOnLength = 0.0
+        switch sitOn {
+            case .one (let one):
+                sitOnLength = one.dimension.length
+            default : break
+        }
+            
         switch part {
             case .sideSupport:
-                dimension =
+                defaultDimension =
                     [.allCasterStretcher:
                         (width: 20.0,
-                         length: sitOn.dimension.length,
+                         length: sitOnLength,
                          height: 20.0),
-                     
-                        .allCasterBed:
+                    .allCasterBed:
                         (width: 20.0,
-                         length: sitOn.dimension.length,
+                         length: sitOnLength,
                          height: 20.0),
-                     .fixedWheelRearDrive:
+                    .fixedWheelRearDrive:
                         (width: 20.0,
-                         length: sitOn.dimension.length,
-                         height: 20.0) ][objectType]
-                        ??
+                         length: sitOnLength,
+                         height: 20.0) ][objectType] ??
                         (width: 400.0, length: 400.0, height: 10.0)
+                leftRightDimension =
+                    getLeftAndRightUserEditedDimensionValues(part, defaultDimension)
+        
                 
-            case .footSupportInOnePiece:
-                dimension =
-                    [.showerTray: (width: 900.0, length: 1200.0, height: 200.0)] [objectType]
-                    ??
-                    (width: OccupantBodySupportDefaultDimension.general.width,
-                    length: 100.0,
-                    height: 10.0)
+//            case .footSupportInOnePiece:
+//                dimension =
+//                    [.showerTray: (width: 900.0, length: 1200.0, height: 200.0)] [objectType]
+//                    ??
+//                    (width: OccupantBodySupportDefaultDimension.general.width,
+//                    length: 100.0,
+//                    height: 10.0)
             case .footSupportHangerLink:
-                    dimension =
+                    defaultDimension =
                         (width: 20.0, length: 200.0, height: 20.0)
                     maxDimension =
                         (width: 20.0, length: 1200.0, height: 20.0)
-            case .baseWheelJoint:
-                    dimension = Joint.dimension3d
-            case .fixedWheelAtRear:
-                    dimension =
-                            [.fixedWheelManualRearDrive:
-                                (width: 20.0,
-                                 length: 600.0,
-                                 height: 600.0)] [objectType] ??
-                                (width: 50.0,
-                                 length: 200.0,
-                                 height: 200.0)
+                leftRightDimension =
+                    getLeftAndRightUserEditedDimensionValues(part, defaultDimension)
+            
+//            case .baseWheelJoint:
+//                    dimension = Joint.dimension3d
+//            case .fixedWheelAtRear:
+//                    dimension =
+//                            [.fixedWheelManualRearDrive:
+//                                (width: 20.0,
+//                                 length: 600.0,
+//                                 height: 600.0)] [objectType] ??
+//                                (width: 50.0,
+//                                 length: 200.0,
+//                                 height: 200.0)
             
             
             /// dep on TwinSitOn
@@ -1022,160 +1042,172 @@ extension StructFactory {
             default:
                 break
         }
-            return GenericPart(
-                part: part,
-                dimension: dimension,
-                maxDimension: maxDimension,
-                origin: ZeroValue.iosLocation,
-                minAngle: ZeroValue.rotationAngles,
-                maxAngle: ZeroValue.rotationAngles,
-                ids: [])
-    }
-}
-
-
-extension StructFactory {
-    static func createBaseWheelJointPart(
-        _ objectType: ObjectTypes,
-        _ wheel: Part,
-        _ userEditedDictionary: UserEditedDictionary,
-        _ sitOn: GenericPart,
-        _ sideSupport: GenericPart?)
-    -> GenericPart {
-        var dimension =
-            //userEditedDictionary.dimension[objectType.rawValue] ??
-            ZeroValue.dimension3d
-        var maxDimension: Dimension3d? = nil
-        
-        var userEditedValues: [UserEditedValue] = []
-        let ids: [Part] = [.id0,.id1,.id2,.id3,.id4,.id5]
-        
-//        for id in ids
-//                userEditedValues.append()
-//        UserEditedValue(
-//            userEditedDictionary,
-//            .id0,
-//            .baseWheelJoint,
+            
+            func getLeftAndRightUserEditedDimensionValues(
+                _ part: Part, _ defaultDimension: Dimension3d)
+                -> (left: Dimension3d, right: Dimension3d) {
+                    
+                (left: UserEditedValue(userEditedDictionary, .id0, part, .id0).dimension ?? defaultDimension,
+                 right: UserEditedValue(userEditedDictionary, .id0, part, .id1).dimension ?? defaultDimension)
+            }
             
             
-        
-        return GenericPart(
-            part:.baseWheelJoint,
-            dimension: dimension,
-            maxDimension: maxDimension,
-            origin: ZeroValue.iosLocation,
-            minAngle: ZeroValue.rotationAngles,
-            maxAngle: ZeroValue.rotationAngles,
-            ids: [])
-        
-        
-        
-        
-        func getWheelBaseJointOrigin() -> [RearMidFrontPositions]{
-            let halfSitOnWidth = sitOn,dimension.width/2
-            let rear =
-                (rear: (
-                     x: halfSitOnWidth +
-                        occupantSideSupportsDimensions[left][right].width +
-                        stability.atRightRear,
-                     y: stability.atRear,
-                     z: wheelDefaultDimensionForRearMidFront.rear.height/2 ),
-                 mid: (
-                     x: halfSitOnWidth +
-                       occupantSideSupportsDimensions[left][right].width +
-                       stability.atRightMid,
-                    y:  sitOnDimensions[onlyOne].length/2 +
-                        stability.atRear ,
-                    z: wheelDefaultDimensionForRearMidFront.mid.height/2 ),
-                 front: (
-                    x: halfSitOnWidth +
-                       occupantSideSupportsDimensions[left][right].width +
-                       stability.atRightFront,
-                    y: stability.atRear +
-                        sitOnDimensions[onlyOne].length +
-                        stability.atFront,
-                    z: wheelDefaultDimensionForRearMidFront.front.height/2 )
+            return
+                .leftRight( left:
+                                GenericPartValues(
+                                    part: part,
+                                    dimension: leftRightDimension.left,
+                                    maxDimension: maxDimension,
+                                    origin: ZeroValue.iosLocation,
+                                    minAngle: ZeroValue.rotationAngles,
+                                    maxAngle: ZeroValue.rotationAngles,
+                                    id: .id0),
+                             right:
+                                GenericPartValues(
+                                    part: part,
+                                    dimension: leftRightDimension.right,
+                                    maxDimension: maxDimension,
+                                    origin: ZeroValue.iosLocation,
+                                    minAngle: ZeroValue.rotationAngles,
+                                    maxAngle: ZeroValue.rotationAngles,
+                                    id: .id1)
                 )
-            
-            let mid =
-                (rear: (
-                    x: halfSitOnWidth +
-                       occupantSideSupportsDimensions[left][right].width +
-                       stability.atRightRear,
-                    y: -sitOnDimensions[onlyOne].length/2 -
-                       stability.atRear,
-                    z: wheelDefaultDimensionForRearMidFront.rear.height ),
-                mid: (
-                    x: halfSitOnWidth +
-                      occupantSideSupportsDimensions[left][right].width +
-                      stability.atRightMid,
-                    y:  0.0,
-                   z: wheelDefaultDimensionForRearMidFront.mid.height ),
-                front: (
-                   x: shalfSitOnWidth +
-                      occupantSideSupportsDimensions[left][right].width +
-                      stability.atRightFront,
-                   y: sitOnDimensions[onlyOne].length/2 +
-                       stability.atFront,
-                   z: wheelDefaultDimensionForRearMidFront.rear.height )
-               )
-            
-            let front =
-                (rear: (
-                     x: halfSitOnWidth +
-                        occupantSideSupportsDimensions[left][right].width +
-                        stability.atRightRear,
-                     y: stability.atRear -
-                        sitOnDimensions[onlyOne].length -
-                        stability.atFront,
-                     z: wheelDefaultDimensionForRearMidFront.rear.height ),
-                 mid: (
-                     x: halfSitOnWidth +
-                       occupantSideSupportsDimensions[left][right].width +
-                       stability.atRightMid,
-                     y:  -sitOnDimensions[onlyOne].length/2 -
-                     stability.atFront,
-                    z: wheelDefaultDimensionForRearMidFront.mid.height ),
-                 front: (
-                    x: halfSitOnWidth +
-                       occupantSideSupportsDimensions[left][right].width +
-                       stability.atRightFront,
-                    y: 0.0,
-                    z: wheelDefaultDimensionForRearMidFront.rear.height )
-                )
-            return [rear, mid, front]
-        }
+                     
+    }
+}
+
+
+//extension StructFactory {
+//    static func createBaseWheelJointPart(
+//        _ objectType: ObjectTypes,
+//        _ wheel: Part,
+//        _ userEditedDictionary: UserEditedDictionary,
+//        _ sitOn: GenericPartValues,
+//        _ sideSupport: GenericPartValues?)
+//    -> GenericPartValues {
+//        var dimension =
+//            //userEditedDictionary.dimension[objectType.rawValue] ??
+//            ZeroValue.dimension3d
+//        var maxDimension: Dimension3d? = nil
+//
+//        var userEditedValues: [UserEditedValue] = []
+//        let ids: [Part] = [.id0,.id1,.id2,.id3,.id4,.id5]
+//
+//
+//
+//        return GenericPartValues(
+//            part:.baseWheelJoint,
+//            dimension: dimension,
+//            maxDimension: maxDimension,
+//            origin: ZeroValue.iosLocation,
+//            minAngle: ZeroValue.rotationAngles,
+//            maxAngle: ZeroValue.rotationAngles,
+//            ids: [])
+//
+//
         
-    }
-}
+        
+//        func getWheelBaseJointOrigin() -> [RearMidFrontPositions]{
+//            let halfSitOnWidth = sitOn.dimension.width/2
+//            let rear =
+//                (rear: (
+//                     x: halfSitOnWidth +
+//                        occupantSideSupportsDimensions[left][right].width +
+//                        stability.atRightRear,
+//                     y: stability.atRear,
+//                     z: wheelDefaultDimensionForRearMidFront.rear.height/2 ),
+//                 mid: (
+//                     x: halfSitOnWidth +
+//                       occupantSideSupportsDimensions[left][right].width +
+//                       stability.atRightMid,
+//                    y:  sitOnDimensions[onlyOne].length/2 +
+//                        stability.atRear ,
+//                    z: wheelDefaultDimensionForRearMidFront.mid.height/2 ),
+//                 front: (
+//                    x: halfSitOnWidth +
+//                       occupantSideSupportsDimensions[left][right].width +
+//                       stability.atRightFront,
+//                    y: stability.atRear +
+//                        sitOnDimensions[onlyOne].length +
+//                        stability.atFront,
+//                    z: wheelDefaultDimensionForRearMidFront.front.height/2 )
+//                )
+//
+//            let mid =
+//                (rear: (
+//                    x: halfSitOnWidth +
+//                       occupantSideSupportsDimensions[left][right].width +
+//                       stability.atRightRear,
+//                    y: -sitOnDimensions[onlyOne].length/2 -
+//                       stability.atRear,
+//                    z: wheelDefaultDimensionForRearMidFront.rear.height ),
+//                mid: (
+//                    x: halfSitOnWidth +
+//                      occupantSideSupportsDimensions[left][right].width +
+//                      stability.atRightMid,
+//                    y:  0.0,
+//                   z: wheelDefaultDimensionForRearMidFront.mid.height ),
+//                front: (
+//                   x: shalfSitOnWidth +
+//                      occupantSideSupportsDimensions[left][right].width +
+//                      stability.atRightFront,
+//                   y: sitOnDimensions[onlyOne].length/2 +
+//                       stability.atFront,
+//                   z: wheelDefaultDimensionForRearMidFront.rear.height )
+//               )
+//
+//            let front =
+//                (rear: (
+//                     x: halfSitOnWidth +
+//                        occupantSideSupportsDimensions[left][right].width +
+//                        stability.atRightRear,
+//                     y: stability.atRear -
+//                        sitOnDimensions[onlyOne].length -
+//                        stability.atFront,
+//                     z: wheelDefaultDimensionForRearMidFront.rear.height ),
+//                 mid: (
+//                     x: halfSitOnWidth +
+//                       occupantSideSupportsDimensions[left][right].width +
+//                       stability.atRightMid,
+//                     y:  -sitOnDimensions[onlyOne].length/2 -
+//                     stability.atFront,
+//                    z: wheelDefaultDimensionForRearMidFront.mid.height ),
+//                 front: (
+//                    x: halfSitOnWidth +
+//                       occupantSideSupportsDimensions[left][right].width +
+//                       stability.atRightFront,
+//                    y: 0.0,
+//                    z: wheelDefaultDimensionForRearMidFront.rear.height )
+//                )
+//            return [rear, mid, front]
+//        }
+        
+//    }
+//}
 
 
-extension StructFactory {
-    static func createIndependentPart(
-    _ objectType: ObjectTypes,
-    _ part: Part)
-        -> GenericPart {
-        var dimension = ZeroValue.dimension3d
-            var maxDimension: Dimension3d? = nil
-        switch part {
-//            case .footSupportHangerLink:
-//                dimension =
-//                    (width: 20.0, length: 200.0, height: 20.0)
-//                maxDimension =
-//                    (width: 20.0, length: 1200.0, height: 20.0)
-            default:
-                break
-        }
-            return GenericPart(
-                part: part,
-                dimension: dimension,
-                maxDimension: maxDimension,
-                origin: ZeroValue.iosLocation,
-                minAngle: ZeroValue.rotationAngles,
-                maxAngle: ZeroValue.rotationAngles,
-                ids: [])
-    }
-}
+//extension StructFactory {
+//    static func createIndependentPart(
+//    _ objectType: ObjectTypes,
+//    _ part: Part)
+//        -> GenericPartValues {
+//        var dimension = ZeroValue.dimension3d
+//            var maxDimension: Dimension3d? = nil
+//        switch part {
+//
+//            default:
+//                break
+//        }
+//            return GenericPartValues(
+//                part: part,
+//                dimension: dimension,
+//                maxDimension: maxDimension,
+//                origin: ZeroValue.iosLocation,
+//                minAngle: ZeroValue.rotationAngles,
+//                maxAngle: ZeroValue.rotationAngles,
+//                ids: [])
+//    }
+//}
 
 //MARK: FootSupport
 //struct FeetSupport: PartValues {
@@ -1263,21 +1295,21 @@ extension StructFactory {
 
 
 
-struct WheelBaseJoint: PartValues {
-    var part: Part = .sitOn
-    
-    var dimension: Dimension3d
-    
-    var origin: PositionAsIosAxes
-    
-    var minAngle: RotationAngles
-    
-    var maxAngle: RotationAngles
-    
-    var ids: [Part]
-    
-    var rearMidFront: Drive
-}
+//struct WheelBaseJoint: PartValues {
+//    var part: Part = .sitOn
+//
+//    var dimension: Dimension3d
+//
+//    var origin: PositionAsIosAxes
+//
+//    var minAngle: RotationAngles
+//
+//    var maxAngle: RotationAngles
+//
+//    var id: [Part]
+//
+//    var rearMidFront: Drive
+//}
 
 
 
