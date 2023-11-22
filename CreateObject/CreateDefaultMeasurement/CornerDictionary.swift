@@ -73,7 +73,7 @@ struct DictionaryProvider {
     var object: Object
     
     /// each part has a either .leftRight or .one GenericPartVqalue
-    var objectPartDic: [Part: Symmetry<GenericPartValues>] = [:]
+    var objectPartDic: [Part: Symmetry<GenericPartValue>] = [:]
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -235,7 +235,7 @@ struct DictionaryProvider {
             {
 
             let preliminarySitOn =
-                    StructFactory.createSitOn(
+                    StructFactory.createOneSitOn(
                         objectType,
                         userEditedDictionary,
                         nil,
@@ -260,7 +260,7 @@ struct DictionaryProvider {
                 
             objectPartDic +=
                 [.sitOn:
-                StructFactory.createSitOn(
+                StructFactory.createOneSitOn(
                     objectType,
                     userEditedDictionary,
                     peliminarySideSupport,

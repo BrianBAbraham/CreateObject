@@ -869,7 +869,7 @@ enum Symmetry <T> {
 }
 
 
-struct GenericPartValues: PartValues {
+struct GenericPartValue: PartValues {
     var part: Part
     
     var dimension: Dimension3d
@@ -910,48 +910,51 @@ struct GenericPartValues: PartValues {
 
 
 extension StructFactory {
-    static func createSitOn(
+    static func createOneSitOn(
     _ objectType: ObjectTypes,
     _ userEditedDictionary: UserEditedDictionary,
-    _ sideSupport: Symmetry<GenericPartValues>?,
-    _ footSupportHangerLink: Symmetry<GenericPartValues>?)
-        -> Symmetry<GenericPartValues> {
-            
-       
-        //var occupantSideSupportsDimensions: [[Dimension3d]] = []
-            
+    _ sideSupport: Symmetry<GenericPartValue>?,
+    _ footSupportHangerLink: Symmetry<GenericPartValue>?)
+        -> Symmetry<GenericPartValue> {
+ 
+        let userEditedValue =
+            UserEditedValue(
+                userEditedDictionary,
+                .id0,
+                .sitOn,
+                .id0)
         let dimensionDic: BaseObject3DimensionDictionary =
             [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
              .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
              .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
                 ]
         let dimension =
+                userEditedValue.dimension ??
                 dimensionDic[objectType] ??
-            (width: 400.0, length: 400.0, height: 10.0)
+                (width: 400.0, length: 400.0, height: 10.0)
             
-//        for _ in sitOnIds {
-//            occupantSideSupportsDimensions.append(getSideSupportDimensions())
-//        }
-//
             return
-                .one(one: GenericPartValues(
-            part: .sitOn,
-            dimension: dimension,
-            origin: getSitOnOrigin(),
-            minAngle: ZeroValue.rotationAngles ,
-            maxAngle: ZeroValue.rotationAngles,
-            id: .id0) )
+                .one(one: GenericPartValue(
+                    part: .sitOn,
+                    dimension: dimension,
+                    origin: getSitOnOrigin(),
+                    minAngle: ZeroValue.rotationAngles ,
+                    maxAngle: ZeroValue.rotationAngles,
+                    id: .id0) )
             
         func getSitOnOrigin() -> PositionAsIosAxes {
-            let origin =
-                PreTiltSitOnOrigin(
-                    objectType,
-                    dimension,
-                    sideSupport,
-                    footSupportHangerLink,
-                userEditedDictionary)
-            let onlyOne = 0
-            return origin.sitOnOrigins.onlyOne[onlyOne]
+            let bodySupportHeight =
+                MiscObjectParameters(objectType).getMainBodySupportAboveFloor()
+            let originDic: BaseObjectOriginDictionary = [
+                .fixedWheelMidDrive:
+                    (x: 0.0, y: 0.0, z: bodySupportHeight ),
+                .fixedWheelFrontDrive:
+                    (x: 0.0, y: -dimension.length/2, z: bodySupportHeight)]
+            
+            return
+                userEditedValue.origin ??
+                originDic[objectType] ??
+                (x: 0.0, y: dimension.length/2, z: bodySupportHeight )
         }
     }
 }
@@ -967,10 +970,10 @@ extension StructFactory {
     _ objectType: ObjectTypes,
 
     _ userEditedDictionary: UserEditedDictionary,
-    _ sitOn: Symmetry<GenericPartValues>,
+    _ sitOn: Symmetry<GenericPartValue>,
 //    _ sideSupport: GenericPart?,
     _ part: Part)
-        -> Symmetry<GenericPartValues> {
+        -> Symmetry<GenericPartValue> {
         //var dimension: Dimension3d = ZeroValue.dimension3d
         var defaultDimension: Dimension3d = ZeroValue.dimension3d
         var maxDimension: Dimension3d = defaultDimension
@@ -1054,7 +1057,7 @@ extension StructFactory {
             
             return
                 .leftRight( left:
-                                GenericPartValues(
+                                GenericPartValue(
                                     part: part,
                                     dimension: leftRightDimension.left,
                                     maxDimension: maxDimension,
@@ -1063,7 +1066,7 @@ extension StructFactory {
                                     maxAngle: ZeroValue.rotationAngles,
                                     id: .id0),
                              right:
-                                GenericPartValues(
+                                GenericPartValue(
                                     part: part,
                                     dimension: leftRightDimension.right,
                                     maxDimension: maxDimension,
