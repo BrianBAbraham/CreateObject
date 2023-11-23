@@ -910,37 +910,41 @@ struct GenericPartValue: PartValues {
 
 
 extension StructFactory {
-    static func createOneSitOn(
+    static func createSingleSitOn(
     _ objectType: ObjectTypes,
     _ userEditedDictionary: UserEditedDictionary,
     _ sideSupport: Symmetry<GenericPartValue>?,
     _ footSupportHangerLink: Symmetry<GenericPartValue>?)
         -> Symmetry<GenericPartValue> {
- 
         let userEditedValue =
             UserEditedValue(
                 userEditedDictionary,
                 .id0,
                 .sitOn,
                 .id0)
-        let dimensionDic: BaseObject3DimensionDictionary =
-            [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
-             .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
-             .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
-                ]
-        let dimension =
+        let dimension = getSitOnDimension()
+        return
+            .one(one: GenericPartValue(
+                part: .sitOn,
+                dimension: dimension,
+                origin: getSitOnOrigin(),
+                minAngle: ZeroValue.rotationAngles ,
+                maxAngle: ZeroValue.rotationAngles,
+                id: .id0) )
+            
+            
+        func getSitOnDimension() -> Dimension3d {
+            let dimensionDic: BaseObject3DimensionDictionary =
+                [.allCasterStretcher: (width: 600.0, length: 1200.0, height: 10.0),
+                 .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
+                 .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
+                    ]
+            return
                 userEditedValue.dimension ??
                 dimensionDic[objectType] ??
                 (width: 400.0, length: 400.0, height: 10.0)
+        }
             
-            return
-                .one(one: GenericPartValue(
-                    part: .sitOn,
-                    dimension: dimension,
-                    origin: getSitOnOrigin(),
-                    minAngle: ZeroValue.rotationAngles ,
-                    maxAngle: ZeroValue.rotationAngles,
-                    id: .id0) )
             
         func getSitOnOrigin() -> PositionAsIosAxes {
             let bodySupportHeight =
@@ -950,7 +954,6 @@ extension StructFactory {
                     (x: 0.0, y: 0.0, z: bodySupportHeight ),
                 .fixedWheelFrontDrive:
                     (x: 0.0, y: -dimension.length/2, z: bodySupportHeight)]
-            
             return
                 userEditedValue.origin ??
                 originDic[objectType] ??
@@ -960,126 +963,148 @@ extension StructFactory {
 }
 
 
-
-
-/// I would like to pass the partChain label
-/// the partChain label then creates the structs for those parts
-
 extension StructFactory {
-    static func createSitOnDependentPart(
+    static func createSingleSitOnDependentPart(
     _ objectType: ObjectTypes,
-
     _ userEditedDictionary: UserEditedDictionary,
     _ sitOn: Symmetry<GenericPartValue>,
-//    _ sideSupport: GenericPart?,
     _ part: Part)
-        -> Symmetry<GenericPartValue> {
-        //var dimension: Dimension3d = ZeroValue.dimension3d
-        var defaultDimension: Dimension3d = ZeroValue.dimension3d
-        var maxDimension: Dimension3d = defaultDimension
-            var leftRightDimension:  (left: Dimension3d, right: Dimension3d) = (left: ZeroValue.dimension3d, right: ZeroValue.dimension3d)
-        var sitOnLength = 0.0
-        switch sitOn {
-            case .one (let one):
-                sitOnLength = one.dimension.length
-            default : break
-        }
-            
-        switch part {
-            case .sideSupport:
-                defaultDimension =
-                    [.allCasterStretcher:
-                        (width: 20.0,
-                         length: sitOnLength,
-                         height: 20.0),
-                    .allCasterBed:
-                        (width: 20.0,
-                         length: sitOnLength,
-                         height: 20.0),
-                    .fixedWheelRearDrive:
-                        (width: 20.0,
-                         length: sitOnLength,
-                         height: 20.0) ][objectType] ??
-                        (width: 400.0, length: 400.0, height: 10.0)
-                leftRightDimension =
-                    getLeftAndRightUserEditedDimensionValues(part, defaultDimension)
+    -> Symmetry<GenericPartValue> {
         
-                
-//            case .footSupportInOnePiece:
-//                dimension =
-//                    [.showerTray: (width: 900.0, length: 1200.0, height: 200.0)] [objectType]
-//                    ??
-//                    (width: OccupantBodySupportDefaultDimension.general.width,
-//                    length: 100.0,
-//                    height: 10.0)
-            case .footSupportHangerLink:
-                    defaultDimension =
-                        (width: 20.0, length: 200.0, height: 20.0)
-                    maxDimension =
-                        (width: 20.0, length: 1200.0, height: 20.0)
-                leftRightDimension =
-                    getLeftAndRightUserEditedDimensionValues(part, defaultDimension)
+    let commonPart = { (id: Part) in
+        UserEditedValue(userEditedDictionary, id, part, .id0)
+    }
+    let userEditedValues = (left: commonPart(.id0), right: commonPart(.id1))
+
+    var sitOnDimension = ZeroValue.dimension3d
+    var dimensions: LeftRight<Dimension3d> =
+        (left: ZeroValue.dimension3d, right: ZeroValue.dimension3d)
+    var origins: LeftRight<PositionAsIosAxes> =
+        (left: ZeroValue.iosLocation, right: ZeroValue.iosLocation)
+    
+    switch sitOn {
+        case .one (let one):
+            sitOnDimension = one.dimension
+        default : break
+    }
             
-//            case .baseWheelJoint:
-//                    dimension = Joint.dimension3d
-//            case .fixedWheelAtRear:
-//                    dimension =
-//                            [.fixedWheelManualRearDrive:
-//                                (width: 20.0,
-//                                 length: 600.0,
-//                                 height: 600.0)] [objectType] ??
-//                                (width: 50.0,
-//                                 length: 200.0,
-//                                 height: 200.0)
-            
-            
-            /// dep on TwinSitOn
-            /// dep on Stability
-            /// dep on Drive
-            /// dep on id
-            /// dep SideSupport
-            /// dep on Wheel
-            
-            
-                
-            default:
-                break
-        }
-            
-            func getLeftAndRightUserEditedDimensionValues(
-                _ part: Part, _ defaultDimension: Dimension3d)
-                -> (left: Dimension3d, right: Dimension3d) {
-                    
-                (left: UserEditedValue(userEditedDictionary, .id0, part, .id0).dimension ?? defaultDimension,
-                 right: UserEditedValue(userEditedDictionary, .id0, part, .id1).dimension ?? defaultDimension)
-            }
-            
+    switch part {
+        case .sideSupportRotationJoint:
+            dimensions = (
+                left: ZeroValue.dimension3d, right: ZeroValue.dimension3d)
+            origins = getSideSupportRotationJointOrigin()
+        case .sideSupport:
+            dimensions = getSideSupportDimensions()
+
+        default:
+            break
+    }
+        
+        
+    
+    return
+        .leftRight( left:
+            GenericPartValue(
+                part: part,
+                dimension: dimensions.left,
+                maxDimension: dimensions.left,
+                origin: origins.left,
+                minAngle: ZeroValue.rotationAngles,
+                maxAngle: ZeroValue.rotationAngles,
+                id: .id0),
+         right:
+            GenericPartValue(
+                part: part,
+                dimension: dimensions.right,
+                maxDimension: dimensions.right,
+                origin: origins.right,
+                minAngle: ZeroValue.rotationAngles,
+                maxAngle: ZeroValue.rotationAngles,
+                id: .id1) )
+        
+        
+
+        
+
+        
+        func getSideSupportDimensions()
+            -> LeftRight<Dimension3d> {
+            let defaultOrDicDimension =
+                [.allCasterStretcher:
+                    (width: 20.0,
+                     length: sitOnDimension.length,
+                     height: 100.0),
+                .allCasterBed:
+                    (width: 20.0,
+                     length: sitOnDimension.length,
+                     height: 150.0),
+                .fixedWheelRearDrive:
+                    (width: 20.0,
+                     length: sitOnDimension.length,
+                     height: 150.0) ][objectType] ??
+                (width: 20.0, length: 400.0, height: 150.0)
             
             return
-                .leftRight( left:
-                                GenericPartValue(
-                                    part: part,
-                                    dimension: leftRightDimension.left,
-                                    maxDimension: maxDimension,
-                                    origin: ZeroValue.iosLocation,
-                                    minAngle: ZeroValue.rotationAngles,
-                                    maxAngle: ZeroValue.rotationAngles,
-                                    id: .id0),
-                             right:
-                                GenericPartValue(
-                                    part: part,
-                                    dimension: leftRightDimension.right,
-                                    maxDimension: maxDimension,
-                                    origin: ZeroValue.iosLocation,
-                                    minAngle: ZeroValue.rotationAngles,
-                                    maxAngle: ZeroValue.rotationAngles,
-                                    id: .id1)
-                )
-                     
+                (left: userEditedValues.left.dimension ??
+                     defaultOrDicDimension,
+                 right: userEditedValues.right.dimension ?? defaultOrDicDimension)
+        }
+        
+        func getSideSupportRotationJointOrigin ()
+            -> LeftRight<PositionAsIosAxes>{
+            let defaultOrDicOrigin =
+                [.allCasterStretcher:
+                    (x: 20.0,
+                     y: sitOnDimension.length/2,
+                     z: 0.0),
+                .allCasterBed:
+                    (x: 20.0,
+                     y: sitOnDimension.length/2,
+                     z: 150.0),
+                .fixedWheelRearDrive:
+                    (x: 20.0,
+                     y: sitOnDimension.length/2,
+                     z: 150.0) ][objectType] ??
+                    (x: sitOnDimension.length/2,
+                     y: sitOnDimension.length/2,
+                     z: getSideSupportDimensions().right.height)
+            return
+                (left: userEditedValues.left.origin ??
+                     defaultOrDicOrigin,
+                 right: userEditedValues.right.origin ??
+                     defaultOrDicOrigin)
+        }
+        
+        func getSideSupportOrigin ()
+            -> LeftRight<PositionAsIosAxes>{
+            let originHeight = -getSideSupportDimensions().right.height/2
+            let defaultOrDicOrigin =
+                [.allCasterStretcher:
+                    (x: 0.0,
+                     y: sitOnDimension.length/2,
+                     z: originHeight),
+                .allCasterBed:
+                    (x: 0.0,
+                     y: sitOnDimension.length/2,
+                     z: originHeight),
+                .fixedWheelRearDrive:
+                    (x: 0.0,
+                     y: sitOnDimension.length/2,
+                     z: originHeight) ][objectType] ??
+                    (x: 0.0,
+                     y: sitOnDimension.length/2,
+                     z: originHeight)
+            return
+                (left: userEditedValues.left.origin ??
+                     defaultOrDicOrigin,
+                 right: userEditedValues.right.origin ??
+                     defaultOrDicOrigin)
+        }
     }
 }
 
-
+/// objectType: [partLabel: [(Part: PositionAsIosAxis)] ]
+///
 //extension StructFactory {
 //    static func createBaseWheelJointPart(
 //        _ objectType: ObjectTypes,

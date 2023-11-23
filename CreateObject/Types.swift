@@ -16,6 +16,9 @@ typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 typealias LeftRightPositionAsIosAxis = (
     left: PositionAsIosAxes, right: PositionAsIosAxes)
 
+// generic touple with left and right and common type
+typealias LeftRight<T> = (left: T, right: T)
+
 typealias RearMidFrontPositions =
     (
     rear: PositionAsIosAxes,
