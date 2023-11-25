@@ -184,8 +184,11 @@ struct DictionaryProvider {
             
             
           
-            
-            
+///by definition the preceeding part in a partChain is the parent of the subsequent  part
+///the subsequent part global origin is therefore dependent on the preceeing part origin
+///therefore. if the global origin of the subsequent part is to be maintained independently of the
+///preceeding part, such as a sideSupport maintaining its relative position to the sitOn  irrespective
+///of jointOrigin between sideSupport and sitOn the partChain ought to be processed as a whole
             
 //MARK: InitialiseAllPart
         initialiseAllPart()
@@ -216,9 +219,9 @@ struct DictionaryProvider {
                     objectPartDic +=
                         [.sitOn: initialilseSitOn()]
                 case .sideSupport:
-                        initialiseSitOnDependantPart(part)
+                initialiseDependantPart(part, .sitOn)
                 case .footSupportHangerLink:
-                        initialiseSitOnDependantPart(part)
+                initialiseDependantPart(part, .sitOn)
 //                case .fixedWheelAtRear, .fixedWheelAtMid, .fixedWheelAtFront:
 //                        initialiseBaseWheelJointPart(part)
                 //do things for fixedWheel
@@ -241,14 +244,14 @@ struct DictionaryProvider {
         }
             
             
-        func initialiseSitOnDependantPart(_ support: Part) {
-            if let sitOn = objectPartDic[Part.sitOn] {
+        func initialiseDependantPart(_ child: Part, _ parent: Part) {
+            if let parent = objectPartDic[parent] {
                 objectPartDic +=
-                [support:  StructFactory.createSingleSitOnDependentPart(
-                    objectType,
-                    userEditedDictionary,
-                    sitOn,
-                    support)]
+                    [child:  StructFactory.createDependentPartForSingleSitOn(
+                        objectType,
+                        userEditedDictionary,
+                        parent,
+                        child)]
             }
         }
                 
