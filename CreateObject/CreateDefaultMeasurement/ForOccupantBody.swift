@@ -465,6 +465,7 @@ struct UserEditedValue {
     let objectToPartOriginDic: PositionDictionary
     let angleDic: AngleDictionary
     let partChainsIdDic: [PartChain: [[Part]]]
+    //let partIdsDic: [Part: [Part]]
     let part: Part
     let sitOnId: Part
     let partId: Part
@@ -478,8 +479,6 @@ struct UserEditedValue {
     var dimension: Dimension3d?
     var origin: PositionAsIosAxes?
     
-  
-    
     init(
         _ userEditedDictionary: UserEditedDictionary,
         _ sitOnId: Part,
@@ -490,6 +489,7 @@ struct UserEditedValue {
             objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
             angleDic = userEditedDictionary.angle
             partChainsIdDic = userEditedDictionary.partChainsId
+            //partIdsDic = userEditedDictionary.partIds
            
             self.sitOnId = sitOnId
             self.part = part
@@ -497,10 +497,108 @@ struct UserEditedValue {
             
             dimension = dimensionDic[name]
             origin = parentToPartOriginDic[name]
-            
-            
     }
 }
+
+
+
+///parts edited by the UI are stored in dictionary
+///these dictiionaries are used for parts,
+///where extant, instead of default values
+///during intitialisation
+struct OneOrTwoUserEditedDictionary {
+    let dimension: Part3DimensionDictionary
+    let parentToPartOrigin: PositionDictionary
+    let objectToPartOrigin: PositionDictionary
+    let angle: AngleDictionary
+    let partChainsId: [PartChain: [[Part]]]
+    let partIds: [Part: OneOrTwo<Part>]
+}
+
+
+enum OneOrTwo <T> {
+    case two (left: T, right: T)
+    case one (one: T)
+}
+
+
+struct OneOrTwoUserEditedValue {
+    let dimensionDic: Part3DimensionDictionary
+    let parentToPartOriginDic: PositionDictionary
+    let objectToPartOriginDic: PositionDictionary
+    let angleDic: AngleDictionary
+    let partChainsIdDic: [PartChain: [[Part]]]
+    let partIdsDic: [Part: OneOrTwo<Part>]
+    let part: Part
+    let sitOnId: Part
+    var name: String {
+        CreateNameFromParts ( [
+            .sitOn,
+            sitOnId,
+            part]
+        ).name}
+    var dimension: OneOrTwo <Dimension3d?> = .one(one: nil)
+    var origin: OneOrTwo <PositionAsIosAxes?> = .one(one: nil)
+    
+    init(
+        _ userEditedDictionary: OneOrTwoUserEditedDictionary,
+        _ sitOnId: Part,
+        _ part: Part) {
+            dimensionDic = userEditedDictionary.dimension
+            parentToPartOriginDic = userEditedDictionary.parentToPartOrigin
+            objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
+            angleDic = userEditedDictionary.angle
+            partChainsIdDic = userEditedDictionary.partChainsId
+            partIdsDic = userEditedDictionary.partIds
+            
+            self.sitOnId = sitOnId
+            self.part = part
+            
+            let partIds =
+                partIdsDic[part] ?? //UI may create edit
+                OneOrTWoId(part).forPart // default
+ 
+            dimension =
+                getValue(partIds, from: dimensionDic) { part in
+                    return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+            
+            origin =
+                getValue(partIds, from: parentToPartOriginDic) { part in
+                    return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+        }
+
+    func getValue<T>(
+    _ partIds: OneOrTwo<Part>,
+    from dictionary: [String: T?],
+    using closure: @escaping (Part) -> String)
+        -> OneOrTwo<T?> {
+        let commonPart = { (id: Part) -> T? in
+            dictionary[closure(id)] ?? nil
+        }
+
+        switch partIds {
+        case .one(let oneId):
+            return .one(one: commonPart(oneId))
+        case .two(let left, let right):
+            return .two(left: commonPart(left), right: commonPart(right))
+        }
+    }
+
+    func getDimension(_ partIds: OneOrTwo<Part>)
+    -> OneOrTwo<Dimension3d?> {
+        return getValue(partIds, from: dimensionDic) { id in
+            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+        }
+    }
+
+    func getOrigin(_ partIds: OneOrTwo<Part>)
+    -> OneOrTwo<PositionAsIosAxes?> {
+        return getValue(partIds, from: parentToPartOriginDic) { id in
+            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+        }
+    }
+}
+
 
 ///parts edited by the UI are stored in dictionary
 ///these dictiionaries are used for parts,
@@ -512,7 +610,11 @@ struct UserEditedDictionary {
     let objectToPartOrigin: PositionDictionary
     let angle: AngleDictionary
     let partChainsId: [PartChain: [[Part]]]
+    
 }
+
+
+
 
 
 ///origin for one sitOn, and frontAndRear and sideBySide

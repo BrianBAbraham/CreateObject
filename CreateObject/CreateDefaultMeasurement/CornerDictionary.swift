@@ -23,6 +23,7 @@ struct DictionaryProvider {
    
     //UI amended dictionary
     let userEditedDictionary: UserEditedDictionary
+    let oneOrTwoUserEditedDictionary: OneOrTwoUserEditedDictionary
     let dimensionDicIn: Part3DimensionDictionary
     let preTiltParentToPartOriginDicIn: PositionDictionary
     let preTiltObjectToPartOriginDicIn: PositionDictionary
@@ -99,7 +100,8 @@ struct DictionaryProvider {
         angleIn: AngleDictionary = [:],
         minMaxAngleIn: AngleMinMaxDictionary = [:],
         objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:],
-        partChainsIdDicIn: PartChainIdDictionary = [:] ) {
+        partChainsIdDicIn: PartChainIdDictionary = [:],
+        partIdsIn: [Part: OneOrTwo<Part>] = [:] ) {
             
         self.objectType = objectType
         self.twinSitOnOption = twinSitOnOption
@@ -117,6 +119,15 @@ struct DictionaryProvider {
                 objectToPartOrigin :preTiltObjectToPartOriginDicIn,
                 angle: angleDicIn,
                 partChainsId: partChainsIdDicIn)
+            
+        oneOrTwoUserEditedDictionary =
+                OneOrTwoUserEditedDictionary(
+                    dimension: dimensionDicIn,
+                    parentToPartOrigin :preTiltParentToPartOriginDicIn,
+                    objectToPartOrigin :preTiltObjectToPartOriginDicIn,
+                    angle: angleDicIn,
+                    partChainsId: partChainsIdDicIn,
+                    partIds: partIdsIn)
             
         object = (Object(objectType))
             
@@ -250,6 +261,7 @@ struct DictionaryProvider {
                     [child:  StructFactory.createDependentPartForSingleSitOn(
                         objectType,
                         userEditedDictionary,
+                        oneOrTwoUserEditedDictionary,
                         parent,
                         child)]
             }

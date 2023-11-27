@@ -9,8 +9,12 @@ import Foundation
 
 struct ZeroValue {
     static let iosLocation: PositionAsIosAxes = (x: 0.0, y: 0.0, z: 0.0 )
+    static let leftRightLocation: LeftRight<PositionAsIosAxes> =
+        (left: ZeroValue.iosLocation, right: ZeroValue.iosLocation)
     static let dimension: Dimension = (width:  0.0,  length: 0.0 )
     static let dimension3d: Dimension3d = (width:  0.0,  length: 0.0, height:  0.0)
+    static let leftRightDimension3d: LeftRight<Dimension3d> =
+        (left: ZeroValue.dimension3d, right: ZeroValue.dimension3d)
     static let angle: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.radians)
     static let angleMinMax: AngleMinMax = (min: angle, max: angle)
     static let dimensions3dRearMidFront =
