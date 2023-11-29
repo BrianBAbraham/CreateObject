@@ -511,8 +511,8 @@ struct OneOrTwoUserEditedDictionary {
     let parentToPartOrigin: PositionDictionary
     let objectToPartOrigin: PositionDictionary
     let angle: AngleDictionary
-    let partChainsId: [PartChain: [[Part]]]
-    let partIds: [Part: OneOrTwo<Part>]
+    let partChainId: [PartChain: OneOrTwo<Part> ]
+    //let partIds: [Part: OneOrTwo<Part>]
 }
 
 
@@ -521,14 +521,35 @@ enum OneOrTwo <T> {
     case one (one: T)
 }
 
+//struct OneOrTwoExtraction<T> {
+//    var values: [T]
+//
+//    init (_ oneOrTwo: OneOrTwo<T>) {
+//        values = extractValues(oneOrTwo)
+//
+//        func extractValues(_ value: OneOrTwo<T>) -> [T] {
+//            switch value {
+//            case .two(let left, let right):
+//                return [left, right]
+//            case .one(let one):
+//                return [one]
+//            }
+//        }
+//    }
+//}
 
+///All dictionary are input in userEditedDictionary
+///The optional  values associated with a part are available
+///dimension
+///origin
+///The non-optional id are available
+///All values are wrapped in OneOrTwoValues
 struct OneOrTwoUserEditedValue {
     let dimensionDic: Part3DimensionDictionary
     let parentToPartOriginDic: PositionDictionary
     let objectToPartOriginDic: PositionDictionary
     let angleDic: AngleDictionary
-    let partChainsIdDic: [PartChain: [[Part]]]
-    let partIdsDic: [Part: OneOrTwo<Part>]
+    let partChainIdDic: [PartChain: OneOrTwo<Part>]
     let part: Part
     let sitOnId: Part
     var name: String {
@@ -539,33 +560,33 @@ struct OneOrTwoUserEditedValue {
         ).name}
     var dimension: OneOrTwo <Dimension3d?> = .one(one: nil)
     var origin: OneOrTwo <PositionAsIosAxes?> = .one(one: nil)
+    var partId: OneOrTwo <Part>
     
     init(
-        _ userEditedDictionary: OneOrTwoUserEditedDictionary,
-        _ sitOnId: Part,
-        _ part: Part) {
-            dimensionDic = userEditedDictionary.dimension
-            parentToPartOriginDic = userEditedDictionary.parentToPartOrigin
-            objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
-            angleDic = userEditedDictionary.angle
-            partChainsIdDic = userEditedDictionary.partChainsId
-            partIdsDic = userEditedDictionary.partIds
-            
-            self.sitOnId = sitOnId
-            self.part = part
-            
-            let partIds =
-                partIdsDic[part] ?? //UI may create edit
-                OneOrTWoId(part).forPart // default
- 
-            dimension =
-                getValue(partIds, from: dimensionDic) { part in
-                    return CreateNameFromParts([.sitOn, sitOnId, part]).name }
-            
-            origin =
-                getValue(partIds, from: parentToPartOriginDic) { part in
-                    return CreateNameFromParts([.sitOn, sitOnId, part]).name }
-        }
+    _ userEditedDictionary: OneOrTwoUserEditedDictionary,
+    _ sitOnId: Part,
+    _ childPart: Part) {
+        self.sitOnId = sitOnId
+        self.part = childPart
+        dimensionDic = userEditedDictionary.dimension
+        parentToPartOriginDic = userEditedDictionary.parentToPartOrigin
+        objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
+        angleDic = userEditedDictionary.angle
+        partChainIdDic = userEditedDictionary.partChainId
+        let onlyOne = 0
+        let partChain = LabelInPartChainOut([childPart]).partChains[onlyOne]
+        partId = //non-optional as must iterate through id
+           partChainIdDic[partChain] ?? //UI may edit
+           OneOrTWoId(childPart).forPart // default
+    
+        dimension =
+            getValue(partId, from: dimensionDic) { part in
+                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+        
+        origin =
+            getValue(partId, from: parentToPartOriginDic) { part in
+                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+    }
 
     func getValue<T>(
     _ partIds: OneOrTwo<Part>,
@@ -577,10 +598,10 @@ struct OneOrTwoUserEditedValue {
         }
 
         switch partIds {
-        case .one(let oneId):
-            return .one(one: commonPart(oneId))
-        case .two(let left, let right):
-            return .two(left: commonPart(left), right: commonPart(right))
+            case .one(let oneId):
+                return .one(one: commonPart(oneId))
+            case .two(let left, let right):
+                return .two(left: commonPart(left), right: commonPart(right))
         }
     }
 

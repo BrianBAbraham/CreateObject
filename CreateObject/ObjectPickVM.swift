@@ -29,7 +29,7 @@ struct ObjectPickModel {
     
     var objectPartChainLabelDic: ObjectPartChainLabelsDictionary = [:]
     
-    var partChainsIdDic: PartChainIdDictionary
+    var partChainsIdDic: [PartChain: OneOrTwo<Part>]
     
     var currentObjectFrameSize: Dimension = ZeroValue.dimension
     
@@ -56,7 +56,7 @@ class ObjectPickViewModel: ObservableObject {
     let angleDic: AngleDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
     let objectPartChainLabelDic: ObjectPartChainLabelsDictionary
-    let partChainsIdDic: PartChainIdDictionary
+    let partChainsIdDic: [PartChain: OneOrTwo<Part>]
 
     
     @Published private var objectPickModel: ObjectPickModel
@@ -81,7 +81,7 @@ class ObjectPickViewModel: ObservableObject {
         objectPartChainLabelDic =
             dictionaryProvider.objectPartChainLabelDic
         partChainsIdDic =
-            dictionaryProvider.partChainsIdDic
+            dictionaryProvider.partChainIdDic
         
         objectPickModel =
             ObjectPickModel(
@@ -303,7 +303,7 @@ extension ObjectPickViewModel {
         func setCurrentObjectByCreatingFromName(
             _ twinSitOnDictionary: TwinSitOnOptionDictionary,
             _ angleInDic: AngleDictionary = [:],
-            partChainIdDicIn: PartChainIdDictionary = [:]) {
+            partChainIdDicIn: [PartChain: OneOrTwo<Part>]  = [:]) {
             
                 let objectPartChainLabelDicToUse: ObjectPartChainLabelsDictionary =
                 getObjectPartChainLabelDic()// [:]
@@ -315,7 +315,7 @@ extension ObjectPickViewModel {
                     ObjectPickViewModel.twinSitOnDictionary,
                     angleIn: angleInDic,
                     objectsAndTheirChainLabelsDicIn: objectPartChainLabelDicToUse,
-                partChainsIdDicIn: partChainIdDicIn)
+                partChainIdDicIn: partChainIdDicIn)
                 
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
@@ -368,7 +368,7 @@ extension ObjectPickViewModel {
             //print(footChain)
             //print (partChainIdDic[footChain])
         
-            partChainIdDic[footChain] = [[Part.id0],[Part.id0], [Part.id0],getNewId(option)]
+            //partChainIdDic[footChain] = [[Part.id0],[Part.id0], [Part.id0],getNewId(option)]
             
             setCurrentObjectByCreatingFromName(
                 ObjectPickViewModel

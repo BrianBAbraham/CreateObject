@@ -29,8 +29,9 @@ struct DictionaryProvider {
     let preTiltObjectToPartOriginDicIn: PositionDictionary
     let angleDicIn: AngleDictionary
     let angleMinMaxDicIn: AngleMinMaxDictionary
+    let partChainIdDicIn: [PartChain: OneOrTwo<Part> ]
    
-    let partChainsIdDicIn: [PartChain: [[Part]]]
+    //let partChainsIdDicIn: [PartChain: [[Part]]]
     
     let objectType: ObjectTypes
     let twinSitOnOption: TwinSitOnOptionDictionary
@@ -41,7 +42,7 @@ struct DictionaryProvider {
 
 
     var partChainDictionary: PartChainDictionary = [:]
-    var partChainsIdDic: PartChainIdDictionary  = [:]
+    var partChainIdDic: PartChainIdDictionary  = [:]
     
     var dimensionDic: Part3DimensionDictionary = [:]
     var angleDic: AngleDictionary = [:]
@@ -100,8 +101,9 @@ struct DictionaryProvider {
         angleIn: AngleDictionary = [:],
         minMaxAngleIn: AngleMinMaxDictionary = [:],
         objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:],
-        partChainsIdDicIn: PartChainIdDictionary = [:],
-        partIdsIn: [Part: OneOrTwo<Part>] = [:] ) {
+        partChainIdDicIn: [PartChain: OneOrTwo<Part> ] = [:]//,
+    //    partIdsDicIn: [Part: OneOrTwo<Part>] = [:]
+    ) {
             
         self.objectType = objectType
         self.twinSitOnOption = twinSitOnOption
@@ -110,7 +112,8 @@ struct DictionaryProvider {
         self.preTiltParentToPartOriginDicIn = parentToPartOrigin
         self.angleDicIn = angleIn
         self.angleMinMaxDicIn = minMaxAngleIn
-        self.partChainsIdDicIn = partChainsIdDicIn
+        self.partChainIdDicIn = partChainIdDicIn
+            //self.
             
         userEditedDictionary =
             UserEditedDictionary(
@@ -118,7 +121,7 @@ struct DictionaryProvider {
                 parentToPartOrigin :preTiltParentToPartOriginDicIn,
                 objectToPartOrigin :preTiltObjectToPartOriginDicIn,
                 angle: angleDicIn,
-                partChainsId: partChainsIdDicIn)
+                partChainsId: [:])
             
         oneOrTwoUserEditedDictionary =
                 OneOrTwoUserEditedDictionary(
@@ -126,8 +129,8 @@ struct DictionaryProvider {
                     parentToPartOrigin :preTiltParentToPartOriginDicIn,
                     objectToPartOrigin :preTiltObjectToPartOriginDicIn,
                     angle: angleDicIn,
-                    partChainsId: partChainsIdDicIn,
-                    partIds: partIdsIn)
+                    partChainId: partChainIdDicIn
+                )
             
         object = (Object(objectType))
             
@@ -230,9 +233,9 @@ struct DictionaryProvider {
                     objectPartDic +=
                         [.sitOn: initialilseSitOn()]
                 case .sideSupport:
-                initialiseDependantPart(part, .sitOn)
+                    initialiseDependantPart(part, .sitOn)
                 case .footSupportHangerLink:
-                initialiseDependantPart(part, .sitOn)
+                    initialiseDependantPart(part, .sitOn)
 //                case .fixedWheelAtRear, .fixedWheelAtMid, .fixedWheelAtFront:
 //                        initialiseBaseWheelJointPart(part)
                 //do things for fixedWheel

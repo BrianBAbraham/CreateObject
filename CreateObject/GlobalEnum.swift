@@ -1027,15 +1027,186 @@ extension StructFactory {
 
 
 extension StructFactory {
-    static func createDependentPartForSingleSitOn(
+    static func createOneOrTwoDependentPartForSingleSitOn(
+    _ objectType: ObjectTypes,
+    _ oneOrTwoUserEditedDictionary: OneOrTwoUserEditedDictionary,//use these if extant
+    _ parent: OneOrTwo<GenericPartValue>,
+    _ child: Part)
+        -> OneOrTwo<GenericPartValue> {
+       
+        let oneOrTwoUserEditedValues = //optional values apart from id
+                OneOrTwoUserEditedValue(
+                    oneOrTwoUserEditedDictionary,
+                    .id0,
+                    child)
+        
+        var parentDimension = ZeroValue.dimension3d
+        var childDimensions: OneOrTwo<Dimension3d> =
+            getChildDimension()
+        var childOrigins: OneOrTwo<PositionAsIosAxes> =
+            getChildOrigin()
+        
+        switch parent {
+            case .one (let one):
+                parentDimension = one.dimension
+            case .leftRight (let left, let right):
+            break
+        }
+        
+        return
+            .leftRight(
+                left:
+                    GenericPartValue(
+                        part: child,
+                        dimension: childDimensions.left,
+                        maxDimension: childDimensions.left,
+                        origin: childOrigins.left,
+                        minAngle: ZeroValue.rotationAngles,
+                        maxAngle: ZeroValue.rotationAngles,
+                        id: .id0),
+                 right:
+                    GenericPartValue(
+                        part: child,
+                        dimension: childDimensions.right,
+                        maxDimension: childDimensions.right,
+                        origin: childOrigins.right,
+                        minAngle: ZeroValue.rotationAngles,
+                        maxAngle: ZeroValue.rotationAngles,
+                        id: .id1) )
+        
+        
+        func getChildDimension ()
+            -> OneOrTwo<Dimension3d> {
+            switch child {
+                case .sideSupport:
+                    return
+                       getSideSupportDimensions()
+                default:
+                return .none
+            }
+        }
+        
+        
+        func getChildOrigin ()
+        -> LeftRight<PositionAsIosAxes> {
+            switch child {
+            case .sideSupport:
+                return
+                    getSideSupportOrigin()
+            default:
+                return ZeroValue.leftRightLocation
+            }
+        }
+        
+        func getSideSupportDimensions()
+        -> OneOrTwo<Dimension3d> {
+            getPartDimensionForObject(
+                [.allCasterStretcher:
+                    (width: 20.0,
+                     length: parentDimension.length,
+                     height: 100.0),
+                 .allCasterBed:
+                    (width: 20.0,
+                     length: parentDimension.length,
+                     height: 150.0),
+                 .fixedWheelRearDrive:
+                    (width: 20.0,
+                     length: parentDimension.length,
+                     height: 150.0) ][objectType] ??
+                (width: 20.0, length: 400.0, height: 150.0)
+            )
+        }
+        
+              
+        func getSideSupportOrigin ()
+            -> OneOrTwo<PositionAsIosAxes>{
+                var originHeight = 0.0
+                
+                switch getSideSupportDimensions() {
+                    case .one(let one):
+                        originHeight = one.height/2
+                    case .two(let left, let right ):
+                        originHeight = left.height/2
+                }
+                
+                return
+                    getPartOriginForObject(
+                    [.allCasterStretcher:
+                        (x: 0.0,
+                         y: parentDimension.length/2,
+                         z: originHeight),
+                    .allCasterBed:
+                        (x: 0.0,
+                         y: parentDimension.length/2,
+                         z: originHeight),
+                    .fixedWheelRearDrive:
+                        (x: 0.0,
+                         y: parentDimension.length/2,
+                         z: originHeight) ][objectType] ??
+                    (x: 0.0,
+                     y: parentDimension.length/2,
+                     z: originHeight) )
+        }
+        
+        
+        func getPartDimensionForObject(
+        _ defaultDimension: Dimension3d)
+            -> OneOrTwo<Dimension3d> {
+            switch oneOrTwoUserEditedValues.dimension {
+                case .one (let one):
+                    return .one(one: one ?? defaultDimension )
+                case .two(let left, let right):
+                    return .two(left: left ?? defaultDimension,
+                                right: right ?? defaultDimension)
+            }
+        }
+        
+        
+        func getPartOriginForObject(
+        _ defaultOrigin: PositionAsIosAxes)
+            -> OneOrTwo<PositionAsIosAxes> {
+            switch oneOrTwoUserEditedValues.origin {
+                case .one (let one):
+                    return .one(one: one ?? defaultOrigin )
+                case .two(let left, let right):
+                    return .two(left: left ?? defaultOrigin,
+                                right: right ?? defaultOrigin)
+            }
+        }
+        
+        
+        func getUserEditedValues()
+            -> LeftRight<UserEditedValue>{
+            let sitOnId:Part = .id0
+            let commonPart = { (id: Part) in
+                UserEditedValue(userEditedDictionary, id, child, sitOnId)
+            }
+            return
+                (left: commonPart(.id0), right: commonPart(.id1))
+        }
+        
+//        func getOneOrTwoUserEditedValues()
+//            -> LeftRight<UserEditedValue>{
+//            let sitOnId:Part = .id0
+//            let commonPart = { (id: Part) in
+//                UserEditedValue(userEditedDictionary, id, child, sitOnId)
+//            }
+//            return
+//                (left: commonPart(.id0), right: commonPart(.id1))
+//        }
+    }
+}
+    
+    
+   func createDependentPartForSingleSitOn(
     _ objectType: ObjectTypes,
     _ userEditedDictionary: UserEditedDictionary,
-    _ oneOrTwoUserEditedDictionary: OneOrTwoUserEditedDictionary,
+    _ oneOrTwoUserEditedDictionary: OneOrTwoUserEditedDictionary,//use these if extant
     _ parent: Symmetry<GenericPartValue>,
     _ child: Part)
     -> Symmetry<GenericPartValue> {
-        let userEditedValues = getUserEditedValues()
-      
+     let userEditedValues = getUserEditedValues()
+      let oneOrTwoUserEditedValues = OneOrTwoUserEditedValue(oneOrTwoUserEditedDictionary, .id0, child)
         var parentDimension = ZeroValue.dimension3d
         var childDimensions: LeftRight<Dimension3d> =
             getChildDimension()
@@ -1178,30 +1349,15 @@ extension StructFactory {
                 (left: commonPart(.id0), right: commonPart(.id1))
         }
         
-        
-//        func getOneOrTwoUserEditedValues()
-//            -> OneOrTwoUserEditedValue{
-//
-            
-//            let sitOnId:Part = .id0
-            //let childIds: OneOrTwo<Part> = OneOrTWoId(child).forPart
-//                return OneOrTwoUserEditedValue(OneOrTwoUserEditedDictionary(), sitOnId, child)
-                
-//            let commonPart =
-//                { (id: Part) in
-//                    OneOrTwoUserEditedValue(userEditedDictionary, child, sitOnId) }
-//
-//            switch childIds {
-//                case .one (let one):
-//                    return
-//                        .one(one: commonPart(one))
-//                case .two (let left, let right):
-//                    return
-//                        .two (
-//                            left: commonPart(left),
-//                            right: commonPart(right) )
-//            }
-//        }
+        func getOneOrTwoUserEditedValues()
+            -> LeftRight<UserEditedValue>{
+            let sitOnId:Part = .id0
+            let commonPart = { (id: Part) in
+                UserEditedValue(userEditedDictionary, id, child, sitOnId)
+            }
+            return
+                (left: commonPart(.id0), right: commonPart(.id1))
+        }
     }
 }
 

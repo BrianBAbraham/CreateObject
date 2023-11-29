@@ -27,10 +27,7 @@ typealias RearMidFrontPositions =
 
 
 
-///an array of one or more part that form
-///a ccnnection chain from the object origin
-///where the object origin is assumed and not included
-typealias PartChain = [Part]
+
 
 ///The dictionary provider uses the values to create the part
 ///The UI  uses the values to remove the part from display
@@ -126,12 +123,19 @@ typealias Corners = [PositionAsIosAxes]
 /// each key has eight corners as per Corners [PositionAsIosAxes]
 typealias CornerDictionary = [String: Corners]
 
+
+///an array of one or more part that form
+///a ccnnection chain from the object origin
+///where the object origin is assumed and not included
+typealias PartChain = [Part]
+
 typealias PartChainDictionary = [String: [String]]
 
-/// key is a PartChain and value is an array of id array
-///  where id array are either unilateral  or bilateral
-/// for sitOn id are unilateral id0 or id1 but for all other unilateral part id0
-typealias PartChainIdDictionary = [PartChain: [[Part]] ]
+///Key is a PartChain, value is a OneOrTwo<Part>
+///Each part in a partChain shares the same id
+///The UI can never leave a subsequent part without a prior part
+///since removal of an id removes id for all part in chain
+typealias PartChainIdDictionary = [PartChain: OneOrTwo<Part> ]
 
 /// Input an object type and get the chain labels associaed with that object type
 /// as defined in ObjectsAndTheirChainLabels
