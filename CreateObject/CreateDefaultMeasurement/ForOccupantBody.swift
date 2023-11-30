@@ -521,22 +521,22 @@ enum OneOrTwo <T> {
     case one (one: T)
 }
 
-//struct OneOrTwoExtraction<T> {
-//    var values: [T]
-//
-//    init (_ oneOrTwo: OneOrTwo<T>) {
-//        values = extractValues(oneOrTwo)
-//
-//        func extractValues(_ value: OneOrTwo<T>) -> [T] {
-//            switch value {
-//            case .two(let left, let right):
-//                return [left, right]
-//            case .one(let one):
-//                return [one]
-//            }
-//        }
-//    }
-//}
+struct OneOrTwoExtraction<T> {
+    var values: [T]
+
+    init (_ oneOrTwo: OneOrTwo<T>) {
+        values = extractValues(oneOrTwo)
+
+        func extractValues(_ value: OneOrTwo<T>) -> [T] {
+            switch value {
+            case .two(let left, let right):
+                return [left, right]
+            case .one(let one):
+                return [one]
+            }
+        }
+    }
+}
 
 ///All dictionary are input in userEditedDictionary
 ///The optional  values associated with a part are available
