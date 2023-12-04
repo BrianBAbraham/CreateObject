@@ -197,27 +197,37 @@ struct DictionaryProvider {
 ///of jointOrigin between sideSupport and sitOn the partChain ought to be processed as a whole
             
 //MARK: InitialiseAllPart
-        initialiseAllPart()
-            
-        func initialiseAllPart() {
-            let chainLabels = objectsAndTheirChainLabels[objectType]
-            
-            
-            let oneOfEachPartInAllPartChain =  getOneOfEachPartInAllPartChain()
-            
-            if oneOfEachPartInAllPartChain.contains(.sitOn) {
-                oneOrTwoObjectPartDic +=
-                    [.sitOn: initialilseOneOrTwoSitOn()]
-            }
+    initialiseAllPart()
         
-           
+    func initialiseAllPart() {
+
+            
+        let oneOfEachPartInAllPartChain =  getOneOfEachPartInAllPartChain()
+        //print (oneOfEachPartInAllPartChain)
+        if oneOfEachPartInAllPartChain.contains(.sitOn) {
+            oneOrTwoObjectPartDic +=
+                [.sitOn: initialilseOneOrTwoSitOn()]
+        }
+        
+        let stability: [Part] =
+            [.stabilityAtRear, .stabilityAtFront, .stabilityAtSide]
+        for item in stability {
+            if oneOfEachPartInAllPartChain.contains(item) {
+                print(item)
+              initialiseOneOrTwoIndependantPart(item)
+            } else {
+                print("not found")
+            }
+        }
+        
+        if oneOfEachPartInAllPartChain.contains(.fixedWheelAtRear) {
+            initialiseOneOrTwoIndependantPart(.fixedWheelAtRear)
+        }
+        
        
         let allPartOrderedForInitialisation: [Part] =
             [ .sitOn, .sideSupport] //+
-//            [.footSupportHangerLink, .footSupportHangerJoint, .footSupportJoint, .footSupport] +
-//            [.backSupporRotationJoint, .backSupport] +
-//            [.backSupportHeadSupportJoint, .backSupportHeadSupportLink,              .backSupportHeadSupport]  +
-//            []
+
         
         var oneOfEachPartInAllPartChainInInitialisationOrder: [Part] = []
         
@@ -229,8 +239,7 @@ struct DictionaryProvider {
         }
         
             
-        //print(oneOfEachPartInAllPartChainInInitialisationOrder)
-        //print (oneOfEachPartInAllPartChain)
+        let chainLabels = objectsAndTheirChainLabels[objectType]
         if let chainLabels {
             for chainLabel in chainLabels {
                 let parts = LabelInPartChainOut(chainLabel).partChain
@@ -247,30 +256,49 @@ struct DictionaryProvider {
                             .sideSupport,
                             .sideSupportRotationJoint,
                             .sitOnTiltJoint:
-                                initialiseOneOrTwoDependantPart(part, .sitOn)
+                                initialiseOneOrTwoDependantPart(.sitOn, part )
                         case
                             .backSupportHeadSupportJoint:
-                                initialiseOneOrTwoDependantPart(part, .backSupport)
+                                initialiseOneOrTwoDependantPart( .backSupport, part)
                         case
                             .backSupportHeadSupportLink,
                             .backSupportHeadSupport:
                                 initialiseOneOrTwoIndependantPart(.backSupportHeadSupportLink)
+                        
+                        case .casterForkAtRear, .casterForkAtMid, .casterForkAtFront:
+                                initialiseOneOrTwoIndependantPart(part)
+                                             
+                        case .casterWheelAtRear, .casterWheelAtMid, .casterWheelAtFront:
+                                initialiseOneOrTwoIndependantPart(part)
+                        
+                        case
+                            .fixedWheelAtRear,
+                            .fixedWheelAtMid,
+                            .fixedWheelAtFront:
+                                initialiseOneOrTwoIndependantPart(part)
+                        
+                        
+                        
                         case .footSupportJoint:
-                                initialiseOneOrTwoDependantPart(part, .footSupportHangerLink)
+                                initialiseOneOrTwoDependantPart(.footSupportHangerLink, part )
                         case .footSupport:
                                 initialiseOneOrTwoIndependantPart(part)
-                        case .fixedWheel:
-                                initialiseOneOrTwoIndependantPart(part)
-                        case .fixedWheelHorizontalJointAtRear:
-                            break
-                        //case
-
-                            //                case .fixedWheelAtRear, .fixedWheelAtMid, .fixedWheelAtFront:
-                            //                        initialiseBaseWheelJointPart(part)
-                            //do things for fixedWheel
-                            //                case .casterWheelAtRear, .casterForkAtMid, .casterForkAtFront:
-                            //                        initialiseBaseWheelJointPart(part)
-                            //do things for casterWheel
+   
+                        case
+                            .fixedWheelHorizontalJointAtRear,
+                            .fixedWheelHorizontalJointAtMid,
+                            .fixedWheelHorizontalJointAtFront,
+                            .casterVerticalJointAtRear,
+                            .casterVerticalJointAtMid,
+                            .casterVerticalJointAtFront:
+                                initialiseOneOrTwoBaseWheelJoint(part)
+   
+                        case
+                            .stabilityAtRear,
+                            .stabilityAtFront,
+                            .stabilityAtSide://already intialised
+                                break
+                        
                         default:
                             fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(part)")
                     }
@@ -278,16 +306,25 @@ struct DictionaryProvider {
             }
         }
 
-        func initialiseOneOrTwoBaseWheelJoint() {
-            guard let _ = oneOrTwoObjectPartDic[.sitOn],
-                  let _ = oneOrTwoObjectPartDic[.fixedWheel] else {
+        func initialiseOneOrTwoBaseWheelJoint(_ child: Part) {
+            guard
+                let rearValues = oneOrTwoObjectPartDic[.stabilityAtRear],
+               
+                let frontValues = oneOrTwoObjectPartDic[.stabilityAtFront],
+                let sideValues = oneOrTwoObjectPartDic[.stabilityAtSide],
+                let wheel = oneOrTwoObjectPartDic[child]
+            else {
+                if oneOrTwoObjectPartDic[.stabilityAtRear] == nil {print ("rear")}
+                if oneOrTwoObjectPartDic[.stabilityAtFront] == nil {print ("front")}
+                if oneOrTwoObjectPartDic[.stabilityAtSide] == nil {print ("side")}
+                if oneOrTwoObjectPartDic[child] == nil {print ("wheel")}
                 return
             }
-            
+            print ("base wheel joint")
             initialiseOneOrTwoDependantPart(
                 .baseWheelJoint,
                 .sitOn,
-                .fixedWheel)
+                [rearValues, frontValues, sideValues, wheel ])
         }
         
             
@@ -303,19 +340,20 @@ struct DictionaryProvider {
            
             
         func initialiseOneOrTwoDependantPart(
-            _ child: Part,
             _ parent: Part,
-            _ sibling: Part? = nil) {
+            _ child: Part,
+            _ siblings: [OneOrTwoGenericPartValue] = []) {
             if let parent = oneOrTwoObjectPartDic[parent] {
                 print (child)
                 oneOrTwoObjectPartDic +=
-                    [child:  StructFactory(
-                        objectType,
-                        oneOrTwoUserEditedDictionary)
-                        .createOneOrTwoDependentPartForSingleSitOn(
-                        parent,
-                        child,
-                        sibling)]
+                    [child:
+                        StructFactory(
+                            objectType,
+                            oneOrTwoUserEditedDictionary)
+                                .createOneOrTwoDependentPartForSingleSitOn(
+                                    parent,
+                                    child,
+                                    [])]
             } else {
                 fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(parent)")
             }
@@ -331,7 +369,7 @@ struct DictionaryProvider {
                             .createOneOrTwoDependentPartForSingleSitOn(
                                 nil,
                                 child,
-                                nil)]
+                                [])]
         }
                    
 //            func initialiseBaseWheelJointPart(_ wheel: Part) {
