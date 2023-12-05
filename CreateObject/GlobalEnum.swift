@@ -137,7 +137,9 @@ case notFound = "notAnyPart"
     
     case stabilityAtRear = "stabilityAtRear"
     case stabilityAtFront = "stabilityAtFront"
-    case stabilityAtSide = "stabilityOnSide"
+    case stabilityAtSideAtRear = "stabilityAtSideAtRear"
+    case stabilityAtSideAtMid = "stabilityAtSideAtMid"
+    case stabilityAtSideAtFront = "stabilityAtSideAtFront"
     
     
     //case sitOnTiltJoint = "tiltInSpaceAngle"
@@ -934,8 +936,7 @@ struct OneOrTWoId {
                     .footSupport,
                 
                     .sideSupport,
-                    .sideSupportRotationJoint,
-                    .stabilityAtSide:
+                    .sideSupportRotationJoint:
                     return .two(left: .id0, right: .id1)
                 case
                     .backSupporRotationJoint,
@@ -943,10 +944,9 @@ struct OneOrTWoId {
                     .backSupportHeadSupportJoint,
                     .backSupportHeadSupportLink,
                     .backSupportHeadSupport,
+                    .footSupportInOnePiece,
                     .sitOn,
-                    .sitOnTiltJoint,
-                    .stabilityAtRear,
-                    .stabilityAtFront:
+                    .sitOnTiltJoint:
                     return .one(one: .id0)
                 default :
                 fatalError("OneOrTwoId: \(#function)  no id has been defined for \(part)")
@@ -1197,8 +1197,10 @@ extension StructFactory {
                     .fixedWheelHorizontalJointAtMid,
                     .fixedWheelHorizontalJointAtFront:
                         setChildDimensionForObject(Joint.dimension3d)
-                        setFixedWheelHorizontalJointChildOrigin(childPart)
-                
+                        setWheelBaseJointChildOrigin(childPart)
+                case .footSupport:
+                        setFootSupportChildDimension()
+                        setFootSupportJointChildOrigin()
                 
                 case .footSupportHangerLink:
                         setChildDimensionForObject(Joint.dimension3d)
@@ -1206,9 +1208,9 @@ extension StructFactory {
                 case .footSupportJoint:
                         setChildDimensionForObject(Joint.dimension3d)
                         setFootSupportJointChildOrigin()
-                case .footSupport:
-                        setFootSupportChildDimension()
-                        setFootSupportJointChildOrigin()
+            case .footSupportInOnePiece:
+                        childOrigin = .one(one: ZeroValue.iosLocation)
+                        setFootSupportInOnePieceChildDimension()
                 case .sideSupport:
                         setSideSupportChildDimension()
                         setSideSupportChildOrigin()
@@ -1216,11 +1218,11 @@ extension StructFactory {
                         setSideSupportChildDimension()
                         setSideSupportRotationJointChildOrigin()
                 
-                case
-                    .stabilityAtRear,
-                    .stabilityAtFront,
-                    .stabilityAtSide:
-                        setStabilityOrigin()
+//                case
+//                    .stabilityAtRear,
+//                    .stabilityAtFront,
+//                    .stabilityAtSideAtRear:
+//                        setStabilityOrigin()
                 
                 
  
@@ -1372,21 +1374,31 @@ extension StructFactory {
                   y: 0.0,
                   z: 0.0) )
          }
+
+            
+        func setFootSupportInOnePieceChildDimension(){
+            setChildDimensionForObject(
+                [.showerTray
+                 : (width: 900.0, length: 1200.0, height: 10.0)][objectType] ??
+                (width: 50.0, length: 200.0, height: 200.0)  )
+        }
             
             
-        func setFixedWheelHorizontalJointChildOrigin(_ wheelPart: Part) {
+        func setWheelBaseJointChildOrigin(_ wheelPart: Part) {
             var origin = ZeroValue.iosLocation
             let rearStability = getStability(.stabilityAtRear)
             let frontStability = getStability(.stabilityAtFront)
-            let sideStability = getStability(.stabilityAtSide)
+            let sideStabilityAtRear = getStability(.stabilityAtSideAtRear)
+            let sideStabilityAtMid = getStability(.stabilityAtSideAtMid)
+            let sideStabilityAtFront = getStability(.stabilityAtSideAtFront)
             let sitOnWidth = parentDimension.width
             let sitOnLength = parentDimension.length
             let wheelJointHeight = getWheelJointHeight(wheelPart)
             let midDriveOrigin = (
-                x: sitOnWidth/2 + sideStability,
+                x: sitOnWidth/2 + sideStabilityAtRear,
                 y: sitOnLength/2 + rearStability,
                 z: wheelJointHeight)
-            let xPosition = sitOnWidth/2 + sideStability
+            let xPosition = sitOnWidth/2 + sideStabilityAtRear
                 
             switch childPart {
                 case
@@ -1435,15 +1447,31 @@ extension StructFactory {
             
             setChildOriginForObject(origin)
             
-            func getStability(_ part: Part)
-                -> Double {
-                switch getSibling(part).origin {
-                    case .one (let one):
-                       return one.y
+            func getStability(_ stability: Part) -> Double{
+                switch stability {
+                    case .stabilityAtRear:
+                        return
+                            [.fixedWheelManualRearDrive: -50.0,
+                             .allCasterTiltInSpaceShowerChair: -200.0
+                            ][objectType] ?? -30.0
+                    case .stabilityAtFront:
+                        return
+                            [:][objectType] ?? 0.0
+                    case .stabilityAtSideAtRear:
+                        return
+                            [:][objectType] ?? 20.0
+                    case .stabilityAtSideAtMid:
+                        return
+                            [:][objectType] ?? 20.00
+                    case .stabilityAtSideAtFront:
+                       return
+                            [:][objectType] ?? 20.00
                     default:
                         return 0.0
                 }
             }
+            
+            
                 
                 
             func getWheelJointHeight(_ part: Part)
@@ -1469,7 +1497,7 @@ extension StructFactory {
                 }
         }
             
-            
+    
         func setFootSupportHangerLinkChildOrigin() {
             setChildOriginForObject(
                 [
@@ -1567,29 +1595,7 @@ extension StructFactory {
                  y: -parentDimension.length/2,
                  z: originHeight) )
         }
-        
-            
-        func setStabilityOrigin() {
-            var general = ZeroValue.iosLocation
-            var dictionary: [ObjectTypes: PositionAsIosAxes] = [:]
-            switch childPart {
-                case .stabilityAtRear:
-                    general = (x: 0.0, y: -50.0, z: 0.0)
-                    dictionary = [:]
-                case .stabilityAtFront:
-                    dictionary = [:]
-                    
-                case . stabilityAtSide:
-                    general = (x: 20.00, y: 0.0, z: 0.0)
-                    dictionary = [:]
-                default:
-                    break
-            }
-            
-            setChildOriginForObject(
-                dictionary[objectType] ??
-                general)
-        }
+ 
         
             
         func setChildDimensionForObject(
