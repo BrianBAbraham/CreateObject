@@ -283,7 +283,7 @@ struct RotatableParts {
 //                LabelInPartChainOut([.backSupport]).partChains[onlyOne],
 //                [.sitOn,   .backSupporRotationJoint]) +
             Self.removeParts(
-                LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne], [.sitOn, .backSupporRotationJoint])
+                LabelInPartChainOut([.backSupportHeadSupport]).partChains[onlyOne], [.sitOn, .backSupportRotationJoint])
         case .backAndSeat:
             return
                 LabelInPartChainOut([.backSupport]).partChains[onlyOne] +

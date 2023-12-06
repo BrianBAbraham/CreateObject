@@ -16,7 +16,7 @@ struct OccupantBackSupportDefaultDimension: PartDimension {
         self.part = part
         
         switch part {
-        case .backSupporRotationJoint:
+        case .backSupportRotationJoint:
             dimension = getBackSupportRotationJoint()
             
         case .backSupport:
@@ -125,7 +125,7 @@ struct PreTiltOccupantBackSupportDefaultOrigin: PartOrigin {
         self.part = part
         
         switch part {
-        case .backSupporRotationJoint:
+        case .backSupportRotationJoint:
             origin = getSitOnToBackSupportRotationJoint()
             
         case .backSupport:

@@ -47,7 +47,7 @@ struct OccupantDefaultAngle {
         self.part = part
 
         switch part {
-        case .backSupporRotationJoint:
+        case .backSupportRotationJoint:
             minAngle = getBackSupportRotationJointAngle()
 
         case .sitOnTiltJoint:
