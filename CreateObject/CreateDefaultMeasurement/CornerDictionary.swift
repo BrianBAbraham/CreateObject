@@ -160,7 +160,7 @@ struct DictionaryProvider {
                    preTiltObjectToPartOriginDic,
                    dimensionDic)
             
-//DictionaryInArrayOut().getNameValue(preTiltObjectToPartFourCornerPerKeyDic).forEach{print($0)}
+DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
 
 //MARK: - POST-TILT
@@ -199,7 +199,7 @@ struct DictionaryProvider {
 //MARK: InitialiseAllPart
     initialiseAllPart()
     createDictionaryFromStructFactory()
-        print(oneOrTwoObjectPartDic.values.map{$0.part})
+        //print(oneOrTwoObjectPartDic.values.map{$0.part})
         
         func createDictionaryFromStructFactory(){
             let chainLabels =
@@ -209,23 +209,41 @@ struct DictionaryProvider {
                 for chainLabel in chainLabels {
                     let chain = LabelInPartChainOut(chainLabel).partChain
                     var currentOrigin: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation )
-                    for part in chain {
-                       let partValue = oneOrTwoObjectPartDic[part]
+                    for index in 0..<chain.count {
+                        let partValue = oneOrTwoObjectPartDic[chain[index]]
+                       
                         if let partValue {
-                            switch partValue.origin {
+                            let startParts: [Part] = index == 0 ? [.object]: [chain[index - 1]]
+                            let endParts = [
+                                .stringLink,.sitOn, partValue.sitOnId]
+                            
+                            switch partValue.id {
                                 case .one (let one):
-                                    print ("\(part) \(one)")
+                                if let origin = OneOrTwoExtraction(partValue.origin).values.one {
+                                    print("\(CreateNameFromParts(startParts + [one, .stringLink, partValue.part, one] + endParts).name) : \(origin)")
+                                    
+                                } else {
+                                   print ( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exist for these chainLabels\(String(describing: chain[index]))")
+                                }
+                                
                                 case .two (let left, let right):
-                                    print ("\(part) left: \(left), right: \(right)")
+                                    let leftName =
+                                    CreateNameFromParts( startParts + [left, .stringLink, partValue.part, left] + endParts).name
+                                    let rightName =
+                                    CreateNameFromParts( startParts + [right, .stringLink, partValue.part, right] + endParts).name
+                        
+                                    print("\(leftName)  \(rightName)" )
                             }
                         } else {
-                            fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(part)")
+                            fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(chain[index])")
                         }
+                       
                     }
+                    print ( "chain complete \n")
                 }
 
             } else {
-                fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for these chainLabels\(chainLabels)")
+                fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for these chainLabels\(String(describing: chainLabels))")
             }
 
         }

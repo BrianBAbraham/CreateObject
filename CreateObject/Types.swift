@@ -53,6 +53,21 @@ typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 typealias Dimension = (width: Double, length: Double)
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
 
+func + (lhs: Dimension3d, rhs: Dimension3d) -> Dimension3d {
+    let sumWidth = lhs.width + rhs.width
+    let sumLength = lhs.length + rhs.length
+    let sumHeight = lhs.height + rhs.height
+    return (sumWidth, sumLength, sumHeight)
+}
+
+func / (lhs: Dimension3d, rhs: Double) -> Dimension3d {
+    let divWidth = lhs.width / rhs
+    let divLength = lhs.length / rhs
+    let divHeight = lhs.height / rhs
+    return (divWidth, divLength, divHeight)
+}
+
+
 //typealias Dimensions3dRearMidFront =
 //    (rear: [Dimension3d], mid: [Dimension3d], front: [Dimension3d])
 
@@ -149,8 +164,4 @@ typealias TwinSitOnOrigins =
      rearAndFront: [PositionAsIosAxes],
      leftAndRight: [PositionAsIosAxes])
 
-typealias TwinSitOn =
-    (onlyOne: [GenericPartValue],
-     rearAndFront: [GenericPartValue],
-     leftAndRight: [GenericPartValue])
 
