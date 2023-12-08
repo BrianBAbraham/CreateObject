@@ -54,6 +54,7 @@ struct DictionaryProvider {
    var chainsWithTouple: [[PartDataTuple]] = []
     
     //pre-tilt
+    var preTiltObjectToPartOriginDicNew: PositionDictionary = [:]
     var preTiltParentToPartOriginDic: PositionDictionary = [:]
     var preTiltObjectToPartOriginDic: PositionDictionary = [:]
     var preTiltObjectToCornerDic: PositionDictionary = [:]
@@ -152,15 +153,22 @@ struct DictionaryProvider {
                     dimensionDicIn,
                     0).forPart
         }
+        
+        initialiseAllPart()
+        createDictionaryFromStructFactory()
 
-           
+        print("\(preTiltObjectToPartOriginDic.count) \(dimensionDic.count)")
+        print (preTiltObjectToPartOriginDicNew.count)
+        
+        preTiltObjectToPartOriginDic = preTiltObjectToPartOriginDicNew
 //MARK: - PRE-TILT CORNERS
         preTiltObjectToPartFourCornerPerKeyDic =
             createCornerDictionary(
-                   preTiltObjectToPartOriginDic,
+                preTiltObjectToPartOriginDic,
                    dimensionDic)
             
 DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print($0)}
+        DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDicNew).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
 
 //MARK: - POST-TILT
@@ -197,43 +205,125 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
 ///of jointOrigin between sideSupport and sitOn the partChain ought to be processed as a whole
             
 //MARK: InitialiseAllPart
-    initialiseAllPart()
-    createDictionaryFromStructFactory()
+   
         //print(oneOrTwoObjectPartDic.values.map{$0.part})
         
         func createDictionaryFromStructFactory(){
             let chainLabels =
                 objectsAndTheirChainLabelsDicIn[objectType] ??
                 ObjectsAndTheirChainLabels().dictionary[objectType]
+            let defaultId: Part = .id0
             if let chainLabels {
                 for chainLabel in chainLabels {
                     let chain = LabelInPartChainOut(chainLabel).partChain
-                    var currentOrigin: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation )
+                    
+                    
+                    
+                    
+                    
                     for index in 0..<chain.count {
+
                         let partValue = oneOrTwoObjectPartDic[chain[index]]
-                       
-                        if let partValue {
+                        let parentPartValue = index == 0 ? partValue: oneOrTwoObjectPartDic[chain[index - 1]]
+                        
+                        if let partValue, let parentPartValue {
+                            var currentOriginForOne = ZeroValue.iosLocation
+                            var currentOriginForLeft = ZeroValue.iosLocation
+                            var currentOriginForRight = ZeroValue.iosLocation
                             let startParts: [Part] = index == 0 ? [.object]: [chain[index - 1]]
+                            
                             let endParts = [
                                 .stringLink,.sitOn, partValue.sitOnId]
                             
+                            let extractedOrigin = OneOrTwoExtraction(partValue.origin).values
+                            let extractedParentId = OneOrTwoExtraction(parentPartValue.id).values
+                            
+                            func getName3(
+                                _ childId: Part,
+                                _ part: Part,
+                                _ extractedParentId: (left: Part?, right: Part?, one: Part?),
+                                _ label: KeyPath<(left: Part?, right: Part?, one: Part?), Part?>)
+                                -> String {
+                                    
+                                    if var parentId = extractedParentId[keyPath: label] {
+                                        if index == 0 {
+                                            parentId = .id0
+                                        }
+                                        return
+                                            getName2((parent: parentId, child: childId), partValue.part)
+                                    } else {
+                                        if var parentId = extractedParentId[keyPath: \.one] {
+                                            if index == 0 {
+                                                 parentId = .id0
+                                            }
+                                            return
+                                                getName2((parent: parentId, child: childId), partValue.part)
+                                        } else {
+                                            fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
+                                        }
+                                    }
+                                    
+                                    
+                                    func getName2(
+                                        _ ids: (parent: Part, child: Part),
+                                        _ part: Part) -> String {
+                                            
+                                            CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
+                                    }
+                            }
+                            
+                            
+                            func getOrigin(
+                                _ currentOrigin: PositionAsIosAxes,
+                                _ extraction: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?),
+                                _ label: KeyPath<(left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?), PositionAsIosAxes?>
+                                ) -> PositionAsIosAxes{
+                                if let origin = extraction[keyPath: label] {
+                                    return
+                                        currentOrigin + origin
+                                } else {
+                                    fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exists for: \(chain[index])")
+                                }
+                                    
+                            }
+                            
+                            
+                            
                             switch partValue.id {
                                 case .one (let one):
-                                if let origin = OneOrTwoExtraction(partValue.origin).values.one {
-                                    print("\(CreateNameFromParts(startParts + [one, .stringLink, partValue.part, one] + endParts).name) : \(origin)")
-                                    
-                                } else {
-                                   print ( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exist for these chainLabels\(String(describing: chain[index]))")
-                                }
+                                    currentOriginForOne = getOrigin(currentOriginForOne, extractedOrigin,\.one)
+                                    let name = getName3(one,partValue.part,extractedParentId, \.one)
                                 
+                                    preTiltObjectToPartOriginDicNew += [name: currentOriginForOne]
+                                    //print("\(name) : \(currentOriginForOne)")
                                 case .two (let left, let right):
-                                    let leftName =
-                                    CreateNameFromParts( startParts + [left, .stringLink, partValue.part, left] + endParts).name
-                                    let rightName =
-                                    CreateNameFromParts( startParts + [right, .stringLink, partValue.part, right] + endParts).name
-                        
-                                    print("\(leftName)  \(rightName)" )
+                                    currentOriginForLeft = getOrigin(currentOriginForLeft, extractedOrigin,\.left)
+                                    let leftName = getName3(left,partValue.part,extractedParentId, \.left)
+                                    //print("\(leftName) : \(currentOriginForLeft)")
+                                preTiltObjectToPartOriginDicNew += [leftName: currentOriginForLeft]
+
+                                    currentOriginForRight = getOrigin(currentOriginForRight, extractedOrigin,\.right)
+                                    let rightName = getName3(right,partValue.part, extractedParentId, \.right)
+                                    //print("\(rightName) : \(currentOriginForRight)")
+                                preTiltObjectToPartOriginDicNew += [rightName: currentOriginForRight]
                             }
+                            
+                            
+                            
+                            
+                            
+                            
+                            func fatalErrorGettingParentId(_ oneOrTwo: String){
+                                fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) parent id does not exist for \(chain[index - 1]) for \(oneOrTwo)")
+                                
+                            }
+                            
+                            func fatalErrorGettingOrigin(_ oneOrTwo: String){
+                                print ( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exist for these chainLabels\(String(describing: chain[index])) for \(oneOrTwo)")
+                            }
+                            
+                            
+                            
                         } else {
                             fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(chain[index])")
                         }

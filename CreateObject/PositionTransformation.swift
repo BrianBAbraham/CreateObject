@@ -255,6 +255,7 @@ struct CreateIosPosition {
                 let maxValue = values.max() ?? 0.0
                 let minIndex = values.firstIndex(of: minValue) ?? 0
                 let maxIndex = values.firstIndex(of: maxValue) ?? 0
+                
                 let minCorner = values[minIndex]
                 let maxCorner = values[maxIndex]
                 return [minCorner, maxCorner]

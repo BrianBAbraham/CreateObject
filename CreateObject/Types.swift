@@ -8,7 +8,7 @@
 import Foundation
 
 typealias AngleMinMax = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle>)
-typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
+
 typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
 //typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
@@ -51,8 +51,23 @@ typealias BaseObjectOriginDictionary = [ObjectTypes: PositionAsIosAxes]
 typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 
 typealias Dimension = (width: Double, length: Double)
-typealias Dimension3d = (width: Double, length: Double,  height: Double)
 
+typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
+func + (lhs: PositionAsIosAxes, rhs: PositionAsIosAxes) -> PositionAsIosAxes {
+    let sumX = lhs.x + rhs.x
+    let sumY = lhs.y + rhs.y
+    let sumZ = lhs.z + rhs.z
+    return (sumX, sumY, sumZ)
+}
+
+func += (lhs: inout PositionAsIosAxes, rhs: PositionAsIosAxes) {
+    lhs.x += rhs.x
+    lhs.y += rhs.y
+    lhs.z += rhs.z
+}
+
+
+typealias Dimension3d = (width: Double, length: Double,  height: Double)
 func + (lhs: Dimension3d, rhs: Dimension3d) -> Dimension3d {
     let sumWidth = lhs.width + rhs.width
     let sumLength = lhs.length + rhs.length
