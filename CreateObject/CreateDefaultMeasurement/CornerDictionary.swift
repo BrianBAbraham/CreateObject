@@ -6,9 +6,72 @@
 //
 
 import Foundation
+//MARK: ANGLE
+struct OccupantBodySupportDefaultAngleMinMax {
+    let dictionary: BaseObjectAngelMinMaxDictionary =
+    [.allCasterTiltInSpaceShowerChair: (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 45.0, unit: UnitAngle.degrees) ) ]
+    
+    static let general = (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 30.0, unit: UnitAngle.degrees) )
+    
+    let value: AngleMinMax
+    
+    init(
+        _ baseType: ObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
 
 
+struct OccupantBackSupportDefaultAngleChange {
+    var dictionary: BaseObjectAngleDictionary =
+    [:]
+    
+    static let general = Measurement(value: 0.0 , unit: UnitAngle.radians)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: ObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
+//MARK: FOOT ANGLE
+struct OccupantFootSupportDefaultAngleChange {
+    var dictionary: BaseObjectAngleDictionary =
+    [:]
+    
+    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: ObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
 
+
+struct OccupantBodySupportDefaultAngleChange {
+    let dictionary: BaseObjectAngleDictionary =
+    [.allCasterTiltInSpaceShowerChair: OccupantBodySupportDefaultAngleMinMax(.allCasterTiltInSpaceShowerChair).value.max]//Measurement(value: 90.0, unit: UnitAngle.degrees)]
+    
+    static let general = Measurement(value: 0.0, unit: UnitAngle.degrees)
+    
+    let value: Measurement<UnitAngle>
+    
+    init(
+        _ baseType: ObjectTypes) {
+            value =
+                dictionary[baseType] ??
+                Self.general
+    }
+}
 //MARK: - PARENT
 ///This provides
 ///The array of objects available
@@ -45,13 +108,14 @@ struct DictionaryProvider {
     var partChainIdDic: PartChainIdDictionary  = [:]
     
     var dimensionDic: Part3DimensionDictionary = [:]
+    var dimensionDicNew: Part3DimensionDictionary = [:]
     var angleDic: AngleDictionary = [:]
     var angleMinMaxDic: AngleMinMaxDictionary = [:]
     
 
     var originIdPartChainForBackForBothSitOn: [PartDataTuple] = []
     
-   var chainsWithTouple: [[PartDataTuple]] = []
+  // var chainsWithTouple: [[PartDataTuple]] = []
     
     //pre-tilt
     var preTiltObjectToPartOriginDicNew: PositionDictionary = [:]
@@ -70,10 +134,10 @@ struct DictionaryProvider {
     
     let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
     
-    var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
+    //var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
     var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
 
-    var object: Object
+   // var objectX: ObjectX
     
     /// each part has a either .leftRight or .one GenericPartVqalue
     //var objectPartDic: [Part: Symmetry<GenericPartValue>] = [:]
@@ -125,9 +189,9 @@ struct DictionaryProvider {
                     partChainId: partChainIdDicIn
                 )
             
-        object = (Object(objectType))
+        //objectX = (ObjectX(objectType))
             
-        preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
+        //preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
   
        //twinSitOnState = TwinSitOn(twinSitOnOption).state
             oneOrTwoIds = [.id0]//twinSitOnState ? [.id0, .id1]: [.id0]
@@ -137,38 +201,68 @@ struct DictionaryProvider {
         angleMinMaxDic =
             ObjectAngleMinMax(parent: self).dictionary
             
-        objectPartChainLabelDic = getObjectPartChainLabelDic()
+        objectPartChainLabelDic = [:]//getObjectPartChainLabelDic()
 
-        chainsWithTouple = object.partDataTupleChain
+        //chainsWithTouple = object.partDataTupleChain
             
 //MARK: - ORIGIN/DIMENSION DICTIONARY
         // both parent to part and
         // object to part
-        for chain in chainsWithTouple {
-            createPreTiltParentToPartOriginDictionary(trial: chain)
-            
-            dimensionDic +=
-                DimensionDictionary(
-                    chain,
-                    dimensionDicIn,
-                    0).forPart
-        }
+//        for chain in chainsWithTouple {
+//            createPreTiltParentToPartOriginDictionary(trial: chain)
+//
+//            dimensionDic +=
+//                DimensionDictionary(
+//                    chain,
+//                    dimensionDicIn,
+//                    0).forPart
+//        }
+        
+        
+        
+        
+        
+        
         
         initialiseAllPart()
         createDictionaryFromStructFactory()
-
-        print("\(preTiltObjectToPartOriginDic.count) \(dimensionDic.count)")
-        print (preTiltObjectToPartOriginDicNew.count)
         
+        dimensionDic = dimensionDicNew
+
+//        print("\(preTiltObjectToPartOriginDic.count) \(dimensionDic.count)")
+              //  DictionaryInArrayOut().getNameValue(dimensionDicNew).forEach{print($0)}
+     
+        
+        
+        let sortedKeysOld = preTiltObjectToPartOriginDic.keys.sorted()
+        let sortedKeysNew = preTiltObjectToPartOriginDicNew.keys.sorted()
+
+
+        // Print values on new lines in alphabetical order
+        //if sortedKeysNew.count == sortedKeysOld.count {
+        for (key, value) in dimensionDicNew{
+                //if !sortedKeysNew.contains(key) {
+            print("\(key)  \(value.length) \n")
+
+   // }
+            }
+       // }
+
         preTiltObjectToPartOriginDic = preTiltObjectToPartOriginDicNew
+        
+        
+        
+        
+        
+        
 //MARK: - PRE-TILT CORNERS
         preTiltObjectToPartFourCornerPerKeyDic =
             createCornerDictionary(
                 preTiltObjectToPartOriginDic,
                    dimensionDic)
             
-DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print($0)}
-        DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDicNew).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print($0)}
+   // DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDicNew).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
 
 //MARK: - POST-TILT
@@ -208,35 +302,37 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
    
         //print(oneOrTwoObjectPartDic.values.map{$0.part})
         
-        func createDictionaryFromStructFactory(){
+        func createDictionaryFromStructFactory(_ global: Bool = true){
             let chainLabels =
                 objectsAndTheirChainLabelsDicIn[objectType] ??
                 ObjectsAndTheirChainLabels().dictionary[objectType]
-            let defaultId: Part = .id0
+            var name: String = ""
             if let chainLabels {
                 for chainLabel in chainLabels {
                     let chain = LabelInPartChainOut(chainLabel).partChain
                     
-                    
-                    
-                    
-                    
+                    var currentOriginForOne = ZeroValue.iosLocation
+                    var currentOriginForLeft = ZeroValue.iosLocation
+                    var currentOriginForRight = ZeroValue.iosLocation
                     for index in 0..<chain.count {
 
                         let partValue = oneOrTwoObjectPartDic[chain[index]]
                         let parentPartValue = index == 0 ? partValue: oneOrTwoObjectPartDic[chain[index - 1]]
                         
                         if let partValue, let parentPartValue {
-                            var currentOriginForOne = ZeroValue.iosLocation
-                            var currentOriginForLeft = ZeroValue.iosLocation
-                            var currentOriginForRight = ZeroValue.iosLocation
-                            let startParts: [Part] = index == 0 ? [.object]: [chain[index - 1]]
+                            if !global {//if relative reset for each part
+                                currentOriginForOne = ZeroValue.iosLocation
+                                currentOriginForLeft = ZeroValue.iosLocation
+                                currentOriginForRight = ZeroValue.iosLocation
+                            }
+                            let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
                             
                             let endParts = [
                                 .stringLink,.sitOn, partValue.sitOnId]
                             
                             let extractedOrigin = OneOrTwoExtraction(partValue.origin).values
                             let extractedParentId = OneOrTwoExtraction(parentPartValue.id).values
+                            let extractedDimension = OneOrTwoExtraction(partValue.dimension).values
                             
                             func getName3(
                                 _ childId: Part,
@@ -246,14 +342,14 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
                                 -> String {
                                     
                                     if var parentId = extractedParentId[keyPath: label] {
-                                        if index == 0 {
+                                        if index == 0 || global {
                                             parentId = .id0
                                         }
                                         return
                                             getName2((parent: parentId, child: childId), partValue.part)
                                     } else {
                                         if var parentId = extractedParentId[keyPath: \.one] {
-                                            if index == 0 {
+                                            if index == 0 || global {
                                                  parentId = .id0
                                             }
                                             return
@@ -262,16 +358,15 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
                                             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
                                         }
                                     }
-                                    
-                                    
-                                    func getName2(
-                                        _ ids: (parent: Part, child: Part),
-                                        _ part: Part) -> String {
-                                            
-                                            CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
-                                    }
                             }
                             
+                            
+                            func getName2(
+                                _ ids: (parent: Part, child: Part),
+                                _ part: Part) -> String {
+                                    
+                                    CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
+                            }
                             
                             func getOrigin(
                                 _ currentOrigin: PositionAsIosAxes,
@@ -288,24 +383,40 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
                             }
                             
                             
+                            func addDimension(
+                                _ extraction: (left: Dimension3d?, right: Dimension3d?, one: Dimension3d?),
+                                _ label: KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>,
+                                _ name: String) {
+                                if let dimension = extraction[keyPath: label] {
+                                    dimensionDicNew += [name: dimension]
+                                } else {
+                                    fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exists for: \(chain[index])")
+                                }
+                                    
+                            }
+                            
                             
                             switch partValue.id {
+                                
                                 case .one (let one):
                                     currentOriginForOne = getOrigin(currentOriginForOne, extractedOrigin,\.one)
-                                    let name = getName3(one,partValue.part,extractedParentId, \.one)
-                                
+                                    name = getName3(one,partValue.part,extractedParentId, \.one)
+                                    addDimension(extractedDimension, \.one, name)
+                                   
                                     preTiltObjectToPartOriginDicNew += [name: currentOriginForOne]
                                     //print("\(name) : \(currentOriginForOne)")
                                 case .two (let left, let right):
                                     currentOriginForLeft = getOrigin(currentOriginForLeft, extractedOrigin,\.left)
-                                    let leftName = getName3(left,partValue.part,extractedParentId, \.left)
+                                    name = getName3(left,partValue.part,extractedParentId, \.left)
+                                addDimension(extractedDimension, \.left, name)
                                     //print("\(leftName) : \(currentOriginForLeft)")
-                                preTiltObjectToPartOriginDicNew += [leftName: currentOriginForLeft]
+                                preTiltObjectToPartOriginDicNew += [name: currentOriginForLeft]
 
                                     currentOriginForRight = getOrigin(currentOriginForRight, extractedOrigin,\.right)
-                                    let rightName = getName3(right,partValue.part, extractedParentId, \.right)
+                                    name = getName3(right,partValue.part, extractedParentId, \.right)
+                                addDimension(extractedDimension, \.right, name)
                                     //print("\(rightName) : \(currentOriginForRight)")
-                                preTiltObjectToPartOriginDicNew += [rightName: currentOriginForRight]
+                                preTiltObjectToPartOriginDicNew += [name: currentOriginForRight]
                             }
                             
                             
@@ -329,7 +440,7 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
                         }
                        
                     }
-                    print ( "chain complete \n")
+                    //print( "chain complete \n")
                 }
 
             } else {
@@ -535,15 +646,43 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
         func getRotatingPartDataTupleFromStruct(
         _ partsToRotate: [Part])
             -> [PartDataTuple] {
-            var rotatedPartData: [PartDataTuple] = []
-            
-            let allPartDataTuple = object.allPartDataTuple
-                for partDataTouple in allPartDataTuple {
-                    if partsToRotate.contains(partDataTouple.part) {
-                        rotatedPartData.append(partDataTouple)
-                    }
-                }
-            return rotatedPartData
+//            var rotatedPartData: [PartDataTuple] = []
+//
+//            let allPartDataTuple = objectX.allPartDataTuple
+//                for partDataTouple in allPartDataTuple {
+//                    if partsToRotate.contains(partDataTouple.part) {
+//                        rotatedPartData.append(partDataTouple)
+//                    }
+//                }
+                
+              // print(rotatedPartData)
+//                (part: Part,
+//                 dimension: (width: Double, length: Double, height: Double),
+//                 origin: (x: Double, y: Double, z: Double),
+//                 ids: [Part],
+//                 angles: (x: Measurement<UnitAngle>, y: Measurement<UnitAngle>, z: Measurement<UnitAngle>))
+                
+            return [
+                (part: Part.backSupport,
+                 dimension: (width: 320.0, length: 10.0, height: 500.0),
+                 origin: (x: 0.0, y: 0.0, z: 250.0),
+                 ids: [Part.id0],
+                 angles: ZeroValue.rotationAngles),
+                (part: Part.backSupportHeadSupportJoint,
+                 dimension: (width: 20.0, length: 20.0, height: 20.0),
+                 origin: (x: 0.0, y: 0.0, z: 250.0),
+                 ids: [Part.id0],
+                 angles: ZeroValue.rotationAngles),
+                (part: Part.backSupportHeadSupportLink,
+                 dimension: (width: 20.0, length: 20.0, height: 100.0),
+                 origin: (x: 0.0, y: 0.0, z: 50.0),
+                 ids: [Part.id0],
+                 angles: ZeroValue.rotationAngles),
+                (part: Part.backSupportHeadSupport,
+                 dimension: (width: 150.0, length: 100.0, height: 100.0),
+                 origin: (x: 0.0, y: 0.0, z: 150.0),
+                 ids: [Part.id0],
+                 angles: ZeroValue.rotationAngles)]
         }
          
 
@@ -562,26 +701,26 @@ DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print(
         }
         
             
-        func createPreTiltParentToPartOriginDictionary (
-            trial: [PartDataTuple]){
-                
-            let parentAndObjectToPartOriginDictionary =
-                ObjectOriginDictionary(
-                    trial,
-                    preTiltParentToPartOriginDicIn)
-                preTiltParentToPartOriginDic +=
-                    parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
-                preTiltObjectToPartOriginDic +=
-                    parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
-        }
+//        func createPreTiltParentToPartOriginDictionary (
+//            trial: [PartDataTuple]){
+//
+//            let parentAndObjectToPartOriginDictionary =
+//                ObjectOriginDictionary(
+//                    trial,
+//                    preTiltParentToPartOriginDicIn)
+//                preTiltParentToPartOriginDic +=
+//                    parentAndObjectToPartOriginDictionary.makeAndGetForParentToPart()
+//                preTiltObjectToPartOriginDic +=
+//                    parentAndObjectToPartOriginDictionary.makeAndGetForObjectToPart()
+//        }
             
             
-        func getObjectPartChainLabelDic  ()
-         -> ObjectPartChainLabelsDictionary {
-             objectsAndTheirChainLabelsDicIn == [:] ?
-                 ObjectsAndTheirChainLabels().dictionary:
-                 objectsAndTheirChainLabelsDicIn
-         }
+//        func getObjectPartChainLabelDic  ()
+//         -> ObjectPartChainLabelsDictionary {
+//             objectsAndTheirChainLabelsDicIn == [:] ?
+//                 ObjectsAndTheirChainLabels().dictionary:
+//                 objectsAndTheirChainLabelsDicIn
+//         }
             
             
         func createCornerDictionary(
@@ -819,19 +958,19 @@ extension DictionaryProvider {
 
 /// Provides a means of passing dimenions for parts
 /// to one function
-protocol PartDimension {
-    //var part: Part? {get}
-    var dimension: Dimension3d {get}
-    mutating func reinitialise(_ part: Part?)
-}
+//protocol PartDimension {
+//    //var part: Part? {get}
+//    var dimension: Dimension3d {get}
+//    mutating func reinitialise(_ part: Part?)
+//}
 
 /// Provides a means of passing origin for parts
 /// to one function
-protocol PartOrigin{
-    //var part: Part? {get}
-    var origin: PositionAsIosAxes {get}
-    mutating func reinitialise(_ part: Part?)
-}
+//protocol PartOrigin{
+//    //var part: Part? {get}
+//    var origin: PositionAsIosAxes {get}
+//    mutating func reinitialise(_ part: Part?)
+//}
 
 protocol RotationAngle {
     var minAngle: RotationAngle {get}

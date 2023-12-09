@@ -24,11 +24,11 @@ struct ZeroValue {
         (rear: dimension3d, mid: dimension3d, front:
             dimension3d )
     
-    static let sitOnOrigins: TwinSitOnOrigins =
-            (
-            onlyOne: [],
-            rearAndFront: [],
-            leftAndRight: [])
+//    static let sitOnOrigins: TwinSitOnOrigins =
+//            (
+//            onlyOne: [],
+//            rearAndFront: [],
+//            leftAndRight: [])
     
     static let rearMidFrontPositions: RearMidFrontPositions =
         (

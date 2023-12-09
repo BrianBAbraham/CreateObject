@@ -133,8 +133,8 @@ typealias PartDataTuple = (part: Part, dimension: (width: Double, length: Double
 ///While OriginIdNodes (s at end)
 ///has collections for each label
 ///only a single value is present
-typealias OriginIdNode =
-    (origin: PositionAsIosAxes, id: [Part] ,node: Part)
+//typealias OriginIdNode =
+//    (origin: PositionAsIosAxes, id: [Part] ,node: Part)
 
 ///corners of a cuboid ordered as follows
 ///IOS screen view
@@ -174,9 +174,9 @@ typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]
 ///(onlyOne: [PositionAsIosAxes],
 ///frontAndRear: [PositionAsIosAxes]
 ///sideBySide: [PositionAsIosAxes])
-typealias TwinSitOnOrigins =
-    (onlyOne: [PositionAsIosAxes],
-     rearAndFront: [PositionAsIosAxes],
-     leftAndRight: [PositionAsIosAxes])
+//typealias TwinSitOnOrigins =
+//    (onlyOne: [PositionAsIosAxes],
+//     rearAndFront: [PositionAsIosAxes],
+//     leftAndRight: [PositionAsIosAxes])
 
 
