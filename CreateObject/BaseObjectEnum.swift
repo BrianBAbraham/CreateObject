@@ -82,137 +82,124 @@ struct MiscObjectParameters {
 
 ///object creation includes features if the object is containted
 ///in the feature group
-struct BaseObjectGroups {
-    let allFourCaster: [ObjectTypes] =
-        [.allCasterBed,
-         .allCasterChair,
-         .allCasterHoist,
-         .allCasterStandAid,
-         .allCasterStretcher,
-         .allCasterTiltInSpaceShowerChair]
-    
-    var rearFixedWheel: [ObjectTypes] =
-        [
-         .fixedWheelManualRearDrive,
-         .fixedWheelRearDrive,
-         .fixedWheelManualRearDrive,
-         .scooterRearDrive3Wheeler,
-         .scooterRearDrive4Wheeler]
-   
-    let oneRearWheel: [ObjectTypes] =
-        [
-        .scooterFrontDrive3Wheeler]
-    
-    let midCaster: [ObjectTypes]
-        = [.allCasterSixHoist]
-    
-    let midFixedWheel: [ObjectTypes] =
-    [.fixedWheelMidDrive, .fixedWheelSolo]
-    
-    let frontFixedWheel: [ObjectTypes] =
-        [.fixedWheelFrontDrive,
-        .scooterFrontDrive3Wheeler,
-        .scooterFrontDrive4Wheeler]
-    
-    let twinSitOnAbility: [ObjectTypes] =
-        [ .fixedWheelManualRearDrive,
-          .fixedWheelRearDrive,
-          .fixedWheelMidDrive,
-          .fixedWheelFrontDrive,
-          .scooterRearDrive3Wheeler,
-          .scooterRearDrive4Wheeler,
-          .scooterFrontDrive3Wheeler,
-          .scooterFrontDrive4Wheeler]
-    
-    let singleWheelAtRear: [ObjectTypes] =
-        [ .scooterRearDrive3Wheeler]
-    
-    let singleWheelAtFront: [ObjectTypes] =
-        [ .scooterRearDrive3Wheeler]
-    
-    let sixWheels: [ObjectTypes] =
-        [
-        .allCasterSixHoist,
-        .fixedWheelMidDrive]
-    
-    let noWheel: [ObjectTypes] = [.showerTray]
-    let noBodySupport: [ObjectTypes] = [.showerTray]
-//    let sitOnBackFootTiltJoint: [ObjectTypes] = [.allCasterTiltInSpaceShowerChair]
+//struct BaseObjectGroups {
+//    let allFourCaster: [ObjectTypes] =
+//        [.allCasterBed,
+//         .allCasterChair,
+//         .allCasterHoist,
+//         .allCasterStandAid,
+//         .allCasterStretcher,
+//         .allCasterTiltInSpaceShowerChair]
 //
-//    let footSupport: [ObjectTypes]
-    let backSupport: [ObjectTypes]
-//    let sideSupport: [ObjectTypes]
-    
-    let fourWheels: [ObjectTypes]
-    let threeWheels: [ObjectTypes]
-    let midWheels: [ObjectTypes]
-    let allCaster: [ObjectTypes]
-    let frontPrimaryOrigin: [ObjectTypes]
-    let midPrimaryOrigin: [ObjectTypes]
-    let rearPrimaryOrigin: [ObjectTypes]
-    let frontCaster: [ObjectTypes]
-    let rearCaster: [ObjectTypes]
-    let allDriveOrigin: [ObjectTypes]
-    
-    init() {
-        fourWheels =
-            [
-            .fixedWheelRearDrive,
-            .fixedWheelFrontDrive,
-            .scooterRearDrive4Wheeler,
-            .scooterFrontDrive4Wheeler] +
-            allFourCaster
-        
-        threeWheels =
-            singleWheelAtRear +
-            singleWheelAtFront
-        
-        midWheels =
-            midCaster +
-            midFixedWheel
-        
-        allCaster =
-            allFourCaster +
-            [.allCasterSixHoist]
-        
-        rearPrimaryOrigin =
-            allCaster +
-            rearFixedWheel
-        midPrimaryOrigin =
-            midFixedWheel
-        frontPrimaryOrigin =
-            frontFixedWheel
-        
-        allDriveOrigin =
-            rearFixedWheel +
-            midFixedWheel +
-            frontFixedWheel
-        
-        frontCaster =
-            allCaster +
-        [.fixedWheelMidDrive, .fixedWheelRearDrive,.fixedWheelManualRearDrive]
-        
-        rearCaster =
-            allCaster +
-            [.fixedWheelMidDrive, .fixedWheelFrontDrive]
-        
-//        footSupport =
-//            twinSitOnAbility + [.allCasterChair,
-//                                .allCasterStandAid,
-//                                .allCasterTiltInSpaceShowerChair,
-//                                .showerTray]
+//    var rearFixedWheel: [ObjectTypes] =
+//        [
+//         .fixedWheelManualRearDrive,
+//         .fixedWheelRearDrive,
+//         .fixedWheelManualRearDrive,
+//         .scooterRearDrive3Wheeler,
+//         .scooterRearDrive4Wheeler]
 //
-        backSupport =
-            twinSitOnAbility + [.allCasterChair,
-                                .allCasterStandAid,
-                                .allCasterTiltInSpaceShowerChair]
+//    let oneRearWheel: [ObjectTypes] =
+//        [
+//        .scooterFrontDrive3Wheeler]
 //
-//        sideSupport =
+//    let midCaster: [ObjectTypes]
+//        = [.allCasterSixHoist]
+//
+//    let midFixedWheel: [ObjectTypes] =
+//    [.fixedWheelMidDrive, .fixedWheelSolo]
+//
+//    let frontFixedWheel: [ObjectTypes] =
+//        [.fixedWheelFrontDrive,
+//        .scooterFrontDrive3Wheeler,
+//        .scooterFrontDrive4Wheeler]
+//
+//    let twinSitOnAbility: [ObjectTypes] =
+//        [ .fixedWheelManualRearDrive,
+//          .fixedWheelRearDrive,
+//          .fixedWheelMidDrive,
+//          .fixedWheelFrontDrive,
+//          .scooterRearDrive3Wheeler,
+//          .scooterRearDrive4Wheeler,
+//          .scooterFrontDrive3Wheeler,
+//          .scooterFrontDrive4Wheeler]
+//
+//    let singleWheelAtRear: [ObjectTypes] =
+//        [ .scooterRearDrive3Wheeler]
+//
+//    let singleWheelAtFront: [ObjectTypes] =
+//        [ .scooterRearDrive3Wheeler]
+//
+//    let sixWheels: [ObjectTypes] =
+//        [
+//        .allCasterSixHoist,
+//        .fixedWheelMidDrive]
+//
+//    let noWheel: [ObjectTypes] = [.showerTray]
+//    let noBodySupport: [ObjectTypes] = [.showerTray]
+//
+//    let backSupport: [ObjectTypes]
+//
+//    let fourWheels: [ObjectTypes]
+//    let threeWheels: [ObjectTypes]
+//    let midWheels: [ObjectTypes]
+//    let allCaster: [ObjectTypes]
+//    let frontPrimaryOrigin: [ObjectTypes]
+//    let midPrimaryOrigin: [ObjectTypes]
+//    let rearPrimaryOrigin: [ObjectTypes]
+//    let frontCaster: [ObjectTypes]
+//    let rearCaster: [ObjectTypes]
+//    let allDriveOrigin: [ObjectTypes]
+//
+//    init() {
+//        fourWheels =
+//            [
+//            .fixedWheelRearDrive,
+//            .fixedWheelFrontDrive,
+//            .scooterRearDrive4Wheeler,
+//            .scooterFrontDrive4Wheeler] +
+//            allFourCaster
+//
+//        threeWheels =
+//            singleWheelAtRear +
+//            singleWheelAtFront
+//
+//        midWheels =
+//            midCaster +
+//            midFixedWheel
+//
+//        allCaster =
+//            allFourCaster +
+//            [.allCasterSixHoist]
+//
+//        rearPrimaryOrigin =
+//            allCaster +
+//            rearFixedWheel
+//        midPrimaryOrigin =
+//            midFixedWheel
+//        frontPrimaryOrigin =
+//            frontFixedWheel
+//
+//        allDriveOrigin =
+//            rearFixedWheel +
+//            midFixedWheel +
+//            frontFixedWheel
+//
+//        frontCaster =
+//            allCaster +
+//        [.fixedWheelMidDrive, .fixedWheelRearDrive,.fixedWheelManualRearDrive]
+//
+//        rearCaster =
+//            allCaster +
+//            [.fixedWheelMidDrive, .fixedWheelFrontDrive]
+//
+//        backSupport =
 //            twinSitOnAbility + [.allCasterChair,
 //                                .allCasterStandAid,
 //                                .allCasterTiltInSpaceShowerChair]
-    }
-}
+//
+//    }
+//}
 
 
 

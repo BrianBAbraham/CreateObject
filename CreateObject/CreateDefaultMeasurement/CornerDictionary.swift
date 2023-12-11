@@ -78,11 +78,7 @@ struct OccupantBodySupportDefaultAngleChange {
 ///Dictionary for objects
 ///An input for edited dimensions to replace default dimensions
 struct DictionaryProvider {
-    
-    static let sitOnHeight = 500.0
-    var objectGroups: BaseObjectGroups {
-        BaseObjectGroups()
-    }
+
    
     //UI amended dictionary
     //let userEditedDictionary: UserEditedDictionary
@@ -93,13 +89,10 @@ struct DictionaryProvider {
     let angleDicIn: AngleDictionary
     let angleMinMaxDicIn: AngleMinMaxDictionary
     let partChainIdDicIn: [PartChain: OneOrTwo<Part> ]
-   
-    //let partChainsIdDicIn: [PartChain: [[Part]]]
-    
+ 
     let objectType: ObjectTypes
     let twinSitOnOption: TwinSitOnOptionDictionary
 
-    //var twinSitOnState: Bool //= false
     let oneOrTwoIds: [Part]
     var objectPartChainLabelDic: ObjectPartChainLabelsDictionary = [:]
 
@@ -107,20 +100,14 @@ struct DictionaryProvider {
     var partChainDictionary: PartChainDictionary = [:]
     var partChainIdDic: PartChainIdDictionary  = [:]
     
-    var dimensionDic: Part3DimensionDictionary = [:]
+
     var dimensionDicNew: Part3DimensionDictionary = [:]
     var angleDic: AngleDictionary = [:]
     var angleMinMaxDic: AngleMinMaxDictionary = [:]
-    
-
-    var originIdPartChainForBackForBothSitOn: [PartDataTuple] = []
-    
-  // var chainsWithTouple: [[PartDataTuple]] = []
-    
+  
     //pre-tilt
     var preTiltObjectToPartOriginDicNew: PositionDictionary = [:]
     var preTiltParentToPartOriginDic: PositionDictionary = [:]
-    var preTiltObjectToPartOriginDic: PositionDictionary = [:]
     var preTiltObjectToCornerDic: PositionDictionary = [:]
     var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
     
@@ -134,13 +121,8 @@ struct DictionaryProvider {
     
     let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
     
-    //var preTiltSitOnAndWheelBaseJointOrigin: PreTiltSitOnAndWheelBaseJointOrigin
     var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
 
-   // var objectX: ObjectX
-    
-    /// each part has a either .leftRight or .one GenericPartVqalue
-    //var objectPartDic: [Part: Symmetry<GenericPartValue>] = [:]
     var oneOrTwoObjectPartDic: [Part: OneOrTwoGenericPartValue] = [:]
 
     /// using values taken from dictionaries
@@ -168,7 +150,6 @@ struct DictionaryProvider {
         minMaxAngleIn: AngleMinMaxDictionary = [:],
         objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:],
         partChainIdDicIn: [PartChain: OneOrTwo<Part> ] = [:]//,
-    //    partIdsDicIn: [Part: OneOrTwo<Part>] = [:]
     ) {
             
         self.objectType = objectType
@@ -185,81 +166,30 @@ struct DictionaryProvider {
                     dimension: dimensionDicIn,
                     parentToPartOrigin :preTiltParentToPartOriginDicIn,
                     objectToPartOrigin :preTiltObjectToPartOriginDicIn,
-                    angle: angleDicIn,
+                    angleMinMaxDic: minMaxAngleIn,
                     partChainId: partChainIdDicIn
                 )
             
-        //objectX = (ObjectX(objectType))
-            
-        //preTiltSitOnAndWheelBaseJointOrigin = PreTiltSitOnAndWheelBaseJointOrigin(objectType)
-  
-       //twinSitOnState = TwinSitOn(twinSitOnOption).state
-            oneOrTwoIds = [.id0]//twinSitOnState ? [.id0, .id1]: [.id0]
+
+        oneOrTwoIds = [.id0]
             
         angleDic =
             ObjectAngleChange(parent: self).dictionary
         angleMinMaxDic =
             ObjectAngleMinMax(parent: self).dictionary
             
-        objectPartChainLabelDic = [:]//getObjectPartChainLabelDic()
+        objectPartChainLabelDic = [:]
 
-        //chainsWithTouple = object.partDataTupleChain
             
 //MARK: - ORIGIN/DIMENSION DICTIONARY
-        // both parent to part and
-        // object to part
-//        for chain in chainsWithTouple {
-//            createPreTiltParentToPartOriginDictionary(trial: chain)
-//
-//            dimensionDic +=
-//                DimensionDictionary(
-//                    chain,
-//                    dimensionDicIn,
-//                    0).forPart
-//        }
-        
-        
-        
-        
-        
-        
-        
         initialiseAllPart()
         createDictionaryFromStructFactory()
-        
-        dimensionDic = dimensionDicNew
-
-//        print("\(preTiltObjectToPartOriginDic.count) \(dimensionDic.count)")
-              //  DictionaryInArrayOut().getNameValue(dimensionDicNew).forEach{print($0)}
-     
-        
-        
-        let sortedKeysOld = preTiltObjectToPartOriginDic.keys.sorted()
-        let sortedKeysNew = preTiltObjectToPartOriginDicNew.keys.sorted()
-
-
-        // Print values on new lines in alphabetical order
-        //if sortedKeysNew.count == sortedKeysOld.count {
-        for (key, value) in dimensionDicNew{
-                //if !sortedKeysNew.contains(key) {
-            print("\(key)  \(value.length) \n")
-
-   // }
-            }
-       // }
-
-        preTiltObjectToPartOriginDic = preTiltObjectToPartOriginDicNew
-        
-        
-        
-        
-        
         
 //MARK: - PRE-TILT CORNERS
         preTiltObjectToPartFourCornerPerKeyDic =
             createCornerDictionary(
-                preTiltObjectToPartOriginDic,
-                   dimensionDic)
+                preTiltObjectToPartOriginDicNew,
+                   dimensionDicNew)
             
 //DictionaryInArrayOut().getNameValue(preTiltParentToPartOriginDic).forEach{print($0)}
    // DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDicNew).forEach{print($0)}
@@ -299,9 +229,6 @@ struct DictionaryProvider {
 ///of jointOrigin between sideSupport and sitOn the partChain ought to be processed as a whole
             
 //MARK: InitialiseAllPart
-   
-        //print(oneOrTwoObjectPartDic.values.map{$0.part})
-        
         func createDictionaryFromStructFactory(_ global: Bool = true){
             let chainLabels =
                 objectsAndTheirChainLabelsDicIn[objectType] ??
@@ -333,6 +260,7 @@ struct DictionaryProvider {
                             let extractedOrigin = OneOrTwoExtraction(partValue.origin).values
                             let extractedParentId = OneOrTwoExtraction(parentPartValue.id).values
                             let extractedDimension = OneOrTwoExtraction(partValue.dimension).values
+                            
                             
                             func getName3(
                                 _ childId: Part,
@@ -371,11 +299,21 @@ struct DictionaryProvider {
                             func getOrigin(
                                 _ currentOrigin: PositionAsIosAxes,
                                 _ extraction: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?),
-                                _ label: KeyPath<(left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?), PositionAsIosAxes?>
-                                ) -> PositionAsIosAxes{
+                                _ label: keyPathForIosPosition)
+                                    -> PositionAsIosAxes{
+                                    var currentOriginAllowingThatParentIsOne = ZeroValue.iosLocation
+                                    if index != 0 {
+                                        switch parentPartValue.id {
+                                        case .one:
+                                            currentOriginAllowingThatParentIsOne = currentOriginForOne
+                                        case .two:
+                                            currentOriginAllowingThatParentIsOne = currentOrigin
+                                        }
+                                        
+                                    }
                                 if let origin = extraction[keyPath: label] {
                                     return
-                                        currentOrigin + origin
+                                        currentOriginAllowingThatParentIsOne + origin
                                 } else {
                                     fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exists for: \(chain[index])")
                                 }
@@ -395,32 +333,51 @@ struct DictionaryProvider {
                                     
                             }
                             
+                            func updateTwo(
+                                _ leftOrRight: Part) {
+                                    var label: keyPathForIosPosition = \.right
+                                    var labelForSide: KeyPath<(left: Part?, right: Part?, one: Part?), Part?> = \.right
+                                    var childId: Part = leftOrRight
+                                    var labelForDimension: KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?> = \.right
+                                    var updatedOriginForSide = ZeroValue.iosLocation
+                                    if leftOrRight == .id0 || leftOrRight == .id2 {
+                                        label = \.left
+                                        labelForSide = \.left
+                                        //childId = leftOrRight
+                                        labelForDimension = \.left
+                                        currentOriginForLeft =  getOrigin(currentOriginForLeft, extractedOrigin,label)
+                                        updatedOriginForSide = currentOriginForLeft
+                                    } else {
+                                        currentOriginForRight =  getOrigin(currentOriginForRight, extractedOrigin,label)
+                                        updatedOriginForSide = currentOriginForRight
+                                    }
+                                    
+                                    name = getName3(childId,partValue.part,extractedParentId, labelForSide)
+                                    addDimension(extractedDimension, labelForDimension, name)
+                                    preTiltObjectToPartOriginDicNew += [name: updatedOriginForSide]
+                            }
+                            
                             
                             switch partValue.id {
                                 
                                 case .one (let one):
+
                                     currentOriginForOne = getOrigin(currentOriginForOne, extractedOrigin,\.one)
                                     name = getName3(one,partValue.part,extractedParentId, \.one)
                                     addDimension(extractedDimension, \.one, name)
                                    
                                     preTiltObjectToPartOriginDicNew += [name: currentOriginForOne]
-                                    //print("\(name) : \(currentOriginForOne)")
+                                
+                             
+                                
                                 case .two (let left, let right):
-                                    currentOriginForLeft = getOrigin(currentOriginForLeft, extractedOrigin,\.left)
-                                    name = getName3(left,partValue.part,extractedParentId, \.left)
-                                addDimension(extractedDimension, \.left, name)
-                                    //print("\(leftName) : \(currentOriginForLeft)")
-                                preTiltObjectToPartOriginDicNew += [name: currentOriginForLeft]
-
-                                    currentOriginForRight = getOrigin(currentOriginForRight, extractedOrigin,\.right)
-                                    name = getName3(right,partValue.part, extractedParentId, \.right)
-                                addDimension(extractedDimension, \.right, name)
-                                    //print("\(rightName) : \(currentOriginForRight)")
-                                preTiltObjectToPartOriginDicNew += [name: currentOriginForRight]
+                                
+                                if partValue.part == .casterVerticalJointAtFront {
+    
+                                }
+                                    updateTwo(left)
+                                    updateTwo(right)
                             }
-                            
-                            
-                            
                             
                             
                             
@@ -428,6 +385,7 @@ struct DictionaryProvider {
                                 fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) parent id does not exist for \(chain[index - 1]) for \(oneOrTwo)")
                                 
                             }
+                            
                             
                             func fatalErrorGettingOrigin(_ oneOrTwo: String){
                                 print ( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exist for these chainLabels\(String(describing: chain[index])) for \(oneOrTwo)")
@@ -440,7 +398,6 @@ struct DictionaryProvider {
                         }
                        
                     }
-                    //print( "chain complete \n")
                 }
 
             } else {
@@ -466,12 +423,25 @@ struct DictionaryProvider {
                 .footSupportHangerLink )
         }
         
-        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportLink) {
-            initialiseOneOrTwoIndependantPart(
-                .backSupportHeadSupportLink )
+        
+        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportJoint) {
+            initialiseOneOrTwoDependantPart(
+                .backSupport, .backSupportHeadSupportJoint )
         }
-//print(oneOfEachPartInAllPartChain)
-
+        
+        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportLink) {
+            initialiseOneOrTwoDependantPart(
+                .backSupportHeadSupportJoint, .backSupportHeadSupportLink )
+        }
+        
+        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupport) {
+            initialiseOneOrTwoDependantPart(
+                .backSupportHeadSupportLink, .backSupportHeadSupport )
+        }
+///backSupport depends on sitOn
+        ///backSupportHeadSupportRotationJoint depends on backSupport
+        ///backSupportHeadSupportLink depends on backSupportHeadSupportRotationJoint
+        ///backSupportHeadSupport depends on backSupportHeadSupportLink
                 for part in oneOfEachPartInAllPartChain {
                     switch part {
                         case //already initialised
@@ -488,16 +458,12 @@ struct DictionaryProvider {
                                 initialiseOneOrTwoDependantPart(
                                     .sitOn, part )
                         case
-                            .backSupportHeadSupportJoint:
-                                initialiseOneOrTwoDependantPart(
-                                    .backSupport, part)
-                        
-                        case  .backSupportHeadSupportLink:
-                            break// already intialised
-                        
-                        case .backSupportHeadSupport:
-                            initialiseOneOrTwoDependantPart(
-                            .backSupportHeadSupportLink, part)
+                            .backSupportHeadSupportJoint,
+                            .backSupportHeadSupportLink,
+                            .backSupportHeadSupport:
+                        break
+
+                                            
                         case .footSupport:
                                 initialiseOneOrTwoIndependantPart(part)
                         case .footSupportJoint:
@@ -554,8 +520,8 @@ struct DictionaryProvider {
                         if let values = oneOrTwoObjectPartDic[part] {
                             siblings.append(values)
                         } else {
-                            fatalError( "\n\nDictionary Provider: \(#function) initialisation did not succedd this part: \(part)")                        }
-                       
+                            fatalError( "\n\nDictionary Provider: \(#function) initialisation did not succedd this part: \(part)")
+                        }
                     }
                 }
             }
@@ -582,11 +548,6 @@ struct DictionaryProvider {
             _ child: Part,
             _ siblings: [OneOrTwoGenericPartValue] = []) {
             if let parentValue = oneOrTwoObjectPartDic[parent] {
-//                if child == .backSupportRotationJoint {
-//                    print (child)
-//                    //print(parentValue.dimension)
-//                }
-//               
                 oneOrTwoObjectPartDic +=
                     [child:
                         StructFactory(
@@ -646,21 +607,6 @@ struct DictionaryProvider {
         func getRotatingPartDataTupleFromStruct(
         _ partsToRotate: [Part])
             -> [PartDataTuple] {
-//            var rotatedPartData: [PartDataTuple] = []
-//
-//            let allPartDataTuple = objectX.allPartDataTuple
-//                for partDataTouple in allPartDataTuple {
-//                    if partsToRotate.contains(partDataTouple.part) {
-//                        rotatedPartData.append(partDataTouple)
-//                    }
-//                }
-                
-              // print(rotatedPartData)
-//                (part: Part,
-//                 dimension: (width: Double, length: Double, height: Double),
-//                 origin: (x: Double, y: Double, z: Double),
-//                 ids: [Part],
-//                 angles: (x: Measurement<UnitAngle>, y: Measurement<UnitAngle>, z: Measurement<UnitAngle>))
                 
             return [
                 (part: Part.backSupport,
@@ -901,7 +847,7 @@ extension DictionaryProvider {
             let originOfRotationName =
                     CreateNameFromParts(tiltOriginPart).name
 
-            if let originOfRotation = parent.preTiltObjectToPartOriginDic[originOfRotationName] {
+            if let originOfRotation = parent.preTiltObjectToPartOriginDicNew[originOfRotationName] {
                 
                 let angleName =
                     CreateNameFromParts( [rotationJoint, .stringLink, .sitOn, sitOnId]).name
@@ -919,9 +865,9 @@ extension DictionaryProvider {
                             CreateNameFromParts([
                                 .object, .id0, .stringLink, originIdPartChain.chain[index], partId, .stringLink, .sitOn, sitOnId]).name
 
-                        let originOfPart = parent.preTiltObjectToPartOriginDic[partName]
+                        let originOfPart = parent.preTiltObjectToPartOriginDicNew[partName]
                         
-                        let dimensionOfPart = parent.dimensionDic[partName]
+                        let dimensionOfPart = parent.dimensionDicNew[partName]
                         if originOfPart != nil && dimensionOfPart != nil {
                             let allTiltedCornersFromPart =
                                 PartToCornersPostTilt(
@@ -956,24 +902,9 @@ extension DictionaryProvider {
 }
 
 
-/// Provides a means of passing dimenions for parts
-/// to one function
-//protocol PartDimension {
-//    //var part: Part? {get}
-//    var dimension: Dimension3d {get}
-//    mutating func reinitialise(_ part: Part?)
-//}
-
-/// Provides a means of passing origin for parts
-/// to one function
-//protocol PartOrigin{
-//    //var part: Part? {get}
-//    var origin: PositionAsIosAxes {get}
-//    mutating func reinitialise(_ part: Part?)
-//}
 
 protocol RotationAngle {
     var minAngle: RotationAngle {get}
     var maxAngle: RotationAngle {get}
-    
+
 }

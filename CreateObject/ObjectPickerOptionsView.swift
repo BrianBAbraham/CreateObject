@@ -58,7 +58,7 @@ struct Tilt: View {
     @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     @State private var sliderValue: Double = 0.0
     //var partChainLabels: [Part] = []
-    var showTilt: Bool = false
+    var showTilt: Bool = true
     var twinSitOnDictionary: TwinSitOnOptionDictionary {
         twinSitOnVM.getTwinSitOnOptions()}
     var angleName: String {
@@ -77,17 +77,7 @@ struct Tilt: View {
         let angleMax = angleMinMax.max.value
         let angleMin = angleMinMax.min.value
         if showTilt {
-            //VStack {
-//                Toggle("Tilt", isOn: $tiltToggle)
-//                    .onChange(of: tiltToggle) { value in
-//                        objectPickVM.setObjectOptionDictionary(
-//                            ObjectOptions.tiltInSpace,
-//                            tiltToggle)
-//                        objectPickVM.setCurrentObjectByCreatingFromName(
-//                            twinSitOnDictionary,
-//                            [angleName:
-//                                Measurement(value: tiltToggle ? 40.0: 0.0, unit: UnitAngle.degrees)] )
-                    //}
+
                 Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
                 Text("tilt-in-space angle: \(Int(angleMax - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
@@ -96,7 +86,6 @@ struct Tilt: View {
                             [angleName:
                                 Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees)] )
                        }
-            //}
         } else {
                 EmptyView()
             }

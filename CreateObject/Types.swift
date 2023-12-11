@@ -180,3 +180,4 @@ typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]
 //     leftAndRight: [PositionAsIosAxes])
 
 
+typealias keyPathForIosPosition = KeyPath<(left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?), PositionAsIosAxes?>

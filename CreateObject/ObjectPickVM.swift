@@ -73,7 +73,7 @@ class ObjectPickViewModel: ObservableObject {
         postTiltOneCornerPerKeyDic =
             ConvertFourCornerPerKeyToOne(fourCornerPerElement: postTiltFourCornerPerKeyDic).oneCornerPerKey
         dimensionDic =
-            dictionaryProvider.dimensionDic
+            dictionaryProvider.dimensionDicNew
         angleDic =
             dictionaryProvider.angleDic
         angleMinMaxDic =
@@ -136,6 +136,8 @@ extension ObjectPickViewModel {
     
     func getAngleMinMaxDic()
     -> AngleMinMaxDictionary {
+print( objectPickModel.angleMinMaxDic)
+        return
             objectPickModel.angleMinMaxDic
     }
     
@@ -319,7 +321,7 @@ extension ObjectPickViewModel {
                 
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
-                dictionaryProvider.dimensionDic
+                dictionaryProvider.dimensionDicNew
             objectPickModel.angleMinMaxDic =
                 dictionaryProvider.angleMinMaxDic
             objectPickModel.angleInDic =

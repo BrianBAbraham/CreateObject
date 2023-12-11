@@ -39,78 +39,78 @@ struct PartToCornersPostTilt {
 
 
 
-struct OccupantDefaultAngle {
-    var minAngle: RotationAngles = ZeroValue.rotationAngles
-    var maxAngle: RotationAngles = ZeroValue.rotationAngles
+//struct OccupantDefaultAngle {
+//    var minAngle: RotationAngles = ZeroValue.rotationAngles
+//    var maxAngle: RotationAngles = ZeroValue.rotationAngles
+//
+//    mutating func reinitialise(_ part: Part?) {
+//        self.part = part
+//
+//        switch part {
+//        case .backSupportRotationJoint:
+//            minAngle = getBackSupportRotationJointAngle()
+//
+//        case .sitOnTiltJoint:
+//            minAngle = getSitOnTiltJointMinAngle()
+//            maxAngle = getSitOnTiltJointMaxAngle()
+//
+//
+//        default:
+//            print("\(#function) \(part!.rawValue) not found")
+//            break
+//        }
+//    }
+//
+//    let baseType: ObjectTypes
+//    var part: Part?
+//
+//    init ( _ baseType: ObjectTypes) {
+//        self.baseType = baseType
+//    }
+//
+//
+//
+//
+//    func getBackSupportRotationJointAngle() -> RotationAngles {
+//        let dictionary: [ObjectTypes: RotationAngles] = [:]
+//        let general =
+//            ZeroValue.rotationAngles
+//        return
+//            dictionary[baseType] ?? general
+//    }
+//
+//
+//    func getSitOnTiltJointMinAngle() -> RotationAngles {
+//        let dictionary: [ObjectTypes: RotationAngles] = [:]
+//        let general = ZeroValue.rotationAngles
+//        return
+//            dictionary[baseType] ?? general
+//    }
+//
+//    func getSitOnTiltJointMaxAngle() -> RotationAngles {
+//        let dictionary: [ObjectTypes: RotationAngles] = [:]
+//        let general = ZeroValue.rotationAngles
+//        return
+//            dictionary[baseType] ?? general
+//    }
+//
+//}
 
-    mutating func reinitialise(_ part: Part?) {
-        self.part = part
+//struct ObjectValues {
+//    let objectIn: ObjectTypes
+//    let partsIn: [Part]
+//    let part: Part
+//    let dimension: Dimension3d
+//    let origin:PositionAsIosAxes
+//    let ids: [Part]
+//    let angles: RotationAngles
+//}
 
-        switch part {
-        case .backSupportRotationJoint:
-            minAngle = getBackSupportRotationJointAngle()
-
-        case .sitOnTiltJoint:
-            minAngle = getSitOnTiltJointMinAngle()
-            maxAngle = getSitOnTiltJointMaxAngle()
-
-
-        default:
-            print("\(#function) \(part!.rawValue) not found")
-            break
-        }
-    }
-
-    let baseType: ObjectTypes
-    var part: Part?
-
-    init ( _ baseType: ObjectTypes) {
-        self.baseType = baseType
-    }
-
-
-
-
-    func getBackSupportRotationJointAngle() -> RotationAngles {
-        let dictionary: [ObjectTypes: RotationAngles] = [:]
-        let general =
-            ZeroValue.rotationAngles
-        return
-            dictionary[baseType] ?? general
-    }
-
-
-    func getSitOnTiltJointMinAngle() -> RotationAngles {
-        let dictionary: [ObjectTypes: RotationAngles] = [:]
-        let general = ZeroValue.rotationAngles
-        return
-            dictionary[baseType] ?? general
-    }
-
-    func getSitOnTiltJointMaxAngle() -> RotationAngles {
-        let dictionary: [ObjectTypes: RotationAngles] = [:]
-        let general = ZeroValue.rotationAngles
-        return
-            dictionary[baseType] ?? general
-    }
-
-}
-
-struct ObjectValues {
-    let objectIn: ObjectTypes
-    let partsIn: [Part]
-    let part: Part
-    let dimension: Dimension3d
-    let origin:PositionAsIosAxes
-    let ids: [Part]
-    let angles: RotationAngles
-}
-
-struct ObjectPartValues {
-    let part: Part
-    let dimension: Dimension3d
-    let maxAngle: RotationAngle
-}
+//struct ObjectPartValues {
+//    let part: Part
+//    let dimension: Dimension3d
+//    let maxAngle: RotationAngle
+//}
 
 
 /// getAllUniquePartInObject
