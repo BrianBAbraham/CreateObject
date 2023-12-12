@@ -1,6 +1,5 @@
 //
-//  GlobalEnum.swift
-//  CreateObject
+//  ObjectCreator.swift
 //
 //  Created by Brian Abraham on 09/01/2023.
 //
@@ -421,9 +420,7 @@ struct OneOrTWoId {
 
 struct OneOrTwoGenericPartValue {
     var part: Part
-    
-    //var parentPart: Part
-    
+
     var dimension: OneOrTwo<Dimension3d>
     
     var maxDimension: OneOrTwo<Dimension3d>
@@ -432,9 +429,9 @@ struct OneOrTwoGenericPartValue {
     
     var origin: OneOrTwo<PositionAsIosAxes>
     
-    var minAngle: OneOrTwo<RotationAngles>
+    var minMaxAngle: OneOrTwo<AnglesMinMax>
     
-    var maxAngle: OneOrTwo<RotationAngles>
+    var angles: OneOrTwo<RotationAngles>
     
     var id: OneOrTwo<Part>
     
@@ -448,8 +445,8 @@ struct OneOrTwoGenericPartValue {
         maxDimension: OneOrTwo<Dimension3d>? = nil,
         minDimension: OneOrTwo<Dimension3d>? = nil,
         origin: OneOrTwo<PositionAsIosAxes>,
-        minAngle: OneOrTwo<RotationAngles>,
-        maxAngle: OneOrTwo<RotationAngles>,
+        minMaxAngles: OneOrTwo<AnglesMinMax>,
+        angles: OneOrTwo<RotationAngles>,
         id: OneOrTwo<Part>,
         sitOnId: Part = .id0,
         scopesOfRotation: [[Part]] = [] ) {
@@ -458,8 +455,8 @@ struct OneOrTwoGenericPartValue {
             self.maxDimension = maxDimension ?? dimension
             self.minDimension = minDimension ?? dimension
             self.origin = origin
-            self.minAngle = minAngle
-            self.maxAngle = maxAngle
+            self.minMaxAngle = minMaxAngles
+            self.angles = .one(one: ZeroValue.rotationAngles)
             self.id = id
             self.sitOnId = sitOnId
             self.scopesOfRotation = scopesOfRotation
@@ -503,8 +500,10 @@ extension StructFactory {
                 part: .sitOn,
                 dimension: dimension,
                 origin: getSitOnOrigin(),
-                minAngle: .two(left: ZeroValue.rotationAngles, right: ZeroValue.rotationAngles),
-                maxAngle: .two(left: ZeroValue.rotationAngles, right: ZeroValue.rotationAngles),
+                minMaxAngles: .one(one:
+                                (min: ZeroValue.rotationAngles,
+                                 max: ZeroValue.rotationAngles)),
+                angles: .one(one: ZeroValue.rotationAngles),
                 id: .one(one: .id0) )
             
             
@@ -594,8 +593,11 @@ extension StructFactory {
         var childOrigin: OneOrTwo<PositionAsIosAxes> =
             .one(one: ZeroValue.iosLocation)
         var scopesOfRotation: [[Part]] = []
-        var maxAngle: OneOrTwo<RotationAngles> = .one(one: ZeroValue.rotationAngles)
-        
+        var childAnglesMinMax: OneOrTwo<AnglesMinMax> =
+                .one(one:
+                        (min:ZeroValue.rotationAngles,
+                         max: ZeroValue.rotationAngles ))
+        var childAngles:  OneOrTwo<RotationAngles> = .one(one: ZeroValue.rotationAngles)
         if let parent {
             parentDimension = getOneDimensionFromOneOrTwo(parent.dimension)
         }
@@ -609,8 +611,8 @@ extension StructFactory {
                 dimension: childDimension,
                 maxDimension: childDimension,
                 origin: childOrigin,
-                minAngle: .one(one: ZeroValue.rotationAngles),
-                maxAngle: maxAngle,
+                minMaxAngles: childAnglesMinMax,
+                angles: childAngles,
                 id: OneOrTWoId(objectType, childPart).forPart,
                 scopesOfRotation: scopesOfRotation)
         
@@ -679,7 +681,7 @@ extension StructFactory {
                         setChildDimensionForObject(Joint.dimension3d)
                         setSitOnTiltJointChildOrigin()
                         setScopesOfRotationForSitOnTiltJoint()
-                        setSitOnTiltJointAngle()
+                        setSitOnTiltJointAngles()
                 
                 
                 default:
@@ -688,24 +690,15 @@ extension StructFactory {
             }
         }
     
-            /// minMaxAngle is set
-            /// angle is derived from maxAngle
-            /// angle is checked in the UI
-        func setSitOnTiltJointMinMaxAngle() {
-            let zeroAngle = ZeroValue.angle
-            let min = Measurement(value: 0.0, unit: UnitAngle.degrees)
-            let max = Measurement(value: 60.0, unit: UnitAngle.degrees)
-            //let minMaxAngle = .one(one:(x: max, y: zeroAngle, z: zeroAngle))
-         
-        }
+      
             
             
-       func setSitOnTiltJointAngle() {
-          let zeroAngle = ZeroValue.angle
-          let max = Measurement(value: 60.0, unit: UnitAngle.degrees)
-          maxAngle = .one(one:(x: max, y: zeroAngle, z: zeroAngle))
-            
-        }
+//       func setSitOnTiltJointAngle() {
+//          let zeroAngle = ZeroValue.angle
+//          let max = Measurement(value: 60.0, unit: UnitAngle.degrees)
+//          maxAngle = .one(one:(x: max, y: zeroAngle, z: zeroAngle))
+//
+//        }
             
         func getOneDimensionFromOneOrTwo(_ parentValue: OneOrTwo<Dimension3d>)
             -> Dimension3d {
@@ -1022,6 +1015,22 @@ extension StructFactory {
                  z: originHeight) )
         }
  
+            /// minMaxAngle is set
+            /// angle is derived from maxAngle
+            /// angle is checked in the UI
+        func setSitOnTiltJointAngles() {
+            let zeroAngle = ZeroValue.angle
+            let min = Measurement(value: 0.0, unit: UnitAngle.degrees)
+            let max = Measurement(value: 60.0, unit: UnitAngle.degrees)
+            let minRotationAngles =
+                (x: min, y: zeroAngle, z: zeroAngle)
+            let maxRotationAngles =
+                (x: max, y: zeroAngle, z: zeroAngle)
+            
+            setChildAnglesForObject(maxRotationAngles)
+            setChildMinMaxAnglesForObject((min: minRotationAngles, max: maxRotationAngles))
+        }
+            
             
         func setSitOnTiltJointChildOrigin(){
             setChildOriginForObject(
@@ -1058,6 +1067,10 @@ extension StructFactory {
                     .fixedWheelHorizontalJointAtRear,
                     .casterVerticalJointAtRear:
                         origin = [
+                            .fixedWheelManualRearDrive: (
+                                x: xPosition + 50.0,
+                                y: rearStability,
+                                z: wheelJointHeight),
                             .fixedWheelFrontDrive: (
                                 x: xPosition + 100.0,
                                         y: -sitOnLength + rearStability,
@@ -1123,10 +1136,10 @@ extension StructFactory {
                         return 0.0
                 }
             }
-            
-            
                 
                 
+                    
+                    
             func getWheelJointHeight(_ part: Part)
                 -> Double {
                     //print(siblings.count)
@@ -1135,10 +1148,40 @@ extension StructFactory {
                        return one.height/2
                     default:
                         return 0.0
-                }
+                    }
             }
-                
         }
+            
+            
+        func setChildAnglesForObject(
+            _ defaultAngles: RotationAngles) {
+                switch oneOrTwoUserEditedValues.angles {
+                case .one (let one):
+                    childAngles =
+                        .one(one: one ?? defaultAngles )
+                case .two(let left, let right):
+                    childAngles =
+                        .two(
+                            left: left ?? defaultAngles,
+                            right: right ?? defaultAngles)
+                }
+        }
+            
+            
+        func setChildMinMaxAnglesForObject(
+            _ defaultAngles: AnglesMinMax) {
+                switch oneOrTwoUserEditedValues.anglesMinMax {
+                case .one (let one):
+                    childAnglesMinMax =
+                        .one(one: one ?? defaultAngles )
+                case .two(let left, let right):
+                    childAnglesMinMax =
+                        .two(
+                            left: left ?? defaultAngles,
+                            right: right ?? defaultAngles)
+                }
+        }
+            
             
         func setChildDimensionForObject(
             _ defaultDimension: Dimension3d) {
@@ -1223,25 +1266,11 @@ enum DictionaryVersion {
 
 
 
-enum Drive {
-    case rear
-    case mid
-    case front
-}
-                                           
-
-
-//parts edited by the UI are stored in dictionary
-///these dictiionaries are used for parts,
-///where extant, instead of default values
-///during intitialisation
-struct OneOrTwoUserEditedDictionary {
-    let dimension: Part3DimensionDictionary
-    let parentToPartOrigin: PositionDictionary
-    let objectToPartOrigin: PositionDictionary
-    let angleMinMaxDic: AngleMinMaxDictionary
-    let partChainId: [PartChain: OneOrTwo<Part> ]
-}
+//enum DriveX {
+//    case rear
+//    case mid
+//    case front
+//}
 
 
 enum OneOrTwo <T> {
@@ -1266,6 +1295,24 @@ struct OneOrTwoExtraction<T> {
         }
     }
 }
+                                           
+
+//MARK: UIEditedDictionary
+///parts edited by the UI are stored in dictionary
+///these dictiionaries are used for parts,
+///where extant, instead of default values
+///during intitialisation
+struct OneOrTwoUserEditedDictionary {
+    let dimension: Part3DimensionDictionary
+    let parentToPartOrigin: PositionDictionary
+    let objectToPartOrigin: PositionDictionary
+    let anglesDic: AnglesDictionary
+    let anglesMinMaxDic: AnglesMinMaxDictionary
+    let partChainId: [PartChain: OneOrTwo<Part> ]
+}
+
+
+
 
 ///All dictionary are input in userEditedDictionary
 ///The optional  values associated with a part are available
@@ -1277,7 +1324,8 @@ struct OneOrTwoUserEditedValue {
     let dimensionDic: Part3DimensionDictionary
     let parentToPartOriginDic: PositionDictionary
     let objectToPartOriginDic: PositionDictionary
-    let angleMinMaxDic: AngleMinMaxDictionary
+    let anglesDic: AnglesDictionary
+    let anglesMinMaxDic: AnglesMinMaxDictionary
     let partChainIdDic: [PartChain: OneOrTwo<Part>]
     let part: Part
     let sitOnId: Part
@@ -1287,6 +1335,8 @@ struct OneOrTwoUserEditedValue {
             sitOnId,
             part]
         ).name}
+    var angles: OneOrTwo <RotationAngles?> = .one(one: nil)
+    var anglesMinMax: OneOrTwo <AnglesMinMax?> = .one(one: nil)
     var dimension: OneOrTwo <Dimension3d?> = .one(one: nil)
     var origin: OneOrTwo <PositionAsIosAxes?> = .one(one: nil)
     var partId: OneOrTwo <Part>
@@ -1301,7 +1351,9 @@ struct OneOrTwoUserEditedValue {
         dimensionDic = userEditedDictionary.dimension
         parentToPartOriginDic = userEditedDictionary.parentToPartOrigin
         objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
-        angleMinMaxDic = userEditedDictionary.angleMinMaxDic
+        anglesDic = userEditedDictionary.anglesDic
+        anglesMinMaxDic = userEditedDictionary.anglesMinMaxDic
+        
         partChainIdDic = userEditedDictionary.partChainId
         let onlyOne = 0
         let partChain = LabelInPartChainOut([childPart]).partChains[onlyOne]
@@ -1315,6 +1367,14 @@ struct OneOrTwoUserEditedValue {
         
         origin =
             getValue(partId, from: parentToPartOriginDic) { part in
+                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+        
+        angles =
+            getValue(partId, from: anglesDic) { part in
+                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+        
+        anglesMinMax =
+            getValue(partId, from: anglesMinMaxDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
     }
 
@@ -1341,6 +1401,23 @@ struct OneOrTwoUserEditedValue {
             CreateNameFromParts([.sitOn, sitOnId, part, id]).name
         }
     }
+    
+    
+    func getAngles(_ partIds: OneOrTwo<Part>)
+    -> OneOrTwo<RotationAngles?> {
+        return getValue(partIds, from: anglesDic) { id in
+            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+        }
+    }
+    
+    
+    func getAnglesMinMax(_ partIds: OneOrTwo<Part>)
+    -> OneOrTwo<AnglesMinMax?> {
+        return getValue(partIds, from: anglesMinMaxDic) { id in
+            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+        }
+    }
+    
 
     func getOrigin(_ partIds: OneOrTwo<Part>)
     -> OneOrTwo<PositionAsIosAxes?> {
@@ -1359,7 +1436,8 @@ struct UserEditedDictionary {
     let dimension: Part3DimensionDictionary
     let parentToPartOrigin: PositionDictionary
     let objectToPartOrigin: PositionDictionary
-    let angle: AngleDictionary
+    let angleMinMax: AngleMinMaxDictionary
+    let angle: AnglesDictionary
     let partChainsId: [PartChain: [[Part]]]
     
 }

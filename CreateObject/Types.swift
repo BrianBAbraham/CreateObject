@@ -6,8 +6,17 @@
 //
 
 import Foundation
-
+typealias RotationAngles =
+(x: Measurement<UnitAngle>,
+ y: Measurement<UnitAngle>,
+ z: Measurement<UnitAngle>)
 typealias AngleMinMax = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle>)
+typealias AnglesMinMax = (min: RotationAngles, max: RotationAngles)
+
+//typealias MinMax = (min: Double, max: Double)
+typealias AnglesDictionary = [String: RotationAngles]// Measurement<UnitAngle>]
+typealias AngleMinMaxDictionary = [String: AngleMinMax]
+typealias AnglesMinMaxDictionary = [String: AnglesMinMax]
 
 typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
@@ -89,26 +98,21 @@ func / (lhs: Dimension3d, rhs: Double) -> Dimension3d {
 typealias Dimension3dRearMidFront =
     (rear: Dimension3d, mid: Dimension3d, front: Dimension3d)
 
-typealias WheelSize = (radius: Double, width: Double)
+//typealias WheelSize = (radius: Double, width: Double)
 
 
 
-//typealias MinMax = (min: Double, max: Double)
-typealias AngleDictionary = [String: Measurement<UnitAngle>]
-typealias AngleMinMaxDictionary = [String: AngleMinMax]
+
 ///input BaseObjectType to get angle
 typealias BaseObjectAngleDictionary = [ObjectTypes: Measurement<UnitAngle>]
 typealias BaseObjectAngelMinMaxDictionary = [ObjectTypes: AngleMinMax]
-typealias BaseObjectWheelSizeDictionary = [ObjectTypes: WheelSize]
+//typealias BaseObjectWheelSizeDictionary = [ObjectTypes: WheelSize]
 
 typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 
 
 
-typealias RotationAngles =
-    (x: Measurement<UnitAngle>,
-     y: Measurement<UnitAngle>,
-     z: Measurement<UnitAngle>)
+
 
 
 //typealias PartDimensionOriginIds =

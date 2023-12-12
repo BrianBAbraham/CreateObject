@@ -56,15 +56,15 @@ struct MiscObjectParameters {
         self.objectType = objectType
     }
     
-    func getDriveLocation()
-    ->Drive {
-        let forDriveLocation: [ObjectTypes: Drive] =
-            [
-            .fixedWheelMidDrive: .mid,
-            .fixedWheelFrontDrive:.front]
-        return
-            forDriveLocation[objectType] ?? .rear
-    }
+//    func getDriveLocation()
+//    ->DriveX {
+//        let forDriveLocation: [ObjectTypes: DriveX] =
+//            [
+//            .fixedWheelMidDrive: .mid,
+//            .fixedWheelFrontDrive:.front]
+//        return
+//            forDriveLocation[objectType] ?? .rear
+//    }
     
     
     func getMainBodySupportAboveFloor()

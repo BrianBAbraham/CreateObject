@@ -73,9 +73,9 @@ struct Tilt: View {
     
     var body: some View {
         let angleMinMax =
-            objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.angleMinMax
-        let angleMax = angleMinMax.max.value
-        let angleMin = angleMinMax.min.value
+            objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.anglesMinMax
+        let angleMax = angleMinMax.max.x.value
+        let angleMin = angleMinMax.min.x.value
         if showTilt {
 
                 Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
@@ -84,7 +84,10 @@ struct Tilt: View {
                         objectPickVM.setCurrentObjectByCreatingFromName(
                             twinSitOnDictionary,
                             [angleName:
-                                Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees)] )
+                                     (x:
+                                Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees),
+                                      y: ZeroValue.angle,
+                                      z: ZeroValue.angle)] )
                        }
         } else {
                 EmptyView()

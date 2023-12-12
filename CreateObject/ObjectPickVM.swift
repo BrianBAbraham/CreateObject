@@ -21,11 +21,11 @@ struct ObjectPickModel {
     
     //var objectOptionDictionary: OptionDictionary
     
-    var angleDic: AngleDictionary
+    var angleDic: AnglesDictionary
     
-    var angleInDic: AngleDictionary = [:]
+    var angleInDic: AnglesDictionary = [:]
     
-    var angleMinMaxDic: AngleMinMaxDictionary
+    var anglesMinMaxDic: AnglesMinMaxDictionary
     
     var objectPartChainLabelDic: ObjectPartChainLabelsDictionary = [:]
     
@@ -53,8 +53,8 @@ class ObjectPickViewModel: ObservableObject {
     let postTiltOneCornerPerKeyDic: PositionDictionary
     let postTiltFourCornerPerKeyDic: CornerDictionary
     let dimensionDic: Part3DimensionDictionary
-    let angleDic: AngleDictionary
-    let angleMinMaxDic: AngleMinMaxDictionary
+    let angleDic: AnglesDictionary
+    let anglesMinMaxDic: AnglesMinMaxDictionary
     let objectPartChainLabelDic: ObjectPartChainLabelsDictionary
     let partChainsIdDic: [PartChain: OneOrTwo<Part>]
 
@@ -76,8 +76,8 @@ class ObjectPickViewModel: ObservableObject {
             dictionaryProvider.dimensionDicNew
         angleDic =
             dictionaryProvider.angleDic
-        angleMinMaxDic =
-            dictionaryProvider.angleMinMaxDic
+        anglesMinMaxDic =
+            dictionaryProvider.anglesMinMaxDic
         objectPartChainLabelDic =
             dictionaryProvider.objectPartChainLabelDic
         partChainsIdDic =
@@ -90,7 +90,7 @@ class ObjectPickViewModel: ObservableObject {
                 postTiltFourCornerPerKeyDic: postTiltFourCornerPerKeyDic,
                 dimensionDic: dimensionDic,
                 angleDic: angleDic,
-                angleMinMaxDic: angleMinMaxDic,
+                anglesMinMaxDic: anglesMinMaxDic,
                 objectPartChainLabelDic: objectPartChainLabelDic,
                 partChainsIdDic: partChainsIdDic)
        
@@ -129,16 +129,16 @@ extension ObjectPickViewModel {
     
     
     func getAngleDic()
-    -> AngleDictionary {
+    -> AnglesDictionary {
             objectPickModel.angleDic
     }
     
     
     func getAngleMinMaxDic()
-    -> AngleMinMaxDictionary {
-print( objectPickModel.angleMinMaxDic)
+    -> AnglesMinMaxDictionary {
+//print( objectPickModel.anglesMinMaxDic)
         return
-            objectPickModel.angleMinMaxDic
+            objectPickModel.anglesMinMaxDic
     }
     
     
@@ -304,7 +304,7 @@ extension ObjectPickViewModel {
         
         func setCurrentObjectByCreatingFromName(
             _ twinSitOnDictionary: TwinSitOnOptionDictionary,
-            _ angleInDic: AngleDictionary = [:],
+            _ angleInDic: AnglesDictionary = [:],
             partChainIdDicIn: [PartChain: OneOrTwo<Part>]  = [:]) {
             
                 let objectPartChainLabelDicToUse: ObjectPartChainLabelsDictionary =
@@ -322,8 +322,8 @@ extension ObjectPickViewModel {
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
                 dictionaryProvider.dimensionDicNew
-            objectPickModel.angleMinMaxDic =
-                dictionaryProvider.angleMinMaxDic
+            objectPickModel.anglesMinMaxDic =
+                dictionaryProvider.anglesMinMaxDic
             objectPickModel.angleInDic =
                 angleInDic
                 

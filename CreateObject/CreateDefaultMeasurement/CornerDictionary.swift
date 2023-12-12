@@ -86,8 +86,8 @@ struct DictionaryProvider {
     let dimensionDicIn: Part3DimensionDictionary
     let preTiltParentToPartOriginDicIn: PositionDictionary
     let preTiltObjectToPartOriginDicIn: PositionDictionary
-    let angleDicIn: AngleDictionary
-    let angleMinMaxDicIn: AngleMinMaxDictionary
+    let angleDicIn: AnglesDictionary
+    let anglesMinMaxDicIn: AnglesMinMaxDictionary
     let partChainIdDicIn: [PartChain: OneOrTwo<Part> ]
  
     let objectType: ObjectTypes
@@ -102,8 +102,8 @@ struct DictionaryProvider {
     
 
     var dimensionDicNew: Part3DimensionDictionary = [:]
-    var angleDic: AngleDictionary = [:]
-    var angleMinMaxDic: AngleMinMaxDictionary = [:]
+    var angleDic: AnglesDictionary = [:]
+    var anglesMinMaxDic: AnglesMinMaxDictionary = [:]
   
     //pre-tilt
     var preTiltObjectToPartOriginDicNew: PositionDictionary = [:]
@@ -146,8 +146,8 @@ struct DictionaryProvider {
         _ dimensionIn: Part3DimensionDictionary = [:],
         _ objectToPartOrigin: PositionDictionary = [:],
         _ parentToPartOrigin: PositionDictionary = [:],
-        angleIn: AngleDictionary = [:],
-        minMaxAngleIn: AngleMinMaxDictionary = [:],
+        angleIn: AnglesDictionary = [:],
+        minMaxAngleIn: AnglesMinMaxDictionary = [:],
         objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:],
         partChainIdDicIn: [PartChain: OneOrTwo<Part> ] = [:]//,
     ) {
@@ -158,7 +158,7 @@ struct DictionaryProvider {
         self.preTiltObjectToPartOriginDicIn = objectToPartOrigin
         self.preTiltParentToPartOriginDicIn = parentToPartOrigin
         self.angleDicIn = angleIn
-        self.angleMinMaxDicIn = minMaxAngleIn
+        self.anglesMinMaxDicIn = minMaxAngleIn
         self.partChainIdDicIn = partChainIdDicIn
             
         oneOrTwoUserEditedDictionary =
@@ -166,17 +166,18 @@ struct DictionaryProvider {
                     dimension: dimensionDicIn,
                     parentToPartOrigin :preTiltParentToPartOriginDicIn,
                     objectToPartOrigin :preTiltObjectToPartOriginDicIn,
-                    angleMinMaxDic: minMaxAngleIn,
+                    anglesDic: angleIn,
+                    anglesMinMaxDic: minMaxAngleIn,
                     partChainId: partChainIdDicIn
                 )
             
 
         oneOrTwoIds = [.id0]
             
-        angleDic =
-            ObjectAngleChange(parent: self).dictionary
-        angleMinMaxDic =
-            ObjectAngleMinMax(parent: self).dictionary
+        angleDic = [:]
+            //ObjectAngleChange(parent: self).dictionary
+        anglesMinMaxDic = [:]
+            //ObjectAngleMinMax(parent: self).dictionary
             
         objectPartChainLabelDic = [:]
 
@@ -717,7 +718,7 @@ extension DictionaryProvider {
     /// Provides extant  passed in value or if not default
     /// of the change in angle from the neutral configuration
     struct ObjectAngleChange {
-        var dictionary: AngleDictionary = [:]
+        var dictionary: AnglesDictionary = [:]
         
         init(
             parent: DictionaryProvider) {
@@ -746,46 +747,46 @@ extension DictionaryProvider {
                     name =
                         CreateNameFromParts(partForNames[index]).name
                     angle =
-                        parent.angleDicIn[name] ?? defaultAngles[index]
-                    dictionary += [name: angle]
+                    parent.angleDicIn[name]?.x ?? defaultAngles[index]
+                    dictionary += [name: (x: angle, y: ZeroValue.angle, z: ZeroValue.angle)]
                 }
             }
         }
     }
     
     //DefaultAngleMinMax
-    struct ObjectAngleMinMax {
-        var dictionary: AngleMinMaxDictionary = [:]
-
-        init(
-            parent: DictionaryProvider) {
-
-                for id in parent.oneOrTwoIds {
-                    setAngleDictionary( id)
-                }
-
-
-                func setAngleDictionary( _ id: Part) {
-                let partForNames: [[Part]] =
-                    [
-                    [.sitOnTiltJoint, .stringLink, .sitOn, id]]
-                let defaultMinMax =
-                    [
-                    OccupantBodySupportDefaultAngleMinMax(parent.objectType).value]
-                var name: String
-                var angleMinMax: AngleMinMax
-                    for index in 0..<partForNames.count {
-                    name =
-                        CreateNameFromParts(partForNames[index]).name
-                    angleMinMax =
-                       parent.angleMinMaxDicIn[name] ??
-                        defaultMinMax[index]
-                    dictionary += [name: angleMinMax]
-                      //print (dictionary)
-                }
-            }
-        }
-    }
+//    struct ObjectAngleMinMax {
+//        var dictionary: AngleMinMaxDictionary = [:]
+//
+//        init(
+//            parent: DictionaryProvider) {
+//
+//                for id in parent.oneOrTwoIds {
+//                    setAngleDictionary( id)
+//                }
+//
+//
+//                func setAngleDictionary( _ id: Part) {
+//                let partForNames: [[Part]] =
+//                    [
+//                    [.sitOnTiltJoint, .stringLink, .sitOn, id]]
+//                let defaultMinMax =
+//                    [
+//                    OccupantBodySupportDefaultAngleMinMax(parent.objectType).value]
+//                var name: String
+//                var angleMinMax: AngleMinMax
+//                    for index in 0..<partForNames.count {
+//                    name =
+//                        CreateNameFromParts(partForNames[index]).name
+//                    angleMinMax =
+//                        parent.anglesMinMaxDicIn[name]?.max.x ??
+//                        defaultMinMax[index]
+//                    dictionary += [name: angleMinMax]
+//                      //print (dictionary)
+//                }
+//            }
+//        }
+//    }
     
 }
 
@@ -852,8 +853,8 @@ extension DictionaryProvider {
                 let angleName =
                     CreateNameFromParts( [rotationJoint, .stringLink, .sitOn, sitOnId]).name
                 let angleChange =
-                    parent.angleDicIn[angleName] ??
-                    parent.angleDic[angleName] ?? ZeroValue.angle
+                parent.angleDicIn[angleName]?.x ??
+                parent.angleDic[angleName]?.x ?? ZeroValue.angle
                 
                 for index in  0..<originIdPartChain.chain.count {
                     let partIds: [Part] =  originIdPartChain.ids[index]
