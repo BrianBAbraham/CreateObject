@@ -44,8 +44,7 @@ typealias BaseOptionDictionary = [Part: Bool]
 
 
 typealias PositionDictionary = [String: PositionAsIosAxes]
-///the positions for the four corners are as Corners type
-//typealias PositionCornerDictionary = [String: Corners]
+
 typealias MeasurementDictionary = [String: Double]
 typealias BaseObjectDoubleDictionary = [ObjectTypes: Double]
 typealias BaseObjectDimensionDictionary = [ObjectTypes: Dimension]

@@ -427,7 +427,7 @@ struct OneOrTwoGenericPartValue {
     
     var minDimension: OneOrTwo<Dimension3d>
     
-    var origin: OneOrTwo<PositionAsIosAxes>
+    var childOrigin: OneOrTwo<PositionAsIosAxes>
     
     var minMaxAngle: OneOrTwo<AnglesMinMax>
     
@@ -454,16 +454,37 @@ struct OneOrTwoGenericPartValue {
             self.dimension = dimension
             self.maxDimension = maxDimension ?? dimension
             self.minDimension = minDimension ?? dimension
-            self.origin = origin
+            self.childOrigin = origin
             self.minMaxAngle = minMaxAngles
-            self.angles = .one(one: ZeroValue.rotationAngles)
+            self.angles = angles
             self.id = id
             self.sitOnId = sitOnId
             self.scopesOfRotation = scopesOfRotation
         }
 }
 
+enum OneOrTwo <T> {
+    case two (left: T, right: T)
+    case one (one: T)
+}
 
+
+struct OneOrTwoExtraction<T> {
+    var values: (left: T?, right: T?, one: T?)
+
+    init (_ oneOrTwo: OneOrTwo<T>) {
+        values = extractValues(oneOrTwo)
+
+        func extractValues(_ value: OneOrTwo<T>) -> (left: T?, right: T?, one: T?) {
+            switch value {
+            case .two(let left, let right):
+                return (left: left, right: right, one: nil)
+            case .one(let one):
+                return (left: nil, right: nil, one: one)
+            }
+        }
+    }
+}
 
 
 //MARK: StructFactory
@@ -603,8 +624,7 @@ extension StructFactory {
         }
         
         getChildValues()
-            
-            
+          
         return
             OneOrTwoGenericPartValue(
                 part: childPart,
@@ -678,6 +698,7 @@ extension StructFactory {
                         setSideSupportChildDimension()
                         setSideSupportRotationJointChildOrigin()
                 case .sitOnTiltJoint:
+                print("SitOnTiltJoint detected")
                         setChildDimensionForObject(Joint.dimension3d)
                         setSitOnTiltJointChildOrigin()
                         setScopesOfRotationForSitOnTiltJoint()
@@ -779,7 +800,7 @@ extension StructFactory {
         func setBackSupportHeadSupportChildDimension() {
             setChildDimensionForObject(
                 [:][objectType] ??
-                (width: 150.0, length: 20.0, height: 100.0)
+                (width: 150.0, length: 50.0, height: 100.0)
             )
         }
         
@@ -1155,11 +1176,14 @@ extension StructFactory {
             
         func setChildAnglesForObject(
             _ defaultAngles: RotationAngles) {
+           //     print("angle set detected with \(defaultAngles)")
                 switch oneOrTwoUserEditedValues.angles {
                 case .one (let one):
+                   // print("one")
                     childAngles =
                         .one(one: one ?? defaultAngles )
                 case .two(let left, let right):
+                  //  print("Two")
                     childAngles =
                         .two(
                             left: left ?? defaultAngles,
@@ -1273,28 +1297,7 @@ enum DictionaryVersion {
 //}
 
 
-enum OneOrTwo <T> {
-    case two (left: T, right: T)
-    case one (one: T)
-}
 
-
-struct OneOrTwoExtraction<T> {
-    var values: (left: T?, right: T?, one: T?)
-
-    init (_ oneOrTwo: OneOrTwo<T>) {
-        values = extractValues(oneOrTwo)
-
-        func extractValues(_ value: OneOrTwo<T>) -> (left: T?, right: T?, one: T?) {
-            switch value {
-            case .two(let left, let right):
-                return (left: left, right: right, one: nil)
-            case .one(let one):
-                return (left: nil, right: nil, one: one)
-            }
-        }
-    }
-}
                                            
 
 //MARK: UIEditedDictionary
