@@ -463,6 +463,40 @@ struct OneOrTwoGenericPartValue {
         }
 }
 
+
+enum OneOrTwoX<T> {
+    case two(left: T?, right: T?)
+    case one(one: T?)
+
+    var left: T? {
+        switch self {
+        case .two(let left, _):
+            return left
+        case .one:
+            return nil
+        }
+    }
+
+    var right: T? {
+        switch self {
+        case .two(_, let right):
+            return right
+        case .one:
+            return nil
+        }
+    }
+    
+    var one: T? {
+        switch self {
+        case .two:
+            return nil
+        case .one(let one):
+            return one
+        }
+    }
+}
+
+
 enum OneOrTwo <T> {
     case two (left: T, right: T)
     case one (one: T)
@@ -499,6 +533,12 @@ struct StructFactory {
     }
 }
 
+
+struct KeyPathContainer<T> {
+    var left: T?
+    var right: T?
+    var one: T?
+}
 
 extension StructFactory {
     
