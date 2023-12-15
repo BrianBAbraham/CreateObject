@@ -500,25 +500,57 @@ enum OneOrTwoX<T> {
 enum OneOrTwo <T> {
     case two (left: T, right: T)
     case one (one: T)
-}
-
-
-struct OneOrTwoExtraction<T> {
-    var values: (left: T?, right: T?, one: T?)
-
-    init (_ oneOrTwo: OneOrTwo<T>) {
-        values = extractValues(oneOrTwo)
-
-        func extractValues(_ value: OneOrTwo<T>) -> (left: T?, right: T?, one: T?) {
-            switch value {
-            case .two(let left, let right):
-                return (left: left, right: right, one: nil)
-            case .one(let one):
-                return (left: nil, right: nil, one: one)
-            }
+    
+    var left: T? {
+        switch self {
+        case .two(let left, _):
+            return left
+        case .one:
+          return nil
         }
     }
+
+    var right: T? {
+        switch self {
+        case .two(_, let right):
+            return right
+        case .one:
+            return nil
+        }
+    }
+    
+    var one: T? {
+        switch self {
+        case .two:
+            return nil
+        case .one(let one):
+            return one
+        }
+    }
+    
+    var values: (left: T?, right: T?, one: T?) {
+        (left: left, right: right, one: one)
+    }
+    
 }
+
+
+//struct OneOrTwoExtraction<T> {
+//    var values: (left: T?, right: T?, one: T?)
+//
+//    init (_ oneOrTwo: OneOrTwo<T>) {
+//        values = extractValues(oneOrTwo)
+//
+//        func extractValues(_ value: OneOrTwo<T>) -> (left: T?, right: T?, one: T?) {
+//            switch value {
+//            case .two(let left, let right):
+//                return (left: left, right: right, one: nil)
+//            case .one(let one):
+//                return (left: nil, right: nil, one: one)
+//            }
+//        }
+//    }
+//}
 
 
 //MARK: StructFactory
@@ -582,10 +614,15 @@ extension StructFactory {
             
             
         func getSitOnOrigin() -> OneOrTwo<PositionAsIosAxes> {
-            if let dimension = OneOrTwoExtraction(dimension).values.one {
+            //if let dimension = OneOrTwoExtraction(dimension).values.one {
+            if let dimension = dimension.one {
                 let bodySupportHeight =
                     MiscObjectParameters(objectType).getMainBodySupportAboveFloor()
                 let originDic: BaseObjectOriginDictionary = [
+                    .fixedWheelSolo: (
+                        (x: 0.0, y: 0.0, z: bodySupportHeight)
+                    ),
+                    
                     .fixedWheelMidDrive:
                         (x: 0.0, y: 0.0, z: bodySupportHeight ),
                     .fixedWheelFrontDrive:
@@ -1032,7 +1069,7 @@ extension StructFactory {
                 (width: 20.0,
                  length: parentDimension.length,
                  height: 150.0) ][objectType] ??
-            (width: 50.0, length: 400.0, height: 150.0)
+            (width: 50.0, length: 300.0, height: 150.0)
             )
         }
         
@@ -1052,7 +1089,11 @@ extension StructFactory {
                  .fixedWheelRearDrive:
                     (x: parentDimension.width/2,
                      y: 0.0,
-                     z: originHeight) ][objectType] ??
+                     z: originHeight),
+                 .fixedWheelFrontDrive:
+                    (x: parentDimension.width/2,
+                     y: 0.0,
+                     z: originHeight)][objectType] ??
                 (x: parentDimension.width/2,
                  y: 0.0,
                  z: originHeight) )
@@ -1144,9 +1185,14 @@ extension StructFactory {
                     .fixedWheelHorizontalJointAtMid,
                     .casterVerticalJointAtMid:
                         origin = [
+                            .fixedWheelSolo: (
+                                x: xPosition,
+                                y: 0.0,
+                                z: wheelJointHeight)
+                                ,
                             .fixedWheelMidDrive: (
                                 x: xPosition,
-                                y: rearStability + frontStability,
+                                y: 0.0,
                                 z: wheelJointHeight) ] [objectType] ?? (
                                 x: xPosition,
                                 y: (rearStability + frontStability + sitOnLength)/2.0,

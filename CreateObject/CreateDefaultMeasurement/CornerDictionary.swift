@@ -6,72 +6,7 @@
 //
 
 import Foundation
-//MARK: ANGLE
-//struct OccupantBodySupportDefaultAngleMinMax {
-//    let dictionary: BaseObjectAngelMinMaxDictionary =
-//    [.allCasterTiltInSpaceShowerChair: (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 45.0, unit: UnitAngle.degrees) ) ]
-//    
-//    static let general = (min: Measurement(value: 0.0, unit: UnitAngle.degrees), max: Measurement(value: 30.0, unit: UnitAngle.degrees) )
-//    
-//    let value: AngleMinMax
-//    
-//    init(
-//        _ baseType: ObjectTypes) {
-//            value =
-//                dictionary[baseType] ??
-//                Self.general
-//    }
-//}
 
-
-//struct OccupantBackSupportDefaultAngleChange {
-//    var dictionary: BaseObjectAngleDictionary =
-//    [:]
-//    
-//    static let general = Measurement(value: 0.0 , unit: UnitAngle.radians)
-//    
-//    let value: Measurement<UnitAngle>
-//    
-//    init(
-//        _ baseType: ObjectTypes) {
-//            value =
-//                dictionary[baseType] ??
-//                Self.general
-//    }
-//}
-//MARK: FOOT ANGLE
-//struct OccupantFootSupportDefaultAngleChange {
-//    var dictionary: BaseObjectAngleDictionary =
-//    [:]
-//
-//    static let general = Measurement(value: 0.0, unit: UnitAngle.radians)
-//
-//    let value: Measurement<UnitAngle>
-//
-//    init(
-//        _ baseType: ObjectTypes) {
-//            value =
-//                dictionary[baseType] ??
-//                Self.general
-//    }
-//}
-
-
-//struct OccupantBodySupportDefaultAngleChange {
-//    let dictionary: BaseObjectAngleDictionary =
-//    [.allCasterTiltInSpaceShowerChair: OccupantBodySupportDefaultAngleMinMax(.allCasterTiltInSpaceShowerChair).value.max]//Measurement(value: 90.0, unit: UnitAngle.degrees)]
-//
-//    static let general = Measurement(value: 0.0, unit: UnitAngle.degrees)
-//
-//    let value: Measurement<UnitAngle>
-//
-//    init(
-//        _ baseType: ObjectTypes) {
-//            value =
-//                dictionary[baseType] ??
-//                Self.general
-//    }
-//}
 //MARK: - PARENT
 ///This provides
 ///The array of objects available
@@ -265,14 +200,11 @@ struct DictionaryProvider {
         
         func processChainLabelNew(_ chainLabel: Part, _ global: Bool ) {
             let chain = LabelInPartChainOut(chainLabel).partChain
-                        var currentOriginForOne = ZeroValue.iosLocation
-                        var currentOriginForLeft = ZeroValue.iosLocation
-                        var currentOriginForRight = ZeroValue.iosLocation
+            let z = ZeroValue.iosLocation
+            var currentOrigins = (left: z, right: z, one: z)
             for index in 0..<chain.count {
                processPart(
-                &currentOriginForOne,
-                &currentOriginForLeft,
-                &currentOriginForRight,
+                &currentOrigins,
                index,
                chain,
                global)
@@ -281,30 +213,38 @@ struct DictionaryProvider {
         
 
         func processPart(
-        _ currentOriginForOne: inout PositionAsIosAxes,
-        _ currentOriginForLeft: inout PositionAsIosAxes,
-        _ currentOriginForRight: inout PositionAsIosAxes,
+        _ currentOriginsForChain: inout (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes),
         _ index: Int,
         _ chain: [Part],
         _ global: Bool) {
             guard let partValue = oneOrTwoObjectPartDic[chain[index]],
-                let parentPartValue = (index == 0 ? partValue: oneOrTwoObjectPartDic[chain[index - 1]])  else {
-                    return fatalErrorGettingPartValue() }
+                  let parentPartValue =
+                    (index == 0 ? partValue: oneOrTwoObjectPartDic[chain[index - 1]])  else {
+            return fatalErrorGettingPartValue() }
 
             if !global {//if relative reset for each part
                 resetOrign()
             }
-
-            let extractedOrigin = OneOrTwoExtraction(partValue.childOrigin).values
-            let extractedParentId = OneOrTwoExtraction(parentPartValue.id).values
-            let extractedDimension = OneOrTwoExtraction(partValue.dimension).values
-
-           let parametersForOneOrTwo =
+            let childOrigin = partValue.childOrigin.values
+            let extractedParentId = parentPartValue.id.values
+            let extractedDimension = partValue.dimension.values
+            var parametersForOneOrTwo = getParameters()
+               
+            switch partValue.id {
+                case .one (let one):
+                    currentOriginsForChain =
+                        (left: currentOriginsForChain.left, right: currentOriginsForChain.right, one:  updateOne(one, parametersForOneOrTwo))
+                case .two (let left, let right):
+                    currentOriginsForChain =
+                        (left: currentOriginsForChain.left, right: updateTwo(right, parametersForOneOrTwo), one: currentOriginsForChain.one)
+            
+                    currentOriginsForChain =
+                        (left: updateTwo(left, parametersForOneOrTwo), right: currentOriginsForChain.right, one: currentOriginsForChain.one)
+            }
+            func getParameters() -> ParametersForOneOrTwo {
                 ParametersForOneOrTwo(
-                    currentOriginForOne: currentOriginForOne,
-                    currentOriginForLeft: currentOriginForLeft,
-                    currentOriginForRight: currentOriginForRight,
-                    extractedOrigin: extractedOrigin,
+                    currentOriginsForChain: currentOriginsForChain,
+                    newOrigin: childOrigin,
                     extractedParentId: extractedParentId,
                     extractedDimension: extractedDimension,
                     partValue: partValue,
@@ -312,39 +252,29 @@ struct DictionaryProvider {
                     index: index,
                     chain: chain,
                     global: global)
-            
-            switch partValue.id {
-                case .one (let one):
-                    currentOriginForOne = updateOne(one, parametersForOneOrTwo)
-                case .two (let left, let right):
-                    currentOriginForLeft = updateTwo(left, parametersForOneOrTwo)
-                    currentOriginForRight = updateTwo(right, parametersForOneOrTwo)
             }
-              
-            
-          func resetOrign() {
-            currentOriginForOne = ZeroValue.iosLocation
-            currentOriginForLeft = ZeroValue.iosLocation
-            currentOriginForRight = ZeroValue.iosLocation
-          }
-            
-          func fatalErrorGettingPartValue(){
+                        
+            func resetOrign() {
+              let z = ZeroValue.iosLocation
+              currentOriginsForChain = (left: z, right: z, one: z)
+            }
+
+            func fatalErrorGettingPartValue(){
               fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(chain[index])")}
-          
-          
-          func fatalErrorGettingParentId(_ oneOrTwo: String){
+
+
+            func fatalErrorGettingParentId(_ oneOrTwo: String){
               fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) parent id does not exist for \(chain[index - 1]) for \(oneOrTwo)") }
-          
-          func fatalErrorGettingOrigin(_ oneOrTwo: String){
+
+
+            func fatalErrorGettingOrigin(_ oneOrTwo: String){
               print ( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exist for these chainLabels\(String(describing: chain[index])) for \(oneOrTwo)") }
         }
         
         
         struct ParametersForOneOrTwo {
-            let currentOriginForOne: PositionAsIosAxes
-            let currentOriginForLeft: PositionAsIosAxes
-            let currentOriginForRight: PositionAsIosAxes
-            let extractedOrigin: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?)
+            let currentOriginsForChain: (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes)
+            let newOrigin: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?)
             let extractedParentId: (left: Part?, right: Part?, one: Part?)
             let extractedDimension:  (left: Dimension3d?, right: Dimension3d?, one: Dimension3d?)
             let partValue: OneOrTwoGenericPartValue
@@ -354,51 +284,37 @@ struct DictionaryProvider {
             let global: Bool
         }
         
+        
         func updateTwo (
         _ childId: Part,
         _ update: ParametersForOneOrTwo)
             -> PositionAsIosAxes {
-            var labelForPosition: KeyPathForIosPosition = \.right
             var labelForSide: KeyPathForSide  = \.right
             var labelForDimension: KeyPathForDimension = \.right
-
-            var updatedOriginForSide = ZeroValue.iosLocation
-            
-            //var newOrigin = ZeroValue.iosLocation
-            
+            var updatedCurrentOrigin = ZeroValue.iosLocation
             if childId == .id0 || childId == .id2 {
-              labelForPosition = \.left
               labelForSide = \.left
-             
               labelForDimension = \.left
-              let currentOriginForLeft =
-                  getOrigin(
-                    update.currentOriginForLeft,
-                    update.currentOriginForOne,
-                    update.extractedOrigin,
-                    labelForPosition,
-                    update.parentPartValue,
-                    update.index,
-                    update.chain)
-              updatedOriginForSide = currentOriginForLeft
-            } else {
-              let currentOriginForRight =
-                  getOrigin(
-                    update.currentOriginForRight,
-                    update.currentOriginForOne,
-                    update.extractedOrigin,
-                    labelForPosition,
-                    update.parentPartValue,
-                    update.index,
-                    update.chain)
-              updatedOriginForSide = currentOriginForRight
+                updatedCurrentOrigin = passLabelToGetOrigin(\.left)
             }
-              
+            if childId == .id1 || childId == .id3 {
+                updatedCurrentOrigin = passLabelToGetOrigin(\.right)
+            }
+            func passLabelToGetOrigin(
+                _ labelForPosition:  KeyPathForIosPosition)
+                    -> PositionAsIosAxes{
+                    getOrigin(
+                        update.currentOriginsForChain,
+                        update.newOrigin,
+                        labelForPosition,
+                        update.parentPartValue,
+                        update.index,
+                        update.chain)
+            }
             let dimension = getDimensionX(update.extractedDimension, labelForDimension, update.chain[update.index])
-            
             let dictionaryUpdate =
               DictionaryUpdate(
-                name: getName3(
+                name: getName(
                     childId,
                     update.chain[update.index],//partValue.part,
                     update.extractedParentId,
@@ -406,17 +322,13 @@ struct DictionaryProvider {
                     update.global,
                     update.index,
                     update.chain,
-                    update.partValue//,
-                    //update.parentPartValue
-                ),
+                    update.partValue),
                 dimension: dimension,
-                origin: updatedOriginForSide,
-                corners: createCorner(dimension, updatedOriginForSide))
-            
+                origin: updatedCurrentOrigin,
+                corners: createCorner(dimension, updatedCurrentOrigin))
             updateDictionary(dictionaryUpdate)
             
-            return updatedOriginForSide
-
+            return updatedCurrentOrigin
         }
           
         
@@ -425,18 +337,17 @@ struct DictionaryProvider {
         _ update: ParametersForOneOrTwo)
             -> PositionAsIosAxes {
            let currentOriginForOne =
-            getOrigin(
-                ZeroValue.iosLocation,
-                update.currentOriginForOne,
-                update.extractedOrigin,
-                \.one,
-                update.parentPartValue,
-                update.index,
-                update.chain)
+                getOrigin(
+                    update.currentOriginsForChain,
+                    update.newOrigin,
+                    \.one,
+                    update.parentPartValue,
+                    update.index,
+                    update.chain)
             let dimension = getDimensionX(update.extractedDimension, \.one, update.chain[update.index])
             let dictionaryUpdate =
                     DictionaryUpdate(
-                        name: getName3(
+                        name: getName(
                             childId,
                             update.partValue.part,
                             update.extractedParentId,
@@ -444,20 +355,13 @@ struct DictionaryProvider {
                             update.global,
                             update.index,
                             update.chain,
-                            update.partValue//,
-                            //update.parentPartValue
-                        
-                        ),
+                            update.partValue),
                         dimension: dimension,
-                        origin:
-                            currentOriginForOne,
+                        origin: currentOriginForOne,
                         corners: createCorner(dimension, currentOriginForOne))
-                
                 updateDictionary(dictionaryUpdate)
                 
-                return currentOriginForOne
-
- 
+             return  currentOriginForOne
           }
           
         
@@ -467,58 +371,64 @@ struct DictionaryProvider {
             let origin: PositionAsIosAxes
             let corners: [PositionAsIosAxes]
         }
-          
-          func updateDictionary(_ update: DictionaryUpdate) {
-              let name = update.name
-              dimensionDicNew +=
-                  [name: update.dimension]
-              preTiltObjectToPartOriginDicNew +=
-                  [name: update.origin]
-              preTiltObjectToPartFourCornerPerKeyDicNew +=
-                  [name: update.corners]
-          }
-        
-        
-    func getOrigin(
-    _ currentOrigin: PositionAsIosAxes,
-    _ currentOriginForOne: PositionAsIosAxes,
-    _ extraction: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?),
-    _ label: KeyPathForIosPosition,
-    _ parentPartValue: OneOrTwoGenericPartValue,
-    _ index: Int,
-    _ chain: [Part])
-        -> PositionAsIosAxes {
-        var currentOriginAllowingThatParentIsOne = ZeroValue.iosLocation
-        if index != 0 {
-            switch parentPartValue.id {
-                case .one:
-                    currentOriginAllowingThatParentIsOne = currentOriginForOne
-                case .two:
-                    currentOriginAllowingThatParentIsOne = currentOrigin
-            }
+
+
+        func updateDictionary(_ update: DictionaryUpdate) {
+          let name = update.name
+          dimensionDicNew +=
+              [name: update.dimension]
+          preTiltObjectToPartOriginDicNew +=
+              [name: update.origin]
+          preTiltObjectToPartFourCornerPerKeyDicNew +=
+              [name: update.corners]
         }
-        guard let origin = extraction[keyPath: label] else {
-            fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exists for: \(chain[index])")
+
+     
+        func getOrigin(
+        _ currentOriginsForChain: (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes),
+        _ newOrigins: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?),
+        _ label: KeyPathForIosPosition, //left or right or one
+        _ parentPartValue: OneOrTwoGenericPartValue,
+        _ index: Int,
+        _ chain: [Part])
+            -> PositionAsIosAxes {
+
+                var updatedOrigins = ZeroValue.iosLocation
+                guard let newOrigin = newOrigins[keyPath: label] else {
+                    fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exists for: \(chain[index])")
+                }
+
+                var allowForSideWithOneParent = //otherwise a sided child of a one parent does not use its origin
+                    index != 0 ? (parentPartValue.childOrigin.one ?? ZeroValue.iosLocation) : ZeroValue.iosLocation
+              
+                switch label {
+                    case \.left:
+                        updatedOrigins = currentOriginsForChain.left + newOrigin + allowForSideWithOneParent
+                    case \.right:
+                        updatedOrigins = currentOriginsForChain.right + newOrigin + allowForSideWithOneParent
+                    case \.one:
+                        updatedOrigins = currentOriginsForChain.one + newOrigin
+                default: break
+                }
+
+            return updatedOrigins
         }
-        return
-            currentOriginAllowingThatParentIsOne + origin
-    }
         
         
-    func createCorner(
-        _ dimension: Dimension3d,
-        _ origin: PositionAsIosAxes)
-    -> [PositionAsIosAxes]{
-        let corners: [PositionAsIosAxes] =  CreateIosPosition
-            .getCornersFromDimension(dimension)
-        let cornersFromObject =
-            CreateIosPosition.addToupleToArrayOfTouples(
-                origin,
-                corners)
-        let topViewCorners = [4,5,6,7].map {cornersFromObject[$0]}
-        return
-            topViewCorners
-    }
+        func createCorner(
+            _ dimension: Dimension3d,
+            _ origin: PositionAsIosAxes)
+        -> [PositionAsIosAxes]{
+            let corners: [PositionAsIosAxes] =  CreateIosPosition
+                .getCornersFromDimension(dimension)
+            let cornersFromObject =
+                CreateIosPosition.addToupleToArrayOfTouples(
+                    origin,
+                    corners)
+            let topViewCorners = [4,5,6,7].map {cornersFromObject[$0]}
+            return
+                topViewCorners
+        }
         
         
         
@@ -533,12 +443,9 @@ struct DictionaryProvider {
             _ chain: [Part],
             _ partValue: OneOrTwoGenericPartValue)
             -> String {
-                
                 let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
-                
                 let endParts = [
                     .stringLink,.sitOn, partValue.sitOnId]
-                
                 if var parentId = extractedParentId[keyPath: label] {
                     if index == 0 || global {
                         parentId = .id0
@@ -563,57 +470,10 @@ struct DictionaryProvider {
                         
                         CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
                 }
-                
         }
         
-        
-        
-    
-    func getName3X(
-        _ childId: Part,
-        _ part: Part,
-        _ extractedParentId: (left: Part?, right: Part?, one: Part?),
-        _ labelForSide: KeyPath<(left: Part?, right: Part?, one: Part?), Part?>,
-        _ global: Bool,
-        _ index: Int,
-        _ chain: [Part],
-        _ partValue: OneOrTwoGenericPartValue)
-        -> String {
-            
-            let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
-            
-            let endParts = [
-                .stringLink,.sitOn, partValue.sitOnId]
-            
-            if var parentId = extractedParentId[keyPath: labelForSide] {
-                if index == 0 || global {
-                    parentId = .id0
-                }
-                return
-                    getName2((parent: parentId, child: childId), partValue.part)
-            } else {
-                if var parentId = extractedParentId[keyPath: \.one] {
-                    if index == 0 || global {
-                         parentId = .id0
-                    }
-                    return
-                        getName2((parent: parentId, child: childId), partValue.part)
-                } else {
-                    fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
-                }
-            }
-            
-            func getName2(
-                _ ids: (parent: Part, child: Part),
-                _ part: Part) -> String {
-                    
-                    CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
-            }
-            
-    }
-        
-        
-        func getName3(
+
+        func getName(
             _ childId: Part,
             _ part: Part,
             _ extractedParentId: (left: Part?, right: Part?, one: Part?),
@@ -622,120 +482,47 @@ struct DictionaryProvider {
             _ index: Int,
             _ chain: [Part],
             _ partValue: OneOrTwoGenericPartValue)
-            -> String {
-                
+                -> String {
                 let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
-                
                 let endParts = [
                     .stringLink,.sitOn, partValue.sitOnId]
-                
                 if var parentId = extractedParentId[keyPath: labelForLeftRightOrOne] {
                     if index == 0 || global {
                         parentId = .id0
                     }
                     return
                         getName2((parent: parentId, child: childId), partValue.part)
-                    
                 } else {
                     guard var parentId = extractedParentId[keyPath: \.one] else {
                         fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
                     }
-                  
                         if index == 0 || global {
                              parentId = .id0
                         }
                         return
                             getName2((parent: parentId, child: childId), partValue.part)
-        
                 }
-                
+
                 func getName2(
                     _ ids: (parent: Part, child: Part),
                     _ part: Part) -> String {
-                        
+
                         CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
                 }
-                
         }
-
-        func getName3Z (
-            _ childId: Part,
-            _ part: Part,
-            _ extractedParentId: (left: Part?, right: Part?, one: Part?),
-            _ labelForLeftRightOrOne: KeyPath<(left: Part?, right: Part?, one: Part?), Part?>,
-            _ global: Bool,
         
-        _ index: Int,
-        _ chain: [Part],
-        _ partValue: OneOrTwoGenericPartValue,
-        _ parentPartValue: OneOrTwoGenericPartValue
-        )
-            -> String {
-            let startParts: [Part] = index == 0  ? [.object]: [chain[index - 1]]
-            let endParts = [
-                .stringLink,.sitOn, partValue.sitOnId]
-                              
-            var parentId = index == 0 ? .id0: getId(parentPartValue)
-            let childId = getId(partValue)
-                
-                
-                
-                switch labelForLeftRightOrOne {
-                case \.left:
-                    if let leftPart = extractedParentId.left {
-                        // Code for left parameter
-                    } else {
-                        // Code when left parameter is nil
-                    }
-                case \.right:
-                    if let rightPart = extractedParentId.right {
-                        // Code for right parameter
-                    } else {
-                        // Code when right parameter is nil
-                    }
-                case \.one:
-                    if let onePart = extractedParentId.one {
-                        // Code for one parameter
-                    } else {
-                        // Code when one parameter is nil
-                    }
-                default: break
-                }
-            
-            return
-                getName2((parent: parentId, child: childId), partValue.part)
-            
-            
-            func getId(_ value: OneOrTwoGenericPartValue) -> Part {
-                switch parentPartValue.id {
-                    case .one (let one):
-                        return one
-                    case .two(let left, let right):
-                        return right //right and left parent have same id
-                }
+        
+        func getDimensionX (
+            _ extraction: (left: Dimension3d?, right: Dimension3d?, one: Dimension3d?),
+            _ label: KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>,
+            _ part: Part) -> Dimension3d {
+            guard let dimension = extraction[keyPath: label] else {
+                fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no dimension exists for: \(part)")
             }
-            
-            func getName2(
-                _ ids: (parent: Part, child: Part),
-                _ part: Part) -> String {
-                    
-                    CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
-            }
+                return
+                    dimension
         }
-
-
         
-        
-    func getDimensionX (
-        _ extraction: (left: Dimension3d?, right: Dimension3d?, one: Dimension3d?),
-        _ label: KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>,
-        _ part: Part) -> Dimension3d {
-        guard let dimension = extraction[keyPath: label] else {
-            fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no dimension exists for: \(part)")
-        }
-            return
-                dimension
-    }
         
     func initialiseAllPart() {
         let oneOfEachPartInAllPartChain =  getOneOfEachPartInAllPartChain()
@@ -769,10 +556,7 @@ struct DictionaryProvider {
             initialiseOneOrTwoDependantPart(
                 .backSupportHeadSupportLink, .backSupportHeadSupport )
         }
-///backSupport depends on sitOn
-        ///backSupportHeadSupportRotationJoint depends on backSupport
-        ///backSupportHeadSupportLink depends on backSupportHeadSupportRotationJoint
-        ///backSupportHeadSupport depends on backSupportHeadSupportLink
+
                 for part in oneOfEachPartInAllPartChain {
                     switch part {
                         case //already initialised
