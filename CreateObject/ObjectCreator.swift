@@ -775,7 +775,7 @@ extension StructFactory {
                         setSideSupportChildDimension()
                         setSideSupportRotationJointChildOrigin()
                 case .sitOnTiltJoint:
-                print("SitOnTiltJoint detected")
+                //print("SitOnTiltJoint detected")
                         setChildDimensionForObject(Joint.dimension3d)
                         setSitOnTiltJointChildOrigin()
                         setScopesOfRotationForSitOnTiltJoint()
