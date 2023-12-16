@@ -287,7 +287,7 @@ struct DictionaryProvider {
         
         func updateTwo (
         _ childId: Part,
-        _ update: ParametersForOneOrTwo)
+        _ parameters: ParametersForOneOrTwo)
             -> PositionAsIosAxes {
             var labelForSide: KeyPathForSide  = \.right
             var labelForDimension: KeyPathForDimension = \.right
@@ -300,29 +300,27 @@ struct DictionaryProvider {
             if childId == .id1 || childId == .id3 {
                 updatedCurrentOrigin = passLabelToGetOrigin(\.right)
             }
+                
             func passLabelToGetOrigin(
                 _ labelForPosition:  KeyPathForIosPosition)
                     -> PositionAsIosAxes{
                     getOrigin(
-                        update.currentOriginsForChain,
-                        update.newOrigin,
+                        parameters.currentOriginsForChain,
+                        parameters.newOrigin,
                         labelForPosition,
-                        update.parentPartValue,
-                        update.index,
-                        update.chain)
+                        parameters.parentPartValue,
+                        parameters.index,
+                        parameters.chain)
             }
-            let dimension = getDimensionX(update.extractedDimension, labelForDimension, update.chain[update.index])
+            let dimension = getDimensionX(parameters.extractedDimension, labelForDimension, parameters.chain[parameters.index])
+                
+            let name =
+                getName(parameters, childId,labelForSide)
+
+                
             let dictionaryUpdate =
               DictionaryUpdate(
-                name: getName(
-                    childId,
-                    update.chain[update.index],//partValue.part,
-                    update.extractedParentId,
-                    labelForSide,
-                    update.global,
-                    update.index,
-                    update.chain,
-                    update.partValue),
+                name: name,
                 dimension: dimension,
                 origin: updatedCurrentOrigin,
                 corners: createCorner(dimension, updatedCurrentOrigin))
@@ -344,26 +342,56 @@ struct DictionaryProvider {
                     update.parentPartValue,
                     update.index,
                     update.chain)
+                
             let dimension = getDimensionX(update.extractedDimension, \.one, update.chain[update.index])
-            let dictionaryUpdate =
+                
+                let name = getName(update, childId,\.one)
+                let dictionaryUpdate =
                     DictionaryUpdate(
-                        name: getName(
-                            childId,
-                            update.partValue.part,
-                            update.extractedParentId,
-                            \.one,
-                            update.global,
-                            update.index,
-                            update.chain,
-                            update.partValue),
+                        name: name,
                         dimension: dimension,
                         origin: currentOriginForOne,
                         corners: createCorner(dimension, currentOriginForOne))
+                
                 updateDictionary(dictionaryUpdate)
                 
              return  currentOriginForOne
           }
-          
+        
+                
+        func getName(
+        _ parameter: ParametersForOneOrTwo,
+        _ childId: Part,
+        _ labelForLeftRightOrOne: KeyPath<(left: Part?, right: Part?, one: Part?), Part?> )
+                -> String {
+                let extractedParentId = parameter.extractedParentId
+                let part = parameter.partValue.part
+                let global = parameter.global
+                let index = parameter.index
+                let chain =  parameter.chain
+                let partValue = parameter.partValue
+                let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
+                let endParts = [
+                    .stringLink,.sitOn, partValue.sitOnId]
+                if var parentId = extractedParentId[keyPath: labelForLeftRightOrOne] {
+                    if index == 0 || global {
+                        parentId = .id0
+                    }
+                    return
+                        CreateNameFromParts([parentId, childId, partValue.part]).name
+                       
+                } else {
+                    guard var parentId = extractedParentId[keyPath: \.one] else {
+                        fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
+                    }
+                        if index == 0 || global {
+                             parentId = .id0
+                        }
+                    return
+                        CreateNameFromParts(startParts + [parentId, .stringLink, part, childId] + endParts).name
+                }
+        }
+
         
         struct DictionaryUpdate {
             let name: String
@@ -432,84 +460,48 @@ struct DictionaryProvider {
         
         
         
+//
+//        func getGlobalName(
+//            _ childId: Part,
+//            _ part: Part,
+//            _ extractedParentId: (left: Part?, right: Part?, one: Part?),
+//            _ label: KeyPath<(left: Part?, right: Part?, one: Part?), Part?>,
+//            _ global: Bool,
+//            _ index: Int,
+//            _ chain: [Part],
+//            _ partValue: OneOrTwoGenericPartValue)
+//            -> String {
+//                let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
+//                let endParts = [
+//                    .stringLink,.sitOn, partValue.sitOnId]
+//                if var parentId = extractedParentId[keyPath: label] {
+//                    if index == 0 || global {
+//                        parentId = .id0
+//                    }
+//                    return
+//                        getName2((parent: parentId, child: childId), partValue.part)
+//                } else {
+//                    if var parentId = extractedParentId[keyPath: \.one] {
+//                        if index == 0 || global {
+//                             parentId = .id0
+//                        }
+//                        return
+//                            getName2((parent: parentId, child: childId), partValue.part)
+//                    } else {
+//                        fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
+//                    }
+//                }
+//
+//                func getName2(
+//                    _ ids: (parent: Part, child: Part),
+//                    _ part: Part) -> String {
+//
+//                        CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
+//                }
+//        }
         
-        func getGlobalName(
-            _ childId: Part,
-            _ part: Part,
-            _ extractedParentId: (left: Part?, right: Part?, one: Part?),
-            _ label: KeyPath<(left: Part?, right: Part?, one: Part?), Part?>,
-            _ global: Bool,
-            _ index: Int,
-            _ chain: [Part],
-            _ partValue: OneOrTwoGenericPartValue)
-            -> String {
-                let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
-                let endParts = [
-                    .stringLink,.sitOn, partValue.sitOnId]
-                if var parentId = extractedParentId[keyPath: label] {
-                    if index == 0 || global {
-                        parentId = .id0
-                    }
-                    return
-                        getName2((parent: parentId, child: childId), partValue.part)
-                } else {
-                    if var parentId = extractedParentId[keyPath: \.one] {
-                        if index == 0 || global {
-                             parentId = .id0
-                        }
-                        return
-                            getName2((parent: parentId, child: childId), partValue.part)
-                    } else {
-                        fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
-                    }
-                }
-                
-                func getName2(
-                    _ ids: (parent: Part, child: Part),
-                    _ part: Part) -> String {
-                        
-                        CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
-                }
-        }
-        
 
-        func getName(
-            _ childId: Part,
-            _ part: Part,
-            _ extractedParentId: (left: Part?, right: Part?, one: Part?),
-            _ labelForLeftRightOrOne: KeyPath<(left: Part?, right: Part?, one: Part?), Part?>,
-            _ global: Bool,
-            _ index: Int,
-            _ chain: [Part],
-            _ partValue: OneOrTwoGenericPartValue)
-                -> String {
-                let startParts: [Part] = index == 0 || global ? [.object]: [chain[index - 1]]
-                let endParts = [
-                    .stringLink,.sitOn, partValue.sitOnId]
-                if var parentId = extractedParentId[keyPath: labelForLeftRightOrOne] {
-                    if index == 0 || global {
-                        parentId = .id0
-                    }
-                    return
-                        getName2((parent: parentId, child: childId), partValue.part)
-                } else {
-                    guard var parentId = extractedParentId[keyPath: \.one] else {
-                        fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no parent id exists for: \(chain[index])")
-                    }
-                        if index == 0 || global {
-                             parentId = .id0
-                        }
-                        return
-                            getName2((parent: parentId, child: childId), partValue.part)
-                }
 
-                func getName2(
-                    _ ids: (parent: Part, child: Part),
-                    _ part: Part) -> String {
-
-                        CreateNameFromParts(startParts + [ids.parent, .stringLink, part, ids.child] + endParts).name
-                }
-        }
         
         
         func getDimensionX (
