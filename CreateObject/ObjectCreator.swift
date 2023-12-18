@@ -420,6 +420,8 @@ struct OneOrTWoId {
 
 struct OneOrTwoGenericPartValue {
     var part: Part
+    
+    var originName: OneOrTwo<String>
 
     var dimension: OneOrTwo<Dimension3d>
     
@@ -441,6 +443,7 @@ struct OneOrTwoGenericPartValue {
     
     init (
         part: Part,
+        originName: OneOrTwo<String>,
         dimension: OneOrTwo<Dimension3d>,
         maxDimension: OneOrTwo<Dimension3d>? = nil,
         minDimension: OneOrTwo<Dimension3d>? = nil,
@@ -451,6 +454,7 @@ struct OneOrTwoGenericPartValue {
         sitOnId: Part = .id0,
         scopesOfRotation: [[Part]] = [] ) {
             self.part = part
+            self.originName = originName
             self.dimension = dimension
             self.maxDimension = maxDimension ?? dimension
             self.minDimension = minDimension ?? dimension
@@ -591,6 +595,7 @@ extension StructFactory {
         return
             OneOrTwoGenericPartValue(
                 part: .sitOn,
+                originName: .one(one: "object_id0_sitOn_id0_sitOn_id0"),
                 dimension: dimension,
                 origin: getSitOnOrigin(),
                 minMaxAngles: .one(one:
@@ -696,15 +701,23 @@ extension StructFactory {
                         (min:ZeroValue.rotationAngles,
                          max: ZeroValue.rotationAngles ))
         var childAngles:  OneOrTwo<RotationAngles> = .one(one: ZeroValue.rotationAngles)
+            
+         
+        var originName: OneOrTwo<String> = .one(one: "")
+        
+            setOriginNames()
         if let parent {
             parentDimension = getOneDimensionFromOneOrTwo(parent.dimension)
         }
         
         getChildValues()
+            
+
           
         return
             OneOrTwoGenericPartValue(
                 part: childPart,
+                originName: originName,
                 dimension: childDimension,
                 maxDimension: childDimension,
                 origin: childOrigin,
@@ -789,7 +802,18 @@ extension StructFactory {
         }
     
       
-            
+        func setOriginNames(){
+            switch oneOrTwoUserEditedValues.originName {
+            case .one (let one):
+               originName =
+                    .one(one: one ?? "" )
+            case .two(let left, let right):
+                originName =
+                    .two(
+                        left: left ?? "",
+                        right: right ?? "")
+            }
+        }
             
 //       func setSitOnTiltJointAngle() {
 //          let zeroAngle = ZeroValue.angle
@@ -1418,12 +1442,9 @@ struct OneOrTwoUserEditedValue {
     let partChainIdDic: [PartChain: OneOrTwo<Part>]
     let part: Part
     let sitOnId: Part
-    var name: String {
-        CreateNameFromParts ( [
-            .sitOn,
-            sitOnId,
-            part]
-        ).name}
+    
+    var originName:  OneOrTwo <String?> = .one(one: nil)
+
     var angles: OneOrTwo <RotationAngles?> = .one(one: nil)
     var anglesMinMax: OneOrTwo <AnglesMinMax?> = .one(one: nil)
     var dimension: OneOrTwo <Dimension3d?> = .one(one: nil)
@@ -1431,90 +1452,123 @@ struct OneOrTwoUserEditedValue {
     var partId: OneOrTwo <Part>
     
     init(
-    _ objectType: ObjectTypes,
-    _ userEditedDictionary: OneOrTwoUserEditedDictionary,
-    _ sitOnId: Part,
-    _ childPart: Part) {
-        self.sitOnId = sitOnId
-        self.part = childPart
-        dimensionDic = userEditedDictionary.dimension
-        parentToPartOriginDic = userEditedDictionary.parentToPartOrigin
-        objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
-        anglesDic = userEditedDictionary.anglesDic
-        anglesMinMaxDic = userEditedDictionary.anglesMinMaxDic
-        
-        partChainIdDic = userEditedDictionary.partChainId
-        let onlyOne = 0
-        let partChain = LabelInPartChainOut([childPart]).partChains[onlyOne]
-        partId = //non-optional as must iterate through id
-           partChainIdDic[partChain] ?? //UI may edit
-           OneOrTWoId(objectType, childPart).forPart // default
-    
-        dimension =
+        _ objectType: ObjectTypes,
+        _ userEditedDictionary: OneOrTwoUserEditedDictionary,
+        _ sitOnId: Part,
+        _ childPart: Part) {
+            self.sitOnId = sitOnId
+            self.part = childPart
+            dimensionDic = userEditedDictionary.dimension
+            parentToPartOriginDic = userEditedDictionary.parentToPartOrigin
+            objectToPartOriginDic = userEditedDictionary.objectToPartOrigin
+            anglesDic = userEditedDictionary.anglesDic
+            anglesMinMaxDic = userEditedDictionary.anglesMinMaxDic
+            
+            partChainIdDic = userEditedDictionary.partChainId
+            let onlyOne = 0
+            let partChain = LabelInPartChainOut([childPart]).partChains[onlyOne]
+            partId = //non-optional as must iterate through id
+            partChainIdDic[partChain] ?? //UI may edit
+            OneOrTWoId(objectType, childPart).forPart // default
+            
+            dimension =
             getValue(partId, from: dimensionDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
-        
-        origin =
+            
+            origin =
             getValue(partId, from: parentToPartOriginDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
-        
-        angles =
+            
+            originName = getOriginName(partId)
+
+            angles =
             getValue(partId, from: anglesDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
-        
-        anglesMinMax =
+            
+            anglesMinMax =
             getValue(partId, from: anglesMinMaxDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+        }
+    
+    
+    func getOriginName(_ partId: OneOrTwo<Part>)
+    -> OneOrTwo<String?>{
+        let start: [Part] = [.object, .id0, .stringLink, part]
+        let end: [Part] = [.stringLink, .sitOn,  sitOnId]
+        
+   
+        switch partId {
+        case .one(let one):
+            return
+                .one(one: CreateNameFromParts(start + [one] + end).name)
+        case .two(let left, let right):
+            return
+                .two(
+                    left: CreateNameFromParts(start + [left] + end).name,
+                    right:  CreateNameFromParts(start + [right] + end).name)
+        }
     }
-
+    
+    
     func getValue<T>(
-    _ partIds: OneOrTwo<Part>,
-    from dictionary: [String: T?],
-    using closure: @escaping (Part) -> String)
-        -> OneOrTwo<T?> {
+        _ partIds: OneOrTwo<Part>,
+        from dictionary: [String: T?],
+        using closure: @escaping (Part) -> String)
+    -> OneOrTwo<T?> {
         let commonPart = { (id: Part) -> T? in
             dictionary[closure(id)] ?? nil
         }
-
+        
         switch partIds {
-            case .one(let oneId):
-                return .one(one: commonPart(oneId))
-            case .two(let left, let right):
-                return .two(left: commonPart(left), right: commonPart(right))
-        }
-    }
-
-    func getDimension(_ partIds: OneOrTwo<Part>)
-    -> OneOrTwo<Dimension3d?> {
-        return getValue(partIds, from: dimensionDic) { id in
-            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
-        }
-    }
-    
-    
-    func getAngles(_ partIds: OneOrTwo<Part>)
-    -> OneOrTwo<RotationAngles?> {
-        return getValue(partIds, from: anglesDic) { id in
-            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
-        }
-    }
-    
-    
-    func getAnglesMinMax(_ partIds: OneOrTwo<Part>)
-    -> OneOrTwo<AnglesMinMax?> {
-        return getValue(partIds, from: anglesMinMaxDic) { id in
-            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
-        }
-    }
-    
-
-    func getOrigin(_ partIds: OneOrTwo<Part>)
-    -> OneOrTwo<PositionAsIosAxes?> {
-        return getValue(partIds, from: parentToPartOriginDic) { id in
-            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+        case .one(let oneId):
+       
+            return .one(one: commonPart(oneId))
+        case .two(let left, let right):
+            return .two(left: commonPart(left), right: commonPart(right))
         }
     }
 }
+
+//    func getDimension(_ partIds: OneOrTwo<Part>)
+//    -> OneOrTwo<Dimension3d?> {
+//        return getValue(partIds, from: dimensionDic) { id in
+//            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+//        }
+//    }
+//
+//
+//    func getAngles(_ partIds: OneOrTwo<Part>)
+//    -> OneOrTwo<RotationAngles?> {
+//        return getValue(partIds, from: anglesDic) { id in
+//            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+//        }
+//    }
+//
+//
+//    func getAnglesMinMax(_ partIds: OneOrTwo<Part>)
+//    -> OneOrTwo<AnglesMinMax?> {
+//        return getValue(partIds, from: anglesMinMaxDic) { id in
+//            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+//        }
+//    }
+    
+
+//    func getOrigin(_ partIds: OneOrTwo<Part>)
+//    -> OneOrTwo<PositionAsIosAxes?> {
+//        print ("DETECT")
+//        switch partIds {
+//        case .one (let one):
+//            print(CreateNameFromParts([.sitOn, sitOnId, part, one]).name)
+//        case .two(let left, let right):
+//            print(CreateNameFromParts([.sitOn, sitOnId, part, left]).name)
+//            print(CreateNameFromParts([.sitOn, sitOnId, part, right]).name)
+//        }
+//
+//        return getValue(partIds, from: parentToPartOriginDic) { id in
+//            CreateNameFromParts([.sitOn, sitOnId, part, id]).name
+//        }
+//    }
+//}
 
 
 ///parts edited by the UI are stored in dictionary

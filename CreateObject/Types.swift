@@ -185,4 +185,6 @@ typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]
 typealias KeyPathForDimension = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>
 typealias KeyPathForIosPosition = KeyPath<(left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?), PositionAsIosAxes?>
 typealias KeyPathForSide = KeyPath<(left: Part?, right: Part?, one: Part?), Part?>
-typealias s = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>
+typealias KeyPathForName = KeyPath<(left: String?, right: String?, one: String?), String?>
+
+//typealias s = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>
