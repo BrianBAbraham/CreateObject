@@ -422,6 +422,8 @@ struct OneOrTwoGenericPartValue {
     var part: Part
     
     var originName: OneOrTwo<String>
+    
+    var dimensionName: OneOrTwo<String>
 
     var dimension: OneOrTwo<Dimension3d>
     
@@ -444,6 +446,7 @@ struct OneOrTwoGenericPartValue {
     init (
         part: Part,
         originName: OneOrTwo<String>,
+        dimensionName: OneOrTwo<String>,
         dimension: OneOrTwo<Dimension3d>,
         maxDimension: OneOrTwo<Dimension3d>? = nil,
         minDimension: OneOrTwo<Dimension3d>? = nil,
@@ -455,6 +458,7 @@ struct OneOrTwoGenericPartValue {
         scopesOfRotation: [[Part]] = [] ) {
             self.part = part
             self.originName = originName
+            self.dimensionName = dimensionName
             self.dimension = dimension
             self.maxDimension = maxDimension ?? dimension
             self.minDimension = minDimension ?? dimension
@@ -469,15 +473,15 @@ struct OneOrTwoGenericPartValue {
 
 
 enum OneOrTwoX<T> {
-    case two(left: T?, right: T?)
-    case one(one: T?)
-
+    case two (left: T, right: T)
+    case one (one: T)
+    
     var left: T? {
         switch self {
         case .two(let left, _):
             return left
         case .one:
-            return nil
+          return nil
         }
     }
 
@@ -498,6 +502,20 @@ enum OneOrTwoX<T> {
             return one
         }
     }
+    
+    var values: (left: T?, right: T?, one: T?) {
+        (left: left, right: right, one: one)
+    }
+    
+    func map<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
+        switch self {
+        case .one(let value):
+            return .one(one: transform(value))
+        case .two(let left, let right):
+            return .two(left: transform(left), right: transform(right))
+        }
+    }
+    
 }
 
 
@@ -536,6 +554,14 @@ enum OneOrTwo <T> {
         (left: left, right: right, one: one)
     }
     
+    func map<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
+        switch self {
+        case .one(let value):
+            return .one(one: transform(value))
+        case .two(let left, let right):
+            return .two(left: transform(left), right: transform(right))
+        }
+    }
 }
 
 
@@ -596,6 +622,7 @@ extension StructFactory {
             OneOrTwoGenericPartValue(
                 part: .sitOn,
                 originName: .one(one: "object_id0_sitOn_id0_sitOn_id0"),
+                dimensionName: .one(one: "object_id0_sitOn_id0_sitOn_id0"),
                 dimension: dimension,
                 origin: getSitOnOrigin(),
                 minMaxAngles: .one(one:
@@ -718,6 +745,7 @@ extension StructFactory {
             OneOrTwoGenericPartValue(
                 part: childPart,
                 originName: originName,
+                dimensionName: originName,
                 dimension: childDimension,
                 maxDimension: childDimension,
                 origin: childOrigin,
