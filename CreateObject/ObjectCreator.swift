@@ -472,51 +472,7 @@ struct OneOrTwoGenericPartValue {
 }
 
 
-enum OneOrTwoX<T> {
-    case two (left: T, right: T)
-    case one (one: T)
-    
-    var left: T? {
-        switch self {
-        case .two(let left, _):
-            return left
-        case .one:
-          return nil
-        }
-    }
 
-    var right: T? {
-        switch self {
-        case .two(_, let right):
-            return right
-        case .one:
-            return nil
-        }
-    }
-    
-    var one: T? {
-        switch self {
-        case .two:
-            return nil
-        case .one(let one):
-            return one
-        }
-    }
-    
-    var values: (left: T?, right: T?, one: T?) {
-        (left: left, right: right, one: one)
-    }
-    
-    func map<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
-        switch self {
-        case .one(let value):
-            return .one(one: transform(value))
-        case .two(let left, let right):
-            return .two(left: transform(left), right: transform(right))
-        }
-    }
-    
-}
 
 
 enum OneOrTwo <T> {
@@ -554,7 +510,7 @@ enum OneOrTwo <T> {
         (left: left, right: right, one: one)
     }
     
-    func map<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
+    func map1<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
         case .one(let value):
             return .one(one: transform(value))
@@ -562,6 +518,32 @@ enum OneOrTwo <T> {
             return .two(left: transform(left), right: transform(right))
         }
     }
+    
+    
+    func map2<U, V>(_ second: OneOrTwo<V>, _ transform: (T, V) -> U) -> OneOrTwo<U> {
+        switch (self, second) {
+        case let (.one(value1), .one(value2)):
+            return .one(one: transform(value1, value2))
+        case let (.two(left1, right1), .two(left2, right2)):
+            return .two(left: transform(left1, left2), right: transform(right1, right2))
+        default:
+            // Handle other cases if needed
+            fatalError("Incompatible cases for map2")
+        }
+    }
+    
+    func map3<U, V, W>(_ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
+        switch (self, second, third) {
+        case let (.one(value1), .one(value2), .one(value3)):
+            return .one(one: transform(value1, value2, value3))
+        case let (.two(left1, right1), .two(left2, right2), .two(left3, right3)):
+            return .two(left: transform(left1, left2, left3), right: transform(right1, right2, right3))
+        default:
+            // Handle other cases if needed
+            fatalError("Incompatible cases for map3")
+        }
+    }
+    
 }
 
 
