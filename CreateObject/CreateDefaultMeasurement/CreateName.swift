@@ -85,7 +85,7 @@ struct GetUniqueNames {
         func getUniquePartNamesOfCornerItems(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
             var uniqueNames: [String] = []
             let cornerKeys = dictionary.filter({$0.key.contains(Part.corner.rawValue)}).keys
-            //var uniqueNames: [String] = []
+           // print(cornerKeys)
             var removedName = ""
             var nameWithoutCornerString = ""
             let cornerName = Part.stringLink.rawValue + Part.corner.rawValue

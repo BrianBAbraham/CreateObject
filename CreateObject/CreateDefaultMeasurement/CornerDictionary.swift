@@ -145,7 +145,9 @@ struct DictionaryProvider {
         postTiltObjectToFourCornerPerKeyDic =
             preTiltObjectToPartFourCornerPerKeyDic
             
-
+        //createPostTiltDictionaryFromStructFactory()
+        
+        
         postTiltObjectToFourCornerPerKeyDic =
             Replace(
                 initial:
@@ -154,7 +156,7 @@ struct DictionaryProvider {
                     getRotatedObjectToPartFourCornerPerKeyDic(            getRotatingPartDataTupleFromStruct(
                     partsToRotate))
             ).intialWithReplacements
-    
+
             
 
           
@@ -164,195 +166,196 @@ struct DictionaryProvider {
 ///preceeding part, such as a sideSupport maintaining its relative position to the sitOn  irrespective
 ///of jointOrigin between sideSupport and sitOn the partChain ought to be processed as a whole
             
-//MARK: InitialiseAllPart
+//MARK: createPreTiltDic
         func createPreTiltDictionaryFromStructFactory(_ global: Bool = true) {
             guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? ObjectsAndTheirChainLabels().dictionary[objectType] else {
                 fatalError("No values exist for the specified chainLabels.")
             }
-
             for chainLabel in chainLabels {
                 processChainLabelForDictionaryCreation(chainLabel, global)
             }
-            
-//            for chainLabel in chainLabels {
-//                    getPartsToBeRotated(chainLabel)
-//            }
         }
         
 
        
-        //MAIN
+//MARK: createPostTiltDic
         func createPostTiltDictionaryFromStructFactory() {
-            let (rotatorParts, allPartsToBeRotatedByOneRotator) =
+            var (rotatorParts, allPartsToBeRotatedByAllRotators) =
                 gePartsInvolvedWithRotation()
        
-            for (partRotating, partsToBeRotated) in
-                    zip(rotatorParts, allPartsToBeRotatedByOneRotator) {// UI alters included chainLabels
-                
-                var dimensions: [OneOrTwo<Dimension3d>] = []
-                var angles: [OneOrTwo<RotationAngles>] = []
-                
-                for partToBeRotated in partsToBeRotated {
-                    guard let values = oneOrTwoObjectPartDic[partToBeRotated] else {
-                        fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(partsToBeRotated) ") }
-                    dimensions.append(values.dimension)
-                   
-                }
-                
-                angles.append(oneOrTwoObjectPartDic[partRotating]!.angles)
-                
-                let rotator =
-                    Rotator(
-                        rotatorOrigin:
-                            getGlobalOriginOfRotatorFromDictionary(partRotating),
-                        partsToBeRotatedOrigin:
-                            getOriginOfPartsToBeRotatedFromDictionary(partsToBeRotated),
-                        partsToBeRotatedDimension:
-                            dimensions,
-                        angles:
-                            angles )
-                print(partRotating)
-                print(partsToBeRotated)
-               getRotatedOrigin(rotator)
-                
-            
+            for (rotatorPart, allPartsToBeRotatedByOneRotator) in
+                    zip(rotatorParts, allPartsToBeRotatedByAllRotators) {
+                processRotationOfAllPartsByOneRotator(rotatorPart, allPartsToBeRotatedByOneRotator)
             }
+            
+            
+            let oneOfEachPartInAllPartChain: Set<Part> = Set(getOneOfEachPartInAllPartChain())
+            let remove: Set<Part> = Set(allPartsToBeRotatedByAllRotators.flatMap { $0 })
+            print( oneOfEachPartInAllPartChain.subtracting(remove))
+           
         }
         
-//        for part in partsToRotate{
-//           processPartForRotationForDictionary(part)
-//        }
+        func processRotationOfAllPartsByOneRotator(
+            _ rotatorPart: Part,
+            _ allPartsToBeRotatedByRotator:[Part]){
+                var dimensions: [OneOrTwo<Dimension3d>] = []
+                var originNames: [OneOrTwo<String>] = []
+                
+                for partToBeRotated in allPartsToBeRotatedByRotator {
+                    guard let values = oneOrTwoObjectPartDic[partToBeRotated] else {
+                        fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(partToBeRotated) ") }
+                    
+                    dimensions.append(values.dimension)
+                    originNames.append(values.originName)
+                }
+                
+                guard let angle: OneOrTwo<RotationAngles> = oneOrTwoObjectPartDic[rotatorPart]?.angles else {
+                    fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(rotatorPart) ") }
+                
+                let rotatorData =
+                    Rotator(
+                        rotatorOrigin:
+                            getGlobalOriginOfRotatorFromDictionary(rotatorPart),
+                        originOfAllPartsToBeRotated:
+                            getOriginOfPartsToBeRotatedFromDictionary(allPartsToBeRotatedByRotator),
+                        partsToBeRotatedDimension:
+                            dimensions,
+                        angle:
+                            angle )
+                
+                let allOriginsAfterRotationdByRotator =
+                   getAllOriginsAfterRotationdByOneRotator(rotatorData)
+                
+                let allPartCornerPositionAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>]  =
+                getAllPartCornerPositionAfterRotationByOneRotator(
+                    allOriginsAfterRotationdByRotator,
+                    rotatorData)
+                
+                let topViewPartCornerPositionAfterRotationByOneRotator =
+                    [4,5,2,3].map{allPartCornerPositionAfterRotationByOneRotator[$0]}
+                
+                for (originName, corners) in zip (originNames,topViewPartCornerPositionAfterRotationByOneRotator) {
+                    getFromOneOrTwoEnumMap2(originName, corners) {addRotatedPartsToFourCornerDic($0, $1)}
+                }
+                
+                
+        }
+        
+        func addNonRotatingPartsToFourCornerDic(){
+            
+        }
+        
+        
+        func addRotatedPartsToFourCornerDic(
+        _ name: String,
+         _ partCornerPositionAfterRotationByOneRotator: [PositionAsIosAxes]
+        ){
+            postTiltObjectToFourCornerPerKeyDic += [name: partCornerPositionAfterRotationByOneRotator]
+           
+        }
+
+
         
         struct Rotator {
             let rotatorOrigin: OneOrTwo<PositionAsIosAxes>
-            let partsToBeRotatedOrigin: [OneOrTwo<PositionAsIosAxes>]
+            let originOfAllPartsToBeRotated: [OneOrTwo<PositionAsIosAxes>]
             let partsToBeRotatedDimension: [OneOrTwo<Dimension3d>]
-            let angles: [OneOrTwo<RotationAngles>]
+            let angle: OneOrTwo<RotationAngles>
         }
        
         
-        func getRotatedOrigin(_ rotator: Rotator) {
-            for (partOrigin, angle) in
-                    zip(rotator.partsToBeRotatedOrigin, rotator.angles) {
-                //origin.map {calculateRotatedCorners($0)}
+        func getAllOriginsAfterRotationdByOneRotator(
+            _ rotator: Rotator)
+        -> [OneOrTwo<PositionAsIosAxes>] {
+            var allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>] = []
+            for partOrigin in
+                    rotator.originOfAllPartsToBeRotated {
                 
-//                let rotatedDimension =
-//                    getFromOneOrTwoEnumMap2(
-//                        rotator.rotatorOrigin,
-//                        partOrigin) { calculateRotatedOrigin($0, $1) }
-                
-                getFromOneOrTwoEnumMap3(
-                    rotator.rotatorOrigin,
-                    partOrigin,
-                   angle ) { calculateRotatedOriginNew($0, $1, $2) }
-                
-
-//                switch  partOrigin {
-//                    case .one:
-//                        let intialRotatorOrigin = rotator.rotatorOrigin.values.one
-//                        let initialPartOrigin = partOrigin.values.one
-//                        let initialPartDimension = dimension.values.one
-//                        calculateRotatedOrigin(
-//                             intialRotatorOrigin,
-//                            initialPartOrigin)
-//                        calculateRotatedDimension(
-//                             intialRotatorOrigin,
-//                            initialPartDimension)
-//
-//
-//
-//
-//                    case .two:
-//                        let intialLeftRotatorOrigin = rotator.rotatorOrigin.values.left
-//                        let initialLeftPartOrigin = partOrigin.values.left
-//                        let intialLeftPartDimension = dimension.values.left
-//
-//                        calculateRotatedOrigin(
-//                             intialLeftRotatorOrigin,
-//                            initialLeftPartOrigin)
-//                        calculateRotatedDimension(
-//                             intialLeftRotatorOrigin,
-//                             intialLeftPartDimension)
-//                        let intialRightRotatorOrigin = rotator.rotatorOrigin.values.right
-//                        let initialRightPartOrigin = partOrigin.values.right
-//                        let intialRightPartDimension = dimension.values.right
-//                        calculateRotatedOrigin(
-//                             intialRightRotatorOrigin,
-//                            initialRightPartOrigin)
-//                        calculateRotatedDimension(
-//                             intialRightRotatorOrigin,
-//                             intialLeftPartDimension)
-//                }
+                allOriginAfterRotationByRotator.append(
+                    getFromOneOrTwoEnumMap3(
+                        rotator.rotatorOrigin,
+                        partOrigin,
+                        rotator.angle ) { calculateRotatedOrigin($0, $1, $2) } )
             }
+            return allOriginAfterRotationByRotator
         }
 
-//        func getFromOneOrTwoEnumMap2<T, U, V>(
-//            _ first: OneOrTwo<T>, _ second: OneOrTwo<U>, _ transform: (T, U) -> V)
-//        -> OneOrTwo<V> {
-//            first.map2(second, transform)
-//        }
         
-        func getFromOneOrTwoEnumMap3<T, U, W, V>(
-            _ first: OneOrTwo<T>, _ second: OneOrTwo<U>, _ third: OneOrTwo<W>,_ transform: (T, U,
-        W) -> V)
+        func getAllPartCornerPositionAfterRotationByOneRotator (
+            _ allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>],
+            _ rotator: Rotator)
+        -> [OneOrTwo<[PositionAsIosAxes]> ]{
+            var allPartCornerPositionsAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>] = []
+            
+            for (dimension, originAfterRotationByRotator) in
+                    zip(rotator.partsToBeRotatedDimension, allOriginAfterRotationByRotator) {
+                let corners = dimension.map1 { CreateIosPosition.getCornersFromDimension($0) }
+                let result =
+                        getFromOneOrTwoEnumMap3(
+                            originAfterRotationByRotator,
+                            corners,
+                            rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
+                allPartCornerPositionsAfterRotationByOneRotator.append(result)
+            }
+            return allPartCornerPositionsAfterRotationByOneRotator
+        }
+        
+    
+        func getFromOneOrTwoEnumMap2<T, U, V>(
+            _ first: OneOrTwo<T>,
+            _ second: OneOrTwo<U>,
+            _ transform: (T, U) -> V)
+        -> OneOrTwo<V> {
+            first.map2(second, transform)
+        }
+        
+        
+        func getFromOneOrTwoEnumMap3<T, U, W, V>(//enum would not work without this
+            _ first: OneOrTwo<T>,
+            _ second: OneOrTwo<U>,
+            _ third: OneOrTwo<W>,
+            _ transform: (T, U, W) -> V)
         -> OneOrTwo<V> {
             first.map3(second, third, transform)
         }
         
-//        func calculateRotatedOrigin(
-//        _ rotatorOrigin: PositionAsIosAxes?,
-//        _ partOrigin: PositionAsIosAxes?){
-//            //code here
-//            print("SUCESS")
-//            print(
-//            rotatorOrigin! + partOrigin!)
-//
-//        }
         
-        
-        func calculateRotatedOriginNew(
-        _ rotatorOrigin: PositionAsIosAxes?,
-        _ partOrigin: PositionAsIosAxes?,
-        _ angle: RotationAngles?){
-            //code here
-           let positionRelativeToRotator =
-            CreateIosPosition.subtractSecondFromFirstTouple(partOrigin ?? ZeroValue.iosLocation, (rotatorOrigin ?? ZeroValue.iosLocation))
-          
-            
+        func calculateRotatedOrigin(
+            _ rotatorOrigin: PositionAsIosAxes,
+            _ partOrigin: PositionAsIosAxes,
+            _ angle: RotationAngles)
+        -> PositionAsIosAxes {
+            let positionRelativeToRotator =
+                CreateIosPosition.subtractSecondFromFirstTouple(partOrigin, rotatorOrigin)
             let rotatedPosition =
-            PositionOfPointAfterRotationAboutPoint(
-                staticPoint:ZeroValue.iosLocation,
-                movingPoint: positionRelativeToRotator,
-                angleChange: angle?.x ?? ZeroValue.angle
-            ).fromObjectOriginToPointWhichHasMoved
-            
-            print(angle)
-            print(partOrigin!)
-            print("ROTATED")
-            print (angle?.x)
-            print(
-            rotatedPosition + rotatorOrigin!)
-            print("\n\n")
+                PositionOfPointAfterRotationAboutPoint(
+                    staticPoint:ZeroValue.iosLocation,
+                    movingPoint: positionRelativeToRotator,
+                    angleChange: angle.x
+                ).fromObjectOriginToPointWhichHasMoved + rotatorOrigin
+            return   rotatedPosition
         }
         
         
-        
-        func calculateRotatedDimension(
-            _ rotatorOrigin: PositionAsIosAxes?,
-            _ dimension: Dimension3d?) {
-            //code here
-        }
-        
-        
-        func calculateRotatedCorners(_ rotatorOrigin: PositionAsIosAxes? ){
+        func calculateRotatedCorner(
+            _ rotatedOriginOfPart: PositionAsIosAxes,
+            _ cornerPositions: [PositionAsIosAxes],
+            _ angle: RotationAngles)
+        -> [PositionAsIosAxes]  {
             
-            
-        }
-        
-        func getAngleOfRotationFromDictionary(
-            _ part: Part) {
-                
+            var rotatedCorners: [PositionAsIosAxes] = []
+            for corner in cornerPositions {
+                rotatedCorners.append(
+                PositionOfPointAfterRotationAboutPoint(
+                    staticPoint:ZeroValue.iosLocation,
+                    movingPoint: corner,
+                    angleChange: angle.x
+                ).fromObjectOriginToPointWhichHasMoved + rotatedOriginOfPart)
             }
+            return rotatedCorners
+        }
+        
+
         
         
         func getOneOfEachPartFromSomePartChainLabel(
@@ -401,46 +404,6 @@ struct DictionaryProvider {
             return origin
         }
         
-        
-//        func getDimensionOfPartsToBeRotatedFromDictionary(//changes may have been made by UI to default
-//            _ partsToBeRotated: [Part])
-//        -> [OneOrTwo<Dimension3d>] {
-//            var scopeDimension: [OneOrTwo<Dimension3d>] = []
-//            for item in partsToBeRotated {
-//                scopeDimension.append(getDimensionFromDictionary(item))
-//            }
-//            return scopeDimension
-//        }
-//
-            
-//        func getDimensionFromDictionary(_ part: Part) -> OneOrTwo<Dimension3d> {
-//            guard let values = oneOrTwoObjectPartDic[part] else {
-//                fatalError("No values defined for part \(part)")
-//            }
-//            let name = values.dimensionName
-//            let dimension: OneOrTwo<Dimension3d> = name.map1 { getDimension($0) }
-//
-//            return dimension
-//        }
-
-    
-//        func getDimension(_ name: String) -> Dimension3d {
-//            guard let dimension = dimensionDicNew[name] else {
-//                fatalError("\(String(describing: type(of: self))): \(#function ) \(name) is not in origin dictionary")
-//            }
-//            return dimension
-//        }
-        
-        
-//        func getDimensionFromValues(_ part: Part) -> OneOrTwo<Dimension3d> {
-//            guard let values = oneOrTwoObjectPartDic[part] else {
-//                fatalError("No values defined for part \(part)")
-//            }
-//             return values.dimension
-//        }
-
-
-        
         func gePartsInvolvedWithRotation ()
             -> ([Part], [[Part]]) {
             guard let chainLabels = objectsAndTheirChainLabels[objectType] else {
@@ -462,35 +425,7 @@ struct DictionaryProvider {
                 return (rotatingParts, allPartsToBeRotatedByOneRotatorPart)
         }
         
- 
 
-        
-//        func getPartsToBeRotated(
-//            _ chainLabel: Part)
-//        -> [Part]{
-//            var partsToRotate: [Part] = []
-//            var angleToRotate: Measurement<UnitAngle> = ZeroValue.angle
-//
-//            var originOfRotate = getRotationOrigin(chainLabel)
-//
-//            guard let allValues = oneOrTwoObjectPartDic[chainLabel] else {
-//                fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(chainLabel)")
-//            }
-//
-//
-//            let noPartsToRotate: [[Part]] = []
-//            let partChainToRotate =
-//                allValues.scopesOfRotation
-//                if partChainToRotate != noPartsToRotate {
-//                    let alwaysUseFirstAsElementsRotatedByUI = 0
-//                    angleToRotate =
-//                    allValues.angles.values.one?.x
-//                    ?? ZeroValue.angle
-//                    partsToRotate =
-//                        Array(Set(LabelInPartChainOut(partChainToRotate[alwaysUseFirstAsElementsRotatedByUI]).partChains.flatMap{$0}))
-//            }
-//            return partsToRotate
-//        }
         
         
         func processPartForRotationForDictionary(
@@ -984,6 +919,12 @@ struct DictionaryProvider {
         }
                    
                
+
+        
+    }
+                     
+            
+            
         func getOneOfEachPartInAllPartChain() -> [Part]{
             let chainLabels =
                 objectsAndTheirChainLabelsDicIn[objectType] ??
@@ -1001,12 +942,6 @@ struct DictionaryProvider {
             }
             return oneOfEachPartInAllChainLabel
         }
-        
-    }
-                     
-            
-            
-            
                     
         //generally all parts in a chain are not rotated
         //therefore non-rotated parts
@@ -1076,37 +1011,37 @@ struct DictionaryProvider {
 //         }
             
             
-        func createCornerDictionary(
-            _ dictionary: PositionDictionary,
-            _ dimension: Part3DimensionDictionary)
-            -> CornerDictionary{
-            let removeObjectName = RemoveObjectName() // key starts object_id0, remove
-            var cornerDictionary: CornerDictionary = [:]//pre and post tilt
-            var corners: [PositionAsIosAxes] = []
-            for (key, value) in dimension {
-                let originValue = dictionary[key]
-                if let originValue {
-                    corners =
-                        CreateIosPosition
-                        .getCornersFromDimension( value)
-                    let cornersFromObject =
-                        CreateIosPosition.addToupleToArrayOfTouples(
-                            originValue,
-                            corners)
-                    let topViewCorners = [4,5,6,7].map {cornersFromObject[$0]}
-                    //
-                    let sideViewCorners = CreateIosPosition.swapXY([4,7,3,0].map {cornersFromObject[$0]})
-                    
-                    // for compatability with prevous code
-                    //object_id0_ is removed from the start
-                    //of the name
-                    let nameWithoutObject = removeObjectName.remove(key)
-                    
-                    cornerDictionary += [nameWithoutObject: topViewCorners]
-                }
-            }
-            return cornerDictionary
-        }
+//        func createCornerDictionary(
+//            _ dictionary: PositionDictionary,
+//            _ dimension: Part3DimensionDictionary)
+//            -> CornerDictionary{
+//            let removeObjectName = RemoveObjectName() // key starts object_id0, remove
+//            var cornerDictionary: CornerDictionary = [:]//pre and post tilt
+//            var corners: [PositionAsIosAxes] = []
+//            for (key, value) in dimension {
+//                let originValue = dictionary[key]
+//                if let originValue {
+//                    corners =
+//                        CreateIosPosition
+//                        .getCornersFromDimension( value)
+//                    let cornersFromObject =
+//                        CreateIosPosition.addToupleToArrayOfTouples(
+//                            originValue,
+//                            corners)
+//                    let topViewCorners = [4,5,6,7].map {cornersFromObject[$0]}
+//                    //
+//                    let sideViewCorners = CreateIosPosition.swapXY([4,7,3,0].map {cornersFromObject[$0]})
+//
+//                    // for compatability with prevous code
+//                    //object_id0_ is removed from the start
+//                    //of the name
+//                    let nameWithoutObject = removeObjectName.remove(key)
+//                    print(nameWithoutObject)
+//                    cornerDictionary += [nameWithoutObject: topViewCorners]
+//                }
+//            }
+//            return cornerDictionary
+//        }
             
             
 
@@ -1195,7 +1130,7 @@ extension DictionaryProvider {
                         let partName =
                             CreateNameFromParts([
                                 .object, .id0, .stringLink, originIdPartChain.chain[index], partId, .stringLink, .sitOn, sitOnId]).name
-
+//print(partName)
                         let originOfPart = parent.preTiltObjectToPartOriginDicNew[partName]
                         
                         let dimensionOfPart = parent.dimensionDicNew[partName]
