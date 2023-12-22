@@ -1076,6 +1076,7 @@ extension StructFactory {
             
         func setScopesOfRotationForSitOnTiltJoint() {
             scopesOfRotation = [
+              
                 [.backSupport, .backSupportHeadSupport],
                 [.backSupport, .backSupportHeadSupport, .sideSupport],
                 [.backSupport, .backSupportHeadSupport, .sideSupport, .footSupport],
@@ -1157,7 +1158,7 @@ extension StructFactory {
         func setSitOnTiltJointAngles() {
             let zeroAngle = ZeroValue.angle
             let min = Measurement(value: 0.0, unit: UnitAngle.degrees)
-            let max = Measurement(value: 60.0, unit: UnitAngle.degrees)
+            let max = Measurement(value: 30.0, unit: UnitAngle.degrees)
             let minRotationAngles =
                 (x: min, y: zeroAngle, z: zeroAngle)
             let maxRotationAngles =

@@ -67,6 +67,10 @@ extension ObjectEditViewModel {
         var color: Color = .blue
         let partNameBeingEdited = getCurrenPartToEditName()
         
+        if uniquePartName == "object_id0_sitOn_id0_sitOn_id0" {
+            color = .red
+        }
+        
         if uniquePartName == partNameBeingEdited {
             color = .white
         } else {
@@ -111,6 +115,8 @@ extension ObjectEditViewModel {
             if uniquePartName.contains("head") {
                 color = .gray
             }
+
+        
 //            if uniquePartName.contains(BaseObjectTypes.showerTray.rawValue) {
 //                color = .blue
 //            }

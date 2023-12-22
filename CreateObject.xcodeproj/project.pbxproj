@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		FD060BD52A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */; };
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
-		FD7FDD522AA79C830012B3F6 /* Tilt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7FDD512AA79C830012B3F6 /* Tilt.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickVM.swift */; };
 		FD93EFBC29DC7EB900456380 /* ObjectEditVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */; };
 		FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */; };
@@ -42,7 +41,6 @@
 /* Begin PBXFileReference section */
 		FD060BD42A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerOptionsView.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
-		FD7FDD512AA79C830012B3F6 /* Tilt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tilt.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickVM.swift; sourceTree = "<group>"; };
 		FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectEditVM.swift; sourceTree = "<group>"; };
 		FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerView.swift; sourceTree = "<group>"; };
@@ -147,7 +145,6 @@
 			children = (
 				FDAC054829EADEFB00FCB400 /* JointDimensions.swift */,
 				FDC71F18296C936600B68427 /* CreateName.swift */,
-				FD7FDD512AA79C830012B3F6 /* Tilt.swift */,
 				FDFC68752A2A3EBF0027E219 /* CornerDictionary.swift */,
 			);
 			path = CreateDefaultMeasurement;
@@ -240,7 +237,6 @@
 				FDA8D6162A121D5D0017CAB5 /* TwinSitOnVM.swift in Sources */,
 				FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
-				FD7FDD522AA79C830012B3F6 /* Tilt.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,
 				FD060BD52A0BB2F6005F31A0 /* ObjectPickerOptionsView.swift in Sources */,
