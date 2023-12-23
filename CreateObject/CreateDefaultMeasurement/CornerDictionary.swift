@@ -138,38 +138,30 @@ struct DictionaryProvider {
             
         createPostTiltDictionaryFromStructFactory()
     
-            
-
         
-     
     func initialiseAllPart() {
         let oneOfEachPartInAllPartChain =  getOneOfEachPartInAllPartChain()
+
         if oneOfEachPartInAllPartChain.contains(.sitOn) {
             oneOrTwoObjectPartDic +=
                 [.sitOn: initialilseOneOrTwoSitOn()]
         }
-        
         if oneOfEachPartInAllPartChain.contains(.backSupport) {
             initialiseOneOrTwoDependantPart(
                 .sitOn,.backSupport )
         }
-        
         if oneOfEachPartInAllPartChain.contains(.footSupportHangerLink) {
             initialiseOneOrTwoIndependantPart(
                 .footSupportHangerLink )
         }
-        
-        
         if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportJoint) {
             initialiseOneOrTwoDependantPart(
                 .backSupport, .backSupportHeadSupportJoint )
         }
-        
         if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportLink) {
             initialiseOneOrTwoDependantPart(
                 .backSupportHeadSupportJoint, .backSupportHeadSupportLink )
         }
-        
         if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupport) {
             initialiseOneOrTwoDependantPart(
                 .backSupportHeadSupportLink, .backSupportHeadSupport )
@@ -181,7 +173,7 @@ struct DictionaryProvider {
                             .sitOn,
                             .backSupport,
                             .footSupportHangerLink:
-                            break
+                                break
                         case //part depends on sitOn
                             .backSupportRotationJoint,
                             .footSupportHangerJoint,
@@ -194,16 +186,13 @@ struct DictionaryProvider {
                             .backSupportHeadSupportJoint,
                             .backSupportHeadSupportLink,
                             .backSupportHeadSupport:
-                        break
-
-                                            
+                                break
                         case .footSupport:
                                 initialiseOneOrTwoIndependantPart(part)
                         case .footSupportJoint:
                                 initialiseOneOrTwoDependantPart(.footSupportHangerLink, part )
-                        
-                        case .footSupportInOnePiece:
-                                initialiseOneOrTwoIndependantPart(part)
+                        case .footSupportInOnePiece, .footOnly:
+                                    initialiseOneOrTwoIndependantPart(part)
                         case
                             .fixedWheelAtRear,
                             .fixedWheelAtMid,
@@ -212,7 +201,6 @@ struct DictionaryProvider {
                             .casterWheelAtMid,
                             .casterWheelAtFront:
                                 initialiseOneOrTwoWheel(part)
-                        
                         case // all intialised by the wheel
                             .casterForkAtRear,
                             .casterForkAtMid,
@@ -297,7 +285,6 @@ struct DictionaryProvider {
             
             
         func initialiseOneOrTwoIndependantPart(_ child: Part) {
-            //print (child)
             oneOrTwoObjectPartDic +=
                 [child:
                     StructFactory(
@@ -309,21 +296,23 @@ struct DictionaryProvider {
                                 []) ]
         }
     }
-                     
-        //MARK: createPreTiltDic
-                func createPreTiltDictionaryFromStructFactory(_ global: Bool = true) {
-                    guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? ObjectsAndTheirChainLabels().dictionary[objectType] else {
-                        fatalError("No values exist for the specified chainLabels.")
-                    }
-                    for chainLabel in chainLabels {
-                        processChainLabelForDictionaryCreation(chainLabel, global)
-                    }
-                }
+        
+//MARK: createPreTiltDic
+        func createPreTiltDictionaryFromStructFactory(_ global: Bool = true) {
+            guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? ObjectsAndTheirChainLabels().dictionary[objectType] else {
+                fatalError("No values exist for the specified chainLabels.")
+            }
+            for chainLabel in chainLabels {
+                processChainLabelForDictionaryCreation(chainLabel, global)
+            }
+        }
+        
         
         func getOneOfEachPartInAllPartChain() -> [Part]{
             let chainLabels =
                 objectsAndTheirChainLabelsDicIn[objectType] ??
                 ObjectsAndTheirChainLabels().dictionary[objectType]
+         
             var oneOfEachPartInAllChainLabel: [Part] = []
             if let chainLabels{
                 var allPartInThisObject: [Part] = []
@@ -337,6 +326,7 @@ struct DictionaryProvider {
             }
             return oneOfEachPartInAllChainLabel
         }
+        
     } // Init ends
 } //Parent struct ends
 

@@ -166,7 +166,7 @@ struct LabelInPartChainOut  {
         .footSupport
         ]
     let footOnly: PartChain =
-        [.footSupportInOnePiece]
+        [.footOnly]
    static let headSupport: PartChain =
         [
         .backSupportHeadSupportJoint,
@@ -332,10 +332,8 @@ struct ObjectsAndTheirChainLabels {
         chairSupportWithFixedRearWheel + [.casterWheelAtFront],
     
     .showerTray: [.footOnly],
-    
-        .fixedWheelSolo: [.fixedWheelAtMid] + [.sitOn] + [.sideSupport]
-    ]
-        
+
+    .fixedWheelSolo: [.fixedWheelAtMid] + [.sitOn] + [.sideSupport] ]
 }
 
 
@@ -393,6 +391,7 @@ struct OneOrTWoId {
                     .backSupportHeadSupportLink,
                     .backSupportHeadSupport,
                     .footSupportInOnePiece,
+                    .footOnly,
                     .sitOn,
                     .sitOnTiltJoint:
                     return .one(one: .id0)
@@ -774,7 +773,7 @@ extension StructFactory {
                     .casterVerticalJointAtFront:
                         setChildDimensionForObject(Joint.dimension3d)
                         setWheelBaseJointChildOrigin(childPart)
-                
+               
                 case .footSupport:
                         setFootSupportChildDimension()
                         setFootSupportChildOrigin()
@@ -788,7 +787,7 @@ extension StructFactory {
                         setChildDimensionForObject(Joint.dimension3d)
                         setFootSupportJointChildOrigin()
         
-                case .footSupportInOnePiece:
+                case .footSupportInOnePiece, .footOnly:
                         childOrigin = .one(one: ZeroValue.iosLocation)
                         setFootSupportInOnePieceChildDimension()
                 case .sideSupport:
