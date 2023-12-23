@@ -28,7 +28,6 @@
 		FDC71F05296C911300B68427 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDC71F04296C911300B68427 /* Assets.xcassets */; };
 		FDC71F08296C911300B68427 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDC71F07296C911300B68427 /* Preview Assets.xcassets */; };
 		FDC71F0F296C916200B68427 /* ObjectCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F0E296C916200B68427 /* ObjectCreator.swift */; };
-		FDC71F13296C91E400B68427 /* BaseObjectEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F12296C91E400B68427 /* BaseObjectEnum.swift */; };
 		FDC71F19296C936600B68427 /* CreateName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC71F18296C936600B68427 /* CreateName.swift */; };
 		FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDCE3F0A299A8B5B00C19F2A /* Save.swift */; };
 		FDCE3F0E299A8F9600C19F2A /* ObjectContainer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */; };
@@ -61,7 +60,6 @@
 		FDC71F04296C911300B68427 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FDC71F07296C911300B68427 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		FDC71F0E296C916200B68427 /* ObjectCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectCreator.swift; sourceTree = "<group>"; };
-		FDC71F12296C91E400B68427 /* BaseObjectEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseObjectEnum.swift; sourceTree = "<group>"; };
 		FDC71F18296C936600B68427 /* CreateName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateName.swift; sourceTree = "<group>"; };
 		FDCE3F0A299A8B5B00C19F2A /* Save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Save.swift; sourceTree = "<group>"; };
 		FDCE3F0D299A8F9600C19F2A /* ObjectContainer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ObjectContainer.xcdatamodel; sourceTree = "<group>"; };
@@ -105,7 +103,6 @@
 				FDEA615E2A2484D000A50ACC /* Calculate.swift */,
 				FDD7247C29B0DD1000B50259 /* Development.swift */,
 				FDC71F0E296C916200B68427 /* ObjectCreator.swift */,
-				FDC71F12296C91E400B68427 /* BaseObjectEnum.swift */,
 				FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */,
 				FDBD6EF729C4A6F700144603 /* Types.swift */,
 				FDFC686E2A2A1B0B0027E219 /* CreateDefaultMeasurement */,
@@ -243,7 +240,6 @@
 				FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */,
 				FDAB603829E98C2500BE56FA /* ObjectDictionaryInformation.swift in Sources */,
 				FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */,
-				FDC71F13296C91E400B68427 /* BaseObjectEnum.swift in Sources */,
 				FDC71F0F296C916200B68427 /* ObjectCreator.swift in Sources */,
 				FDD7247D29B0DD1000B50259 /* Development.swift in Sources */,
 				FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */,

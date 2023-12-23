@@ -6,11 +6,204 @@
 
 import Foundation
 
-
-enum DictionaryTypes  {
-    case forScreen
-    case forMeasurement
+struct Object {
+    let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
+    
+    var partValuesDic: [Part: OneOrTwoGenericPartValue] = [:]
+    
+    let objectType: ObjectTypes
+    
+    let oneOrTwoUserEditedDictionary: OneOrTwoUserEditedDictionary
+    
+    init(
+        _ objectType: ObjectTypes,
+        _ userEditedDictionary: OneOrTwoUserEditedDictionary) {
+        
+            self.objectType = objectType
+            self.oneOrTwoUserEditedDictionary = userEditedDictionary
+    }
+    
+    
 }
+
+//extension Object {
+//    mutating func initialiseAllPart() {
+//        let oneOfEachPartInAllPartChain = getOneOfEachPartInAllPartChain()
+//
+//        if oneOfEachPartInAllPartChain.contains(.sitOn) {
+//            partValuesDic +=
+//                [.sitOn: initialilseOneOrTwoSitOn()]
+//        }
+//        if oneOfEachPartInAllPartChain.contains(.backSupport) {
+//            initialiseOneOrTwoDependantPart(
+//                .sitOn,.backSupport )
+//        }
+//        if oneOfEachPartInAllPartChain.contains(.footSupportHangerLink) {
+//            initialiseOneOrTwoIndependantPart(
+//                .footSupportHangerLink )
+//        }
+//        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportJoint) {
+//            initialiseOneOrTwoDependantPart(
+//                .backSupport, .backSupportHeadSupportJoint )
+//        }
+//        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportLink) {
+//            initialiseOneOrTwoDependantPart(
+//                .backSupportHeadSupportJoint, .backSupportHeadSupportLink )
+//        }
+//        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupport) {
+//            initialiseOneOrTwoDependantPart(
+//                .backSupportHeadSupportLink, .backSupportHeadSupport )
+//        }
+//
+//        for part in oneOfEachPartInAllPartChain {
+//            switch part {
+//                case //already initialised
+//                    .sitOn,
+//                    .backSupport,
+//                    .footSupportHangerLink:
+//                        break
+//                case //part depends on sitOn
+//                    .backSupportRotationJoint,
+//                    .footSupportHangerJoint,
+//                    .sideSupport,
+//                    .sideSupportRotationJoint,
+//                    .sitOnTiltJoint:
+//                        initialiseOneOrTwoDependantPart(
+//                            .sitOn, part )
+//                case
+//                    .backSupportHeadSupportJoint,
+//                    .backSupportHeadSupportLink,
+//                    .backSupportHeadSupport:
+//                        break
+//                case .footSupport:
+//                        initialiseOneOrTwoIndependantPart(part)
+//                case .footSupportJoint:
+//                        initialiseOneOrTwoDependantPart(.footSupportHangerLink, part )
+//                case .footSupportInOnePiece, .footOnly:
+//                            initialiseOneOrTwoIndependantPart(part)
+//                case
+//                    .fixedWheelAtRear,
+//                    .fixedWheelAtMid,
+//                    .fixedWheelAtFront,
+//                    .casterWheelAtRear,
+//                    .casterWheelAtMid,
+//                    .casterWheelAtFront:
+//                        initialiseOneOrTwoWheel(part)
+//                case // all intialised by the wheel
+//                    .casterForkAtRear,
+//                    .casterForkAtMid,
+//                    .casterForkAtFront,
+//                    .fixedWheelHorizontalJointAtRear,
+//                    .fixedWheelHorizontalJointAtMid,
+//                    .fixedWheelHorizontalJointAtFront,
+//                    .casterVerticalJointAtRear,
+//                    .casterVerticalJointAtMid,
+//                    .casterVerticalJointAtFront:
+//                        break
+//
+//                default:
+//                    fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(part)")
+//            }
+//        }
+//    }
+//
+//    mutating func initialiseOneOrTwoWheel(_ oneChainLabel: Part ) {
+//        let partChain = LabelInPartChainOut(oneChainLabel).partChain
+//        let partWithJoint: [Part] = [
+//                .fixedWheelHorizontalJointAtRear,
+//                .fixedWheelHorizontalJointAtMid,
+//                .fixedWheelHorizontalJointAtFront,
+//                .casterVerticalJointAtRear,
+//                .casterVerticalJointAtMid,
+//                .casterVerticalJointAtFront]
+//        var siblings: [OneOrTwoGenericPartValue] = []
+//        var jointPart:Part = .notFound
+//
+//        if let jointIndex = partChain.firstIndex(where: { partWithJoint.contains($0) }) {
+//            jointPart = partChain[jointIndex]
+//            for index in 0..<partChain.count {
+//                let part = partChain[index]
+//                if index != jointIndex {
+//                    initialiseOneOrTwoIndependantPart(part)
+//
+//                    if let values = partValuesDic[part] {
+//                        siblings.append(values)
+//                    } else {
+//                        fatalError( "\n\nDictionary Provider: \(#function) initialisation did not succedd this part: \(part)")
+//                    }
+//                }
+//            }
+//        }
+//        initialiseOneOrTwoDependantPart(
+//            .sitOn,
+//            jointPart,
+//            siblings)
+//    }
+//
+//
+//    func initialilseOneOrTwoSitOn ()
+//        -> OneOrTwoGenericPartValue {
+//         StructFactory(
+//            objectType,
+//            oneOrTwoUserEditedDictionary)
+//                 .createOneOrTwoSitOn(
+//                    nil,
+//                    nil)
+//    }
+//
+//
+//    mutating func initialiseOneOrTwoDependantPart(
+//        _ parent: Part,
+//        _ child: Part,
+//        _ siblings: [OneOrTwoGenericPartValue] = []) {
+//        if let parentValue = partValuesDic[parent] {
+//            partValuesDic +=
+//                [child:
+//                    StructFactory(
+//                        objectType,
+//                        oneOrTwoUserEditedDictionary)
+//                            .createOneOrTwoDependentPartForSingleSitOn(
+//                                parentValue,
+//                                child,
+//                                []) ]
+//        } else {
+//             fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(parent)")
+//        }
+//    }
+//
+//
+//    mutating func initialiseOneOrTwoIndependantPart(_ child: Part) {
+//        partValuesDic +=
+//            [child:
+//                StructFactory(
+//                   objectType,
+//                   oneOrTwoUserEditedDictionary)
+//                        .createOneOrTwoDependentPartForSingleSitOn(
+//                            nil,
+//                            child,
+//                            []) ]
+//    }
+//
+//    func getOneOfEachPartInAllPartChain() -> [Part]{
+//        let chainLabels =
+//            objectsAndTheirChainLabelsDicIn[objectType] ??
+//            ObjectsAndTheirChainLabels().dictionary[objectType]
+//
+//        var oneOfEachPartInAllChainLabel: [Part] = []
+//        if let chainLabels{
+//            var allPartInThisObject: [Part] = []
+//            let onlyOne = 0
+//            for label in chainLabels {
+//                allPartInThisObject +=
+//                LabelInPartChainOut([label]).partChains[onlyOne]
+//            }
+//           oneOfEachPartInAllChainLabel =
+//            Array(Set(allPartInThisObject))
+//        }
+//        return oneOfEachPartInAllChainLabel
+//    }
+//
+//}
 
 
 enum Part: String {
@@ -28,8 +221,7 @@ enum Part: String {
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
     case backSupportHeadLinkRotationJoint = "backSupportHeadSupportLinkHorizontalJoint"
     case backSupportTiltJoint = "backSupportReclineAngle"
-    //case corner = "corner"
-    
+      
     case baseToCarryBarConnector = "baseToCarryBarConnector"
     case baseWheelJoint = "baseWheelJoint"
 
@@ -42,10 +234,7 @@ enum Part: String {
     case overheadSupportHook = "overHeadHookSupport"
     case overheadSupportJoint = "overHeadSupportVerticalJoint"
     
-    
     case carriedObjectAtRear = "objectCarriedAtRear"
-    
-    case casterFork = "casterFork"
 
     case casterVerticalJointAtRear = "casterVerticalBaseJointAtRear"
     case casterVerticalJointAtMid = "casterVerticalBaseJointAtMid"
@@ -58,12 +247,8 @@ enum Part: String {
     case casterWheelAtRear = "casterWheelAtRear"
     case casterWheelAtMid = "casterWheelAtMid"
     case casterWheelAtFront = "casterWheelAtFront"
-    
-    case casterWheel = "casterWheel"
-    case ceiling = "ceiling"
-    
-    case frameTube = "frameTube"
 
+    case ceiling = "ceiling"
 
     case corner = "corner"
     case id = "_id"
@@ -76,8 +261,6 @@ enum Part: String {
     case fixedWheel = "fixedWheel"
     case fixedWheelPropeller = "fixedWheelPropeller"
     
-    
-    
     case fixedWheelHorizontalJointAtRear = "fixedWheelHorizontalBaseJointAtRear"
     case fixedWheelHorizontalJointAtMid = "fixedWheelHorizontalBaseJointAtMid"
     case fixedWheelHorizontalJointAtFront = "fixedWheelHorizontalBaseJointAtFront"
@@ -88,31 +271,24 @@ enum Part: String {
     case fixedWheelAtMidWithPropeller = "fixedWheelAtMidithPropeller"
     case fixedWheelAtFrontWithPropeller = "fixedWheelAtFrontithPropeller"
     
-    
-    
     case footSupport = "footSupport"
     case footOnly = "footOnly"
     case footSupportInOnePiece = "footSupportInOnePiece"
     case footSupportJoint = "footSupportHorizontalJoint"
-    //case footSupportHanger = "footSupportHanger"
     case footSupportHangerLink = "footSupportHangerLink"
     case footSupportHangerJoint = "footSupportHangerSitOnVerticalJoint"
-    //case footSupportHangerBaseJoint = "footSupportHangerBaseJoint"
-    
-    case height = "Height"
+  
     case joint = "Joint"
     
     case joyStickForOccupant = "occupantControlledJoystick"
-    //case joyStickForAssistant = "assistantControlledJoystick"
-    
+ 
     case leftToRightDimension = "xIos"
-    case legSupportAngle = "legSupportAngle"
-    case length = "Length"
-    case lieOnSupport = "lieOn"
+   // case legSupportAngle = "legSupportAngle"
+
     case object = "object"
     case objectOrigin = "objectOrigin"
-    case viewOrigin = "viewOrigin"
-case notFound = "notAnyPart"
+
+    case notFound = "notAnyPart"
     case sitOn = "sitOn"
     case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"
@@ -128,24 +304,59 @@ case notFound = "notAnyPart"
     case stabilityAtSideAtMid = "stabilityAtSideAtMid"
     case stabilityAtSideAtFront = "stabilityAtSideAtFront"
     
-    
-    //case sitOnTiltJoint = "tiltInSpaceAngle"
     case sitOnTiltJoint = "tiltInSpaceHorizontalJoint"
     
-    
     case topToBottomDimension = "yIos"
-    case width = "Width"
 }
 
+
+enum ObjectTypes: String, CaseIterable {
+    
+    case allCasterBed = "Bed with caster base"
+    case allCasterChair = "Chair with caster base"
+    case allCasterHoist = "Hoist with caster base"
+    case allCasterSixHoist = "Hoist with caster base and six caster"
+    case allCasterTiltInSpaceShowerChair = "Tilting shower chair with caster base"
+    case allCasterStandAid = "Stand aid with caster base"
+    case allCasterStretcher = "Stretcher with caster Base "
+    
+//    case bathIntegralHoist = "IntegralBathHoist"
+//    case bathFloorFixedHoistOneRotationPoint = "SingleRotationPointBathHoist"
+//    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
+    
+    
+    case fixedWheelFrontDrive = "Power wheelchair with front drive"
+    case fixedWheelMidDrive  = "Power wheelchair with mid-drive"
+    case fixedWheelRearDrive = "Power wheelchair with rear drive"
+    case fixedWheelManualRearDrive = "Self-propelling wheelchair with rear drive"
+    case fixedWheelSolo = "Power wheelchair with active balance"
+    case fixedWheelTransfer = "Fixed wheel transfer device"
+    
+//    case hingedDoorSingle = "Door"
+//    case hingedDoorDouble = "Bi-FoldDoor"
+//    case hingedDoortripple = "Tri-FoldDoor"
+//
+    case scooterFrontDrive4Wheeler = "Scooter 4 wheel front drive"
+    case scooterFrontDrive3Wheeler =  "Scooter 3 wheel front drive"
+    case scooterRearDrive4Wheeler  = "Scooter 4 wheel rear drive"
+    case scooterRearDrive3Wheeler = "Scooter 3 wheel rear drive"
+    
+    case seatThatTilts = "Tilting chair"
+    
+    case showerTray = "Shower tray"
+    
+    case stairLiftStraight = "Straight stair-lift"
+    case stairLiftInternalRadius = "Internal radius stair-lift"
+    case stairLiftExternalRaidus = "External radius stair-lift"
+    
+    case verticalLift = "Vertical Lift"
+}
 
 
 enum Toggles {
     case twinSitOn
     case sitOnPosition
 }
-
-
-
 
 
 
@@ -346,11 +557,8 @@ struct ObjectsAndTheirChainLabels {
 //MARK: OneOrTwoId
 struct OneOrTWoId {
     let forPart: OneOrTwo<Part>
-    
     init(_ objectType: ObjectTypes,_ part: Part){
-       
         forPart = getIdForPart(part)
-        
         func getIdForPart(_ part: Part)
         -> OneOrTwo<Part>{
             switch part {
@@ -403,15 +611,12 @@ struct OneOrTWoId {
         func getIdForFrontAccountingForDriveLocation()
         -> OneOrTwo<Part>{
             switch objectType {
-            
-                
             case .fixedWheelFrontDrive, .fixedWheelRearDrive:
                 return .two(left: .id0, right: .id1)
             default:
                 return .two(left: .id2, right: .id3)
                 
             }
-            
         }
     }
 }
@@ -532,36 +737,62 @@ enum OneOrTwo <T> {
     }
     
     func map3<U, V, W>(_ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
-        switch (self, second, third) {
+
+       let (first,second, third) = convertToTwoIfMixed(self, second, third)
+        switch (first, second, third) {
         case let (.one(value1), .one(value2), .one(value3)):
             return .one(one: transform(value1, value2, value3))
         case let (.two(left1, right1), .two(left2, right2), .two(left3, right3)):
-            return .two(left: transform(left1, left2, left3), right: transform(right1, right2, right3))
+            return .two(
+                        left: transform(left1, left2, left3),
+                        right: transform(right1, right2, right3))
         default:
             // Handle other cases if needed
             fatalError("Incompatible cases for map3")
         }
     }
     
+    func convertToTwoIfMixed<U, V, W>(
+        _ value1: OneOrTwo<U>,
+        _ value2: OneOrTwo<V>,
+        _ value3: OneOrTwo<W>)
+    -> (OneOrTwo<U>, OneOrTwo<V>, OneOrTwo<W>) {
+        switch (value1, value2, value3) {
+        case let (.one(oneValue), .two, .two):
+            return ( .two(left: oneValue, right: oneValue), value2, value3)
+        case let (.two, .one(oneValue), .two):
+            return (value1, .two(left: oneValue, right: oneValue), value3)
+        case let (.one(firstOneValue), .two, .one(secondOneValue)):
+            return (.two(left: firstOneValue, right: firstOneValue), value2, .two(left: secondOneValue, right: secondOneValue))
+        case let (.two, .two, .one(oneValue)):
+            return (value1, value2, .two(left: oneValue, right: oneValue))
+        default:
+            return (value1, value2, value3)
+        }
+    }
 }
 
 
-//struct OneOrTwoExtraction<T> {
-//    var values: (left: T?, right: T?, one: T?)
-//
-//    init (_ oneOrTwo: OneOrTwo<T>) {
-//        values = extractValues(oneOrTwo)
-//
-//        func extractValues(_ value: OneOrTwo<T>) -> (left: T?, right: T?, one: T?) {
-//            switch value {
-//            case .two(let left, let right):
-//                return (left: left, right: right, one: nil)
-//            case .one(let one):
-//                return (left: nil, right: nil, one: one)
-//            }
-//        }
-//    }
-//}
+
+
+struct MiscObjectParameters {
+    let objectType: ObjectTypes
+
+    init(_ objectType: ObjectTypes) {
+        self.objectType = objectType
+    }
+    
+    
+    func getMainBodySupportAboveFloor()
+    -> Double {
+        let forMainBodySupportAboveFloor: [ObjectTypes: Double] =
+            [
+            .allCasterStretcher: 900.0,
+            .allCasterBed: 800.0]
+        return
+            forMainBodySupportAboveFloor[objectType] ?? 500.0
+    }
+}
 
 
 //MARK: StructFactory
@@ -583,8 +814,8 @@ struct KeyPathContainer<T> {
     var one: T?
 }
 
+
 extension StructFactory {
-    
     func createOneOrTwoSitOn(
     _ sideSupport: OneOrTwoGenericPartValue?,
     _ footSupportHangerLink: OneOrTwoGenericPartValue?)
@@ -1075,10 +1306,14 @@ extension StructFactory {
             
         func setScopesOfRotationForSitOnTiltJoint() {
             scopesOfRotation = [
-              
+                
+                [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
+                [.backSupport, .backSupportHeadSupport,.sideSupport],
+                [.sideSupport, .footSupport],
+               
                 [.backSupport, .backSupportHeadSupport],
                 [.backSupport, .backSupportHeadSupport, .sideSupport],
-                [.backSupport, .backSupportHeadSupport, .sideSupport, .footSupport],
+
                 [.backSupport, .backSupportHeadSupport, .footSupport]
                 ]
         }
@@ -1157,7 +1392,7 @@ extension StructFactory {
         func setSitOnTiltJointAngles() {
             let zeroAngle = ZeroValue.angle
             let min = Measurement(value: 0.0, unit: UnitAngle.degrees)
-            let max = Measurement(value: 30.0, unit: UnitAngle.degrees)
+            let max = Measurement(value: 0.0, unit: UnitAngle.degrees)
             let minRotationAngles =
                 (x: min, y: zeroAngle, z: zeroAngle)
             let maxRotationAngles =

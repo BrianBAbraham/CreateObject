@@ -504,3 +504,9 @@ struct ConvertFourCornerPerKeyToOne {
         return oneCornerPerKey
     }
 }
+
+
+enum DictionaryTypes  {
+    case forScreen
+    case forMeasurement
+}

@@ -79,7 +79,7 @@ class ObjectPickViewModel: ObservableObject {
         anglesMinMaxDic =
             dictionaryProvider.anglesMinMaxDic
         objectPartChainLabelDic =
-            dictionaryProvider.objectPartChainLabelDic
+            dictionaryProvider.objectsAndTheirChainLabels
         partChainsIdDic =
             dictionaryProvider.partChainIdDic
         

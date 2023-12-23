@@ -28,8 +28,7 @@ struct DictionaryProvider {
     let objectType: ObjectTypes
     let twinSitOnOption: TwinSitOnOptionDictionary
 
-    let oneOrTwoIds: [Part]
-    var objectPartChainLabelDic: ObjectPartChainLabelsDictionary = [:]
+   
 
 
     var partChainDictionary: PartChainDictionary = [:]
@@ -53,12 +52,11 @@ struct DictionaryProvider {
     var postTiltObjectToCornerDic: PositionDictionary = [:]
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary = [:]
     
+    let objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
     
     let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
-    
-    var sitOnOrigin: PositionAsIosAxes = ZeroValue.iosLocation
 
-    var oneOrTwoObjectPartDic: [Part: OneOrTwoGenericPartValue] = [:]
+    var partValuesDic: [Part: OneOrTwoGenericPartValue] = [:]
 
     /// using values taken from dictionaries
     /// either passed in, which may be the result of UI edit,
@@ -95,6 +93,7 @@ struct DictionaryProvider {
         self.angleDicIn = angleIn
         self.anglesMinMaxDicIn = minMaxAngleIn
         self.partChainIdDicIn = partChainIdDicIn
+        self.objectsAndTheirChainLabelsDicIn = objectsAndTheirChainLabelsDicIn
             
         oneOrTwoUserEditedDictionary =
                 OneOrTwoUserEditedDictionary(
@@ -106,26 +105,13 @@ struct DictionaryProvider {
                     partChainId: partChainIdDicIn
                 )
             
-
-        oneOrTwoIds = [.id0]
-            
         angleDic = [:]
-           
         anglesMinMaxDic = [:]
-        objectPartChainLabelDic = [:]
-
-            
 //MARK: - ORIGIN/DIMENSION DICTIONARY
         initialiseAllPart()
         createPreTiltDictionaryFromStructFactory()
         createPostTiltDictionaryFromStructFactory()
-     
-        
-        
-//MARK: - PRE-TILT CORNERS
-        
 
-            
 //DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDicNew).forEach{print($0)}
    // DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDicNew).forEach{print($0)}
 //print(preTiltObjectToPartFourCornerPerKeyDic)
@@ -138,12 +124,17 @@ struct DictionaryProvider {
             
         createPostTiltDictionaryFromStructFactory()
     
-        
-    func initialiseAllPart() {
-        let oneOfEachPartInAllPartChain =  getOneOfEachPartInAllPartChain()
+    } // Init ends
+} //Parent struct ends
+
+
+//MARK: initiate
+extension DictionaryProvider {
+    mutating func initialiseAllPart() {
+        let oneOfEachPartInAllPartChain = getOneOfEachPartInAllPartChain()
 
         if oneOfEachPartInAllPartChain.contains(.sitOn) {
-            oneOrTwoObjectPartDic +=
+            partValuesDic +=
                 [.sitOn: initialilseOneOrTwoSitOn()]
         }
         if oneOfEachPartInAllPartChain.contains(.backSupport) {
@@ -167,186 +158,183 @@ struct DictionaryProvider {
                 .backSupportHeadSupportLink, .backSupportHeadSupport )
         }
 
-                for part in oneOfEachPartInAllPartChain {
-                    switch part {
-                        case //already initialised
-                            .sitOn,
-                            .backSupport,
-                            .footSupportHangerLink:
-                                break
-                        case //part depends on sitOn
-                            .backSupportRotationJoint,
-                            .footSupportHangerJoint,
-                            .sideSupport,
-                            .sideSupportRotationJoint,
-                            .sitOnTiltJoint:
-                                initialiseOneOrTwoDependantPart(
-                                    .sitOn, part )
-                        case
-                            .backSupportHeadSupportJoint,
-                            .backSupportHeadSupportLink,
-                            .backSupportHeadSupport:
-                                break
-                        case .footSupport:
-                                initialiseOneOrTwoIndependantPart(part)
-                        case .footSupportJoint:
-                                initialiseOneOrTwoDependantPart(.footSupportHangerLink, part )
-                        case .footSupportInOnePiece, .footOnly:
-                                    initialiseOneOrTwoIndependantPart(part)
-                        case
-                            .fixedWheelAtRear,
-                            .fixedWheelAtMid,
-                            .fixedWheelAtFront,
-                            .casterWheelAtRear,
-                            .casterWheelAtMid,
-                            .casterWheelAtFront:
-                                initialiseOneOrTwoWheel(part)
-                        case // all intialised by the wheel
-                            .casterForkAtRear,
-                            .casterForkAtMid,
-                            .casterForkAtFront,
-                            .fixedWheelHorizontalJointAtRear,
-                            .fixedWheelHorizontalJointAtMid,
-                            .fixedWheelHorizontalJointAtFront,
-                            .casterVerticalJointAtRear,
-                            .casterVerticalJointAtMid,
-                            .casterVerticalJointAtFront:
-                                break
-                        
-                        default:
-                            fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(part)")
-                    }
-                }
- 
-  
-        func initialiseOneOrTwoWheel(_ oneChainLabel: Part ) {
-            let partChain = LabelInPartChainOut(oneChainLabel).partChain
-            let partWithJoint: [Part] = [
+        for part in oneOfEachPartInAllPartChain {
+            switch part {
+                case //already initialised
+                    .sitOn,
+                    .backSupport,
+                    .footSupportHangerLink:
+                        break
+                case //part depends on sitOn
+                    .backSupportRotationJoint,
+                    .footSupportHangerJoint,
+                    .sideSupport,
+                    .sideSupportRotationJoint,
+                    .sitOnTiltJoint:
+                        initialiseOneOrTwoDependantPart(
+                            .sitOn, part )
+                case
+                    .backSupportHeadSupportJoint,
+                    .backSupportHeadSupportLink,
+                    .backSupportHeadSupport:
+                        break
+                case .footSupport:
+                        initialiseOneOrTwoIndependantPart(part)
+                case .footSupportJoint:
+                        initialiseOneOrTwoDependantPart(.footSupportHangerLink, part )
+                case .footSupportInOnePiece, .footOnly:
+                            initialiseOneOrTwoIndependantPart(part)
+                case
+                    .fixedWheelAtRear,
+                    .fixedWheelAtMid,
+                    .fixedWheelAtFront,
+                    .casterWheelAtRear,
+                    .casterWheelAtMid,
+                    .casterWheelAtFront:
+                        initialiseOneOrTwoWheel(part)
+                case // all intialised by the wheel
+                    .casterForkAtRear,
+                    .casterForkAtMid,
+                    .casterForkAtFront,
                     .fixedWheelHorizontalJointAtRear,
                     .fixedWheelHorizontalJointAtMid,
                     .fixedWheelHorizontalJointAtFront,
                     .casterVerticalJointAtRear,
                     .casterVerticalJointAtMid,
-                    .casterVerticalJointAtFront]
-            var siblings: [OneOrTwoGenericPartValue] = []
-            var jointPart:Part = .notFound
-            
-            if let jointIndex = partChain.firstIndex(where: { partWithJoint.contains($0) }) {
-                jointPart = partChain[jointIndex]
-                for index in 0..<partChain.count {
-                    let part = partChain[index]
-                    if index != jointIndex {
-                        initialiseOneOrTwoIndependantPart(part)
-                        
-                        if let values = oneOrTwoObjectPartDic[part] {
-                            siblings.append(values)
-                        } else {
-                            fatalError( "\n\nDictionary Provider: \(#function) initialisation did not succedd this part: \(part)")
-                        }
+                    .casterVerticalJointAtFront:
+                        break
+                
+                default:
+                    fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(part)")
+            }
+        }
+    }
+    
+    mutating func initialiseOneOrTwoWheel(_ oneChainLabel: Part ) {
+        let partChain = LabelInPartChainOut(oneChainLabel).partChain
+        let partWithJoint: [Part] = [
+                .fixedWheelHorizontalJointAtRear,
+                .fixedWheelHorizontalJointAtMid,
+                .fixedWheelHorizontalJointAtFront,
+                .casterVerticalJointAtRear,
+                .casterVerticalJointAtMid,
+                .casterVerticalJointAtFront]
+        var siblings: [OneOrTwoGenericPartValue] = []
+        var jointPart:Part = .notFound
+        
+        if let jointIndex = partChain.firstIndex(where: { partWithJoint.contains($0) }) {
+            jointPart = partChain[jointIndex]
+            for index in 0..<partChain.count {
+                let part = partChain[index]
+                if index != jointIndex {
+                    initialiseOneOrTwoIndependantPart(part)
+                    
+                    if let values = partValuesDic[part] {
+                        siblings.append(values)
+                    } else {
+                        fatalError( "\n\nDictionary Provider: \(#function) initialisation did not succedd this part: \(part)")
                     }
                 }
             }
-            initialiseOneOrTwoDependantPart(
-                .sitOn,
-                jointPart,
-                siblings)
         }
+        initialiseOneOrTwoDependantPart(
+            .sitOn,
+            jointPart,
+            siblings)
+    }
+    
+    
+    func initialilseOneOrTwoSitOn ()
+        -> OneOrTwoGenericPartValue {
+         StructFactory(
+            objectType,
+            oneOrTwoUserEditedDictionary)
+                 .createOneOrTwoSitOn(
+                    nil,
+                    nil)
+    }
+       
         
-        
-        func initialilseOneOrTwoSitOn ()
-            -> OneOrTwoGenericPartValue {
-             StructFactory(
-                objectType,
-                oneOrTwoUserEditedDictionary)
-                     .createOneOrTwoSitOn(
-                        nil,
-                        nil)
-        }
-           
-            
-        func initialiseOneOrTwoDependantPart(
-            _ parent: Part,
-            _ child: Part,
-            _ siblings: [OneOrTwoGenericPartValue] = []) {
-            if let parentValue = oneOrTwoObjectPartDic[parent] {
-                oneOrTwoObjectPartDic +=
-                    [child:
-                        StructFactory(
-                            objectType,
-                            oneOrTwoUserEditedDictionary)
-                                .createOneOrTwoDependentPartForSingleSitOn(
-                                    parentValue,
-                                    child,
-                                    []) ]
-            } else {
-                 fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(parent)")
-            }
-        }
-            
-            
-        func initialiseOneOrTwoIndependantPart(_ child: Part) {
-            oneOrTwoObjectPartDic +=
+    mutating func initialiseOneOrTwoDependantPart(
+        _ parent: Part,
+        _ child: Part,
+        _ siblings: [OneOrTwoGenericPartValue] = []) {
+        if let parentValue = partValuesDic[parent] {
+            partValuesDic +=
                 [child:
                     StructFactory(
-                       objectType,
-                       oneOrTwoUserEditedDictionary)
+                        objectType,
+                        oneOrTwoUserEditedDictionary)
                             .createOneOrTwoDependentPartForSingleSitOn(
-                                nil,
+                                parentValue,
                                 child,
                                 []) ]
+        } else {
+             fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(parent)")
         }
     }
         
-//MARK: createPreTiltDic
-        func createPreTiltDictionaryFromStructFactory(_ global: Bool = true) {
-            guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? ObjectsAndTheirChainLabels().dictionary[objectType] else {
-                fatalError("No values exist for the specified chainLabels.")
-            }
-            for chainLabel in chainLabels {
-                processChainLabelForDictionaryCreation(chainLabel, global)
-            }
-        }
         
-        
-        func getOneOfEachPartInAllPartChain() -> [Part]{
-            let chainLabels =
-                objectsAndTheirChainLabelsDicIn[objectType] ??
-                ObjectsAndTheirChainLabels().dictionary[objectType]
-         
-            var oneOfEachPartInAllChainLabel: [Part] = []
-            if let chainLabels{
-                var allPartInThisObject: [Part] = []
-                let onlyOne = 0
-                for label in chainLabels {
-                    allPartInThisObject +=
-                    LabelInPartChainOut([label]).partChains[onlyOne]
-                }
-               oneOfEachPartInAllChainLabel =
-                Array(Set(allPartInThisObject))
-            }
-            return oneOfEachPartInAllChainLabel
-        }
-        
-    } // Init ends
-} //Parent struct ends
+    mutating func initialiseOneOrTwoIndependantPart(_ child: Part) {
+        partValuesDic +=
+            [child:
+                StructFactory(
+                   objectType,
+                   oneOrTwoUserEditedDictionary)
+                        .createOneOrTwoDependentPartForSingleSitOn(
+                            nil,
+                            child,
+                            []) ]
+    }
+}
+
 
 
 //MARK: PretTiltDic
 extension DictionaryProvider {
-  
     
-         mutating  func processChainLabelForDictionaryCreation(_ chainLabel: Part, _ global: Bool ) {
-                let chain = LabelInPartChainOut(chainLabel).partChain
-                let z = ZeroValue.iosLocation
-                var currentOrigins = (left: z, right: z, one: z)
-                for index in 0..<chain.count {
-                   processPartForDictionaryCreation(
-                    &currentOrigins,
-                   index,
-                   chain,
-                   global)
-                }
+//MARK: createPreTiltDic
+    mutating func createPreTiltDictionaryFromStructFactory(_ global: Bool = true) {
+        guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? ObjectsAndTheirChainLabels().dictionary[objectType] else {
+            fatalError("No values exist for the specified chainLabels.")
+        }
+        for chainLabel in chainLabels {
+            processChainLabelForDictionaryCreation(chainLabel, global)
+        }
+    }
+    
+    
+    func getOneOfEachPartInAllPartChain() -> [Part]{
+        let chainLabels =
+            objectsAndTheirChainLabelsDicIn[objectType] ??
+            ObjectsAndTheirChainLabels().dictionary[objectType]
+     
+        var oneOfEachPartInAllChainLabel: [Part] = []
+        if let chainLabels{
+            var allPartInThisObject: [Part] = []
+            let onlyOne = 0
+            for label in chainLabels {
+                allPartInThisObject +=
+                LabelInPartChainOut([label]).partChains[onlyOne]
             }
+           oneOfEachPartInAllChainLabel =
+            Array(Set(allPartInThisObject))
+        }
+        return oneOfEachPartInAllChainLabel
+    }
+    
+     mutating  func processChainLabelForDictionaryCreation(_ chainLabel: Part, _ global: Bool ) {
+            let chain = LabelInPartChainOut(chainLabel).partChain
+            let z = ZeroValue.iosLocation
+            var currentOrigins = (left: z, right: z, one: z)
+            for index in 0..<chain.count {
+               processPartForDictionaryCreation(
+                &currentOrigins,
+               index,
+               chain,
+               global)
+            }
+        }
             
 
      mutating func processPartForDictionaryCreation(
@@ -354,9 +342,9 @@ extension DictionaryProvider {
             _ index: Int,
             _ chain: [Part],
             _ global: Bool) {
-                guard let partValue = oneOrTwoObjectPartDic[chain[index]],
+                guard let partValue = partValuesDic[chain[index]],
                       let parentPartValue =
-                        (index == 0 ? partValue: oneOrTwoObjectPartDic[chain[index - 1]])  else {
+                        (index == 0 ? partValue: partValuesDic[chain[index - 1]])  else {
                 return fatalErrorGettingPartValue() }
 
                 if !global {//if relative reset for each part
@@ -416,7 +404,7 @@ extension DictionaryProvider {
 
 
                 func fatalErrorGettingOrigin(_ oneOrTwo: String){
-                  print ( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exist for these chainLabels\(String(describing: chain[index])) for \(oneOrTwo)") }
+                    fatalError ( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exist for these chainLabels\(String(describing: chain[index])) for \(oneOrTwo)") }
             }
             
             
@@ -602,7 +590,8 @@ extension DictionaryProvider {
 
         for (rotatorPart, allPartsToBeRotatedByOneRotator) in
                 zip(rotatorParts, allPartsToBeRotatedByAllRotators) {
-            processRotationOfAllPartsByOneRotator(rotatorPart, allPartsToBeRotatedByOneRotator)
+           // print(allPartsToBeRotatedByOneRotator)
+                    processRotationOfAllPartsByOneRotator(rotatorPart, allPartsToBeRotatedByOneRotator)
         }
     }
 
@@ -614,14 +603,14 @@ extension DictionaryProvider {
             var originNames: [OneOrTwo<String>] = []
             
             for partToBeRotated in allPartsToBeRotatedByRotator {
-                guard let values = oneOrTwoObjectPartDic[partToBeRotated] else {
+                guard let values = partValuesDic[partToBeRotated] else {
                     fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(partToBeRotated) ") }
                 
                 dimensions.append(values.dimension)
                 originNames.append(values.originName)
             }
-            
-            guard let angle: OneOrTwo<RotationAngles> = oneOrTwoObjectPartDic[rotatorPart]?.angles else {
+            //print(originNames)
+            guard let angle: OneOrTwo<RotationAngles> = partValuesDic[rotatorPart]?.angles else {
                 fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(rotatorPart) ") }
             
             let rotatorData =
@@ -637,6 +626,7 @@ extension DictionaryProvider {
             
             let allOriginsAfterRotationdByRotator =
                getAllOriginsAfterRotationdByOneRotator(rotatorData)
+            //print(allOriginsAfterRotationdByRotator)
             
             let allPartCornerPositionAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>]  =
                     getAllPartCornerPositionAfterRotationByOneRotator(
@@ -678,16 +668,39 @@ extension DictionaryProvider {
         var allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>] = []
         for partOrigin in
                 rotator.originOfAllPartsToBeRotated {
+//            print(type(of: rotator.rotatorOrigin))
+//            print(type(of: partOrigin))
+//            print(type(of: rotator.angle))
+//            print("\n\n")
             
+            //print(partOrigin)
             allOriginAfterRotationByRotator.append(
                 getFromOneOrTwoEnumMap3(
                     rotator.rotatorOrigin,
                     partOrigin,
                     rotator.angle ) { calculateRotatedOrigin($0, $1, $2) } )
         }
+        
+       // print("ORIGIN ROTATED")
         return allOriginAfterRotationByRotator
     }
 
+    
+//    func getAllOriginsAfterRotationdByOneRotator(
+//        _ rotator: Rotator)
+//    -> OneOrTwo<[PositionAsIosAxes]> {
+//        var allOriginAfterRotationByRotator: OneOrTwo<[PositionAsIosAxes]> = .one(one: [])
+//        for partOrigin in
+//                rotator.originOfAllPartsToBeRotated {
+//
+//            allOriginAfterRotationByRotator.append(
+//                getFromOneOrTwoEnumMap3(
+//                    rotator.rotatorOrigin,
+//                    partOrigin,
+//                    rotator.angle ) { calculateRotatedOrigin($0, $1, $2) } )
+//        }
+//        return allOriginAfterRotationByRotator
+//    }
             
     func getAllPartCornerPositionAfterRotationByOneRotator (
         _ allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>],
@@ -705,6 +718,7 @@ extension DictionaryProvider {
                         rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
             allPartCornerPositionsAfterRotationByOneRotator.append(result)
         }
+       // print("CORNER ROTATED")
         return allPartCornerPositionsAfterRotationByOneRotator
     }
     
@@ -772,7 +786,7 @@ extension DictionaryProvider {
         var rotatingParts: [Part] = []
         var allPartsToBeRotatedByOneRotatorPart: [[Part]] = []
         for chainLabel in chainLabels {
-            guard let  values = oneOrTwoObjectPartDic[chainLabel] else {
+            guard let  values = partValuesDic[chainLabel] else {
                fatalError("no values defined for chain labels \(chainLabel)")
             }
             let currentScopeOrderedAsByUI = 0 // UI edits parts rotated by same rotator
@@ -806,7 +820,7 @@ extension DictionaryProvider {
     func getGlobalOriginOfRotatorFromDictionary(//from dictionary as property is origin from parent
         _ part: Part)
     -> OneOrTwo<PositionAsIosAxes> {
-        guard let values = oneOrTwoObjectPartDic[part] else {
+        guard let values = partValuesDic[part] else {
             fatalError("No values defined for part \(part)")
         }
         let name = values.originName

@@ -74,8 +74,8 @@ struct Tilt: View {
     var body: some View {
         let angleMinMax =
             objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.anglesMinMax
-        let angleMax = angleMinMax.max.x.value
-        let angleMin = angleMinMax.min.x.value
+        let angleMax = 1.0//angleMinMax.max.x.value
+        let angleMin = 0.0//angleMinMax.min.x.value
         if showTilt {
 
                 Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
