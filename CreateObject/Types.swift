@@ -107,7 +107,7 @@ typealias BaseObjectAngleDictionary = [ObjectTypes: Measurement<UnitAngle>]
 typealias BaseObjectAngelMinMaxDictionary = [ObjectTypes: AngleMinMax]
 //typealias BaseObjectWheelSizeDictionary = [ObjectTypes: WheelSize]
 
-typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
+//typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
 
 
 

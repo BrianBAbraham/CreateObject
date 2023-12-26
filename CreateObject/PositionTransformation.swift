@@ -26,12 +26,6 @@ struct ZeroValue {
         (rear: dimension3d, mid: dimension3d, front:
             dimension3d )
     
-//    static let sitOnOrigins: TwinSitOnOrigins =
-//            (
-//            onlyOne: [],
-//            rearAndFront: [],
-//            leftAndRight: [])
-    
     static let rearMidFrontPositions: RearMidFrontPositions =
         (
         rear: ZeroValue.iosLocation,
@@ -75,23 +69,7 @@ struct CreateIosPosition {
         return toupleSum
     }
     
-//    static func addToupleToArrayOfTouple (
-//        _ additiveTouple: PositionAsIosAxes,
-//        _ toupleArray: [PositionAsIosAxes])
-//        -> [PositionAsIosAxes] {
-//            
-//            var touples: [PositionAsIosAxes] = []
-//            for touple in toupleArray {
-//                touples.append(
-//                CreateIosPosition.addTwoTouples(
-//                    additiveTouple,
-//                    touple)
-//                )
-//            }
-//        return touples
-//    }
-    
-    
+
     static func subtractSecondFromFirstTouple(_ first: PositionAsIosAxes, _ second: PositionAsIosAxes)  -> PositionAsIosAxes {
         (x: first.x - second.x,y: first.y - second.y, z: first.z - second.z )
     }
@@ -246,6 +224,7 @@ struct CreateIosPosition {
     static func minMaxPosition(
         _ corners: PositionDictionary)
         -> [PositionAsIosAxes] {
+            
         let values = corners.map { $0.value }
         let valuesAsArray = CreateIosPosition
             .getArrayFromPositions(values)

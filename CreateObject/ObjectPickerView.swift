@@ -12,7 +12,7 @@ struct PickInitialObjectView: View {
     @EnvironmentObject var objecEditVM: ObjectEditViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
-    @EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
+    //@EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
     
     var objectNames: [String] {
         //DictionaryProvider.objects.map{$0.rawValue
@@ -34,7 +34,7 @@ struct PickInitialObjectView: View {
     
     var body: some View {
         
-        let twinSitOnState = twinSitOnVM.getState() //TWIN
+       // let twinSitOnState = twinSitOnVM.getState() //TWIN
         //let doubleSitOnState = objectPickVM.getCurrentOptionThereAreDoubleSitOn()  //TWIN
         let boundEquipmentType = Binding(
             get: {objectPickVM.getCurrentObjectName()},
@@ -56,14 +56,15 @@ struct PickInitialObjectView: View {
    
 //print(objectPickVM.getInitialObjectDictionary())
 
-let twinSitOnOptions = twinSitOnVM.getTwinSitOnOptions()
+//let twinSitOnOptions = twinSitOnVM.getTwinSitOnOptions()
                 
 //objectPickVM.setDefaultObjectDictionary(
 //    twinSitOnOptions)
                 
 objectPickVM.setCurrentObjectByCreatingFromName(
-    //tag,
-    twinSitOnOptions)
+// tag//,
+  // twinSitOnOptions
+)
                 
 
                 

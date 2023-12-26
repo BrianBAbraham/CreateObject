@@ -18,12 +18,11 @@ struct ObjectPickModel {
     var postTiltFourCornerPerKeyDic: CornerDictionary = [:]
     
     var dimensionDic: Part3DimensionDictionary
-    
-    //var objectOptionDictionary: OptionDictionary
+  
     
     var angleDic: AnglesDictionary
     
-    var angleInDic: AnglesDictionary = [:]
+    var angleInDic: AnglesDictionary
     
     var anglesMinMaxDic: AnglesMinMaxDictionary
     
@@ -33,12 +32,28 @@ struct ObjectPickModel {
     
     var currentObjectFrameSize: Dimension = ZeroValue.dimension
     
+    var userEditedDictionary: UserEditedDictionary
 
-//    mutating func setObjectOptionDictionary(
-//        _ option: ObjectOptions,
-//        _ state: Bool) {
-//            objectOptionDictionary[option] = state
-//        }
+
+    init(
+        currentObjectName: String,
+       
+        preTiltFourCornerPerKeyDic: CornerDictionary,
+        postTiltFourCornerPerKeyDic: CornerDictionary,
+        userEditedDictionary: UserEditedDictionary
+    ){
+        self.userEditedDictionary = userEditedDictionary
+        self.currentObjectName = currentObjectName
+        self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
+        self.postTiltFourCornerPerKeyDic = postTiltFourCornerPerKeyDic
+        dimensionDic = userEditedDictionary.dimension
+        angleDic = userEditedDictionary.anglesDic
+        anglesMinMaxDic = userEditedDictionary.anglesMinMaxDic
+        objectPartChainLabelDic = userEditedDictionary.objectsAndTheirChainLabelsDicIn
+        partChainsIdDic = userEditedDictionary.partChainId
+        angleInDic = angleDic
+        
+    }
 }
     
     
@@ -47,7 +62,7 @@ struct ObjectPickModel {
 class ObjectPickViewModel: ObservableObject {
     static let initialObject = ObjectTypes.fixedWheelRearDrive
     static let initialObjectName = initialObject.rawValue
-   static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
+ //  static let twinSitOnDictionary: TwinSitOnOptionDictionary = [:]
     
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let postTiltOneCornerPerKeyDic: PositionDictionary
@@ -57,14 +72,15 @@ class ObjectPickViewModel: ObservableObject {
     let anglesMinMaxDic: AnglesMinMaxDictionary
     let objectPartChainLabelDic: ObjectPartChainLabelsDictionary
     let partChainsIdDic: [PartChain: OneOrTwo<Part>]
+    var userEditedDictionary: UserEditedDictionary
 
     
     @Published private var objectPickModel: ObjectPickModel
     let dictionaryProvider: DictionaryProvider
     
     init() {
-        
-        dictionaryProvider = setDictionaryProvider(nil)
+        userEditedDictionary = UserEditedDictionary()
+        dictionaryProvider = setDictionaryProvider(nil, userEditedDictionary)
 
        preTiltFourCornerPerKeyDic =
             dictionaryProvider.preTiltObjectToPartFourCornerPerKeyDic
@@ -83,31 +99,39 @@ class ObjectPickViewModel: ObservableObject {
         partChainsIdDic =
             dictionaryProvider.partChainIdDic
         
+        //print(postTiltFourCornerPerKeyDic)
+        
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: ObjectTypes.fixedWheelRearDrive.rawValue,
                 preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
                 postTiltFourCornerPerKeyDic: postTiltFourCornerPerKeyDic,
-                dimensionDic: dimensionDic,
-                angleDic: angleDic,
-                anglesMinMaxDic: anglesMinMaxDic,
-                objectPartChainLabelDic: objectPartChainLabelDic,
-                partChainsIdDic: partChainsIdDic)
+//                dimensionDic: dimensionDic,
+//                angleDic: angleDic,
+//                anglesMinMaxDic: anglesMinMaxDic,
+//                objectPartChainLabelDic: objectPartChainLabelDic,
+//                partChainsIdDic: partChainsIdDic,
+                userEditedDictionary: userEditedDictionary)
+        
+       // let userEditedDictionary = UserEditedDictionary()
        
         func setDictionaryProvider(
-            _ objectName: String?)
+            _ objectName: String?,
+            _ userEditedDictionary: UserEditedDictionary)
             -> DictionaryProvider {
             var objectType: ObjectTypes
-            if let unwrappedObjectName = objectName {
+               
+            if let unwrappedObjectName = objectName  {
                 objectType = ObjectTypes(rawValue: unwrappedObjectName) ?? ObjectTypes.fixedWheelRearDrive
+               
             } else {
                 objectType = .fixedWheelRearDrive
+                
             }
             return
                 DictionaryProvider(
                     objectType,
-                    ObjectPickViewModel.twinSitOnDictionary//,
-                    //[ObjectPickViewModel.optionDictionary, ObjectPickViewModel.optionDictionary]
+                    userEditedDictionary
                     )
         }
     }
@@ -144,7 +168,15 @@ extension ObjectPickViewModel {
     
     func getPostTiltOneCornerPerKeyDic()
         ->PositionDictionary{
+            
+          
+            //print(objectPickModel.postTiltFourCornerPerKeyDic)
+        let dic =
         ConvertFourCornerPerKeyToOne(fourCornerPerElement: objectPickModel.postTiltFourCornerPerKeyDic).oneCornerPerKey
+//            print(dic)
+//            print("\n\n")
+            return dic
+            
     }
     
     
@@ -153,6 +185,8 @@ extension ObjectPickViewModel {
     }
     
     func getPostTiltFourCornerPerKeyDic() -> CornerDictionary {
+       // print(objectPickModel.postTiltFourCornerPerKeyDic)
+        return
         objectPickModel.postTiltFourCornerPerKeyDic
     }
     
@@ -289,6 +323,8 @@ extension ObjectPickViewModel {
     
     
         func setCurrentObjectName(_ objectName: String){
+            //print("DETECT")
+
             objectPickModel.currentObjectName = objectName
         }
         
@@ -303,21 +339,20 @@ extension ObjectPickViewModel {
         
         
         func setCurrentObjectByCreatingFromName(
-            _ twinSitOnDictionary: TwinSitOnOptionDictionary,
+           // _ twinSitOnDictionary: TwinSitOnOptionDictionary,
             _ angleInDic: AnglesDictionary = [:],
             partChainIdDicIn: [PartChain: OneOrTwo<Part>]  = [:]) {
-            
-                let objectPartChainLabelDicToUse: ObjectPartChainLabelsDictionary =
-                getObjectPartChainLabelDic()// [:]
-
+           
+ 
             let objectName = getCurrentObjectName()
             let dictionaryProvider =
                 DictionaryProvider(
                     ObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
-                    ObjectPickViewModel.twinSitOnDictionary,
-                    angleIn: angleInDic,
-                    objectsAndTheirChainLabelsDicIn: objectPartChainLabelDicToUse,
-                partChainIdDicIn: partChainIdDicIn)
+
+                    objectPickModel.userEditedDictionary)
+                
+               
+            // print(dictionaryProvider.postTiltObjectToFourCornerPerKeyDic)
                 
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
@@ -355,7 +390,7 @@ extension ObjectPickViewModel {
                 setObjectPartChainLabelDic(currentObjectPartChainLabelDic)
 
                 setCurrentObjectByCreatingFromName(
-                    ObjectPickViewModel.twinSitOnDictionary,
+                   // ObjectPickViewModel.twinSitOnDictionary,
                     objectPickModel.angleInDic,
                    
                     partChainIdDicIn: getPartChainIdDic())
@@ -373,8 +408,8 @@ extension ObjectPickViewModel {
             //partChainIdDic[footChain] = [[Part.id0],[Part.id0], [Part.id0],getNewId(option)]
             
             setCurrentObjectByCreatingFromName(
-                ObjectPickViewModel
-                    .twinSitOnDictionary,
+//                ObjectPickViewModel
+//                    .twinSitOnDictionary,
                 objectPickModel.angleInDic,
                 partChainIdDicIn: partChainIdDic)
         
@@ -404,7 +439,7 @@ extension ObjectPickViewModel {
     func getMaximumDimensionOfObject (
         _ dictionary: PositionDictionary)
         -> Double {
-
+//print(dictionary)
             let minMax =
             CreateIosPosition
                .minMaxPosition(dictionary)
@@ -434,11 +469,13 @@ extension ObjectPickViewModel {
         -> CornerDictionary {
          
         let currentDic =  objectPickModel.postTiltFourCornerPerKeyDic
-        let currentObjectAsOneCornerPerKeyDic =
+        // print(currentDic)
+            
+            let currentObjectAsOneCornerPerKeyDic =
             ConvertFourCornerPerKeyToOne(
                 fourCornerPerElement: currentDic).oneCornerPerKey
-//print (currentDic )
-//print (currentObjectAsOneCornerPerKeyDic)
+//print (currentObjectAsOneCornerPerKeyDic )
+
         let minThenMax =
              CreateIosPosition
                 .minMaxPosition(currentObjectAsOneCornerPerKeyDic)

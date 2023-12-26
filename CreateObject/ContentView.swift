@@ -295,96 +295,96 @@ struct ContentView: View {
 //        }
 //    }
 //}
+//
+//struct ExclusiveToggles: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
 
-struct ExclusiveToggles: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-
-    let toggleCases: [TwinSitOnOption]
+   // let toggleCases: [TwinSitOnOption]
     
-    let toggleFor: Toggles
+//    let toggleFor: Toggles
+//
+//    @State var flags: [Bool]
+//
     
-    @State var flags: [Bool]
-    
-    
-    init(_ optionStates: [Bool], _ toggleCases: [TwinSitOnOption], _ toggleFor: Toggles) {
+//    init(_ optionStates: [Bool],
+//         _ toggleCases: [TwinSitOnOption],
+//         _ toggleFor: Toggles) {
+//
+//        self.toggleCases = toggleCases
+//        _flags = State(initialValue: optionStates)
+//        self.toggleFor = toggleFor
+//
+//
+//
+//    }
+//
+//    var body: some View {
+//        HStack {
+//            ForEach(flags.indices, id: \.self) { i in
+//                ToggleItem(
+//                    storage: self.$flags,
+//                    tag: i,
+//                    label: toggleCases[i].rawValue,
+//                    toggleCases: toggleCases,
+//                    toggleFor: toggleFor)
+//                        .padding(.horizontal)
+//            }
+//        }
+//    }
+//}
 
-        self.toggleCases = toggleCases
-        _flags = State(initialValue: optionStates)
-        self.toggleFor = toggleFor
-        
-        
 
-    }
-    
-    var body: some View {
-        HStack {
-            ForEach(flags.indices, id: \.self) { i in
-                ToggleItem(
-                    storage: self.$flags,
-                    tag: i,
-                    label: toggleCases[i].rawValue,
-                    toggleCases: toggleCases,
-                    toggleFor: toggleFor)
-                        .padding(.horizontal)
-            }
-        }
-    }
-}
-
-
-struct ToggleItem: View {
-    @Binding var storage: [Bool]
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-    var tag: Int
-    var label: String = ""
-    let toggleCases: [TwinSitOnOption]
-    let toggleFor: Toggles
-    
-    var body: some View {
-        
-
-        
-        
-        let isOn = Binding (get: { self.storage[self.tag] },
-            set: { value in
-            
-            for index in 0..<toggleCases.count {
-
-                let setOption = index == tag ? true: false
-
-                switch toggleFor {
-                case .twinSitOn:
-                    twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
-                    
-
-let twinSitOnOptions =
-twinSitOnVM.getTwinSitOnOptions()
-                    
-//objectPickVM.setDefaultObjectDictionary(
+//struct ToggleItem: View {
+//    @Binding var storage: [Bool]
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+//    var tag: Int
+//    var label: String = ""
+//    let toggleCases: [TwinSitOnOption]
+//    let toggleFor: Toggles
+//    
+//    var body: some View {
+//        
+//
+//        
+//        
+//        let isOn = Binding (get: { self.storage[self.tag] },
+//            set: { value in
+//            
+//            for index in 0..<toggleCases.count {
+//
+//                let setOption = index == tag ? true: false
+//
+//                switch toggleFor {
+//                case .twinSitOn:
+//                    twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
+//                    
+//
+//let twinSitOnOptions =
+//twinSitOnVM.getTwinSitOnOptions()
+//                    
+//                
+//objectPickVM.setCurrentObjectByCreatingFromName(
 //    twinSitOnOptions)
-                    
-objectPickVM.setCurrentObjectByCreatingFromName(
-    twinSitOnOptions)
-
-                    
-                case .sitOnPosition:
-                    twinSitOnVM.setTwinSitOnOption(
-                        toggleCases[index],
-                        setOption
-                    )
-                }
-            }
-
-                withAnimation {
-                    self.storage = self.storage.enumerated().map { $0.0 == self.tag }
-                }
-            })
-        return Toggle(label, isOn: isOn)
-    }
-
-}
+//
+//                    
+//                case .sitOnPosition:
+//                    twinSitOnVM.setTwinSitOnOption(
+//                        toggleCases[index],
+//                        setOption
+//                    )
+//                }
+//            }
+//
+//                withAnimation {
+//                    self.storage = self.storage.enumerated().map { $0.0 == self.tag }
+//                }
+//            })
+//        return Toggle(label, isOn: isOn)
+//    }
+//
+//}
 
 //struct ToggleItem: View {
 //    @Binding var storage: [Bool]

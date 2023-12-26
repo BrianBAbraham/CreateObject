@@ -15,7 +15,6 @@
 		FD95DA2C29E40F1B009A9500 /* EditObjectMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD95DA2B29E40F1B009A9500 /* EditObjectMenuView.swift */; };
 		FD9B4B4429A1265600E408AA /* ObjectDictionaryTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9B4B4329A1265600E408AA /* ObjectDictionaryTransformation.swift */; };
 		FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA4743C29E46925003F1202 /* ObjectView.swift */; };
-		FDA8D6162A121D5D0017CAB5 /* TwinSitOnVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */; };
 		FDAB603829E98C2500BE56FA /* ObjectDictionaryInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAB603729E98C2500BE56FA /* ObjectDictionaryInformation.swift */; };
 		FDAC054929EADEFB00FCB400 /* JointDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC054829EADEFB00FCB400 /* JointDimensions.swift */; };
 		FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB931CF2A0134AE00F86B4F /* CircleView.swift */; };
@@ -46,7 +45,6 @@
 		FD95DA2B29E40F1B009A9500 /* EditObjectMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditObjectMenuView.swift; sourceTree = "<group>"; };
 		FD9B4B4329A1265600E408AA /* ObjectDictionaryTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDictionaryTransformation.swift; sourceTree = "<group>"; };
 		FDA4743C29E46925003F1202 /* ObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectView.swift; sourceTree = "<group>"; };
-		FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinSitOnVM.swift; sourceTree = "<group>"; };
 		FDAB603729E98C2500BE56FA /* ObjectDictionaryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDictionaryInformation.swift; sourceTree = "<group>"; };
 		FDAC054829EADEFB00FCB400 /* JointDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointDimensions.swift; sourceTree = "<group>"; };
 		FDB931CF2A0134AE00F86B4F /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
@@ -110,7 +108,6 @@
 				FDAB603729E98C2500BE56FA /* ObjectDictionaryInformation.swift */,
 				FDD0CAEE29DB393600203BE5 /* Screen.swift */,
 				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
-				FDA8D6152A121D5D0017CAB5 /* TwinSitOnVM.swift */,
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectEditVM.swift */,
 				FDCE3F0A299A8B5B00C19F2A /* Save.swift */,
@@ -231,7 +228,6 @@
 				FD95DA2C29E40F1B009A9500 /* EditObjectMenuView.swift in Sources */,
 				FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */,
 				FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */,
-				FDA8D6162A121D5D0017CAB5 /* TwinSitOnVM.swift in Sources */,
 				FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,

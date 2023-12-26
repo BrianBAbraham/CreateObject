@@ -95,7 +95,7 @@ struct PartView: View {
 
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+    //@EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     
     //@GestureState private var startLocation: CGPoint? = nil
     @GestureState private var fingerLocation: CGPoint? = nil
@@ -127,9 +127,9 @@ struct ObjectView: View {
 //    }
     
     
-    var twinSitOnOptionsDictionary: TwinSitOnOptionDictionary {
-        twinSitOnVM.getTwinSitOnOptions()  //TWIN
-    }
+//    var twinSitOnOptionsDictionary: TwinSitOnOptionDictionary {
+//        twinSitOnVM.getTwinSitOnOptions()  //TWIN
+//    }
     
     var zoom: CGFloat {
         getZoom()

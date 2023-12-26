@@ -55,12 +55,12 @@ import SwiftUI
 struct Tilt: View {
     @State private var tiltToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     @State private var sliderValue: Double = 0.0
     //var partChainLabels: [Part] = []
     var showTilt: Bool = true
-    var twinSitOnDictionary: TwinSitOnOptionDictionary {
-        twinSitOnVM.getTwinSitOnOptions()}
+//    var twinSitOnDictionary: TwinSitOnOptionDictionary {
+//        twinSitOnVM.getTwinSitOnOptions()}
     var angleName: String {
         CreateNameFromParts( [.sitOnTiltJoint, .stringLink, .sitOn, .id0]).name    }
 //    var angleMinMax: AngleMinMax {
@@ -82,7 +82,7 @@ struct Tilt: View {
                 Text("tilt-in-space angle: \(Int(angleMax - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
                         objectPickVM.setCurrentObjectByCreatingFromName(
-                            twinSitOnDictionary,
+                      //      twinSitOnDictionary,
                             [angleName:
                                      (x:
                                 Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees),
@@ -99,7 +99,7 @@ struct Tilt: View {
 struct HeadSupport: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let showTilt: Bool
     
     init(_ name: String) {
@@ -123,7 +123,7 @@ struct HeadSupport: View {
 struct Propeller: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let showTilt: Bool
     
     init(_ name: String) {
@@ -149,7 +149,7 @@ struct FootSupport: View {
     //@State private var footSuppportToggle = true
     @State private var laterality = "both"
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+  //  @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let objectNames = ["none", "both", "left", "right"]
     
     var body: some View {
@@ -186,39 +186,39 @@ struct DoubleSitOnPreferenceKey: PreferenceKey {
 
 
 
-struct TwinSitOnView: View {
-    @State private var twinSitOnToggle: Bool
-    
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-    
-    let showTwinSitOn: Bool
-    
-    init(_ twinSitOnState: Bool, _ name: String) {
-        
-        showTwinSitOn =
-            name.contains("wheelchair") ? true: false
-        
-        _twinSitOnToggle
-            = State(initialValue: twinSitOnState)
-    }
-    
-    var body: some View {
-        if showTwinSitOn {
-            Toggle("Two seats",isOn: $twinSitOnToggle)
-                .onChange(of: twinSitOnToggle) { value in
-                   
-                    if !twinSitOnToggle {
-                        
-                        twinSitOnVM.setAllConfigurationFalse()
-                        
+//struct TwinSitOnView: View {
+//    @State private var twinSitOnToggle: Bool
+//
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    //@EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+//
+//    let showTwinSitOn: Bool
+//
+//    init(_ twinSitOnState: Bool, _ name: String) {
+//
+//        showTwinSitOn =
+//            name.contains("wheelchair") ? true: false
+//
+//        _twinSitOnToggle
+//            = State(initialValue: twinSitOnState)
+//    }
+//
+//    var body: some View {
+//        if showTwinSitOn {
+//            Toggle("Two seats",isOn: $twinSitOnToggle)
+//                .onChange(of: twinSitOnToggle) { value in
+//
+//                    if !twinSitOnToggle {
+//
+//                        twinSitOnVM.setAllConfigurationFalse()
+//
                        // let name = objectPickVM.getCurrentObjectName()
-                        let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-                        objectPickVM
-                            .setCurrentObjectByCreatingFromName(
+//                        let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
+//                        objectPickVM
+//                            .setCurrentObjectByCreatingFromName(
                                 //name,
-                                twinSitOnDictionary)
-                    }
+//                                twinSitOnDictionary)
+//                    }
 //                    else {
 //
 //                        let objectType = objectPickVM.getCurrentObjectType()
@@ -229,23 +229,23 @@ struct TwinSitOnView: View {
 //
 //print(twinSitOnDictionary)
 //                    }
-                }
+             //   }
             
-            let options: [TwinSitOnOption] = [.leftAndRight, .frontAndRear]
-                        
-            if twinSitOnToggle {
-                ExclusiveToggles(
-                    twinSitOnVM.getManyState(options), 
-                    options,
-                    .twinSitOn)
-                
-
-                
-            }
-            
-        } else {
-            EmptyView()
-        }
-    }
-    
-}
+//            let options: [TwinSitOnOption] = [.leftAndRight, .frontAndRear]
+//
+//            if twinSitOnToggle {
+//                ExclusiveToggles(
+//                    twinSitOnVM.getManyState(options),
+//                    options,
+//                    .twinSitOn)
+//
+//
+//
+//            }
+//
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//
+//}
