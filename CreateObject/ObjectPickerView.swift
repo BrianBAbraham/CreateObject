@@ -33,9 +33,6 @@ struct PickInitialObjectView: View {
     }
     
     var body: some View {
-        
-       // let twinSitOnState = twinSitOnVM.getState() //TWIN
-        //let doubleSitOnState = objectPickVM.getCurrentOptionThereAreDoubleSitOn()  //TWIN
         let boundEquipmentType = Binding(
             get: {objectPickVM.getCurrentObjectName()},
             set: {self.equipmentType = $0}
@@ -53,18 +50,8 @@ struct PickInitialObjectView: View {
                 self.equipmentType = tag
                 //objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
-   
-//print(objectPickVM.getInitialObjectDictionary())
-
-//let twinSitOnOptions = twinSitOnVM.getTwinSitOnOptions()
                 
-//objectPickVM.setDefaultObjectDictionary(
-//    twinSitOnOptions)
-                
-objectPickVM.setCurrentObjectByCreatingFromName(
-// tag//,
-  // twinSitOnOptions
-)
+objectPickVM.setCurrentObjectByCreatingFromName()
                 
 
                 

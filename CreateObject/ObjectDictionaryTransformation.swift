@@ -241,7 +241,15 @@ struct DictionaryInArrayOut {
         
         var description = ""
         for (key, value) in dictionary {
+            
+            if let position = value as? RotationAngles {
+                description = "\(key): \(position.x), \(position.y), \(position.z)"
+            }
 
+            if let position = value as? AnglesMinMax {
+                description = "\(key): min: \(position.min.x), \(position.min.y), \(position.min.z), max: \(position.max.x), \(position.max.y), \(position.max.z) "
+            }
+            
             if let position = value as? PositionAsIosAxes {
                 description = "\(key): \(position.x), \(position.y), \(position.z)"
             }

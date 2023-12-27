@@ -76,7 +76,7 @@ class ObjectPickViewModel: ObservableObject {
 
     
     @Published private var objectPickModel: ObjectPickModel
-    let dictionaryProvider: DictionaryProvider
+    let dictionaryProvider: DictionaryMaker
     
     init() {
         userEditedDictionary = UserEditedDictionary()
@@ -89,7 +89,7 @@ class ObjectPickViewModel: ObservableObject {
         postTiltOneCornerPerKeyDic =
             ConvertFourCornerPerKeyToOne(fourCornerPerElement: postTiltFourCornerPerKeyDic).oneCornerPerKey
         dimensionDic =
-            dictionaryProvider.dimensionDicNew
+            dictionaryProvider.dimensionDic
         angleDic =
             dictionaryProvider.angleDic
         anglesMinMaxDic =
@@ -118,7 +118,7 @@ class ObjectPickViewModel: ObservableObject {
         func setDictionaryProvider(
             _ objectName: String?,
             _ userEditedDictionary: UserEditedDictionary)
-            -> DictionaryProvider {
+            -> DictionaryMaker {
             var objectType: ObjectTypes
                
             if let unwrappedObjectName = objectName  {
@@ -129,7 +129,7 @@ class ObjectPickViewModel: ObservableObject {
                 
             }
             return
-                DictionaryProvider(
+                DictionaryMaker(
                     objectType,
                     userEditedDictionary
                     )
@@ -346,7 +346,7 @@ extension ObjectPickViewModel {
  
             let objectName = getCurrentObjectName()
             let dictionaryProvider =
-                DictionaryProvider(
+                DictionaryMaker(
                     ObjectTypes(rawValue: objectName) ?? .fixedWheelRearDrive,
 
                     objectPickModel.userEditedDictionary)
@@ -356,7 +356,7 @@ extension ObjectPickViewModel {
                 
             objectPickModel.postTiltFourCornerPerKeyDic = dictionaryProvider.postTiltObjectToFourCornerPerKeyDic
             objectPickModel.dimensionDic =
-                dictionaryProvider.dimensionDicNew
+                dictionaryProvider.dimensionDic
             objectPickModel.anglesMinMaxDic =
                 dictionaryProvider.anglesMinMaxDic
             objectPickModel.angleInDic =

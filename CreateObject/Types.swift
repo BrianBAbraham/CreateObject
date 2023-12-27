@@ -10,10 +10,11 @@ typealias RotationAngles =
 (x: Measurement<UnitAngle>,
  y: Measurement<UnitAngle>,
  z: Measurement<UnitAngle>)
-typealias AngleMinMax = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle>)
+
 typealias AnglesMinMax = (min: RotationAngles, max: RotationAngles)
 
-//typealias MinMax = (min: Double, max: Double)
+typealias AngleMinMax = (min: Measurement<UnitAngle>, max: Measurement<UnitAngle>)
+///string: (x: Measurement<UnitAngle>, y: Measurement<UnitAngle>, z: Measurement<UnitAngle>)
 typealias AnglesDictionary = [String: RotationAngles]// Measurement<UnitAngle>]
 typealias AngleMinMaxDictionary = [String: AngleMinMax]
 typealias AnglesMinMaxDictionary = [String: AnglesMinMax]
@@ -186,5 +187,7 @@ typealias KeyPathForDimension = KeyPath<(left: Dimension3d?, right: Dimension3d?
 typealias KeyPathForIosPosition = KeyPath<(left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?), PositionAsIosAxes?>
 typealias KeyPathForSide = KeyPath<(left: Part?, right: Part?, one: Part?), Part?>
 typealias KeyPathForName = KeyPath<(left: String?, right: String?, one: String?), String?>
+typealias KeyPathForAngles = KeyPath<(left: RotationAngles?, right: RotationAngles?, one: RotationAngles?), RotationAngles?>
+typealias KeyPathForMinMaxAngle = KeyPath<(left: AnglesMinMax?, right: AnglesMinMax?, one: AnglesMinMax?), AnglesMinMax?>
 
 //typealias s = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>
