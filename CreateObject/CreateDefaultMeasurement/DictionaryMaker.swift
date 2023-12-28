@@ -15,21 +15,21 @@ struct DictionaryMaker {
     let dimensionDicIn: Part3DimensionDictionary
     var dimensionDic: Part3DimensionDictionary = [:]
     
-    let angleDicIn: AnglesDictionary
+    //let angleDicIn: AnglesDictionary
     var angleDic: AnglesDictionary = [:]
     
-    let anglesMinMaxDicIn: AnglesMinMaxDictionary
-    var anglesMinMaxDic: AnglesMinMaxDictionary = [:]
+   // let anglesMinMaxDicIn: AngleMinMaxDictionary
+    var angleMinMaxDic: AngleMinMaxDictionary = [:]
   
     //pre-tilt
-    let preTiltParentToPartOriginDicIn: PositionDictionary
-    let preTiltObjectToPartOriginDicIn: PositionDictionary
-    var preTiltObjectToPartOriginDicNew: PositionDictionary = [:]
+    //let preTiltParentToPartOriginDicIn: PositionDictionary
+   // let preTiltObjectToPartOriginDicIn: PositionDictionary
+    var preTiltObjectToPartOriginDic: PositionDictionary = [:]
     var preTiltParentToPartOriginDic: PositionDictionary = [:]
     var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
     
     //post-tilt
-    var postTiltObjectToPartOriginDicIn: PositionDictionary = [:]
+   // var postTiltObjectToPartOriginDicIn: PositionDictionary = [:]
     var postTiltObjectToPartOriginDic: PositionDictionary = [:]
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary = [:]
     
@@ -42,23 +42,23 @@ struct DictionaryMaker {
 
     init(
         _ objectType: ObjectTypes,
-        _ userEditedDictionary: UserEditedDictionary) {
+        _ dictionaries: Dictionaries) {
         self.objectType = objectType
-        self.dimensionDicIn = userEditedDictionary.dimension
-        self.preTiltObjectToPartOriginDicIn = userEditedDictionary.objectToPartOrigin
-        self.preTiltParentToPartOriginDicIn = userEditedDictionary.parentToPartOrigin
-        self.angleDicIn = userEditedDictionary.anglesDic
-        self.anglesMinMaxDicIn = userEditedDictionary.anglesMinMaxDic
-        self.partChainIdDicIn = userEditedDictionary.partChainId
-        self.objectsAndTheirChainLabelsDicIn = userEditedDictionary.objectsAndTheirChainLabelsDicIn
+        self.dimensionDicIn = dictionaries.dimension
+//        self.preTiltObjectToPartOriginDicIn = dictionaries.objectToPartOrigin
+//        self.preTiltParentToPartOriginDicIn = dictionaries.parentToPartOrigin
+       // self.angleDicIn = userEditedDictionary.anglesDic
+       // self.anglesMinMaxDicIn = dictionaries.angleMinMaxDic
+        self.partChainIdDicIn = dictionaries.partChainId
+        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDicIn
                     
-      
+            print("OUT \(dictionaries.anglesDic["object_id0_tiltInSpaceHorizontalJoint_id0_sitOn_id0"]) ")
    
             
         partValuesDic =
             ObjectMaker(
                 objectType,
-                userEditedDictionary,
+                dictionaries,
                 objectsAndTheirChainLabelsDicIn).partValuesDic
             
             
@@ -66,9 +66,8 @@ struct DictionaryMaker {
         createPreTiltDictionaryFromStructFactory()
         createPostTiltDictionaryFromStructFactory()
 
-DictionaryInArrayOut().getNameValue(anglesMinMaxDic
-
-).forEach{print($0)}
+//DictionaryInArrayOut().getNameValue(anglesMinMaxDic
+//).forEach{print($0)}
   
 //MARK: - POST-TILT
         // initially set postTilt to preTilt values
@@ -219,7 +218,7 @@ extension DictionaryMaker {
         let chain: [Part]
         let global: Bool
         let angles:  (left: RotationAngles?, right: RotationAngles?, one: RotationAngles?)
-        let minMaxAngle: (left: AnglesMinMax?, right: AnglesMinMax?, one: AnglesMinMax?)
+        let minMaxAngle: (left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?)
     }
             
     
@@ -324,11 +323,11 @@ extension DictionaryMaker {
             let name = update.name
             angleDic +=
              [name: update.angle]
-             anglesMinMaxDic +=
+             angleMinMaxDic +=
              [name: update.minMaxAngle]
             dimensionDic +=
               [name: update.dimension]
-            preTiltObjectToPartOriginDicNew +=
+            preTiltObjectToPartOriginDic +=
               [name: update.origin]
             preTiltObjectToPartFourCornerPerKeyDic +=
               [name: update.corners]
@@ -340,7 +339,7 @@ extension DictionaryMaker {
             let dimension: Dimension3d
             let origin: PositionAsIosAxes
             let angle: RotationAngles
-            let minMaxAngle: AnglesMinMax
+            let minMaxAngle: AngleMinMax
             let corners: [PositionAsIosAxes]
         }
         
@@ -430,15 +429,15 @@ extension DictionaryMaker {
     
     
     func getMinMaxRotationAngles(
-        _ extraction: (left: AnglesMinMax?, right: AnglesMinMax?, one: AnglesMinMax?),
-        _ label: KeyPath<(left: AnglesMinMax?, right: AnglesMinMax?, one: AnglesMinMax?), AnglesMinMax?>,
+        _ extraction: (left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?),
+        _ label: KeyPath<(left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?), AngleMinMax?>,
         _ part: Part)
-    -> AnglesMinMax {
+    -> AngleMinMax {
 
-        guard let minMaxAngles = extraction[keyPath: label] else {
+        guard let minMaxAngle = extraction[keyPath: label] else {
             fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no dimension exists for: \(part)")
         }
-        return minMaxAngles
+        return minMaxAngle
     }
     
     
@@ -690,7 +689,7 @@ extension DictionaryMaker {
 
     
     func getOrigin(_ name: String) -> PositionAsIosAxes {
-        guard let origin = preTiltObjectToPartOriginDicNew[name] else {
+        guard let origin = preTiltObjectToPartOriginDic[name] else {
             fatalError("\(String(describing: type(of: self))): \(#function ) \(name) is not in origin dictionary")
         }
         return origin

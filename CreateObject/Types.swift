@@ -188,6 +188,6 @@ typealias KeyPathForIosPosition = KeyPath<(left: PositionAsIosAxes?, right: Posi
 typealias KeyPathForSide = KeyPath<(left: Part?, right: Part?, one: Part?), Part?>
 typealias KeyPathForName = KeyPath<(left: String?, right: String?, one: String?), String?>
 typealias KeyPathForAngles = KeyPath<(left: RotationAngles?, right: RotationAngles?, one: RotationAngles?), RotationAngles?>
-typealias KeyPathForMinMaxAngle = KeyPath<(left: AnglesMinMax?, right: AnglesMinMax?, one: AnglesMinMax?), AnglesMinMax?>
+typealias KeyPathForMinMaxAngle = KeyPath<(left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?), AngleMinMax?>
 
 //typealias s = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>

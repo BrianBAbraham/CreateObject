@@ -51,11 +51,7 @@ struct PickInitialObjectView: View {
                 //objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
                 
-objectPickVM.setCurrentObjectByCreatingFromName()
-                
-
-                
-                
+                objectPickVM.setCurrentObjectByCreatingFromName()
             }
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)
@@ -65,7 +61,7 @@ objectPickVM.setCurrentObjectByCreatingFromName()
                 .padding(.horizontal)
             Propeller(objectPickVM.getCurrentObjectName())
                 .padding(.horizontal)
-            Tilt(objectPickVM.getCurrentObjectChainLabels())
+            TiltX(objectPickVM.getRotations())
                 //objectPickVM.getCurrentObjectName())
                 .padding(.horizontal)
             //BackSupportRecline(objectPickVM.getCurrentObjectName())

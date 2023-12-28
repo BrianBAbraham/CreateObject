@@ -52,48 +52,48 @@ import SwiftUI
 //    }
 //}
 
-struct Tilt: View {
+struct TiltX: View {
     @State private var tiltToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
+ 
     @State private var sliderValue: Double = 0.0
-    //var partChainLabels: [Part] = []
+    
     var showTilt: Bool = true
-//    var twinSitOnDictionary: TwinSitOnOptionDictionary {
-//        twinSitOnVM.getTwinSitOnOptions()}
-    var angleName: String {
-        CreateNameFromParts( [.sitOnTiltJoint, .stringLink, .sitOn, .id0]).name    }
-//    var angleMinMax: AngleMinMax {
-//        objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.angleMinMax
-//    }
+
+  
+
  
     init (_ partChainLabels: [Part]){
         showTilt = partChainLabels.contains(.sitOnTiltJoint) ? true: false
     }
     
     var body: some View {
+        var angleName: String {
+            CreateNameFromParts( [.object, .id0, .stringLink, .sitOnTiltJoint, .id0, .stringLink, .sitOn, .id0]).name    }
         let angleMinMax =
-            objectPickVM.getAngleMinMaxDic()[angleName] ?? ZeroValue.anglesMinMax
-        let angleMax = 1.0//angleMinMax.max.x.value
-        let angleMin = 0.0//angleMinMax.min.x.value
+            objectPickVM.getAngleMinMaxDic(angleName)
+        let angleMax = angleMinMax.max.value
+        let angleMin = angleMinMax.min.value
         if showTilt {
 
                 Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
                 Text("tilt-in-space angle: \(Int(angleMax - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
                         objectPickVM.setCurrentObjectByCreatingFromName(
-                      //      twinSitOnDictionary,
                             [angleName:
                                      (x:
                                 Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees),
                                       y: ZeroValue.angle,
-                                      z: ZeroValue.angle)] )
+                                      z: ZeroValue.angle)]
+                            //,angleName
+                        )
+                       
                        }
         } else {
-                EmptyView()
-            }
+            EmptyView()
         }
     }
+}
 
 
 struct HeadSupport: View {
