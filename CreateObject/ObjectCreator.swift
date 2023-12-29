@@ -807,6 +807,27 @@ enum OneOrTwo <T> {
 }
 
 
+extension OneOrTwo {
+static    func getFromOneOrTwoEnumMap2<T, U, V>(
+        _ first: OneOrTwo<T>,
+        _ second: OneOrTwo<U>,
+        _ transform: (T, U) -> V)
+    -> OneOrTwo<V> {
+        first.map2(second, transform)
+    }
+    
+    
+  static  func getFromOneOrTwoEnumMap3<T, U, W, V>(//enum would not work without this
+        _ first: OneOrTwo<T>,
+        _ second: OneOrTwo<U>,
+        _ third: OneOrTwo<W>,
+        _ transform: (T, U, W) -> V)
+    -> OneOrTwo<V> {
+        first.map3(second, third, transform)
+    }
+}
+
+
 
 
 struct MiscObjectParameters {
@@ -1561,8 +1582,6 @@ extension StructFactory {
             
         func setChildAnglesForObject(
             _ defaultAngles: RotationAngles) {
-           //     print("angle set detected with \(defaultAngles)")
-                print(oneOrTwoUserEditedValues.angles )
                 switch oneOrTwoUserEditedValues.angles {
                 case .one (let one):
                    // print("one")
@@ -1683,29 +1702,40 @@ enum DictionaryVersion {
 ///during intitialisation
 ///partChainId  are wrapped in OneOrTwo
 struct Dictionaries {
-    let dimension: Part3DimensionDictionary
-    let parentToPartOrigin: PositionDictionary
-    let objectToPartOrigin: PositionDictionary
-    let anglesDic: AnglesDictionary
-    let angleMinMaxDic: AngleMinMaxDictionary
-    let partChainId: [PartChain: OneOrTwo<Part> ]
-    let objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
+    var dimension: Part3DimensionDictionary
+    var parentToPartOrigin: PositionDictionary
+    var objectToPartOrigin: PositionDictionary
+    var anglesDic: AnglesDictionary
+    var angleMinMaxDic: AngleMinMaxDictionary
+    var partChainId: [PartChain: OneOrTwo<Part> ]
+    var objectsAndTheirChainLabelsDic: ObjectPartChainLabelsDictionary
+    var preTiltObjectToPartFourCornerPerKey: CornerDictionary
+    var postTiltObjectToPartFourCornerPerKey: CornerDictionary
+    static var shared = Dictionaries()
     
-    init(
+   private init(
         dimension: Part3DimensionDictionary  = [:],
         parentToPartOrigin: PositionDictionary = [:],
         objectToPartOrigin: PositionDictionary = [:],
         anglesDic: AnglesDictionary = [:],
         angleMinMaxDic: AngleMinMaxDictionary = [:],
         partChainId: [PartChain : OneOrTwo<Part>] = [:],
-        objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:]) {
+        objectsAndTheirChainLabelsDic: ObjectPartChainLabelsDictionary = [:],
+        preTiltObjectToPartFourCornerPerKey: CornerDictionary = [:],
+        postTiltObjectToPartFourCornerPerKey: CornerDictionary = [:]) {
         self.dimension = dimension
         self.parentToPartOrigin = parentToPartOrigin
         self.objectToPartOrigin = objectToPartOrigin
         self.anglesDic = anglesDic
         self.angleMinMaxDic = angleMinMaxDic
         self.partChainId = partChainId
-        self.objectsAndTheirChainLabelsDicIn = objectsAndTheirChainLabelsDicIn
+        self.objectsAndTheirChainLabelsDic = objectsAndTheirChainLabelsDic
+        self.preTiltObjectToPartFourCornerPerKey =
+            preTiltObjectToPartFourCornerPerKey
+        self.postTiltObjectToPartFourCornerPerKey =
+            postTiltObjectToPartFourCornerPerKey
+            
+
     }
 }
 
@@ -1800,7 +1830,7 @@ struct UserEditedValue {
     }
     
     func getAngles() -> OneOrTwo<RotationAngles?>{
-        let z = ZeroValue.rotationAngles
+        //let z = ZeroValue.rotationAngles
         var angles: OneOrTwo<RotationAngles?> = .one(one: nil)
         switch originName {
         case .one(let one):

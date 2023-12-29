@@ -15,21 +15,16 @@ struct DictionaryMaker {
     let dimensionDicIn: Part3DimensionDictionary
     var dimensionDic: Part3DimensionDictionary = [:]
     
-    //let angleDicIn: AnglesDictionary
     var angleDic: AnglesDictionary = [:]
-    
-   // let anglesMinMaxDicIn: AngleMinMaxDictionary
+
     var angleMinMaxDic: AngleMinMaxDictionary = [:]
   
     //pre-tilt
-    //let preTiltParentToPartOriginDicIn: PositionDictionary
-   // let preTiltObjectToPartOriginDicIn: PositionDictionary
     var preTiltObjectToPartOriginDic: PositionDictionary = [:]
     var preTiltParentToPartOriginDic: PositionDictionary = [:]
     var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
     
     //post-tilt
-   // var postTiltObjectToPartOriginDicIn: PositionDictionary = [:]
     var postTiltObjectToPartOriginDic: PositionDictionary = [:]
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary = [:]
     
@@ -45,14 +40,10 @@ struct DictionaryMaker {
         _ dictionaries: Dictionaries) {
         self.objectType = objectType
         self.dimensionDicIn = dictionaries.dimension
-//        self.preTiltObjectToPartOriginDicIn = dictionaries.objectToPartOrigin
-//        self.preTiltParentToPartOriginDicIn = dictionaries.parentToPartOrigin
-       // self.angleDicIn = userEditedDictionary.anglesDic
-       // self.anglesMinMaxDicIn = dictionaries.angleMinMaxDic
         self.partChainIdDicIn = dictionaries.partChainId
-        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDicIn
+        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDic
                     
-            print("OUT \(dictionaries.anglesDic["object_id0_tiltInSpaceHorizontalJoint_id0_sitOn_id0"]) ")
+//            print("OUT \(dictionaries.anglesDic["object_id0_tiltInSpaceHorizontalJoint_id0_sitOn_id0"]) ")
    
             
         partValuesDic =
@@ -546,7 +537,7 @@ extension DictionaryMaker {
         for partOrigin in
                 rotator.originOfAllPartsToBeRotated {
             allOriginAfterRotationByRotator.append(
-                getFromOneOrTwoEnumMap3(
+              getFromOneOrTwoEnumMap3(
                     rotator.rotatorOrigin,
                     partOrigin,
                     rotator.angle ) { calculateRotatedOrigin($0, $1, $2) } )
@@ -554,6 +545,14 @@ extension DictionaryMaker {
         return allOriginAfterRotationByRotator
     }
 
+    func getFromOneOrTwoEnumMap3<T, U, W, V>(//enum would not work without this
+        _ first: OneOrTwo<T>,
+        _ second: OneOrTwo<U>,
+        _ third: OneOrTwo<W>,
+        _ transform: (T, U, W) -> V)
+    -> OneOrTwo<V> {
+        first.map3(second, third, transform)
+    }
 
             
     func getAllPartCornerPositionAfterRotationByOneRotator (
@@ -586,14 +585,7 @@ extension DictionaryMaker {
     }
     
     
-    func getFromOneOrTwoEnumMap3<T, U, W, V>(//enum would not work without this
-        _ first: OneOrTwo<T>,
-        _ second: OneOrTwo<U>,
-        _ third: OneOrTwo<W>,
-        _ transform: (T, U, W) -> V)
-    -> OneOrTwo<V> {
-        first.map3(second, third, transform)
-    }
+
     
     
     func calculateRotatedOrigin(

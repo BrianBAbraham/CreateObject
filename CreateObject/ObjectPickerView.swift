@@ -51,7 +51,7 @@ struct PickInitialObjectView: View {
                 //objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
                 
-                objectPickVM.setCurrentObjectByCreatingFromName()
+                objectPickVM.setObjectByCreatingFromName()
             }
             //.pickerStyle(.wheel)
             .scaleEffect(0.8)

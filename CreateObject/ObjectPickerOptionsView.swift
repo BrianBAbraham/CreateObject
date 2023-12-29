@@ -79,7 +79,7 @@ struct TiltX: View {
                 Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
                 Text("tilt-in-space angle: \(Int(angleMax - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setCurrentObjectByCreatingFromName(
+                        objectPickVM.setCurrentRotation(
                             [angleName:
                                      (x:
                                 Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees),
