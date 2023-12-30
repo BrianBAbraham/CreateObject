@@ -34,6 +34,8 @@ struct DictionaryMaker {
     let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
 
     var partValuesDic: [Part: PartData] = [:]
+    
+    let accessOneOrTwo = AccessOneOrTwo()
 
     init(
         _ objectType: ObjectTypes,
@@ -113,6 +115,10 @@ extension DictionaryMaker {
         }
     }
             
+    
+  
+
+    
 
      mutating func processPartForDictionaryCreation(
         _ currentOriginsForChain: inout (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes),
@@ -133,32 +139,57 @@ extension DictionaryMaker {
             let extractedAngles = partValue.angles.values
             let extractedMinMaxAngles = partValue.minMaxAngle.values
             let parametersForOneOrTwo = getParameters()
-          
-            
+            let z = ZeroValue.iosLocation
+
+            var updatedOneOrigin = z
+            var updatedRightOrigin = z
+            var updatedLeftOrigin = z
+                      
             switch partValue.id {
             case .one (let one):
-                currentOriginsForChain =
-                    (left: currentOriginsForChain.left,
-                     right: currentOriginsForChain.right,
-                     one:  updateOneForDictionaryCreation(
-                                one,
-                                parametersForOneOrTwo))
-            case .two (let left, let right):
-                currentOriginsForChain =
-                    (left: currentOriginsForChain.left,
-                     right: updateBothSidesForDictionaryCreation(
-                                right,
-                                parametersForOneOrTwo),
-                     one: currentOriginsForChain.one)
-                
-                currentOriginsForChain =
-                    (left: updateBothSidesForDictionaryCreation(
-                                left,
-                                parametersForOneOrTwo),
-                     right: currentOriginsForChain.right,
-                     one: currentOriginsForChain.one)
+                updatedOneOrigin =
+                    updateForDictionaryCreation(
+                        one,
+                        parametersForOneOrTwo)
+            case .two(let left, let right):
+                updatedRightOrigin =
+                    updateForDictionaryCreation(
+                        right,
+                        parametersForOneOrTwo)
+                updatedLeftOrigin =
+                    updateForDictionaryCreation(
+                        left,
+                        parametersForOneOrTwo)
             }
             
+            switch partValue.id {
+            case .one:
+                currentOriginsForChain =
+                    createTuple(
+                        currentOriginsForChain.left,
+                        currentOriginsForChain.right,
+                        updatedOneOrigin)
+            case .two:
+                currentOriginsForChain =
+                    createTuple(
+                       updatedLeftOrigin,
+                            currentOriginsForChain.right,
+                            currentOriginsForChain.one)
+                currentOriginsForChain =
+                    createTuple(
+                        currentOriginsForChain.left,
+                        updatedRightOrigin,
+                        currentOriginsForChain.one)
+            }
+            
+            
+            func createTuple(
+                _ left: PositionAsIosAxes,
+                _ right: PositionAsIosAxes,
+                _ one: PositionAsIosAxes)
+            -> OneOrTwoPositionsAsTuple {
+                (left: left, right: right, one: one)
+            }
             
             func getParameters() -> ParametersForOneOrTwoSides {
                 ParametersForOneOrTwoSides(
@@ -279,6 +310,18 @@ extension DictionaryMaker {
     }
 
 
+    mutating func updateForDictionaryCreation (
+        _ childId: Part,
+        _ parameters: ParametersForOneOrTwoSides) -> PositionAsIosAxes {
+            switch parameters.partValue.id {
+            case .one:
+                return
+                    updateOneForDictionaryCreation(childId, parameters)
+            case .two:
+                return
+                    updateBothSidesForDictionaryCreation(childId, parameters)
+            }
+    }
               
             
       mutating  func updateOneForDictionaryCreation (
@@ -504,7 +547,8 @@ extension DictionaryMaker {
             for (originName, allCorners) in zip (originNames,allPartCornerPositionAfterRotationByOneRotator) {
                 let corners =
                     allCorners.map1 {getTopViewConers($0)}
-                getFromOneOrTwoEnumMap2(originName, corners) {addPartsToFourCornerDic($0, $1)}
+                
+                accessOneOrTwo.getFromOneOrTwoEnumMap2(originName, corners) {addPartsToFourCornerDic($0, $1)}
             }
     }
             
@@ -537,7 +581,7 @@ extension DictionaryMaker {
         for partOrigin in
                 rotator.originOfAllPartsToBeRotated {
             allOriginAfterRotationByRotator.append(
-              getFromOneOrTwoEnumMap3(
+                accessOneOrTwo.getForThreeValues(
                     rotator.rotatorOrigin,
                     partOrigin,
                     rotator.angle ) { calculateRotatedOrigin($0, $1, $2) } )
@@ -545,14 +589,14 @@ extension DictionaryMaker {
         return allOriginAfterRotationByRotator
     }
 
-    func getFromOneOrTwoEnumMap3<T, U, W, V>(//enum would not work without this
-        _ first: OneOrTwo<T>,
-        _ second: OneOrTwo<U>,
-        _ third: OneOrTwo<W>,
-        _ transform: (T, U, W) -> V)
-    -> OneOrTwo<V> {
-        first.map3(second, third, transform)
-    }
+//    func getFromOneOrTwoEnumMap3<T, U, W, V>(//enum would not work without this
+//        _ first: OneOrTwo<T>,
+//        _ second: OneOrTwo<U>,
+//        _ third: OneOrTwo<W>,
+//        _ transform: (T, U, W) -> V)
+//    -> OneOrTwo<V> {
+//        first.map3(second, third, transform)
+//    }
 
             
     func getAllPartCornerPositionAfterRotationByOneRotator (
@@ -565,24 +609,25 @@ extension DictionaryMaker {
                 zip(rotator.partsToBeRotatedDimension, allOriginAfterRotationByRotator) {
             let corners = dimension.map1 { CreateIosPosition.getCornersFromDimension($0) }
             let result =
-                    getFromOneOrTwoEnumMap3(
-                        originAfterRotationByRotator,
-                        corners,
-                        rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
+                accessOneOrTwo.getForThreeValues(
+                            originAfterRotationByRotator,
+                            corners,
+                            rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
+            
             allPartCornerPositionsAfterRotationByOneRotator.append(result)
         }
-       // print("CORNER ROTATED")
+      
         return allPartCornerPositionsAfterRotationByOneRotator
     }
     
 
-    func getFromOneOrTwoEnumMap2<T, U, V>(
-        _ first: OneOrTwo<T>,
-        _ second: OneOrTwo<U>,
-        _ transform: (T, U) -> V)
-    -> OneOrTwo<V> {
-        first.map2(second, transform)
-    }
+//    func getFromOneOrTwoEnumMap2<T, U, V>(
+//        _ first: OneOrTwo<T>,
+//        _ second: OneOrTwo<U>,
+//        _ transform: (T, U) -> V)
+//    -> OneOrTwo<V> {
+//        first.map2(second, transform)
+//    }
     
     
 

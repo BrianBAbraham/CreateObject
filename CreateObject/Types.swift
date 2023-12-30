@@ -23,8 +23,8 @@ typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
 //typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
 
-typealias LeftRightPositionAsIosAxis = (
-    left: PositionAsIosAxes, right: PositionAsIosAxes)
+typealias OneOrTwoPositionsAsTuple = (
+    left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes)
 
 // generic touple with left and right and common type
 typealias LeftRight<T> = (left: T, right: T)
@@ -115,30 +115,6 @@ typealias BaseObjectAngelMinMaxDictionary = [ObjectTypes: AngleMinMax]
 
 
 
-//typealias PartDimensionOriginIds =
-//    (
-//    part: Part,
-//    dimension: Dimension3d,
-//    origin: PositionAsIosAxes,
-//    ids: [Part],
-//    angles: RotationAngles)
-
-
-
-typealias PartDataTuple = (part: Part, dimension: (width: Double, length: Double, height: Double), origin: (x: Double, y: Double, z: Double), ids: [Part], angles: (x: Measurement<UnitAngle>, y: Measurement<UnitAngle>, z: Measurement<UnitAngle>))
-
-///OriginIdNodes type is assigned to
-///'rear'', 'mid' and 'front'
-///for absent values ZeroValue.rearMidOriginIdNodes is used
-//typealias RearMidFrontOriginIdNodes =
-//    (rear: OriginIdPartChain, mid: OriginIdPartChain, front: OriginIdPartChain)
-
-
-///While OriginIdNodes (s at end)
-///has collections for each label
-///only a single value is present
-//typealias OriginIdNode =
-//    (origin: PositionAsIosAxes, id: [Part] ,node: Part)
 
 ///corners of a cuboid ordered as follows
 ///IOS screen view

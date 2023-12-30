@@ -757,6 +757,7 @@ enum OneOrTwo <T> {
         }
     }
     
+   
     
     func map2<U, V>(_ second: OneOrTwo<V>, _ transform: (T, V) -> U) -> OneOrTwo<U> {
         switch (self, second) {
@@ -769,6 +770,24 @@ enum OneOrTwo <T> {
             fatalError("Incompatible cases for map2")
         }
     }
+    
+    
+//    func map3Values<U>(_ second: U, _ third: U, _ transform: (U, U, U) -> U) -> U {
+//    
+//
+//        switch self {
+//        case let (.one(value1), .one(value2), .one(value3)):
+//            return transform(value1, value2, value3)
+//        case let (.two(left1, right1), left2, right2):
+//            return transform(left1, left2, right2)
+//        default:
+//            // Handle other cases if needed
+//            fatalError("Incompatible cases for map3")
+//        }
+//    }
+
+
+
     
     func map3<U, V, W>(_ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
 
@@ -807,24 +826,23 @@ enum OneOrTwo <T> {
 }
 
 
-extension OneOrTwo {
-static    func getFromOneOrTwoEnumMap2<T, U, V>(
-        _ first: OneOrTwo<T>,
-        _ second: OneOrTwo<U>,
-        _ transform: (T, U) -> V)
-    -> OneOrTwo<V> {
-        first.map2(second, transform)
-    }
+struct AccessOneOrTwo {
+     func getForThreeValues<T, U, W, V>(//enum would not work without this
+            _ first: OneOrTwo<T>,
+            _ second: OneOrTwo<U>,
+            _ third: OneOrTwo<W>,
+            _ transform: (T, U, W) -> V)
+        -> OneOrTwo<V> {
+            first.map3(second, third, transform)
+        }
     
-    
-  static  func getFromOneOrTwoEnumMap3<T, U, W, V>(//enum would not work without this
-        _ first: OneOrTwo<T>,
-        _ second: OneOrTwo<U>,
-        _ third: OneOrTwo<W>,
-        _ transform: (T, U, W) -> V)
-    -> OneOrTwo<V> {
-        first.map3(second, third, transform)
-    }
+   func getFromOneOrTwoEnumMap2<T, U, V>(
+            _ first: OneOrTwo<T>,
+            _ second: OneOrTwo<U>,
+            _ transform: (T, U) -> V)
+        -> OneOrTwo<V> {
+            first.map2(second, transform)
+        }
 }
 
 

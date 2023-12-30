@@ -32,13 +32,7 @@ struct ZeroValue {
         mid: ZeroValue.iosLocation,
         front: ZeroValue.iosLocation)
 
-    static let partDataTouple: PartDataTuple =
-    (
-    part: Part.notFound,
-    dimension: Self.dimension3d,
-    origin: Self.iosLocation,
-    ids: [],
-    angles: Self.rotationAngles)
+
     
     static let rotationAngles: RotationAngles =
         (
@@ -74,39 +68,7 @@ struct CreateIosPosition {
         (x: first.x - second.x,y: first.y - second.y, z: first.z - second.z )
     }
     
-    static func addToupleToLeftRightTouple(
-        _ touple: PositionAsIosAxes,
-        _ leftRightTouple :LeftRightPositionAsIosAxis)
-        -> LeftRightPositionAsIosAxis {
-            
-            (left: addTwoTouples(
-                touple,
-                leftRightTouple.left),
-             right: addTwoTouples(
-                touple,
-                leftRightTouple.right) )
-    }
-    
-    static func addTwoLeftAndRightTouples(_ first:
-                                          LeftRightPositionAsIosAxis, _ second: LeftRightPositionAsIosAxis) -> LeftRightPositionAsIosAxis {
-        
-        (left: addTwoTouples(first.left, second.left),
-         right: addTwoTouples(first.right, second.right) )
-    }
-    
-    static func addArrayOfLeftAndRightTouples(
-        _ toupleArray: [LeftRightPositionAsIosAxis])
-        -> LeftRightPositionAsIosAxis {
-            
-            var leftAndRightToupleSum = toupleArray[0]
-            for index in 1..<toupleArray.count {
-                leftAndRightToupleSum =
-                CreateIosPosition.addTwoLeftAndRightTouples(
-                    leftAndRightToupleSum,
-                    toupleArray[index])
-            }
-        return leftAndRightToupleSum
-    }
+
     
     
     static func getCornersFromDimension (
@@ -162,23 +124,7 @@ struct CreateIosPosition {
     }
     
  
-    
-    
-//    static func maximumPosition( _ positions: [PositionAsIosAxes]) {
-//        let arrayTouple = getArrayFromPositions(positions)
-//    }
-    
-    static func subtractSecondFromFirstLeftAndRightTouple(_ first: LeftRightPositionAsIosAxis, _ second: LeftRightPositionAsIosAxis) -> LeftRightPositionAsIosAxis {
-        
-        (left: subtractSecondFromFirstTouple(first.left, second.left),
-         right: subtractSecondFromFirstTouple(first.right, second.right) )
-    }
-    
-    static func convertArrayToLeftRightTouple(
-        _  positions:[PositionAsIosAxes])
-    -> LeftRightPositionAsIosAxis{
-        (left: positions[0], right: positions[1])
-    }
+
     
     static func addToupleToArrayOfTouples(_ touple: PositionAsIosAxes, _ toupleArray: [PositionAsIosAxes]) -> [PositionAsIosAxes] {
         var newArrayOfTouple: [PositionAsIosAxes] = []
@@ -204,19 +150,6 @@ struct CreateIosPosition {
             z: right.z)
     }
     
-    static func byExtractingLeftRightOfAsArray(_ position: LeftRightPositionAsIosAxis  ) -> [PositionAsIosAxes] {
-        [position.left, position.right]
-    }
-    
-    static func swapXY (_ positions: [PositionAsIosAxes]) -> [PositionAsIosAxes] {
-        var swapped: [PositionAsIosAxes] = []
-        for position in positions {
-            swapped.append((x: position.y, y: 1500 - position.z, z:  position.x))
-        }
-        return swapped
-    }
-    
-
 
     
     
