@@ -23,8 +23,9 @@ typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
 //typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
 
-typealias OneOrTwoPositionsAsTuple = (
-    left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes)
+///This type provides position for all conditions which is required when you wish to
+///sum the parent of two to a  one child wheere as OneOrTwo<T> only provides the current conditiion
+typealias OneOrTwoPositionsAsTuple = (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes)
 
 // generic touple with left and right and common type
 typealias LeftRight<T> = (left: T, right: T)

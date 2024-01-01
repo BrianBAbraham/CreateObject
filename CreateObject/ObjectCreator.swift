@@ -748,7 +748,7 @@ enum OneOrTwo <T> {
         (left: left, right: right, one: one)
     }
     
-    func map1<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
+    func map1WithOneTransform<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
         case .one(let value):
             return .one(one: transform(value))
@@ -757,12 +757,24 @@ enum OneOrTwo <T> {
         }
     }
     
-   
+    func map1WithOneValue(_ value: (left: T, right: T, one: T)) -> (left: T, right: T, one: T) {
+        switch self {
+        case .one(let one):
+            return (left: value.left, right: value.right, one: one)// as! PositionAsIosAxes )
+        case .two(let left , let right):
+            return
+                (left: left , right: right, one: value.one )
+        }
+    }
     
-    func map2<U, V>(_ second: OneOrTwo<V>, _ transform: (T, V) -> U) -> OneOrTwo<U> {
+    func map2<U, V>(
+        _ second: OneOrTwo<V>,
+        _ transform: (T, V) -> U)
+    -> OneOrTwo<U> {
         switch (self, second) {
         case let (.one(value1), .one(value2)):
             return .one(one: transform(value1, value2))
+            
         case let (.two(left1, right1), .two(left2, right2)):
             return .two(left: transform(left1, left2), right: transform(right1, right2))
         default:
@@ -770,6 +782,43 @@ enum OneOrTwo <T> {
             fatalError("Incompatible cases for map2")
         }
     }
+        
+        func map1WithOneValueAndTwoTransforms<U, V>(
+            _ second: V,
+            _ transform1: (T, V) -> U,
+            _ transform2: (T, V) -> U)
+    -> OneOrTwo<U> {
+        switch (self) {
+        case let (.one(value1)):
+            return .one(one: transform1(value1, second))
+            
+        case let (.two(left1, right1)):
+            return .two(
+                left: transform2(left1, second),
+                right: transform2(right1, second))
+        }
+    }
+        
+    
+//    func map2WithTwoTransforms<U, V>(
+//        _ second: OneOrTwo<V>,
+//        _ transform1: (T, V) -> U,
+//        _ transform2: (T, V) -> U)
+//-> OneOrTwo<U> {
+//    switch (self, second) {
+//    case let (.one(value1), .one(value2)):
+//        return .one(one: transform1(value1, value2))
+//
+//    case let (.two(left1, right1), .two(left2, right2)):
+//        return .two(
+//            left: transform2(left1, left2),
+//            right: transform2(right1, right2))
+//    default:
+//        // Handle other cases if needed
+//        fatalError("Incompatible cases for map2")
+//    }
+//}
+
     
     
 //    func map3Values<U>(_ second: U, _ third: U, _ transform: (U, U, U) -> U) -> U {
@@ -843,6 +892,14 @@ struct AccessOneOrTwo {
         -> OneOrTwo<V> {
             first.map2(second, transform)
         }
+    func usingSingleOneOrTwoAndOneValueAndTwoTransforms<T, U, V>(
+             _ first: OneOrTwo<T>,
+             _ second: U,
+             _ transform1: (T, U) -> V,
+             _ transform2: (T, U) -> V)
+         -> OneOrTwo<V> {
+             first.map1WithOneValueAndTwoTransforms(second, transform1, transform2)
+         }
 }
 
 
@@ -1912,5 +1969,63 @@ struct UserEditedValue {
 //    let angleMinMax: AngleMinMaxDictionary
 //    let angle: AnglesDictionary
 //    let partChainsId: [PartChain: [[Part]]]
+//
+//}
+//enum OneOrTwoX <T> {
+//    case two (left: T, right: T)
+//    case one (one: T)
+//
+//    func map2WithTwoTransformsX<U, V>(
+//        _ second: OneOrTwoX<V>,
+//        _ transform1: (T, V) -> U,
+//        _ transform2: (T, V) -> U)
+//    -> OneOrTwoX<U> {
+//        switch (self, second) {
+//        case let (.one(value1), .one(value2)):
+//            return .one(one: transform1(value1, value2))
+//
+//        case let (.two(left1, right1), .two(left2, right2)):
+//            return .two(
+//                left: transform2(left1, left2),
+//                right: transform2(right1, right2))
+//        default:
+//            // Handle other cases if needed
+//            fatalError("Incompatible cases for map2")
+//        }
+//    }
+//}
+//
+//
+//struct AccessOneOrTwoX {
+//    func getFromOneOrTwoEnumMap2WithTwoTransforms<T, U, V>(
+//             _ first: OneOrTwoX<T>,
+//             _ second: OneOrTwoX<U>,
+//             _ transform1: (T, U) -> V,
+//             _ transform2: (T, U) -> V)
+//         -> OneOrTwoX<V> {
+//             first.map2WithTwoTransformsX(second, transform1, transform2)
+//         }
+//}
+//
+//
+//struct TextX {
+//    func getData(
+//        _ parameters: String,
+//        _ ids: OneOrTwoX<Int> ){
+//
+//    let updatedOrigin =
+//          accessOneOrTwo.getFromOneOrTwoEnumMap2WithTwoTransforms(
+//        //I do not know how to pass 'paremeters' or 'ids' or 'transformOne' or 'transformTwo'
+//    }
+//
+//    func transformOne(_ id: Int,
+//                      _ paremeters: String ) {
+//        //code for transform one
+//    }
+//
+//    func transformTwo(_ id: Int,
+//                      _ parameters: String ) {
+//        // dode for transform two
+//    }
 //
 //}
