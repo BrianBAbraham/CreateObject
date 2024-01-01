@@ -587,14 +587,18 @@ struct OneOrTWoId {
                     .footSupport,
                 
                     .sideSupport,
-                    .sideSupportRotationJoint:
-                    return .two(left: .id0, right: .id1)
-                
-                case
+                    .sideSupportRotationJoint,
                     .casterVerticalJointAtFront,
                     .casterForkAtFront,
                     .casterWheelAtFront:
-                    return getIdForFrontAccountingForDriveLocation()
+                
+                    return .two(left: .id0, right: .id1)
+                
+//                case
+//                    .casterVerticalJointAtFront,
+//                    .casterForkAtFront,
+//                    .casterWheelAtFront:
+//                    return getIdForFrontAccountingForDriveLocation()
                 case
                     .backSupportRotationJoint,
                     .backSupport,
@@ -611,16 +615,16 @@ struct OneOrTWoId {
             }
         }
         
-        func getIdForFrontAccountingForDriveLocation()
-        -> OneOrTwo<Part>{
-            switch objectType {
-            case .fixedWheelFrontDrive, .fixedWheelRearDrive:
-                return .two(left: .id0, right: .id1)
-            default:
-                return .two(left: .id2, right: .id3)
-                
-            }
-        }
+//        func getIdForFrontAccountingForDriveLocation()
+//        -> OneOrTwo<Part>{
+//            switch objectType {
+//            case .fixedWheelFrontDrive, .fixedWheelRearDrive:
+//                return .two(left: .id0, right: .id1)
+//            default:
+//                return .two(left: .id0, right: .id1)
+//
+//            }
+//        }
     }
 }
 
@@ -757,15 +761,41 @@ enum OneOrTwo <T> {
         }
     }
     
-    func map1WithOneValue(_ value: (left: T, right: T, one: T)) -> (left: T, right: T, one: T) {
+    func mapSingleOneOrTwoAndTwoValueAndOneTransform(
+        _ value0: Part,
+        _ value1: DictionaryMaker.ParametersForOneOrTwoSides,
+        _ transform: (KeyPathForSide, DictionaryMaker.ParametersForOneOrTwoSides) -> (left: T, right: T, one: T))
+    -> (left: T, right: T, one: T) {
+        switch self {
+        case .one:
+            return transform(\.one, value1)
+        case .two:
+            switch value0 {
+            case .id0:
+                return transform(\.left, value1)
+            case .id1:
+                return transform(\.right, value1)
+            default:
+                fatalError()
+            }
+        }
+    }
+    
+
+    
+    
+    func mapSingleOneOrTwoAndOneValue(
+        _ value: (left: T, right: T, one: T))
+    -> (left: T, right: T, one: T) {
         switch self {
         case .one(let one):
-            return (left: value.left, right: value.right, one: one)// as! PositionAsIosAxes )
+            return (left: value.left, right: value.right, one: one)
         case .two(let left , let right):
             return
                 (left: left , right: right, one: value.one )
         }
     }
+    
     
     func map2<U, V>(
         _ second: OneOrTwo<V>,
@@ -783,10 +813,10 @@ enum OneOrTwo <T> {
         }
     }
         
-        func map1WithOneValueAndTwoTransforms<U, V>(
-            _ second: V,
-            _ transform1: (T, V) -> U,
-            _ transform2: (T, V) -> U)
+    func map1WithOneValueAndTwoTransforms<U, V>(
+        _ second: V,
+        _ transform1: (T, V) -> U,
+        _ transform2: (T, V) -> U)
     -> OneOrTwo<U> {
         switch (self) {
         case let (.one(value1)):
@@ -798,7 +828,51 @@ enum OneOrTwo <T> {
                 right: transform2(right1, second))
         }
     }
-        
+       
+    func map1WithOneValueAndTwoTransformsWithoutReturn<V>(
+         _ second: V,
+         _ transform1: (T, V) -> (),
+         _ transform2: (T, V) -> ()) {
+         switch self {
+         case let .one(value1):
+             transform1(value1, second)
+             
+         case let .two(left1, right1):
+             transform2(left1, second)
+             transform2(right1, second)
+         }
+     }
+    
+    func map1WithTwoValueAndTwoTransformsWithoutReturn<U>(
+         _ value1: U,
+         _ value2: OneOrTwoPositionsAsTuple,
+         _ transform1: (T, U, PositionAsIosAxes)  -> (),
+         _ transform2: (T, U, PositionAsIosAxes) -> ()) {
+         switch self {
+         case let .one(one):
+             transform1(one, value1, value2.one)
+             
+         case let .two(left, right):
+             transform2(left, value1, value2.left)
+             transform2(right, value1, value2.right)
+         }
+     }
+    
+//    func map1WithOneValueAndTwoTransformsWithoutReturn<V>(
+//        _ second: V,
+//        _ transform1: (T, V) -> (),
+//        _ transform2: (T, V) -> ())
+//    {
+//        switch (self) {
+//        case let (.one(value1)):
+//            .one(one: transform1(value1, second))
+//
+//        case let (.two(left1, right1)):
+//             .two(
+//                left: transform2(left1, second),
+//                right: transform2(right1, second))
+//        }
+//    }
     
 //    func map2WithTwoTransforms<U, V>(
 //        _ second: OneOrTwo<V>,
@@ -892,6 +966,8 @@ struct AccessOneOrTwo {
         -> OneOrTwo<V> {
             first.map2(second, transform)
         }
+
+    
     func usingSingleOneOrTwoAndOneValueAndTwoTransforms<T, U, V>(
              _ first: OneOrTwo<T>,
              _ second: U,
@@ -900,6 +976,26 @@ struct AccessOneOrTwo {
          -> OneOrTwo<V> {
              first.map1WithOneValueAndTwoTransforms(second, transform1, transform2)
          }
+    
+    func usingSingleOneOrTwoAndOneValueAndTwoTransformsWithoutReturn<T, U >(
+             _ first: OneOrTwo<T>,
+             _ second: U,
+             _ transform1: (T, U) -> (),
+             _ transform2: (T, U) -> ()) {
+             first.map1WithOneValueAndTwoTransforms(
+                second, transform1, transform2)
+    }
+    
+    func usingSingleOneOrTwoAndTwoValueAndTwoTransformsWithoutReturn<T, U >(
+             _ first: OneOrTwo<T>,
+             _ value1: U,
+             _ value2: OneOrTwoPositionsAsTuple,
+             _ transform1: (T, U, PositionAsIosAxes) -> (),
+             _ transform2: (T, U, PositionAsIosAxes) -> ()) {
+             first.map1WithTwoValueAndTwoTransformsWithoutReturn(
+                value1, value2, transform1, transform2)
+    }
+    
 }
 
 
