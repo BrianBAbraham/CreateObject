@@ -93,12 +93,8 @@ extension DictionaryMaker {
     
     mutating  func processChainLabelForDictionaryCreation(_ chainLabel: Part, _ global: Bool ) {
         let chain = LabelInPartChainOut(chainLabel).partChain
-
-        var currentOrigins: OneOrTwoPositionsAsTuple =
-             ZeroValue.oneOrTwoPositionAsTuple//reset for each chain
         for index in 0..<chain.count {
            processPartForDictionaryCreation(
-            &currentOrigins,
            index,
            chain,
            global)
@@ -107,86 +103,40 @@ extension DictionaryMaker {
             
     
     mutating func processPartForDictionaryCreation(
-        _ currentOriginTupleForChain:
-            inout OneOrTwoPositionsAsTuple,
+
         _ index: Int,
         _ chain: [Part],
         _ global: Bool) {
-        guard let partValue = partValuesDic[chain[index]],
-              let parentPartValue =
-                (index == 0 ? partValue: partValuesDic[chain[index - 1]])  else {
+        guard let partValue = partValuesDic[chain[index]]
+            else {
             return fatalErrorGettingPartValue() }
-
-        if !global {//if relative reset for each part
-            resetOrign()
-        }
+            
+        let globalOrigin = partValue.globalOrigin
         let parametersForOneOrTwo = getParameters()
-
-        let updatedOrigin: OneOrTwo<PositionAsIosAxes> =
-            getFromOneOrTwo.usingSingleOneOrTwoAndOneValueAndTwoTransforms(
-                partValue.id,
-                parametersForOneOrTwo,
-                { (id, parametersForOneOrTwo) in
-                    self.updateOneOrigin(id, parametersForOneOrTwo) },
-                { (id, parametersForOneOrTwo) in
-                    self.updateTwoOrigin(id, parametersForOneOrTwo) }
-            )
             
-            currentOriginTupleForChain = updatedOrigin.mapSingleOneOrTwoAndOneValue( currentOriginTupleForChain)
+        getFromOneOrTwo.usingSingleOneOrTwoAndOneValueAndTwoTransformsWithoutReturn(
+            partValue.id,
+            parametersForOneOrTwo,
+            { (id, parametersForOneOrTwo) in
+                self.updateOneForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo) },
+            { (id, parametersForOneOrTwo) in
+                self.updateTwoForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo) }
+        )
+                
             
-           // print(type(of: currentOriginTupleForChain))
-            
-            
-            getFromOneOrTwo.usingSingleOneOrTwoAndOneValueAndTwoTransformsWithoutReturn(
-                partValue.id,
-                parametersForOneOrTwo,
-                { (id, parametersForOneOrTwo) in
-                    self.updateOneForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo) },
-                { (id, parametersForOneOrTwo) in
-                    self.updateTwoForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo) }
-            )
-                    
-            
-            //NEED TO MOIDFY updateOneForDictionaryCreationWithoutReturn
-//            getFromOneOrTwo.usingSingleOneOrTwoAndTwoValueAndTwoTransformsWithoutReturn(
-//                partValue.id,
-//                parametersForOneOrTwo,
-//                currentOriginTupleForChain,
-//                { (id, parametersForOneOrTwo, currentOriginTupleForChain ) in
-//                    self.updateOneForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo, currentOriginTupleForChain) },
-//                { (id, parametersForOneOrTwo, currentOriginTupleForChain) in
-//                    self.updateTwoForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo, currentOriginTupleForChain) }
-//            )
-
-
-
         func getParameters() -> ParametersForOneOrTwoSides {
-            let childOrigin = partValue.childOrigin.values
-            let extractedParentId = parentPartValue.id.values
             let extractedDimension = partValue.dimension.values
             let extractedAngles = partValue.angles.values
             let extractedMinMaxAngles = partValue.minMaxAngle.values
             return
                 ParametersForOneOrTwoSides(
-                    currentOriginsForChain: currentOriginTupleForChain,
-                    newOrigin: childOrigin,
-                    extractedParentId: extractedParentId,
                     extractedDimension: extractedDimension,
                     partValue: partValue,
-                    parentPartValue: parentPartValue,
-                    index: index,
-                    chain: chain,
-                    global: global,
                     angles: extractedAngles,
                     minMaxAngle: extractedMinMaxAngles)
         }
 
-
-        func resetOrign() {
-            currentOriginTupleForChain = ZeroValue.oneOrTwoPositionAsTuple
-        }
-
-
+            
         func fatalErrorGettingPartValue(){
             fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(chain[index])")
         }
@@ -204,79 +154,46 @@ extension DictionaryMaker {
             
             
     struct ParametersForOneOrTwoSides {
-        let currentOriginsForChain: (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes)
-        let newOrigin: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?)
-        let extractedParentId: (left: Part?, right: Part?, one: Part?)
         let extractedDimension:  (left: Dimension3d?, right: Dimension3d?, one: Dimension3d?)
         let partValue: PartData
-        let parentPartValue: PartData
-        let index: Int
-        let chain: [Part]
-        let global: Bool
         let angles:  (left: RotationAngles?, right: RotationAngles?, one: RotationAngles?)
         let minMaxAngle: (left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?)
     }
             
     
-    
-    mutating func updateCurrentOrigin(
+   func getGlobalOrigin(
         _ childId: Part,
-        _ parameters: ParametersForOneOrTwoSides)
+        _ values: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?))
      -> PositionAsIosAxes {
          switch childId {
          case .id1:
-             return getOrigin(\.right, parameters)
+             return values.right ?? ZeroValue.iosLocation
          case .id0 :
-             return getOrigin(\.left, parameters)
-             
+             return values.left ?? ZeroValue.iosLocation
          default:
              fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the following childId is not used here: \(childId)")
          }
     }
     
-    
 
-    
-    mutating func updateTwoOrigin(
-        _ childId: Part,
-        _ parameters: ParametersForOneOrTwoSides)
-    -> PositionAsIosAxes {
-        updateCurrentOrigin(childId, parameters)
-        
-       }
-    
-    
     mutating func updateTwoForDictionaryCreationWithoutReturn(
         _ childId: Part,
-        _ parameters: ParametersForOneOrTwoSides)
- {
-        var updatedCurrentOrigin: PositionAsIosAxes
-        //var labelForSide: KeyPathForSide
+        _ parameters: ParametersForOneOrTwoSides) {
+        
         var labelForDimension: KeyPathForDimension
         var labelForName: KeyPathForName
         var labelForAngles: KeyPathForAngles
         var labelForMinMaxAngle: KeyPathForMinMaxAngle
         
-        updatedCurrentOrigin = updateCurrentOrigin(childId, parameters)
+        var globalOrigin: PositionAsIosAxes = getGlobalOrigin(childId, parameters.partValue.globalOrigin.values)
         
-        switch childId {
-        case .id1:
-            (labelForDimension, labelForName, labelForAngles, labelForMinMaxAngle) =
-            initializeValues(\.right, \.right, \.right, \.right, parameters)
-        case .id0:
-            (labelForDimension, labelForName, labelForAngles, labelForMinMaxAngle) =
-            initializeValues( \.left, \.left, \.left,  \.left, parameters)
-        default:
-            fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the following childId is not used here: \(childId)")
-        }
+        (labelForDimension, labelForName, labelForAngles, labelForMinMaxAngle) =
+            initializeValuesById(childId)
 
         prepareForUpdatedDictionary()
         
-        
-        
-        
         func prepareForUpdatedDictionary() {
-            let dimension = getDimension(parameters.extractedDimension, labelForDimension, parameters.chain[parameters.index])
+            let dimension = getDimension(parameters.extractedDimension, labelForDimension, parameters.partValue.part  )
             let name = getName(parameters.partValue, labelForName)
             let angle =
                 getRotationAngles(
@@ -290,266 +207,94 @@ extension DictionaryMaker {
                     DictionaryUpdate(
                         name: name,
                         dimension: dimension,
-                        origin: updatedCurrentOrigin,
+                        origin: globalOrigin,
                         angle: angle,
                         minMaxAngle: minMaxAngle,
-                        corners: createCorner(dimension, updatedCurrentOrigin))
+                        corners: createCorner(dimension, globalOrigin))
             updateDictionary(dictionaryUpdate)
         }
-  
     }
     
-    
-//    mutating func updateTwoForDictionaryCreation(
-//        _ childId: Part,
-//        _ parameters: ParametersForOneOrTwoSides)
-//    -> PositionAsIosAxes {
-//        var updatedCurrentOrigin: PositionAsIosAxes
-//        var labelForSide: KeyPathForSide
-//        var labelForDimension: KeyPathForDimension
-//        var labelForName: KeyPathForName
-//        var labelForAngles: KeyPathForAngles
-//        var labelForMinMaxAngle: KeyPathForMinMaxAngle
-//
-//        updatedCurrentOrigin = updateCurrentOrigin(childId, parameters)
-//
-//        switch childId {
-//        case .id1:
-//            (labelForDimension, labelForName, labelForAngles, labelForMinMaxAngle) =
-//            initializeValues(\.right, \.right, \.right, \.right, parameters)
-//        case .id0:
-//            (labelForDimension, labelForName, labelForAngles, labelForMinMaxAngle) =
-//            initializeValues( \.left, \.left, \.left,  \.left, parameters)
-//        default:
-//            fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the following childId is not used here: \(childId)")
-//        }
-//
-//        prepareForUpdatedDictionary()
-//
-//
-//
-//
-//        func prepareForUpdatedDictionary() {
-//            let dimension = getDimension(parameters.extractedDimension, labelForDimension, parameters.chain[parameters.index])
-//            let name = getName(parameters.partValue, labelForName)
-//            let angle =
-//                getRotationAngles(
-//                    parameters.angles,
-//                    labelForAngles,
-//                    parameters.partValue.part)
-//            let minMaxAngle =
-//                getMinMaxRotationAngles(parameters.minMaxAngle, labelForMinMaxAngle, parameters.partValue.part)
-//
-//            let dictionaryUpdate =
-//                    DictionaryUpdate(
-//                        name: name,
-//                        dimension: dimension,
-//                        origin: updatedCurrentOrigin,
-//                        angle: angle,
-//                        minMaxAngle: minMaxAngle,
-//                        corners: createCorner(dimension, updatedCurrentOrigin))
-//            updateDictionary(dictionaryUpdate)
-//        }
-//
-//
-//        return updatedCurrentOrigin
-//    }
-
-    private func initializeValues(
-    
-     //   _ labelForSide: KeyPathForSide,
-        _ labelForDimension: KeyPathForDimension,
-        _ labelForName: KeyPathForName,
-        _ labelForAngles: KeyPathForAngles,
-        _ labelForMinMaxAngle: KeyPathForMinMaxAngle,
-        _ parameters: ParametersForOneOrTwoSides
-    ) -> (
-       
-         KeyPathForDimension, KeyPathForName, KeyPathForAngles, KeyPathForMinMaxAngle) {
-        (
-           // labelForSide,
-            labelForDimension,
-            labelForName,
-            labelForAngles,
-            labelForMinMaxAngle
-        )
-    }
              
-            
-    
-    
-    mutating  func updateOneOrigin (
-      _ childId: Part,
-      _ parameters: ParametersForOneOrTwoSides)
-      -> PositionAsIosAxes {
-    
-              getOrigin(
-                  \.one,
-                  parameters)
-      }
-    
+    private func initializeValuesById(_ id: Part)
+    -> (KeyPathForDimension, KeyPathForName, KeyPathForAngles, KeyPathForMinMaxAngle) {
+        switch id {
+        case .id0:
+            return (
+                \.left, \.left, \.left, \.left)
+        case .id1:
+            return (
+                \.right, \.right, \.right, \.right)
+        default:
+            fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the following childId is not used here: \(id)")
+        }
+    }
+
     
     mutating  func updateOneForDictionaryCreationWithoutReturn (
       _ childId: Part,
-      _ parameters: ParametersForOneOrTwoSides)
-     {
-      //    let updatedCurrentOrigin = updateCurrentOrigin(childId, parameters)
-          let updatedCurrentOrigin =
-              getOrigin(
-                  \.one,
-                  parameters)
-         
-          
-         prepareForUpdatedDictionary()
-          
-          
-          func  prepareForUpdatedDictionary() {
-              let dimension =
-                  getDimension(
-                      parameters.extractedDimension,
-                      \.one,
-                      parameters.chain[parameters.index])
-              let name = getName(parameters.partValue, \.one)
-              let angle = getRotationAngles(parameters.angles, \.one, parameters.partValue.part)
-              let minMaxAngle = getMinMaxRotationAngles(parameters.minMaxAngle, \.one, parameters.partValue.part)
-                  
-              let dictionaryUpdate =
-                  DictionaryUpdate(
-                      name: name,
-                      dimension: dimension,
-                      origin: updatedCurrentOrigin,
-                      angle: angle,
-                      minMaxAngle: minMaxAngle,
-                      corners: createCorner(dimension, updatedCurrentOrigin))
-              updateDictionary(dictionaryUpdate)
-              
-          }
-          
-        
-      }
-    
-//      mutating  func updateOneForDictionaryCreation (
-//        _ childId: Part,
-//        _ parameters: ParametersForOneOrTwoSides)
-//        -> PositionAsIosAxes {
-//        //    let updatedCurrentOrigin = updateCurrentOrigin(childId, parameters)
-//            let updatedCurrentOrigin =
-//                getOrigin(
-//                    \.one,
-//                    parameters)
-//
-//
-//           prepareForUpdatedDictionary()
-//
-//
-//            func  prepareForUpdatedDictionary() {
-//                let dimension =
-//                    getDimension(
-//                        parameters.extractedDimension,
-//                        \.one,
-//                        parameters.chain[parameters.index])
-//                let name = getName(parameters.partValue, \.one)
-//                let angle = getRotationAngles(parameters.angles, \.one, parameters.partValue.part)
-//                let minMaxAngle = getMinMaxRotationAngles(parameters.minMaxAngle, \.one, parameters.partValue.part)
-//
-//                let dictionaryUpdate =
-//                    DictionaryUpdate(
-//                        name: name,
-//                        dimension: dimension,
-//                        origin: updatedCurrentOrigin,
-//                        angle: angle,
-//                        minMaxAngle: minMaxAngle,
-//                        corners: createCorner(dimension, updatedCurrentOrigin))
-//                updateDictionary(dictionaryUpdate)
-//
-//            }
-//
-//
-//            return  updatedCurrentOrigin
-//        }
-    
-        
-         mutating func updateDictionary(_ update: DictionaryUpdate) {
-            let name = update.name
-            angleDic +=
-             [name: update.angle]
-             angleMinMaxDic +=
-             [name: update.minMaxAngle]
-            dimensionDic +=
-              [name: update.dimension]
-            preTiltObjectToPartOriginDic +=
-              [name: update.origin]
-            preTiltObjectToPartFourCornerPerKeyDic +=
-              [name: update.corners]
-        }
-     
-    
-    mutating func updateDictionaryNew(
-        
-        _ update: DictionaryUpdate) {
-       let name = update.name
-       angleDic +=
-        [name: update.angle]
-        angleMinMaxDic +=
-        [name: update.minMaxAngle]
-       dimensionDic +=
-         [name: update.dimension]
-       preTiltObjectToPartOriginDic +=
-         [name: update.origin]
-       preTiltObjectToPartFourCornerPerKeyDic +=
-         [name: update.corners]
-   }
-    
-        
-        struct DictionaryUpdate {
-            let name: String
-            let dimension: Dimension3d
-            let origin: PositionAsIosAxes
-            let angle: RotationAngles
-            let minMaxAngle: AngleMinMax
-            let corners: [PositionAsIosAxes]
-        }
-        
-        
-        func getName (
-            _   partValue: PartData,
-            _ key:  KeyPath<(left: String?, right: String?, one: String?),
-            String?> )
-        -> String {
-            guard let name = partValue.originName.values[keyPath: key] else {
-                fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no origin name exists for: \(partValue.part)")
-            }
-        return name
-    }
-            
-            
-    func getOrigin(
-    _ label: KeyPathForIosPosition, //left or right or one
-    _ parameters: ParametersForOneOrTwoSides)
-        -> PositionAsIosAxes {
-            let currentOriginsForChain = parameters.currentOriginsForChain
-            let newOrigins = parameters.newOrigin
-            let parentPartValue = parameters.parentPartValue
-            let index = parameters.index
-            let chain = parameters.chain
-            var updatedOrigins = ZeroValue.iosLocation
-            guard let newOrigin = newOrigins[keyPath: label] else {
-                fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no origin exists for: \(chain[index])")
-            }
+      _ parameters: ParametersForOneOrTwoSides){
 
-            let allowForSideWithOneParent = //otherwise a sided child of a one parent does not use its origin
-                index != 0 ? (parentPartValue.childOrigin.one ?? ZeroValue.iosLocation) : ZeroValue.iosLocation
-          
-            switch label {
-                case \.left:
-                    updatedOrigins = currentOriginsForChain.left + newOrigin + allowForSideWithOneParent
-                case \.right:
-                    updatedOrigins = currentOriginsForChain.right + newOrigin + allowForSideWithOneParent
-                case \.one:
-                    updatedOrigins = currentOriginsForChain.one + newOrigin
-            default: break
-            }
-        return updatedOrigins
+        let globalOrigin = parameters.partValue.globalOrigin.values.one ?? ZeroValue.iosLocation
+        prepareForUpdatedDictionary()
+                
+        func  prepareForUpdatedDictionary() {
+          let dimension =
+              getDimension(
+                  parameters.extractedDimension,
+                  \.one,
+                  parameters.partValue.part)
+          let name = getName(parameters.partValue, \.one)
+          let angle = getRotationAngles(parameters.angles, \.one, parameters.partValue.part)
+          let minMaxAngle = getMinMaxRotationAngles(parameters.minMaxAngle, \.one, parameters.partValue.part)
+              
+          let dictionaryUpdate =
+              DictionaryUpdate(
+                  name: name,
+                  dimension: dimension,
+                  origin: globalOrigin,
+                  angle: angle,
+                  minMaxAngle: minMaxAngle,
+                  corners: createCorner(dimension, globalOrigin))
+          updateDictionary(dictionaryUpdate)
+      }
+    }
+
+    
+    mutating func updateDictionary(_ update: DictionaryUpdate) {
+        let name = update.name
+        angleDic +=
+         [name: update.angle]
+         angleMinMaxDic +=
+         [name: update.minMaxAngle]
+        dimensionDic +=
+          [name: update.dimension]
+        preTiltObjectToPartOriginDic +=
+          [name: update.origin]
+        preTiltObjectToPartFourCornerPerKeyDic +=
+          [name: update.corners]
+    }
+     
+
+    struct DictionaryUpdate {
+        let name: String
+        let dimension: Dimension3d
+        let origin: PositionAsIosAxes
+        let angle: RotationAngles
+        let minMaxAngle: AngleMinMax
+        let corners: [PositionAsIosAxes]
+    }
+        
+        
+    func getName (
+        _   partValue: PartData,
+        _ key:  KeyPath<(left: String?, right: String?, one: String?),
+        String?> )
+    -> String {
+        guard let name = partValue.originName.values[keyPath: key] else {
+            fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no origin name exists for: \(partValue.part)")
+        }
+    return name
     }
             
             
@@ -574,7 +319,6 @@ extension DictionaryMaker {
         _ label: KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>,
         _ part: Part)
     -> Dimension3d {
-    
         guard let dimension = extraction[keyPath: label] else {
             fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no dimension exists for: \(part)")
         }
@@ -587,7 +331,6 @@ extension DictionaryMaker {
         _ label: KeyPath<(left: RotationAngles?, right: RotationAngles?, one: RotationAngles?), RotationAngles?>,
         _ part: Part)
     -> RotationAngles {
-
         guard let rotationAngles = extraction[keyPath: label] else {
             fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no dimension exists for: \(part)")
         }
@@ -600,31 +343,10 @@ extension DictionaryMaker {
         _ label: KeyPath<(left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?), AngleMinMax?>,
         _ part: Part)
     -> AngleMinMax {
-
         guard let minMaxAngle = extraction[keyPath: label] else {
             fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no dimension exists for: \(part)")
         }
         return minMaxAngle
-    }
-    
-    
-    func getOneOfEachPartInAllPartChain() -> [Part]{
-        let chainLabels =
-            objectsAndTheirChainLabelsDicIn[objectType] ??
-            ObjectsAndTheirChainLabels().dictionary[objectType]
-     
-        var oneOfEachPartInAllChainLabel: [Part] = []
-        if let chainLabels{
-            var allPartInThisObject: [Part] = []
-            let onlyOne = 0
-            for label in chainLabels {
-                allPartInThisObject +=
-                LabelInPartChainOut([label]).partChains[onlyOne]
-            }
-           oneOfEachPartInAllChainLabel =
-            Array(Set(allPartInThisObject))
-        }
-        return oneOfEachPartInAllChainLabel
     }
 }
 
@@ -741,7 +463,6 @@ extension DictionaryMaker {
             
             allPartCornerPositionsAfterRotationByOneRotator.append(result)
         }
-      
         return allPartCornerPositionsAfterRotationByOneRotator
     }
     
@@ -769,11 +490,9 @@ extension DictionaryMaker {
         _ angle: RotationAngles = ZeroValue.rotationAngles)
     -> [PositionAsIosAxes]  {
         var rotatedCorners: [PositionAsIosAxes] = []
-     
         guard angle.y.value == 0.0 || angle.z.value == 0.0 else {
             fatalError("\(String(describing: type(of: self))): \(#function ) only x rotation are coded \(angle.y.value)  \(angle.z.value) ")
         }
-
         for index in 0..<cornerPositions.count {
             let newCornerPosition =
             PositionOfPointAfterRotationAboutPoint(

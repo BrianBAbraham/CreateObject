@@ -29,9 +29,97 @@ struct ObjectMaker {
             
             initialiseAllPart()
             
+            postProcessGlobalOrigin()
     }
     
-    
+   mutating func postProcessGlobalOrigin(){
+        let allPartChain = getAllPartChain()
+        var partsToHaveGlobalOriginSet = getOneOfEachPartInAllPartChain()
+      
+        for chain in allPartChain {
+            processPart( chain)
+        }
+
+        func processPart(_ chain: [Part]) {
+            for index in 0..<chain.count {
+                let part = chain[index]
+                if partsToHaveGlobalOriginSet.contains(part){
+                let parentGlobalOrigin = getParentGlobalOrigin(index)
+                  setGlobalOrigin(part, parentGlobalOrigin)
+                  partsToHaveGlobalOriginSet = removePartFromArray(part)
+                }
+            }
+            
+            
+            func getParentGlobalOrigin(_ index: Int) -> OneOrTwo<PositionAsIosAxes> {
+                if index == 0 {
+                    return .one(one: ZeroValue.iosLocation)
+                } else {
+                   let parentPart = chain[index - 1]
+                    
+                    guard let parentPartValue = partValuesDic[parentPart] else {
+                        fatalError()
+                    }
+                    
+                    return parentPartValue.globalOrigin
+                }
+            }
+        }
+
+       
+        func getAllPartChain() -> [[Part]]{
+            guard let allChainLabel = getAllChainLabel() else {
+                fatalError()
+            }
+            var allPartChain: [[Part]] = []
+            for label in allChainLabel {
+                allPartChain.append(getPartChain(label))
+            }
+            return allPartChain
+        }
+
+        
+       func setGlobalOrigin(_ part: Part, _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>) {
+            guard let partValue = partValuesDic[part] else {
+                fatalError()
+            }
+
+            let childOrigin = partValue.childOrigin
+
+            let globalOrigin =
+                   getGlobalOrigin(childOrigin, parentGlobalOrigin)
+
+            let modifiedPartValue = partValue.withNewGlobalOrigin(globalOrigin)
+
+            partValuesDic[part] = modifiedPartValue
+        }
+        
+        
+        func getGlobalOrigin(
+            _ childOrigin: OneOrTwo<PositionAsIosAxes>,
+            _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<PositionAsIosAxes> {
+            let (modifiedChildOrigin, modifiedParentOrigin) =
+            OneOrTwo<Any>.convert2OneOrTwoToAllTwoIfMixedOneAndTwo (childOrigin, parentGlobalOrigin)
+            
+            switch (modifiedChildOrigin, modifiedParentOrigin) {
+            case let (.two (left0, right0) , .two(left1, right1)):
+                let leftAdd = left0 + left1
+                let rightAdd = right0 + right1
+                return .two(left: leftAdd, right: rightAdd)
+            case let (.one( one0), .one(one1)):
+                let oneAdd = one0 + one1
+                return .one(one: oneAdd)
+            default:
+                fatalError("\n\n\(String(describing: type(of: self))): \(#function ) a problem exists with one or both of the OneOrTwo<PositionAsIosAxes>)")
+            }
+        }
+       
+       func removePartFromArray(_ elementToRemove: Part) -> [Part] {
+           partsToHaveGlobalOriginSet.filter { $0 != elementToRemove }
+       }
+
+    }
+
 }
 
 extension ObjectMaker {
@@ -46,10 +134,7 @@ extension ObjectMaker {
             initialiseOneOrTwoDependantPart(
                 .sitOn,.backSupport )
         }
-        if oneOfEachPartInAllPartChain.contains(.footSupportHangerLink) {
-            initialiseOneOrTwoIndependantPart(
-                .footSupportHangerLink )
-        }
+       
         if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportJoint) {
             initialiseOneOrTwoDependantPart(
                 .backSupport, .backSupportHeadSupportJoint )
@@ -63,6 +148,10 @@ extension ObjectMaker {
                 .backSupportHeadSupportLink, .backSupportHeadSupport )
         }
 
+        if oneOfEachPartInAllPartChain.contains(.footSupportHangerLink) {
+            initialiseOneOrTwoIndependantPart(
+                .footSupportHangerLink )
+        }
         for part in oneOfEachPartInAllPartChain {
             switch part {
                 case //already initialised
@@ -194,25 +283,32 @@ extension ObjectMaker {
 
     
     func getOneOfEachPartInAllPartChain() -> [Part]{
-        let chainLabels =
-            objectsAndTheirChainLabelsDicIn[objectType] ??
-            ObjectsAndTheirChainLabels().dictionary[objectType]
-
+        let chainLabels = getAllChainLabel()
         var oneOfEachPartInAllChainLabel: [Part] = []
         if let chainLabels{
             var allPartInThisObject: [Part] = []
-            let onlyOne = 0
             for label in chainLabels {
                 allPartInThisObject +=
-                LabelInPartChainOut([label]).partChains[onlyOne]
+                getPartChain(label)
             }
            oneOfEachPartInAllChainLabel =
             Array(Set(allPartInThisObject))
         }
         return oneOfEachPartInAllChainLabel
     }
-
+    
+    
+    func getPartChain(_ label: Part) -> [Part] {
+        LabelInPartChainOut(label).partChain
+    }
+    
+    
+    func getAllChainLabel() -> [Part]? {
+        objectsAndTheirChainLabelsDicIn[objectType] ??
+        ObjectsAndTheirChainLabels().dictionary[objectType]
+    }
 }
+
 
 //MARK: PART
 enum Part: String {
@@ -645,6 +741,8 @@ struct PartData {
     
     var childOrigin: OneOrTwo<PositionAsIosAxes>
     
+    var globalOrigin: OneOrTwo<PositionAsIosAxes>
+    
     var minMaxAngle: OneOrTwo<AngleMinMax>
     
     var angles: OneOrTwo<RotationAngles>
@@ -663,6 +761,8 @@ struct PartData {
         maxDimension: OneOrTwo<Dimension3d>? = nil,
         minDimension: OneOrTwo<Dimension3d>? = nil,
         origin: OneOrTwo<PositionAsIosAxes>,
+        globalOrigin: OneOrTwo<PositionAsIosAxes> =
+            .one(one: ZeroValue.iosLocation),
         minMaxAngle: OneOrTwo<AngleMinMax>?,
         angles: OneOrTwo<RotationAngles>?,
         id: OneOrTwo<Part>,
@@ -675,6 +775,9 @@ struct PartData {
             self.maxDimension = maxDimension ?? dimension
             self.minDimension = minDimension ?? dimension
             self.childOrigin = origin
+            self.globalOrigin = globalOrigin
+           //
+            
             
            
             self.id = id
@@ -683,7 +786,7 @@ struct PartData {
             self.angles = getAngles()
             self.minMaxAngle = getMinMaxAngle()
             
-            
+
             func getAngles() -> OneOrTwo<RotationAngles> {
                 let defaultAngles = ZeroValue.rotationAngles
                 guard let angles = angles else {
@@ -712,6 +815,18 @@ struct PartData {
             }
         }
 }
+
+
+extension PartData {
+  func withNewGlobalOrigin(_ newGlobalOrigin: OneOrTwo<PositionAsIosAxes>) -> PartData {
+        var updatedPartData = self
+      updatedPartData.globalOrigin = newGlobalOrigin
+        return updatedPartData
+    }
+}
+
+
+
 
 
 
@@ -914,7 +1029,7 @@ enum OneOrTwo <T> {
     
     func map3<U, V, W>(_ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
 
-       let (first,second, third) = convertToTwoIfMixed(self, second, third)
+       let (first,second, third) = convert3OneOrTwoToAllTwoIfMixedOneAndTwo(self, second, third)
         switch (first, second, third) {
         case let (.one(value1), .one(value2), .one(value3)):
             return .one(one: transform(value1, value2, value3))
@@ -928,7 +1043,26 @@ enum OneOrTwo <T> {
         }
     }
     
-    func convertToTwoIfMixed<U, V, W>(
+    
+    
+  static func convert2OneOrTwoToAllTwoIfMixedOneAndTwo<U, V>(
+        _ value1: OneOrTwo<U>,
+        _ value2: OneOrTwo<V>
+    ) -> (OneOrTwo<U>, OneOrTwo<V>) {
+        switch (value1, value2) {
+        case let (.one(oneValue), .two):
+            return (.two(left: oneValue, right: oneValue), value2)
+        case let (.two, .one(oneValue)):
+            return (value1, .two(left: oneValue, right: oneValue))
+        default:
+            return (value1, value2)
+        }
+    }
+    
+    
+    
+    
+    func convert3OneOrTwoToAllTwoIfMixedOneAndTwo<U, V, W>(
         _ value1: OneOrTwo<U>,
         _ value2: OneOrTwo<V>,
         _ value3: OneOrTwo<W>)
@@ -1063,6 +1197,7 @@ extension StructFactory {
                 dimensionName: .one(one: "object_id0_sitOn_id0_sitOn_id0"),
                 dimension: dimension,
                 origin: getSitOnOrigin(),
+                //parentOrigin: .one(one: ZeroValue.iosLocation),
                 minMaxAngle: nil,
                 angles: nil,
                 id: .one(one: .id0) )
@@ -1167,6 +1302,9 @@ extension StructFactory {
             setOriginNames()
         if let parent {
             parentDimension = getOneDimensionFromOneOrTwo(parent.dimension)
+            
+           // print("\(parent.originName) \(parent.childOrigin) "
+           //)
         }
         
         getChildValues()
@@ -1181,6 +1319,7 @@ extension StructFactory {
                 dimension: childDimension,
                 maxDimension: childDimension,
                 origin: childOrigin,
+                globalOrigin: .one(one: ZeroValue.iosLocation),
                 minMaxAngle: childAnglesMinMax,
                 angles: childAngles,
                 id: OneOrTWoId(objectType, childPart).forPart,

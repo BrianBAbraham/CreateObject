@@ -27,22 +27,7 @@ typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 ///sum the parent of two to a  one child wheere as OneOrTwo<T> only provides the current conditiion
 typealias OneOrTwoPositionsAsTuple = (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes)
 
-// generic touple with left and right and common type
-typealias LeftRight<T> = (left: T, right: T)
 
-typealias RearMidFrontPositions =
-    (
-    rear: PositionAsIosAxes,
-    mid: PositionAsIosAxes,
-    front: PositionAsIosAxes)
-
-
-
-
-
-///The dictionary provider uses the values to create the part
-///The UI  uses the values to remove the part from display
-typealias BaseOptionDictionary = [Part: Bool]
 
 
 typealias PositionDictionary = [String: PositionAsIosAxes]
@@ -63,6 +48,7 @@ typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 typealias Dimension = (width: Double, length: Double)
 
 typealias PositionAsIosAxes = (x: Double, y: Double, z: Double)
+
 func + (lhs: PositionAsIosAxes, rhs: PositionAsIosAxes) -> PositionAsIosAxes {
     let sumX = lhs.x + rhs.x
     let sumY = lhs.y + rhs.y
