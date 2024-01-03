@@ -138,19 +138,6 @@ typealias PartChainIdDictionary = [PartChain: OneOrTwo<Part> ]
 /// as defined in ObjectsAndTheirChainLabels
 typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]
 
-///(onlyOne: [PositionAsIosAxes],
-///frontAndRear: [PositionAsIosAxes]
-///sideBySide: [PositionAsIosAxes])
-//typealias TwinSitOnOrigins =
-//    (onlyOne: [PositionAsIosAxes],
-//     rearAndFront: [PositionAsIosAxes],
-//     leftAndRight: [PositionAsIosAxes])
 
-typealias KeyPathForDimension = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>
-typealias KeyPathForIosPosition = KeyPath<(left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?), PositionAsIosAxes?>
-typealias KeyPathForSide = KeyPath<(left: Part?, right: Part?, one: Part?), Part?>
-typealias KeyPathForName = KeyPath<(left: String?, right: String?, one: String?), String?>
-typealias KeyPathForAngles = KeyPath<(left: RotationAngles?, right: RotationAngles?, one: RotationAngles?), RotationAngles?>
-typealias KeyPathForMinMaxAngle = KeyPath<(left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?), AngleMinMax?>
 
 //typealias s = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>

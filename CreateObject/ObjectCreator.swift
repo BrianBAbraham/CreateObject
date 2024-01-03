@@ -838,9 +838,19 @@ enum OneOrTwo <T> {
         }
     }
     
-    var values: (left: T?, right: T?, one: T?) {
-        (left: left, right: right, one: one)
-    }
+//    var values: (left: T?, right: T?, one: T?) {
+//        (left: left, right: right, one: one)
+//    }
+    
+//    func map1() -> T{
+//        switch self {
+//        case .one(let value):
+//            return value
+//        case .two(let value, let value):
+//            return left: left, right: right)
+//        }
+//    }
+    
     
     func map1WithOneTransform<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
@@ -850,28 +860,6 @@ enum OneOrTwo <T> {
             return .two(left: transform(left), right: transform(right))
         }
     }
-    
-    func mapSingleOneOrTwoAndTwoValueAndOneTransform(
-        _ value0: Part,
-        _ value1: DictionaryMaker.ParametersForOneOrTwoSides,
-        _ transform: (KeyPathForSide, DictionaryMaker.ParametersForOneOrTwoSides) -> (left: T, right: T, one: T))
-    -> (left: T, right: T, one: T) {
-        switch self {
-        case .one:
-            return transform(\.one, value1)
-        case .two:
-            switch value0 {
-            case .id0:
-                return transform(\.left, value1)
-            case .id1:
-                return transform(\.right, value1)
-            default:
-                fatalError()
-            }
-        }
-    }
-    
-
     
     
     func mapSingleOneOrTwoAndOneValue(
@@ -1041,6 +1029,25 @@ enum OneOrTwo <T> {
         }
     }
 
+    func mapFiveOneOrTwoAndToOneFuncWithVoidReturn(
+         _ value1: OneOrTwo<String>,
+         _ value2: OneOrTwo<RotationAngles>,
+         _ value3: OneOrTwo<AngleMinMax>,
+         _ value4: OneOrTwo<PositionAsIosAxes>,
+         _ transform: (Dimension3d, String, RotationAngles, AngleMinMax, PositionAsIosAxes)  -> ()) {
+         switch (self, value1, value2, value3, value4) {
+         case let (.one(one0), .one(one1), .one(one2), .one(one3), .one(one4)):
+             transform(one0 as! Dimension3d, one1, one2, one3, one4)
+         
+         
+         case let (.two(left0, right0), .two(left1, right1), .two(left2, right2), .two(left3, right3), .two(left4, right4) ):
+             transform(left0 as! Dimension3d, left1, left2, left3, left4)
+             transform(right0 as! Dimension3d, right1, right2, right3, right4)
+         default:
+             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa )")
+         }
+     }
+    
     
 }
 
@@ -1082,6 +1089,22 @@ struct AccessOneOrTwo {
              _ transform2: (Part, U, PositionAsIosAxes) -> ()) {
              first.mapWithDoubleOneOrTwoAndOneValueAndTwoTransformWithVoidReturnNew(
                 value1, value2, transform1, transform2)
+    }
+    
+    func usingFiveOneOrTwoAndOneFuncWithVoidReturn(
+       _ oneOrTwoDimension: OneOrTwo<Dimension3d>,
+       _ oneOrTwoName: OneOrTwo<String>,
+       _ oneOrTwoAngle: OneOrTwo<RotationAngles>,
+       _ oneOrTwoMinMaxAngle: OneOrTwo<AngleMinMax>,
+       _ globalOrigin: OneOrTwo<PositionAsIosAxes>,
+       _ transform: (Dimension3d, String, RotationAngles, AngleMinMax, PositionAsIosAxes) -> ()) {
+           oneOrTwoDimension.mapFiveOneOrTwoAndToOneFuncWithVoidReturn(
+            oneOrTwoName,
+            oneOrTwoAngle,
+            oneOrTwoMinMaxAngle,
+            globalOrigin,
+            transform
+           )
     }
     
 }
@@ -1998,8 +2021,6 @@ struct Dictionaries {
             preTiltObjectToPartFourCornerPerKey
         self.postTiltObjectToPartFourCornerPerKey =
             postTiltObjectToPartFourCornerPerKey
-            
-
     }
 }
 
