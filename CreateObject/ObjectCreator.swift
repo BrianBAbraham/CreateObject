@@ -97,21 +97,14 @@ struct ObjectMaker {
         
         func getGlobalOrigin(
             _ childOrigin: OneOrTwo<PositionAsIosAxes>,
-            _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<PositionAsIosAxes> {
-            let (modifiedChildOrigin, modifiedParentOrigin) =
+            _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>)
+       -> OneOrTwo<PositionAsIosAxes> {
+            let (modifiedChildOrigin, modifiedParentGlobalOrigin) =
             OneOrTwo<Any>.convert2OneOrTwoToAllTwoIfMixedOneAndTwo (childOrigin, parentGlobalOrigin)
-            
-            switch (modifiedChildOrigin, modifiedParentOrigin) {
-            case let (.two (left0, right0) , .two(left1, right1)):
-                let leftAdd = left0 + left1
-                let rightAdd = right0 + right1
-                return .two(left: leftAdd, right: rightAdd)
-            case let (.one( one0), .one(one1)):
-                let oneAdd = one0 + one1
-                return .one(one: oneAdd)
-            default:
-                fatalError("\n\n\(String(describing: type(of: self))): \(#function ) a problem exists with one or both of the OneOrTwo<PositionAsIosAxes>)")
-            }
+                
+            return
+                modifiedChildOrigin.mapWithDoubleOneOrTwoWithOneOrTwoReturn(modifiedParentGlobalOrigin)
+                
         }
        
        func removePartFromArray(_ elementToRemove: Part) -> [Part] {
@@ -710,17 +703,6 @@ struct OneOrTWoId {
                 fatalError("OneOrTwoId: \(#function)  no id has been defined for \(part)")
             }
         }
-        
-//        func getIdForFrontAccountingForDriveLocation()
-//        -> OneOrTwo<Part>{
-//            switch objectType {
-//            case .fixedWheelFrontDrive, .fixedWheelRearDrive:
-//                return .two(left: .id0, right: .id1)
-//            default:
-//                return .two(left: .id0, right: .id1)
-//
-//            }
-//        }
     }
 }
 
@@ -776,10 +758,7 @@ struct PartData {
             self.minDimension = minDimension ?? dimension
             self.childOrigin = origin
             self.globalOrigin = globalOrigin
-           //
             
-            
-           
             self.id = id
             self.sitOnId = sitOnId
             self.scopesOfRotation = scopesOfRotation
@@ -824,10 +803,6 @@ extension PartData {
         return updatedPartData
     }
 }
-
-
-
-
 
 
 
@@ -958,7 +933,7 @@ enum OneOrTwo <T> {
          }
      }
     
-    func map1WithTwoValueAndTwoTransformsWithoutReturn<U>(
+    func mapWithSingleOneOrTwoAndTwoValueAndTwoTransformWithVoidReturn<U>(
          _ value1: U,
          _ value2: OneOrTwoPositionsAsTuple,
          _ transform1: (T, U, PositionAsIosAxes)  -> (),
@@ -973,56 +948,23 @@ enum OneOrTwo <T> {
          }
      }
     
-//    func map1WithOneValueAndTwoTransformsWithoutReturn<V>(
-//        _ second: V,
-//        _ transform1: (T, V) -> (),
-//        _ transform2: (T, V) -> ())
-//    {
-//        switch (self) {
-//        case let (.one(value1)):
-//            .one(one: transform1(value1, second))
-//
-//        case let (.two(left1, right1)):
-//             .two(
-//                left: transform2(left1, second),
-//                right: transform2(right1, second))
-//        }
-//    }
     
-//    func map2WithTwoTransforms<U, V>(
-//        _ second: OneOrTwo<V>,
-//        _ transform1: (T, V) -> U,
-//        _ transform2: (T, V) -> U)
-//-> OneOrTwo<U> {
-//    switch (self, second) {
-//    case let (.one(value1), .one(value2)):
-//        return .one(one: transform1(value1, value2))
-//
-//    case let (.two(left1, right1), .two(left2, right2)):
-//        return .two(
-//            left: transform2(left1, left2),
-//            right: transform2(right1, right2))
-//    default:
-//        // Handle other cases if needed
-//        fatalError("Incompatible cases for map2")
-//    }
-//}
-
+    func mapWithDoubleOneOrTwoAndOneValueAndTwoTransformWithVoidReturnNew< U>(
+         _ value1: U,
+         _ value2: OneOrTwo<PositionAsIosAxes>,
+         _ transform1: (T, U, PositionAsIosAxes)  -> (),
+         _ transform2: (T, U, PositionAsIosAxes) -> ()) {
+         switch (self, value2) {
+         case let (.one(id), .one(position)):
+             transform1(id, value1, position)
+         case let (.two(leftId, rightId), .two(leftPosition, rightPosition) ):
+             transform2(leftId, value1, leftPosition)
+             transform2(rightId, value1, rightPosition)
+         default:
+             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa )")
+         }
+     }
     
-    
-//    func map3Values<U>(_ second: U, _ third: U, _ transform: (U, U, U) -> U) -> U {
-//    
-//
-//        switch self {
-//        case let (.one(value1), .one(value2), .one(value3)):
-//            return transform(value1, value2, value3)
-//        case let (.two(left1, right1), left2, right2):
-//            return transform(left1, left2, right2)
-//        default:
-//            // Handle other cases if needed
-//            fatalError("Incompatible cases for map3")
-//        }
-//    }
 
 
 
@@ -1080,6 +1022,26 @@ enum OneOrTwo <T> {
             return (value1, value2, value3)
         }
     }
+    
+    
+    
+    func mapWithDoubleOneOrTwoWithOneOrTwoReturn(
+        _ value0: OneOrTwo<PositionAsIosAxes>)
+    -> OneOrTwo<PositionAsIosAxes> {
+        switch (self, value0) {
+        case let (.two (left0, right0) , .two(left1, right1)):
+            let leftAdd = left0 as! PositionAsIosAxes + left1
+            let rightAdd = right0 as! PositionAsIosAxes + right1
+            return .two(left: leftAdd, right: rightAdd)
+        case let (.one( one0), .one(one1)):
+            let oneAdd = one0 as! PositionAsIosAxes + one1
+            return .one(one: oneAdd)
+        default:
+            fatalError("\n\n\(String(describing: type(of: self))): \(#function ) a problem exists with one or both of the OneOrTwo<PositionAsIosAxes>)")
+        }
+    }
+
+    
 }
 
 
@@ -1110,23 +1072,15 @@ struct AccessOneOrTwo {
          -> OneOrTwo<V> {
              first.map1WithOneValueAndTwoTransforms(second, transform1, transform2)
          }
-    
-    func usingSingleOneOrTwoAndOneValueAndTwoTransformsWithoutReturn<T, U >(
-             _ first: OneOrTwo<T>,
-             _ second: U,
-             _ transform1: (T, U) -> (),
-             _ transform2: (T, U) -> ()) {
-             first.map1WithOneValueAndTwoTransforms(
-                second, transform1, transform2)
-    }
-    
-    func usingSingleOneOrTwoAndTwoValueAndTwoTransformsWithoutReturn<T, U >(
-             _ first: OneOrTwo<T>,
+
+        
+    func usingDoubleOneOrTwoAndOneValueAndTwoTransformsWithVoidReturn< U >(
+             _ first: OneOrTwo<Part>,
              _ value1: U,
-             _ value2: OneOrTwoPositionsAsTuple,
-             _ transform1: (T, U, PositionAsIosAxes) -> (),
-             _ transform2: (T, U, PositionAsIosAxes) -> ()) {
-             first.map1WithTwoValueAndTwoTransformsWithoutReturn(
+             _ value2: OneOrTwo<PositionAsIosAxes>,
+             _ transform1: (Part, U, PositionAsIosAxes) -> (),
+             _ transform2: (Part, U, PositionAsIosAxes) -> ()) {
+             first.mapWithDoubleOneOrTwoAndOneValueAndTwoTransformWithVoidReturnNew(
                 value1, value2, transform1, transform2)
     }
     
@@ -2107,14 +2061,7 @@ struct UserEditedValue {
             originName = getOriginName(partId)
 
             angles = getAngles()
-//            getValue(partId, from: anglesDic) { part in
-//                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
-            
-//            if part == .sitOnTiltJoint {
-//                print(part)
-//                print(angles)
-//                print("\n\n")
-//            }
+
             angleMinMax =
             getValue(partId, from: angleMinMaxDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
@@ -2126,7 +2073,6 @@ struct UserEditedValue {
         let start: [Part] = [.object, .id0, .stringLink, part]
         let end: [Part] = [.stringLink, .sitOn,  sitOnId]
         
-   
         switch partId {
         case .one(let one):
             return
@@ -2170,97 +2116,6 @@ struct UserEditedValue {
             return .two(left: commonPart(left), right: commonPart(right))
         }
     }
-    
-//    func getValue<T>(
-//        _ partIds: OneOrTwo<Part>,
-//        from dictionary: [String: T?],
-//        using closure: @escaping (Part) -> String)
-//    -> OneOrTwo<T?> {
-//        let commonPart = { (id: Part) -> T? in
-//            dictionary[closure(id)] ?? nil
-//        }
-//
-//        switch partIds {
-//        case .one(let oneId):
-//
-//            return .one(one: commonPart(oneId))
-//        case .two(let left, let right):
-//            return .two(left: commonPart(left), right: commonPart(right))
-//        }
-//    }
 }
 
 
-
-
-///parts edited by the UI are stored in dictionary
-///these dictiionaries are used for parts,
-///where extant, instead of default values
-///during intitialisation
-//struct UserEditedDictionary {
-//    let dimension: Part3DimensionDictionary
-//    let parentToPartOrigin: PositionDictionary
-//    let objectToPartOrigin: PositionDictionary
-//    let angleMinMax: AngleMinMaxDictionary
-//    let angle: AnglesDictionary
-//    let partChainsId: [PartChain: [[Part]]]
-//
-//}
-//enum OneOrTwoX <T> {
-//    case two (left: T, right: T)
-//    case one (one: T)
-//
-//    func map2WithTwoTransformsX<U, V>(
-//        _ second: OneOrTwoX<V>,
-//        _ transform1: (T, V) -> U,
-//        _ transform2: (T, V) -> U)
-//    -> OneOrTwoX<U> {
-//        switch (self, second) {
-//        case let (.one(value1), .one(value2)):
-//            return .one(one: transform1(value1, value2))
-//
-//        case let (.two(left1, right1), .two(left2, right2)):
-//            return .two(
-//                left: transform2(left1, left2),
-//                right: transform2(right1, right2))
-//        default:
-//            // Handle other cases if needed
-//            fatalError("Incompatible cases for map2")
-//        }
-//    }
-//}
-//
-//
-//struct AccessOneOrTwoX {
-//    func getFromOneOrTwoEnumMap2WithTwoTransforms<T, U, V>(
-//             _ first: OneOrTwoX<T>,
-//             _ second: OneOrTwoX<U>,
-//             _ transform1: (T, U) -> V,
-//             _ transform2: (T, U) -> V)
-//         -> OneOrTwoX<V> {
-//             first.map2WithTwoTransformsX(second, transform1, transform2)
-//         }
-//}
-//
-//
-//struct TextX {
-//    func getData(
-//        _ parameters: String,
-//        _ ids: OneOrTwoX<Int> ){
-//
-//    let updatedOrigin =
-//          accessOneOrTwo.getFromOneOrTwoEnumMap2WithTwoTransforms(
-//        //I do not know how to pass 'paremeters' or 'ids' or 'transformOne' or 'transformTwo'
-//    }
-//
-//    func transformOne(_ id: Int,
-//                      _ paremeters: String ) {
-//        //code for transform one
-//    }
-//
-//    func transformTwo(_ id: Int,
-//                      _ parameters: String ) {
-//        // dode for transform two
-//    }
-//
-//}

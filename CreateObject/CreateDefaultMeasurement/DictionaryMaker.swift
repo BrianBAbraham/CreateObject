@@ -69,7 +69,7 @@ struct DictionaryMaker {
    
         createPostTiltDictionaryFromStructFactory()
     } // Init ends
-} //Parent struct ends
+}
 
 
 //MARK: AngleDic
@@ -81,32 +81,29 @@ extension DictionaryMaker {
 //MARK: PretTiltDic
 extension DictionaryMaker {
 
-    mutating func createPreTiltDictionaryFromStructFactory(_ global: Bool = true) {
+    mutating func createPreTiltDictionaryFromStructFactory() {
         guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? ObjectsAndTheirChainLabels().dictionary[objectType] else {
             fatalError("No values exist for the specified chainLabels.")
         }
         for chainLabel in chainLabels {
-            processChainLabelForDictionaryCreation(chainLabel, global)
+            processChainLabelForDictionaryCreation(chainLabel)
         }
     }
 
     
-    mutating  func processChainLabelForDictionaryCreation(_ chainLabel: Part, _ global: Bool ) {
+    mutating  func processChainLabelForDictionaryCreation(_ chainLabel: Part) {
         let chain = LabelInPartChainOut(chainLabel).partChain
         for index in 0..<chain.count {
            processPartForDictionaryCreation(
            index,
-           chain,
-           global)
+           chain)
         }
     }
             
     
     mutating func processPartForDictionaryCreation(
-
         _ index: Int,
-        _ chain: [Part],
-        _ global: Bool) {
+        _ chain: [Part]) {
         guard let partValue = partValuesDic[chain[index]]
             else {
             return fatalErrorGettingPartValue() }
@@ -114,15 +111,17 @@ extension DictionaryMaker {
         let globalOrigin = partValue.globalOrigin
         let parametersForOneOrTwo = getParameters()
             
-        getFromOneOrTwo.usingSingleOneOrTwoAndOneValueAndTwoTransformsWithoutReturn(
-            partValue.id,
-            parametersForOneOrTwo,
-            { (id, parametersForOneOrTwo) in
-                self.updateOneForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo) },
-            { (id, parametersForOneOrTwo) in
-                self.updateTwoForDictionaryCreationWithoutReturn(id, parametersForOneOrTwo) }
-        )
-                
+
+        getFromOneOrTwo.usingDoubleOneOrTwoAndOneValueAndTwoTransformsWithVoidReturn(
+                partValue.id,
+                parametersForOneOrTwo,
+                globalOrigin,
+                { (id, parametersForOneOrTwo, globalOrigin) in
+                    self.updateOneForDictionaryCreation(id, parametersForOneOrTwo,globalOrigin) },
+                { (id, parametersForOneOrTwo,globalOrigin) in
+                    self.updateTwoForDictionaryCreation(id, parametersForOneOrTwo,globalOrigin) }
+            )
+
             
         func getParameters() -> ParametersForOneOrTwoSides {
             let extractedDimension = partValue.dimension.values
@@ -160,35 +159,19 @@ extension DictionaryMaker {
         let minMaxAngle: (left: AngleMinMax?, right: AngleMinMax?, one: AngleMinMax?)
     }
             
-    
-   func getGlobalOrigin(
-        _ childId: Part,
-        _ values: (left: PositionAsIosAxes?, right: PositionAsIosAxes?, one: PositionAsIosAxes?))
-     -> PositionAsIosAxes {
-         switch childId {
-         case .id1:
-             return values.right ?? ZeroValue.iosLocation
-         case .id0 :
-             return values.left ?? ZeroValue.iosLocation
-         default:
-             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the following childId is not used here: \(childId)")
-         }
-    }
-    
-
-    mutating func updateTwoForDictionaryCreationWithoutReturn(
-        _ childId: Part,
-        _ parameters: ParametersForOneOrTwoSides) {
-        
+  
+    mutating func updateTwoForDictionaryCreation(
+        _ childId: Part ,
+        _ parameters: ParametersForOneOrTwoSides,
+        _ newGlobalOrigin: PositionAsIosAxes) {
         var labelForDimension: KeyPathForDimension
         var labelForName: KeyPathForName
         var labelForAngles: KeyPathForAngles
         var labelForMinMaxAngle: KeyPathForMinMaxAngle
         
-        var globalOrigin: PositionAsIosAxes = getGlobalOrigin(childId, parameters.partValue.globalOrigin.values)
         
         (labelForDimension, labelForName, labelForAngles, labelForMinMaxAngle) =
-            initializeValuesById(childId)
+          initializeValuesById(childId)
 
         prepareForUpdatedDictionary()
         
@@ -202,20 +185,19 @@ extension DictionaryMaker {
                     parameters.partValue.part)
             let minMaxAngle =
                 getMinMaxRotationAngles(parameters.minMaxAngle, labelForMinMaxAngle, parameters.partValue.part)
-            
             let dictionaryUpdate =
                     DictionaryUpdate(
                         name: name,
                         dimension: dimension,
-                        origin: globalOrigin,
+                        origin: newGlobalOrigin,
                         angle: angle,
                         minMaxAngle: minMaxAngle,
-                        corners: createCorner(dimension, globalOrigin))
+                        corners: createCorner(dimension, newGlobalOrigin))
             updateDictionary(dictionaryUpdate)
         }
     }
+        
     
-             
     private func initializeValuesById(_ id: Part)
     -> (KeyPathForDimension, KeyPathForName, KeyPathForAngles, KeyPathForMinMaxAngle) {
         switch id {
@@ -231,13 +213,13 @@ extension DictionaryMaker {
     }
 
     
-    mutating  func updateOneForDictionaryCreationWithoutReturn (
-      _ childId: Part,
-      _ parameters: ParametersForOneOrTwoSides){
-
-        let globalOrigin = parameters.partValue.globalOrigin.values.one ?? ZeroValue.iosLocation
+    mutating  func updateOneForDictionaryCreation(
+        _ id: Part,
+          _ parameters: ParametersForOneOrTwoSides,
+          _ newGlobalOrigin: PositionAsIosAxes) {
+              
         prepareForUpdatedDictionary()
-                
+          
         func  prepareForUpdatedDictionary() {
           let dimension =
               getDimension(
@@ -252,14 +234,14 @@ extension DictionaryMaker {
               DictionaryUpdate(
                   name: name,
                   dimension: dimension,
-                  origin: globalOrigin,
+                  origin: newGlobalOrigin,
                   angle: angle,
                   minMaxAngle: minMaxAngle,
-                  corners: createCorner(dimension, globalOrigin))
+                  corners: createCorner(dimension, newGlobalOrigin))
           updateDictionary(dictionaryUpdate)
       }
     }
-
+    
     
     mutating func updateDictionary(_ update: DictionaryUpdate) {
         let name = update.name
