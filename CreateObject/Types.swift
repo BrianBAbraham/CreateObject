@@ -33,7 +33,7 @@ typealias OneOrTwoPositionsAsTuple = (left: PositionAsIosAxes, right: PositionAs
 typealias PositionDictionary = [String: PositionAsIosAxes]
 
 typealias MeasurementDictionary = [String: Double]
-typealias BaseObjectDoubleDictionary = [ObjectTypes: Double]
+//typealias BaseObjectDoubleDictionary = [ObjectTypes: Double]
 typealias BaseObjectDimensionDictionary = [ObjectTypes: Dimension]
 
 //. Input BaseObjectType to get Dimension3d
@@ -79,25 +79,15 @@ func / (lhs: Dimension3d, rhs: Double) -> Dimension3d {
 }
 
 
-//typealias Dimensions3dRearMidFront =
-//    (rear: [Dimension3d], mid: [Dimension3d], front: [Dimension3d])
 
 typealias Dimension3dRearMidFront =
     (rear: Dimension3d, mid: Dimension3d, front: Dimension3d)
-
-//typealias WheelSize = (radius: Double, width: Double)
-
 
 
 
 ///input BaseObjectType to get angle
 typealias BaseObjectAngleDictionary = [ObjectTypes: Measurement<UnitAngle>]
 typealias BaseObjectAngelMinMaxDictionary = [ObjectTypes: AngleMinMax]
-//typealias BaseObjectWheelSizeDictionary = [ObjectTypes: WheelSize]
-
-//typealias TwinSitOnOptionDictionary = [TwinSitOnOption : Bool]
-
-
 
 
 

@@ -46,14 +46,12 @@ struct DictionaryMaker {
         self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDic
                     
 //            print("OUT \(dictionaries.anglesDic["object_id0_tiltInSpaceHorizontalJoint_id0_sitOn_id0"]) ")
-   
             
         partValuesDic =
             ObjectMaker(
                 objectType,
                 dictionaries,
                 objectsAndTheirChainLabelsDicIn).partValuesDic
-            
             
 //MARK: - ORIGIN/DIMENSION DICTIONARY
         createPreTiltDictionaryFromStructFactory()
@@ -68,7 +66,7 @@ struct DictionaryMaker {
             preTiltObjectToPartFourCornerPerKeyDic
    
         createPostTiltDictionaryFromStructFactory()
-    } // Init ends
+    }
 }
 
 
@@ -214,52 +212,70 @@ extension DictionaryMaker {
     mutating func processRotationOfAllPartsByOneRotator(
         _ rotatorPart: Part,
         _ allPartsToBeRotatedByRotator:[Part]){
-            var dimensions: [OneOrTwo<Dimension3d>] = []
-            var originNames: [OneOrTwo<String>] = []
-            
-            for partToBeRotated in allPartsToBeRotatedByRotator {
-                guard let values = partValuesDic[partToBeRotated] else {
-                    fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(partToBeRotated) ") }
-                
-                dimensions.append(values.dimension)
-                originNames.append(values.originName)
-            }
+        var dimensions: [OneOrTwo<Dimension3d>] = []
+        var originNames: [OneOrTwo<String>] = []
+        var globalOrigins: [OneOrTwo<PositionAsIosAxes>] = []
+        
+        for partToBeRotated in allPartsToBeRotatedByRotator {
+            guard let partValues = partValuesDic[partToBeRotated] else {
+                fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(partToBeRotated) ") }
+            dimensions.append(partValues.dimension)
+            originNames.append(partValues.originName)
+            globalOrigins.append(partValues.globalOrigin)
+        }
 
-            guard let angle: OneOrTwo<RotationAngles> = partValuesDic[rotatorPart]?.angles else {
-                fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(rotatorPart) ") }
-            let rotatorData =
-                Rotator(
-                    rotatorOrigin:
-                        getGlobalOriginOfRotatorFromDictionary(rotatorPart),
-                    originOfAllPartsToBeRotated:
-                        getGlobalOriginOfPartsFromDictionary(allPartsToBeRotatedByRotator),
-                    partsToBeRotatedDimension:
-                        dimensions,
-                    angle:
-                        angle )
-            let allOriginsAfterRotationdByRotator =
-               getAllOriginsAfterRotationdByOneRotator(rotatorData)
+        guard let rotatorPartData = partValuesDic[rotatorPart] else {
+            fatalError()
+        }
+        
+        guard let angle: OneOrTwo<RotationAngles> = partValuesDic[rotatorPart]?.angles else {
+            fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(rotatorPart) ") }
+        let rotatorData =
+            Rotator(
+                rotatorOrigin:
+                    rotatorPartData.globalOrigin,
+                originOfAllPartsToBeRotated:
+                    globalOrigins,
+                partsToBeRotatedDimension:
+                    dimensions,
+                angle:
+                    angle )
+        let allOriginsAfterRotationdByRotator =
+           getAllOriginsAfterRotationdByOneRotator(rotatorData)
+        
+        let allPartCornerPositionAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>]  =
+                getAllPartCornerPositionAfterRotationByOneRotator(
+                    allOriginsAfterRotationdByRotator,
+                    rotatorData)
+        
+        for (originName, allCorners) in zip (originNames,allPartCornerPositionAfterRotationByOneRotator) {
+            let corners =
+                allCorners.map1WithOneTransform {getTopViewCorners($0)}
             
-            let allPartCornerPositionAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>]  =
-                    getAllPartCornerPositionAfterRotationByOneRotator(
-                        allOriginsAfterRotationdByRotator,
-                        rotatorData)
+//            let corners =
+//            allCorners.map1WithOneTransform {getSideViewCorners($0)}
             
-            for (originName, allCorners) in zip (originNames,allPartCornerPositionAfterRotationByOneRotator) {
-                let corners =
-                    allCorners.map1WithOneTransform {getTopViewConers($0)}
-                
-                getFromOneOrTwo.getFromOneOrTwoEnumMap2(originName, corners) {addPartsToFourCornerDic($0, $1)}
-            }
+            getFromOneOrTwo.getFromOneOrTwoEnumMap2(originName, corners) {addPartsToFourCornerDic($0, $1)}
+        }
     }
             
             
-    func getTopViewConers(_ allCorners: [PositionAsIosAxes]) -> [PositionAsIosAxes]{
+    func getTopViewCorners(_ allCorners: [PositionAsIosAxes]) -> [PositionAsIosAxes]{
         [4,5,2,3].map{allCorners[$0]}
     }
     
+//    func getSideViewCorners(_ allCorners: [PositionAsIosAxes]) -> [PositionAsIosAxes]{
+//        let corners = [7,3,0,4].map{allCorners[$0]}
+//        var sideWaysCorners: [PositionAsIosAxes] = []
+//        for corner in corners {
+//            sideWaysCorners.append((x: corner.y, y:corner.z ,z: corner.x))
+//        }
+                
+        //print(corners.count)
+//        return sideWaysCorners
+//    }
             
-     mutating   func addPartsToFourCornerDic(
+     mutating  func addPartsToFourCornerDic(
          _ name: String,
          _ partCornerPosition: [PositionAsIosAxes]
         ){
@@ -388,35 +404,5 @@ extension DictionaryMaker {
             Array(Set(allPartInThisObject))
         return oneOfEachPartInAllChainLabel
     }
-    
-    
-    func getGlobalOriginOfRotatorFromDictionary(//from dictionary as property is origin from parent
-        _ part: Part)
-    -> OneOrTwo<PositionAsIosAxes> {
-        guard let values = partValuesDic[part] else {
-            fatalError("No values defined for part \(part)")
-        }
-        let name = values.originName
-        let origin: OneOrTwo<PositionAsIosAxes> = name.map1WithOneTransform { getOrigin($0) }
-        return origin
-    }
 
-    
-    func getOrigin(_ name: String) -> PositionAsIosAxes {
-        guard let origin = preTiltObjectToPartOriginDic[name] else {
-            fatalError("\(String(describing: type(of: self))): \(#function ) \(name) is not in origin dictionary")
-        }
-        return origin
-    }
-    
-    
-    func getGlobalOriginOfPartsFromDictionary(//default is local these are global
-        _ partsToBeRotated: [Part])
-    -> [OneOrTwo<PositionAsIosAxes>] {
-        var scopeOrigin: [OneOrTwo<PositionAsIosAxes>] = []
-        for item in partsToBeRotated {
-            scopeOrigin.append(getGlobalOriginOfRotatorFromDictionary(item))
-        }
-        return scopeOrigin
-    }
 }
