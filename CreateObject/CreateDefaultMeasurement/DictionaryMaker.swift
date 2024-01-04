@@ -250,7 +250,7 @@ extension DictionaryMaker {
         
         for (originName, allCorners) in zip (originNames,allPartCornerPositionAfterRotationByOneRotator) {
             let corners =
-                allCorners.map1WithOneTransform {getTopViewCorners($0)}
+                allCorners.mapSingleOneOrTwoWithOneFuncWithReturn {getTopViewCorners($0)}
             
 //            let corners =
 //            allCorners.map1WithOneTransform {getSideViewCorners($0)}
@@ -315,7 +315,7 @@ extension DictionaryMaker {
         
         for (dimension, originAfterRotationByRotator) in
                 zip(rotator.partsToBeRotatedDimension, allOriginAfterRotationByRotator) {
-            let corners = dimension.map1WithOneTransform { CreateIosPosition.getCornersFromDimension($0) }
+            let corners = dimension.mapSingleOneOrTwoWithOneFuncWithReturn { CreateIosPosition.getCornersFromDimension($0) }
             let result =
                 getFromOneOrTwo.getForThreeValues(
                             originAfterRotationByRotator,

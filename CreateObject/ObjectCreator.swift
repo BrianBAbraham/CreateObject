@@ -798,13 +798,105 @@ extension PartData {
     }
 }
 
+enum Second<V>{
+    case one (one: V)
+    case two (two: V)
+}
 
+enum First<V>{
+case one (one: V?)
+case two (two: V?)
+
+func process(_ value: V) -> Second<V> {
+    var firstToSecond: Second<V>
+       switch self {
+    case .one (let one):
+           firstToSecond = (.one(one: one ?? value))
+    case .two (let two):
+           firstToSecond = (.two(two: two ?? value))
+    
+       }
+      return firstToSecond
+}
+}
+
+
+
+//enum OneOrTwoOptional <V> {
+//    case two (left:  V?, right: V?)
+//    case one (one: V?)
+//
+//
+//    func processOptionalValues<T>(_ value: T) -> OneOrTwo<T> {
+//        var optionalToNonOptionalForOne: OneOrTwo<T> = .one(one: ZeroValue.dimension3d as! T)
+//        var returnForOne: T
+//        var returnForLeft: T
+//        var returnForRight: T
+//        switch self {
+//            case .one(let one):
+//                if let one{
+//                    returnForOne = value
+//                } else {
+//                    returnForOne = one as! T
+//                }
+//                optionalToNonOptionalForOne = .one(one: returnForOne)
+//
+//                case .two(let left, let right):
+//                    if let left {
+//                        returnForLeft = value
+//                    } else {
+//                        returnForLeft = left as! T
+//                    }
+//                    if let right {
+//                        returnForRight = value
+//                    } else {
+//                        returnForRight = left as! T
+//                    }
+//                    optionalToNonOptionalForOne = .two(left: returnForLeft, right: returnForRight)
+//                }
+//            return optionalToNonOptionalForOne
+//            }
+//}
+
+enum OneOrTwoOptional <V> {
+    case two(left: V?, right: V?)
+    case one(one: V?)
+    
+    
+    func mapOptionalToNonOptionalOneOrTwo<T>(_ value: T) -> OneOrTwo<T> {
+        var optionalToNonOptional: OneOrTwo<T> = .one(one: ZeroValue.dimension3d as! T)
+        switch self {
+        case .one(let one):
+            if let one {
+                optionalToNonOptional = .one(one: value)
+            } else {
+                optionalToNonOptional = .one(one: one as! T)
+            }
+            
+        case .two(let left, let right):
+            var returnForLeft: T
+            var returnForRight: T
+            if let left {
+                returnForLeft = value
+            } else {
+                returnForLeft = left as! T
+            }
+            if let right {
+                returnForRight = value
+            } else {
+                returnForRight = right as! T
+            }
+            optionalToNonOptional = .two(left: returnForLeft, right: returnForRight)
+        }
+        return optionalToNonOptional
+    }
+}
 
 
 enum OneOrTwo <T> {
     case two (left: T, right: T)
     case one (one: T)
-    
+
     var left: T? {
         switch self {
         case .two(let left, _):
@@ -846,7 +938,38 @@ enum OneOrTwo <T> {
 //    }
     
     
-    func map1WithOneTransform<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
+  static func processOptionalValues(_ oneOrTwo: OneOrTwo<T?>, _ defaultValue: T) -> OneOrTwo<T> {
+            switch oneOrTwo {
+            case .one(let one):
+                if let unwrappedValue = one {
+                    return .one(one: unwrappedValue)
+                } else {
+                    return .one(one: defaultValue)
+                }
+            case .two(let left , let right ):
+                // Check if either value is nil and use the default in that case
+                if let unwrappedValue1 = left, let unwrappedValue2 = right {
+                    return .two(left: unwrappedValue1, right: unwrappedValue2)
+                } else {
+                    return .two(left: defaultValue, right: defaultValue)
+                }
+            }
+        }
+    
+
+    
+    
+    func mapSingleOneOrTwoWithOneValue(_ value: T) -> OneOrTwo<T> {
+        switch self {
+        case .one(let value):
+            return .one(one: value)
+        case .two(let left, let right):
+            return .two(left: left, right: right)
+        }
+    }
+    
+    
+    func mapSingleOneOrTwoWithOneFuncWithReturn<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
         case .one(let value):
             return .one(one: transform(value))
@@ -856,20 +979,20 @@ enum OneOrTwo <T> {
     }
     
     
-    func mapSingleOneOrTwoAndOneValue(
-        _ value: (left: T, right: T, one: T))
-    -> (left: T, right: T, one: T) {
-        switch self {
-        case .one(let one):
-            return (left: value.left, right: value.right, one: one)
-        case .two(let left , let right):
-            return
-                (left: left , right: right, one: value.one )
-        }
-    }
+//    func mapSingleOneOrTwoAndOneValue(
+//        _ value: (left: T, right: T, one: T))
+//    -> (left: T, right: T, one: T) {
+//        switch self {
+//        case .one(let one):
+//            return (left: value.left, right: value.right, one: one)
+//        case .two(let left , let right):
+//            return
+//                (left: left , right: right, one: value.one )
+//        }
+//    }
     
     
-    func map2<U, V>(
+    func mapSingleOneOrTwoAndOneFuncWithReturn<U, V>(
         _ second: OneOrTwo<V>,
         _ transform: (T, V) -> U)
     -> OneOrTwo<U> {
@@ -1061,7 +1184,7 @@ struct AccessOneOrTwo {
             _ second: OneOrTwo<U>,
             _ transform: (T, U) -> V)
         -> OneOrTwo<V> {
-            first.map2(second, transform)
+            first.mapSingleOneOrTwoAndOneFuncWithReturn(second, transform)
         }
 
     
@@ -1151,7 +1274,7 @@ extension StructFactory {
     _ sideSupport: PartData?,
     _ footSupportHangerLink: PartData?)
         -> PartData {
-        let oneOrTwoSitOnId: OneOrTwo<Part> = .one(one: .id0)
+        //let oneOrTwoSitOnId: OneOrTwo<Part> = .one(one: .id0)
             
         let oneOrTwoUserEditedValues =
             UserEditedValue(
@@ -1159,6 +1282,7 @@ extension StructFactory {
                 dictionaries,
                 .id0,
                 .sitOn)
+        
         let dimension = getSitOnDimension()
             
         return
@@ -1168,7 +1292,7 @@ extension StructFactory {
                 dimensionName: .one(one: "object_id0_sitOn_id0_sitOn_id0"),
                 dimension: dimension,
                 origin: getSitOnOrigin(),
-                //parentOrigin: .one(one: ZeroValue.iosLocation),
+
                 minMaxAngle: nil,
                 angles: nil,
                 id: .one(one: .id0) )
@@ -1180,15 +1304,25 @@ extension StructFactory {
                  .allCasterBed: (width: 900.0, length: 2000.0, height: 150.0),
                  .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
                     ]
-            return
-                getPartDimensionForObject(
-                    dimensionDic[objectType] ??
-                    (width: 400.0, length: 400.0, height: 10.0) )
+            let defaultDimension: Dimension3d = dimensionDic[objectType] ?? (width: 400.0, length: 400.0, height: 10.0)
+           // print(defaultDimension)
+            
+            let optionalDimension = oneOrTwoUserEditedValues.optionalDimension
+            
+            
+//            print(
+//            optionalDimension.processOptionalValues(defaultDimension) )
+//            print(type(of: optionalDimension.processOptionalValues(defaultDimension)))
+//            print( optionalDimension.processOptionalValues(defaultDimension))
+        return
+            optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
+//            OneOrTwo.processOptionalValues(
+//                oneOrTwoUserEditedValues.dimension,
+//                defaultDimension)
         }
             
             
         func getSitOnOrigin() -> OneOrTwo<PositionAsIosAxes> {
-            //if let dimension = OneOrTwoExtraction(dimension).values.one {
             if let dimension = dimension.one {
                 let bodySupportHeight =
                     MiscObjectParameters(objectType).getMainBodySupportAboveFloor()
@@ -1201,44 +1335,19 @@ extension StructFactory {
                         (x: 0.0, y: 0.0, z: bodySupportHeight ),
                     .fixedWheelFrontDrive:
                         (x: 0.0, y: -dimension.length/2, z: bodySupportHeight)]
+                
+                let defaultOrigin =
+                    originDic[objectType] ??
+                    (x: 0.0, y: dimension.length/2, z: bodySupportHeight )
+                
+                
                 return
-                    getPartOriginForObject(
-                        originDic[objectType] ??
-                        (x: 0.0, y: dimension.length/2, z: bodySupportHeight ) )
+                    OneOrTwo.processOptionalValues(oneOrTwoUserEditedValues.origin, defaultOrigin)
+                
             } else {
                 fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) sitOn does not have a .one dimension")
             }
             
-        }
-            
-            
-        func getPartOriginForObject(
-        _ defaultOrigin: PositionAsIosAxes)
-            -> OneOrTwo<PositionAsIosAxes> {
-//                print(oneOrTwoUserEditedValues.origin)
-                
-            switch oneOrTwoUserEditedValues.origin {
-                case .one (let one):
-                    return .one(one: one ?? defaultOrigin )
-                case .two(let left, let right):
-                    return .two(left: left ?? defaultOrigin,
-                                right: right ?? defaultOrigin)
-            }
-        }
-            
-            
-        func getPartDimensionForObject(
-        _ defaultDimension: Dimension3d)
-            -> OneOrTwo<Dimension3d> {
-//                print(oneOrTwoUserEditedValues.dimension)
-                
-            switch oneOrTwoUserEditedValues.dimension {
-                case .one (let one):
-                    return .one(one: one ?? defaultDimension )
-                case .two(let left, let right):
-                    return .two(left: left ?? defaultDimension,
-                                right: right ?? defaultDimension)
-            }
         }
     }
 }
@@ -2042,6 +2151,7 @@ struct UserEditedValue {
     var angles: OneOrTwo <RotationAngles?> = .one(one: nil)
     var angleMinMax: OneOrTwo <AngleMinMax?> = .one(one: nil)
     var dimension: OneOrTwo <Dimension3d?> = .one(one: nil)
+    var optionalDimension: OneOrTwoOptional <Dimension3d?> = .one(one: nil)
     var origin: OneOrTwo <PositionAsIosAxes?> = .one(one: nil)
     var partId: OneOrTwo <Part>
     
@@ -2064,6 +2174,11 @@ struct UserEditedValue {
             partId = //non-optional as must iterate through id
             partChainIdDic[partChain] ?? //UI may edit
             OneOrTWoId(objectType, childPart).forPart // default
+            
+            
+            optionalDimension =
+            getOptionalValue(partId, from: dimensionDic) { part in
+                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
             
             dimension =
             getValue(partId, from: dimensionDic) { part in
@@ -2120,6 +2235,24 @@ struct UserEditedValue {
         from dictionary: [String: T?],
         using closure: @escaping (Part) -> String
     ) -> OneOrTwo<T?> {
+        let commonPart = { (id: Part) -> T? in
+            dictionary[closure(id)] ?? nil
+        }
+
+        switch partIds {
+        case .one(let oneId):
+            return .one(one: commonPart(oneId))
+        case .two(let left, let right):
+            return .two(left: commonPart(left), right: commonPart(right))
+        }
+    }
+    
+    
+    func getOptionalValue<T>(
+        _ partIds: OneOrTwo<Part>,
+        from dictionary: [String: T?],
+        using closure: @escaping (Part) -> String
+    ) -> OneOrTwoOptional<T?> {
         let commonPart = { (id: Part) -> T? in
             dictionary[closure(id)] ?? nil
         }
