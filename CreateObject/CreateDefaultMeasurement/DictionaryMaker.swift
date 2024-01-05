@@ -155,7 +155,7 @@ extension DictionaryMaker {
             let name = update.name
             angleDic +=
              [name: update.angle]
-             angleMinMaxDic +=
+            angleMinMaxDic +=
              [name: update.minMaxAngle]
             dimensionDic +=
               [name: update.dimension]

@@ -138,7 +138,7 @@ class ObjectPickViewModel: ObservableObject {
     func setCurrentRotation(
         _ angleInDic: AnglesDictionary = [:],
         partChainIdDicIn: [PartChain: OneOrTwo<Part>]  = [:] ) {
-
+//print(angleInDic)
         objectPickModel.angleDic += angleInDic
 
         let objectName = getCurrentObjectName()

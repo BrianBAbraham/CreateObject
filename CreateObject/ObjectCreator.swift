@@ -641,10 +641,12 @@ struct ObjectsAndTheirChainLabels {
 
 
 //MARK: OneOrTwoId
-struct OneOrTWoId {
+struct OneOrTwoId {
     let forPart: OneOrTwo<Part>
     init(_ objectType: ObjectTypes,_ part: Part){
         forPart = getIdForPart(part)
+        
+        
         func getIdForPart(_ part: Part)
         -> OneOrTwo<Part>{
             switch part {
@@ -798,65 +800,15 @@ extension PartData {
     }
 }
 
-enum Second<V>{
-    case one (one: V)
-    case two (two: V)
-}
-
-enum First<V>{
-case one (one: V?)
-case two (two: V?)
-
-func process(_ value: V) -> Second<V> {
-    var firstToSecond: Second<V>
-       switch self {
-    case .one (let one):
-           firstToSecond = (.one(one: one ?? value))
-    case .two (let two):
-           firstToSecond = (.two(two: two ?? value))
-    
-       }
-      return firstToSecond
-}
-}
 
 
 
-//enum OneOrTwoOptional <V> {
-//    case two (left:  V?, right: V?)
-//    case one (one: V?)
-//
-//
-//    func processOptionalValues<T>(_ value: T) -> OneOrTwo<T> {
-//        var optionalToNonOptionalForOne: OneOrTwo<T> = .one(one: ZeroValue.dimension3d as! T)
-//        var returnForOne: T
-//        var returnForLeft: T
-//        var returnForRight: T
-//        switch self {
-//            case .one(let one):
-//                if let one{
-//                    returnForOne = value
-//                } else {
-//                    returnForOne = one as! T
-//                }
-//                optionalToNonOptionalForOne = .one(one: returnForOne)
-//
-//                case .two(let left, let right):
-//                    if let left {
-//                        returnForLeft = value
-//                    } else {
-//                        returnForLeft = left as! T
-//                    }
-//                    if let right {
-//                        returnForRight = value
-//                    } else {
-//                        returnForRight = left as! T
-//                    }
-//                    optionalToNonOptionalForOne = .two(left: returnForLeft, right: returnForRight)
-//                }
-//            return optionalToNonOptionalForOne
-//            }
+
+//enum RelevantTypes {
+//    case Dimension(Dimension3d)
+//    case Origin(PositionAsIosAxes)
 //}
+
 
 enum OneOrTwoOptional <V> {
     case two(left: V?, right: V?)
@@ -864,8 +816,10 @@ enum OneOrTwoOptional <V> {
     
     
     func mapOptionalToNonOptionalOneOrTwo<T>(_ value: T) -> OneOrTwo<T> {
-        var optionalToNonOptional: OneOrTwo<T> = .one(one: ZeroValue.dimension3d as! T)
-        switch self {
+
+        var optionalToNonOptional: OneOrTwo<T> = setToParameterType(value)
+        
+        switch self { //assign default to one or left and right if nil
         case .one(let one):
             if let one {
                 optionalToNonOptional = .one(one: value)
@@ -886,12 +840,37 @@ enum OneOrTwoOptional <V> {
             } else {
                 returnForRight = right as! T
             }
-            optionalToNonOptional = .two(left: returnForLeft, right: returnForRight)
+            optionalToNonOptional =
+                .two(left: returnForLeft, right: returnForRight)
         }
         return optionalToNonOptional
+        
+        func setToParameterType<T>(_ parameter: T) -> OneOrTwo<T> {
+            switch parameter {
+            case is Dimension3d:
+                return OneOrTwo.one(one: ZeroValue.dimension3d) as! OneOrTwo<T>
+            case is PositionAsIosAxes:
+                return OneOrTwo.one(one: ZeroValue.iosLocation) as! OneOrTwo<T>
+            case is RotationAngles:
+                return OneOrTwo.one(one: ZeroValue.rotationAngles) as! OneOrTwo<T>
+            case is AngleMinMax:
+                return OneOrTwo.one(one: ZeroValue.angleMinMax) as! OneOrTwo<T>
+            default:
+                fatalError()
+            }
+        }
+
     }
 }
 
+
+/// when no entries in dic object is as default
+/// when entries follow default they are used
+/// if removal of a .one part then it is not created
+/// if removal of a ,two it is not created
+/// if removal of .id0 or .id1, but not both, PartData.id is assigned from UserEditedValues which may return .id0 and .none or .none and .id1 indicating that no extant symmetry exists
+/// so when symmetry is attempted it should only be done if id.left <> .none
+/// and if id.right == .none proceed as normal
 
 enum OneOrTwo <T> {
     case two (left: T, right: T)
@@ -924,40 +903,23 @@ enum OneOrTwo <T> {
         }
     }
     
-//    var values: (left: T?, right: T?, one: T?) {
-//        (left: left, right: right, one: one)
-//    }
-    
-//    func map1() -> T{
-//        switch self {
-//        case .one(let value):
-//            return value
-//        case .two(let value, let value):
-//            return left: left, right: right)
-//        }
-//    }
-    
-    
-  static func processOptionalValues(_ oneOrTwo: OneOrTwo<T?>, _ defaultValue: T) -> OneOrTwo<T> {
-            switch oneOrTwo {
-            case .one(let one):
-                if let unwrappedValue = one {
-                    return .one(one: unwrappedValue)
-                } else {
-                    return .one(one: defaultValue)
-                }
-            case .two(let left , let right ):
-                // Check if either value is nil and use the default in that case
-                if let unwrappedValue1 = left, let unwrappedValue2 = right {
-                    return .two(left: unwrappedValue1, right: unwrappedValue2)
-                } else {
-                    return .two(left: defaultValue, right: defaultValue)
-                }
+
+    func adjustForSymmetry() -> OneOrTwo<T> {
+        switch self {
+        case .one:
+            return self
+        case .two (let left, let right):
+            //if unequal then the values must have been user edited
+            if left as! PositionAsIosAxes == right as! PositionAsIosAxes {
+                return .two(left:
+                                CreateIosPosition.getLeftFromRight(right as! PositionAsIosAxes) as! T,
+                            right: right)
+            } else {
+                return .two(left: left, right: right)
             }
         }
-    
+    }
 
-    
     
     func mapSingleOneOrTwoWithOneValue(_ value: T) -> OneOrTwo<T> {
         switch self {
@@ -977,19 +939,6 @@ enum OneOrTwo <T> {
             return .two(left: transform(left), right: transform(right))
         }
     }
-    
-    
-//    func mapSingleOneOrTwoAndOneValue(
-//        _ value: (left: T, right: T, one: T))
-//    -> (left: T, right: T, one: T) {
-//        switch self {
-//        case .one(let one):
-//            return (left: value.left, right: value.right, one: one)
-//        case .two(let left , let right):
-//            return
-//                (left: left , right: right, one: value.one )
-//        }
-//    }
     
     
     func mapSingleOneOrTwoAndOneFuncWithReturn<U, V>(
@@ -1152,6 +1101,8 @@ enum OneOrTwo <T> {
          _ value3: OneOrTwo<AngleMinMax>,
          _ value4: OneOrTwo<PositionAsIosAxes>,
          _ transform: (Dimension3d, String, RotationAngles, AngleMinMax, PositionAsIosAxes)  -> ()) {
+             
+          //   print("\(value1), \(value2), \(value3), \(value4) ")
          switch (self, value1, value2, value3, value4) {
          case let (.one(one0), .one(one1), .one(one2), .one(one3), .one(one4)):
              transform(one0 as! Dimension3d, one1, one2, one3, one4)
@@ -1305,20 +1256,11 @@ extension StructFactory {
                  .allCasterHoist: (width: 0.0, length: 0.0, height: 0.0)
                     ]
             let defaultDimension: Dimension3d = dimensionDic[objectType] ?? (width: 400.0, length: 400.0, height: 10.0)
-           // print(defaultDimension)
-            
+ 
             let optionalDimension = oneOrTwoUserEditedValues.optionalDimension
             
-            
-//            print(
-//            optionalDimension.processOptionalValues(defaultDimension) )
-//            print(type(of: optionalDimension.processOptionalValues(defaultDimension)))
-//            print( optionalDimension.processOptionalValues(defaultDimension))
         return
             optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
-//            OneOrTwo.processOptionalValues(
-//                oneOrTwoUserEditedValues.dimension,
-//                defaultDimension)
         }
             
             
@@ -1342,7 +1284,8 @@ extension StructFactory {
                 
                 
                 return
-                    OneOrTwo.processOptionalValues(oneOrTwoUserEditedValues.origin, defaultOrigin)
+                    oneOrTwoUserEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin)
+                
                 
             } else {
                 fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) sitOn does not have a .one dimension")
@@ -1360,7 +1303,7 @@ extension StructFactory {
     _ siblings: [PartData])
         -> PartData {
         
-        let oneOrTwoUserEditedValues = //optional values apart from id
+        let userEditedValues = //optional values apart from id
                 UserEditedValue(
                     objectType,
                     dictionaries,
@@ -1373,13 +1316,25 @@ extension StructFactory {
         var childOrigin: OneOrTwo<PositionAsIosAxes> =
             .one(one: ZeroValue.iosLocation)
         var scopesOfRotation: [[Part]] = []
-        var childAnglesMinMax: OneOrTwo<AngleMinMax>? = nil
-        var childAngles:  OneOrTwo<RotationAngles>? = nil
-            
-         
+//        var childAnglesMinMax: OneOrTwo<AngleMinMax>? = nil
+            var childAnglesMinMax: OneOrTwo<AngleMinMax> =  .one(one: ZeroValue.angleMinMax)
+        //var childAngles:  OneOrTwo<RotationAngles>? = nil
+        var childAngles:  OneOrTwo<RotationAngles> = .one(one: ZeroValue.rotationAngles)
         var originName: OneOrTwo<String> = .one(one: "")
+        var childId = userEditedValues.partId//two sided default edited to one will be detected
+         
+            switch childId{
+            case .one:
+                break
+            case .two:
+                childAngles = .two(left: ZeroValue.rotationAngles, right: ZeroValue.rotationAngles)
+                childAnglesMinMax = .two(left: ZeroValue.angleMinMax, right: ZeroValue.angleMinMax)
+            }
         
-            setOriginNames()
+                
+        
+        setOriginNames()
+            
         if let parent {
             parentDimension = getOneDimensionFromOneOrTwo(parent.dimension)
             
@@ -1402,10 +1357,11 @@ extension StructFactory {
                 globalOrigin: .one(one: ZeroValue.iosLocation),
                 minMaxAngle: childAnglesMinMax,
                 angles: childAngles,
-                id: OneOrTWoId(objectType, childPart).forPart,
+                id: childId,
                 scopesOfRotation: scopesOfRotation)
+         
             
-            
+      
         
         func getChildValues () {
             switch childPart {
@@ -1484,7 +1440,7 @@ extension StructFactory {
     
       
         func setOriginNames(){
-            switch oneOrTwoUserEditedValues.originName {
+            switch userEditedValues.originName {
             case .one (let one):
                originName =
                     .one(one: one ?? "" )
@@ -1496,12 +1452,6 @@ extension StructFactory {
             }
         }
             
-//       func setSitOnTiltJointAngle() {
-//          let zeroAngle = ZeroValue.angle
-//          let max = Measurement(value: 60.0, unit: UnitAngle.degrees)
-//          maxAngle = .one(one:(x: max, y: zeroAngle, z: zeroAngle))
-//
-//        }
             
         func getOneDimensionFromOneOrTwo(_ parentValue: OneOrTwo<Dimension3d>)
             -> Dimension3d {
@@ -1610,7 +1560,7 @@ extension StructFactory {
          
          
          func setCasterForkChildOrigin() {
-             let originLength = getChildDimension(keyPath: \.length)
+             let originLength = getChildOneDimensionSize(keyPath: \.length)
              setChildOriginForObject(
                  [
                      : ][objectType] ??
@@ -1633,7 +1583,7 @@ extension StructFactory {
          
          
          func setCasterWheelChildOrigin() {
-             let originHeight = getChildDimension(keyPath: \.height)
+             let originHeight = getChildOneDimensionSize(keyPath: \.height)
              setChildOriginForObject(
                  [
                      : ][objectType] ??
@@ -1734,7 +1684,7 @@ extension StructFactory {
         
         
         func setFootSupportChildOrigin() {
-            let dimensionWidth = getChildDimension( keyPath: \.width)
+            let dimensionWidth = getChildOneDimensionSize( keyPath: \.width)
            // print (-dimensionWidth/2.0)
             setChildOriginForObject(
                 [
@@ -1786,7 +1736,7 @@ extension StructFactory {
         
         func setSideSupportChildOrigin () {
             //let dimension = getOneDimensionFromOneOrTwo(parentDimension)
-            let originHeight = getChildDimension(keyPath: \.height)
+            let originHeight = getChildOneDimensionSize(keyPath: \.height)
             setChildOriginForObject(
                 [.allCasterStretcher:
                     (x: parentDimension.width/2,
@@ -1812,7 +1762,7 @@ extension StructFactory {
         
         func setSideSupportRotationJointChildOrigin () {
             //let dimension = getOneDimensionFromOneOrTwo(parentDimension)
-            let originHeight = getChildDimension(keyPath: \.height)
+            let originHeight = getChildOneDimensionSize(keyPath: \.height)
             setChildOriginForObject(
                 [.allCasterStretcher:
                     (x: 0.0,
@@ -1972,68 +1922,49 @@ extension StructFactory {
             
         func setChildAnglesForObject(
             _ defaultAngles: RotationAngles) {
-                switch oneOrTwoUserEditedValues.angles {
-                case .one (let one):
-                   // print("one")
-                    childAngles =
-                        .one(one: one ?? defaultAngles )
-                case .two(let left, let right):
-                  //  print("Two")
-                    childAngles =
-                        .two(
-                            left: left ?? defaultAngles,
-                            right: right ?? defaultAngles)
-                }
+//                switch userEditedValues.angles {
+//                case .one (let one):
+//                   // print("one")
+//                    childAngles =
+//                        .one(one: one ?? defaultAngles )
+//                case .two(let left, let right):
+//                  //  print("Two")
+//                    childAngles =
+//                        .two(
+//                            left: left ?? defaultAngles,
+//                            right: right ?? defaultAngles)
+//                }
+//
+                
+                childAngles = userEditedValues.optionalAngles.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
+              //  print("\(childPart)  \(childAngles)")
+               
         }
             
             
         func setChildMinMaxAnglesForObject(
             _ defaultAngles: AngleMinMax) {
+                childAnglesMinMax = userEditedValues.optionalAngleMinMax.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
                 
-                switch oneOrTwoUserEditedValues.angleMinMax {
-                case .one (let one):
-                    childAnglesMinMax =
-                        .one(one: one ?? defaultAngles )
-                case .two(let left, let right):
-                    childAnglesMinMax =
-                        .two(
-                            left: left ?? defaultAngles,
-                            right: right ?? defaultAngles)
-                }
+        
         }
             
             
         func setChildDimensionForObject(
             _ defaultDimension: Dimension3d) {
-            switch oneOrTwoUserEditedValues.dimension {
-                case .one (let one):
-                    childDimension = .one(one: one ?? defaultDimension )
-                case .two(let left, let right):
-                    childDimension = .two(left: left ?? defaultDimension,
-                                right: right ?? defaultDimension)
-            }
+                childDimension = userEditedValues.optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
         }
         
         
         func setChildOriginForObject(
             _ defaultOrigin: PositionAsIosAxes) {
-               
-            switch oneOrTwoUserEditedValues.origin {
-                case .one (let one):
-                    childOrigin =
-                        .one(one: one ?? defaultOrigin )
-                case .two(let left, let right):
-                 let leftDefaultOrigin =
-                        CreateIosPosition.getLeftFromRight(
-                            defaultOrigin)
-                    childOrigin =
-                        .two(left: left ?? leftDefaultOrigin,
-                            right: right ?? defaultOrigin)
-            }
+                childOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin)
+                
+                childOrigin = childOrigin.adjustForSymmetry()
         }
         
 
-        func getChildDimension( keyPath: KeyPath<Dimension3d, Double>) -> Double {
+        func getChildOneDimensionSize( keyPath: KeyPath<Dimension3d, Double>) -> Double {
             var originDimension = 0.0
             
             switch childDimension {
@@ -2148,11 +2079,11 @@ struct UserEditedValue {
     
     var originName:  OneOrTwo <String?> = .one(one: nil)
 
-    var angles: OneOrTwo <RotationAngles?> = .one(one: nil)
-    var angleMinMax: OneOrTwo <AngleMinMax?> = .one(one: nil)
-    var dimension: OneOrTwo <Dimension3d?> = .one(one: nil)
+   // var angles: OneOrTwo <RotationAngles?> = .one(one: nil)
+    var optionalAngles: OneOrTwoOptional <RotationAngles?> = .one(one: nil)
+    var optionalAngleMinMax: OneOrTwoOptional <AngleMinMax?> = .one(one: nil)
     var optionalDimension: OneOrTwoOptional <Dimension3d?> = .one(one: nil)
-    var origin: OneOrTwo <PositionAsIosAxes?> = .one(one: nil)
+    var optionalOrigin: OneOrTwoOptional <PositionAsIosAxes?> = .one(one: nil)
     var partId: OneOrTwo <Part>
     
     init(
@@ -2167,34 +2098,49 @@ struct UserEditedValue {
             objectToPartOriginDic = dictionaries.objectToPartOrigin
             anglesDic = dictionaries.anglesDic
             angleMinMaxDic = dictionaries.angleMinMaxDic
-            
+//            if childPart == .sitOnTiltJoint {
+//                print("")
+//                print("MAKER")
+//                print(anglesDic["object_id0_tiltInSpaceHorizontalJoint_id0_sitOn_id0"])
+//
+//                print("")
+//            }
             partChainIdDic = dictionaries.partChainId
             let onlyOne = 0
             let partChain = LabelInPartChainOut([childPart]).partChains[onlyOne]
             partId = //non-optional as must iterate through id
             partChainIdDic[partChain] ?? //UI may edit
-            OneOrTWoId(objectType, childPart).forPart // default
+            OneOrTwoId(objectType, childPart).forPart // default
             
             
             optionalDimension =
             getOptionalValue(partId, from: dimensionDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
             
-            dimension =
-            getValue(partId, from: dimensionDic) { part in
-                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
-            
-            origin =
-            getValue(partId, from: parentToPartOriginDic) { part in
+            optionalOrigin =
+            getOptionalValue(partId, from: parentToPartOriginDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
             
             originName = getOriginName(partId)
 
-            angles = getAngles()
-
-            angleMinMax =
-            getValue(partId, from: angleMinMaxDic) { part in
+           // angles = getAngles()
+            
+            optionalAngleMinMax =
+            getOptionalValue(partId, from: angleMinMaxDic) { part in
                 return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+            
+            optionalAngles =
+            getOptionalValue(partId, from: anglesDic) { part in
+                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+            
+            if childPart == .sitOnTiltJoint {
+                print("")
+                print("MAKER")
+                print(optionalAngles)
+                
+                print("")
+            }
+            
         }
     
     
@@ -2216,7 +2162,6 @@ struct UserEditedValue {
     }
     
     func getAngles() -> OneOrTwo<RotationAngles?>{
-        //let z = ZeroValue.rotationAngles
         var angles: OneOrTwo<RotationAngles?> = .one(one: nil)
         switch originName {
         case .one(let one):
@@ -2229,25 +2174,7 @@ struct UserEditedValue {
         return angles
     }
     
-    
-    func getValue<T>(
-        _ partIds: OneOrTwo<Part>,
-        from dictionary: [String: T?],
-        using closure: @escaping (Part) -> String
-    ) -> OneOrTwo<T?> {
-        let commonPart = { (id: Part) -> T? in
-            dictionary[closure(id)] ?? nil
-        }
-
-        switch partIds {
-        case .one(let oneId):
-            return .one(one: commonPart(oneId))
-        case .two(let left, let right):
-            return .two(left: commonPart(left), right: commonPart(right))
-        }
-    }
-    
-    
+        
     func getOptionalValue<T>(
         _ partIds: OneOrTwo<Part>,
         from dictionary: [String: T?],
@@ -2256,11 +2183,13 @@ struct UserEditedValue {
         let commonPart = { (id: Part) -> T? in
             dictionary[closure(id)] ?? nil
         }
-
+//print(commonPart)
         switch partIds {
         case .one(let oneId):
+         //   print(commonPart(oneId))
             return .one(one: commonPart(oneId))
         case .two(let left, let right):
+           
             return .two(left: commonPart(left), right: commonPart(right))
         }
     }
