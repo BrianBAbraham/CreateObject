@@ -35,7 +35,6 @@ struct DictionaryMaker {
 
     var partValuesDic: [Part: PartData] = [:]
     
-    let getFromOneOrTwo = AccessOneOrTwo()
 
     init(
         _ objectType: ObjectTypes,
@@ -70,11 +69,6 @@ struct DictionaryMaker {
 }
 
 
-//MARK: AngleDic
-extension DictionaryMaker {
-    
-}
-
 
 //MARK: PretTiltDic
 extension DictionaryMaker {
@@ -106,8 +100,8 @@ extension DictionaryMaker {
             
         let globalOrigin = partValue.globalOrigin
  
-        getFromOneOrTwo.usingFiveOneOrTwoAndOneFuncWithVoidReturn(
-            partValue.dimension,
+            
+        partValue.dimension.mapFiveOneOrTwoAndToOneFuncWithVoidReturn  (
             partValue.originName,
             partValue.angles,
             partValue.minMaxAngle,
@@ -124,7 +118,6 @@ extension DictionaryMaker {
                     minMaxAngle,
                     globalOrigin) }
         )
-
             
         func fatalErrorGettingPartValue(){
             fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(part)")
@@ -251,11 +244,8 @@ extension DictionaryMaker {
         for (originName, allCorners) in zip (originNames,allPartCornerPositionAfterRotationByOneRotator) {
             let corners =
                 allCorners.mapSingleOneOrTwoWithOneFuncWithReturn {getTopViewCorners($0)}
-            
-//            let corners =
-//            allCorners.map1WithOneTransform {getSideViewCorners($0)}
-            
-            getFromOneOrTwo.getFromOneOrTwoEnumMap2(originName, corners) {addPartsToFourCornerDic($0, $1)}
+        
+            originName.mapSingleOneOrTwoAndOneFuncWithReturn(corners){addPartsToFourCornerDic($0, $1)}
         }
     }
             
@@ -295,11 +285,11 @@ extension DictionaryMaker {
         _ rotator: Rotator)
     -> [OneOrTwo<PositionAsIosAxes>] {
         var allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>] = []
+        
         for partOrigin in
                 rotator.originOfAllPartsToBeRotated {
             allOriginAfterRotationByRotator.append(
-                getFromOneOrTwo.getForThreeValues(
-                    rotator.rotatorOrigin,
+                rotator.rotatorOrigin.map3New(
                     partOrigin,
                     rotator.angle ) { calculateRotatedOrigin($0, $1, $2) } )
         }
@@ -317,10 +307,13 @@ extension DictionaryMaker {
                 zip(rotator.partsToBeRotatedDimension, allOriginAfterRotationByRotator) {
             let corners = dimension.mapSingleOneOrTwoWithOneFuncWithReturn { CreateIosPosition.getCornersFromDimension($0) }
             let result =
-                getFromOneOrTwo.getForThreeValues(
-                            originAfterRotationByRotator,
-                            corners,
-                            rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
+//                getFromOneOrTwo.getForThreeValues(
+//                            originAfterRotationByRotator,
+//                            corners,
+//                            rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
+            originAfterRotationByRotator.map3New(
+                        corners,
+                        rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
             
             allPartCornerPositionsAfterRotationByOneRotator.append(result)
         }

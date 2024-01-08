@@ -12,28 +12,13 @@ import Foundation
 
 
 struct ConnectStrings {
-    static let symbol = Part.stringLink.rawValue
+    static let symbol = PartTag.stringLink.rawValue
 
-    static func byUnderscoreOrSymbolForLeftToRightDimension(
-        _ first: String,
-        _ second:String,
-        _ symbol:String = Part.stringLink.rawValue)
-    -> String {
-        first + symbol + second + symbol + Part.leftToRightDimension.rawValue
-    }
 
-    static func byUnderscoreOrSymbolForTopToBottomDimension(
-        _ first: String,
-        _ second:String,
-        _ symbol:String = Part.stringLink.rawValue)
-    -> String {
-        first + symbol + second + symbol + Part.topToBottomDimension.rawValue
-    }
-    
     static func byUnderscoreOrSymbol(
         _ first: String,
         _ second:String,
-        _ symbol:String = Part.stringLink.rawValue)
+        _ symbol:String = PartTag.stringLink.rawValue)
     -> String {
         first + symbol + second //+ symbol
     }
@@ -41,7 +26,7 @@ struct ConnectStrings {
 
 
 struct RemoveObjectName {
-    let nameToBeRemovedCharacterCount = CreateNameFromParts([.object, .id0, .stringLink]).name.count
+    let nameToBeRemovedCharacterCount = CreateNameFromParts([Part.objectOrigin, PartTag.id0, PartTag.stringLink]).name.count
     
     func remove(_ name: String)
         -> String {
@@ -54,23 +39,42 @@ struct RemoveObjectName {
 }
 
 
+//struct CreateNameFromParts {
+//    let name: String
+//    init(_ parts: [any Parts]) {
+//
+//        name = getNameFromParts(parts)
+//
+//        func getNameFromParts(_ parts: [any Parts])
+//            -> String {
+//            var name = ""
+//            for item in parts {
+//                if let newItem = item.stringValue as? String{
+//                    name += newItem
+//                } else {
+//                    fatalError()
+//                }
+//                }
+//            return name
+//        }
+//    }
+//}
+
 struct CreateNameFromParts {
-    let name: String
-    init(_ parts: [Part]) {
-      
+    var name: String = ""
+    
+    init(_ parts: [Parts]) {
         name = getNameFromParts(parts)
-        
-        func getNameFromParts(_ parts: [Part])
-            -> String {
-            var name = ""
-            for item in parts {
-                name += item.rawValue
-                }
-            return name
+    }
+    
+    private func getNameFromParts(_ parts: [Parts]) -> String {
+        var name = ""
+        for item in parts {
+            name += item.stringValue
         }
+        return name
     }
 }
-
 
 
 struct GetUniqueNames {
@@ -84,11 +88,11 @@ struct GetUniqueNames {
         
         func getUniquePartNamesOfCornerItems(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
             var uniqueNames: [String] = []
-            let cornerKeys = dictionary.filter({$0.key.contains(Part.corner.rawValue)}).keys
+            let cornerKeys = dictionary.filter({$0.key.contains(PartTag.corner.rawValue)}).keys
            // print(cornerKeys)
             var removedName = ""
             var nameWithoutCornerString = ""
-            let cornerName = Part.stringLink.rawValue + Part.corner.rawValue
+            let cornerName = PartTag.stringLink.rawValue + PartTag.corner.rawValue
             for cornerKey in cornerKeys {
                 for index in 0...3 {
                     removedName = cornerName + String(index)
@@ -157,7 +161,7 @@ struct ParentToPartName {
         var editedString = parentToPartName
         var underscoreCount = 0
         var startIndex: String.Index?
-        let objectName = Part.object.rawValue + Part.id0.rawValue + Part.stringLink.rawValue
+        let objectName = Part.objectOrigin.rawValue + PartTag.id0.rawValue + PartTag.stringLink.rawValue
 
         for (index, character) in editedString.enumerated() {
             if character == "_" {

@@ -21,13 +21,6 @@ typealias AnglesMinMaxDictionary = [String: AnglesMinMax]
 
 typealias PositionArrayAsIosAxes = (x:[Double], y: [Double], z: [Double])
 
-//typealias HashableDictionaryTouple =  (id: [UUID], object: [PositionDictionary])
-
-///This type provides position for all conditions which is required when you wish to
-///sum the parent of two to a  one child wheere as OneOrTwo<T> only provides the current conditiion
-typealias OneOrTwoPositionsAsTuple = (left: PositionAsIosAxes, right: PositionAsIosAxes, one: PositionAsIosAxes)
-
-
 
 
 typealias PositionDictionary = [String: PositionAsIosAxes]
@@ -64,6 +57,7 @@ func += (lhs: inout PositionAsIosAxes, rhs: PositionAsIosAxes) {
 
 
 typealias Dimension3d = (width: Double, length: Double,  height: Double)
+
 func + (lhs: Dimension3d, rhs: Dimension3d) -> Dimension3d {
     let sumWidth = lhs.width + rhs.width
     let sumLength = lhs.length + rhs.length
@@ -77,11 +71,6 @@ func / (lhs: Dimension3d, rhs: Double) -> Dimension3d {
     let divHeight = lhs.height / rhs
     return (divWidth, divLength, divHeight)
 }
-
-
-
-typealias Dimension3dRearMidFront =
-    (rear: Dimension3d, mid: Dimension3d, front: Dimension3d)
 
 
 
@@ -122,7 +111,7 @@ typealias PartChainDictionary = [String: [String]]
 ///Each part in a partChain shares the same id
 ///The UI can never leave a subsequent part without a prior part
 ///since removal of an id removes id for all part in chain
-typealias PartChainIdDictionary = [PartChain: OneOrTwo<Part> ]
+typealias PartChainIdDictionary = [PartChain: OneOrTwo<PartTag> ]
 
 /// Input an object type and get the chain labels associaed with that object type
 /// as defined in ObjectsAndTheirChainLabels

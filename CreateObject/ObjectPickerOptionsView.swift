@@ -69,7 +69,9 @@ struct TiltX: View {
     
     var body: some View {
         var angleName: String {
-            CreateNameFromParts( [.object, .id0, .stringLink, .sitOnTiltJoint, .id0, .stringLink, .sitOn, .id0]).name    }
+            let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOnTiltJoint, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
+           return
+            CreateNameFromParts(parts ).name    }
         let angleMinMax =
             objectPickVM.getAngleMinMaxDic(angleName)
         let angleMax = angleMinMax.max.value
@@ -110,9 +112,9 @@ struct HeadSupport: View {
         if showTilt {
             Toggle("Headrest",isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
-                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
-                        Part.backSupportHeadSupport,
-                        Part.backSupport)
+//                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
+//                        Part.backSupportHeadSupport,
+//                        Part.backSupport)
                 }
         } else {
             EmptyView()
@@ -134,9 +136,9 @@ struct Propeller: View {
         if showTilt {
             Toggle("Propellers",isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
-                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
-                        Part.backSupportHeadSupport,
-                        Part.backSupport)
+//                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
+//                        Part.backSupportHeadSupport,
+//                        Part.backSupport)
                 }
         } else {
             EmptyView()
@@ -168,7 +170,7 @@ struct FootSupport: View {
                 }
             }
             .onChange(of: laterality) {tag in
-                objectPickVM.setCurrentObjectWithEditedPartChainsId(tag)
+                //objectPickVM.setCurrentObjectWithEditedPartChainsId(tag)
             }
         }
 

@@ -192,7 +192,7 @@ struct DictionaryInStringOut {
             for valuesForOneKey in valuesForAllKeys {
                 var valueString: String = ""
                     //for  value in valuesForOneKey {
-                        valueString += getValueString(valuesForOneKey) + Part.stringLink.rawValue
+                        valueString += getValueString(valuesForOneKey) + PartTag.stringLink.rawValue
 
                     //}
                 stringOfValuesOut += valueString + " + "
@@ -201,7 +201,7 @@ struct DictionaryInStringOut {
         }
         
         func getValueString(_ value: PositionAsIosAxes) -> String{
-            String(value.x) + Part.stringLink.rawValue + String(value.y) + Part.stringLink.rawValue + String(value.z)
+            String(value.x) + PartTag.stringLink.rawValue + String(value.y) + PartTag.stringLink.rawValue + String(value.z)
         }
     }
 }
@@ -312,10 +312,10 @@ struct Filter {
     let dictionary: PositionDictionary
     
     init (
-        _ parts: [Part],
+        _ parts: [Parts],
         _ dictionary: PositionDictionary,
-        _ originOrAndCorner: Part?,
-        _ sitOnId: Part?) {
+        _ originOrAndCorner: Parts?,
+        _ sitOnId: PartTag?) {
             
             self.dictionary =
             filterDictionary (
@@ -325,25 +325,25 @@ struct Filter {
                 sitOnId)
             
             func filterDictionary(
-                _ parts: [Part],
+                _ parts: [Parts],
                 _ dictionary: PositionDictionary,
-                _ originOrAndCorner: Part?,
-                _ sitOnId: Part?
+                _ originOrAndCorner: Parts?,
+                _ sitOnId: PartTag?
             )
             -> PositionDictionary {
-                let partNameTermination = Part.stringLink.rawValue
+                let partNameTermination = PartTag.stringLink.rawValue
                 var filteredDictionary: PositionDictionary = [:]
                 for part in parts {
                     filteredDictionary  +=
-                    dictionary.filter({$0.key.contains(part.rawValue + partNameTermination )})
+                    dictionary.filter({$0.key.contains(part.stringValue + partNameTermination )})
                 }
                 
                 if let originOrAndCorner {
                     switch originOrAndCorner {
-                    case .corner:
+                    case PartTag.corner:
                         filteredDictionary =
-                        filteredDictionary.filter({$0.key.contains(Part.corner.rawValue)})
-                    case .objectOrigin:
+                        filteredDictionary.filter({$0.key.contains(PartTag.corner.stringValue)})
+                    case Part.objectOrigin:
                         filteredDictionary =
                         filteredDictionary.filter({$0.key.contains(Part.objectOrigin.rawValue)})
                     default:
@@ -352,13 +352,14 @@ struct Filter {
                 }
                 
                 if let sitOnId {
+                    let parts: [Parts] = [PartTag.stringLink, Part.sitOn, sitOnId]
                     let sitOnName =
-                            CreateNameFromParts([.stringLink, .sitOn, sitOnId]).name
+                            CreateNameFromParts(parts).name
                     switch sitOnId {
-                    case .id0:
+                    case PartTag.id0:
                         filteredDictionary =
                         filteredDictionary.filter({$0.key.contains(sitOnName)})
-                    case .id1:
+                    case PartTag.id1:
                         filteredDictionary =
                         filteredDictionary.filter({$0.key.contains(sitOnName)})
                     default:
@@ -506,7 +507,7 @@ struct ConvertFourCornerPerKeyToOne {
       var oneCornerPerKey: PositionDictionary = [:]
         for (key, value) in fourCornerPerElement {
             for index in 0..<value.count {
-                oneCornerPerKey += [key + Part.stringLink.rawValue + Part.corner.rawValue + String(index): value[index]]
+                oneCornerPerKey += [key + PartTag.stringLink.rawValue + PartTag.corner.rawValue + String(index): value[index]]
             }
         }
         return oneCornerPerKey

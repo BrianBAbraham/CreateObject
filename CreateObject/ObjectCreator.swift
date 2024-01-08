@@ -32,6 +32,7 @@ struct ObjectMaker {
             postProcessGlobalOrigin()
     }
     
+    
    mutating func postProcessGlobalOrigin(){
         let allPartChain = getAllPartChain()
         var partsToHaveGlobalOriginSet = getOneOfEachPartInAllPartChain()
@@ -107,12 +108,11 @@ struct ObjectMaker {
                 
         }
        
+       
        func removePartFromArray(_ elementToRemove: Part) -> [Part] {
            partsToHaveGlobalOriginSet.filter { $0 != elementToRemove }
        }
-
     }
-
 }
 
 extension ObjectMaker {
@@ -303,8 +303,22 @@ extension ObjectMaker {
 }
 
 
+
+
 //MARK: PART
-enum Part: String {
+protocol Parts {
+    var stringValue: String { get }
+}
+
+
+enum Part: String, Parts {
+    typealias AssociatedType = String
+    
+    var stringValue: String {
+        return self.rawValue
+    }
+    
+    
     case armSupport = "arm"
     case armVerticalJoint = "armVerticalJoint"
     
@@ -334,9 +348,14 @@ enum Part: String {
     
     case carriedObjectAtRear = "objectCarriedAtRear"
 
+   
     case casterVerticalJointAtRear = "casterVerticalBaseJointAtRear"
     case casterVerticalJointAtMid = "casterVerticalBaseJointAtMid"
     case casterVerticalJointAtFront = "casterVerticalBaseJointAtFront"
+    
+    case fixedWheelHorizontalJointAtRear = "fixedWheelHorizontalBaseJointAtRear"
+    case fixedWheelHorizontalJointAtMid = "fixedWheelHorizontalBaseJointAtMid"
+    case fixedWheelHorizontalJointAtFront = "fixedWheelHorizontalBaseJointAtFront"
     
     case casterForkAtRear = "casterForkAtRear"
     case casterForkAtMid = "casterForkAtMid"
@@ -346,22 +365,10 @@ enum Part: String {
     case casterWheelAtMid = "casterWheelAtMid"
     case casterWheelAtFront = "casterWheelAtFront"
 
-    case ceiling = "ceiling"
-
-    case corner = "corner"
-    case id = "_id"
-    case id0 = "_id0"
-    case id1 = "_id1"
-    case id2 = "_id2"
-    case id3 = "_id3"
-    case id4 = "_id4"
-    case id5 = "_id5"
     case fixedWheel = "fixedWheel"
     case fixedWheelPropeller = "fixedWheelPropeller"
     
-    case fixedWheelHorizontalJointAtRear = "fixedWheelHorizontalBaseJointAtRear"
-    case fixedWheelHorizontalJointAtMid = "fixedWheelHorizontalBaseJointAtMid"
-    case fixedWheelHorizontalJointAtFront = "fixedWheelHorizontalBaseJointAtFront"
+  
     case fixedWheelAtRear = "fixedWheelAtRear"
     case fixedWheelAtMid = "fixedWheelAtMid"
     case fixedWheelAtFront = "fixedWheelAtFront"
@@ -379,14 +386,12 @@ enum Part: String {
     case joint = "Joint"
     
     case joyStickForOccupant = "occupantControlledJoystick"
- 
-    case leftToRightDimension = "xIos"
-   // case legSupportAngle = "legSupportAngle"
 
-    case object = "object"
-    case objectOrigin = "objectOrigin"
+    case objectOrigin = "object"
 
     case notFound = "notAnyPart"
+    
+    
     case sitOn = "sitOn"
     case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"
@@ -394,8 +399,7 @@ enum Part: String {
     case sideSupport = "sideSupport"
     case sideSupportRotationJoint = "sideSupportRotatationJoint"
     case sideSupportJoystick = "sideSupportJoystick"
-    case stringLink = "_"
-    
+
     case stabilityAtRear = "stabilityAtRear"
     case stabilityAtFront = "stabilityAtFront"
     case stabilityAtSideAtRear = "stabilityAtSideAtRear"
@@ -404,8 +408,43 @@ enum Part: String {
     
     case sitOnTiltJoint = "tiltInSpaceHorizontalJoint"
     
-    case topToBottomDimension = "yIos"
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
 }
+
+
+enum PartTag: String, Parts {
+    
+    case corner = "corner"
+    case id0 = "_id0"
+    case id1 = "_id1"
+    case stringLink = "_"
+    
+    var stringValue: String {
+        return self.rawValue
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
+}
+
+
+//enum PartJoint: String, Parts {
+//
+//
+//
+//
+//    var stringValue: String {
+//        return self.rawValue
+//    }
+//
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(rawValue)
+//    }
+//}
+
 
 
 enum ObjectTypes: String, CaseIterable {
@@ -450,6 +489,54 @@ enum ObjectTypes: String, CaseIterable {
     case verticalLift = "Vertical Lift"
 }
 
+
+
+/// provides the object names for the picker
+/// provides the chainPartLabels for each object
+//MARK: ObjectsChainLabels
+struct ObjectsAndTheirChainLabels {
+    static let chairSupport: [Part] =
+        [
+        .backSupportHeadSupport,
+        .footSupport,
+        .sideSupport,
+        .sitOnTiltJoint,
+        .sitOn,]
+    static let rearAndFrontCasterWheels: [Part] =
+        [.casterWheelAtRear, .casterWheelAtFront]
+    static let chairSupportWithFixedRearWheel: [Part] =
+    chairSupport + [.fixedWheelAtRear]
+    
+    let dictionary: ObjectPartChainLabelsDictionary =
+    [
+    .allCasterBed:
+        [ .sideSupport, .sitOn],
+      
+    .allCasterChair:
+        chairSupport + rearAndFrontCasterWheels,
+      
+    .allCasterTiltInSpaceShowerChair:
+        chairSupport + rearAndFrontCasterWheels + [.sitOnTiltJoint],
+    
+    .allCasterStretcher:
+        [ .sitOn] + rearAndFrontCasterWheels,
+    
+    .fixedWheelMidDrive:
+        chairSupport + [.fixedWheelAtMid] + rearAndFrontCasterWheels,
+    
+    .fixedWheelFrontDrive:
+        chairSupport + [.fixedWheelAtFront] + [.casterWheelAtRear],
+     
+    .fixedWheelRearDrive:
+        chairSupportWithFixedRearWheel + [.casterWheelAtFront],
+    
+    .fixedWheelManualRearDrive:
+        chairSupportWithFixedRearWheel + [.casterWheelAtFront],
+    
+    .showerTray: [.footOnly],
+
+    .fixedWheelSolo: [.fixedWheelAtMid] + [.sitOn] + [.sideSupport] ]
+}
 
 
 //Source of truth for partChain
@@ -592,65 +679,19 @@ struct LabelInPartChainOut  {
     }
 }
 
-/// provides the object names for the picker
-/// provides the chainPartLabels for each object
-//MARK: ObjectsChainLabels
-struct ObjectsAndTheirChainLabels {
-    static let chairSupport: [Part] =
-        [
-        .backSupportHeadSupport,
-        .footSupport,
-        .sideSupport,
-        .sitOnTiltJoint,
-        .sitOn,]
-    static let rearAndFrontCasterWheels: [Part] =
-        [.casterWheelAtRear, .casterWheelAtFront]
-    static let chairSupportWithFixedRearWheel: [Part] =
-    chairSupport + [.fixedWheelAtRear]
-    
-    let dictionary: ObjectPartChainLabelsDictionary =
-    [
-    .allCasterBed:
-        [ .sideSupport, .sitOn],
-      
-    .allCasterChair:
-        chairSupport + rearAndFrontCasterWheels,
-      
-    .allCasterTiltInSpaceShowerChair:
-        chairSupport + rearAndFrontCasterWheels + [.sitOnTiltJoint],
-    
-    .allCasterStretcher:
-        [ .sitOn] + rearAndFrontCasterWheels,
-    
-    .fixedWheelMidDrive:
-        chairSupport + [.fixedWheelAtMid] + rearAndFrontCasterWheels,
-    
-    .fixedWheelFrontDrive:
-        chairSupport + [.fixedWheelAtFront] + [.casterWheelAtRear],
-     
-    .fixedWheelRearDrive:
-        chairSupportWithFixedRearWheel + [.casterWheelAtFront],
-    
-    .fixedWheelManualRearDrive:
-        chairSupportWithFixedRearWheel + [.casterWheelAtFront],
-    
-    .showerTray: [.footOnly],
-
-    .fixedWheelSolo: [.fixedWheelAtMid] + [.sitOn] + [.sideSupport] ]
-}
 
 
 //MARK: OneOrTwoId
 struct OneOrTwoId {
-    let forPart: OneOrTwo<Part>
+    let forPart: OneOrTwo<PartTag>
     init(_ objectType: ObjectTypes,_ part: Part){
         forPart = getIdForPart(part)
         
         
         func getIdForPart(_ part: Part)
-        -> OneOrTwo<Part>{
+        -> OneOrTwo<PartTag>{
             switch part {
-                case
+                case  // default not used as case will detect undefined part
                     .casterForkAtRear,
                     .casterForkAtMid,
                     
@@ -677,13 +718,8 @@ struct OneOrTwoId {
                     .casterForkAtFront,
                     .casterWheelAtFront:
                 
-                    return .two(left: .id0, right: .id1)
+                    return .two(left: PartTag.id0, right: PartTag.id1)
                 
-//                case
-//                    .casterVerticalJointAtFront,
-//                    .casterForkAtFront,
-//                    .casterWheelAtFront:
-//                    return getIdForFrontAccountingForDriveLocation()
                 case
                     .backSupportRotationJoint,
                     .backSupport,
@@ -694,7 +730,7 @@ struct OneOrTwoId {
                     .footOnly,
                     .sitOn,
                     .sitOnTiltJoint:
-                    return .one(one: .id0)
+                    return .one(one: PartTag.id0)
                 default :
                 fatalError("OneOrTwoId: \(#function)  no id has been defined for \(part)")
             }
@@ -725,9 +761,9 @@ struct PartData {
     
     var angles: OneOrTwo<RotationAngles>
     
-    var id: OneOrTwo<Part>
+    var id: OneOrTwo<PartTag>
     
-    var sitOnId: Part
+    var sitOnId: Parts
     
     var scopesOfRotation: [[Part]]
     
@@ -743,8 +779,8 @@ struct PartData {
             .one(one: ZeroValue.iosLocation),
         minMaxAngle: OneOrTwo<AngleMinMax>?,
         angles: OneOrTwo<RotationAngles>?,
-        id: OneOrTwo<Part>,
-        sitOnId: Part = .id0,
+        id: OneOrTwo<PartTag>,
+        sitOnId: PartTag = .id0,
         scopesOfRotation: [[Part]] = [] ) {
             self.part = part
             self.originName = originName
@@ -763,30 +799,18 @@ struct PartData {
             
 
             func getAngles() -> OneOrTwo<RotationAngles> {
-                let defaultAngles = ZeroValue.rotationAngles
-                guard let angles = angles else {
-                    switch id {
-                    case .one:
-                        return .one(one: defaultAngles)
-                    case .two:
-                        return .two(left: defaultAngles, right: defaultAngles)
-                    }
+                guard let unwrapped = angles else {
+                    return  id.createOneOrTwoWithOneValue(ZeroValue.rotationAngles)
                 }
-                return angles
+                return unwrapped
             }
 
             
             func getMinMaxAngle() -> OneOrTwo<AngleMinMax> {
-                let defaultAngles = ZeroValue.angleMinMax
-                guard let minMaxAngles = minMaxAngle else {
-                    switch id {
-                    case .one:
-                        return .one(one: defaultAngles)
-                    case .two:
-                        return .two(left: defaultAngles, right: defaultAngles)
-                    }
+                guard let unwrapped = minMaxAngle else {
+                    return  id.createOneOrTwoWithOneValue(ZeroValue.angleMinMax)
                 }
-                return minMaxAngles
+                return unwrapped
             }
         }
 }
@@ -856,38 +880,39 @@ enum OneOrTwoOptional <V> {
 
 
 
-
-
-/// when no entries in dic object is as default
-/// when entries follow default they are used
-/// if removal of a .one part then it is not created
-/// if removal of a ,two it is not created
-/// if removal of .id0 or .id1, but not both, PartData.id is assigned from UserEditedValues which may return .id0 and .none or .none and .id1 indicating that no extant symmetry exists
-/// so when symmetry is attempted it should only be done if id.left <> .none
-/// and if id.right == .none proceed as normal
-
 enum OneOrTwo <T> {
     case two (left: T, right: T)
     case one (one: T)
-
-    var left: T? {
+    
+    func createOneOrTwoWithOneValue<U>(_ value: U) -> OneOrTwo<U> {
         switch self {
-        case .two(let left, _):
-            return left
         case .one:
-          return nil
-        }
-    }
-
-    var right: T? {
-        switch self {
-        case .two(_, let right):
-            return right
-        case .one:
-            return nil
+            return .one(one: value)
+        case .two:
+            return .two(left: value, right: value)
         }
     }
     
+
+
+//    var left: T? {
+//        switch self {
+//        case .two(let left, _):
+//            return left
+//        case .one:
+//          return nil
+//        }
+//    }
+//
+//    var right: T? {
+//        switch self {
+//        case .two(_, let right):
+//            return right
+//        case .one:
+//            return nil
+//        }
+//    }
+//
     var one: T? {
         switch self {
         case .two:
@@ -914,16 +939,7 @@ enum OneOrTwo <T> {
         }
     }
 
-    
-    func mapSingleOneOrTwoWithOneValue(_ value: T) -> OneOrTwo<T> {
-        switch self {
-        case .one(let value):
-            return .one(one: value)
-        case .two(let left, let right):
-            return .two(left: left, right: right)
-        }
-    }
-    
+
     
     func mapSingleOneOrTwoWithOneFuncWithReturn<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
@@ -950,74 +966,10 @@ enum OneOrTwo <T> {
             fatalError("Incompatible cases for map2")
         }
     }
-        
-    func map1WithOneValueAndTwoTransforms<U, V>(
-        _ second: V,
-        _ transform1: (T, V) -> U,
-        _ transform2: (T, V) -> U)
-    -> OneOrTwo<U> {
-        switch (self) {
-        case let (.one(value1)):
-            return .one(one: transform1(value1, second))
-            
-        case let (.two(left1, right1)):
-            return .two(
-                left: transform2(left1, second),
-                right: transform2(right1, second))
-        }
-    }
-       
-    func map1WithOneValueAndTwoTransformsWithoutReturn<V>(
-         _ second: V,
-         _ transform1: (T, V) -> (),
-         _ transform2: (T, V) -> ()) {
-         switch self {
-         case let .one(value1):
-             transform1(value1, second)
-             
-         case let .two(left1, right1):
-             transform2(left1, second)
-             transform2(right1, second)
-         }
-     }
-    
-    func mapWithSingleOneOrTwoAndTwoValueAndTwoTransformWithVoidReturn<U>(
-         _ value1: U,
-         _ value2: OneOrTwoPositionsAsTuple,
-         _ transform1: (T, U, PositionAsIosAxes)  -> (),
-         _ transform2: (T, U, PositionAsIosAxes) -> ()) {
-         switch self {
-         case let .one(one):
-             transform1(one, value1, value2.one)
-             
-         case let .two(left, right):
-             transform2(left, value1, value2.left)
-             transform2(right, value1, value2.right)
-         }
-     }
-    
-    
-    func mapWithDoubleOneOrTwoAndOneValueAndTwoTransformWithVoidReturnNew< U>(
-         _ value1: U,
-         _ value2: OneOrTwo<PositionAsIosAxes>,
-         _ transform1: (T, U, PositionAsIosAxes)  -> (),
-         _ transform2: (T, U, PositionAsIosAxes) -> ()) {
-         switch (self, value2) {
-         case let (.one(id), .one(position)):
-             transform1(id, value1, position)
-         case let (.two(leftId, rightId), .two(leftPosition, rightPosition) ):
-             transform2(leftId, value1, leftPosition)
-             transform2(rightId, value1, rightPosition)
-         default:
-             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa )")
-         }
-     }
-    
-
-
 
     
-    func map3<U, V, W>(_ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
+
+    func map3New<V, W, U>( _ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
 
        let (first,second, third) = convert3OneOrTwoToAllTwoIfMixedOneAndTwo(self, second, third)
         switch (first, second, third) {
@@ -1032,7 +984,7 @@ enum OneOrTwo <T> {
             fatalError("Incompatible cases for map3")
         }
     }
-    
+
     
     
   static func convert2OneOrTwoToAllTwoIfMixedOneAndTwo<U, V>(
@@ -1048,8 +1000,6 @@ enum OneOrTwo <T> {
             return (value1, value2)
         }
     }
-    
-    
     
     
     func convert3OneOrTwoToAllTwoIfMixedOneAndTwo<U, V, W>(
@@ -1114,66 +1064,6 @@ enum OneOrTwo <T> {
 }
 
 
-struct AccessOneOrTwo {
-     func getForThreeValues<T, U, W, V>(//enum would not work without this
-            _ first: OneOrTwo<T>,
-            _ second: OneOrTwo<U>,
-            _ third: OneOrTwo<W>,
-            _ transform: (T, U, W) -> V)
-        -> OneOrTwo<V> {
-            first.map3(second, third, transform)
-        }
-    
-   func getFromOneOrTwoEnumMap2<T, U, V>(
-            _ first: OneOrTwo<T>,
-            _ second: OneOrTwo<U>,
-            _ transform: (T, U) -> V)
-        -> OneOrTwo<V> {
-            first.mapSingleOneOrTwoAndOneFuncWithReturn(second, transform)
-        }
-
-    
-    func usingSingleOneOrTwoAndOneValueAndTwoTransforms<T, U, V>(
-             _ first: OneOrTwo<T>,
-             _ second: U,
-             _ transform1: (T, U) -> V,
-             _ transform2: (T, U) -> V)
-         -> OneOrTwo<V> {
-             first.map1WithOneValueAndTwoTransforms(second, transform1, transform2)
-         }
-
-        
-    func usingDoubleOneOrTwoAndOneValueAndTwoTransformsWithVoidReturn< U >(
-             _ first: OneOrTwo<Part>,
-             _ value1: U,
-             _ value2: OneOrTwo<PositionAsIosAxes>,
-             _ transform1: (Part, U, PositionAsIosAxes) -> (),
-             _ transform2: (Part, U, PositionAsIosAxes) -> ()) {
-             first.mapWithDoubleOneOrTwoAndOneValueAndTwoTransformWithVoidReturnNew(
-                value1, value2, transform1, transform2)
-    }
-    
-    func usingFiveOneOrTwoAndOneFuncWithVoidReturn(
-       _ oneOrTwoDimension: OneOrTwo<Dimension3d>,
-       _ oneOrTwoName: OneOrTwo<String>,
-       _ oneOrTwoAngle: OneOrTwo<RotationAngles>,
-       _ oneOrTwoMinMaxAngle: OneOrTwo<AngleMinMax>,
-       _ globalOrigin: OneOrTwo<PositionAsIosAxes>,
-       _ transform: (Dimension3d, String, RotationAngles, AngleMinMax, PositionAsIosAxes) -> ()) {
-           oneOrTwoDimension.mapFiveOneOrTwoAndToOneFuncWithVoidReturn(
-            oneOrTwoName,
-            oneOrTwoAngle,
-            oneOrTwoMinMaxAngle,
-            globalOrigin,
-            transform
-           )
-    }
-    
-}
-
-
-
-
 struct MiscObjectParameters {
     let objectType: ObjectTypes
 
@@ -1219,8 +1109,7 @@ extension StructFactory {
     _ sideSupport: PartData?,
     _ footSupportHangerLink: PartData?)
         -> PartData {
-        //let oneOrTwoSitOnId: OneOrTwo<Part> = .one(one: .id0)
-            
+    
         let oneOrTwoUserEditedValues =
             UserEditedValue(
                 objectType,
@@ -1240,7 +1129,7 @@ extension StructFactory {
 
                 minMaxAngle: nil,
                 angles: nil,
-                id: .one(one: .id0) )
+                id: .one(one: PartTag.id0) )
             
             
         func getSitOnDimension() -> OneOrTwo<Dimension3d> {
@@ -1454,7 +1343,11 @@ extension StructFactory {
                 return dimension
         }
         
-            
+            /// partObjectDicForOrigin: [Part: [object: PositionAsIosAxes]]
+            ///partDefaultForOrigin: [Part: PositionAsIosAxes]
+            ///,case .sitIOn, ...
+            ///childOrigin = partObjectDicForOrigin[part] ?? partDefaultForOrigin[part] or error not defined
+            ///part.map(dic1,dc2)
             
         func setBackSupportRotationJointOrigin() {
             setChildOriginForObject(
@@ -1464,7 +1357,21 @@ extension StructFactory {
                  y: -parentDimension.length/2,
                  z: 0.0) )
         }
-        
+            
+            
+             
+            
+        let partObjectDefaultDicForOrigin: [Part: [ObjectTypes: PositionAsIosAxes]] = [:]
+        let partDefaultDicForOrigin: [Part: PositionAsIosAxes] =
+            [.backSupportRotationJoint: (x: 0.0, y: -parentDimension.length/2, z: 0.0),
+            ]
+        let partObjectDefaultDicForDimension: [Part: [ObjectTypes: Dimension3d]] = [:]
+        let partDefaultDicForDimension: [Part: Dimension3d] =
+            [.backSupportRotationJoint: (width: parentDimension.width, length: 20.0 , height: 500.0)]
+            
+            
+            
+            
         
         func setBackSupportChildDimension() {
             setChildDimensionForObject(
@@ -1991,7 +1898,7 @@ struct Dictionaries {
     var objectToPartOrigin: PositionDictionary
     var anglesDic: AnglesDictionary
     var angleMinMaxDic: AngleMinMaxDictionary
-    var partChainId: [PartChain: OneOrTwo<Part> ]
+    var partChainId: [PartChain: OneOrTwo<PartTag> ]
     var objectsAndTheirChainLabelsDic: ObjectPartChainLabelsDictionary
     var preTiltObjectToPartFourCornerPerKey: CornerDictionary
     var postTiltObjectToPartFourCornerPerKey: CornerDictionary
@@ -2003,7 +1910,7 @@ struct Dictionaries {
         objectToPartOrigin: PositionDictionary = [:],
         anglesDic: AnglesDictionary = [:],
         angleMinMaxDic: AngleMinMaxDictionary = [:],
-        partChainId: [PartChain : OneOrTwo<Part>] = [:],
+        partChainId: [PartChain : OneOrTwo<PartTag>] = [:],
         objectsAndTheirChainLabelsDic: ObjectPartChainLabelsDictionary = [:],
         preTiltObjectToPartFourCornerPerKey: CornerDictionary = [:],
         postTiltObjectToPartFourCornerPerKey: CornerDictionary = [:]) {
@@ -2036,21 +1943,21 @@ struct UserEditedValue {
     let objectToPartOriginDic: PositionDictionary
     let anglesDic: AnglesDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
-    let partChainIdDic: [PartChain: OneOrTwo<Part>]
+    let partChainIdDic: [PartChain: OneOrTwo<PartTag>]
     let part: Part
-    let sitOnId: Part
+    let sitOnId: PartTag
     
     var originName:  OneOrTwo <String?> = .one(one: nil)
     var optionalAngles: OneOrTwoOptional <RotationAngles> = .one(one: nil)
     var optionalAngleMinMax: OneOrTwoOptional <AngleMinMax> = .one(one: nil)
     var optionalDimension: OneOrTwoOptional <Dimension3d> = .one(one: nil)
     var optionalOrigin: OneOrTwoOptional <PositionAsIosAxes> = .one(one: nil)
-    var partId: OneOrTwo <Part>
+    var partId: OneOrTwo <PartTag>
     
     init(
         _ objectType: ObjectTypes,
         _ dictionaries: Dictionaries,
-        _ sitOnId: Part,
+        _ sitOnId: PartTag,
         _ childPart: Part) {
             self.sitOnId = sitOnId
             self.part = childPart
@@ -2070,11 +1977,11 @@ struct UserEditedValue {
             
             optionalDimension =
             getOptionalValue(partId, from: dimensionDic) { part in
-                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
             
             optionalOrigin =
             getOptionalValue(partId, from: parentToPartOriginDic) { part in
-                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
             
             originName = getOriginName(partId)
 
@@ -2082,17 +1989,17 @@ struct UserEditedValue {
             
             optionalAngleMinMax =
             getOptionalValue(partId, from: angleMinMaxDic) { part in
-                return CreateNameFromParts([.sitOn, sitOnId, part]).name }
+                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
             
             optionalAngles = getOptionalAngles()
 
         }
     
     
-    func getOriginName(_ partId: OneOrTwo<Part>)
+    func getOriginName(_ partId: OneOrTwo<PartTag>)
     -> OneOrTwo<String?>{
-        let start: [Part] = [.object, .id0, .stringLink, part]
-        let end: [Part] = [.stringLink, .sitOn,  sitOnId]
+        let start: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part]
+        let end: [Parts] = [PartTag.stringLink, Part.sitOn,  sitOnId]
         
         switch partId {
         case .one(let one):
@@ -2104,19 +2011,6 @@ struct UserEditedValue {
                     left: CreateNameFromParts(start + [left] + end).name,
                     right:  CreateNameFromParts(start + [right] + end).name)
         }
-    }
-    
-    func getAngles() -> OneOrTwo<RotationAngles?>{
-        var angles: OneOrTwo<RotationAngles?> = .one(one: nil)
-        switch originName {
-        case .one(let one):
-            angles =
-                .one(one: anglesDic[one ?? ""] )
-        case .two(let left, let right):
-            angles =
-                .two(left: anglesDic[ left ?? ""]  , right: anglesDic[right ?? ""] )
-        }
-        return angles
     }
     
     
@@ -2134,20 +2028,17 @@ struct UserEditedValue {
     }
         
     func getOptionalValue<T>(
-        _ partIds: OneOrTwo<Part>,
+        _ partIds: OneOrTwo<PartTag>,
         from dictionary: [String: T?],
-        using closure: @escaping (Part) -> String
+        using closure: @escaping (PartTag) -> String
     ) -> OneOrTwoOptional<T> {
-        let commonPart = { (id: Part) -> T? in
+        let commonPart = { (id: PartTag) -> T? in
             dictionary[closure(id)] ?? nil
         }
-//print(commonPart)
         switch partIds {
         case .one(let oneId):
-         //   print(commonPart(oneId))
             return .one(one: commonPart(oneId))
         case .two(let left, let right):
-           
             return .two(left: commonPart(left), right: commonPart(right))
         }
     }
