@@ -61,7 +61,6 @@ struct ObjectMaker {
                     guard let parentPartValue = partValuesDic[parentPart] else {
                         fatalError()
                     }
-                    
                     return parentPartValue.globalOrigin
                 }
             }
@@ -82,7 +81,7 @@ struct ObjectMaker {
         
        func setGlobalOrigin(_ part: Part, _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>) {
             guard let partValue = partValuesDic[part] else {
-                fatalError()
+                fatalError("This part:\(part) has not been intialised where the parent global origin is \(parentGlobalOrigin)")
             }
 
             let childOrigin = partValue.childOrigin
@@ -117,54 +116,36 @@ struct ObjectMaker {
 
 extension ObjectMaker {
     mutating func initialiseAllPart() {
-        let oneOfEachPartInAllPartChain = getOneOfEachPartInAllPartChain()
+        let orderedToEnsureParentInitialisedFirst = getOneOfEachPartInAllPartChain()
 
-        if oneOfEachPartInAllPartChain.contains(.sitOn) {
-            partValuesDic +=
-                [.sitOn: initialilseOneOrTwoSitOn()]
-        }
-        if oneOfEachPartInAllPartChain.contains(.backSupport) {
-            initialiseOneOrTwoDependantPart(
-                .sitOn,.backSupport )
-        }
-       
-        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportJoint) {
-            initialiseOneOrTwoDependantPart(
-                .backSupport, .backSupportHeadSupportJoint )
-        }
-        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupportLink) {
-            initialiseOneOrTwoDependantPart(
-                .backSupportHeadSupportJoint, .backSupportHeadSupportLink )
-        }
-        if oneOfEachPartInAllPartChain.contains(.backSupportHeadSupport) {
-            initialiseOneOrTwoDependantPart(
-                .backSupportHeadSupportLink, .backSupportHeadSupport )
-        }
-
-        if oneOfEachPartInAllPartChain.contains(.footSupportHangerLink) {
-            initialiseOneOrTwoIndependantPart(
-                .footSupportHangerLink )
-        }
-        for part in oneOfEachPartInAllPartChain {
+        for part in orderedToEnsureParentInitialisedFirst {
             switch part {
-                case //already initialised
-                    .sitOn,
-                    .backSupport,
-                    .footSupportHangerLink:
-                        break
+                case .sitOn:
+                    initialilseOneOrTwoSitOn()
+                    
+                case .backSupport:
+                    initialiseOneOrTwoDependantPart(
+                        .sitOn,.backSupport )
+                case .backSupportHeadSupportJoint:
+                    initialiseOneOrTwoDependantPart(
+                        .backSupport, .backSupportHeadSupportJoint )
+                case .backSupportHeadSupportLink:
+                    initialiseOneOrTwoDependantPart(
+                        .backSupportHeadSupportJoint, .backSupportHeadSupportLink )
+                case .backSupportHeadSupport:
+                    initialiseOneOrTwoDependantPart(
+                          .backSupportHeadSupportLink, .backSupportHeadSupport )
+                case .footSupportHangerLink:
+                    initialiseOneOrTwoIndependantPart(
+                        .footSupportHangerLink )
                 case //part depends on sitOn
-                    .backSupportRotationJoint,
-                    .footSupportHangerJoint,
-                    .sideSupport,
-                    .sideSupportRotationJoint,
-                    .sitOnTiltJoint:
-                        initialiseOneOrTwoDependantPart(
-                            .sitOn, part )
-                case
-                    .backSupportHeadSupportJoint,
-                    .backSupportHeadSupportLink,
-                    .backSupportHeadSupport:
-                        break
+                        .backSupportRotationJoint,
+                        .footSupportHangerJoint,
+                        .sideSupport,
+                        .sideSupportRotationJoint,
+                        .sitOnTiltJoint:
+                            initialiseOneOrTwoDependantPart(
+                                .sitOn, part )
                 case .footSupport:
                         initialiseOneOrTwoIndependantPart(part)
                 case .footSupportJoint:
@@ -196,6 +177,7 @@ extension ObjectMaker {
             }
         }
     }
+    
 
     mutating func initialiseOneOrTwoWheel(_ oneChainLabel: Part ) {
         let partChain = LabelInPartChainOut(oneChainLabel).partChain
@@ -231,14 +213,17 @@ extension ObjectMaker {
     }
 
 
-    func initialilseOneOrTwoSitOn ()
-        -> PartData {
+    mutating func initialilseOneOrTwoSitOn (){
+         let sitOnPartValue =
          StructFactory(
             objectType,
             dictionaries)
                  .createOneOrTwoSitOn(
                     nil,
                     nil)
+            
+            partValuesDic +=
+                [.sitOn: sitOnPartValue]
     }
 
 
@@ -274,22 +259,22 @@ extension ObjectMaker {
                             []) ]
     }
 
-    
+
     func getOneOfEachPartInAllPartChain() -> [Part]{
         let chainLabels = getAllChainLabel()
         var oneOfEachPartInAllChainLabel: [Part] = []
         if let chainLabels{
-            var allPartInThisObject: [Part] = []
             for label in chainLabels {
-                allPartInThisObject +=
-                getPartChain(label)
+               let partChain = LabelInPartChainOut(label).partChain
+                for part in partChain {
+                    if !oneOfEachPartInAllChainLabel.contains(part) {
+                        oneOfEachPartInAllChainLabel.append(part)
+                    }
+                }
             }
-           oneOfEachPartInAllChainLabel =
-            Array(Set(allPartInThisObject))
         }
         return oneOfEachPartInAllChainLabel
     }
-    
     
     func getPartChain(_ label: Part) -> [Part] {
         LabelInPartChainOut(label).partChain
@@ -311,7 +296,7 @@ protocol Parts {
 }
 
 
-enum Part: String, Parts {
+enum Part: String, Parts, Hashable {
     typealias AssociatedType = String
     
     var stringValue: String {
@@ -447,7 +432,7 @@ enum PartTag: String, Parts {
 
 
 
-enum ObjectTypes: String, CaseIterable {
+enum ObjectTypes: String, CaseIterable, Hashable {
     
     case allCasterBed = "Bed with caster base"
     case allCasterChair = "Chair with caster base"
@@ -496,12 +481,11 @@ enum ObjectTypes: String, CaseIterable {
 //MARK: ObjectsChainLabels
 struct ObjectsAndTheirChainLabels {
     static let chairSupport: [Part] =
-        [
+        [.sitOn,
         .backSupportHeadSupport,
         .footSupport,
         .sideSupport,
-        .sitOnTiltJoint,
-        .sitOn,]
+        .sitOnTiltJoint]
     static let rearAndFrontCasterWheels: [Part] =
         [.casterWheelAtRear, .casterWheelAtFront]
     static let chairSupportWithFixedRearWheel: [Part] =
@@ -510,7 +494,7 @@ struct ObjectsAndTheirChainLabels {
     let dictionary: ObjectPartChainLabelsDictionary =
     [
     .allCasterBed:
-        [ .sideSupport, .sitOn],
+        [.sitOn, .sideSupport ],
       
     .allCasterChair:
         chairSupport + rearAndFrontCasterWheels,
@@ -535,7 +519,7 @@ struct ObjectsAndTheirChainLabels {
     
     .showerTray: [.footOnly],
 
-    .fixedWheelSolo: [.fixedWheelAtMid] + [.sitOn] + [.sideSupport] ]
+    .fixedWheelSolo: [.sitOn] + [.fixedWheelAtMid]  + [.sideSupport] ]
 }
 
 
@@ -1359,15 +1343,26 @@ extension StructFactory {
         }
             
             
-             
+            struct PartObjectKey: Hashable {
+                var part: Part
+                var object: ObjectTypes
+            }
             
-        let partObjectDefaultDicForOrigin: [Part: [ObjectTypes: PositionAsIosAxes]] = [:]
-        let partDefaultDicForOrigin: [Part: PositionAsIosAxes] =
-            [.backSupportRotationJoint: (x: 0.0, y: -parentDimension.length/2, z: 0.0),
-            ]
-        let partObjectDefaultDicForDimension: [Part: [ObjectTypes: Dimension3d]] = [:]
-        let partDefaultDicForDimension: [Part: Dimension3d] =
-            [.backSupportRotationJoint: (width: parentDimension.width, length: 20.0 , height: 500.0)]
+             
+       
+        let partObjectDefaultDicForOrigin: [PartObjectKey: PositionAsIosAxes] =
+            [PartObjectKey(part: .sitOn, object: .fixedWheelManualRearDrive): (x: 0.0, y: -parentDimension.length/2, z: 0.0)]
+            
+            
+          //  partObjectDefaultDicForOrigin += [.sitOn: []]
+        let partDefaultDicForOrigin: [Part: PositionAsIosAxes] = [
+            .backSupportRotationJoint: (x: 0.0, y: -parentDimension.length/2, z: 0.0),
+            .backSupport: (x: 0.0, y: 0.0, z: getOneDimensionFromOneOrTwo(childDimension).height/2.0 )            ]
+        
+            
+            let partObjectDefaultDicForDimension: [Part: [ObjectTypes: Dimension3d]] = [:]
+        let partDefaultDicForDimension: [Part: Dimension3d] = [
+            .backSupportRotationJoint: (width: parentDimension.width, length: 20.0 , height: 500.0),]
             
             
             
