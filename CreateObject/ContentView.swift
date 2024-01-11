@@ -164,7 +164,8 @@ struct ContentView: View {
                         ObjectView(
                             uniquePartNames,
                             //currentDictionary,
-                            name)
+                            name,
+                            objectManipulationIsActive)
                        // .environmentObject(objectPickVM)
     //                        .modifier(
     //                            ForObjectInDefaultView (
