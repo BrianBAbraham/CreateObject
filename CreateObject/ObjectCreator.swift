@@ -390,6 +390,7 @@ enum ObjectTypes: String, CaseIterable, Hashable {
     case allCasterHoist = "Hoist with caster base"
     case allCasterSixHoist = "Hoist with caster base and six caster"
     case allCasterTiltInSpaceShowerChair = "Tilting shower chair with caster base"
+    case allCasterTiltInSpaceArmChair = "Tilting arm chair with caster base"
     case allCasterStandAid = "Stand aid with caster base"
     case allCasterStretcher = "Stretcher with caster Base "
     
@@ -437,6 +438,11 @@ struct ObjectsAndTheirChainLabels {
         .footSupport,
         .sideSupport,
         .sitOnTiltJoint]
+    static let chairSupportWithOutFoot: [Part] =
+        [.sitOn,
+        .backSupportHeadSupport,
+        .sideSupport,
+        .sitOnTiltJoint]
     static let rearAndFrontCasterWheels: [Part] =
         [.casterWheelAtRear, .casterWheelAtFront]
     static let chairSupportWithFixedRearWheel: [Part] =
@@ -449,6 +455,9 @@ struct ObjectsAndTheirChainLabels {
           
         .allCasterChair:
             chairSupport + rearAndFrontCasterWheels,
+    
+        .allCasterTiltInSpaceArmChair:
+            chairSupportWithOutFoot + rearAndFrontCasterWheels + [.sitOnTiltJoint],
           
         .allCasterTiltInSpaceShowerChair:
             chairSupport + rearAndFrontCasterWheels + [.sitOnTiltJoint],
@@ -530,7 +539,7 @@ struct LabelInPartChainOut {
     }
 }
 
-
+// needs to be based on presence of part in object
 struct PartInRotationScopeOut {
     let dictionary: [Part: [[Part]]] = [
         .backSupportRotationJoint: [
@@ -540,12 +549,13 @@ struct PartInRotationScopeOut {
             [.backSupportHeadSupport] ]
         ,
         .sitOnTiltJoint: [
+            [.backSupport, .backSupportHeadSupport, .sideSupport],
             [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
             [.backSupport, .backSupportHeadSupport,.sideSupport],
             [.sideSupport, .footSupport],
            
             [.backSupport, .backSupportHeadSupport],
-            [.backSupport, .backSupportHeadSupport, .sideSupport],
+           
 
             [.backSupport, .backSupportHeadSupport, .footSupport]
             ]
@@ -570,35 +580,6 @@ struct OneOrTwoId {
         func getIdForPart(_ part: Part)
         -> OneOrTwo<PartTag>{
             switch part {
-                case  // default not used as case will detect undefined part
-                    .casterForkAtRear,
-                    .casterForkAtMid,
-                    
-                    .casterVerticalJointAtRear,
-                    .casterVerticalJointAtMid,
-                    
-                    .casterWheelAtRear,
-                    .casterWheelAtMid,
-                   
-                    .fixedWheelAtRear,
-                    .fixedWheelAtMid,
-                    .fixedWheelAtFront,
-                    .fixedWheelHorizontalJointAtRear,
-                    .fixedWheelHorizontalJointAtMid,
-                    .fixedWheelHorizontalJointAtFront,
-                    .fixedWheelAtRearWithPropeller,
-                    .footSupportHangerJoint,
-                    .footSupportHangerLink,
-                    .footSupportJoint,
-                    .footSupport,
-                
-                    .sideSupport,
-                    .sideSupportRotationJoint,
-                    .casterVerticalJointAtFront,
-                    .casterForkAtFront,
-                    .casterWheelAtFront:
-                
-                    return .two(left: PartTag.id0, right: PartTag.id1)
                 
                 case
                     .backSupportRotationJoint,
@@ -612,7 +593,7 @@ struct OneOrTwoId {
                     .sitOnTiltJoint:
                     return .one(one: PartTag.id0)
                 default :
-                fatalError("OneOrTwoId: \(#function)  no id has been defined for \(part)")
+                return .two(left: PartTag.id0, right: PartTag.id1)
             }
         }
     }
@@ -762,7 +743,7 @@ struct PartDefaultDimension {
                 PartObject(.casterWheelAtFront, .fixedWheelMidDrive): (width: 20.0, length: 50.0, height: 50.0),
                 PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (width: 20.0, length: 600.0, height: 600.0),
                 PartObject(.footOnly, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
-                
+                PartObject(.sideSupport, .allCasterTiltInSpaceArmChair): (width: 100.0, length: parentDimension.length, height: 150.0),
                 PartObject(.sitOn, .allCasterBed): (width: 900.0, length: 2000.0, height: 150.0),
                 PartObject(.sitOn, .allCasterStretcher): (width: 600.0, length: 1400.0, height: 10.0),
                 PartObject(.stabilizerAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),
