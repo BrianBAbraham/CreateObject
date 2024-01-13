@@ -367,6 +367,7 @@ extension DictionaryMaker {
             fatalError("no chain labels defined for object \(objectType)") }
         var rotatingParts: [Part] = []
         var allPartsToBeRotatedByOneRotatorPart: [[Part]] = []
+         //   print(chainLabels)
         for chainLabel in chainLabels {
             guard let  values = partValuesDic[chainLabel] else {
                fatalError("no values defined for chain labels \(chainLabel)")

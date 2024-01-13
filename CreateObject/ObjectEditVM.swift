@@ -89,9 +89,9 @@ extension ObjectEditViewModel {
 //                color = .blue
 //            }
             
-            if uniquePartName.contains(Part.overheadSupport.rawValue) {
-                color = .green
-            }
+//            if uniquePartName.contains(Part.overheadSupport.rawValue) {
+//                color = .green
+//            }
             
             if uniquePartName.contains("asterWheel") {
                 color = .black

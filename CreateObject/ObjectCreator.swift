@@ -27,16 +27,31 @@ struct ObjectMaker {
             self.objectsAndTheirChainLabelsDicIn =
             objectsAndTheirChainLabelsDicIn
             
+
+            checkLabelAndPartChain()
+            
             initialiseAllPart()
             
             postProcessGlobalOrigin()
+    }
+    
+    func checkLabelAndPartChain(){
+        guard let objectChainlabels = objectsAndTheirChainLabels[objectType] else {
+            fatalError("no chainLabels defined for \(objectType)")
+        }
+        for label in objectChainlabels {
+            let labelInPartChainOut = LabelInPartChainOut(label)
+            
+            guard labelInPartChainOut.partChain.isEmpty == false else {
+                fatalError("chainLabel \(label) has no partChain in LabelInPartChainOut")
+            }
+        }
     }
     
     
    mutating func postProcessGlobalOrigin(){
         let allPartChain = getAllPartChain()
         var partsToHaveGlobalOriginSet = getOneOfEachPartInAllPartChain()
-     // print(partsToHaveGlobalOriginSet)
         for chain in allPartChain {
             processPart( chain)
         }
@@ -46,9 +61,6 @@ struct ObjectMaker {
                 let part = chain[index]
                 if partsToHaveGlobalOriginSet.contains(part){
                 let parentGlobalOrigin = getParentGlobalOrigin(index)
-//                    if part  == .fixedWheelAtRear {
-//                        print(parentGlobalOrigin)
-//                    }
                 setGlobalOrigin(part, parentGlobalOrigin)
                   partsToHaveGlobalOriginSet = removePartFromArray(part)
                 }
@@ -86,14 +98,10 @@ struct ObjectMaker {
             guard let partValue = partValuesDic[part] else {
                 fatalError("This part:\(part) has not been intialised where the parent global origin is \(parentGlobalOrigin)")
             }
-
             let childOrigin = partValue.childOrigin
-
             let globalOrigin =
                    getGlobalOrigin(childOrigin, parentGlobalOrigin)
-
             let modifiedPartValue = partValue.withNewGlobalOrigin(globalOrigin)
-
             partValuesDic[part] = modifiedPartValue
         }
         
@@ -104,10 +112,8 @@ struct ObjectMaker {
        -> OneOrTwo<PositionAsIosAxes> {
             let (modifiedChildOrigin, modifiedParentGlobalOrigin) =
             OneOrTwo<Any>.convert2OneOrTwoToAllTwoIfMixedOneAndTwo (childOrigin, parentGlobalOrigin)
-                
             return
                 modifiedChildOrigin.mapWithDoubleOneOrTwoWithOneOrTwoReturn(modifiedParentGlobalOrigin)
-                
         }
        
        
@@ -117,120 +123,57 @@ struct ObjectMaker {
     }
 }
 
-extension ObjectMaker {
 
+
+extension ObjectMaker {
     mutating func initialiseAllPart() {
-        
+       setUniqueInitialisation()
         func setUniqueInitialisation(){
             setObjectOriginPartValue()
         }
-
-        setUniqueInitialisation()
-
+        
         let orderedToEnsureParentInitialisedFirst = getOneOfEachPartInAllPartChain()
-
+//print(orderedToEnsureParentInitialisedFirst)
         for part in orderedToEnsureParentInitialisedFirst {
          let parentPart = getParentPart(part)
-            switch part {
-                case .sitOn:
-                    initialilseOneOrTwoSitOn()
-                    
-                case .backSupport:
-                    initialisePart(
-                        .sitOn,.backSupport )
-      
-            
-            case .backSupportHeadSupportJoint:
-                    initialisePart(
-                        parentPart, .backSupportHeadSupportJoint )
-                case .backSupportHeadSupportLink:
-                    initialisePart(
-                        parentPart, .backSupportHeadSupportLink )
-                case .backSupportHeadSupport:
-                    initialisePart(
-                        parentPart, .backSupportHeadSupport )
-                case .footSupportHangerLink:
-                    initialisePart( parentPart,
-                        .footSupportHangerLink )
-                case //part depends on sitOn and sitOn is parent
-                        .backSupportRotationJoint,
-                        .footSupportHangerJoint,
-                        .sideSupport,
-                        .sideSupportRotationJoint,
-                        .sitOnTiltJoint:
-                            initialisePart(
-                                parentPart, part )
-                case .footSupport:
-                        initialisePart( parentPart,part)
-                case .footSupportJoint:
-                        initialisePart( parentPart, part )
-                case .footSupportInOnePiece, .footOnly:
-                            initialisePart( parentPart,part)
-                
-                case  .fixedWheelHorizontalJointAtRear,
-                    .fixedWheelHorizontalJointAtMid,
-                    .fixedWheelHorizontalJointAtFront,
-                    .casterVerticalJointAtRear,
-                    .casterVerticalJointAtMid,
-                    .casterVerticalJointAtFront:
-                initialisePart(.sitOn, part)
-                
-                case
-                    .fixedWheelAtRear,
-                    .fixedWheelAtMid,
-                    .fixedWheelAtFront,
-                    .casterWheelAtRear,
-                    .casterWheelAtMid,
-                    .casterWheelAtFront,
-                    .casterForkAtRear,
-                    .casterForkAtMid,
-                    .casterForkAtFront:
-                initialisePart( parentPart,part)
-                default:
-                    fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(part)")
-            }
+            part == .sitOn ?
+                initialisePart(nil, part):
+                    initialisePart(parentPart, part )
         }
     }
 
-
-    mutating func initialilseOneOrTwoSitOn (){
-         let sitOnPartValue =
-         StructFactory(
-            objectType,
-            dictionaries, .sitOn).sitOnPartValue
-            
-            partValuesDic +=
-                [.sitOn: sitOnPartValue]
-    }
-
-
+    
     mutating func initialisePart(
-        _ parent: Part,
+        _ wrappedParent: Part?,
         _ child: Part
     ) {
-        if let parentValue = partValuesDic[parent] {
-            
-            let childValue =
-            StructFactory(
-                objectType,
-                dictionaries,
-                parentValue,
-                child)
-                    .createPart()
-            
-            partValuesDic +=
-                [child: childValue]
-            
+        var childData: PartData = ZeroValue.partValue
+        if let parent = wrappedParent {
+            guard let parentData = partValuesDic[parent] else {
+                fatalError("no partValue for \(parent)")
+            }
+            childData =
+                StructFactory(
+                    objectType,
+                    dictionaries,
+                    parentData,
+                    child)
+                        .partData
         } else {
-             fatalError( "\n\nDictionary Provider: \(#function) no initialisation defined for this part: \(parent)")
+            childData =
+                StructFactory(
+                   objectType,
+                   dictionaries,
+                   child)
+                    .partData
         }
+            partValuesDic +=
+                [child: childData]
     }
-
 
 
     func getOneOfEachPartInAllPartChain() -> [Part]{
         let chainLabels = getAllChainLabel()
-        //print(chainLabels)
         var oneOfEachPartInAllChainLabel: [Part] = []
         if let chainLabels{
             for label in chainLabels {
@@ -246,22 +189,40 @@ extension ObjectMaker {
     }
     
     
-    func getParentPart(_ childPart: Part) -> Part{
+    func getParentPart(_ childPart: Part) -> Part {
+        let partsWithSitOnParentImposed = get()
         var parentPart: Part = .objectOrigin
-        let chainLabels = getAllChainLabel()
-        if let chainLabels{
-            for label in chainLabels {
-               let partChain = LabelInPartChainOut(label).partChain
-                for i in 0..<partChain.count {
-                    if childPart == partChain[i] && i != 0 {
-                       parentPart = partChain[i - 1]
-                    }
+
+        guard let chainLabels = getAllChainLabel() else {
+            return parentPart
+        }
+
+        for label in chainLabels {
+            let partChain = LabelInPartChainOut(label).partChain
+
+            for i in 0..<partChain.count {
+                if partsWithSitOnParentImposed.contains(childPart) {
+                    parentPart = .sitOn
+                } else if childPart == partChain[i] && i != 0 {
+                    parentPart = partChain[i - 1]
                 }
             }
         }
+
         return parentPart
     }
-    
+
+    func get() -> [Part] {
+        [
+            .fixedWheelHorizontalJointAtRear,
+            .fixedWheelHorizontalJointAtMid,
+            .fixedWheelHorizontalJointAtFront,
+            .casterVerticalJointAtRear,
+            .casterVerticalJointAtMid,
+            .casterVerticalJointAtFront
+        ]
+    }
+
     
     func getPartChain(_ label: Part) -> [Part] {
         LabelInPartChainOut(label).partChain
@@ -275,7 +236,7 @@ extension ObjectMaker {
     
     mutating func setObjectOriginPartValue() {
         partValuesDic +=
-        [.objectOrigin: PartData(part: .objectOrigin, originName: .one(one: Part.objectOrigin.rawValue), dimensionName: .one(one: Part.objectOrigin.rawValue), dimension: .one(one: ZeroValue.dimension3d), origin: .one(one: ZeroValue.iosLocation), minMaxAngle: nil, angles: nil, id: .one(one: .id0))]
+        [.objectOrigin: ZeroValue.partValue]
     }
 }
 
@@ -309,21 +270,21 @@ enum Part: String, Parts, Hashable {
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
     case backSupportHeadLinkRotationJoint = "backSupportHeadSupportLinkHorizontalJoint"
-    case backSupportTiltJoint = "backSupportReclineAngle"
+   
       
-    case baseToCarryBarConnector = "baseToCarryBarConnector"
-    case baseWheelJoint = "baseWheelJoint"
-
-    case overheadSupportMastBase = "overHeadSupporMastBase"
-    case overheadSupportMast = "overHeadSupporMast"
-    case overheadSupportAssistantHandle = "overHeadSupporHandle"
-    case overheadSupportAssistantHandleInOnePiece = "overHeadSupporHandleInOnePiece"
-    case overheadSupportLink = "overHeadSupportLink"
-    case overheadSupport = "overHeadSupport"
-    case overheadSupportHook = "overHeadHookSupport"
-    case overheadSupportJoint = "overHeadSupportVerticalJoint"
-    
-    case carriedObjectAtRear = "objectCarriedAtRear"
+//    case baseToCarryBarConnector = "baseToCarryBarConnector"
+//
+//
+//    case overheadSupportMastBase = "overHeadSupporMastBase"
+//    case overheadSupportMast = "overHeadSupporMast"
+//    case overheadSupportAssistantHandle = "overHeadSupporHandle"
+//    case overheadSupportAssistantHandleInOnePiece = "overHeadSupporHandleInOnePiece"
+//    case overheadSupportLink = "overHeadSupportLink"
+//    case overheadSupport = "overHeadSupport"
+//    case overheadSupportHook = "overHeadHookSupport"
+//    case overheadSupportJoint = "overHeadSupportVerticalJoint"
+//
+//    case carriedObjectAtRear = "objectCarriedAtRear"
 
    
     case casterVerticalJointAtRear = "casterVerticalBaseJointAtRear"
@@ -377,9 +338,9 @@ enum Part: String, Parts, Hashable {
     case sideSupportRotationJoint = "sideSupportRotatationJoint"
     case sideSupportJoystick = "sideSupportJoystick"
 
-    case stabilityAtRear = "stabilityAtRear"
-    case stabilityAtMid = "stabilityAtMid"
-    case stabilityAtFront = "stabilityAtFront"
+    case stabilizerAtRear = "stabilityAtRear"
+    case stabilizerAtMid = "stabilityAtMid"
+    case stabilizerAtFront = "stabilityAtFront"
     
     case sitOnTiltJoint = "tiltInSpaceHorizontalJoint"
     
@@ -467,7 +428,7 @@ enum ObjectTypes: String, CaseIterable, Hashable {
 
 
 /// provides the object names for the picker
-/// provides the chainPartLabels for each object
+/// provides the chainLabels for each object
 //MARK: ObjectsChainLabels
 struct ObjectsAndTheirChainLabels {
     static let chairSupport: [Part] =
@@ -502,10 +463,10 @@ struct ObjectsAndTheirChainLabels {
             chairSupport + [.fixedWheelAtFront] + [.casterWheelAtRear],
          
         .fixedWheelRearDrive:
-            chairSupportWithFixedRearWheel + [.casterWheelAtFront],
+            chairSupportWithFixedRearWheel + [.casterWheelAtFront] ,
         
         .fixedWheelManualRearDrive:
-            chairSupportWithFixedRearWheel + [.casterWheelAtFront],
+            chairSupportWithFixedRearWheel + [.casterWheelAtFront] + [.fixedWheelAtRearWithPropeller],
         
         .showerTray: [.footOnly],
 
@@ -513,19 +474,21 @@ struct ObjectsAndTheirChainLabels {
 }
 
 //Source of truth for partChain
+//chainLabel is the last item in array
 //MARK: ChainLabel
 struct LabelInPartChainOut {
     static let partChainArrays: [[Part]] = [
-            [.sitOn, .backSupportRotationJoint, .backSupport],
+            [.sitOn, .backSupport],
             [.sitOn, .footSupportHangerJoint, .footSupportHangerLink, .footSupportJoint, .footSupport],
             [.footOnly],
-            [.sitOn, .backSupportRotationJoint, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
+            [.sitOn, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
             [.sitOn, .sideSupport],
             [.sitOn],
             [.sitOn, .sitOnTiltJoint],
             [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear],
             [.fixedWheelHorizontalJointAtMid, .fixedWheelAtMid],
             [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront],
+            [.fixedWheelAtRear, .fixedWheelAtRearWithPropeller],
             [.casterVerticalJointAtRear, .casterForkAtRear, .casterWheelAtRear],
             [.casterVerticalJointAtMid, .casterForkAtMid, .casterWheelAtMid],
             [.casterVerticalJointAtFront, .casterForkAtFront, .casterWheelAtFront]
@@ -568,7 +531,33 @@ struct LabelInPartChainOut {
 }
 
 
+struct PartInRotationScopeOut {
+    let dictionary: [Part: [[Part]]] = [
+        .backSupportRotationJoint: [
+            [.backSupport, .backSupportHeadSupport] ]
+        ,
+        .backSupportHeadLinkRotationJoint: [
+            [.backSupportHeadSupport] ]
+        ,
+        .sitOnTiltJoint: [
+            [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
+            [.backSupport, .backSupportHeadSupport,.sideSupport],
+            [.sideSupport, .footSupport],
+           
+            [.backSupport, .backSupportHeadSupport],
+            [.backSupport, .backSupportHeadSupport, .sideSupport],
 
+            [.backSupport, .backSupportHeadSupport, .footSupport]
+            ]
+    
+    ]
+    
+    let part: Part
+    
+    var rotationScope: [[Part]] {
+        dictionary[part] ?? []
+    }
+}
 
 
 //MARK: OneOrTwoId
@@ -597,6 +586,7 @@ struct OneOrTwoId {
                     .fixedWheelHorizontalJointAtRear,
                     .fixedWheelHorizontalJointAtMid,
                     .fixedWheelHorizontalJointAtFront,
+                    .fixedWheelAtRearWithPropeller,
                     .footSupportHangerJoint,
                     .footSupportHangerLink,
                     .footSupportJoint,
@@ -656,6 +646,8 @@ struct PartData {
     var sitOnId: Parts
     
     var scopesOfRotation: [[Part]]
+    
+  //  var color: Color = .black
     
     init (
         part: Part,
@@ -773,9 +765,9 @@ struct PartDefaultDimension {
                 
                 PartObject(.sitOn, .allCasterBed): (width: 900.0, length: 2000.0, height: 150.0),
                 PartObject(.sitOn, .allCasterStretcher): (width: 600.0, length: 1400.0, height: 10.0),
-                PartObject(.stabilityAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),
-                PartObject(.stabilityAtFront, .fixedWheelMidDrive): (width: -50.0, length: 20.0, height: 0.0),
-                PartObject(.stabilityAtRear, .allCasterTiltInSpaceShowerChair): (width: 150.0, length: -100.0, height: 0.0),
+                PartObject(.stabilizerAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),
+                PartObject(.stabilizerAtFront, .fixedWheelMidDrive): (width: -50.0, length: 20.0, height: 0.0),
+                PartObject(.stabilizerAtRear, .allCasterTiltInSpaceShowerChair): (width: 150.0, length: -100.0, height: 0.0),
             ][PartObject(childOrParent, objectType)]
         }
     
@@ -804,6 +796,7 @@ struct PartDefaultDimension {
                 .fixedWheelHorizontalJointAtFront: j,
                 .fixedWheelHorizontalJointAtMid: j,
                 .fixedWheelHorizontalJointAtRear:j,
+                .fixedWheelAtRearWithPropeller: (width: 10.0, length: parentDimension.length * 0.9, height: parentDimension.length * 0.9),
                 .footSupport: (width: 150.0, length: 100.0, height: 20.0),
                 .footSupportJoint: j,
                 .footSupportInOnePiece: (width: 50.0, length: 200.0, height: 200.0),
@@ -813,9 +806,9 @@ struct PartDefaultDimension {
                 .sideSupport: (width: 50.0, length: parentDimension.length, height: 150.0),
                 .sitOn: (width: 400.0, length: 400.0, height: 10.0),
                 .sitOnTiltJoint: j,
-                .stabilityAtFront: z,
-                .stabilityAtMid: z,
-                .stabilityAtRear: z,
+                .stabilizerAtFront: z,
+                .stabilizerAtMid: z,
+                .stabilizerAtRear: z,
                 ] [childOrParent]
         }
     }
@@ -839,8 +832,6 @@ struct PartDefaultOrigin {
           ) {
         self.part = part
         self.objectType = object
-    //    self.parentPart = parentPart
-       // self.childDimension = childDimension
         bodySupportHeight =
             MiscObjectParameters(object).getMainBodySupportAboveFloor()
         
@@ -865,9 +856,10 @@ struct PartDefaultOrigin {
         
         func getFineTuneOriginDefault() -> PositionAsIosAxes? {
             [
-              PartObject(.sitOn, .fixedWheelSolo): (x: 0.0, y: 0.0, z: bodySupportHeight),
-                PartObject(.sitOn, .fixedWheelMidDrive): (x: 0.0, y: 0.0, z: bodySupportHeight ),
-                PartObject(.sitOn, .fixedWheelFrontDrive): (x: 0.0, y: -selfDimension.length/2, z: bodySupportHeight),
+            PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (x: 75.0, y: 0.0, z: 0.0),
+            PartObject(.sitOn, .fixedWheelSolo): (x: 0.0, y: 0.0, z: bodySupportHeight),
+            PartObject(.sitOn, .fixedWheelMidDrive): (x: 0.0, y: 0.0, z: bodySupportHeight ),
+            PartObject(.sitOn, .fixedWheelFrontDrive): (x: 0.0, y: -selfDimension.length/2, z: bodySupportHeight),
             ][PartObject(part, object)]
         }
     
@@ -877,7 +869,7 @@ struct PartDefaultOrigin {
             
             return
                 [
-                .backSupport: (x: 0.0, y: 0.0, z: selfDimension.height/2.0 ),
+                .backSupport: (x: 0.0, y: -parentDimension.length/2, z: selfDimension.height/2.0 ),
                 .backSupportHeadSupport: (x: 0.0, y: 0.0, z: parentDimension.height/2),
                 .backSupportHeadSupportJoint: (x: 0.0, y: 0.0, z: parentDimension.height/2.0),
                 .backSupportHeadSupportLink:   (x: 0.0, y: 0.0, z: selfDimension.height/2),
@@ -895,6 +887,7 @@ struct PartDefaultOrigin {
                 .fixedWheelHorizontalJointAtFront: wheelBaseJointOrigin,
                 .fixedWheelHorizontalJointAtMid: wheelBaseJointOrigin,
                 .fixedWheelHorizontalJointAtRear: wheelBaseJointOrigin,
+                .fixedWheelAtRearWithPropeller: (x: PartDefaultDimension(.fixedWheelAtRear,objectType, parentPart).partDimension.width * 1.1, y: 0.0, z: 0.0),
                 .footOnly: ZeroValue.iosLocation,
                 .footSupport: (x: -PartDefaultDimension(.footSupport,objectType, parentPart).partDimension.width/2.0, y: 0.0, z: 0.0),
                 .footSupportJoint: (x: 0.0, y: parentDimension.length/2.0, z: 0.0),
@@ -915,9 +908,9 @@ struct PartDefaultOrigin {
     func getWheelBaseJointOrigin() -> PositionAsIosAxes {
         var origin = ZeroValue.iosLocation
         
-        let frontStability = PartDefaultDimension(.stabilityAtFront, objectType, .objectOrigin).partDimension
-        let midStability = PartDefaultDimension(.stabilityAtMid, objectType, .objectOrigin).partDimension
-        let rearStability = PartDefaultDimension(.stabilityAtRear, objectType, .objectOrigin).partDimension
+        let frontStability = PartDefaultDimension(.stabilizerAtFront, objectType, .objectOrigin).partDimension
+        let midStability = PartDefaultDimension(.stabilizerAtMid, objectType, .objectOrigin).partDimension
+        let rearStability = PartDefaultDimension(.stabilizerAtRear, objectType, .objectOrigin).partDimension
         
         let fixedFrontWheel = PartDefaultDimension(.fixedWheelAtFront, objectType, .fixedWheelHorizontalJointAtFront)
         let fixedMidWheel = PartDefaultDimension(.fixedWheelAtMid, objectType, .fixedWheelHorizontalJointAtMid)
@@ -1045,6 +1038,8 @@ enum OneOrTwoOptional <V> {
                 return OneOrTwo.one(one: ZeroValue.iosLocation) as! OneOrTwo<T>
             case is RotationAngles:
                 return OneOrTwo.one(one: ZeroValue.rotationAngles) as! OneOrTwo<T>
+            case is String:
+                return OneOrTwo.one(one: "") as! OneOrTwo<T>
             case is AngleMinMax:
                 return OneOrTwo.one(one: ZeroValue.angleMinMax) as! OneOrTwo<T>
             default:
@@ -1069,26 +1064,6 @@ enum OneOrTwo <T> {
         }
     }
     
-
-
-//    var left: T? {
-//        switch self {
-//        case .two(let left, _):
-//            return left
-//        case .one:
-//          return nil
-//        }
-//    }
-//
-//    var right: T? {
-//        switch self {
-//        case .two(_, let right):
-//            return right
-//        case .one:
-//            return nil
-//        }
-//    }
-//
     var one: T? {
         switch self {
         case .two:
@@ -1264,40 +1239,36 @@ struct MiscObjectParameters {
 struct StructFactory {
     let objectType: ObjectTypes
     let dictionaries: Dictionaries
-    var sitOnPartValue: PartData {
-        createSitOn()
-    }
-    let parentValue: PartData?
-    let childPart: Part
+    var partData: PartData = ZeroValue.partValue
+    let parentData: PartData?
+    let part: Part
     let parentPart: Part
     let defaultDimension: Dimension3d
     let defaultOrigin: PartDefaultOrigin
     let userEditedValues: UserEditedValue
-    var childOrigin: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
-    
-    
-    var childDimension: OneOrTwo<Dimension3d> = .one(one: ZeroValue.dimension3d)
+    var partOrigin: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
+    var partDimension: OneOrTwo<Dimension3d> = .one(one: ZeroValue.dimension3d)
 
     // Designated initializer for common parts
     init(_ objectType: ObjectTypes,
          _ dictionaries: Dictionaries,
-         _ parentValue: PartData?,
-         _ childPart: Part,
+         _ parentData: PartData?,
+         _ part: Part,
          _ parentPart: Part) {
         self.objectType = objectType
         self.dictionaries = dictionaries
-        self.parentValue = parentValue
-        self.childPart = childPart
+        self.parentData = parentData
+        self.part = part
         self.parentPart = parentPart
-        defaultDimension = PartDefaultDimension(childPart, objectType, parentPart).partDimension
-        defaultOrigin = PartDefaultOrigin(childPart, objectType, parentPart)
+        defaultDimension = PartDefaultDimension(part, objectType, parentPart).partDimension
+        defaultOrigin = PartDefaultOrigin(part, objectType, parentPart)
         
         userEditedValues =
         UserEditedValue(
             objectType,
             dictionaries,
             .id0,
-            childPart)
+            part)
         
         setChildDimensionForPartData()
 
@@ -1306,16 +1277,16 @@ struct StructFactory {
         setChildOriginAllowingForSymmetryForPartData()
         
         func setChildOriginAllowingForSymmetryForPartData() {
-            childOrigin = childOrigin.adjustForSymmetry()
+            partOrigin = partOrigin.adjustForSymmetry()
         }
         
         func setChildOriginForOneSideForPartData() {
-             childOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin)
+             partOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin)
          }
         
         
         func setChildDimensionForPartData() {
-                childDimension = userEditedValues.optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
+                partDimension = userEditedValues.optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
             }
     }
 
@@ -1324,7 +1295,7 @@ struct StructFactory {
          _ dictionaries: Dictionaries,
          _ childPart: Part) {
         self.init(objectType, dictionaries, nil, childPart, .objectOrigin)
-        createSitOn()
+        partData = createSitOn()
     }
 
     // Convenience initializer for parts in general
@@ -1334,7 +1305,7 @@ struct StructFactory {
          _ childPart: Part) {
         if let unwrapped = parent?.part  {
             self.init(objectType, dictionaries, parent, childPart, unwrapped)
-            createPart()
+        partData = createPart()
         } else {
             fatalError("no parentValue")
         }
@@ -1351,7 +1322,7 @@ extension StructFactory {
                 part: .sitOn,
                 originName:sitOnName,
                 dimensionName: sitOnName,
-                dimension: childDimension,
+                dimension: partDimension,
                 origin: userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin),
                 minMaxAngle: nil,
                 angles: nil,
@@ -1362,25 +1333,15 @@ extension StructFactory {
     
     func createPart()
         -> PartData {
-            
+        let partId = userEditedValues.partId//two sided default edited to one will be detected
         var scopesOfRotation: [[Part]] = []
-        var childAnglesMinMax: OneOrTwo<AngleMinMax> =  .one(one: ZeroValue.angleMinMax)
-        var childAngles:  OneOrTwo<RotationAngles> = .one(one: ZeroValue.rotationAngles)
-        var originName: OneOrTwo<String> = .one(one: "")
-        let childId = userEditedValues.partId//two sided default edited to one will be detected
-         
-            switch childId{
-            case .one:
-                break
-            case .two:
-                childAngles = .two(left: ZeroValue.rotationAngles, right: ZeroValue.rotationAngles)
-                childAnglesMinMax = .two(left: ZeroValue.angleMinMax, right: ZeroValue.angleMinMax)
-            }
-    
-        setOriginNames()
+        var partAnglesMinMax = partId.createOneOrTwoWithOneValue(ZeroValue.angleMinMax)
+        var partAngles = partId.createOneOrTwoWithOneValue(ZeroValue.rotationAngles)
+        let originName =
+            userEditedValues.originName.mapOptionalToNonOptionalOneOrTwo("")
+        //let rotationScope = PartInRotationScopeOut(part: part).rotationScope
 
-
-        if childPart == .sitOnTiltJoint{
+        if part == .sitOnTiltJoint{
             setScopesOfRotationForSitOnTiltJoint()
             setSitOnTiltJointAngles()
         }
@@ -1388,45 +1349,32 @@ extension StructFactory {
           
         return
             PartData(
-                part: childPart,
+                part: part,
                 originName: originName,
                 dimensionName: originName,
-                dimension: childDimension,
-                maxDimension: childDimension,
-                origin: childOrigin,
+                dimension: partDimension,
+                maxDimension: partDimension,
+                origin: partOrigin,
                 globalOrigin: .one(one: ZeroValue.iosLocation),
-                minMaxAngle: childAnglesMinMax,
-                angles: childAngles,
-                id: childId,
+                minMaxAngle: partAnglesMinMax,
+                angles: partAngles,
+                id: partId,
                 scopesOfRotation: scopesOfRotation)
             
             
-        func setOriginNames(){
-            switch userEditedValues.originName {
-            case .one (let one):
-               originName =
-                    .one(one: one ?? "" )
-            case .two(let left, let right):
-                originName =
-                    .two(
-                        left: left ?? "",
-                        right: right ?? "")
-            }
-        }
-
-            
         func setScopesOfRotationForSitOnTiltJoint() {
-            scopesOfRotation = [
-                
-                [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
-                [.backSupport, .backSupportHeadSupport,.sideSupport],
-                [.sideSupport, .footSupport],
-               
-                [.backSupport, .backSupportHeadSupport],
-                [.backSupport, .backSupportHeadSupport, .sideSupport],
-
-                [.backSupport, .backSupportHeadSupport, .footSupport]
-                ]
+            scopesOfRotation = PartInRotationScopeOut(part: part).rotationScope
+//            [
+//
+//                [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
+//                [.backSupport, .backSupportHeadSupport,.sideSupport],
+//                [.sideSupport, .footSupport],
+//
+//                [.backSupport, .backSupportHeadSupport],
+//                [.backSupport, .backSupportHeadSupport, .sideSupport],
+//
+//                [.backSupport, .backSupportHeadSupport, .footSupport]
+//                ]
         }
        
 
@@ -1448,13 +1396,13 @@ extension StructFactory {
             
         func setChildAnglesForObject(
             _ defaultAngles: RotationAngles) {
-                childAngles = userEditedValues.optionalAngles.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
+                partAngles = userEditedValues.optionalAngles.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
         }
             
             
         func setChildMinMaxAnglesForObject(
             _ defaultAngles: AngleMinMax) {
-                childAnglesMinMax = userEditedValues.optionalAngleMinMax.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
+                partAnglesMinMax = userEditedValues.optionalAngleMinMax.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
         }
             
     }
@@ -1558,7 +1506,7 @@ struct UserEditedValue {
     let part: Part
     let sitOnId: PartTag
     
-    var originName:  OneOrTwo <String?> = .one(one: nil)
+    var originName:  OneOrTwoOptional <String?> = .one(one: nil)
     var optionalAngles: OneOrTwoOptional <RotationAngles> = .one(one: nil)
     var optionalAngleMinMax: OneOrTwoOptional <AngleMinMax> = .one(one: nil)
     var optionalDimension: OneOrTwoOptional <Dimension3d> = .one(one: nil)
@@ -1608,7 +1556,7 @@ struct UserEditedValue {
     
     
     func getOriginName(_ partId: OneOrTwo<PartTag>)
-    -> OneOrTwo<String?>{
+    -> OneOrTwoOptional<String?>{
         let start: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part]
         let end: [Parts] = [PartTag.stringLink, Part.sitOn,  sitOnId]
         
@@ -1627,13 +1575,13 @@ struct UserEditedValue {
     
     func getOptionalAngles() -> OneOrTwoOptional<RotationAngles>{
         var angles: OneOrTwoOptional<RotationAngles> = .one(one: nil)
-        switch originName {
+        switch originName.mapOptionalToNonOptionalOneOrTwo("") {
         case .one(let one):
             angles =
-                .one(one: anglesDic[one ?? ""] )
+                .one(one: anglesDic[one ] )
         case .two(let left, let right):
             angles =
-                .two(left: anglesDic[ left ?? ""]  , right: anglesDic[right ?? ""] )
+                .two(left: anglesDic[ left ]  , right: anglesDic[right ] )
         }
         return angles
     }
