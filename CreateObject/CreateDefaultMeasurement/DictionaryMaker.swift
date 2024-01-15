@@ -49,8 +49,8 @@ struct DictionaryMaker {
         partValuesDic =
             ObjectMaker(
                 objectType,
-                dictionaries,
-                objectsAndTheirChainLabelsDicIn).partValuesDic
+                dictionaries)
+                    .partValuesDic
             
 //MARK: - ORIGIN/DIMENSION DICTIONARY
         createPreTiltDictionaryFromStructFactory()
@@ -74,7 +74,7 @@ struct DictionaryMaker {
 extension DictionaryMaker {
 
     mutating func createPreTiltDictionaryFromStructFactory() {
-        guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? ObjectsAndTheirChainLabels().dictionary[objectType] else {
+        guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? objectsAndTheirChainLabels[objectType] else {
             fatalError("No values exist for the specified chainLabels.")
         }
         for chainLabel in chainLabels {
@@ -367,16 +367,16 @@ extension DictionaryMaker {
             fatalError("no chain labels defined for object \(objectType)") }
         var rotatingParts: [Part] = []
         var allPartsToBeRotatedByOneRotatorPart: [[Part]] = []
-         //   print(chainLabels)
         for chainLabel in chainLabels {
             guard let  values = partValuesDic[chainLabel] else {
                fatalError("no values defined for chain labels \(chainLabel)")
             }
-            let currentScopeOrderedAsByUI = 0 // UI edits parts rotated by same rotator
-            if values.scopesOfRotation != [] {//there may be no rotators
+            
+            if values.scopeOfRotation != [] {//there may be no rotators
                 rotatingParts.append(chainLabel)
+                
                 allPartsToBeRotatedByOneRotatorPart.append( getOneOfEachPartFromSomePartChainLabel(
-                    values.scopesOfRotation[currentScopeOrderedAsByUI]) //unique parts returned
+                    values.scopeOfRotation) //unique parts returned
                 )
             }
         }

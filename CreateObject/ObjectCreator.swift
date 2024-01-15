@@ -19,15 +19,13 @@ struct ObjectMaker {
 
     init(
         _ objectType: ObjectTypes,
-        _ userEditedDictionary: Dictionaries,
-        _ objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:]) {
+        _ userEditedDictionary: Dictionaries//,
+    ) {
         
             self.objectType = objectType
             self.dictionaries = userEditedDictionary
-            self.objectsAndTheirChainLabelsDicIn =
-            objectsAndTheirChainLabelsDicIn
-            
-
+            self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDic
+          
             checkLabelAndPartChain()
             
             initialiseAllPart()
@@ -36,10 +34,9 @@ struct ObjectMaker {
     }
     
     func checkLabelAndPartChain(){
-        guard let objectChainlabels = objectsAndTheirChainLabels[objectType] else {
-            fatalError("no chainLabels defined for \(objectType)")
-        }
-        for label in objectChainlabels {
+        let chainLabel = getAllChainLabel()
+        
+        for label in chainLabel {
             let labelInPartChainOut = LabelInPartChainOut(label)
             
             guard labelInPartChainOut.partChain.isEmpty == false else {
@@ -83,11 +80,9 @@ struct ObjectMaker {
 
        
         func getAllPartChain() -> [[Part]]{
-            guard let allChainLabel = getAllChainLabel() else {
-                fatalError()
-            }
+            let chainLabel = getAllChainLabel()
             var allPartChain: [[Part]] = []
-            for label in allChainLabel {
+            for label in chainLabel {
                 allPartChain.append(getPartChain(label))
             }
             return allPartChain
@@ -133,7 +128,6 @@ extension ObjectMaker {
         }
         
         let orderedToEnsureParentInitialisedFirst = getOneOfEachPartInAllPartChain()
-//print(orderedToEnsureParentInitialisedFirst)
         for part in orderedToEnsureParentInitialisedFirst {
          let parentPart = getParentPart(part)
             part == .sitOn ?
@@ -157,9 +151,10 @@ extension ObjectMaker {
                     objectType,
                     dictionaries,
                     parentData,
-                    child)
+                    child,
+                    getAllChainLabel())
                         .partData
-        } else {
+        } else { //only for sitOn
             childData =
                 StructFactory(
                    objectType,
@@ -173,10 +168,9 @@ extension ObjectMaker {
 
 
     func getOneOfEachPartInAllPartChain() -> [Part]{
-        let chainLabels = getAllChainLabel()
+        let chainLabel = getAllChainLabel()
         var oneOfEachPartInAllChainLabel: [Part] = []
-        if let chainLabels{
-            for label in chainLabels {
+            for label in chainLabel {
                let partChain = LabelInPartChainOut(label).partChain
                 for part in partChain {
                     if !oneOfEachPartInAllChainLabel.contains(part) {
@@ -184,7 +178,6 @@ extension ObjectMaker {
                     }
                 }
             }
-        }
         return oneOfEachPartInAllChainLabel
     }
     
@@ -192,12 +185,10 @@ extension ObjectMaker {
     func getParentPart(_ childPart: Part) -> Part {
         let partsWithSitOnParentImposed = get()
         var parentPart: Part = .objectOrigin
+        let chainLabel = getAllChainLabel()
 
-        guard let chainLabels = getAllChainLabel() else {
-            return parentPart
-        }
 
-        for label in chainLabels {
+        for label in chainLabel {
             let partChain = LabelInPartChainOut(label).partChain
 
             for i in 0..<partChain.count {
@@ -229,9 +220,13 @@ extension ObjectMaker {
     }
     
     
-    func getAllChainLabel() -> [Part]? {
+    func getAllChainLabel() -> [Part] {
+        guard let partChainLabel =
         objectsAndTheirChainLabelsDicIn[objectType] ??
-        ObjectsAndTheirChainLabels().dictionary[objectType]
+                objectsAndTheirChainLabels[objectType] else {
+            fatalError("there are no partChainLabel for object \(objectType)")
+        }
+        return partChainLabel
     }
     
     mutating func setObjectOriginPartValue() {
@@ -256,6 +251,7 @@ enum Part: String, Parts, Hashable {
         return self.rawValue
     }
     
+    case assistantFootLever = "assistantFootLever"
     
     case armSupport = "arm"
     case armVerticalJoint = "armVerticalJoint"
@@ -398,7 +394,7 @@ enum ObjectTypes: String, CaseIterable, Hashable {
 //    case bathFloorFixedHoistOneRotationPoint = "SingleRotationPointBathHoist"
 //    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
     
-    
+    case fixedWheelRearDriveAssisted = "Assisted wheelchair"
     case fixedWheelFrontDrive = "Power wheelchair with front drive"
     case fixedWheelMidDrive  = "Power wheelchair with mid-drive"
     case fixedWheelRearDrive = "Power wheelchair with rear drive"
@@ -465,6 +461,9 @@ struct ObjectsAndTheirChainLabels {
         .allCasterStretcher:
             [ .sitOn, .sideSupport] + rearAndFrontCasterWheels,
         
+        .fixedWheelRearDriveAssisted:
+            chairSupport + [.fixedWheelAtRear] + [.casterWheelAtFront] + [.assistantFootLever],
+        
         .fixedWheelMidDrive:
             chairSupport + [.fixedWheelAtMid] + rearAndFrontCasterWheels,
         
@@ -482,11 +481,14 @@ struct ObjectsAndTheirChainLabels {
         .fixedWheelSolo: [.sitOn] + [.fixedWheelAtMid]  + [.sideSupport] ]
 }
 
+
+
 //Source of truth for partChain
 //chainLabel is the last item in array
 //MARK: ChainLabel
 struct LabelInPartChainOut {
     static let partChainArrays: [[Part]] = [
+            [.sitOn, .assistantFootLever],
             [.sitOn, .backSupport],
             [.sitOn, .footSupportHangerJoint, .footSupportHangerLink, .footSupportJoint, .footSupport],
             [.footOnly],
@@ -539,35 +541,34 @@ struct LabelInPartChainOut {
     }
 }
 
-// needs to be based on presence of part in object
-struct PartInRotationScopeOut {
-    let dictionary: [Part: [[Part]]] = [
-        .backSupportRotationJoint: [
-            [.backSupport, .backSupportHeadSupport] ]
-        ,
-        .backSupportHeadLinkRotationJoint: [
-            [.backSupportHeadSupport] ]
-        ,
-        .sitOnTiltJoint: [
-            [.backSupport, .backSupportHeadSupport, .sideSupport],
-            [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
-            [.backSupport, .backSupportHeadSupport,.sideSupport],
-            [.sideSupport, .footSupport],
-           
-            [.backSupport, .backSupportHeadSupport],
-           
 
-            [.backSupport, .backSupportHeadSupport, .footSupport]
-            ]
-    
+
+struct PartInRotationScopeOut {
+    let partChainLabel: [Part]
+    let dictionary: [Part: [Part]] = [
+        .sitOnTiltJoint:
+            [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
     ]
     
     let part: Part
     
-    var rotationScope: [[Part]] {
+    var defaultRotationScope: [Part] {
         dictionary[part] ?? []
     }
+    
+    var rotationScopeAllowingForEditToChainLabel: [Part] {
+        defaultRotationScope.filter { partChainLabel.contains($0) }
+        
+    }
+    
+    init(_ part: Part, _ partChainLabel: [Part]) {
+        self.part = part
+        self.partChainLabel = partChainLabel
+    }
+    
 }
+
+
 
 
 //MARK: OneOrTwoId
@@ -626,7 +627,7 @@ struct PartData {
     
     var sitOnId: Parts
     
-    var scopesOfRotation: [[Part]]
+    var scopeOfRotation: [Part]
     
   //  var color: Color = .black
     
@@ -644,7 +645,7 @@ struct PartData {
         angles: OneOrTwo<RotationAngles>?,
         id: OneOrTwo<PartTag>,
         sitOnId: PartTag = .id0,
-        scopesOfRotation: [[Part]] = [] ) {
+        scopesOfRotation: [Part] = [] ) {
             self.part = part
             self.originName = originName
             self.dimensionName = dimensionName
@@ -656,7 +657,7 @@ struct PartData {
             
             self.id = id
             self.sitOnId = sitOnId
-            self.scopesOfRotation = scopesOfRotation
+            self.scopeOfRotation = scopesOfRotation
             self.angles = getAngles()
             self.minMaxAngle = getMinMaxAngle()
             
@@ -699,8 +700,64 @@ struct PartObject: Hashable {
 }
 
 
+
+struct PartDefaultAngle {
+    
+    let angle: RotationAngles
+    var minMaxAngle: AngleMinMax = ZeroValue.angleMinMax
+  
+    
+    init(_ part: Part, _ objectType: ObjectTypes) {
+        self.angle = getDefault(part, objectType)
+        minMaxAngle = getMinMaxAngle()
+    
+        func getDefault(_ part: Part, _ objectType: ObjectTypes)  -> RotationAngles {
+            let partObject = PartObject(part, objectType)
+            guard let angle =
+                    getFineTunedAngleDefault(partObject) ??
+                    getGeneralAngleDfault(part) else {
+                fatalError("no angle defined for part \(part)")
+            }
+            return angle
+        }
+        
+        
+        func getFineTunedAngleDefault(_ partObject: PartObject) -> RotationAngles?{
+            let dictionary: [PartObject: RotationAngles] = [:]
+            
+            return dictionary[partObject]
+        }
+        
+        
+        func getGeneralAngleDfault(_ part: Part) -> RotationAngles?{
+            let z: Measurement<UnitAngle> = ZeroValue.angleDeg
+            let dictionary: [Part: RotationAngles] = [
+                .sitOnTiltJoint: (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z)
+            ]
+            return dictionary[part]
+        }
+        
+        func getMinMaxAngle() -> AngleMinMax {
+            let min = Measurement(value: 0.0, unit: UnitAngle.degrees)
+            
+            let max = extractNonZeroAngle(angle)
+            
+            return (min: min, max: max)
+            
+            func extractNonZeroAngle(_ angle: RotationAngles) -> Measurement<UnitAngle> {
+                guard let nonZeroAngle = [angle.x, angle.y, angle.z].first(where: { $0.value != 0 }) else {
+                    fatalError("All angles are zero.")
+                }
+                return nonZeroAngle
+            }
+        }
+    }
+}
+
+
+
 struct PartDefaultDimension {
-    static let casterForDimension = (width: 50.0, length: 100.0, height: 50.0)
+    static let casterForkDimension = (width: 50.0, length: 100.0, height: 50.0)
     static let casterWheelDimension = (width: 20.0, length: 75.0, height: 75.0)
     static let poweredWheelDimension = (width: 50.0, length: 200.0, height: 200.0)
     static let joint = (width: 20.0, length: 20.0, height: 20.0)
@@ -739,6 +796,7 @@ struct PartDefaultDimension {
         
         func getFineTuneDimensionDefault(_ childOrParent: Part) -> Dimension3d? {
             [
+                PartObject(.backSupport, .allCasterTiltInSpaceArmChair): (width: parentDimension.width, length: 100.0, height: 500.0),
                 PartObject(.casterForkAtFront, .fixedWheelMidDrive): (width: 20.0, length: 50.0, height: 50.0),
                 PartObject(.casterWheelAtFront, .fixedWheelMidDrive): (width: 20.0, length: 50.0, height: 50.0),
                 PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (width: 20.0, length: 600.0, height: 600.0),
@@ -749,6 +807,7 @@ struct PartDefaultDimension {
                 PartObject(.stabilizerAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),
                 PartObject(.stabilizerAtFront, .fixedWheelMidDrive): (width: -50.0, length: 20.0, height: 0.0),
                 PartObject(.stabilizerAtRear, .allCasterTiltInSpaceShowerChair): (width: 150.0, length: -100.0, height: 0.0),
+                PartObject(.stabilizerAtRear, .fixedWheelRearDriveAssisted): (width: 50.0, length: -100.0, height: 0.0),
             ][PartObject(childOrParent, objectType)]
         }
     
@@ -758,13 +817,14 @@ struct PartDefaultDimension {
             let j = Self.joint
             return
                 [
+                .assistantFootLever: (width: 20.0, length: 300.0, height: 20.0),
                 .backSupport: (width: parentDimension.width, length: 20.0 , height: 500.0),
                 .backSupportHeadSupport: (width: 150.0, length: 50.0, height: 100.0) ,
                 .backSupportHeadSupportJoint: Self.joint,
                 .backSupportHeadSupportLink: (width: 20.0, length: 20.0, height: 150.0),
                 .backSupportRotationJoint: j,
-                .casterForkAtFront: Self.casterForDimension,
-                .casterForkAtRear: Self.casterForDimension,
+                .casterForkAtFront: Self.casterForkDimension,
+                .casterForkAtRear: Self.casterForkDimension,
                 .casterWheelAtFront: Self.casterWheelDimension,
                 .casterWheelAtMid: Self.casterWheelDimension,
                 .casterWheelAtRear: Self.casterWheelDimension,
@@ -804,7 +864,7 @@ struct PartDefaultOrigin {
     //var parentPart: Part
     let part: Part
     let objectType: ObjectTypes
-    let bodySupportHeight: Double
+//    let bodySupportHeight: Double
     var wheelBaseJointOrigin: PositionAsIosAxes = ZeroValue.iosLocation
 
     
@@ -813,8 +873,8 @@ struct PartDefaultOrigin {
           ) {
         self.part = part
         self.objectType = object
-        bodySupportHeight =
-            MiscObjectParameters(object).getMainBodySupportAboveFloor()
+//        bodySupportHeight =
+//            MiscObjectParameters(object).getMainBodySupportAboveFloor()
         
         selfDimension = PartDefaultDimension(part, objectType, parentPart).partDimension
         parentDimension = PartDefaultDimension(parentPart, objectType, .objectOrigin).partDimension
@@ -836,12 +896,17 @@ struct PartDefaultOrigin {
                      
         
         func getFineTuneOriginDefault() -> PositionAsIosAxes? {
-            [
-            PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (x: 75.0, y: 0.0, z: 0.0),
-            PartObject(.sitOn, .fixedWheelSolo): (x: 0.0, y: 0.0, z: bodySupportHeight),
-            PartObject(.sitOn, .fixedWheelMidDrive): (x: 0.0, y: 0.0, z: bodySupportHeight ),
-            PartObject(.sitOn, .fixedWheelFrontDrive): (x: 0.0, y: -selfDimension.length/2, z: bodySupportHeight),
-            ][PartObject(part, object)]
+            let chairHeight = 500.0
+            return
+                [
+                PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (x: 75.0, y: 0.0, z: 0.0),
+                PartObject(.sitOn, .fixedWheelSolo): (x: 0.0, y: 0.0, z: chairHeight),
+                PartObject(.sitOn, .fixedWheelMidDrive): (x: 0.0, y: 0.0, z: chairHeight ),
+                PartObject(.sitOn, .fixedWheelFrontDrive): (x: 0.0, y: -selfDimension.length/2, z: chairHeight),
+                PartObject(.sitOn, .allCasterBed): (x: 0.0, y: selfDimension.length/2, z: 900.0),
+                PartObject(.sitOn, .allCasterStretcher): (x: 0.0, y: selfDimension.length/2, z: 900.0),
+                
+                ][PartObject(part, object)]
         }
     
     
@@ -850,7 +915,8 @@ struct PartDefaultOrigin {
             
             return
                 [
-                .backSupport: (x: 0.0, y: -parentDimension.length/2, z: selfDimension.height/2.0 ),
+                    .assistantFootLever: (x: parentDimension.width/3, y: -(selfDimension.length + parentDimension.length)/2, z: wheelBaseJointOrigin.z),
+                .backSupport: (x: 0.0, y: -(parentDimension.length + selfDimension.length)/2, z: selfDimension.height/2.0 ),
                 .backSupportHeadSupport: (x: 0.0, y: 0.0, z: parentDimension.height/2),
                 .backSupportHeadSupportJoint: (x: 0.0, y: 0.0, z: parentDimension.height/2.0),
                 .backSupportHeadSupportLink:   (x: 0.0, y: 0.0, z: selfDimension.height/2),
@@ -878,7 +944,7 @@ struct PartDefaultOrigin {
              
                 .sideSupport: (x: parentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
                 .sideSupportRotationJoint: (x: parentDimension.width/2, y: -parentDimension.length/2, z: selfDimension.height),
-                .sitOn:  (x: 0.0, y: selfDimension.length/2, z: bodySupportHeight ),
+                .sitOn:  (x: 0.0, y: selfDimension.length/2, z: 500.0 ),
                 .sitOnTiltJoint: (x: 0.0, y: -parentDimension.length/4, z: -100.0),
 
                 ] [part]
@@ -915,6 +981,8 @@ struct PartDefaultOrigin {
                 y: sitOnLength/2 + rearStability.length,
                 z: wheelJointHeight)
             let xPosition = sitOnWidth/2 + rearStability.width
+            let xPositionAtFront = sitOnWidth/2 + frontStability.width
+
 
             switch part {
                 case
@@ -962,7 +1030,7 @@ struct PartDefaultOrigin {
                                     y: sitOnLength/2 + frontStability.length,
                                     z: wheelJointHeight),
                             .fixedWheelSolo: midDriveOrigin][objectType] ?? (
-                                    x: xPosition,
+                                    x: xPositionAtFront,
                                     y: sitOnLength + frontStability.length,
                                     z: wheelJointHeight)
                 default:
@@ -1196,24 +1264,24 @@ enum OneOrTwo <T> {
 }
 
 
-struct MiscObjectParameters {
-    let objectType: ObjectTypes
-
-    init(_ objectType: ObjectTypes) {
-        self.objectType = objectType
-    }
-    
-    
-    func getMainBodySupportAboveFloor()
-    -> Double {
-        let forMainBodySupportAboveFloor: [ObjectTypes: Double] =
-            [
-            .allCasterStretcher: 900.0,
-            .allCasterBed: 800.0]
-        return
-            forMainBodySupportAboveFloor[objectType] ?? 500.0
-    }
-}
+//struct MiscObjectParameters {
+//    let objectType: ObjectTypes
+//
+//    init(_ objectType: ObjectTypes) {
+//        self.objectType = objectType
+//    }
+//
+//
+//    func getMainBodySupportAboveFloor()
+//    -> Double {
+//        let forMainBodySupportAboveFloor: [ObjectTypes: Double] =
+//            [
+//            .allCasterStretcher: 900.0,
+//            .allCasterBed: 800.0]
+//        return
+//            forMainBodySupportAboveFloor[objectType] ?? 500.0
+//    }
+//}
 
 
 //MARK: StructFactory
@@ -1224,6 +1292,7 @@ struct StructFactory {
     let parentData: PartData?
     let part: Part
     let parentPart: Part
+    let chainLabel: [Part]
     let defaultDimension: Dimension3d
     let defaultOrigin: PartDefaultOrigin
     let userEditedValues: UserEditedValue
@@ -1235,12 +1304,14 @@ struct StructFactory {
          _ dictionaries: Dictionaries,
          _ parentData: PartData?,
          _ part: Part,
-         _ parentPart: Part) {
+         _ parentPart: Part,
+         _ chainLabel: [Part]){
         self.objectType = objectType
         self.dictionaries = dictionaries
         self.parentData = parentData
         self.part = part
         self.parentPart = parentPart
+        self.chainLabel = chainLabel
         defaultDimension = PartDefaultDimension(part, objectType, parentPart).partDimension
         defaultOrigin = PartDefaultOrigin(part, objectType, parentPart)
         
@@ -1275,7 +1346,7 @@ struct StructFactory {
     init(_ objectType: ObjectTypes,
          _ dictionaries: Dictionaries,
          _ childPart: Part) {
-        self.init(objectType, dictionaries, nil, childPart, .objectOrigin)
+        self.init(objectType, dictionaries, nil, childPart, .objectOrigin,[])
         partData = createSitOn()
     }
 
@@ -1283,9 +1354,11 @@ struct StructFactory {
     init(_ objectType: ObjectTypes,
          _ dictionaries: Dictionaries,
          _ parent: PartData?,
-         _ childPart: Part) {
+         _ childPart: Part,
+         _ chainLabel: [Part]
+    ) {
         if let unwrapped = parent?.part  {
-            self.init(objectType, dictionaries, parent, childPart, unwrapped)
+            self.init(objectType, dictionaries, parent, childPart, unwrapped, chainLabel)
         partData = createPart()
         } else {
             fatalError("no parentValue")
@@ -1311,20 +1384,20 @@ extension StructFactory {
     }
 
     
-    
     func createPart()
         -> PartData {
         let partId = userEditedValues.partId//two sided default edited to one will be detected
-        var scopesOfRotation: [[Part]] = []
+        let scopesOfRotation: [Part] =  setScopeOfRotation()
         var partAnglesMinMax = partId.createOneOrTwoWithOneValue(ZeroValue.angleMinMax)
         var partAngles = partId.createOneOrTwoWithOneValue(ZeroValue.rotationAngles)
         let originName =
             userEditedValues.originName.mapOptionalToNonOptionalOneOrTwo("")
-        //let rotationScope = PartInRotationScopeOut(part: part).rotationScope
+     
 
-        if part == .sitOnTiltJoint{
-            setScopesOfRotationForSitOnTiltJoint()
-            setSitOnTiltJointAngles()
+        if [.sitOnTiltJoint].contains(part) {
+            let (jointAngle, minMaxAngle) = getDefaultJointAnglesData()
+            partAngles = getAngles(jointAngle)
+            partAnglesMinMax = getMinMaxAngles(minMaxAngle)
         }
  
           
@@ -1343,49 +1416,31 @@ extension StructFactory {
                 scopesOfRotation: scopesOfRotation)
             
             
-        func setScopesOfRotationForSitOnTiltJoint() {
-            scopesOfRotation = PartInRotationScopeOut(part: part).rotationScope
-//            [
-//
-//                [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
-//                [.backSupport, .backSupportHeadSupport,.sideSupport],
-//                [.sideSupport, .footSupport],
-//
-//                [.backSupport, .backSupportHeadSupport],
-//                [.backSupport, .backSupportHeadSupport, .sideSupport],
-//
-//                [.backSupport, .backSupportHeadSupport, .footSupport]
-//                ]
+        func setScopeOfRotation() -> [Part]{
+                PartInRotationScopeOut(
+                    part,
+                    chainLabel)
+                        .rotationScopeAllowingForEditToChainLabel
         }
-       
+         
+            
+        func getDefaultJointAnglesData() -> (RotationAngles, AngleMinMax){
+            let  partDefaultAngle = PartDefaultAngle(part, objectType)
+            return (partDefaultAngle.angle, partDefaultAngle.minMaxAngle)
+        }
 
-            /// minMaxAngle is set
-            /// angle is derived from maxAngle
-            /// angle is checked in the UI
-        func setSitOnTiltJointAngles() {
-            let z = ZeroValue.angle
-            let min = Measurement(value: 0.0, unit: UnitAngle.degrees)
-            let max = Measurement(value: 30.0, unit: UnitAngle.degrees)
-            let minRotationAngle = z
-            let maxRotationAngle = max
-           
+
             
-            setChildAnglesForObject((x: maxRotationAngle, y: z, z: z))
-            setChildMinMaxAnglesForObject((min: minRotationAngle, max: maxRotationAngle))
+        func getAngles(
+            _ defaultAngles: RotationAngles) -> OneOrTwo<RotationAngles> {
+                userEditedValues.optionalAngles.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
         }
             
             
-        func setChildAnglesForObject(
-            _ defaultAngles: RotationAngles) {
-                partAngles = userEditedValues.optionalAngles.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
+        func getMinMaxAngles(
+            _ defaultAngles: AngleMinMax) -> OneOrTwo<AngleMinMax>{
+                userEditedValues.optionalAngleMinMax.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
         }
-            
-            
-        func setChildMinMaxAnglesForObject(
-            _ defaultAngles: AngleMinMax) {
-                partAnglesMinMax = userEditedValues.optionalAngleMinMax.mapOptionalToNonOptionalOneOrTwo(defaultAngles)
-        }
-            
     }
 }
 
@@ -1396,14 +1451,13 @@ extension Array where Element == PartData {
         if let element = self.first(where: { $0.part == part }) {
             return element
         } else {
-            //print(self.count)
             fatalError("StructFactory: \(#function) Element with part \(part) not found in [OneOrTwoGenericPartValue]: \(self)].")
         }
     }
 }
 
 
-//InterOrigin().names
+
 extension Array where Element: Hashable {
     func removingDuplicates() -> [Element] {
         var addedDict = [Element: Bool]()

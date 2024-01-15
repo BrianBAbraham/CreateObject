@@ -14,6 +14,7 @@ struct ZeroValue {
     static let dimension: Dimension = (width:  0.0,  length: 0.0 )
     static let dimension3d: Dimension3d = (width:  0.0,  length: 0.0, height:  0.0)
     static let angle: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.radians)
+    static let angleDeg: Measurement<UnitAngle> = Measurement(value: 0.0, unit: UnitAngle.degrees)
     
     static let angleMinMax: AngleMinMax = (min: angle, max: Measurement(value: 1.0, unit: UnitAngle.radians))
     

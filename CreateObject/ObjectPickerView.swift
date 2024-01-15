@@ -12,17 +12,16 @@ struct PickInitialObjectView: View {
     @EnvironmentObject var objecEditVM: ObjectEditViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
-    //@EnvironmentObject var  twinSitOnVM: TwinSitOnViewModel
-    
+   
     var objectNames: [String] {
-        //DictionaryProvider.objects.map{$0.rawValue
-        ObjectsAndTheirChainLabels().dictionary.keys.map{$0.rawValue}      // }
+        let unsortedObjectNames =
+        ObjectsAndTheirChainLabels().dictionary.keys.map{$0.rawValue}
+        
+        return unsortedObjectNames.sorted()
     }
 
     @State private var equipmentType = ObjectTypes.fixedWheelRearDrive.rawValue
-    
     @State private var recline = false
-    //@State private var reclineToggle = false
     
     var currentEqipmentType: String {
         getCurrentEquipmentType()
@@ -48,12 +47,11 @@ struct PickInitialObjectView: View {
             .onChange(of: equipmentType) {tag in
 
                 self.equipmentType = tag
-                //objectPickVM.setInitialObjectDictionary(tag)
                 objectPickVM.setCurrentObjectName(tag)
                 
                 objectPickVM.setObjectByCreatingFromName()
             }
-            //.pickerStyle(.wheel)
+         //.pickerStyle(.wheel)
             .scaleEffect(0.8)
             
            FootSupport()
@@ -62,19 +60,6 @@ struct PickInitialObjectView: View {
             Propeller(objectPickVM.getCurrentObjectName())
                 .padding(.horizontal)
             TiltX(objectPickVM.getRotations())
-                //objectPickVM.getCurrentObjectName())
-                .padding(.horizontal)
-            //BackSupportRecline(objectPickVM.getCurrentObjectName())
-//                .onPreferenceChange(ReclinePreferenceKey.self, perform: {value in
-//                    self.recline = value
-//                })
-                .padding(.horizontal)
-            
-            //TwinSitOnView(twinSitOnState, objectPickVM.getCurrentObjectName())
-//            DoubleSitOnOption(doubleSitOnState, objectPickVM.getCurrentObjectName())
-//                .onPreferenceChange(DoubleSitOnPreferenceKey.self, perform: {value in
-//                    self.recline = value
-//                })
                 .padding(.horizontal)
         }
     }

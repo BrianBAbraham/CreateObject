@@ -35,26 +35,28 @@ import SwiftUI
 
 struct LocalOutlineRectangle {
     static func path(corners: [CGPoint], _ color: Color = .black) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 30) // Adjust the cornerRadius as needed
-                .path(in: CGRect(
-                    x: corners[0].x,
-                    y: corners[0].y,
-                    width: corners[2].x - corners[0].x,
-                    height: corners[2].y - corners[0].y
-                ))
-                .fill(color)
-                .opacity(0.9)
-            
-            RoundedRectangle(cornerRadius: 30) // Adjust the cornerRadius as needed
-                .path(in: CGRect(
-                    x: corners[0].x,
-                    y: corners[0].y,
-                    width: corners[2].x - corners[0].x,
-                    height: corners[2].y - corners[0].y
-                ))
-                .stroke(Color.black)
-        }
+        let cornerRadius = 30.0
+        return
+            ZStack {
+                RoundedRectangle(cornerRadius: cornerRadius) // Adjust the cornerRadius as needed
+                    .path(in: CGRect(
+                        x: corners[0].x,
+                        y: corners[0].y,
+                        width: corners[2].x - corners[0].x,
+                        height: corners[2].y - corners[0].y
+                    ))
+                    .fill(color)
+                    .opacity(0.9)
+                
+                RoundedRectangle(cornerRadius: cornerRadius) // Adjust the cornerRadius as needed
+                    .path(in: CGRect(
+                        x: corners[0].x,
+                        y: corners[0].y,
+                        width: corners[2].x - corners[0].x,
+                        height: corners[2].y - corners[0].y
+                    ))
+                    .stroke(Color.black)
+            }
     }
 }
 
