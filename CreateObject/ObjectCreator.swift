@@ -570,7 +570,6 @@ struct PartInRotationScopeOut {
 
 
 
-
 //MARK: OneOrTwoId
 struct OneOrTwoId {
     let forPart: OneOrTwo<PartTag>
@@ -599,6 +598,7 @@ struct OneOrTwoId {
         }
     }
 }
+
 
 
 //MAARK: PARTDATA
@@ -915,7 +915,7 @@ struct PartDefaultOrigin {
             
             return
                 [
-                    .assistantFootLever: (x: parentDimension.width/3, y: -(selfDimension.length + parentDimension.length)/2, z: wheelBaseJointOrigin.z),
+                .assistantFootLever: (x: parentDimension.width/2, y: -(selfDimension.length + parentDimension.length)/2, z: wheelBaseJointOrigin.z),
                 .backSupport: (x: 0.0, y: -(parentDimension.length + selfDimension.length)/2, z: selfDimension.height/2.0 ),
                 .backSupportHeadSupport: (x: 0.0, y: 0.0, z: parentDimension.height/2),
                 .backSupportHeadSupportJoint: (x: 0.0, y: 0.0, z: parentDimension.height/2.0),
@@ -959,13 +959,13 @@ struct PartDefaultOrigin {
         let midStability = PartDefaultDimension(.stabilizerAtMid, objectType, .objectOrigin).partDimension
         let rearStability = PartDefaultDimension(.stabilizerAtRear, objectType, .objectOrigin).partDimension
         
-        let fixedFrontWheel = PartDefaultDimension(.fixedWheelAtFront, objectType, .fixedWheelHorizontalJointAtFront)
-        let fixedMidWheel = PartDefaultDimension(.fixedWheelAtMid, objectType, .fixedWheelHorizontalJointAtMid)
-        let fixedRearWheel = PartDefaultDimension(.fixedWheelAtRear, objectType, .fixedWheelHorizontalJointAtRear)
-       
-        let casterFrontWheel = PartDefaultDimension(.casterWheelAtFront, objectType, .casterVerticalJointAtFront)
-        let casterMidWheel = PartDefaultDimension(.casterWheelAtMid, objectType, .casterVerticalJointAtMid)
-        let casterRearWheel = PartDefaultDimension(.casterWheelAtRear, objectType, .casterVerticalJointAtRear)
+//        let fixedFrontWheel = PartDefaultDimension(.fixedWheelAtFront, objectType, .fixedWheelHorizontalJointAtFront)
+//        let fixedMidWheel = PartDefaultDimension(.fixedWheelAtMid, objectType, .fixedWheelHorizontalJointAtMid)
+//        let fixedRearWheel = PartDefaultDimension(.fixedWheelAtRear, objectType, .fixedWheelHorizontalJointAtRear)
+//
+//        let casterFrontWheel = PartDefaultDimension(.casterWheelAtFront, objectType, .casterVerticalJointAtFront)
+//        let casterMidWheel = PartDefaultDimension(.casterWheelAtMid, objectType, .casterVerticalJointAtMid)
+//        let casterRearWheel = PartDefaultDimension(.casterWheelAtRear, objectType, .casterVerticalJointAtRear)
         
         
 
@@ -1256,7 +1256,7 @@ enum OneOrTwo <T> {
              transform(left0 as! Dimension3d, left1, left2, left3, left4)
              transform(right0 as! Dimension3d, right1, right2, right3, right4)
          default:
-             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa )")
+             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
          }
      }
     
@@ -1564,6 +1564,9 @@ struct UserEditedValue {
             partChainIdDic = dictionaries.partChainId
            // let onlyOne = 0
             let partChain = LabelInPartChainOut(childPart).partChain
+            print("In UserEdited")
+            print(partChain)
+            print("\n")
             partId = //non-optional as must iterate through id
             partChainIdDic[partChain] ?? //UI may edit
             OneOrTwoId(objectType, childPart).forPart // default
@@ -1621,6 +1624,7 @@ struct UserEditedValue {
         return angles
     }
         
+    
     func getOptionalValue<T>(
         _ partIds: OneOrTwo<PartTag>,
         from dictionary: [String: T?],

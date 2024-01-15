@@ -170,11 +170,9 @@ struct FootSupport: View {
                 }
             }
             .onChange(of: laterality) {tag in
-                //objectPickVM.setCurrentObjectWithEditedPartChainsId(tag)
+                objectPickVM.setObjectPartIdDic(tag, Part.footSupport)
             }
         }
-
-        
     }
 }
 
@@ -188,66 +186,3 @@ struct DoubleSitOnPreferenceKey: PreferenceKey {
 
 
 
-//struct TwinSitOnView: View {
-//    @State private var twinSitOnToggle: Bool
-//
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    //@EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-//
-//    let showTwinSitOn: Bool
-//
-//    init(_ twinSitOnState: Bool, _ name: String) {
-//
-//        showTwinSitOn =
-//            name.contains("wheelchair") ? true: false
-//
-//        _twinSitOnToggle
-//            = State(initialValue: twinSitOnState)
-//    }
-//
-//    var body: some View {
-//        if showTwinSitOn {
-//            Toggle("Two seats",isOn: $twinSitOnToggle)
-//                .onChange(of: twinSitOnToggle) { value in
-//
-//                    if !twinSitOnToggle {
-//
-//                        twinSitOnVM.setAllConfigurationFalse()
-//
-                       // let name = objectPickVM.getCurrentObjectName()
-//                        let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-//                        objectPickVM
-//                            .setCurrentObjectByCreatingFromName(
-                                //name,
-//                                twinSitOnDictionary)
-//                    }
-//                    else {
-//
-//                        let objectType = objectPickVM.getCurrentObjectType()
-//                        let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-//                        objectPickVM.setDefaultObjectDictionary(
-//                            objectType,
-//                            twinSitOnDictionary)
-//
-//print(twinSitOnDictionary)
-//                    }
-             //   }
-            
-//            let options: [TwinSitOnOption] = [.leftAndRight, .frontAndRear]
-//
-//            if twinSitOnToggle {
-//                ExclusiveToggles(
-//                    twinSitOnVM.getManyState(options),
-//                    options,
-//                    .twinSitOn)
-//
-//
-//
-//            }
-//
-//        } else {
-//            EmptyView()
-//        }
-//    }
-//
-//}

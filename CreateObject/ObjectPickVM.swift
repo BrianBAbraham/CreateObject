@@ -366,30 +366,35 @@ extension ObjectPickViewModel {
     }
     
     
-        func setCurrentObjectName(_ objectName: String){
-            //print(objectName)
-            objectPickModel.currentObjectName = objectName
+    func setCurrentObjectName(_ objectName: String){
+        //print(objectName)
+        objectPickModel.currentObjectName = objectName
+    }
+    
+
+    func  setObjectPartChainLabelDic(
+        _  objectPartChainLabelDic: ObjectPartChainLabelsDictionary) {
+        objectPickModel.objectPartChainLabelDic = objectPartChainLabelDic
+    }
+    
+    
+    func setObjectPartIdDic(_ tag: String, _ part: Part) {
+        /// if left set to [id0]
+        /// if right set to [id1]
+        /// if both set to [id0. id1]
+        /// if none remove chainLabel
+        /// if both add chain label
+        if tag == "left" {
+            var partChain = LabelInPartChainOut(part).partChain
+            let partChainWithoutSitOn = partChain.enumerated().filter { $0.offset != 0 }.map { $0.element }
+            print(partChainWithoutSitOn)
+            dictionaries.partChainId[partChainWithoutSitOn] = .one(one: .id0)
+            setObjectByCreatingFromName()
         }
-        
-        
-//        func setLoadedDictionary(_ entity: LocationEntity){
-//            let allOriginNames = entity.interOriginNames ?? ""
-//            let allOriginValues = entity.interOriginValues ?? ""
-//
-//            objectPickModel.loadedDictionary =
-//            OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary
-//        }
-        
-        
+      // print( dictionaries.partChainId)
+    }
+    
 
-
-
-
-        func  setObjectPartChainLabelDic(
-            _  objectPartChainLabelDic: ObjectPartChainLabelsDictionary) {
-            objectPickModel.objectPartChainLabelDic = objectPartChainLabelDic
-        }
-//
 }
 
 

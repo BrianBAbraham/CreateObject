@@ -52,7 +52,7 @@ struct PickInitialObjectView: View {
                 objectPickVM.setObjectByCreatingFromName()
             }
          //.pickerStyle(.wheel)
-            .scaleEffect(0.8)
+            .scaleEffect(0.6)
             
            FootSupport()
             HeadSupport(objectPickVM.getCurrentObjectName())
