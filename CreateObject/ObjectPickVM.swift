@@ -388,7 +388,7 @@ extension ObjectPickViewModel {
             var partChain = LabelInPartChainOut(part).partChain
             let partChainWithoutSitOn = partChain.enumerated().filter { $0.offset != 0 }.map { $0.element }
             print(partChainWithoutSitOn)
-            dictionaries.partChainId[partChainWithoutSitOn] = .one(one: .id0)
+            //dictionaries.partChainId[partChainWithoutSitOn] = .two(left: .id0, right: nil)
             setObjectByCreatingFromName()
         }
       // print( dictionaries.partChainId)
