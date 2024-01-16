@@ -26,7 +26,6 @@ struct CreateObjectApp: App {
         WindowGroup {
 
             ContentView()
-             //   .environmentObject(twinSitOnVM)
                 .environmentObject(objectPickVM)
                 .environmentObject(objectEditVM)
                 .environmentObject(coreDataVM)

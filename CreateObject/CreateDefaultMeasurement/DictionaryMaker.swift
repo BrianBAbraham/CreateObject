@@ -28,12 +28,13 @@ struct DictionaryMaker {
     var postTiltObjectToPartOriginDic: PositionDictionary = [:]
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary = [:]
     
-    let partChainIdDicIn: PartChainIdDictionary
+    let partIdDicIn: [Part: OneOrTwo<PartTag>]
     var partChainIdDic: PartChainIdDictionary  = [:]
     let objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
     let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
 
     var partValuesDic: [Part: PartData] = [:]
+    let chainLabels: [Part]
     
 
     init(
@@ -41,8 +42,14 @@ struct DictionaryMaker {
         _ dictionaries: Dictionaries) {
         self.objectType = objectType
         self.dimensionDicIn = dictionaries.dimension
-        self.partChainIdDicIn = dictionaries.partChainId
-        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDic
+        self.partIdDicIn = dictionaries.partIdDicIn
+        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDicIn
+            
+        guard let unwrapped = objectsAndTheirChainLabelsDicIn[objectType] ?? objectsAndTheirChainLabels[objectType] else {
+            fatalError("no chain labels for this object \(objectType)")
+        }
+        
+        chainLabels = unwrapped
                     
 //            print("OUT \(dictionaries.anglesDic["object_id0_tiltInSpaceHorizontalJoint_id0_sitOn_id0"]) ")
             
@@ -74,9 +81,7 @@ struct DictionaryMaker {
 extension DictionaryMaker {
 
     mutating func createPreTiltDictionaryFromStructFactory() {
-        guard let chainLabels = objectsAndTheirChainLabelsDicIn[objectType] ?? objectsAndTheirChainLabels[objectType] else {
-            fatalError("No values exist for the specified chainLabels.")
-        }
+
         for chainLabel in chainLabels {
             processChainLabelForDictionaryCreation(chainLabel)
         }
@@ -363,8 +368,7 @@ extension DictionaryMaker {
     
     func gePartsInvolvedWithRotation ()
         -> ([Part], [[Part]]) {
-        guard let chainLabels = objectsAndTheirChainLabels[objectType] else {
-            fatalError("no chain labels defined for object \(objectType)") }
+
         var rotatingParts: [Part] = []
         var allPartsToBeRotatedByOneRotatorPart: [[Part]] = []
         for chainLabel in chainLabels {

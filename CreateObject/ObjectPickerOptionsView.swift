@@ -77,9 +77,9 @@ struct TiltX: View {
         let angleMax = angleMinMax.max.value
         let angleMin = angleMinMax.min.value
         if showTilt {
-
+            HStack{
                 Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
-                Text("tilt-in-space angle: \(Int(angleMax - sliderValue))")
+                Text("tilt-in-space deg: \(Int(angleMax - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
                         objectPickVM.setCurrentRotation(
                             [angleName:
@@ -87,10 +87,10 @@ struct TiltX: View {
                                 Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees),
                                       y: ZeroValue.angle,
                                       z: ZeroValue.angle)]
-                            //,angleName
                         )
-                       
                        }
+            }
+
         } else {
             EmptyView()
         }
@@ -148,33 +148,30 @@ struct Propeller: View {
 
 
 struct FootSupport: View {
-    //@State private var footSuppportToggle = true
-    @State private var laterality = "both"
+    @State private var laterality = "none"
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-  //  @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-    let objectNames = ["none", "both", "left", "right"]
-    
+
+    let partSymmetry = ["none", "both", "left", "right"]
+
     var body: some View {
-        
-//        Toggle("foot",isOn: $footSuppportToggle)
-//            .onChange(of: footSuppportToggle) { value in
-//
-//                objectPickVM.setCurrentObjectWithEditedPartChainsId()
-//            }
         HStack {
-            Text("Footplate?")
-            Picker("foot",selection: $laterality ) {
-                ForEach(objectNames, id:  \.self)
-                        { equipment in
+            Text("Foot remove")
+            Picker("anyString", selection: $laterality) {
+                ForEach(partSymmetry, id: \.self) { equipment in
                     Text(equipment)
                 }
             }
-            .onChange(of: laterality) {tag in
-                objectPickVM.setObjectPartIdDic(tag, Part.footSupport)
+
+            .onChange(of: laterality) { tag in
+                objectPickVM.setChangeToPartBeingOnBothSides(tag, Part.footSupport)
             }
         }
     }
 }
+
+
+
+
 
 struct DoubleSitOnPreferenceKey: PreferenceKey {
     static var defaultValue: Bool = false

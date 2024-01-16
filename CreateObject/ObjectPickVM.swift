@@ -26,7 +26,7 @@ struct ObjectPickModel {
     
     var objectPartChainLabelDic: ObjectPartChainLabelsDictionary
     
-    var partChainsIdDic: [PartChain: OneOrTwo<PartTag>]
+    var partChainsIdDic: PartChainIdDictionary
     
     var currentObjectFrameSize: Dimension = ZeroValue.dimension
     
@@ -44,7 +44,7 @@ struct ObjectPickModel {
         dimensionDic = dictionaries.dimension
         angleDic = dictionaries.anglesDic
         angleMinMaxDic = dictionaries.angleMinMaxDic
-        objectPartChainLabelDic = dictionaries.objectsAndTheirChainLabelsDic
+        objectPartChainLabelDic = dictionaries.objectsAndTheirChainLabelsDicDefault
         partChainsIdDic = dictionaries.partChainId
        
       
@@ -75,7 +75,7 @@ class ObjectPickViewModel: ObservableObject {
         dictionaries.anglesDic = dictionaryMaker.angleDic
         dictionaries.angleMinMaxDic = dictionaryMaker.angleMinMaxDic
         dictionaries.partChainId = dictionaryMaker.partChainIdDic
-        dictionaries.objectsAndTheirChainLabelsDic = dictionaryMaker.objectsAndTheirChainLabels
+        dictionaries.objectsAndTheirChainLabelsDicDefault = dictionaryMaker.objectsAndTheirChainLabels
         dictionaries.preTiltObjectToPartFourCornerPerKey = dictionaryMaker.preTiltObjectToPartFourCornerPerKeyDic
         dictionaries.postTiltObjectToPartFourCornerPerKey = dictionaryMaker.postTiltObjectToFourCornerPerKeyDic
        
@@ -121,7 +121,11 @@ class ObjectPickViewModel: ObservableObject {
                     objectName,
                     dictionaries)
         //dictionaries.anglesDic = objectPickModel.angleDic
+        
+        
         dictionaries.postTiltObjectToPartFourCornerPerKey = dictionaryMaker.postTiltObjectToFourCornerPerKeyDic
+        
+        
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: objectName,
@@ -378,20 +382,44 @@ extension ObjectPickViewModel {
     }
     
     
-    func setObjectPartIdDic(_ tag: String, _ part: Part) {
-        /// if left set to [id0]
-        /// if right set to [id1]
-        /// if both set to [id0. id1]
-        /// if none remove chainLabel
-        /// if both add chain label
-        if tag == "left" {
-            var partChain = LabelInPartChainOut(part).partChain
-            let partChainWithoutSitOn = partChain.enumerated().filter { $0.offset != 0 }.map { $0.element }
-            print(partChainWithoutSitOn)
-            //dictionaries.partChainId[partChainWithoutSitOn] = .two(left: .id0, right: nil)
-            setObjectByCreatingFromName()
+    func setChangeToPartBeingOnBothSides(_ tag: String, _ part: Part) {
+
+        let action: [String: OneOrTwo<PartTag>] = [
+            "left": .one(one: .id0),
+            "right": .one(one: .id1)
+        ]
+        
+        let partChain = LabelInPartChainOut(part).partChain
+        let partChainWithoutSitOn = partChain.enumerated().filter { $0.offset != 0 }.map { $0.element }
+        
+        if let newId = action[tag] {
+            for part in partChainWithoutSitOn {
+                dictionaries.partIdDicIn[part] = newId
+            }
         }
-      // print( dictionaries.partChainId)
+        
+        if tag == "none" {
+            for part in partChainWithoutSitOn {
+                dictionaries.partIdDicIn.removeValue(forKey: part)
+            }
+        }
+        
+        let objectType = getCurrentObjectType()
+        
+        if tag == "both" {
+            
+            let currentObjectChainLabels =
+                dictionaries.objectsAndTheirChainLabelsDicDefault[objectType]
+            let newChainLabels = currentObjectChainLabels?.filter { $0 != part}
+            dictionaries.objectsAndTheirChainLabelsDicIn[objectType] = newChainLabels
+           
+        }
+        
+        if tag == "none" {
+            dictionaries.objectsAndTheirChainLabelsDicIn.removeValue(forKey: objectType)
+        }
+        
+        setObjectByCreatingFromName()
     }
     
 

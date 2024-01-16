@@ -7,8 +7,7 @@
 import Foundation
 
 struct ObjectMaker {
-    let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
-    
+    let objectsAndTheirChainLabelsDicDefault: ObjectPartChainLabelsDictionary
     let objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
     
     var partValuesDic: [Part: PartData] = [:]
@@ -19,18 +18,18 @@ struct ObjectMaker {
 
     init(
         _ objectType: ObjectTypes,
-        _ userEditedDictionary: Dictionaries//,
-    ) {
+        _ dictionaries: Dictionaries) {
         
-            self.objectType = objectType
-            self.dictionaries = userEditedDictionary
-            self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDic
+        self.objectType = objectType
+        self.dictionaries = dictionaries
+        self.objectsAndTheirChainLabelsDicDefault = dictionaries.objectsAndTheirChainLabelsDicDefault
+        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDicIn
           
-            checkLabelAndPartChain()
-            
-            initialiseAllPart()
-            
-            postProcessGlobalOrigin()
+        checkLabelAndPartChain()
+        
+        initialiseAllPart()
+        
+        postProcessGlobalOrigin()
     }
     
     func checkLabelAndPartChain(){
@@ -221,9 +220,10 @@ extension ObjectMaker {
     
     
     func getAllChainLabel() -> [Part] {
+      //  print(objectsAndTheirChainLabelsDicIn[objectType] )
         guard let partChainLabel =
         objectsAndTheirChainLabelsDicIn[objectType] ??
-                objectsAndTheirChainLabels[objectType] else {
+                objectsAndTheirChainLabelsDicDefault[objectType] else {
             fatalError("there are no partChainLabel for object \(objectType)")
         }
         return partChainLabel
@@ -1122,13 +1122,31 @@ enum OneOrTwo <T> {
         }
     }
     
+    
+    func adjustForTwoToOneId() -> OneOrTwo<T> {
+        switch self {
+        case .one (let one):
+            
+            return self
+        case .two (let left, let right):
+            //if equal then the values are not user edited
+            if left as! PositionAsIosAxes == right as! PositionAsIosAxes {
+                return .two(left:
+                                CreateIosPosition.getLeftFromRight(right as! PositionAsIosAxes) as! T,
+                            right: right)
+            } else {
+                return .two(left: left, right: right)
+            }
+        }
+    }
 
+    
     func adjustForSymmetry() -> OneOrTwo<T> {
         switch self {
         case .one:
             return self
         case .two (let left, let right):
-            //if unequal then the values must have been user edited
+            //if equal then the values are not user edited
             if left as! PositionAsIosAxes == right as! PositionAsIosAxes {
                 return .two(left:
                                 CreateIosPosition.getLeftFromRight(right as! PositionAsIosAxes) as! T,
@@ -1328,13 +1346,31 @@ struct StructFactory {
 
         setChildOriginAllowingForSymmetryForPartData()
         
-        func setChildOriginAllowingForSymmetryForPartData() {
-            partOrigin = partOrigin.adjustForSymmetry()
-        }
+        setChildOriginAllowingForChangFromTwoToOne()
         
         func setChildOriginForOneSideForPartData() {
              partOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin)
          }
+        
+        func setChildOriginAllowingForSymmetryForPartData() {
+           
+            partOrigin = partOrigin.adjustForSymmetry()
+        }
+        
+        func setChildOriginAllowingForChangFromTwoToOne() {
+            if let
+                twoIdChangedToOne = dictionaries.partIdDicIn[part]?.one {
+                if twoIdChangedToOne == .id1 { //no action required for id0 right as this is default
+                    if let oldOrigin = partOrigin.one {
+                        partOrigin =
+                            .one(one:
+                                    CreateIosPosition.getLeftFromRight(
+                                oldOrigin) )
+                    }
+                    
+                }
+            }
+        }
         
         
         func setChildDimensionForPartData() {
@@ -1492,8 +1528,10 @@ struct Dictionaries {
     var objectToPartOrigin: PositionDictionary
     var anglesDic: AnglesDictionary
     var angleMinMaxDic: AngleMinMaxDictionary
-    var partChainId: [PartChain: OneOrTwo<PartTag> ]
-    var objectsAndTheirChainLabelsDic: ObjectPartChainLabelsDictionary
+    var partChainId: PartChainIdDictionary
+    var partIdDicIn: [Part: OneOrTwo<PartTag>]
+    var objectsAndTheirChainLabelsDicDefault: ObjectPartChainLabelsDictionary
+    var objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
     var preTiltObjectToPartFourCornerPerKey: CornerDictionary
     var postTiltObjectToPartFourCornerPerKey: CornerDictionary
     static var shared = Dictionaries()
@@ -1504,8 +1542,11 @@ struct Dictionaries {
         objectToPartOrigin: PositionDictionary = [:],
         anglesDic: AnglesDictionary = [:],
         angleMinMaxDic: AngleMinMaxDictionary = [:],
-        partChainId: [PartChain : OneOrTwo<PartTag>] = [:],
-        objectsAndTheirChainLabelsDic: ObjectPartChainLabelsDictionary = [:],
+        partChainId: PartChainIdDictionary = [:],
+        partIdDicIn: [Part: OneOrTwo<PartTag>] = [:],
+        objectsAndTheirChainLabelsDicDefault: ObjectPartChainLabelsDictionary =
+            ObjectsAndTheirChainLabels().dictionary,
+        objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:],
         preTiltObjectToPartFourCornerPerKey: CornerDictionary = [:],
         postTiltObjectToPartFourCornerPerKey: CornerDictionary = [:]) {
         self.dimension = dimension
@@ -1514,7 +1555,9 @@ struct Dictionaries {
         self.anglesDic = anglesDic
         self.angleMinMaxDic = angleMinMaxDic
         self.partChainId = partChainId
-        self.objectsAndTheirChainLabelsDic = objectsAndTheirChainLabelsDic
+        self.partIdDicIn = partIdDicIn
+        self.objectsAndTheirChainLabelsDicDefault = objectsAndTheirChainLabelsDicDefault
+        self.objectsAndTheirChainLabelsDicIn = objectsAndTheirChainLabelsDicIn
         self.preTiltObjectToPartFourCornerPerKey =
             preTiltObjectToPartFourCornerPerKey
         self.postTiltObjectToPartFourCornerPerKey =
@@ -1537,11 +1580,11 @@ struct UserEditedValue {
     let objectToPartOriginDic: PositionDictionary
     let anglesDic: AnglesDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
-    let partChainIdDic: [PartChain: OneOrTwo<PartTag>]
+    let partIdDicIn: [Part: OneOrTwo<PartTag>]
     let part: Part
     let sitOnId: PartTag
     
-    var originName:  OneOrTwoOptional <String?> = .one(one: nil)
+    var originName:  OneOrTwoOptional <String> = .one(one: nil)
     var optionalAngles: OneOrTwoOptional <RotationAngles> = .one(one: nil)
     var optionalAngleMinMax: OneOrTwoOptional <AngleMinMax> = .one(one: nil)
     var optionalDimension: OneOrTwoOptional <Dimension3d> = .one(one: nil)
@@ -1561,14 +1604,11 @@ struct UserEditedValue {
             anglesDic = dictionaries.anglesDic
             angleMinMaxDic = dictionaries.angleMinMaxDic
 
-            partChainIdDic = dictionaries.partChainId
-           // let onlyOne = 0
-            let partChain = LabelInPartChainOut(childPart).partChain
-            print("In UserEdited")
-            print(partChain)
-            print("\n")
+            partIdDicIn = dictionaries.partIdDicIn
+
+            
             partId = //non-optional as must iterate through id
-            partChainIdDic[partChain] ?? //UI may edit
+            partIdDicIn[part] ?? //UI may edit
             OneOrTwoId(objectType, childPart).forPart // default
             
             
@@ -1594,7 +1634,7 @@ struct UserEditedValue {
     
     
     func getOriginName(_ partId: OneOrTwo<PartTag>)
-    -> OneOrTwoOptional<String?>{
+    -> OneOrTwoOptional<String>{
         let start: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part]
         let end: [Parts] = [PartTag.stringLink, Part.sitOn,  sitOnId]
         
