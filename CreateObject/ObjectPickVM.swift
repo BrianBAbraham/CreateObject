@@ -383,45 +383,68 @@ extension ObjectPickViewModel {
     
     
     func setChangeToPartBeingOnBothSides(_ tag: String, _ part: Part) {
-
-        let action: [String: OneOrTwo<PartTag>] = [
-            "left": .one(one: .id0),
-            "right": .one(one: .id1)
-        ]
-        
-        let partChain = LabelInPartChainOut(part).partChain
-        let partChainWithoutSitOn = partChain.enumerated().filter { $0.offset != 0 }.map { $0.element }
-        
-        if let newId = action[tag] {
-            for part in partChainWithoutSitOn {
-                dictionaries.partIdDicIn[part] = newId
-            }
-        }
-        
-        if tag == "none" {
-            for part in partChainWithoutSitOn {
-                dictionaries.partIdDicIn.removeValue(forKey: part)
-            }
-        }
-        
         let objectType = getCurrentObjectType()
+        let partChain = LabelInPartChainOut(part).partChain
+        if tag == "left" || tag == "right" {
+            
+            let action: [String: OneOrTwo<PartTag>] = [
+                "left": .one(one: .id0),
+                "right": .one(one: .id1) ]
+            
+            if let newId = action[tag] {
+                var chainLabelForFootWasRemoved: Bool = false
+                if let chainLabelForObject = dictionaries.objectsAndTheirChainLabelsDicIn[objectType] {
+                    chainLabelForFootWasRemoved = chainLabelForObject.contains(part) ? false: true
+                }//to restore left or right after no footSupport, the chainLabel is restored
+                
+                if chainLabelForFootWasRemoved {
+                    restoreChainLabelToObject(part, objectType)
+                }
+                let ignoreFirstItem = 1//relevant part subsequent
+                for index in ignoreFirstItem..<partChain.count {
+                    dictionaries.partIdDicIn[partChain[index]] = newId
+                }
+            }
+        }
+
+        if tag == "no" {
+            removeChainLabelFromObject(part, objectType)
+        }
         
         if tag == "both" {
-            
-            let currentObjectChainLabels =
-                dictionaries.objectsAndTheirChainLabelsDicDefault[objectType]
-            let newChainLabels = currentObjectChainLabels?.filter { $0 != part}
-            dictionaries.objectsAndTheirChainLabelsDicIn[objectType] = newChainLabels
-           
-        }
-        
-        if tag == "none" {
+            setPartIdDicInKeyToNilRestoringDefault(partChain)
             dictionaries.objectsAndTheirChainLabelsDicIn.removeValue(forKey: objectType)
         }
         
         setObjectByCreatingFromName()
     }
     
+    
+    func restoreChainLabelToObject(_ chainLabel: Part, _ objectType: ObjectTypes) {
+        guard var currentObjectChainLabels =
+                dictionaries.objectsAndTheirChainLabelsDicDefault[objectType] else {
+            fatalError("no chain labels for object \(objectType)")
+        }
+        let newChainLabels = currentObjectChainLabels + [chainLabel]
+        
+        print(newChainLabels)
+        dictionaries.objectsAndTheirChainLabelsDicIn[objectType] = newChainLabels
+    }
+    
+    
+    func removeChainLabelFromObject(_ chainLabel: Part, _ objectType: ObjectTypes) {
+        let currentObjectChainLabels =
+            dictionaries.objectsAndTheirChainLabelsDicDefault[objectType]
+        let newChainLabels = currentObjectChainLabels?.filter { $0 != chainLabel}
+        dictionaries.objectsAndTheirChainLabelsDicIn[objectType] = newChainLabels
+    }
+    
+    
+    func setPartIdDicInKeyToNilRestoringDefault (_ partChainWithoutRoot: [Part]) {
+        for part in partChainWithoutRoot {
+            dictionaries.partIdDicIn.removeValue(forKey: part)
+        }
+    }
 
 }
 
@@ -434,7 +457,6 @@ extension ObjectPickViewModel {
     func getMaximumDimensionOfObject (
         _ dictionary: PositionDictionary)
         -> Double {
-//print(dictionary)
             let minMax =
             CreateIosPosition
                .minMaxPosition(dictionary)

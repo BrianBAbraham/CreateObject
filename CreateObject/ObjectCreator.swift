@@ -15,6 +15,8 @@ struct ObjectMaker {
     let objectType: ObjectTypes
     
     let dictionaries: Dictionaries
+    
+    let size: Dimension = (width: 0.0, length: 0.0)
 
     init(
         _ objectType: ObjectTypes,
@@ -30,6 +32,7 @@ struct ObjectMaker {
         initialiseAllPart()
         
         postProcessGlobalOrigin()
+            
     }
     
     func checkLabelAndPartChain(){
@@ -88,7 +91,9 @@ struct ObjectMaker {
         }
 
         
-       func setGlobalOrigin(_ part: Part, _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>) {
+       func setGlobalOrigin(
+        _ part: Part,
+        _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>) {
             guard let partValue = partValuesDic[part] else {
                 fatalError("This part:\(part) has not been intialised where the parent global origin is \(parentGlobalOrigin)")
             }
@@ -101,8 +106,8 @@ struct ObjectMaker {
         
         
         func getGlobalOrigin(
-            _ childOrigin: OneOrTwo<PositionAsIosAxes>,
-            _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>)
+        _ childOrigin: OneOrTwo<PositionAsIosAxes>,
+        _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>)
        -> OneOrTwo<PositionAsIosAxes> {
             let (modifiedChildOrigin, modifiedParentGlobalOrigin) =
             OneOrTwo<Any>.convert2OneOrTwoToAllTwoIfMixedOneAndTwo (childOrigin, parentGlobalOrigin)
@@ -1125,8 +1130,7 @@ enum OneOrTwo <T> {
     
     func adjustForTwoToOneId() -> OneOrTwo<T> {
         switch self {
-        case .one (let one):
-            
+        case .one:
             return self
         case .two (let left, let right):
             //if equal then the values are not user edited
@@ -1277,29 +1281,7 @@ enum OneOrTwo <T> {
              fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
          }
      }
-    
-    
 }
-
-
-//struct MiscObjectParameters {
-//    let objectType: ObjectTypes
-//
-//    init(_ objectType: ObjectTypes) {
-//        self.objectType = objectType
-//    }
-//
-//
-//    func getMainBodySupportAboveFloor()
-//    -> Double {
-//        let forMainBodySupportAboveFloor: [ObjectTypes: Double] =
-//            [
-//            .allCasterStretcher: 900.0,
-//            .allCasterBed: 800.0]
-//        return
-//            forMainBodySupportAboveFloor[objectType] ?? 500.0
-//    }
-//}
 
 
 //MARK: StructFactory
@@ -1352,15 +1334,16 @@ struct StructFactory {
              partOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin)
          }
         
+        
         func setChildOriginAllowingForSymmetryForPartData() {
-           
             partOrigin = partOrigin.adjustForSymmetry()
         }
+        
         
         func setChildOriginAllowingForChangFromTwoToOne() {
             if let
                 twoIdChangedToOne = dictionaries.partIdDicIn[part]?.one {
-                if twoIdChangedToOne == .id1 { //no action required for id0 right as this is default
+                if twoIdChangedToOne == .id0 { //no action for id0 right as this is default
                     if let oldOrigin = partOrigin.one {
                         partOrigin =
                             .one(one:

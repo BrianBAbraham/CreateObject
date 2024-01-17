@@ -72,6 +72,32 @@ struct DictionaryMaker {
             preTiltObjectToPartFourCornerPerKeyDic
    
         createPostTiltDictionaryFromStructFactory()
+            
+        createExteriorPointDictionary()
+    }
+    
+    func createExteriorPointDictionary() {
+        
+        let postTiltOneCornerPerKeyDic =
+            ConvertFourCornerPerKeyToOne(fourCornerPerElement: postTiltObjectToFourCornerPerKeyDic).oneCornerPerKey
+        let allCornersXYZ = postTiltOneCornerPerKeyDic.values.map { ($0.x, $0.y) }
+        let points = allCornersXYZ
+        
+        print(points.count)
+      
+
+        let filteredPoints = points.filter { point in
+                let isInterior = points.allSatisfy { otherPoint in
+                    // Check if the magnitude of the current point is greater than or equal to other points in both x and y coordinates
+                    let isGreaterX = abs(point.0) >= abs(otherPoint.0)
+                    let isGreaterY = abs(point.1) >= abs(otherPoint.1)
+                    return isGreaterX && isGreaterY
+                }
+                return !isInterior
+            }
+        
+        print(filteredPoints.count)
+        print("")
     }
 }
 

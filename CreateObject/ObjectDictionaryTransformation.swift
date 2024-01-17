@@ -10,33 +10,6 @@ import SwiftUI
 
 
 
-struct ForScreen {
-    var dictionary: PositionDictionary = [:]
-    
-    init( _ actualSize: PositionDictionary,
-          _ offset: PositionAsIosAxes,
-          _ scale: Double
-    ) {
-        dictionary = createDictionaryForScreen(actualSize, scale, offset)
-    }
-    
-    func createDictionaryForScreen(
-        _ actualSize: PositionDictionary,
-        _ scale: Double,
-        _ offset: PositionAsIosAxes)
-    -> PositionDictionary {
-        let scaleFactor = scale/scale
-        var dictionaryForScreen: PositionDictionary = [:]
-        for item in actualSize {
-            dictionaryForScreen[item.key] =
-            (x: (item.value.x + offset.x) * scaleFactor,
-             y: (item.value.y + offset.y) * scaleFactor,
-             z: item.value.z)
-        }
-        return dictionaryForScreen
-    }
-}
-
 struct ForScreen2 {
     var dictionary: CornerDictionary = [:]
     
@@ -75,17 +48,7 @@ struct ForScreen2 {
     }
 }
 
-///input unique name
-///get four cornefor unique name
-///get min and max x
-///get min and max y
-///find width and length
-///return width and length
 
-
-struct MeasurementsFrom {
-    
-}
 
 struct DictionaryElementIn {
 
@@ -178,15 +141,7 @@ struct DictionaryInStringOut {
             return stringOfNamesOut
         }
         
-//        func getValuesForOrigin() -> String {
-//            var valueString: String
-//            for  value in valuesForAllKeys {
-//                valueString = getValueString(value[0])
-//                stringOfValuesOut += valueString + " + "
-//            }
-//            return stringOfValuesOut
-//        }
-        
+
         func getValuesForOrigin() -> String {
 
             for valuesForOneKey in valuesForAllKeys {
@@ -207,27 +162,6 @@ struct DictionaryInStringOut {
 }
 
 
-struct FindGeneralPart {
-    let specificPartName: String
-    let partCase: Part
-    
-    init(_ specificPartName: String) {
-        self.specificPartName = specificPartName
-        partCase = getPartCase()
-        
-        func getPartCase() -> Part{
-            var partCase = Part.notFound
-            let components = specificPartName.components(separatedBy: "_")
-            if components.count >= 3 {
-                let generalPartName = components[2]
-//print (Part(rawValue: generalPartName)!)
-                partCase = Part(rawValue: generalPartName) ??  Part.notFound
-//print (partCase)
-            }
-            return partCase
-        }
-    }
-}
 
 
 
@@ -458,38 +392,6 @@ extension Dictionary {
                 reducedDictionary[name] = position
             }
         }
-    }
-}
-
-struct Replace {
-    var intialWithReplacements: CornerDictionary = [:]
-    
-    init( initial: CornerDictionary, replacement: CornerDictionary) {
-//print( replacement)
-        intialWithReplacements =
-        replace(initial, replacement)
-//print (initial)
-    }
-
-    func replace(
-        _ initial: CornerDictionary,
-        _ replacement: CornerDictionary) -> CornerDictionary{
-        let nameWithoutObject = RemoveObjectName()
-        var initialWithReplacements = initial
-        for (key, value) in replacement {
-           let keyWithoutObject = nameWithoutObject.remove(key)
-            if initial[keyWithoutObject] != nil {
-//if keyWithoutObject == "backSupport_id0_sitOn_id0" {
-//    print (keyWithoutObject)
-//    print (initial[keyWithoutObject])
-//    print (value)
-//    print ("")
-//}
-                
-                initialWithReplacements[keyWithoutObject] = value
-            }
-        }
-        return initialWithReplacements
     }
 }
 

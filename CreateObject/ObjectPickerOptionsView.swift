@@ -59,9 +59,6 @@ struct TiltX: View {
     @State private var sliderValue: Double = 0.0
     
     var showTilt: Bool = true
-
-  
-
  
     init (_ partChainLabels: [Part]){
         showTilt = partChainLabels.contains(.sitOnTiltJoint) ? true: false
@@ -96,6 +93,7 @@ struct TiltX: View {
         }
     }
 }
+
 
 
 struct HeadSupport: View {
@@ -148,23 +146,24 @@ struct Propeller: View {
 
 
 struct FootSupport: View {
-    @State private var laterality = "none"
+    @State private var laterality = "both"
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
 
-    let partSymmetry = ["none", "both", "left", "right"]
+    let partSymmetry = ["no", "both", "left", "right"]
 
     var body: some View {
         HStack {
-            Text("Foot remove")
+            Text("Show")
             Picker("anyString", selection: $laterality) {
                 ForEach(partSymmetry, id: \.self) { equipment in
                     Text(equipment)
                 }
-            }
 
+            }
             .onChange(of: laterality) { tag in
                 objectPickVM.setChangeToPartBeingOnBothSides(tag, Part.footSupport)
             }
+            Text("foot support")
         }
     }
 }
