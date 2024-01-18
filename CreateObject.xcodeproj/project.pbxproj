@@ -33,7 +33,7 @@
 		FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD0CAEE29DB393600203BE5 /* Screen.swift */; };
 		FDD7247D29B0DD1000B50259 /* Development.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD7247C29B0DD1000B50259 /* Development.swift */; };
 		FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEA615E2A2484D000A50ACC /* Calculate.swift */; };
-		FDFC68762A2A3EBF0027E219 /* DictionaryMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68752A2A3EBF0027E219 /* DictionaryMaker.swift */; };
+		FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,7 +64,7 @@
 		FDD0CAEE29DB393600203BE5 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		FDD7247C29B0DD1000B50259 /* Development.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Development.swift; sourceTree = "<group>"; };
 		FDEA615E2A2484D000A50ACC /* Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculate.swift; sourceTree = "<group>"; };
-		FDFC68752A2A3EBF0027E219 /* DictionaryMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryMaker.swift; sourceTree = "<group>"; };
+		FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectImageData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,7 +139,7 @@
 			children = (
 				FDAC054829EADEFB00FCB400 /* JointDimensions.swift */,
 				FDC71F18296C936600B68427 /* CreateName.swift */,
-				FDFC68752A2A3EBF0027E219 /* DictionaryMaker.swift */,
+				FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */,
 			);
 			path = CreateDefaultMeasurement;
 			sourceTree = "<group>";
@@ -217,7 +217,7 @@
 				FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */,
 				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
-				FDFC68762A2A3EBF0027E219 /* DictionaryMaker.swift in Sources */,
+				FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */,
 				FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */,
 				FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */,
 				FDBD6EF829C4A6F700144603 /* Types.swift in Sources */,

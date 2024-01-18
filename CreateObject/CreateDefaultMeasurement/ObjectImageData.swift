@@ -1,6 +1,6 @@
 //
-//  CornerDictionary.swift
-//  DictionaryMaker
+//
+// ObjectImageData
 //
 //  Created by Brian Abraham on 02/06/2023.
 //
@@ -8,14 +8,13 @@
 import Foundation
 
 
-struct DictionaryMaker {
+struct ObjectImageData {
 
     let objectType: ObjectTypes
   
-    let dimensionDicIn: Part3DimensionDictionary
-    var dimensionDic: Part3DimensionDictionary = [:]
+    var dimensionAfterUserEditDic: Part3DimensionDictionary = [:]
     
-    var angleDic: AnglesDictionary = [:]
+    var angleAfterUserEditDic: AnglesDictionary = [:]
 
     var angleMinMaxDic: AngleMinMaxDictionary = [:]
   
@@ -26,35 +25,39 @@ struct DictionaryMaker {
     
     //post-tilt
     var postTiltObjectToPartOriginDic: PositionDictionary = [:]
-    var postTiltObjectToFourCornerPerKeyDic: CornerDictionary = [:]
+    var postTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
+    var postTiltObjectToOneCornerPerKeyDic: PositionDictionary = [:]
     
     let partIdDicIn: [Part: OneOrTwo<PartTag>]
-    var partChainIdDic: PartChainIdDictionary  = [:]
-    let objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
-    let objectsAndTheirChainLabels: ObjectPartChainLabelsDictionary = ObjectsAndTheirChainLabels().dictionary
+
+    let objectChainLabelsUserEditedDic: ObjectChainLabelDictionary
+    let objectChainLabelsDefaultDic: ObjectChainLabelDictionary = ObjectChainLabel().dictionary
 
     var partValuesDic: [Part: PartData] = [:]
     let chainLabels: [Part]
     
+    var dimension: Dimension = (width: 0.0, length: 0.0)
+    var maximumDimension: Double {
+        dimension.width > dimension.length ? dimension.width: dimension.length
+    }
+    
 
     init(
         _ objectType: ObjectTypes,
-        _ dictionaries: Dictionaries) {
+        _ dictionaries: UserEditedDictionaries) {
         self.objectType = objectType
-        self.dimensionDicIn = dictionaries.dimension
-        self.partIdDicIn = dictionaries.partIdDicIn
-        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDicIn
+     
+        self.partIdDicIn = dictionaries.partIdsUserEditedDic
+        self.objectChainLabelsUserEditedDic = dictionaries.objectChainLabelsUserEditDic
             
-        guard let unwrapped = objectsAndTheirChainLabelsDicIn[objectType] ?? objectsAndTheirChainLabels[objectType] else {
+        guard let unwrapped = objectChainLabelsUserEditedDic[objectType] ?? objectChainLabelsDefaultDic[objectType] else {
             fatalError("no chain labels for this object \(objectType)")
         }
         
         chainLabels = unwrapped
-                    
-//            print("OUT \(dictionaries.anglesDic["object_id0_tiltInSpaceHorizontalJoint_id0_sitOn_id0"]) ")
             
         partValuesDic =
-            ObjectMaker(
+            ObjectData(
                 objectType,
                 dictionaries)
                     .partValuesDic
@@ -68,43 +71,78 @@ struct DictionaryMaker {
   
 //MARK: - POST-TILT
         // initially set postTilt to preTilt values
-        postTiltObjectToFourCornerPerKeyDic =
+        postTiltObjectToPartFourCornerPerKeyDic =
             preTiltObjectToPartFourCornerPerKeyDic
    
         createPostTiltDictionaryFromStructFactory()
             
-        createExteriorPointDictionary()
+        postTiltObjectToOneCornerPerKeyDic =
+        ConvertFourCornerPerKeyToOne(
+            fourCornerPerElement: postTiltObjectToPartFourCornerPerKeyDic).oneCornerPerKey
+            
+        dimension = getSize()
+            
+            
+            
+            
+        //createExteriorPointDictionary()
     }
     
-    func createExteriorPointDictionary() {
+    func getSize() ->Dimension{
+        let minMax =
+            CreateIosPosition.minMaxPosition(postTiltObjectToOneCornerPerKeyDic)
         
-        let postTiltOneCornerPerKeyDic =
-            ConvertFourCornerPerKeyToOne(fourCornerPerElement: postTiltObjectToFourCornerPerKeyDic).oneCornerPerKey
-        let allCornersXYZ = postTiltOneCornerPerKeyDic.values.map { ($0.x, $0.y) }
-        let points = allCornersXYZ
+        let objectDimension =
+                (width: minMax[1].x - minMax[0].x,length: minMax[1].y - minMax[0].y )
         
-        print(points.count)
-      
-
-        let filteredPoints = points.filter { point in
-                let isInterior = points.allSatisfy { otherPoint in
-                    // Check if the magnitude of the current point is greater than or equal to other points in both x and y coordinates
-                    let isGreaterX = abs(point.0) >= abs(otherPoint.0)
-                    let isGreaterY = abs(point.1) >= abs(otherPoint.1)
-                    return isGreaterX && isGreaterY
-                }
-                return !isInterior
-            }
+       return
+        objectDimension
         
-        print(filteredPoints.count)
-        print("")
+        func getMaximumDimensionOfObject (
+        _ dictionary: PositionDictionary)
+            -> Double {
+            let minMax =
+            CreateIosPosition
+               .minMaxPosition(dictionary)
+            let objectDimensions =
+            (length: minMax[1].y - minMax[0].y, width: minMax[1].x - minMax[0].x)
+            return
+                [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
+        }
+        
     }
+    
+    
+//    func createExteriorPointDictionary() {
+//
+//        let postTiltOneCornerPerKeyDic =
+//            ConvertFourCornerPerKeyToOne(fourCornerPerElement: postTiltObjectToFourCornerPerKeyDic).oneCornerPerKey
+//        let allCornersXYZ = postTiltOneCornerPerKeyDic.values.map { ($0.x, $0.y) }
+//        let points = allCornersXYZ
+//
+//        print(points.count)
+//
+//
+//        let filteredPoints = points.filter { point in
+//                let isInterior = points.allSatisfy { otherPoint in
+//                    // Check if the magnitude of the current point is greater than or equal to other points in both x and y coordinates
+//                    let isGreaterX = abs(point.0) >= abs(otherPoint.0)
+//                    let isGreaterY = abs(point.1) >= abs(otherPoint.1)
+//                    return isGreaterX && isGreaterY
+//                }
+//                return !isInterior
+//            }
+//
+//        print(filteredPoints.count)
+//        print("")
+//    }
 }
 
 
 
+
 //MARK: PretTiltDic
-extension DictionaryMaker {
+extension ObjectImageData {
 
     mutating func createPreTiltDictionaryFromStructFactory() {
 
@@ -177,11 +215,11 @@ extension DictionaryMaker {
             
         func process(_ update: DictionaryUpdate) {
             let name = update.name
-            angleDic +=
+            angleAfterUserEditDic +=
              [name: update.angle]
             angleMinMaxDic +=
              [name: update.minMaxAngle]
-            dimensionDic +=
+            dimensionAfterUserEditDic +=
               [name: update.dimension]
             preTiltObjectToPartOriginDic +=
               [name: update.origin]
@@ -220,7 +258,7 @@ extension DictionaryMaker {
 
 
 //MARK: Apply Rotations
-extension DictionaryMaker {
+extension ObjectImageData {
    
     mutating func createPostTiltDictionaryFromStructFactory() {
         let (rotatorParts, allPartsToBeRotatedByAllRotators) =
@@ -300,7 +338,7 @@ extension DictionaryMaker {
          _ name: String,
          _ partCornerPosition: [PositionAsIosAxes]
         ){
-            postTiltObjectToFourCornerPerKeyDic += [name: partCornerPosition]
+            postTiltObjectToPartFourCornerPerKeyDic += [name: partCornerPosition]
     }
 
 

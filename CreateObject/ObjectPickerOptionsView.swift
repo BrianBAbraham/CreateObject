@@ -94,31 +94,56 @@ struct TiltX: View {
     }
 }
 
+//struct HeadSupport: View {
+//    @State private var optionToggle = true
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    let showTilt: Bool
+//
+//    init(_ name: String) {
+//        showTilt = true
+//    }
+//
+//    var body: some View {
+//        if showTilt {
+//            Toggle("Headrest", isOn: $optionToggle)
+//                .onChange(of: optionToggle) { value in
+//
+//                        objectPickVM.replaceChainLabelForObject(Part.backSupportHeadSupport, Part.backSupport )
+//
+//                }
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//}
 
 
 struct HeadSupport: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
     let showTilt: Bool
     
     init(_ name: String) {
-        showTilt = name.contains("ilting") ? true: false
+        showTilt = true
     }
     
     var body: some View {
         if showTilt {
-            Toggle("Headrest",isOn: $optionToggle)
+            Toggle("Headrest", isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
-//                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
-//                        Part.backSupportHeadSupport,
-//                        Part.backSupport)
+                    if !value {
+                        objectPickVM.replaceChainLabelForObject(Part.backSupportHeadSupport, Part.backSupport)
+                    } else {
+                            
+                            objectPickVM.replaceChainLabelForObject( Part.backSupport, Part.backSupportHeadSupport )
+                    }
                 }
         } else {
             EmptyView()
         }
     }
 }
+
 
 struct Propeller: View {
     @State private var optionToggle = true

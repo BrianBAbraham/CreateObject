@@ -6,26 +6,26 @@
 
 import Foundation
 
-struct ObjectMaker {
-    let objectsAndTheirChainLabelsDicDefault: ObjectPartChainLabelsDictionary
-    let objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
+struct ObjectData {
+    let objectChainLabelsDefaultDic: ObjectChainLabelDictionary
+    let objectChainLabelsUserEditedDic: ObjectChainLabelDictionary
     
     var partValuesDic: [Part: PartData] = [:]
     
     let objectType: ObjectTypes
     
-    let dictionaries: Dictionaries
+    let dictionaries: UserEditedDictionaries
     
     let size: Dimension = (width: 0.0, length: 0.0)
 
     init(
         _ objectType: ObjectTypes,
-        _ dictionaries: Dictionaries) {
+        _ dictionaries: UserEditedDictionaries) {
         
         self.objectType = objectType
         self.dictionaries = dictionaries
-        self.objectsAndTheirChainLabelsDicDefault = dictionaries.objectsAndTheirChainLabelsDicDefault
-        self.objectsAndTheirChainLabelsDicIn = dictionaries.objectsAndTheirChainLabelsDicIn
+        self.objectChainLabelsDefaultDic = ObjectChainLabel().dictionary
+        self.objectChainLabelsUserEditedDic = dictionaries.objectChainLabelsUserEditDic
           
         checkLabelAndPartChain()
         
@@ -124,7 +124,7 @@ struct ObjectMaker {
 
 
 
-extension ObjectMaker {
+extension ObjectData {
     mutating func initialiseAllPart() {
        setUniqueInitialisation()
         func setUniqueInitialisation(){
@@ -226,12 +226,12 @@ extension ObjectMaker {
     
     func getAllChainLabel() -> [Part] {
       //  print(objectsAndTheirChainLabelsDicIn[objectType] )
-        guard let partChainLabel =
-        objectsAndTheirChainLabelsDicIn[objectType] ??
-                objectsAndTheirChainLabelsDicDefault[objectType] else {
+        guard let chainLabels =
+        objectChainLabelsUserEditedDic[objectType] ??
+                objectChainLabelsDefaultDic[objectType] else {
             fatalError("there are no partChainLabel for object \(objectType)")
         }
-        return partChainLabel
+        return chainLabels
     }
     
     mutating func setObjectOriginPartValue() {
@@ -432,7 +432,7 @@ enum ObjectTypes: String, CaseIterable, Hashable {
 /// provides the object names for the picker
 /// provides the chainLabels for each object
 //MARK: ObjectsChainLabels
-struct ObjectsAndTheirChainLabels {
+struct ObjectChainLabel {
     static let chairSupport: [Part] =
         [.sitOn,
         .backSupportHeadSupport,
@@ -449,7 +449,7 @@ struct ObjectsAndTheirChainLabels {
     static let chairSupportWithFixedRearWheel: [Part] =
     chairSupport + [.fixedWheelAtRear]
     
-    let dictionary: ObjectPartChainLabelsDictionary =
+    let dictionary: ObjectChainLabelDictionary =
         [
         .allCasterBed:
             [.sitOn, .sideSupport ],
@@ -1287,7 +1287,7 @@ enum OneOrTwo <T> {
 //MARK: StructFactory
 struct StructFactory {
     let objectType: ObjectTypes
-    let dictionaries: Dictionaries
+    let dictionaries: UserEditedDictionaries
     var partData: PartData = ZeroValue.partValue
     let parentData: PartData?
     let part: Part
@@ -1301,7 +1301,7 @@ struct StructFactory {
 
     // Designated initializer for common parts
     init(_ objectType: ObjectTypes,
-         _ dictionaries: Dictionaries,
+         _ dictionaries: UserEditedDictionaries,
          _ parentData: PartData?,
          _ part: Part,
          _ parentPart: Part,
@@ -1342,7 +1342,7 @@ struct StructFactory {
         
         func setChildOriginAllowingForChangFromTwoToOne() {
             if let
-                twoIdChangedToOne = dictionaries.partIdDicIn[part]?.one {
+                twoIdChangedToOne = dictionaries.partIdsUserEditedDic[part]?.one {
                 if twoIdChangedToOne == .id0 { //no action for id0 right as this is default
                     if let oldOrigin = partOrigin.one {
                         partOrigin =
@@ -1363,7 +1363,7 @@ struct StructFactory {
 
     // Convenience initializer for .sitOn part
     init(_ objectType: ObjectTypes,
-         _ dictionaries: Dictionaries,
+         _ dictionaries: UserEditedDictionaries,
          _ childPart: Part) {
         self.init(objectType, dictionaries, nil, childPart, .objectOrigin,[])
         partData = createSitOn()
@@ -1371,7 +1371,7 @@ struct StructFactory {
 
     // Convenience initializer for parts in general
     init(_ objectType: ObjectTypes,
-         _ dictionaries: Dictionaries,
+         _ dictionaries: UserEditedDictionaries,
          _ parent: PartData?,
          _ childPart: Part,
          _ chainLabel: [Part]
@@ -1505,46 +1505,49 @@ enum DictionaryVersion {
 ///where extant, instead of default values
 ///during intitialisation
 ///partChainId  are wrapped in OneOrTwo
-struct Dictionaries {
-    var dimension: Part3DimensionDictionary
-    var parentToPartOrigin: PositionDictionary
-    var objectToPartOrigin: PositionDictionary
-    var anglesDic: AnglesDictionary
+struct UserEditedDictionaries {
+    //relating to Part
+    var dimensionUserEditedDic: Part3DimensionDictionary
+    var angleUserEditedDic: AnglesDictionary
     var angleMinMaxDic: AngleMinMaxDictionary
-    var partChainId: PartChainIdDictionary
-    var partIdDicIn: [Part: OneOrTwo<PartTag>]
-    var objectsAndTheirChainLabelsDicDefault: ObjectPartChainLabelsDictionary
-    var objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary
-    var preTiltObjectToPartFourCornerPerKey: CornerDictionary
-    var postTiltObjectToPartFourCornerPerKey: CornerDictionary
-    static var shared = Dictionaries()
+    
+    //relating to Object
+    var parentToPartOriginUserEditedDic: PositionDictionary
+    var objectToParOrigintUserEditedDic: PositionDictionary
+
+    
+    //relating to ObjectImage
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>]
+    var objectChainLabelsUserEditDic: ObjectChainLabelDictionary
+   
+
+    static var shared = UserEditedDictionaries()
     
    private init(
-        dimension: Part3DimensionDictionary  = [:],
-        parentToPartOrigin: PositionDictionary = [:],
-        objectToPartOrigin: PositionDictionary = [:],
-        anglesDic: AnglesDictionary = [:],
-        angleMinMaxDic: AngleMinMaxDictionary = [:],
-        partChainId: PartChainIdDictionary = [:],
-        partIdDicIn: [Part: OneOrTwo<PartTag>] = [:],
-        objectsAndTheirChainLabelsDicDefault: ObjectPartChainLabelsDictionary =
-            ObjectsAndTheirChainLabels().dictionary,
-        objectsAndTheirChainLabelsDicIn: ObjectPartChainLabelsDictionary = [:],
-        preTiltObjectToPartFourCornerPerKey: CornerDictionary = [:],
-        postTiltObjectToPartFourCornerPerKey: CornerDictionary = [:]) {
-        self.dimension = dimension
-        self.parentToPartOrigin = parentToPartOrigin
-        self.objectToPartOrigin = objectToPartOrigin
-        self.anglesDic = anglesDic
-        self.angleMinMaxDic = angleMinMaxDic
-        self.partChainId = partChainId
-        self.partIdDicIn = partIdDicIn
-        self.objectsAndTheirChainLabelsDicDefault = objectsAndTheirChainLabelsDicDefault
-        self.objectsAndTheirChainLabelsDicIn = objectsAndTheirChainLabelsDicIn
-        self.preTiltObjectToPartFourCornerPerKey =
-            preTiltObjectToPartFourCornerPerKey
-        self.postTiltObjectToPartFourCornerPerKey =
-            postTiltObjectToPartFourCornerPerKey
+        dimension: Part3DimensionDictionary  =
+            [:],
+        parentToPartOriginUserEditedDic: PositionDictionary = [:],
+        objectToParOrigintUserEditedDic: PositionDictionary = [:],
+        anglesDic: AnglesDictionary =
+            [:],
+        angleMinMaxDic: AngleMinMaxDictionary =
+            [:],
+        partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] =
+            [:],
+        objectChainLabelsUserEditDic: ObjectChainLabelDictionary =
+            [:]) {
+        
+        self.dimensionUserEditedDic =
+            dimension
+        self.parentToPartOriginUserEditedDic = parentToPartOriginUserEditedDic
+        self.objectToParOrigintUserEditedDic = objectToParOrigintUserEditedDic
+        self.angleUserEditedDic =
+            anglesDic
+        self.angleMinMaxDic =
+            angleMinMaxDic
+        self.partIdsUserEditedDic =
+            partIdsUserEditedDic
+        self.objectChainLabelsUserEditDic = objectChainLabelsUserEditDic
     }
 }
 
@@ -1558,10 +1561,10 @@ struct Dictionaries {
 ///The non-optional id are available
 ///All values are wrapped in OneOrTwoValues
 struct UserEditedValue {
-    let dimensionDic: Part3DimensionDictionary
-    let parentToPartOriginDic: PositionDictionary
-    let objectToPartOriginDic: PositionDictionary
-    let anglesDic: AnglesDictionary
+    let dimensionUserEditedDic: Part3DimensionDictionary
+    let parentToPartOriginUserEditedDic: PositionDictionary
+    let objectToParOrigintUserEditedDic: PositionDictionary
+    let angleUserEditedDic: AnglesDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
     let partIdDicIn: [Part: OneOrTwo<PartTag>]
     let part: Part
@@ -1576,37 +1579,38 @@ struct UserEditedValue {
     
     init(
         _ objectType: ObjectTypes,
-        _ dictionaries: Dictionaries,
+        _ dictionaries: UserEditedDictionaries,
         _ sitOnId: PartTag,
         _ childPart: Part) {
             self.sitOnId = sitOnId
             self.part = childPart
-            dimensionDic = dictionaries.dimension
-            parentToPartOriginDic = dictionaries.parentToPartOrigin
-            objectToPartOriginDic = dictionaries.objectToPartOrigin
-            anglesDic = dictionaries.anglesDic
-            angleMinMaxDic = dictionaries.angleMinMaxDic
+            dimensionUserEditedDic =
+                dictionaries.dimensionUserEditedDic
+            parentToPartOriginUserEditedDic =
+                dictionaries.parentToPartOriginUserEditedDic
+            objectToParOrigintUserEditedDic =
+                dictionaries.objectToParOrigintUserEditedDic
+            angleUserEditedDic =
+                dictionaries.angleUserEditedDic
+            angleMinMaxDic =
+                dictionaries.angleMinMaxDic
+            partIdDicIn =
+                dictionaries.partIdsUserEditedDic
 
-            partIdDicIn = dictionaries.partIdDicIn
-
-            
             partId = //non-optional as must iterate through id
             partIdDicIn[part] ?? //UI may edit
             OneOrTwoId(objectType, childPart).forPart // default
-            
-            
+                        
             optionalDimension =
-            getOptionalValue(partId, from: dimensionDic) { part in
+            getOptionalValue(partId, from: dimensionUserEditedDic) { part in
                 return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
             
             optionalOrigin =
-            getOptionalValue(partId, from: parentToPartOriginDic) { part in
+            getOptionalValue(partId, from: parentToPartOriginUserEditedDic) { part in
                 return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
             
             originName = getOriginName(partId)
 
-          
-            
             optionalAngleMinMax =
             getOptionalValue(partId, from: angleMinMaxDic) { part in
                 return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
@@ -1639,10 +1643,10 @@ struct UserEditedValue {
         switch originName.mapOptionalToNonOptionalOneOrTwo("") {
         case .one(let one):
             angles =
-                .one(one: anglesDic[one ] )
+                .one(one: angleUserEditedDic[one ] )
         case .two(let left, let right):
             angles =
-                .two(left: anglesDic[ left ]  , right: anglesDic[right ] )
+                .two(left: angleUserEditedDic[ left ], right: angleUserEditedDic[right ] )
         }
         return angles
     }

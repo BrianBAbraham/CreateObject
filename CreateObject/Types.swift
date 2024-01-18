@@ -115,7 +115,7 @@ typealias PartChainIdDictionary = [PartChain: OneOrTwo<PartTag> ]
 
 /// Input an object type and get the chain labels associaed with that object type
 /// as defined in ObjectsAndTheirChainLabels
-typealias ObjectPartChainLabelsDictionary = [ObjectTypes: [Part]]
+typealias ObjectChainLabelDictionary = [ObjectTypes: [Part]]
 
 
 

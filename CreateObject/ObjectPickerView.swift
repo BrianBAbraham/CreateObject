@@ -15,7 +15,7 @@ struct PickInitialObjectView: View {
    
     var objectNames: [String] {
         let unsortedObjectNames =
-        ObjectsAndTheirChainLabels().dictionary.keys.map{$0.rawValue}
+        ObjectChainLabel().dictionary.keys.map{$0.rawValue}
         
         return unsortedObjectNames.sorted()
     }
