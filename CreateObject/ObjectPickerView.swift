@@ -54,13 +54,18 @@ struct PickInitialObjectView: View {
          //.pickerStyle(.wheel)
             .scaleEffect(0.6)
             
-           FootSupport()
-            HeadSupport(objectPickVM.getCurrentObjectName())
+            FootSupport()
                 .padding(.horizontal)
-            Propeller(objectPickVM.getCurrentObjectName())
+            HStack{
+                HeadSupport()
+                    .padding(.horizontal)
+                Propeller()
+                    .padding(.horizontal)
+            }
+            TiltX()
                 .padding(.horizontal)
-            TiltX(objectPickVM.getRotations())
-                .padding(.horizontal)
+            
+            SeatWidth()
         }
     }
 }

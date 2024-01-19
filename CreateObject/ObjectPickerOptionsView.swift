@@ -52,36 +52,70 @@ import SwiftUI
 //    }
 //}
 
-struct TiltX: View {
-    @State private var tiltToggle = true
+
+struct SeatWidth: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
- 
     @State private var sliderValue: Double = 0.0
-    
-    var showTilt: Bool = true
- 
-    init (_ partChainLabels: [Part]){
-        showTilt = partChainLabels.contains(.sitOnTiltJoint) ? true: false
+    let chainLabelsRequiringAction: [Part] = [.sitOn]
+    var show: Bool {
+        objectPickVM.defaultObjectHasThisChainLabel(chainLabelsRequiringAction)
     }
-    
+ 
     var body: some View {
-        var angleName: String {
+        var partName: String {
+            let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
+           return
+            CreateNameFromParts(parts ).name    }
+//        let aminMax =
+//            objectPickVM.getAngleMinMaxDic(partName)
+        let max = 1000.0//aminMax.max.value
+        let min = 300.0//minMax.min.value
+        if show {
+            HStack{
+                Text("seat width")
+                Slider(value: $sliderValue, in: min...max, step: 1.0)
+                Text(" mm: \(Int(max - sliderValue))")
+                    .onChange(of: sliderValue) { newValue in
+                        objectPickVM.setCurrentWidth(
+                            max - sliderValue
+                            , partName)
+                       }
+            }
+
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+
+struct TiltX: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @State private var sliderValue: Double = 0.0
+    let chainLabelsRequiringAction: [Part] = [.sitOnTiltJoint]
+    var show: Bool {
+        objectPickVM.defaultObjectHasThisChainLabel(chainLabelsRequiringAction)
+    }
+ 
+    var body: some View {
+        var partName: String {
             let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOnTiltJoint, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
            return
             CreateNameFromParts(parts ).name    }
         let angleMinMax =
-            objectPickVM.getAngleMinMaxDic(angleName)
-        let angleMax = angleMinMax.max.value
-        let angleMin = angleMinMax.min.value
-        if showTilt {
+            objectPickVM.getAngleMinMaxDic(partName)
+        let max = angleMinMax.max.value
+        let min = angleMinMax.min.value
+        if show {
             HStack{
-                Slider(value: $sliderValue, in: angleMin...angleMax, step: 1.0)
-                Text("tilt-in-space deg: \(Int(angleMax - sliderValue))")
+                Text("tilt-in-space")
+                Slider(value: $sliderValue, in: min...max, step: 1.0)
+                Text(" deg: \(Int(max - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
                         objectPickVM.setCurrentRotation(
-                            [angleName:
+                            [partName:
                                      (x:
-                                Measurement(value: angleMax - sliderValue, unit: UnitAngle.degrees),
+                                Measurement(value: max - sliderValue, unit: UnitAngle.degrees),
                                       y: ZeroValue.angle,
                                       z: ZeroValue.angle)]
                         )
@@ -94,48 +128,32 @@ struct TiltX: View {
     }
 }
 
-//struct HeadSupport: View {
-//    @State private var optionToggle = true
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    let showTilt: Bool
-//
-//    init(_ name: String) {
-//        showTilt = true
-//    }
-//
-//    var body: some View {
-//        if showTilt {
-//            Toggle("Headrest", isOn: $optionToggle)
-//                .onChange(of: optionToggle) { value in
-//
-//                        objectPickVM.replaceChainLabelForObject(Part.backSupportHeadSupport, Part.backSupport )
-//
-//                }
-//        } else {
-//            EmptyView()
-//        }
-//    }
-//}
 
 
 struct HeadSupport: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    let showTilt: Bool
-    
-    init(_ name: String) {
-        showTilt = true
+    let chainLabelsRequiringAction: [Part] = [.backSupportHeadSupport]
+    var chainLabelRequiringAction: Part {
+        objectPickVM.defaultObjectHasOneOFTheseChainLabels(chainLabelsRequiringAction)
     }
+    var show: Bool {
+        chainLabelRequiringAction == Part.notFound ? false: true
+    }
+
     
     var body: some View {
-        if showTilt {
-            Toggle("Headrest", isOn: $optionToggle)
+        if show {
+            Toggle("headrest", isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
                     if !value {
-                        objectPickVM.replaceChainLabelForObject(Part.backSupportHeadSupport, Part.backSupport)
+                        objectPickVM.replaceChainLabelForObject(
+                            chainLabelRequiringAction,
+                            .backSupport)
                     } else {
-                            
-                            objectPickVM.replaceChainLabelForObject( Part.backSupport, Part.backSupportHeadSupport )
+                        objectPickVM.replaceChainLabelForObject(
+                            .backSupport,
+                            chainLabelRequiringAction)
                     }
                 }
         } else {
@@ -145,23 +163,29 @@ struct HeadSupport: View {
 }
 
 
+
+
 struct Propeller: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-    let showTilt: Bool
-    
-    init(_ name: String) {
-        showTilt = name.contains("propel") ? true: false
+    var chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
+    var chainLabelRequiringAction: Part {
+        objectPickVM.defaultObjectHasOneOFTheseChainLabels(chainLabelsRequiringAction)
+    }
+    var show: Bool {
+        chainLabelRequiringAction == Part.notFound ? false: true
     }
     
+    
     var body: some View {
-        if showTilt {
-            Toggle("Propellers",isOn: $optionToggle)
+        if show {
+            Toggle("propellers", isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
-//                    objectPickVM.setCurrentObjectWithToggledRelatedPartChainLabel(
-//                        Part.backSupportHeadSupport,
-//                        Part.backSupport)
+                    if !value {
+                        objectPickVM.replaceChainLabelForObject(chainLabelRequiringAction,.fixedWheelAtRear)
+                    } else {
+                        objectPickVM.replaceChainLabelForObject( .fixedWheelAtRear, chainLabelRequiringAction)
+                    }
                 }
         } else {
             EmptyView()
@@ -170,7 +194,7 @@ struct Propeller: View {
 }
 
 
-struct FootSupport: View {
+struct FootSupportX: View {
     @State private var laterality = "both"
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
 
@@ -194,15 +218,58 @@ struct FootSupport: View {
 }
 
 
+struct FootSupport: View {
+    @State private var isLeftSelected = true
+    @State private var isRightSelected = true
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    var objectsRequiringView: [ObjectTypes] = [
+    .fixedWheelSolo,
+    .fixedWheelMidDrive,
+    .fixedWheelRearDrive,
+    .fixedWheelFrontDrive,
+    .fixedWheelManualRearDrive,
+    .fixedWheelRearDriveAssisted,
+    .allCasterTiltInSpaceShowerChair,
+    .allCasterChair
+    ]
+    var show: Bool {
+        objectsRequiringView.contains(objectPickVM.getCurrentObjectType()) ? true: false
+    }
+    
+    
+    var body: some View {
+        if show {
+            HStack {
+                Text("foot support:")
+                Toggle("L", isOn: $isLeftSelected)
+                    .onChange(of: isLeftSelected) { newValue in
+                        objectPickVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
+                    }
+                Toggle("R", isOn: $isRightSelected)
+                    .onChange(of: isRightSelected) { newValue in
+                        objectPickVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
+                    }
+                    .padding(.leading, 30)
+            }
+            .onAppear {
+                objectPickVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
+            }
+        } else {
+            EmptyView()
+        }
 
-
-
-struct DoubleSitOnPreferenceKey: PreferenceKey {
-    static var defaultValue: Bool = false
-    static func reduce(value: inout Bool, nextValue: () -> Bool) {
-        value = nextValue()
     }
 }
+
+
+
+//
+//struct DoubleSitOnPreferenceKey: PreferenceKey {
+//    static var defaultValue: Bool = false
+//    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+//        value = nextValue()
+//    }
+//}
 
 
 

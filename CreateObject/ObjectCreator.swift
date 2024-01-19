@@ -504,7 +504,8 @@ struct LabelInPartChainOut {
             [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear],
             [.fixedWheelHorizontalJointAtMid, .fixedWheelAtMid],
             [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront],
-            [.fixedWheelAtRear, .fixedWheelAtRearWithPropeller],
+            [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear, .fixedWheelAtRearWithPropeller],
+            [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront, .fixedWheelAtFrontWithPropeller],
             [.casterVerticalJointAtRear, .casterForkAtRear, .casterWheelAtRear],
             [.casterVerticalJointAtMid, .casterForkAtMid, .casterWheelAtMid],
             [.casterVerticalJointAtFront, .casterForkAtFront, .casterWheelAtFront]
@@ -783,8 +784,14 @@ struct PartDefaultDimension {
             fatalError("no dimension exists for part \(parentPart)")
         }
         
-        parentDimension = unwrapped
         
+//        if part == .sitOn {
+//            parentDimension = parentPartData.dimension.one.value
+//        } else {
+//            
+//        }
+        
+        parentDimension = unwrapped
         
         guard let unwrapped = getDefault(part) else {
             fatalError("no dimension exists for part \(part)")
@@ -1358,6 +1365,10 @@ struct StructFactory {
         
         func setChildDimensionForPartData() {
                 partDimension = userEditedValues.optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
+            if part == .sitOn {
+                print(partDimension)
+                print(defaultDimension)
+            }
             }
     }
 
@@ -1601,9 +1612,13 @@ struct UserEditedValue {
             partIdDicIn[part] ?? //UI may edit
             OneOrTwoId(objectType, childPart).forPart // default
                         
-            optionalDimension =
-            getOptionalValue(partId, from: dimensionUserEditedDic) { part in
-                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
+            
+            
+//            optionalDimension =
+//            getOptionalValue(partId, from: dimensionUserEditedDic) { part in
+//                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
+//
+            
             
             optionalOrigin =
             getOptionalValue(partId, from: parentToPartOriginUserEditedDic) { part in
@@ -1616,6 +1631,7 @@ struct UserEditedValue {
                 return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
             
             optionalAngles = getOptionalAngles()
+            optionalDimension = getOptionalDimension()
 
         }
     
@@ -1650,6 +1666,20 @@ struct UserEditedValue {
         }
         return angles
     }
+    
+    func getOptionalDimension() -> OneOrTwoOptional<Dimension3d>{
+        
+        var dimension: OneOrTwoOptional<Dimension3d> = .one(one: nil)
+        switch originName.mapOptionalToNonOptionalOneOrTwo("") {
+        case .one(let one):
+            dimension =
+                .one(one: dimensionUserEditedDic[one ] )
+        case .two(let left, let right):
+            dimension =
+                .two(left: dimensionUserEditedDic[ left ], right: dimensionUserEditedDic[right ] )
+        }
+        return dimension
+    }
         
     
     func getOptionalValue<T>(
@@ -1657,6 +1687,10 @@ struct UserEditedValue {
         from dictionary: [String: T?],
         using closure: @escaping (PartTag) -> String
     ) -> OneOrTwoOptional<T> {
+        if part == .sitOn {
+           // print(dictionary)
+        }
+        
         let commonPart = { (id: PartTag) -> T? in
             dictionary[closure(id)] ?? nil
         }

@@ -15,7 +15,7 @@ struct ObjectPickModel {
     var loadedDictionary: PositionDictionary = [:]
     
     ///source of truth for the UI  (after absolute coordinates are transformed)
-    var postTiltFourCornerPerKeyDic: CornerDictionary
+    //var postTiltFourCornerPerKeyDic: CornerDictionary
         
     var angleUserEditedDic: AnglesDictionary
     
@@ -38,7 +38,7 @@ struct ObjectPickModel {
         self.dictionaries = dictionaries
         self.currentObjectName = currentObjectName
         self.preTiltFourCornerPerKeyDic = objectImageData.preTiltObjectToPartFourCornerPerKeyDic
-        self.postTiltFourCornerPerKeyDic = objectImageData.postTiltObjectToPartFourCornerPerKeyDic
+       // self.postTiltFourCornerPerKeyDic = objectImageData.postTiltObjectToPartFourCornerPerKeyDic
 
         angleUserEditedDic = dictionaries.angleUserEditedDic
         angleMinMaxDic = dictionaries.angleMinMaxDic
@@ -53,10 +53,7 @@ struct ObjectPickModel {
 
 
 class ObjectPickViewModel: ObservableObject {
-    static let initialObject = ObjectTypes.fixedWheelRearDrive
-    var postTiltOneCornerPerKeyDic: PositionDictionary = [:]
-    var updatedDictionaries: UserEditedDictionaries = UserEditedDictionaries.shared
-    var dictionaries: UserEditedDictionaries = UserEditedDictionaries.shared
+    var userEditedDictionaries: UserEditedDictionaries = UserEditedDictionaries.shared
     
     @Published private var objectPickModel: ObjectPickModel
 
@@ -65,24 +62,23 @@ class ObjectPickViewModel: ObservableObject {
     init() {
         objectImageData =
             ObjectPickViewModel.setDictionaryMaker(
-            nil, dictionaries)
+            nil, userEditedDictionaries)
         
 
-        dictionaries.parentToPartOriginUserEditedDic = objectImageData.preTiltParentToPartOriginDic
-        dictionaries.objectToParOrigintUserEditedDic = objectImageData.preTiltObjectToPartOriginDic
-        dictionaries.angleUserEditedDic =
-            objectImageData.angleAfterUserEditDic
-        dictionaries.angleMinMaxDic =
+        userEditedDictionaries.parentToPartOriginUserEditedDic =
+            objectImageData.preTiltParentToPartOriginDic
+        userEditedDictionaries.objectToParOrigintUserEditedDic =
+            objectImageData.preTiltObjectToPartOriginDic
+        userEditedDictionaries.angleUserEditedDic =
+            objectImageData.angleUserEditDic
+        userEditedDictionaries.angleMinMaxDic =
             objectImageData.angleMinMaxDic
 
-       
-        postTiltOneCornerPerKeyDic =
-            ConvertFourCornerPerKeyToOne(fourCornerPerElement: objectImageData.postTiltObjectToPartFourCornerPerKeyDic).oneCornerPerKey
-        
-        objectPickModel = ObjectPickModel(
+        objectPickModel =
+            ObjectPickModel(
             currentObjectName: ObjectTypes.fixedWheelRearDrive.rawValue,
-            dictionaries: dictionaries,
-        objectImageData: objectImageData)
+            dictionaries: userEditedDictionaries,
+            objectImageData: objectImageData)
         
 
     }
@@ -110,23 +106,18 @@ class ObjectPickViewModel: ObservableObject {
 
     
     func setObjectByCreatingFromName(){
-       
-//print("DETECT")
         let objectName = getCurrentObjectName()
      
         objectImageData =
             Self.setDictionaryMaker(
                     objectName,
-                    dictionaries)
-
+                    userEditedDictionaries)
         
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: objectName,
-                dictionaries: dictionaries,
+                dictionaries: userEditedDictionaries,
             objectImageData: objectImageData)
-    
-  
     
         setCurrentObjectFrameSize()
 
@@ -136,21 +127,54 @@ class ObjectPickViewModel: ObservableObject {
     func setCurrentRotation(
         _ angleUserEditedDic: AnglesDictionary = [:]) {
 
-        dictionaries.angleUserEditedDic += angleUserEditedDic
+        userEditedDictionaries.angleUserEditedDic += angleUserEditedDic
         let objectName = getCurrentObjectName()
      
         objectImageData =
             Self.setDictionaryMaker(
                     objectName,
-                    dictionaries)
+                    userEditedDictionaries)
 
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: objectName,
-                dictionaries: dictionaries,
+                dictionaries: userEditedDictionaries,
                 objectImageData: objectImageData)
         
         setCurrentObjectFrameSize()
+    }
+    
+    
+    func setCurrentWidth(_ width: Double, _ name: String) {
+        
+        
+        guard let currentDimension =  objectPickModel.dictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
+            fatalError()
+        }
+               
+        let newDimension = (width: width, length: currentDimension.length, height:currentDimension.height)
+        
+        userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
+        
+       // setObjectByCreatingFromName()
+        
+        let objectName = getCurrentObjectName()
+//
+//        objectImageData =
+//            Self.setDictionaryMaker(
+//                    objectName,
+//                    userEditedDictionaries)
+
+        objectPickModel =
+            ObjectPickModel(
+                currentObjectName: objectName,
+                dictionaries: userEditedDictionaries,
+                objectImageData: objectImageData)
+        
+        setCurrentObjectFrameSize()
+        
+        setObjectByCreatingFromName()
+        
     }
 }
 
@@ -168,61 +192,42 @@ extension ObjectPickViewModel {
     
     
     func getAllOriginValues()-> String{
-       
         DictionaryInArrayOut().getAllOriginValuesAsString(getPostTiltOneCornerPerKeyDic())
     }
     
     
     func getAngleDic()
     -> AnglesDictionary {
-            objectPickModel.angleUserEditedDic
+        objectPickModel.angleUserEditedDic
     }
-
+    
     
     func getAngleMinMaxDic(_ name: String)
     -> AngleMinMax {
-
-        return
-            objectPickModel.angleMinMaxDic[name] ?? ZeroValue.angleMinMax
+        objectPickModel.angleMinMaxDic[name] ?? ZeroValue.angleMinMax
     }
     
     
     func getPostTiltOneCornerPerKeyDic()
-        ->PositionDictionary{
-            
-          
-            //print(objectPickModel.postTiltFourCornerPerKeyDic)
-        let dic =
-        ConvertFourCornerPerKeyToOne(fourCornerPerElement: objectPickModel.postTiltFourCornerPerKeyDic).oneCornerPerKey
-//            print(dic)
-//            print("\n\n")
-            return dic
-            
+    ->PositionDictionary{
+        objectPickModel.objectImageData.postTiltObjectToOneCornerPerKeyDic
     }
     
     
     func getPreTiltFourCornerPerKeyDic() -> CornerDictionary {
-        objectPickModel.preTiltFourCornerPerKeyDic
+        objectPickModel.objectImageData.preTiltObjectToPartFourCornerPerKeyDic
     }
+    
     
     func getPostTiltFourCornerPerKeyDic() -> CornerDictionary {
-       // print(objectPickModel.postTiltFourCornerPerKeyDic)
-        return
-        objectPickModel.postTiltFourCornerPerKeyDic
-    }
-    
-    
-    
-    func getRotations() -> [Part]{
-     let angleDic = getAngleDic()
-       // print(angleDic)
-        return [.sitOnTiltJoint]
+        objectPickModel.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
     }
     
     
     func getCurrentObjectFrameSize() -> Dimension {
         objectPickModel.currentObjectFrameSize
     }
+    
     
     func getCurrentObjectName() -> String{
         objectPickModel.currentObjectName
@@ -237,43 +242,7 @@ extension ObjectPickViewModel {
             ObjectTypes.fixedWheelRearDrive
     }
     
-    
 
-    
-    
-    func getList (_  version: DictionaryVersion) -> [String] {
-        var list: [String] = []
-            switch version  {
-            case .useCurrent:
-                list =
-                    DictionaryInArrayOut().getNameValue(
-                        getPostTiltOneCornerPerKeyDic())
-            case .useInitial:
-                list =
-                    DictionaryInArrayOut().getNameValue(
-                        getPostTiltOneCornerPerKeyDic())
-            case .useLoaded:
-                list =
-                    DictionaryInArrayOut().getNameValue(
-                        objectPickModel.loadedDictionary)
-            case .useDimension:
-             
-                list =
-                    DictionaryInArrayOut().getNameValue(
-                        objectPickModel.objectImageData.dimensionAfterUserEditDic)
-                    }
-        return list
-    }
-    
-    
-
-    
-    
-    func getMaximumOfObject(_ objectDimensions: Dimension)
-        -> Double {
-            [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
-    }
-    
     
     
     func getObjectDictionaryFromSaved(_ entity: LocationEntity) -> [String]{
@@ -316,11 +285,85 @@ extension ObjectPickViewModel {
     }
     
 
-
-
     func getUniquePartNamesFromObjectDictionary() -> [String] {
       GetUniqueNames(  getPostTiltOneCornerPerKeyDic()).forPart
     }
+    
+}
+ 
+
+
+
+//MARK:
+extension ObjectPickViewModel {
+    
+    
+    func defaultObjectHasThisChainLabel(_ chainLabels: [Part]) -> Bool {
+        let objectType = getCurrentObjectType()
+        guard let defaultChainLabels =
+                objectImageData.objectChainLabelsDefaultDic[objectType] else {
+                    fatalError()
+                }
+        var action = false
+        for chainLabel in chainLabels {
+            if defaultChainLabels.contains(chainLabel) {
+                action = true
+            }
+        }
+        return action
+    }
+    
+    func defaultObjectHasOneOFTheseChainLabels(_ chainLabels: [Part]) -> Part {
+        let objectType = getCurrentObjectType()
+        guard let defaultChainLabels =
+                objectImageData.objectChainLabelsDefaultDic[objectType] else {
+                    fatalError()
+                }
+        var idenftifiedChainLabel: Part = .notFound
+        for chainLabel in chainLabels {
+            if defaultChainLabels.contains(chainLabel) {
+                idenftifiedChainLabel = chainLabel
+               break
+            }
+        }
+        return idenftifiedChainLabel
+    }
+    
+
+    
+    
+
+    
+    
+    func getList (_  version: DictionaryVersion) -> [String] {
+        var list: [String] = []
+            switch version  {
+            case .useCurrent:
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                        getPostTiltOneCornerPerKeyDic())
+            case .useInitial:
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                        getPostTiltOneCornerPerKeyDic())
+            case .useLoaded:
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                        objectPickModel.loadedDictionary)
+            case .useDimension:
+             
+                list =
+                    DictionaryInArrayOut().getNameValue(
+                        objectPickModel.objectImageData.dimensionDic)
+                    }
+        return list
+    }
+    
+    
+
+    
+    
+
     
     
 }
@@ -335,12 +378,58 @@ extension ObjectPickViewModel {
     
     
     func setCurrentObjectName(_ objectName: String){
-        //print(objectName)
         objectPickModel.currentObjectName = objectName
     }
     
     
     func setChangeToPartBeingOnBothSides(_ tag: String, _ part: Part) {
+        let objectType = getCurrentObjectType()
+        let partChain = LabelInPartChainOut(part).partChain
+
+        if tag == "left" || tag == "right" {
+            let newId: OneOrTwo<PartTag> = (tag == "left") ? .one(one: .id0) : .one(one: .id1)
+
+            let chainLabelForFootWasRemoved = userEditedDictionaries.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
+
+            if chainLabelForFootWasRemoved {
+                restoreChainLabelToObject(part)
+                setObjectByCreatingFromName()
+            }
+
+            let ignoreFirstItem = 1 // relevant part subsequent
+            for index in ignoreFirstItem..<partChain.count {
+                userEditedDictionaries.partIdsUserEditedDic[partChain[index]] = newId
+            }
+        }
+
+        if tag == "no" {
+            removeChainLabelFromObject(part)
+            setObjectByCreatingFromName()
+        }
+
+        if tag == "both" {
+            setPartIdDicInKeyToNilRestoringDefault(partChain)
+            userEditedDictionaries.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+        }
+
+        setObjectByCreatingFromName()
+    }
+
+    
+    func updatePartBeingOnBothSides(isLeftSelected: Bool, isRightSelected: Bool) {
+        if isLeftSelected && isRightSelected {
+            setChangeToPartBeingOnBothSides("both", Part.footSupport)
+        } else if isLeftSelected {
+            setChangeToPartBeingOnBothSides("left", Part.footSupport)
+        } else if isRightSelected {
+            setChangeToPartBeingOnBothSides("right", Part.footSupport)
+        } else {
+            setChangeToPartBeingOnBothSides("no", Part.footSupport)
+        }
+    }
+
+    
+    func setChangeToPartBeingOnBothSidesX(_ tag: String, _ part: Part) {
         let objectType = getCurrentObjectType()
         let partChain = LabelInPartChainOut(part).partChain
         if tag == "left" || tag == "right" {
@@ -351,7 +440,7 @@ extension ObjectPickViewModel {
             
             if let newId = action[tag] {
                 var chainLabelForFootWasRemoved: Bool = false
-                if let chainLabelForObject = dictionaries.objectChainLabelsUserEditDic[objectType] {
+                if let chainLabelForObject = userEditedDictionaries.objectChainLabelsUserEditDic[objectType] {
                     chainLabelForFootWasRemoved = chainLabelForObject.contains(part) ? false: true
                 }//to restore left or right after no footSupport, the chainLabel is restored
                 
@@ -361,7 +450,7 @@ extension ObjectPickViewModel {
                 }
                 let ignoreFirstItem = 1//relevant part subsequent
                 for index in ignoreFirstItem..<partChain.count {
-                    dictionaries.partIdsUserEditedDic[partChain[index]] = newId
+                    userEditedDictionaries.partIdsUserEditedDic[partChain[index]] = newId
                 }
             }
         }
@@ -373,7 +462,7 @@ extension ObjectPickViewModel {
         
         if tag == "both" {
             setPartIdDicInKeyToNilRestoringDefault(partChain)
-            dictionaries.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+            userEditedDictionaries.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
         }
         
         setObjectByCreatingFromName()
@@ -382,45 +471,44 @@ extension ObjectPickViewModel {
     
     func restoreChainLabelToObject(_ chainLabel: Part) {
         let objectType = getCurrentObjectType()
-        guard var currentObjectChainLabels =
+        guard let currentObjectChainLabels =
                 objectImageData.objectChainLabelsDefaultDic[objectType] else {
             fatalError("no chain labels for object \(objectType)")
         }
         let newChainLabels = currentObjectChainLabels + [chainLabel]
         
-        dictionaries.objectChainLabelsUserEditDic[objectType] = newChainLabels
+        userEditedDictionaries.objectChainLabelsUserEditDic[objectType] = newChainLabels
     }
     
     
     func removeChainLabelFromObject(_ chainLabel: Part) {
         let objectType = getCurrentObjectType()
-        let currentObjectChainLabels =
+        let currentObjectChainLabels = userEditedDictionaries.objectChainLabelsUserEditDic[objectType] ??
             objectImageData.objectChainLabelsDefaultDic[objectType]
 
         
         let newChainLabels = currentObjectChainLabels?.filter { $0 != chainLabel}
-        dictionaries.objectChainLabelsUserEditDic[objectType] = newChainLabels
+        userEditedDictionaries.objectChainLabelsUserEditDic[objectType] = newChainLabels
     }
     
     
-
     
     func replaceChainLabelForObject(_ removal: Part, _ replacement: Part) {
         let objectType = getCurrentObjectType()
         removeChainLabelFromObject(removal)
-        guard var curentObjectChainLabels = dictionaries.objectChainLabelsUserEditDic[objectType]  else {
+        guard var curentObjectChainLabels = userEditedDictionaries.objectChainLabelsUserEditDic[objectType]  else {
          fatalError()
         }
         curentObjectChainLabels += [replacement]
         
-        dictionaries.objectChainLabelsUserEditDic[objectType] = curentObjectChainLabels
+        userEditedDictionaries.objectChainLabelsUserEditDic[objectType] = curentObjectChainLabels
         setObjectByCreatingFromName()
     }
     
 
     func setPartIdDicInKeyToNilRestoringDefault (_ partChainWithoutRoot: [Part]) {
         for part in partChainWithoutRoot {
-            dictionaries.partIdsUserEditedDic.removeValue(forKey: part)
+            userEditedDictionaries.partIdsUserEditedDic.removeValue(forKey: part)
         }
     }
     
@@ -451,12 +539,11 @@ extension ObjectPickViewModel {
     func getObjectDictionaryForScreen ()
         -> CornerDictionary {
          
-        let currentDic =  objectPickModel.postTiltFourCornerPerKeyDic
-        // print(currentDic)
+        let currentDic =  objectPickModel.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
+        
             
-            let currentObjectAsOneCornerPerKeyDic =
-            ConvertFourCornerPerKeyToOne(
-                fourCornerPerElement: currentDic).oneCornerPerKey
+        let currentObjectAsOneCornerPerKeyDic =
+            objectPickModel.objectImageData.postTiltObjectToOneCornerPerKeyDic
 
         let minThenMax =
              CreateIosPosition
@@ -478,20 +565,25 @@ extension ObjectPickViewModel {
                 scale
             ).dictionary
         return screenDictionary
+            
+            
+            func getMaximumOfObject(_ objectDimensions: Dimension)
+                -> Double {
+                    [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
+            }
     }
     
     
     func getScreenFrameSize ()
         -> Dimension{
             
-        let currentDic =  objectPickModel.postTiltFourCornerPerKeyDic
+        let currentDic =  objectPickModel.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
         let objectInitialDimension =
             getObjectDimension( ConvertFourCornerPerKeyToOne(
                 fourCornerPerElement: currentDic).oneCornerPerKey)
             
         let objectDimensionWithLengthIncrease =
-            ( //+
-             //maximumLengthIncrease * 0
+            (
             width: objectInitialDimension.width,length: objectInitialDimension.length)
 
         var frameSize: Dimension =

@@ -12,9 +12,9 @@ struct ObjectImageData {
 
     let objectType: ObjectTypes
   
-    var dimensionAfterUserEditDic: Part3DimensionDictionary = [:]
+    var dimensionDic: Part3DimensionDictionary = [:]
     
-    var angleAfterUserEditDic: AnglesDictionary = [:]
+    var angleUserEditDic: AnglesDictionary = [:]
 
     var angleMinMaxDic: AngleMinMaxDictionary = [:]
   
@@ -215,11 +215,11 @@ extension ObjectImageData {
             
         func process(_ update: DictionaryUpdate) {
             let name = update.name
-            angleAfterUserEditDic +=
+            angleUserEditDic +=
              [name: update.angle]
             angleMinMaxDic +=
              [name: update.minMaxAngle]
-            dimensionAfterUserEditDic +=
+            dimensionDic +=
               [name: update.dimension]
             preTiltObjectToPartOriginDic +=
               [name: update.origin]
