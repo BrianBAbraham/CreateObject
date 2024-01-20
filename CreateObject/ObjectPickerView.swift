@@ -49,10 +49,10 @@ struct PickInitialObjectView: View {
                 self.equipmentType = tag
                 objectPickVM.setCurrentObjectName(tag)
                 
-                objectPickVM.setObjectByCreatingFromName()
+                objectPickVM.resetObjectByCreatingFromName()
             }
-         //.pickerStyle(.wheel)
-            .scaleEffect(0.6)
+            .pickerStyle(DefaultPickerStyle())
+           
             
             FootSupport()
                 .padding(.horizontal)
@@ -66,7 +66,9 @@ struct PickInitialObjectView: View {
                 .padding(.horizontal)
             
             SeatWidth()
+                .padding(.horizontal)
         }
+        .scaleEffect(0.8)
     }
 }
 

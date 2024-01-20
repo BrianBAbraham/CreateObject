@@ -55,7 +55,7 @@ import SwiftUI
 
 struct SeatWidth: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @State private var sliderValue: Double = 0.0
+    @State private var sliderValue: Double = 400.0
     let chainLabelsRequiringAction: [Part] = [.sitOn]
     var show: Bool {
         objectPickVM.defaultObjectHasThisChainLabel(chainLabelsRequiringAction)
@@ -72,12 +72,12 @@ struct SeatWidth: View {
         let min = 300.0//minMax.min.value
         if show {
             HStack{
-                Text("seat width")
-                Slider(value: $sliderValue, in: min...max, step: 1.0)
-                Text(" mm: \(Int(max - sliderValue))")
+                Text("support width")
+                Slider(value: $sliderValue, in: min...max, step: 10.0)
+                Text(" mm: \(Int(sliderValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setCurrentWidth(
-                            max - sliderValue
+                        objectPickVM.setWidthInUserEditedDictiionary(
+                            sliderValue
                             , partName)
                        }
             }
@@ -250,11 +250,13 @@ struct FootSupport: View {
                         objectPickVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
                     }
                     .padding(.leading, 30)
+
             }
-            .onAppear {
-                objectPickVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
-            }
-        } else {
+            .onChange(of: objectPickVM.getCurrentObjectType()){ _ in
+                isLeftSelected = true
+                isRightSelected = true }
+        }
+        else {
             EmptyView()
         }
 

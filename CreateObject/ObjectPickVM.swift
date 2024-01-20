@@ -102,12 +102,19 @@ class ObjectPickViewModel: ObservableObject {
                 )
     }
     
+    func resetObjectByCreatingFromName() {
+        userEditedDictionaries.dimensionUserEditedDic = [:]
+        userEditedDictionaries.angleUserEditedDic = [:]
+        
+      //  objectWillChange.send()
+        modifyObjectByCreatingFromName()
+    }
     
 
     
-    func setObjectByCreatingFromName(){
+    func modifyObjectByCreatingFromName(){
         let objectName = getCurrentObjectName()
-     
+        //userEditedDictionaries = [:]
         objectImageData =
             Self.setDictionaryMaker(
                     objectName,
@@ -128,52 +135,27 @@ class ObjectPickViewModel: ObservableObject {
         _ angleUserEditedDic: AnglesDictionary = [:]) {
 
         userEditedDictionaries.angleUserEditedDic += angleUserEditedDic
-        let objectName = getCurrentObjectName()
-     
-        objectImageData =
-            Self.setDictionaryMaker(
-                    objectName,
-                    userEditedDictionaries)
-
-        objectPickModel =
-            ObjectPickModel(
-                currentObjectName: objectName,
-                dictionaries: userEditedDictionaries,
-                objectImageData: objectImageData)
-        
-        setCurrentObjectFrameSize()
+      
+            
+        modifyObjectByCreatingFromName()
     }
     
     
-    func setCurrentWidth(_ width: Double, _ name: String) {
+    func setWidthInUserEditedDictiionary(_ width: Double, _ name: String) {
         
-        
-        guard let currentDimension =  objectPickModel.dictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
+        guard let currentDimension =
+                objectPickModel.dictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
             fatalError()
         }
                
-        let newDimension = (width: width, length: currentDimension.length, height:currentDimension.height)
+        let newDimension =
+            (width: width,
+             length: currentDimension.length,
+             height:currentDimension.height)
         
         userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
         
-       // setObjectByCreatingFromName()
-        
-        let objectName = getCurrentObjectName()
-//
-//        objectImageData =
-//            Self.setDictionaryMaker(
-//                    objectName,
-//                    userEditedDictionaries)
-
-        objectPickModel =
-            ObjectPickModel(
-                currentObjectName: objectName,
-                dictionaries: userEditedDictionaries,
-                objectImageData: objectImageData)
-        
-        setCurrentObjectFrameSize()
-        
-        setObjectByCreatingFromName()
+        modifyObjectByCreatingFromName()
         
     }
 }
@@ -393,7 +375,7 @@ extension ObjectPickViewModel {
 
             if chainLabelForFootWasRemoved {
                 restoreChainLabelToObject(part)
-                setObjectByCreatingFromName()
+                modifyObjectByCreatingFromName()
             }
 
             let ignoreFirstItem = 1 // relevant part subsequent
@@ -404,7 +386,7 @@ extension ObjectPickViewModel {
 
         if tag == "no" {
             removeChainLabelFromObject(part)
-            setObjectByCreatingFromName()
+            modifyObjectByCreatingFromName()
         }
 
         if tag == "both" {
@@ -412,7 +394,7 @@ extension ObjectPickViewModel {
             userEditedDictionaries.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
         }
 
-        setObjectByCreatingFromName()
+        modifyObjectByCreatingFromName()
     }
 
     
@@ -446,7 +428,7 @@ extension ObjectPickViewModel {
                 
                 if chainLabelForFootWasRemoved {
                     restoreChainLabelToObject(part)
-                    setObjectByCreatingFromName()
+                    modifyObjectByCreatingFromName()
                 }
                 let ignoreFirstItem = 1//relevant part subsequent
                 for index in ignoreFirstItem..<partChain.count {
@@ -457,7 +439,7 @@ extension ObjectPickViewModel {
 
         if tag == "no" {
             removeChainLabelFromObject(part)
-            setObjectByCreatingFromName()
+            modifyObjectByCreatingFromName()
         }
         
         if tag == "both" {
@@ -465,7 +447,7 @@ extension ObjectPickViewModel {
             userEditedDictionaries.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
         }
         
-        setObjectByCreatingFromName()
+        modifyObjectByCreatingFromName()
     }
     
     
@@ -502,7 +484,7 @@ extension ObjectPickViewModel {
         curentObjectChainLabels += [replacement]
         
         userEditedDictionaries.objectChainLabelsUserEditDic[objectType] = curentObjectChainLabels
-        setObjectByCreatingFromName()
+        modifyObjectByCreatingFromName()
     }
     
 

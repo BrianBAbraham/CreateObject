@@ -141,46 +141,17 @@ struct ContentView: View {
 
         NavigationView {
             VStack {
-                
-//                NavigationLink(destination: SceneView() )
-//                    { Text("Scene") }
-
-                
                 NavigationLink(destination:
-                       
-                    ZStack{
-                        VStack {
-                        
+                    VStack{
                             PickInitialObjectView()
-                               // .environmentObject(objectPickVM)
-
-
-                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
-                                .environmentObject(objectPickVM)
-                            Spacer()
-                        }
-                    HStack(alignment: .center) {
-                   
-                        ObjectView(
-                            uniquePartNames,
-                            //currentDictionary,
-                            name,
-                            objectManipulationIsActive)
-                       // .environmentObject(objectPickVM)
-    //                        .modifier(
-    //                            ForObjectInDefaultView (
-    //                                frameSize: frameSize)
-    //                            )
-    //                        .scaleEffect(0.5)
-                      
-                    }
-
-                    }
-  
-                )
-                    { Text("Default equipment")
-                           // .environmentObject(objectPickVM)
-                    }
+//                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
+//                                .environmentObject(objectPickVM)
+                            ObjectView(
+                                uniquePartNames,
+                                name,
+                                objectManipulationIsActive)
+                    } )
+                    { Text("Default equipment")}
 
                 
 //                NavigationLink(destination:
@@ -195,17 +166,11 @@ struct ContentView: View {
                 NavigationLink(destination:
                     VStack {
                     Text( objectPickVM.getCurrentObjectName())
-//                    GeometryReader{ proxy in
-                        
                         ObjectView(
                             uniquePartNames,
                             name,
                             objectManipulationIsActive
                            )
-
-                    
-                                   
-                                    
 
                     EditObjectMenuView()
                     saveButtonView
