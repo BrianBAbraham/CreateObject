@@ -53,12 +53,51 @@ import SwiftUI
 //}
 
 
+
+
+struct LegLength: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @State private var sliderValue: Double = 400.0
+   
+    var show: Bool {
+        objectPickVM.getViewStatus(.legLength)
+    }
+ 
+    var body: some View {
+        var partName: String {
+            let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.footSupportHangerLink, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
+           return
+            CreateNameFromParts(parts ).name    }
+//        let aminMax =
+//            objectPickVM.getAngleMinMaxDic(partName)
+        let max = 1000.0//aminMax.max.value
+        let min = 100.0//minMax.min.value
+        if show {
+            HStack{
+                Text("leg length")
+                Slider(value: $sliderValue, in: min...max, step: 10.0)
+                Text(" mm: \(Int(sliderValue))")
+                    .onChange(of: sliderValue) { newValue in
+                        objectPickVM.setLengthInUserEditedDictiionary(
+                            sliderValue
+                            , partName)
+                       }
+            }
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+
+
+
 struct SeatWidth: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @State private var sliderValue: Double = 400.0
-    let chainLabelsRequiringAction: [Part] = [.sitOn]
+   
     var show: Bool {
-        objectPickVM.defaultObjectHasThisChainLabel(chainLabelsRequiringAction)
+        objectPickVM.getViewStatus(.supportWidth)
     }
  
     var body: some View {
@@ -81,7 +120,6 @@ struct SeatWidth: View {
                             , partName)
                        }
             }
-
         } else {
             EmptyView()
         }
@@ -194,46 +232,37 @@ struct Propeller: View {
 }
 
 
-struct FootSupportX: View {
-    @State private var laterality = "both"
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-
-    let partSymmetry = ["no", "both", "left", "right"]
-
-    var body: some View {
-        HStack {
-            Text("Show")
-            Picker("anyString", selection: $laterality) {
-                ForEach(partSymmetry, id: \.self) { equipment in
-                    Text(equipment)
-                }
-
-            }
-            .onChange(of: laterality) { tag in
-                objectPickVM.setChangeToPartBeingOnBothSides(tag, Part.footSupport)
-            }
-            Text("foot support")
-        }
-    }
-}
+//struct FootSupportX: View {
+//    @State private var laterality = "both"
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//
+//    let partSymmetry = ["no", "both", "left", "right"]
+//
+//    var body: some View {
+//        HStack {
+//            Text("Show")
+//            Picker("anyString", selection: $laterality) {
+//                ForEach(partSymmetry, id: \.self) { equipment in
+//                    Text(equipment)
+//                }
+//
+//            }
+//            .onChange(of: laterality) { tag in
+//                objectPickVM.setChangeToPartBeingOnBothSides(tag, Part.footSupport)
+//            }
+//            Text("foot support")
+//        }
+//    }
+//}
 
 
 struct FootSupport: View {
     @State private var isLeftSelected = true
     @State private var isRightSelected = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    var objectsRequiringView: [ObjectTypes] = [
-    .fixedWheelSolo,
-    .fixedWheelMidDrive,
-    .fixedWheelRearDrive,
-    .fixedWheelFrontDrive,
-    .fixedWheelManualRearDrive,
-    .fixedWheelRearDriveAssisted,
-    .allCasterTiltInSpaceShowerChair,
-    .allCasterChair
-    ]
+   
     var show: Bool {
-        objectsRequiringView.contains(objectPickVM.getCurrentObjectType()) ? true: false
+        objectPickVM.getViewStatus(.footSupport)
     }
     
     

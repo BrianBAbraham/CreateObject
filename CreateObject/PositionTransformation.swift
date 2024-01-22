@@ -28,7 +28,7 @@ struct ZeroValue {
         y: Self.angle,
         z: Self.angle)
     
-    static let partValue: PartData = PartData(part: .objectOrigin, originName: .one(one: Part.objectOrigin.rawValue), dimensionName: .one(one: Part.objectOrigin.rawValue), dimension: .one(one: ZeroValue.dimension3d), origin: .one(one: ZeroValue.iosLocation), minMaxAngle: nil, angles: nil, id: .one(one: .id0))
+    static let partData: PartData = PartData(part: .objectOrigin, originName: .one(one: Part.objectOrigin.rawValue), dimensionName: .one(one: Part.objectOrigin.rawValue), dimension: .one(one: ZeroValue.dimension3d), origin: .one(one: ZeroValue.iosLocation), minMaxAngle: nil, angles: nil, id: .one(one: .id0))
     
 }
     

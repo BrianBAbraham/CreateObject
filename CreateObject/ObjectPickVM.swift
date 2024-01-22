@@ -141,6 +141,25 @@ class ObjectPickViewModel: ObservableObject {
     }
     
     
+    func setLengthInUserEditedDictiionary(_ length: Double, _ name: String) {
+        
+        guard let currentDimension =
+                objectPickModel.dictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
+            fatalError()
+        }
+              // print(length)
+        let newDimension =
+        (width: currentDimension.width,
+             length: length,
+             height:currentDimension.height)
+        
+        userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
+        
+        modifyObjectByCreatingFromName()
+        
+    }
+    
+    
     func setWidthInUserEditedDictiionary(_ width: Double, _ name: String) {
         
         guard let currentDimension =
@@ -270,6 +289,30 @@ extension ObjectPickViewModel {
     func getUniquePartNamesFromObjectDictionary() -> [String] {
       GetUniqueNames(  getPostTiltOneCornerPerKeyDic()).forPart
     }
+    
+    
+    func getViewStatus(_ view: UserModifiers)-> Bool {
+        print(view)
+        let dictionary = ObjectModifiers.dictionary
+        let objectType = getCurrentObjectType()
+        let modifiersForThisObject = dictionary[objectType] ?? []
+        
+        let state =
+        modifiersForThisObject.contains(view) ? true: false
+//        print(state)
+//        print("")
+        return state
+    }
+    
+    
+    func getViewStatusForGreyOut(_ view: UserModifiers)-> Bool {
+        let dictionary = UserModifiersPartDependency.dictionary
+        let objectType = getCurrentObjectType()
+        let state = (dictionary[view] == nil) ? false: true
+        
+        return state
+    }
+    
     
 }
  

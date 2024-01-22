@@ -56,6 +56,8 @@ struct PickInitialObjectView: View {
             
             FootSupport()
                 .padding(.horizontal)
+            LegLength()
+                .padding(.horizontal)
             HStack{
                 HeadSupport()
                     .padding(.horizontal)
