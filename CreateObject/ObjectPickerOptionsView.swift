@@ -53,6 +53,70 @@ import SwiftUI
 //}
 
 
+enum Side: String, CaseIterable {
+    case left = "L"
+    case right = "R"
+    case both = "L & R"
+    case none = "none"
+    
+    static let options: [String] = Self.allCases.map {$0.rawValue}
+
+}
+
+
+//struct SideSelection: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @State private var selection: Side = .both
+//    let twoSidedPart: Part
+//    let options = Side.options
+//
+//    var body: some View {
+//        let boundEquipmentType = Binding(
+//            get: {objectPickVM.getCurrentSidesForPart(twoSidedPart)},
+//            set: {self.selection = $0}
+//        )
+//
+//
+//        Picker("side",selection: boundEquipmentType ) {
+//            ForEach(Side.allCases, id:  \.self)
+//                    { selection in
+//                        Text(selection.rawValue)
+//            }
+//            .onChange(of: selection) { newSelection in
+//
+//                print (newSelection)}
+//        }.pickerStyle(.segmented)
+//    }
+//
+//}
+
+struct SideSelection: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @State private var selection: Side = .both
+    let twoSidedPart: Part
+    var relevantCases: [Side]{
+        objectPickVM.getSidesPresentGivenUserEdit(twoSidedPart)
+    }
+
+    var body: some View {
+        Picker("side", selection: $selection) {
+            ForEach(relevantCases, id: \.self) { side in
+                Text(side.rawValue)
+            }
+        }
+        .pickerStyle(.segmented)
+        .disabled(relevantCases == [.none])
+        .fixedSize()
+        .onChange(of: selection) { newSelection in
+            objectPickVM.setSidesToBeEdited(newSelection)
+
+        }
+    }
+}
+
+
+
+
 
 
 struct LegLength: View {
@@ -64,10 +128,7 @@ struct LegLength: View {
     }
  
     var body: some View {
-        var partName: String {
-            let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.footSupportHangerLink, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
-           return
-            CreateNameFromParts(parts ).name    }
+        
 //        let aminMax =
 //            objectPickVM.getAngleMinMaxDic(partName)
         let max = 1000.0//aminMax.max.value
@@ -80,7 +141,7 @@ struct LegLength: View {
                     .onChange(of: sliderValue) { newValue in
                         objectPickVM.setLengthInUserEditedDictiionary(
                             sliderValue
-                            , partName)
+                            , Part.footSupportHangerLink)
                        }
             }
         } else {
@@ -173,7 +234,7 @@ struct HeadSupport: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     let chainLabelsRequiringAction: [Part] = [.backSupportHeadSupport]
     var chainLabelRequiringAction: Part {
-        objectPickVM.defaultObjectHasOneOFTheseChainLabels(chainLabelsRequiringAction)
+        objectPickVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction)
     }
     var show: Bool {
         chainLabelRequiringAction == Part.notFound ? false: true
@@ -208,7 +269,7 @@ struct Propeller: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     var chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
     var chainLabelRequiringAction: Part {
-        objectPickVM.defaultObjectHasOneOFTheseChainLabels(chainLabelsRequiringAction)
+        objectPickVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction)
     }
     var show: Bool {
         chainLabelRequiringAction == Part.notFound ? false: true

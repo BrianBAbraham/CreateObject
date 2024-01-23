@@ -34,7 +34,7 @@ typealias BaseObject3DimensionDictionary = [ObjectTypes: Dimension3d]
 typealias PartDimensionDictionary = [String: Dimension]
 ///[String: Dimension3d aka (width: Double, length: Double,  height: Double)]
 typealias Part3DimensionDictionary = [String: Dimension3d]
-typealias BaseObjectOriginDictionary = [ObjectTypes: PositionAsIosAxes]
+//typealias BaseObjectOriginDictionary = [ObjectTypes: PositionAsIosAxes]
 /// Input BaseObjectTypes to get default value for that object
 typealias OriginDictionary = [ ObjectTypes : PositionAsIosAxes ]
 

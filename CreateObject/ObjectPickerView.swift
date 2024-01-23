@@ -21,7 +21,7 @@ struct PickInitialObjectView: View {
     }
 
     @State private var equipmentType = ObjectTypes.fixedWheelRearDrive.rawValue
-    @State private var recline = false
+    //@State private var recline = false
     
     var currentEqipmentType: String {
         getCurrentEquipmentType()
@@ -56,7 +56,11 @@ struct PickInitialObjectView: View {
             
             FootSupport()
                 .padding(.horizontal)
-            LegLength()
+            HStack{
+                SideSelection(twoSidedPart:.footSupport)
+                LegLength()
+            }
+            
                 .padding(.horizontal)
             HStack{
                 HeadSupport()
@@ -70,7 +74,8 @@ struct PickInitialObjectView: View {
             SeatWidth()
                 .padding(.horizontal)
         }
-        .scaleEffect(0.8)
+        .font(.caption)
+       // .scaleEffect(0.8)
     }
 }
 

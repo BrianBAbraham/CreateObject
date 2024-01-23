@@ -1180,6 +1180,19 @@ enum OneOrTwo <T> {
         }
     }
     
+    func mapOneOrTwoToSide() -> [Side] {
+        switch self {
+        case .one (let one):
+            if PartTag.id0 == one as! PartTag {
+                return [.left]
+            } else {
+                return [.right]
+            }
+        case .two:
+            return [.left, .right, .both]
+        }
+    }
+    
     
     func createOneOrTwoWithOneValue<U>(_ value: U) -> OneOrTwo<U> {
         switch self {
@@ -1601,6 +1614,7 @@ enum DictionaryVersion {
 struct UserEditedDictionaries {
     //relating to Part
     var dimensionUserEditedDic: Part3DimensionDictionary
+    var originUserEditedDic: PositionDictionary
     var angleUserEditedDic: AnglesDictionary
     var angleMinMaxDic: AngleMinMaxDictionary
     
@@ -1619,6 +1633,8 @@ struct UserEditedDictionaries {
    private init(
         dimension: Part3DimensionDictionary  =
             [:],
+        origin: PositionDictionary =
+            [:] ,
         parentToPartOriginUserEditedDic: PositionDictionary = [:],
         objectToParOrigintUserEditedDic: PositionDictionary = [:],
         anglesDic: AnglesDictionary =
@@ -1630,8 +1646,8 @@ struct UserEditedDictionaries {
         objectChainLabelsUserEditDic: ObjectChainLabelDictionary =
             [:]) {
         
-        self.dimensionUserEditedDic =
-            dimension
+        self.dimensionUserEditedDic = dimension
+        self.originUserEditedDic = origin
         self.parentToPartOriginUserEditedDic = parentToPartOriginUserEditedDic
         self.objectToParOrigintUserEditedDic = objectToParOrigintUserEditedDic
         self.angleUserEditedDic =
