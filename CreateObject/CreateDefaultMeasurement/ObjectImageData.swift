@@ -63,6 +63,12 @@ struct ObjectImageData {
                     .partValuesDic
             
 //MARK: - ORIGIN/DIMENSION DICTIONARY
+
+            func createPreTiltParentToPartOriginDictionary() {
+                
+            }
+            
+            
         createPreTiltDictionaryFromStructFactory()
         createPostTiltDictionaryFromStructFactory()
 
@@ -161,6 +167,39 @@ extension ObjectImageData {
     }
             
     
+//    mutating func processPartForDictionaryCreationX(
+//        _ part: Part) {
+//        guard let partValue = partValuesDic[part]
+//            else {
+//            return fatalErrorGettingPartValue() }
+//
+//        let globalOrigin = partValue.globalOrigin
+//        let childOrigin = partValue.childOrigin
+//
+//
+//        partValue.dimension.mapFiveOneOrTwoToOneFuncWithVoidReturn  (
+//        partValue.originName,
+//        partValue.angles,
+//        partValue.minMaxAngle,
+//            globalOrigin,
+//            { (dimension,
+//               originName,
+//               angles,
+//               minMaxAngle,
+//               globalOrigin)
+//                in self.updateDictionaries(//the whole point
+//                    dimension,
+//                    originName,
+//                    angles,
+//                    minMaxAngle,
+//                    globalOrigin) }
+//        )
+//
+//        func fatalErrorGettingPartValue(){
+//            fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(part)")
+//        }
+//    }
+
     mutating func processPartForDictionaryCreation(
         _ part: Part) {
         guard let partValue = partValuesDic[part]
@@ -168,24 +207,28 @@ extension ObjectImageData {
             return fatalErrorGettingPartValue() }
             
         let globalOrigin = partValue.globalOrigin
+        let childOrigin = partValue.childOrigin
  
             
-        partValue.dimension.mapFiveOneOrTwoAndToOneFuncWithVoidReturn  (
-            partValue.originName,
-            partValue.angles,
-            partValue.minMaxAngle,
-            globalOrigin,
+        partValue.dimension.mapSixOneOrTwoToOneFuncWithVoidReturn  (
+        partValue.originName,
+        partValue.angles,
+        partValue.minMaxAngle,
+        globalOrigin,
+        childOrigin,
             { (dimension,
                originName,
                angles,
                minMaxAngle,
-               globalOrigin)
+               globalOrigin,
+               childOrigin)
                 in self.updateDictionaries(//the whole point
                     dimension,
                     originName,
                     angles,
                     minMaxAngle,
-                    globalOrigin) }
+                    globalOrigin,
+                    childOrigin) }
         )
             
         func fatalErrorGettingPartValue(){
@@ -194,18 +237,65 @@ extension ObjectImageData {
     }
             
     
+//    mutating func updateDictionaries(
+//        _ dimension: Dimension3d,
+//        _ name: String,
+//        _ angle: RotationAngles,
+//        _ minMaxAngle: AngleMinMax,
+//        _ globalOrigin: PositionAsIosAxes) {
+//
+//        let dictionaryUpdate =
+//            DictionaryUpdate(
+//                name: name,
+//                dimension: dimension,
+//                globalOrigin: globalOrigin,
+//                angle: angle,
+//                minMaxAngle: minMaxAngle,
+//                corners: createCorner(dimension, globalOrigin))
+//
+//        process(dictionaryUpdate)
+//
+//
+//        func process(_ update: DictionaryUpdate) {
+//            let name = update.name
+//            angleUserEditDic +=
+//             [name: update.angle]
+//            angleMinMaxDic +=
+//             [name: update.minMaxAngle]
+//            dimensionDic +=
+//              [name: update.dimension]
+//            preTiltObjectToPartOriginDic +=
+//              [name: update.globalOrigin]
+//            preTiltObjectToPartFourCornerPerKeyDic +=
+//              [name: update.corners]
+//        }
+//
+//
+//        struct DictionaryUpdate {
+//            let name: String
+//            let dimension: Dimension3d
+//            let globalOrigin: PositionAsIosAxes
+//            let angle: RotationAngles
+//            let minMaxAngle: AngleMinMax
+//            let corners: [PositionAsIosAxes]
+//        }
+//    }
+     
+    
     mutating func updateDictionaries(
         _ dimension: Dimension3d,
         _ name: String,
         _ angle: RotationAngles,
         _ minMaxAngle: AngleMinMax,
-        _ globalOrigin: PositionAsIosAxes) {
+        _ globalOrigin: PositionAsIosAxes,
+        _ childOrigin: PositionAsIosAxes) {
         
         let dictionaryUpdate =
             DictionaryUpdate(
                 name: name,
                 dimension: dimension,
-                origin: globalOrigin,
+                globalOrigin: globalOrigin,
+                childOrigin: childOrigin,
                 angle: angle,
                 minMaxAngle: minMaxAngle,
                 corners: createCorner(dimension, globalOrigin))
@@ -222,7 +312,9 @@ extension ObjectImageData {
             dimensionDic +=
               [name: update.dimension]
             preTiltObjectToPartOriginDic +=
-              [name: update.origin]
+              [name: update.globalOrigin]
+            preTiltParentToPartOriginDic +=
+              [name: update.childOrigin]
             preTiltObjectToPartFourCornerPerKeyDic +=
               [name: update.corners]
         }
@@ -231,13 +323,14 @@ extension ObjectImageData {
         struct DictionaryUpdate {
             let name: String
             let dimension: Dimension3d
-            let origin: PositionAsIosAxes
+            let globalOrigin: PositionAsIosAxes
+            let childOrigin: PositionAsIosAxes
             let angle: RotationAngles
             let minMaxAngle: AngleMinMax
             let corners: [PositionAsIosAxes]
         }
     }
-        
+    
             
     func createCorner(
         _ dimension: Dimension3d,

@@ -560,7 +560,7 @@ struct LabelInPartChainOut {
     static let partChainArrays: [[Part]] = [
             [.sitOn, .assistantFootLever],
             [.sitOn, .backSupport],
-            [.sitOn, .footSupportHangerJoint, .footSupportHangerLink, .footSupportJoint, .footSupport],
+            [.sitOn, .footSupportHangerLink,  .footSupport],
             [.footOnly],
             [.sitOn, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
             [.sitOn, .sideSupport],
@@ -941,14 +941,21 @@ struct PartDefaultOrigin {
         self.parentData = linkedOrParentData
         
         selfDimension = PartDefaultDimension(part, objectType, linkedOrParentData).partDimension
-      
+
         linkedOrParentDimension = linkedOrParentData.dimension.mapOneOrTwoToOneValue()
-        
+
         guard let unwrapped = getDefault() else {
             fatalError("no origin exists for part \(part)")
         }
         
         partOrigin = unwrapped
+//
+        if part == .footSupportHangerLink {
+            print(linkedOrParentData.part)
+            print(selfDimension)
+            print(partOrigin)
+        }
+        
      
         wheelBaseJointOrigin = getWheelBaseJointOrigin()
 
@@ -999,10 +1006,17 @@ struct PartDefaultOrigin {
                 .fixedWheelHorizontalJointAtRear: wheelBaseJointOrigin,
                 .fixedWheelAtRearWithPropeller: (x: PartDefaultDimension(.fixedWheelAtRear,objectType, linkedOrParentData).partDimension.width * 1.1, y: 0.0, z: 0.0),
                 .footOnly: ZeroValue.iosLocation,
-                .footSupport: (x: -PartDefaultDimension(.footSupport,objectType, linkedOrParentData).partDimension.width/2.0, y: 0.0, z: 0.0),
+                
+                
+                .footSupport: (x: -PartDefaultDimension(.footSupport,objectType, linkedOrParentData).partDimension.width/2.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
+                
+                
                 .footSupportJoint: (x: 0.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
                 .footSupportHangerJoint: (x: linkedOrParentDimension.width/2.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
-                .footSupportHangerLink: (x: 0.0, y: selfDimension.length/2.0, z: selfDimension.height/2.0),
+                
+                
+                .footSupportHangerLink: (x: linkedOrParentDimension.width/2.0, y: (linkedOrParentDimension.length + selfDimension.length)/2.0, z: selfDimension.height/2.0),
+                
                 .footSupportInOnePiece: ZeroValue.iosLocation,
              
                 .sideSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
@@ -1247,6 +1261,9 @@ enum OneOrTwo <T> {
     }
 
 
+    ///the default is that symmetry is applied since default values are equal
+    ///
+    ///
     
     func mapSingleOneOrTwoWithOneFuncWithReturn<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
@@ -1346,7 +1363,7 @@ enum OneOrTwo <T> {
         }
     }
 
-    func mapFiveOneOrTwoAndToOneFuncWithVoidReturn(
+    func mapFiveOneOrTwoToOneFuncWithVoidReturn(
          _ value1: OneOrTwo<String>,
          _ value2: OneOrTwo<RotationAngles>,
          _ value3: OneOrTwo<AngleMinMax>,
@@ -1363,7 +1380,29 @@ enum OneOrTwo <T> {
              transform(left0 as! Dimension3d, left1, left2, left3, left4)
              transform(right0 as! Dimension3d, right1, right2, right3, right4)
          default:
-             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
+              fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
+         }
+     }
+    
+    func mapSixOneOrTwoToOneFuncWithVoidReturn(
+         _ value1: OneOrTwo<String>,
+         _ value2: OneOrTwo<RotationAngles>,
+         _ value3: OneOrTwo<AngleMinMax>,
+         _ value4: OneOrTwo<PositionAsIosAxes>,
+         _ value5: OneOrTwo<PositionAsIosAxes>,
+         _ transform: (Dimension3d, String, RotationAngles, AngleMinMax, PositionAsIosAxes, PositionAsIosAxes)  -> ()) {
+             
+          //   print("\(value1), \(value2), \(value3), \(value4) ")
+         switch (self, value1, value2, value3, value4, value5) {
+         case let (.one(one0), .one(one1), .one(one2), .one(one3), .one(one4), .one(one5)):
+             transform(one0 as! Dimension3d, one1, one2, one3, one4, one5)
+         
+         
+         case let (.two(left0, right0), .two(left1, right1), .two(left2, right2), .two(left3, right3), .two(left4, right4), .two(left5, right5) ):
+             transform(left0 as! Dimension3d, left1, left2, left3, left4, left5)
+             transform(right0 as! Dimension3d, right1, right2, right3, right4, right5)
+         default:
+              fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
          }
      }
 }
@@ -1410,13 +1449,13 @@ struct StructFactory {
 
         setChildDimensionForPartData()
 
-        setChildOriginForOneSideForPartData()
+        setOneOrTWoChildOriginIfNilWithOneValueForPartData()
 
         setChildOriginAllowingForSymmetryForPartData()
 
         setChildOriginAllowingForChangFromTwoToOne()
         
-                func setChildOriginForOneSideForPartData() {
+                func setOneOrTWoChildOriginIfNilWithOneValueForPartData() {
                      partOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin)
                  }
         
@@ -1614,13 +1653,13 @@ enum DictionaryVersion {
 struct UserEditedDictionaries {
     //relating to Part
     var dimensionUserEditedDic: Part3DimensionDictionary
-    var originUserEditedDic: PositionDictionary
+    
     var angleUserEditedDic: AnglesDictionary
     var angleMinMaxDic: AngleMinMaxDictionary
     
     //relating to Object
     var parentToPartOriginUserEditedDic: PositionDictionary
-    var objectToParOrigintUserEditedDic: PositionDictionary
+    var objectToPartOrigintUserEditedDic: PositionDictionary
 
     
     //relating to ObjectImage
@@ -1647,9 +1686,9 @@ struct UserEditedDictionaries {
             [:]) {
         
         self.dimensionUserEditedDic = dimension
-        self.originUserEditedDic = origin
+   
         self.parentToPartOriginUserEditedDic = parentToPartOriginUserEditedDic
-        self.objectToParOrigintUserEditedDic = objectToParOrigintUserEditedDic
+        self.objectToPartOrigintUserEditedDic = objectToParOrigintUserEditedDic
         self.angleUserEditedDic =
             anglesDic
         self.angleMinMaxDic =
@@ -1672,7 +1711,7 @@ struct UserEditedDictionaries {
 struct UserEditedValue {
     let dimensionUserEditedDic: Part3DimensionDictionary
     let parentToPartOriginUserEditedDic: PositionDictionary
-    let objectToParOrigintUserEditedDic: PositionDictionary
+    let objectToPartOrigintUserEditedDic: PositionDictionary
     let angleUserEditedDic: AnglesDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
     let partIdDicIn: [Part: OneOrTwo<PartTag>]
@@ -1697,8 +1736,8 @@ struct UserEditedValue {
                 dictionaries.dimensionUserEditedDic
             parentToPartOriginUserEditedDic =
                 dictionaries.parentToPartOriginUserEditedDic
-            objectToParOrigintUserEditedDic =
-                dictionaries.objectToParOrigintUserEditedDic
+            objectToPartOrigintUserEditedDic =
+                dictionaries.objectToPartOrigintUserEditedDic
             angleUserEditedDic =
                 dictionaries.angleUserEditedDic
             angleMinMaxDic =
@@ -1712,11 +1751,18 @@ struct UserEditedValue {
                         
                 
             
-            optionalOrigin =
-            getOptionalValue(partId, from: parentToPartOriginUserEditedDic) { part in
-                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
+
+//            getOptionalValue(partId, from: parentToPartOriginUserEditedDic) { part in
+//                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
             
             originName = getOriginName(partId)
+                                       
+                                       optionalOrigin = getOptionalOrigin()
+//                                       if part == .footSupport {
+//                                           print("Start")
+//                                           print(optionalOrigin)
+//                                           print("end")
+//                                       }
 
             optionalAngleMinMax =
             getOptionalValue(partId, from: angleMinMaxDic) { part in
@@ -1770,6 +1816,19 @@ struct UserEditedValue {
                 .two(left: dimensionUserEditedDic[ left ], right: dimensionUserEditedDic[right ] )
         }
         return dimension
+    }
+    
+    func getOptionalOrigin() -> OneOrTwoOptional<PositionAsIosAxes>{
+        var origin: OneOrTwoOptional<PositionAsIosAxes> = .one(one: nil)
+        switch originName.mapOptionalToNonOptionalOneOrTwo("") {
+        case .one(let one):
+            origin =
+                .one(one: parentToPartOriginUserEditedDic[one ] )
+        case .two(let left, let right):
+            origin =
+                .two(left: parentToPartOriginUserEditedDic[ left ], right: parentToPartOriginUserEditedDic[right ] )
+        }
+        return origin
     }
         
     

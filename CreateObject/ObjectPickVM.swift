@@ -70,7 +70,7 @@ class ObjectPickViewModel: ObservableObject {
 
         userEditedDictionaries.parentToPartOriginUserEditedDic =
             objectImageData.preTiltParentToPartOriginDic
-        userEditedDictionaries.objectToParOrigintUserEditedDic =
+        userEditedDictionaries.objectToPartOrigintUserEditedDic =
             objectImageData.preTiltObjectToPartOriginDic
         userEditedDictionaries.angleUserEditedDic =
             objectImageData.angleUserEditDic
@@ -192,6 +192,8 @@ extension ObjectPickViewModel {
         objectPickModel.currentObjectName
     }
     
+    
+   
     
     func getCurrentObjectType()
         ->ObjectTypes {
@@ -578,8 +580,6 @@ extension ObjectPickViewModel {
             process(.id0)
             process(.id1)
             
-           
-            
         case.left:
             if presenceOfPartForSide == .both {
                             ensureUnaffectedSideHasEditedValue(.id1)
@@ -598,22 +598,30 @@ extension ObjectPickViewModel {
         func process(_ part: PartTag) {
             let name = getName(part)
             let currentDimension = getEditedDimension(name)
-            let newDimension = getNewDimension(currentDimension)
-            userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
+            let newDimension = dimensionWithModifiedLength(currentDimension)
+                userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
+            let currentOrigin = getEditedOrigin(name)
+            let newOrigin = originModifiedByLength(currentOrigin)
             
         }
         
         
         func ensureUnaffectedSideHasEditedValue(_ id: PartTag) {
-            
-         
             let partChainMustExist = LabelInPartChainOut(.footSupport).partChain
             let ignoreFirstElement = 1
             for index in ignoreFirstElement..<partChainMustExist.count {
                 let name = getName( id, partChainMustExist[index])
-                //let currentOrigin = getEditedOrigin(name)
+                let currentOrigin = getEditedOrigin(name)
                 let currentDimension = getEditedDimension(name)
-                   userEditedDictionaries.dimensionUserEditedDic += [name: currentDimension]
+                userEditedDictionaries.dimensionUserEditedDic +=
+                    [name: currentDimension]
+                userEditedDictionaries.parentToPartOriginUserEditedDic +=
+                [name: currentOrigin]
+//                if name == "object_id0_footSupport_id1_sitOn_id0" {
+//                    print(" \(name) \(currentOrigin)")
+                    //                userEditedDictionaries.objectToPartOrigintUserEditedDic +=
+                    //                    [name: currentOrigin]
+//                }
             }
         
         }
@@ -627,22 +635,40 @@ extension ObjectPickViewModel {
             return name
         }
         
+        
         func getEditedDimension(_ name: String) -> Dimension3d {
             guard let dimension =
                     objectPickModel.dictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
                 fatalError()
             }
-            
             return dimension
         }
         
-        func getNewDimension(_ dimension: Dimension3d) -> Dimension3d {
+        
+        func getEditedOrigin(_ name: String) -> PositionAsIosAxes {
+//            if name == "object_id0_footSupportHangerSitOnVerticalJoint_id1_sitOn_id0" {
+//                print("DETECT")
+//                print(objectPickModel.objectImageData.preTiltParentToPartOriginDic)
+//            }
+            guard let origin =
+                    objectPickModel.dictionaries.parentToPartOriginUserEditedDic[name] ?? objectPickModel.objectImageData.preTiltParentToPartOriginDic[name] else {
+                fatalError()
+            }
+            return origin
+        }
+        
+        
+        func dimensionWithModifiedLength(_ dimension: Dimension3d) -> Dimension3d {
             (width: dimension.width,
                  length: length,
                  height:dimension.height)
         }
         
-        
+        func originModifiedByLength(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
+        (x: origin.x,
+         y: origin.y,
+         z: origin.z)
+        }
         
         //func
         
