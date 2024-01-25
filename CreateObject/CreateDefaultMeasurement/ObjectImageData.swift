@@ -33,7 +33,7 @@ struct ObjectImageData {
     let objectChainLabelsUserEditedDic: ObjectChainLabelDictionary
     let objectChainLabelsDefaultDic: ObjectChainLabelDictionary = ObjectChainLabel().dictionary
 
-    var partValuesDic: [Part: PartData] = [:]
+    var partDataDic: [Part: PartData] = [:]
     let chainLabels: [Part]
     
     var dimension: Dimension = (width: 0.0, length: 0.0)
@@ -56,7 +56,7 @@ struct ObjectImageData {
         
         chainLabels = unwrapped
             
-        partValuesDic =
+        partDataDic =
             ObjectData(
                 objectType,
                 dictionaries)
@@ -202,7 +202,7 @@ extension ObjectImageData {
 
     mutating func processPartForDictionaryCreation(
         _ part: Part) {
-        guard let partValue = partValuesDic[part]
+        guard let partValue = partDataDic[part]
             else {
             return fatalErrorGettingPartValue() }
             
@@ -372,18 +372,18 @@ extension ObjectImageData {
         var globalOrigins: [OneOrTwo<PositionAsIosAxes>] = []
         
         for partToBeRotated in allPartsToBeRotatedByRotator {
-            guard let partValues = partValuesDic[partToBeRotated] else {
+            guard let partValues = partDataDic[partToBeRotated] else {
                 fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(partToBeRotated) ") }
             dimensions.append(partValues.dimension)
             originNames.append(partValues.originName)
             globalOrigins.append(partValues.globalOrigin)
         }
 
-        guard let rotatorPartData = partValuesDic[rotatorPart] else {
+        guard let rotatorPartData = partDataDic[rotatorPart] else {
             fatalError()
         }
         
-        guard let angle: OneOrTwo<RotationAngles> = partValuesDic[rotatorPart]?.angles else {
+        guard let angle: OneOrTwo<RotationAngles> = partDataDic[rotatorPart]?.angles else {
             fatalError("\n\n\(String(describing: type(of: self))): \(#function ) no values exists for: \(rotatorPart) ") }
         let rotatorData =
             Rotator(
@@ -529,7 +529,7 @@ extension ObjectImageData {
         var rotatingParts: [Part] = []
         var allPartsToBeRotatedByOneRotatorPart: [[Part]] = []
         for chainLabel in chainLabels {
-            guard let  values = partValuesDic[chainLabel] else {
+            guard let  values = partDataDic[chainLabel] else {
                fatalError("no values defined for chain labels \(chainLabel)")
             }
             

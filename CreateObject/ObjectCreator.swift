@@ -950,11 +950,11 @@ struct PartDefaultOrigin {
         
         partOrigin = unwrapped
 //
-        if part == .footSupportHangerLink {
-            print(linkedOrParentData.part)
-            print(selfDimension)
-            print(partOrigin)
-        }
+//        if part == .footSupportHangerLink {
+//            print(linkedOrParentData.part)
+//            print(selfDimension)
+//            print(partOrigin)
+//        }
         
      
         wheelBaseJointOrigin = getWheelBaseJointOrigin()
@@ -1175,13 +1175,79 @@ enum OneOrTwoOptional <V> {
             }
         }
     }
+    
+    
+    //MARK: DEVELPOMENT REFACTOR
+    func mapOptionalToNonOptionalOneOrTwoOrigin(_ defaultValue: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<PositionAsIosAxes> {
+
+        switch self { //assign default to one or left and right if nil
+        case .one(let one):
+            if let one {
+                return .one(one: one as! PositionAsIosAxes )
+            } else {
+                if let unwrapped = defaultValue.one {
+                    return .one(one: unwrapped)
+                } else {
+                    fatalError("id is .one but default is .two")
+                }
+            }
+
+        case .two(let left, let right):
+            var returnForLeft: PositionAsIosAxes
+            var returnForRight: PositionAsIosAxes
+            if let left {
+                returnForLeft = left as! PositionAsIosAxes
+            } else {
+                switch defaultValue {
+                case .two( let left, _):
+                        returnForLeft = left
+                    default:
+                        fatalError("id is .two but default is .one")
+                    }
+            }
+
+            if let right {
+                returnForRight = right as! PositionAsIosAxes
+            } else {
+                switch defaultValue {
+                case .two( _, let right):
+                        returnForRight = right
+                    default:
+                        fatalError("id is .two but default is .one")
+                    }
+            }
+
+            return .two(left: returnForLeft, right: returnForRight)
+        }
+
+    }
+    
+    
+
+
+
+
+
+    
 }
+
+
 
 
 
 enum OneOrTwo <T> {
     case two (left: T, right: T)
     case one (one: T)
+    
+    func mapDefaultToOneOrTwo(_ defaultValue: PositionAsIosAxes) -> OneOrTwo<PositionAsIosAxes>{
+        switch self {
+        case .one:
+            return .one(one: defaultValue)
+        case .two:
+            return .two(left: CreateIosPosition.getLeftFromRight(defaultValue),
+                        right: defaultValue)
+        }
+    }
     
     
     //MARK: CHANGE TO AVERAGE
@@ -1193,6 +1259,23 @@ enum OneOrTwo <T> {
             return left
         }
     }
+    
+    
+    func returnValue(_ id: PartTag) -> T {
+        switch self {
+        case .one (let one):
+            if id == .id0 {
+                return one
+            } else {
+            fatalError(" passed a non-id0 to one") }
+            
+        case .two (let left, let right):
+            let value = id == .id0 ?  left: right
+            
+            return value
+        }
+    }
+    
     
     func mapOneOrTwoToSide() -> [Side] {
         switch self {
@@ -1437,8 +1520,9 @@ struct StructFactory {
         self.part = part
         self.parentPart = linkedOrParentData.part
         self.chainLabel = chainLabel
-        defaultDimension = PartDefaultDimension(part, objectType, linkedOrParentData).partDimension
-        defaultOrigin = PartDefaultOrigin(part, objectType, linkedOrParentData)
+        
+       
+        
 
         userEditedValues =
             UserEditedValue(
@@ -1447,43 +1531,67 @@ struct StructFactory {
                 .id0,
                 part)
 
+        defaultDimension = PartDefaultDimension(part, objectType, linkedOrParentData).partDimension
+        
+        defaultOrigin = PartDefaultOrigin(part, objectType, linkedOrParentData)
+      
+        
+//        if part == Part.footSupport {
+//            print(
+//            userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwoOrigin( oneOrTwoDefaultOriginAdjustedForSymmetry)
+//            )
+//        }
+        
         setChildDimensionForPartData()
 
         setOneOrTWoChildOriginIfNilWithOneValueForPartData()
 
         setChildOriginAllowingForSymmetryForPartData()
 
-        setChildOriginAllowingForChangFromTwoToOne()
+        setChildOriginAllowingForChangeFromTwoToOne()
         
-                func setOneOrTWoChildOriginIfNilWithOneValueForPartData() {
-                     partOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin)
-                 }
+        func setOneOrTWoChildOriginIfNilWithOneValueForPartData() {
+             partOrigin = userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwo(defaultOrigin.partOrigin)
+         }
+
+
+        func setChildOriginAllowingForSymmetryForPartData() {
+            
+            let any: OneOrTwo<PartTag> = userEditedValues.partId
+            let oneOrTwoDefaultOriginAdjustedForSymmetry = any.mapDefaultToOneOrTwo(defaultOrigin.partOrigin)
+            
+            partOrigin = //partOrigin.adjustForSymmetry()
+            userEditedValues.optionalOrigin.mapOptionalToNonOptionalOneOrTwoOrigin( oneOrTwoDefaultOriginAdjustedForSymmetry)
+        }
+
         
-        
-                func setChildOriginAllowingForSymmetryForPartData() {
-                    partOrigin = partOrigin.adjustForSymmetry()
-                }
-        
-        
-                func setChildOriginAllowingForChangFromTwoToOne() {
-                    if let
-                        twoIdChangedToOne = userEditedDictionaries.partIdsUserEditedDic[part]?.one {
-                        if twoIdChangedToOne == .id0 { //no action for id0 right as this is default
-                            if let oldOrigin = partOrigin.one {
-                                partOrigin =
-                                    .one(one:
-                                            CreateIosPosition.getLeftFromRight(
-                                        oldOrigin) )
-                            }
-        
-                        }
+        func setChildOriginAllowingForSymmetryForPartDataX() {
+            
+           
+            
+            partOrigin = partOrigin.adjustForSymmetry()
+          
+        }
+
+        func setChildOriginAllowingForChangeFromTwoToOne() {
+            if let
+                twoIdChangedToOne = userEditedDictionaries.partIdsUserEditedDic[part]?.one {
+                if twoIdChangedToOne == .id0 { //no action for id0 right as this is default
+                    if let oldOrigin = partOrigin.one {
+                        partOrigin =
+                            .one(one:
+                                    CreateIosPosition.getLeftFromRight(
+                                oldOrigin) )
                     }
+
                 }
-        
-        
-                func setChildDimensionForPartData() {
-                        partDimension = userEditedValues.optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
-                    }
+            }
+        }
+
+
+        func setChildDimensionForPartData() {
+                partDimension = userEditedValues.optionalDimension.mapOptionalToNonOptionalOneOrTwo(defaultDimension)
+        }
 
         // Assign linkedOrParentData.part directly here
         partData = createPart()
@@ -1573,7 +1681,7 @@ extension StructFactory {
                 dimension: partDimension,
                 maxDimension: partDimension,
                 origin: partOrigin,
-                globalOrigin: .one(one: ZeroValue.iosLocation),
+                globalOrigin: .one(one: ZeroValue.iosLocation),//postProcessed
                 minMaxAngle: partAnglesMinMax,
                 angles: partAngles,
                 id: partId,
