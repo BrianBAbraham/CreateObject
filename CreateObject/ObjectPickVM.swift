@@ -25,23 +25,25 @@ struct ObjectPickModel {
     
     var currentObjectFrameSize: Dimension = ZeroValue.dimension
     
-    var dictionaries: UserEditedDictionaries
+    var userEditedDictionaries: UserEditedDictionaries
+    var defaultDictionaries: DefaultDictionaries
     
     var objectImageData: ObjectImageData
 
 
     init(
         currentObjectName: String,
-        dictionaries: UserEditedDictionaries,
+        userEditedDictionaries: UserEditedDictionaries,
+        defaultDictionaries: DefaultDictionaries,
         objectImageData: ObjectImageData
     ){
-        self.dictionaries = dictionaries
+        self.userEditedDictionaries = userEditedDictionaries
+        self.defaultDictionaries = defaultDictionaries
         self.currentObjectName = currentObjectName
         self.preTiltFourCornerPerKeyDic = objectImageData.preTiltObjectToPartFourCornerPerKeyDic
-       // self.postTiltFourCornerPerKeyDic = objectImageData.postTiltObjectToPartFourCornerPerKeyDic
-
-        angleUserEditedDic = dictionaries.angleUserEditedDic
-        angleMinMaxDic = dictionaries.angleMinMaxDic
+      
+        angleUserEditedDic = userEditedDictionaries.angleUserEditedDic
+        angleMinMaxDic = userEditedDictionaries.angleMinMaxDic
 
         self.objectImageData = objectImageData
        
@@ -54,18 +56,22 @@ struct ObjectPickModel {
 
 class ObjectPickViewModel: ObservableObject {
     var userEditedDictionaries: UserEditedDictionaries = UserEditedDictionaries.shared
+    let defaultDictionaries: DefaultDictionaries = DefaultDictionaries.shared
     
     @Published private var objectPickModel: ObjectPickModel
     
     @Published private var scopeOfEditForSide: Side = .both
-    @Published private var presenceOfPartForSide: Side = .both
+   // @Published private
+    var presenceOfPartForSide: Side = .both
+    var dimensionForEditing: PartTag = .length
 
     var objectImageData: ObjectImageData
     
     init() {
         objectImageData =
             ObjectPickViewModel.setDictionaryMaker(
-            nil, userEditedDictionaries)
+            nil,
+            userEditedDictionaries)
         
 
         userEditedDictionaries.parentToPartOriginUserEditedDic =
@@ -80,7 +86,8 @@ class ObjectPickViewModel: ObservableObject {
         objectPickModel =
             ObjectPickModel(
             currentObjectName: ObjectTypes.fixedWheelRearDrive.rawValue,
-            dictionaries: userEditedDictionaries,
+            userEditedDictionaries: userEditedDictionaries,
+           defaultDictionaries: defaultDictionaries,
             objectImageData: objectImageData)
         
 
@@ -108,8 +115,6 @@ class ObjectPickViewModel: ObservableObject {
     func resetObjectByCreatingFromName() {
         userEditedDictionaries.dimensionUserEditedDic = [:]
         userEditedDictionaries.angleUserEditedDic = [:]
-        
-      //  objectWillChange.send()
         modifyObjectByCreatingFromName()
     }
     
@@ -126,8 +131,9 @@ class ObjectPickViewModel: ObservableObject {
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: objectName,
-                dictionaries: userEditedDictionaries,
-            objectImageData: objectImageData)
+                userEditedDictionaries: userEditedDictionaries,
+                defaultDictionaries: defaultDictionaries,
+                objectImageData: objectImageData)
     
         setCurrentObjectFrameSize()
 
@@ -193,7 +199,11 @@ extension ObjectPickViewModel {
     }
     
     
-   
+    func getDimensionMinMax(_ part: Part) -> (min: Double, max: Double) {
+        let minMaxDimension = defaultDictionaries.getDefault(part, getCurrentObjectType())
+        return (min: minMaxDimension.min.length, max: minMaxDimension.max.length)
+    }
+    
     
     func getCurrentObjectType()
         ->ObjectTypes {
@@ -281,11 +291,30 @@ extension ObjectPickViewModel {
     }
     
     
+    func getPresenceOfPartForSide() -> Side {
+        presenceOfPartForSide
+    }
+    
+    
     func getViewStatusForGreyOut(_ view: UserModifiers)-> Bool {
         let dictionary = UserModifiersPartDependency.dictionary
-        let objectType = getCurrentObjectType()
+        //let objectType = getCurrentObjectType()
         let state = (dictionary[view] == nil) ? false: true
+     //   print(state)
+        return state
+    }
+    
+    
+    func getShowViewStatus(_ view: UserModifiers)-> Bool {
+        let dictionary = ObjectModifiers.dictionary
+        let objectType = getCurrentObjectType()
+        var state: Bool = false
+        if let show = dictionary[objectType] {
+       //     print(show)
+            state = show.contains(view)
+        }
         
+        //print(state)
         return state
     }
     
@@ -468,6 +497,13 @@ extension ObjectPickViewModel {
     }
 
     
+    func updateDimenionToBeEdited(_ dimension: PartTag) {
+        dimensionForEditing = dimension
+    }
+    
+    func getDimensionToBeEdited() -> PartTag {
+        dimensionForEditing
+    }
     
     
 //    func setChangeToPartBeingOnBothSidesX(_ tag: String, _ part: Part) {
@@ -575,12 +611,10 @@ extension ObjectPickViewModel {
     
     func setSidesToBeEdited(_ sides: Side) {
         scopeOfEditForSide = sides
-        guard let partData = objectImageData.partDataDic[.footSupportHangerLink] else {
-            fatalError()
-        }
-//        print(partData.childOrigin)
-//    print(sides)
-//        print("")
+//        guard let partData = objectImageData.partDataDic[.footSupportHangerLink] else {
+//            fatalError()
+//        }
+
     }
     
     
@@ -588,7 +622,8 @@ extension ObjectPickViewModel {
     
     
     func setLengthInUserEditedDictiionary(_ length: Double, _ part: Part) {
-     
+//     print(length)
+//        print(scopeOfEditForSide)
         switch scopeOfEditForSide {
         case .both:
             process(.id0)
@@ -648,15 +683,24 @@ extension ObjectPickViewModel {
     }
     
     
-    func setWidthInUserEditedDictiionary(_ width: Double, _ name: String) {
+    func setWidthInUserEditedDictionary(_ value: Double, _ part: Part, _ selectedDimension: PartTag) {
+        
+        let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
+        let name = CreateNameFromParts(parts ).name
         guard let currentDimension =
-                objectPickModel.dictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
-            fatalError()
+                objectPickModel.userEditedDictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
+            fatalError(name)
         }
-        let newDimension =
-            (width: width,
+        
+        let newDimension = selectedDimension == .width ?
+            (width: value,
              length: currentDimension.length,
              height:currentDimension.height)
+            :
+            (width: currentDimension.width,
+             length: value,
+             height:currentDimension.height)
+        
         
         userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
         

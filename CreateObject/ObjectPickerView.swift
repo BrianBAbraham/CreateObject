@@ -70,8 +70,10 @@ struct PickInitialObjectView: View {
             }
             TiltX()
                 .padding(.horizontal)
-            
-            SeatWidth()
+            HStack {
+                DimensionSelection()
+                SitOnDimension()
+            }
                 .padding(.horizontal)
         }
         .font(.caption)

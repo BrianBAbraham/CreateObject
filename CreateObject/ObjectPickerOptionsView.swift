@@ -109,13 +109,43 @@ struct SideSelection: View {
         .fixedSize()
         .onChange(of: selection) { newSelection in
             objectPickVM.setSidesToBeEdited(newSelection)
-
+        }
+        .onChange(of: relevantCases) { newCases in
+            if newCases == [.left] ||
+                newCases == [.right] {
+                objectPickVM.setSidesToBeEdited(newCases[0])
+            }
         }
     }
 }
 
 
+struct DimensionSelection: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @State private var selection: PartTag = .width
+   // let twoSidedPart: Part
+    var relevantCases: [PartTag] = [.length, .width]
 
+    var body: some View {
+        Picker("side", selection: $selection) {
+            ForEach(relevantCases, id: \.self) { side in
+                Text(side.rawValue)
+            }
+        }
+        .pickerStyle(.segmented)
+        //.disabled(relevantCases == [.none])
+        .fixedSize()
+        .onChange(of: selection) { newSelection in
+            objectPickVM.updateDimenionToBeEdited(newSelection)
+        }
+//        .onChange(of: relevantCases) { newCases in
+//            if newCases == [.left] ||
+//                newCases == [.right] {
+//                objectPickVM.setSidesToBeEdited(newCases[0])
+//            }
+//        }
+    }
+}
 
 
 
@@ -144,6 +174,7 @@ struct LegLength: View {
                             , Part.footSupportHangerLink)
                        }
             }
+            .disabled(objectPickVM.getPresenceOfPartForSide() == .none)
         } else {
             EmptyView()
         }
@@ -153,32 +184,32 @@ struct LegLength: View {
 
 
 
-struct SeatWidth: View {
+struct SitOnDimension: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @State private var sliderValue: Double = 400.0
-   
     var show: Bool {
-        objectPickVM.getViewStatus(.supportWidth)
+        objectPickVM.getShowViewStatus(.supportWidth)
     }
- 
+    var minMaxLength: (min: Double, max: Double){
+        objectPickVM.getDimensionMinMax(.sitOn)
+    }
+
+    var min: Double { minMaxLength.min}
+    var max: Double { minMaxLength.max}
+    
     var body: some View {
-        var partName: String {
-            let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
-           return
-            CreateNameFromParts(parts ).name    }
-//        let aminMax =
-//            objectPickVM.getAngleMinMaxDic(partName)
-        let max = 1000.0//aminMax.max.value
-        let min = 300.0//minMax.min.value
+        let dimensionToEdit = objectPickVM.getDimensionToBeEdited()
+        
         if show {
             HStack{
-                Text("support width")
+                Text("support")
                 Slider(value: $sliderValue, in: min...max, step: 10.0)
                 Text(" mm: \(Int(sliderValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setWidthInUserEditedDictiionary(
-                            sliderValue
-                            , partName)
+                        objectPickVM.setWidthInUserEditedDictionary(
+                            sliderValue,
+                            .sitOn,
+                            dimensionToEdit)
                        }
             }
         } else {
@@ -186,6 +217,7 @@ struct SeatWidth: View {
         }
     }
 }
+
 
 
 struct TiltX: View {
