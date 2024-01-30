@@ -92,38 +92,49 @@ enum Side: String, CaseIterable {
 
 struct SideSelection: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
     @State private var selection: Side = .both
-    let twoSidedPart: Part
+    let objectName: String
+    //let twoSidedPart: Part
     var relevantCases: [Side]{
-        objectPickVM.getSidesPresentGivenUserEdit(twoSidedPart)
+        objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
     }
-
+    var show: Bool {
+        //objectPickVM.getViewStatus(.legLength)
+        objectEditVM.getShowMenuStatus(.footSupport, objectName)
+    }
     var body: some View {
-        Picker("side", selection: $selection) {
-            ForEach(relevantCases, id: \.self) { side in
-                Text(side.rawValue)
+        
+        if show {
+            Picker("side", selection: $selection) {
+                ForEach(relevantCases, id: \.self) { side in
+                    Text(side.rawValue)
+                }
             }
-        }
-        .pickerStyle(.segmented)
-        .disabled(relevantCases == [.none])
-        .fixedSize()
-        .onChange(of: selection) { newSelection in
-            objectPickVM.setSidesToBeEdited(newSelection)
-        }
-        .onChange(of: relevantCases) { newCases in
-            if newCases == [.left] ||
-                newCases == [.right] {
-                objectPickVM.setSidesToBeEdited(newCases[0])
+            .pickerStyle(.segmented)
+            .disabled(relevantCases == [.none])
+            .fixedSize()
+            .onChange(of: selection) { newSelection in
+                objectPickVM.setSidesToBeEdited(newSelection)
             }
+            .onChange(of: relevantCases) { newCases in
+                if newCases == [.left] ||
+                    newCases == [.right] {
+                    objectPickVM.setSidesToBeEdited(newCases[0])
+                }
+            }
+        } else {
+            EmptyView()
         }
+
     }
 }
 
 
 struct DimensionSelection: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @State private var selection: PartTag = .width
-   // let twoSidedPart: Part
+    @State private var selection: PartTag = .length
+  
     var relevantCases: [PartTag] = [.length, .width]
 
     var body: some View {
@@ -138,12 +149,6 @@ struct DimensionSelection: View {
         .onChange(of: selection) { newSelection in
             objectPickVM.updateDimenionToBeEdited(newSelection)
         }
-//        .onChange(of: relevantCases) { newCases in
-//            if newCases == [.left] ||
-//                newCases == [.right] {
-//                objectPickVM.setSidesToBeEdited(newCases[0])
-//            }
-//        }
     }
 }
 
@@ -151,10 +156,12 @@ struct DimensionSelection: View {
 
 struct LegLength: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
     @State private var sliderValue: Double = 400.0
-   
+    let objectName: String
+    
     var show: Bool {
-        objectPickVM.getViewStatus(.legLength)
+        objectEditVM.getShowMenuStatus(.legLength, objectName)
     }
  
     var body: some View {
@@ -169,7 +176,7 @@ struct LegLength: View {
                 Slider(value: $sliderValue, in: min...max, step: 10.0)
                 Text(" mm: \(Int(sliderValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setLengthInUserEditedDictiionary(
+                        objectPickVM.setOneOrTwoDimesionForTwoInUserEditedDic(
                             sliderValue
                             , Part.footSupportHangerLink)
                        }
@@ -182,41 +189,105 @@ struct LegLength: View {
 }
 
 
-
-
 struct SitOnDimension: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @State private var sliderValue: Double = 400.0
+    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    @State private var sliderValue: Double = 200.0
+    let objectName: String
     var show: Bool {
-        objectPickVM.getShowViewStatus(.supportWidth)
+        objectEditVM.getShowMenuStatus(.supportWidth, objectName)
     }
-    var minMaxLength: (min: Double, max: Double){
+
+    var minMaxLength: (min: Double, max: Double) {
         objectPickVM.getDimensionMinMax(.sitOn)
     }
 
-    var min: Double { minMaxLength.min}
-    var max: Double { minMaxLength.max}
+    var min: Double { minMaxLength.min }
+    var max: Double { minMaxLength.max }
     
+    init (objectName: String) {
+        self.objectName = objectName
+    }
+
     var body: some View {
         let dimensionToEdit = objectPickVM.getDimensionToBeEdited()
         
+        
+        let boundObjectType = Binding(
+            get: {objectPickVM.getInitialSliderValue(.id0, .sitOn)},
+            set: {self.sliderValue = $0}
+        )
+       
         if show {
-            HStack{
+            HStack {
                 Text("support")
-                Slider(value: $sliderValue, in: min...max, step: 10.0)
-                Text(" mm: \(Int(sliderValue))")
+                Slider(value: boundObjectType, in: min...max, step: 10.0)
+                Text(" mm: \(Int(boundObjectType.wrappedValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setWidthInUserEditedDictionary(
+                        objectPickVM.setOneOrTwoDimensionForOneInUserEditedDic(
                             sliderValue,
                             .sitOn,
                             dimensionToEdit)
-                       }
+                    }
+            }
+//            HStack {
+//                Text("support")
+//                Slider(value: $sliderValue, in: min...max, step: 10.0)
+//                Text(" mm: \(Int(sliderValue))")
+//                    .onChange(of: sliderValue) { newValue in
+//                        objectPickVM.setOneOrTwoDimensionForOneInUserEditedDic(
+//                            sliderValue,
+//                            .sitOn,
+//                            dimensionToEdit)
+//                    }
+//            }
+            .onAppear {
+                sliderValue = boundObjectType.wrappedValue
+
             }
         } else {
             EmptyView()
         }
     }
 }
+
+
+
+
+
+//struct SitOnDimension: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @State private var sliderValue: Double = 400.0
+//    var show: Bool {
+//        objectPickVM.getShowViewStatus(.supportWidth)
+//    }
+//    var minMaxLength: (min: Double, max: Double){
+//        objectPickVM.getDimensionMinMax(.sitOn)
+//    }
+//
+//    var min: Double { minMaxLength.min}
+//    var max: Double { minMaxLength.max}
+//
+//    var body: some View {
+//        let dimensionToEdit = objectPickVM.getDimensionToBeEdited()
+//
+//        if show {
+//            HStack{
+//                Text("support")
+//                Slider(value: $sliderValue, in: min...max, step: 10.0)
+//                Text(" mm: \(Int(sliderValue))")
+//                    .onChange(of: sliderValue) { newValue in
+//                        objectPickVM.setWidthInUserEditedDictionary(
+//                            sliderValue,
+//                            .sitOn,
+//                            dimensionToEdit)
+//                       }
+//            }
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//}
 
 
 
@@ -353,9 +424,12 @@ struct FootSupport: View {
     @State private var isLeftSelected = true
     @State private var isRightSelected = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    let objectName: String
    
     var show: Bool {
-        objectPickVM.getViewStatus(.footSupport)
+        objectEditVM.getShowMenuStatus(.footSupport, objectName)
+        //objectPickVM.getViewStatus(.footSupport)
     }
     
     

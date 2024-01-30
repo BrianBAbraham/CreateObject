@@ -55,20 +55,22 @@ struct LocalOutlineRectangle {
                         width: corners[2].x - corners[0].x,
                         height: corners[2].y - corners[0].y
                     ))
-                    .stroke(Color.black)
+                    .stroke(Color.black, lineWidth: 5)
+                    
             }
     }
 }
 
 struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var partEditVM: ObjectEditViewModel
+    @EnvironmentObject var partEditVM: ObjectMenuShowViewModel
     let uniquePartName: String
     var preTiltFourCornerPerKeyDic: CornerDictionary
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary
     
     var color: Color {
-        partEditVM.getColorForPart(uniquePartName)
+        .white
+       // partEditVM.getColorForPart(uniquePartName)
     }
     
     var dictionaryElementIn: DictionaryElementIn {
@@ -88,9 +90,9 @@ struct PartView: View {
       LocalOutlineRectangle.path(corners: partCorners, color)
         .zIndex(zPosition)
 
-        .onTapGesture {
-            partEditVM.setCurrentPartToEditName(uniquePartName)
-        }
+//        .onTapGesture {
+//            partEditVM.setCurrentPartToEditName(uniquePartName)
+//        }
     }
 }
 

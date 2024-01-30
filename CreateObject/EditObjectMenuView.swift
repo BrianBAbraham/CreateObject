@@ -21,7 +21,7 @@ import SwiftUI
 struct EditObjectMenuView: View {
     var dictionary: PositionDictionary = [:]
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
     
     
     init(){

@@ -402,56 +402,7 @@ struct LinkedParts {
 
 
 
-struct ObjectModifiers {
-    static let supportDimension: [UserModifiers] = [.supportLength, .supportWidth]
-    static let footControl: [UserModifiers] = [.footSupport, .footSeparation]
-    static let standardWheeledChair = footControl + supportDimension + [.tiltInSpace] + [.headRest] + [.legLength]
-    static var dictionary: [ObjectTypes: [UserModifiers]] = {
-        [
-            .allCasterBed: supportDimension,
-            .allCasterChair: supportDimension,
-            .allCasterTiltInSpaceShowerChair: standardWheeledChair,
-            .allCasterTiltInSpaceArmChair: supportDimension + [.tiltInSpace] + [.headRest],
-            .fixedWheelFrontDrive: standardWheeledChair,
-            .fixedWheelMidDrive: standardWheeledChair,
-            .fixedWheelRearDrive: standardWheeledChair ,
-            .fixedWheelManualRearDrive: standardWheeledChair ,
-            .fixedWheelSolo: standardWheeledChair,
-                //.fixedWheelTransfer : ,
-            .showerTray: supportDimension
-        ]
-    }()
-}
 
-
-
-enum UserModifiers: String {
-    case casterBaseSeparator = "open"
-    case casterSepartionAtFront = "front caster"
-    case casterSeparationAtRear = "rear caster"
-    case backRecline = "back recline"
-    case footSupport = "foot support"
-    case footSeparation = "foot separtion"
-    case headRest = "head rest"
-    case independantJoyStick = "joy stick"
-    case legLength = "leg length"
-    case legSeparatation = "leg separation"
-    case propelleers = "propellers"
-    case rearJoyStick = "rear joy stick"
-    case supportLength = "support length"
-    case supportWidth = "support width"
-    case tiltInSpace = "tilt-in-space"
-}
-
-
-
-struct UserModifiersPartDependency {
-    static var dictionary: [UserModifiers: [Part]] = {
-        [.footSupport: [.footSupport],
-         .footSeparation: [.footSupport]
-        ]
-    }()
-}
 
 
 

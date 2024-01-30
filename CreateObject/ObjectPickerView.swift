@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PickInitialObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objecEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
    
@@ -20,33 +20,25 @@ struct PickInitialObjectView: View {
         return unsortedObjectNames.sorted()
     }
 
-    @State private var equipmentType = ObjectTypes.fixedWheelRearDrive.rawValue
-    //@State private var recline = false
-    
-    var currentEqipmentType: String {
-        getCurrentEquipmentType()
-    }
-
-    func getCurrentEquipmentType() -> String {
-        ObjectTypes.fixedWheelRearDrive.rawValue
-    }
+    @State private var objectName = ObjectTypes.fixedWheelRearDrive.rawValue
+   
     
     var body: some View {
-        let boundEquipmentType = Binding(
+        let boundObjectType = Binding(
             get: {objectPickVM.getCurrentObjectName()},
-            set: {self.equipmentType = $0}
+            set: {self.objectName = $0}
         )
         
         VStack {
-            Picker("Equipment",selection: boundEquipmentType ) {
+            Picker("Equipment",selection: boundObjectType ) {
                 ForEach(objectNames, id:  \.self)
                         { equipment in
                     Text(equipment)
                 }
             }
-            .onChange(of: equipmentType) {tag in
+            .onChange(of: objectName) {tag in
 
-                self.equipmentType = tag
+                self.objectName = tag
                 objectPickVM.setCurrentObjectName(tag)
                 
                 objectPickVM.resetObjectByCreatingFromName()
@@ -54,11 +46,12 @@ struct PickInitialObjectView: View {
             .pickerStyle(DefaultPickerStyle())
            
             
-            FootSupport()
+            FootSupport(objectName: objectName)
                 .padding(.horizontal)
             HStack{
-                SideSelection(twoSidedPart:.footSupport)
-                LegLength()
+              
+                SideSelection(objectName: objectName)
+                LegLength(objectName: objectName)
             }
             
                 .padding(.horizontal)
@@ -72,10 +65,11 @@ struct PickInitialObjectView: View {
                 .padding(.horizontal)
             HStack {
                 DimensionSelection()
-                SitOnDimension()
+                SitOnDimension(objectName: objectName)
             }
                 .padding(.horizontal)
         }
+        .onAppear{objectName = objectPickVM.getCurrentObjectName()}
         .font(.caption)
        // .scaleEffect(0.8)
     }

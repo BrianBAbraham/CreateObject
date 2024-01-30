@@ -54,7 +54,7 @@ struct ListView: View {
 struct ContentView: View {
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objecEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
     
@@ -110,9 +110,6 @@ struct ContentView: View {
         objectPickVM.getUniquePartNamesFromObjectDictionary()
     }
 
-//    var originDictionary: [String] {
-//        DictionaryInArrayOut().getNameValue( objectPickVM.getAllPartFromPrimaryOriginDictionary())
-//    }
 
     var currentDictionary: PositionDictionary {
         objectPickVM.getPostTiltOneCornerPerKeyDic()
@@ -145,7 +142,7 @@ struct ContentView: View {
                     VStack{
                             PickInitialObjectView()
 //                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
-//                                .environmentObject(objectPickVM)
+                              //  .environmentObject(objectPickVM)
                             ObjectView(
                                 uniquePartNames,
                                 name,
@@ -163,47 +160,47 @@ struct ContentView: View {
 //                    { Text("Saved equipment") }
                 
                 
-                NavigationLink(destination:
-                    VStack {
-                    Text( objectPickVM.getCurrentObjectName())
-                        ObjectView(
-                            uniquePartNames,
-                            name,
-                            objectManipulationIsActive
-                           )
-
-                    EditObjectMenuView()
-                    saveButtonView
-                    }
-                )
-                { Text("Edit equipment") }
+//                NavigationLink(destination:
+//                    VStack {
+//                    Text( objectPickVM.getCurrentObjectName())
+//                        ObjectView(
+//                            uniquePartNames,
+//                            name,
+//                            objectManipulationIsActive
+//                           )
+//
+//                    EditObjectMenuView()
+//                    saveButtonView
+//                    }
+//                )
+//                { Text("Edit equipment") }
 
                 
                 
-                NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
-                 Text("View current dictionary")
-                }
-
-                NavigationLink(destination: ListView(equipmentName, initialObjectDictionaryAsList)){
-                 Text("View initial dictionary")
-                }
-                
-                NavigationLink(destination: ListView(equipmentName, dimensionsAsList)){
-                 Text("View initial dimensions")
-                }
-                
-                
-                NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
-                 Text("View saved dictionary")
-                }
-
-                NavigationLink(destination: ListView(equipmentName, uniquePartNames) ) {
-                    Text("View dictionary parts")
-                }
-
-                NavigationLink(destination: ListView(equipmentName, uniquePartNames)) {
-                    Text("Settings")
-                }
+//                NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
+//                 Text("View current dictionary")
+//                }
+//
+//                NavigationLink(destination: ListView(equipmentName, initialObjectDictionaryAsList)){
+//                 Text("View initial dictionary")
+//                }
+//                
+//                NavigationLink(destination: ListView(equipmentName, dimensionsAsList)){
+//                 Text("View initial dimensions")
+//                }
+//                
+//                
+//                NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
+//                 Text("View saved dictionary")
+//                }
+//
+//                NavigationLink(destination: ListView(equipmentName, uniquePartNames) ) {
+//                    Text("View dictionary parts")
+//                }
+//
+//                NavigationLink(destination: ListView(equipmentName, uniquePartNames)) {
+//                    Text("Settings")
+//                }
 
             }
             .navigationBarTitle("Equipment manager")

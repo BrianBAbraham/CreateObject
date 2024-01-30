@@ -61,8 +61,10 @@ class ObjectPickViewModel: ObservableObject {
     @Published private var objectPickModel: ObjectPickModel
     
     @Published private var scopeOfEditForSide: Side = .both
-   // @Published private
-    var presenceOfPartForSide: Side = .both
+    @Published private var presenceOfPartForSide: Side = .both
+    
+    
+    
     var dimensionForEditing: PartTag = .length
 
     var objectImageData: ObjectImageData
@@ -148,6 +150,213 @@ class ObjectPickViewModel: ObservableObject {
 
 
 
+
+//MARK: UI
+extension ObjectPickViewModel {
+    
+    func getInitialSliderValue(_ id: PartTag, _ part: Part) -> Double {
+        let name = getPartName(id, part)
+        let dimension = objectImageData.dimensionDic[name] ?? ZeroValue.dimension3d
+        print(getCurrentObjectName())
+        print(name)
+        print(dimension.length)
+        print("")
+        return dimension.length
+    }
+    
+    
+    func getSidesPresentGivenUserEdit(_ part: Part) -> [Side] {
+        let objectType = getCurrentObjectType()
+        let oneOrTWoid = userEditedDictionaries.partIdsUserEditedDic[part] ?? OneOrTwoId(objectType, part).forPart
+        guard let chainLabels = userEditedDictionaries.objectChainLabelsUserEditDic[objectType] ?? objectImageData.objectChainLabelsDefaultDic[objectType] else {
+            fatalError()
+        }
+        
+        if chainLabels.contains(part) {
+            
+            return oneOrTWoid.mapOneOrTwoToSide()
+        } else {
+            return [.none]
+        }
+    }
+    
+
+    
+    func getPresenceOfPartForSide() -> Side {
+        presenceOfPartForSide
+    }
+    
+    
+    func setWhenPartChangesOneOrTwoStatus(_ tag: String, _ part: Part) {
+        let objectType = getCurrentObjectType()
+        let partChain = LabelInPartChainOut(part).partChain
+
+        if tag == "left" || tag == "right" {
+
+            let newId: OneOrTwo<PartTag> = (tag == "left") ? .one(one: .id0) : .one(one: .id1)
+
+            let chainLabelForFootWasRemoved = userEditedDictionaries.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
+
+            if chainLabelForFootWasRemoved {
+                restoreChainLabelToObject(part)
+            }
+
+            let ignoreFirstItem = 1 // relevant part subsequent
+            for index in ignoreFirstItem..<partChain.count {
+                userEditedDictionaries.partIdsUserEditedDic[partChain[index]] = newId
+            }
+        }
+
+        if tag == "none" {
+            removeChainLabelFromObject(part)
+            modifyObjectByCreatingFromName()
+        }
+
+        if tag == "both" {
+            setPartIdDicInKeyToNilRestoringDefault(partChain)
+            userEditedDictionaries.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+            scopeOfEditForSide = .both
+            
+        }
+
+        modifyObjectByCreatingFromName()
+    }
+
+    
+    func updatePartBeingOnBothSides(isLeftSelected: Bool, isRightSelected: Bool) {
+        if isLeftSelected && isRightSelected {
+            presenceOfPartForSide = .both
+            setWhenPartChangesOneOrTwoStatus("both", Part.footSupport)
+        } else if isLeftSelected {
+            presenceOfPartForSide = .left
+            setWhenPartChangesOneOrTwoStatus("left", Part.footSupport)
+        } else if isRightSelected {
+            presenceOfPartForSide = .right
+            setWhenPartChangesOneOrTwoStatus("right", Part.footSupport)
+        } else {
+            presenceOfPartForSide = .none
+            setWhenPartChangesOneOrTwoStatus("none", Part.footSupport)
+        }
+    }
+
+    
+    func updateDimenionToBeEdited(_ dimension: PartTag) {
+        dimensionForEditing = dimension
+    }
+    
+    func getDimensionToBeEdited() -> PartTag {
+        dimensionForEditing
+    }
+    
+
+    
+    func setCurrentRotation(
+        _ angleUserEditedDic: AnglesDictionary = [:]) {
+
+        userEditedDictionaries.angleUserEditedDic += angleUserEditedDic
+      
+        modifyObjectByCreatingFromName()
+    }
+    
+    
+    func setSidesToBeEdited(_ sides: Side) {
+        scopeOfEditForSide = sides
+
+
+    }
+    
+    
+    func setOneOrTwoDimesionForTwoInUserEditedDic(_ length: Double, _ part: Part) {
+
+        switch scopeOfEditForSide {
+        case .both:
+            process(.id0)
+            process(.id1)
+        case.left:
+            process(.id0)
+        case.right:
+            process(.id1)
+        default:
+            break
+        }
+     
+        modifyObjectByCreatingFromName()
+       
+        func process(_ id: PartTag) {
+                let name = getName( id, part)
+                let currentDimension = getEditedOrDefaultDimension(name, part, id)
+                let newDimension = dimensionWithModifiedLength(currentDimension)
+                userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
+        }
+        
+
+        func getName (_ id: PartTag, _ part: Part =  Part.footSupportHangerLink) -> String {
+            var name: String {
+                let parts: [Parts] =
+                [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
+               return
+                CreateNameFromParts(parts ).name    }
+            return name
+        }
+        
+        
+        func getEditedOrDefaultDimension(_ name: String, _ part: Part, _ id: PartTag) -> Dimension3d {
+            guard let partData = objectImageData.partDataDic[part] else {
+                fatalError()
+            }
+           
+            return
+                partData.dimension.returnValue(id)
+        }
+
+    
+        func dimensionWithModifiedLength(_ dimension: Dimension3d) -> Dimension3d {
+            (width: dimension.width,
+             length: length,
+             height:dimension.height)
+        }
+        
+        
+        func originModifiedByLength(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
+        (x: origin.x,
+         y: origin.y,
+         z: origin.z)
+        }
+        
+    }
+    
+    
+    func setOneOrTwoDimensionForOneInUserEditedDic(
+        _ value: Double,
+        _ part: Part,
+        _ selectedDimension: PartTag) {
+    
+        let name = getPartName(.id0, part)
+
+        guard let currentDimension =
+                objectPickModel.userEditedDictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
+            fatalError(name)
+        }
+        
+        let newDimension = selectedDimension == .width ?
+            (width: value,
+             length: currentDimension.length,
+             height:currentDimension.height)
+            :
+            (width: currentDimension.width,
+             length: value,
+             height:currentDimension.height)
+        
+        
+        userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
+        
+        modifyObjectByCreatingFromName()
+        
+    }
+}
+
+
+
 //MARK: GET
 extension ObjectPickViewModel {
     
@@ -214,21 +423,7 @@ extension ObjectPickViewModel {
     }
     
 
-    func getSidesPresentGivenUserEdit(_ part: Part) -> [Side] {
-        let objectType = getCurrentObjectType()
-        let oneOrTWoid = userEditedDictionaries.partIdsUserEditedDic[part] ?? OneOrTwoId(objectType, part).forPart
-        guard let chainLabels = userEditedDictionaries.objectChainLabelsUserEditDic[objectType] ?? objectImageData.objectChainLabelsDefaultDic[objectType] else {
-            fatalError()
-        }
-        
-        if chainLabels.contains(part) {
-            
-            return oneOrTWoid.mapOneOrTwoToSide()
-        } else {
-            return [.none]
-        }
-        
-    }
+
     
 
     
@@ -244,6 +439,15 @@ extension ObjectPickViewModel {
     }
     
 
+    func getPartName (_ id: PartTag, _ part: Part) -> String {
+        var name: String {
+            let parts: [Parts] =
+            [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
+           return
+            CreateNameFromParts(parts ).name    }
+        return name
+    }
+    
     
     func getRelevantDictionary(
         _ forScreenOrMeasurment: DictionaryTypes,
@@ -277,46 +481,7 @@ extension ObjectPickViewModel {
     }
     
     
-    func getViewStatus(_ view: UserModifiers)-> Bool {
-        //print(view)
-        let dictionary = ObjectModifiers.dictionary
-        let objectType = getCurrentObjectType()
-        let modifiersForThisObject = dictionary[objectType] ?? []
-        
-        let state =
-        modifiersForThisObject.contains(view) ? true: false
-//        print(state)
-//        print("")
-        return state
-    }
-    
-    
-    func getPresenceOfPartForSide() -> Side {
-        presenceOfPartForSide
-    }
-    
-    
-    func getViewStatusForGreyOut(_ view: UserModifiers)-> Bool {
-        let dictionary = UserModifiersPartDependency.dictionary
-        //let objectType = getCurrentObjectType()
-        let state = (dictionary[view] == nil) ? false: true
-     //   print(state)
-        return state
-    }
-    
-    
-    func getShowViewStatus(_ view: UserModifiers)-> Bool {
-        let dictionary = ObjectModifiers.dictionary
-        let objectType = getCurrentObjectType()
-        var state: Bool = false
-        if let show = dictionary[objectType] {
-       //     print(show)
-            state = show.contains(view)
-        }
-        
-        //print(state)
-        return state
-    }
+
     
 //    func getPartChainLabelFromPart(_ part: Part) -> Part {
 //
@@ -442,68 +607,7 @@ extension ObjectPickViewModel {
     }
     
     
-    func setWhenPartChangesOneOrTwoStatus(_ tag: String, _ part: Part) {
-        let objectType = getCurrentObjectType()
-        let partChain = LabelInPartChainOut(part).partChain
-     //   print(tag)
-        if tag == "left" || tag == "right" {
 
-            let newId: OneOrTwo<PartTag> = (tag == "left") ? .one(one: .id0) : .one(one: .id1)
-//print ("oneOrTwoStatusChanged")
-//print(newId)
-
-            let chainLabelForFootWasRemoved = userEditedDictionaries.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
-
-            if chainLabelForFootWasRemoved {
-                restoreChainLabelToObject(part)
-               // modifyObjectByCreatingFromName()
-            }
-
-            let ignoreFirstItem = 1 // relevant part subsequent
-            for index in ignoreFirstItem..<partChain.count {
-                userEditedDictionaries.partIdsUserEditedDic[partChain[index]] = newId
-               // modifyObjectByCreatingFromName()
-            }
-        }
-
-        if tag == "none" {
-            removeChainLabelFromObject(part)
-            modifyObjectByCreatingFromName()
-        }
-
-        if tag == "both" {
-            setPartIdDicInKeyToNilRestoringDefault(partChain)
-            userEditedDictionaries.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
-        }
-
-        modifyObjectByCreatingFromName()
-    }
-
-    
-    func updatePartBeingOnBothSides(isLeftSelected: Bool, isRightSelected: Bool) {
-        if isLeftSelected && isRightSelected {
-            presenceOfPartForSide = .both
-            setWhenPartChangesOneOrTwoStatus("both", Part.footSupport)
-        } else if isLeftSelected {
-            presenceOfPartForSide = .left
-            setWhenPartChangesOneOrTwoStatus("left", Part.footSupport)
-        } else if isRightSelected {
-            presenceOfPartForSide = .right
-            setWhenPartChangesOneOrTwoStatus("right", Part.footSupport)
-        } else {
-            presenceOfPartForSide = .none
-            setWhenPartChangesOneOrTwoStatus("none", Part.footSupport)
-        }
-    }
-
-    
-    func updateDimenionToBeEdited(_ dimension: PartTag) {
-        dimensionForEditing = dimension
-    }
-    
-    func getDimensionToBeEdited() -> PartTag {
-        dimensionForEditing
-    }
     
     
 //    func setChangeToPartBeingOnBothSidesX(_ tag: String, _ part: Part) {
@@ -596,118 +700,7 @@ extension ObjectPickViewModel {
 
 
 
-extension ObjectPickViewModel {
 
-    
-    
-    func setCurrentRotation(
-        _ angleUserEditedDic: AnglesDictionary = [:]) {
-
-        userEditedDictionaries.angleUserEditedDic += angleUserEditedDic
-      
-        modifyObjectByCreatingFromName()
-    }
-    
-    
-    func setSidesToBeEdited(_ sides: Side) {
-        scopeOfEditForSide = sides
-//        guard let partData = objectImageData.partDataDic[.footSupportHangerLink] else {
-//            fatalError()
-//        }
-
-    }
-    
-    
-    
-    
-    
-    func setLengthInUserEditedDictiionary(_ length: Double, _ part: Part) {
-//     print(length)
-//        print(scopeOfEditForSide)
-        switch scopeOfEditForSide {
-        case .both:
-            process(.id0)
-            process(.id1)
-        case.left:
-          process(.id0)
-        case.right:
-            process(.id1)
-        default:
-            break
-        }
-     
-        modifyObjectByCreatingFromName()
-       
-        func process(_ id: PartTag) {
-                let name = getName( id, part)
-                let currentDimension = getEditedOrDefaultDimension(name, part, id)
-                let newDimension = dimensionWithModifiedLength(currentDimension)
-                userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
-        }
-        
-
-        
-        func getName (_ id: PartTag, _ part: Part =  Part.footSupportHangerLink) -> String {
-            var name: String {
-                let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
-               return
-                CreateNameFromParts(parts ).name    }
-            return name
-        }
-        
-        
-        func getEditedOrDefaultDimension(_ name: String, _ part: Part, _ id: PartTag) -> Dimension3d {
-            guard let partData = objectImageData.partDataDic[part] else {
-                fatalError()
-            }
-           
-            return
-            
-            partData.dimension.returnValue(id)
-        }
-
-    
-        func dimensionWithModifiedLength(_ dimension: Dimension3d) -> Dimension3d {
-            (width: dimension.width,
-             length: length,
-             height:dimension.height)
-        }
-        
-        
-        func originModifiedByLength(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
-        (x: origin.x,
-         y: origin.y,
-         z: origin.z)
-        }
-        
-    }
-    
-    
-    func setWidthInUserEditedDictionary(_ value: Double, _ part: Part, _ selectedDimension: PartTag) {
-        
-        let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
-        let name = CreateNameFromParts(parts ).name
-        guard let currentDimension =
-                objectPickModel.userEditedDictionaries.dimensionUserEditedDic[name] ?? objectImageData.dimensionDic[name] else {
-            fatalError(name)
-        }
-        
-        let newDimension = selectedDimension == .width ?
-            (width: value,
-             length: currentDimension.length,
-             height:currentDimension.height)
-            :
-            (width: currentDimension.width,
-             length: value,
-             height:currentDimension.height)
-        
-        
-        userEditedDictionaries.dimensionUserEditedDic += [name: newDimension]
-        
-        modifyObjectByCreatingFromName()
-        
-    }
-}
 
 
 

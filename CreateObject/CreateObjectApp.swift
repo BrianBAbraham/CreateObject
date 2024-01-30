@@ -14,22 +14,24 @@ import SwiftUI
 
 @main
 struct CreateObjectApp: App {
-   // @StateObject var twinSitOnVM = TwinSitOnViewModel()
-  
+   
     @StateObject var objectPickVM = ObjectPickViewModel()
-    
-    @StateObject var objectEditVM = ObjectEditViewModel()
+    @StateObject var objectEditVM = ObjectMenuShowViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
+    
+//    init() {
+//           // Initialize ObjectEditViewModel with ObjectPickViewModel
+//           self.objectEditVM = ObjectEditViewModel(objectPickVM: objectPickVM)
+//       }
 
     var body: some Scene {
         WindowGroup {
-
-            ContentView()
-                .environmentObject(objectPickVM)
-                .environmentObject(objectEditVM)
-                .environmentObject(coreDataVM)
-                .environmentObject(sceneVM)
+                ContentView()
+                    .environmentObject(objectPickVM)
+                    .environmentObject(objectEditVM)
+                    .environmentObject(coreDataVM)
+                    .environmentObject(sceneVM)
         }
     }
 }
