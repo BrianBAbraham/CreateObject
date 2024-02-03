@@ -9,13 +9,13 @@ import SwiftUI
 
 struct PickInitialObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
    
     var objectNames: [String] {
         let unsortedObjectNames =
-        ObjectChainLabel().dictionary.keys.map{$0.rawValue}
+        ObjectChainLabel.dictionary.keys.map{$0.rawValue}
         
         return unsortedObjectNames.sorted()
     }

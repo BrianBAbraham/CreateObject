@@ -31,7 +31,7 @@ struct ObjectImageData {
     let partIdDicIn: [Part: OneOrTwo<PartTag>]
 
     let objectChainLabelsUserEditedDic: ObjectChainLabelDictionary
-    let objectChainLabelsDefaultDic: ObjectChainLabelDictionary = ObjectChainLabel().dictionary
+    let objectChainLabelsDefaultDic: ObjectChainLabelDictionary = ObjectChainLabel.dictionary
 
     var partDataDic: [Part: PartData] = [:]
     let chainLabels: [Part]
@@ -166,39 +166,7 @@ extension ObjectImageData {
         }
     }
             
-    
-//    mutating func processPartForDictionaryCreationX(
-//        _ part: Part) {
-//        guard let partValue = partValuesDic[part]
-//            else {
-//            return fatalErrorGettingPartValue() }
-//
-//        let globalOrigin = partValue.globalOrigin
-//        let childOrigin = partValue.childOrigin
-//
-//
-//        partValue.dimension.mapFiveOneOrTwoToOneFuncWithVoidReturn  (
-//        partValue.originName,
-//        partValue.angles,
-//        partValue.minMaxAngle,
-//            globalOrigin,
-//            { (dimension,
-//               originName,
-//               angles,
-//               minMaxAngle,
-//               globalOrigin)
-//                in self.updateDictionaries(//the whole point
-//                    dimension,
-//                    originName,
-//                    angles,
-//                    minMaxAngle,
-//                    globalOrigin) }
-//        )
-//
-//        func fatalErrorGettingPartValue(){
-//            fatalError( "\n\n\(String(describing: type(of: self))): \(#function ) no values exist for this part: \(part)")
-//        }
-//    }
+
 
     mutating func processPartForDictionaryCreation(
         _ part: Part) {

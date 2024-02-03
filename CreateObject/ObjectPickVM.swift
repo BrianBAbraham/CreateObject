@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 struct ObjectPickModel {
     var currentObjectName: String  //FixedWheelBase.Subtype.midDrive.rawValu
@@ -51,11 +52,61 @@ struct ObjectPickModel {
     }
 }
     
-    
+  
+
+
+
+
+//struct CurrentObject {
+//    var currentObject: ObjectTypes
+//    static var shared = CurrentObject()
+//
+//    init ( _ currentObject: ObjectTypes = .fixedWheelRearDrive) {
+//        self.currentObject = currentObject }
+//}
+
+
+//class ObjectMakerVM: ObservableObject {
+//
+//    @Published var partLengthMakerDic: [String: Double] = [:]
+//    var partLengthDictionary = [
+//        "seat": 400.0,
+//        "foot": 300.0]
+//
+//    private var cancellables: Set<AnyCancellable> = []
+//    let defineDictionaryAgain = false
+//    init() {
+//
+//        DataService.shared.$partLengthSharedDic
+//            .sink { [weak self] newData in
+//                self?.partLengthMakerDic = newData
+//            }
+//            .store(in: &cancellables)
+//    }
+//
+//    func sendPartLengthDataToObjectEditor() {
+//            DataService.shared.partLengthSharedDic = partLengthDictionary
+//    }
+//
+//}
+
+
+//class DataService: ObservableObject {
+//    @Published var userEditedSharedDic: UserEditedDictionaries = UserEditedDictionaries.shared
+//    static let shared = DataService()
+//    private init() {}
+//}
 
 
 class ObjectPickViewModel: ObservableObject {
-    var userEditedDictionaries: UserEditedDictionaries = UserEditedDictionaries.shared
+var userEditedDictionaries: UserEditedDictionaries = UserEditedDictionaries.shared
+    
+//
+//    @Published var userEditedDictionaries: UserEditedDictionaries = UserEditedDictionaries.shared
+//    private var cancellables: Set<AnyCancellable> = []
+
+    
+    
     let defaultDictionaries: DefaultDictionaries = DefaultDictionaries.shared
     
     @Published private var objectPickModel: ObjectPickModel
@@ -70,6 +121,9 @@ class ObjectPickViewModel: ObservableObject {
     var objectImageData: ObjectImageData
     
     init() {
+        
+
+        
         objectImageData =
             ObjectPickViewModel.setDictionaryMaker(
             nil,
@@ -84,7 +138,9 @@ class ObjectPickViewModel: ObservableObject {
             objectImageData.angleUserEditDic
         userEditedDictionaries.angleMinMaxDic =
             objectImageData.angleMinMaxDic
-
+        
+        
+       
         objectPickModel =
             ObjectPickModel(
             currentObjectName: ObjectTypes.fixedWheelRearDrive.rawValue,
@@ -92,6 +148,16 @@ class ObjectPickViewModel: ObservableObject {
            defaultDictionaries: defaultDictionaries,
             objectImageData: objectImageData)
         
+//        
+//        DataService.shared.$userEditedSharedDic
+//            .sink { [weak self] newData in
+//                self?.userEditedDictionaries = newData
+//            }
+//            .store(in: &cancellables)
+
+        
+
+
 
     }
     
@@ -157,10 +223,10 @@ extension ObjectPickViewModel {
     func getInitialSliderValue(_ id: PartTag, _ part: Part) -> Double {
         let name = getPartName(id, part)
         let dimension = objectImageData.dimensionDic[name] ?? ZeroValue.dimension3d
-        print(getCurrentObjectName())
-        print(name)
-        print(dimension.length)
-        print("")
+//        print(getCurrentObjectName())
+//        print(name)
+//        print(dimension.length)
+//        print("")
         return dimension.length
     }
     
@@ -604,6 +670,14 @@ extension ObjectPickViewModel {
     
     func setCurrentObjectName(_ objectName: String){
         objectPickModel.currentObjectName = objectName
+        guard let objectType = ObjectTypes(rawValue: objectName) else {
+            fatalError()
+         }
+        
+       
+        //CurrentObject.shared.currentObject = objectType
+        
+       
     }
     
     
@@ -667,24 +741,27 @@ extension ObjectPickViewModel {
         let currentObjectChainLabels = userEditedDictionaries.objectChainLabelsUserEditDic[objectType] ??
             objectImageData.objectChainLabelsDefaultDic[objectType]
 
-        
+
         let newChainLabels = currentObjectChainLabels?.filter { $0 != chainLabel}
         userEditedDictionaries.objectChainLabelsUserEditDic[objectType] = newChainLabels
     }
-    
-    
-    
     func replaceChainLabelForObject(_ removal: Part, _ replacement: Part) {
         let objectType = getCurrentObjectType()
         removeChainLabelFromObject(removal)
+
         guard var curentObjectChainLabels = userEditedDictionaries.objectChainLabelsUserEditDic[objectType]  else {
          fatalError()
         }
         curentObjectChainLabels += [replacement]
-        
+
         userEditedDictionaries.objectChainLabelsUserEditDic[objectType] = curentObjectChainLabels
         modifyObjectByCreatingFromName()
     }
+    
+    
+    
+    
+    
     
 
     func setPartIdDicInKeyToNilRestoringDefault (_ partChainWithoutRoot: [Part]) {

@@ -16,19 +16,20 @@ import SwiftUI
 struct CreateObjectApp: App {
    
     @StateObject var objectPickVM = ObjectPickViewModel()
-    @StateObject var objectEditVM = ObjectMenuShowViewModel()
+    
+    @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
+    @StateObject var objectEditVM = ObjectEditViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
     
-//    init() {
-//           // Initialize ObjectEditViewModel with ObjectPickViewModel
-//           self.objectEditVM = ObjectEditViewModel(objectPickVM: objectPickVM)
-//       }
+
 
     var body: some Scene {
         WindowGroup {
                 ContentView()
                     .environmentObject(objectPickVM)
+                  
+                    .environmentObject(objectShowMenuVM)
                     .environmentObject(objectEditVM)
                     .environmentObject(coreDataVM)
                     .environmentObject(sceneVM)

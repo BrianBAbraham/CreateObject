@@ -54,7 +54,7 @@ struct ListView: View {
 struct ContentView: View {
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
     

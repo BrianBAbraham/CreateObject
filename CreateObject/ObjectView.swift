@@ -63,7 +63,7 @@ struct LocalOutlineRectangle {
 
 struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var partEditVM: ObjectMenuShowViewModel
+    @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
     let uniquePartName: String
     var preTiltFourCornerPerKeyDic: CornerDictionary
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary

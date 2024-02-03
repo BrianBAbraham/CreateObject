@@ -29,8 +29,9 @@ struct ObjectData {
         
         self.objectType = objectType
         self.userEditedDictionaries = dictionaries
-        self.objectChainLabelsDefaultDic = ObjectChainLabel().dictionary
+        self.objectChainLabelsDefaultDic = ObjectChainLabel.dictionary
         self.objectChainLabelsUserEditedDic = dictionaries.objectChainLabelsUserEditDic
+        
         allPartChainLabels = getAllPartChainLabels()
             
         checkObjectHasAtLeastOnePartChain()
@@ -471,7 +472,7 @@ struct ObjectChainLabel {
     static let chairSupportWithFixedRearWheel: [Part] =
     chairSupport + [.fixedWheelAtRear]
     
-    let dictionary: ObjectChainLabelDictionary =
+   static let dictionary: ObjectChainLabelDictionary =
         [
         .allCasterBed:
             [.sitOn, .sideSupport ],

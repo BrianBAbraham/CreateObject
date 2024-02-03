@@ -92,7 +92,7 @@ enum Side: String, CaseIterable {
 
 struct SideSelection: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var selection: Side = .both
     let objectName: String
     //let twoSidedPart: Part
@@ -101,7 +101,7 @@ struct SideSelection: View {
     }
     var show: Bool {
         //objectPickVM.getViewStatus(.legLength)
-        objectEditVM.getShowMenuStatus(.footSupport, objectName)
+        objectShowMenuVM.getShowMenuStatus(.footSupport, objectName)
     }
     var body: some View {
         
@@ -156,12 +156,12 @@ struct DimensionSelection: View {
 
 struct LegLength: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
     let objectName: String
     
     var show: Bool {
-        objectEditVM.getShowMenuStatus(.legLength, objectName)
+        objectShowMenuVM.getShowMenuStatus(.legLength, objectName)
     }
  
     var body: some View {
@@ -191,11 +191,11 @@ struct LegLength: View {
 
 struct SitOnDimension: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 200.0
     let objectName: String
     var show: Bool {
-        objectEditVM.getShowMenuStatus(.supportWidth, objectName)
+        objectShowMenuVM.getShowMenuStatus(.supportWidth, objectName)
     }
 
     var minMaxLength: (min: Double, max: Double) {
@@ -335,6 +335,7 @@ struct TiltX: View {
 struct HeadSupport: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     let chainLabelsRequiringAction: [Part] = [.backSupportHeadSupport]
     var chainLabelRequiringAction: Part {
         objectPickVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction)
@@ -349,13 +350,20 @@ struct HeadSupport: View {
             Toggle("headrest", isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
                     if !value {
+                        
+                        
                         objectPickVM.replaceChainLabelForObject(
                             chainLabelRequiringAction,
                             .backSupport)
+//                        objectEditVM.replaceChainLabelForObject(
+//                            chainLabelRequiringAction,
+//                            .backSupport)
+//                        objectPickVM.modifyObjectByCreatingFromName()
                     } else {
                         objectPickVM.replaceChainLabelForObject(
                             .backSupport,
                             chainLabelRequiringAction)
+                        objectPickVM.modifyObjectByCreatingFromName()
                     }
                 }
         } else {
@@ -424,11 +432,11 @@ struct FootSupport: View {
     @State private var isLeftSelected = true
     @State private var isRightSelected = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectMenuShowViewModel
+    @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     let objectName: String
    
     var show: Bool {
-        objectEditVM.getShowMenuStatus(.footSupport, objectName)
+        objecShowMenuVM.getShowMenuStatus(.footSupport, objectName)
         //objectPickVM.getViewStatus(.footSupport)
     }
     
