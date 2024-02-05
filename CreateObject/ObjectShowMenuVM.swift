@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+import Combine
 
 struct EditObjectMenuShowModel {
         static let supportDimension: [UserModifiers] = [.supportLength, .supportWidth]
@@ -17,6 +17,7 @@ struct EditObjectMenuShowModel {
             [
                 .allCasterBed: supportDimension,
                 .allCasterChair: supportDimension,
+                .allCasterStretcher: supportDimension,
                 .allCasterTiltInSpaceShowerChair: standardWheeledChair,
                 .allCasterTiltInSpaceArmChair: supportDimension + [.tiltInSpace] + [.headRest],
                 .fixedWheelFrontDrive: standardWheeledChair,
@@ -65,6 +66,17 @@ enum UserModifiers: String {
 class ObjectShowMenuViewModel: ObservableObject {
     @Published private var editObjectMenuShowModel: EditObjectMenuShowModel =
         EditObjectMenuShowModel()
+    var currentObjectType: ObjectTypes = .fixedWheelRearDrive
+    private var cancellables: Set<AnyCancellable> = []
+    
+    init () {
+        DataService.shared.$currentObjectType
+            .sink { [weak self] newData in
+                self?.currentObjectType = newData
+            }
+            .store(in: &self.cancellables)
+    }
+    
 }
 
 
@@ -82,6 +94,39 @@ extension ObjectShowMenuViewModel {
        
         return state
     }
+    
+    
+//    func defaultObjectHasThisChainLabel(_ chainLabels: [Part]) -> Bool {
+//        guard let defaultChainLabels =
+//                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+//                    fatalError()
+//                }
+//        var action = false
+//        for chainLabel in chainLabels {
+//            if defaultChainLabels.contains(chainLabel) {
+//                action = true
+//            }
+//        }
+//        return action
+//    }
+//
+//
+//    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> Part {
+//        guard let defaultChainLabels =
+//                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+//                    fatalError()
+//                }
+//        var idenftifiedChainLabel: Part = .notFound
+//        for chainLabel in chainLabels {
+//            if defaultChainLabels.contains(chainLabel) {
+//                idenftifiedChainLabel = chainLabel
+//               break
+//            }
+//        }
+//        return idenftifiedChainLabel
+//    }
+    
+    
 }
 
 

@@ -44,11 +44,10 @@ struct ObjectImageData {
 
     init(
         _ objectType: ObjectTypes,
-        _ dictionaries: UserEditedDictionaries) {
+        _ userEditedDic: UserEditedDictionaries?) {
         self.objectType = objectType
-     
-        self.partIdDicIn = dictionaries.partIdsUserEditedDic
-        self.objectChainLabelsUserEditedDic = dictionaries.objectChainLabelsUserEditDic
+        self.partIdDicIn = userEditedDic?.partIdsUserEditedDic ?? [:]
+        self.objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
             
         guard let unwrapped = objectChainLabelsUserEditedDic[objectType] ?? objectChainLabelsDefaultDic[objectType] else {
             fatalError("no chain labels for this object \(objectType)")
@@ -59,9 +58,9 @@ struct ObjectImageData {
         partDataDic =
             ObjectData(
                 objectType,
-                dictionaries)
+                userEditedDic)
                     .partValuesDic
-            
+        DataService.shared.partDataSharedDic = partDataDic
 //MARK: - ORIGIN/DIMENSION DICTIONARY
 
             func createPreTiltParentToPartOriginDictionary() {
@@ -83,8 +82,8 @@ struct ObjectImageData {
         createPostTiltDictionaryFromStructFactory()
             
         postTiltObjectToOneCornerPerKeyDic =
-        ConvertFourCornerPerKeyToOne(
-            fourCornerPerElement: postTiltObjectToPartFourCornerPerKeyDic).oneCornerPerKey
+            ConvertFourCornerPerKeyToOne(
+                fourCornerPerElement: postTiltObjectToPartFourCornerPerKeyDic).oneCornerPerKey
             
         dimension = getSize()
             

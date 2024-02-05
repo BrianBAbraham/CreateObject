@@ -92,6 +92,7 @@ enum Side: String, CaseIterable {
 
 struct SideSelection: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var selection: Side = .both
     let objectName: String
@@ -115,12 +116,12 @@ struct SideSelection: View {
             .disabled(relevantCases == [.none])
             .fixedSize()
             .onChange(of: selection) { newSelection in
-                objectPickVM.setSidesToBeEdited(newSelection)
+                objectEditVM.setSidesToBeEdited(newSelection)
             }
             .onChange(of: relevantCases) { newCases in
                 if newCases == [.left] ||
                     newCases == [.right] {
-                    objectPickVM.setSidesToBeEdited(newCases[0])
+                    objectEditVM.setSidesToBeEdited(newCases[0])
                 }
             }
         } else {
@@ -133,6 +134,7 @@ struct SideSelection: View {
 
 struct DimensionSelection: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @State private var selection: PartTag = .length
   
     var relevantCases: [PartTag] = [.length, .width]
@@ -147,7 +149,7 @@ struct DimensionSelection: View {
         //.disabled(relevantCases == [.none])
         .fixedSize()
         .onChange(of: selection) { newSelection in
-            objectPickVM.updateDimenionToBeEdited(newSelection)
+            objectEditVM.updateDimensionToBeEdited(newSelection)
         }
     }
 }
@@ -156,6 +158,7 @@ struct DimensionSelection: View {
 
 struct LegLength: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
     let objectName: String
@@ -176,12 +179,14 @@ struct LegLength: View {
                 Slider(value: $sliderValue, in: min...max, step: 10.0)
                 Text(" mm: \(Int(sliderValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setOneOrTwoDimesionForTwoInUserEditedDic(
+                        objectEditVM.setOneOrTwoDimensionForTwoInUserEditedDic(
                             sliderValue
-                            , Part.footSupportHangerLink)
+                            ,Part.footSupportHangerLink)
+                        
+                        objectPickVM.modifyObjectByCreatingFromName()
                        }
             }
-            .disabled(objectPickVM.getPresenceOfPartForSide() == .none)
+            .disabled(DataService.shared.presenceOfPartForSide == .none)
         } else {
             EmptyView()
         }
@@ -191,6 +196,7 @@ struct LegLength: View {
 
 struct SitOnDimension: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 200.0
     let objectName: String
@@ -224,23 +230,13 @@ struct SitOnDimension: View {
                 Slider(value: boundObjectType, in: min...max, step: 10.0)
                 Text(" mm: \(Int(boundObjectType.wrappedValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setOneOrTwoDimensionForOneInUserEditedDic(
+                        objectEditVM.setOneOrTwoDimensionForOneInUserEditedDic(
                             sliderValue,
-                            .sitOn,
-                            dimensionToEdit)
+                            Part.sitOn,
+                        dimensionToEdit)
+                        objectPickVM.modifyObjectByCreatingFromName()
                     }
             }
-//            HStack {
-//                Text("support")
-//                Slider(value: $sliderValue, in: min...max, step: 10.0)
-//                Text(" mm: \(Int(sliderValue))")
-//                    .onChange(of: sliderValue) { newValue in
-//                        objectPickVM.setOneOrTwoDimensionForOneInUserEditedDic(
-//                            sliderValue,
-//                            .sitOn,
-//                            dimensionToEdit)
-//                    }
-//            }
             .onAppear {
                 sliderValue = boundObjectType.wrappedValue
 
@@ -293,6 +289,8 @@ struct SitOnDimension: View {
 
 struct TiltX: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 0.0
     let chainLabelsRequiringAction: [Part] = [.sitOnTiltJoint]
     var show: Bool {
@@ -314,13 +312,9 @@ struct TiltX: View {
                 Slider(value: $sliderValue, in: min...max, step: 1.0)
                 Text(" deg: \(Int(max - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectPickVM.setCurrentRotation(
-                            [partName:
-                                     (x:
-                                Measurement(value: max - sliderValue, unit: UnitAngle.degrees),
-                                      y: ZeroValue.angle,
-                                      z: ZeroValue.angle)]
+                        objectEditVM.setCurrentRotation( max - sliderValue
                         )
+                        objectPickVM.modifyObjectByCreatingFromName()
                        }
             }
 
@@ -350,21 +344,15 @@ struct HeadSupport: View {
             Toggle("headrest", isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
                     if !value {
-                        
-                        
-                        objectPickVM.replaceChainLabelForObject(
+                        objectEditVM.replaceChainLabelForObject(
                             chainLabelRequiringAction,
                             .backSupport)
-//                        objectEditVM.replaceChainLabelForObject(
-//                            chainLabelRequiringAction,
-//                            .backSupport)
-//                        objectPickVM.modifyObjectByCreatingFromName()
                     } else {
-                        objectPickVM.replaceChainLabelForObject(
+                        objectEditVM.replaceChainLabelForObject(
                             .backSupport,
                             chainLabelRequiringAction)
-                        objectPickVM.modifyObjectByCreatingFromName()
                     }
+                    objectPickVM.modifyObjectByCreatingFromName()
                 }
         } else {
             EmptyView()
@@ -378,6 +366,7 @@ struct HeadSupport: View {
 struct Propeller: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     var chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
     var chainLabelRequiringAction: Part {
         objectPickVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction)
@@ -392,9 +381,15 @@ struct Propeller: View {
             Toggle("propellers", isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
                     if !value {
-                        objectPickVM.replaceChainLabelForObject(chainLabelRequiringAction,.fixedWheelAtRear)
+                        objectEditVM.replaceChainLabelForObject(
+                            chainLabelRequiringAction,
+                            .fixedWheelAtRear)
+                        objectPickVM.modifyObjectByCreatingFromName()
                     } else {
-                        objectPickVM.replaceChainLabelForObject( .fixedWheelAtRear, chainLabelRequiringAction)
+                        objectEditVM.replaceChainLabelForObject(
+                            .fixedWheelAtRear,
+                            chainLabelRequiringAction)
+                        objectPickVM.modifyObjectByCreatingFromName()
                     }
                 }
         } else {
@@ -432,6 +427,7 @@ struct FootSupport: View {
     @State private var isLeftSelected = true
     @State private var isRightSelected = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     let objectName: String
    
@@ -447,11 +443,13 @@ struct FootSupport: View {
                 Text("foot support:")
                 Toggle("L", isOn: $isLeftSelected)
                     .onChange(of: isLeftSelected) { newValue in
-                        objectPickVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
+                        objectEditVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
+                        objectPickVM.modifyObjectByCreatingFromName()
                     }
                 Toggle("R", isOn: $isRightSelected)
                     .onChange(of: isRightSelected) { newValue in
-                        objectPickVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
+                        objectEditVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
+                        objectPickVM.modifyObjectByCreatingFromName()
                     }
                     .padding(.leading, 30)
 

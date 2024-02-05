@@ -15,7 +15,7 @@ struct ObjectData {
     
     let objectType: ObjectTypes
     
-    let userEditedDictionaries: UserEditedDictionaries
+    let userEditedDic: UserEditedDictionaries?
     
     let size: Dimension = (width: 0.0, length: 0.0)
 
@@ -25,12 +25,12 @@ struct ObjectData {
     
     init(
         _ objectType: ObjectTypes,
-        _ dictionaries: UserEditedDictionaries) {
+        _ userEditedDic: UserEditedDictionaries?) {
         
         self.objectType = objectType
-        self.userEditedDictionaries = dictionaries
+        self.userEditedDic = userEditedDic
         self.objectChainLabelsDefaultDic = ObjectChainLabel.dictionary
-        self.objectChainLabelsUserEditedDic = dictionaries.objectChainLabelsUserEditDic
+            self.objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
         
         allPartChainLabels = getAllPartChainLabels()
             
@@ -156,7 +156,7 @@ extension ObjectData {
         let foundationalData =
                 StructFactory(
                    objectType,
-                   userEditedDictionaries,
+                   userEditedDic,
                   independantPart: child)
                     .partData
         
@@ -176,7 +176,7 @@ extension ObjectData {
         childData =
             StructFactory(
                 objectType,
-                userEditedDictionaries,
+                userEditedDic,
                 linkedOrParentData,
                 child,
                 allPartChainLabels)
@@ -1649,7 +1649,7 @@ struct StructFactory {
 
     // Designated initializer for common parts
     init(_ objectType: ObjectTypes,
-         _ userEditedDictionaries: UserEditedDictionaries,
+         _ userEditedDic: UserEditedDictionaries?,
          _ linkedOrParentData: PartData,
          _ part: Part,
          _ chainLabel: [Part]){
@@ -1663,7 +1663,7 @@ struct StructFactory {
         userEditedData =
             UserEditedData(
                 objectType,
-                userEditedDictionaries,
+                userEditedDic,
                 sitOnId,
                 part)
         
@@ -1707,13 +1707,13 @@ struct StructFactory {
 
    
     init(_ objectType: ObjectTypes,
-         _ userEditedDictionaries: UserEditedDictionaries,
+         _ userEditedDic: UserEditedDictionaries?,
          independantPart childPart: Part) {
         let linkedOrParentData = ZeroValue.partData
         let noChainLabelRequired: [Part] = []
         self.init(
             objectType,
-            userEditedDictionaries,
+            userEditedDic,
             linkedOrParentData,
             childPart,
             noChainLabelRequired
@@ -1726,7 +1726,7 @@ struct StructFactory {
     // Convenience initializer for parts in general
     init(
         _ objectType: ObjectTypes,
-         _ userEditedDictionaries: UserEditedDictionaries,
+         _ userEditedDic: UserEditedDictionaries?,
          _ linkedOrParentData: PartData,
          dependantPart childPart: Part,
          _ chainLabel: [Part]
@@ -1734,7 +1734,7 @@ struct StructFactory {
      
         self.init(
             objectType,
-            userEditedDictionaries,
+            userEditedDic,
             linkedOrParentData,
             childPart,
             chainLabel)
@@ -1863,6 +1863,8 @@ enum DictionaryVersion {
 
 
 struct DefaultDictionaries {
+    let dimensionDic: Part3DimensionDictionary = [:]
+    
     let fineDimensionMinMaxDic: [PartObject: (min: Dimension3d, max: Dimension3d)] = [
         PartObject(.sitOn,.showerTray):
             (min: (width: 600.0, length: 600.0, height: 10.0), max: (width: 2000.0, length: 3000.0, height: 10.0))
@@ -1988,25 +1990,25 @@ struct UserEditedData {
     
     init(
         _ objectType: ObjectTypes,
-        _ dictionaries: UserEditedDictionaries,
+        _ userEditedDic: UserEditedDictionaries?,
         _ sitOnId: PartTag,
         _ part: Part) {
             self.sitOnId = sitOnId
             self.part = part
             dimensionUserEditedDic =
-                dictionaries.dimensionUserEditedDic
+            userEditedDic?.dimensionUserEditedDic ?? [:]
             parentToPartOriginUserEditedDic =
-                dictionaries.parentToPartOriginUserEditedDic
+            userEditedDic?.parentToPartOriginUserEditedDic ?? [:]
             parentToPartOriginUserEditedDicNew =
-                dictionaries.parentToPartOriginUserEditedDicNew
+            userEditedDic?.parentToPartOriginUserEditedDicNew ?? [:]
             objectToPartOrigintUserEditedDic =
-                dictionaries.objectToPartOrigintUserEditedDic
+            userEditedDic?.objectToPartOrigintUserEditedDic ?? [:]
             angleUserEditedDic =
-                dictionaries.angleUserEditedDic
+            userEditedDic?.angleUserEditedDic ?? [:]
             angleMinMaxDic =
-                dictionaries.angleMinMaxDic
+            userEditedDic?.angleMinMaxDic ?? [:]
             partIdDicIn =
-                dictionaries.partIdsUserEditedDic
+            userEditedDic?.partIdsUserEditedDic ?? [:]
 
             partIdAllowingForUserEdit = //non-optional as must iterate through id
             partIdDicIn[part] ?? //UI edit:.two(left:.id0,right:.id1)<->.one(one:.id0) ||.one(one:.id1)
