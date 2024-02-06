@@ -16,7 +16,7 @@ struct EditObjectMenuShowModel {
         static var dictionary: [ObjectTypes: [UserModifiers]] = {
             [
                 .allCasterBed: supportDimension,
-                .allCasterChair: supportDimension,
+                .allCasterChair: supportDimension + standardWheeledChair,
                 .allCasterStretcher: supportDimension,
                 .allCasterTiltInSpaceShowerChair: standardWheeledChair,
                 .allCasterTiltInSpaceArmChair: supportDimension + [.tiltInSpace] + [.headRest],
@@ -67,12 +67,19 @@ class ObjectShowMenuViewModel: ObservableObject {
     @Published private var editObjectMenuShowModel: EditObjectMenuShowModel =
         EditObjectMenuShowModel()
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
+    var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     private var cancellables: Set<AnyCancellable> = []
     
     init () {
         DataService.shared.$currentObjectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
+            }
+            .store(in: &self.cancellables)
+        
+        DataService.shared.$objectChainLabelsDefaultDic
+            .sink { [weak self] newData in
+                self?.objectChainLabelsDefaultDic = newData
             }
             .store(in: &self.cancellables)
     }
@@ -97,10 +104,10 @@ extension ObjectShowMenuViewModel {
     
     
 //    func defaultObjectHasThisChainLabel(_ chainLabels: [Part]) -> Bool {
-//        guard let defaultChainLabels =
-//                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
-//                    fatalError()
-//                }
+//
+//            let defaultChainLabels =
+//                objectChainLabelsDefaultDic[currentObjectType] ?? []
+//
 //        var action = false
 //        for chainLabel in chainLabels {
 //            if defaultChainLabels.contains(chainLabel) {
@@ -111,20 +118,30 @@ extension ObjectShowMenuViewModel {
 //    }
 //
 //
-//    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> Part {
-//        guard let defaultChainLabels =
-//                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> (show: Bool, part: Part) {//Part {
+//        print(chainLabels)
+//        print(currentObjectType)
+//       print(objectChainLabelsDefaultDic[currentObjectType] )
+//        print("")
+//        guard
+            let defaultChainLabels =
+                objectChainLabelsDefaultDic[currentObjectType] ?? []
+//        else {
 //                    fatalError()
 //                }
-//        var idenftifiedChainLabel: Part = .notFound
-//        for chainLabel in chainLabels {
-//            if defaultChainLabels.contains(chainLabel) {
-//                idenftifiedChainLabel = chainLabel
-//               break
-//            }
-//        }
-//        return idenftifiedChainLabel
-//    }
+        var idenftifiedChainLabel: Part = .notFound
+        for chainLabel in chainLabels {
+            if defaultChainLabels.contains(chainLabel) {
+                idenftifiedChainLabel = chainLabel
+               break
+            }
+        }
+        
+        var show: Bool {
+            idenftifiedChainLabel == Part.notFound ? false: true
+        }
+        return (show: show, part: idenftifiedChainLabel) //idenftifiedChainLabel
+    }
     
     
 }
@@ -194,3 +211,6 @@ extension ObjectShowMenuViewModel {
 //            partEditModel.part = partName
 //    }
 //
+
+
+

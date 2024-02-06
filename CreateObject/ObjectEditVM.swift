@@ -18,14 +18,12 @@ class DataService: ObservableObject {
     @Published var scopeOfEditForSide: Side = .both
     @Published var dimensionForEditing: PartTag = .length
 
-    //@Published var objectImageData = ObjectImageData(.fixedWheelRearDrive, nil)
+    @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     static let shared = DataService()
     private init() {
 
-        //objectImageData = ObjectImageData(currentObjectType, userEditedSharedDic)
     }
 }
-
 
 
 

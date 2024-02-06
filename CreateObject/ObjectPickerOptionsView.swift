@@ -294,7 +294,7 @@ struct TiltX: View {
     @State private var sliderValue: Double = 0.0
     let chainLabelsRequiringAction: [Part] = [.sitOnTiltJoint]
     var show: Bool {
-        objectPickVM.defaultObjectHasThisChainLabel(chainLabelsRequiringAction)
+        objecShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
     }
  
     var body: some View {
@@ -330,12 +330,10 @@ struct HeadSupport: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     let chainLabelsRequiringAction: [Part] = [.backSupportHeadSupport]
-    var chainLabelRequiringAction: Part {
-        objectPickVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction)
-    }
     var show: Bool {
-        chainLabelRequiringAction == Part.notFound ? false: true
+        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
     }
 
     
@@ -345,12 +343,12 @@ struct HeadSupport: View {
                 .onChange(of: optionToggle) { value in
                     if !value {
                         objectEditVM.replaceChainLabelForObject(
-                            chainLabelRequiringAction,
+                            .backSupportHeadSupport,
                             .backSupport)
                     } else {
                         objectEditVM.replaceChainLabelForObject(
                             .backSupport,
-                            chainLabelRequiringAction)
+                            .backSupportHeadSupport)
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
@@ -367,12 +365,13 @@ struct Propeller: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    var chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    let chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
     var chainLabelRequiringAction: Part {
-        objectPickVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction)
+        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).part
     }
     var show: Bool {
-        chainLabelRequiringAction == Part.notFound ? false: true
+        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
     }
     
     

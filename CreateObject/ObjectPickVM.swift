@@ -55,20 +55,20 @@ struct ObjectPickModel {
 
 class ObjectPickViewModel: ObservableObject {
     @Published private var objectPickModel: ObjectPickModel
+    var objectImageData: ObjectImageData
     var userEditedDics: UserEditedDictionaries
     
     let defaultDics: DefaultDictionaries
     
     
-    var currentObjectType: ObjectTypes = .fixedWheelFrontDrive
+    var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionDic: Part3DimensionDictionary
     var partDataDic: [Part: PartData] = [:]
     private var cancellables: Set<AnyCancellable> = []
     
     var dimensionForEditing: PartTag
 
-    @Published var objectImageData: ObjectImageData =
-    ObjectImageData(.fixedWheelRearDrive, nil)
+    @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     
     init() {
         self.defaultDics = DefaultDictionaries.shared
@@ -77,15 +77,17 @@ class ObjectPickViewModel: ObservableObject {
         self.partDataDic = DataService.shared.partDataSharedDic
         self.dimensionForEditing = DataService.shared.dimensionForEditing
         
-     let initialObjectImageData =
+     objectImageData =
             ObjectImageData(.fixedWheelRearDrive, nil)
-
+//
+       
+        
         objectPickModel =
             ObjectPickModel(
             currentObjectName: currentObjectType.rawValue,
             userEditedDic: nil,
             defaultDictionaries: defaultDics,
-            objectImageData: initialObjectImageData)
+            objectImageData: ObjectImageData(.fixedWheelRearDrive, nil))
         
         dimensionDic = objectImageData.dimensionDic
         
@@ -132,6 +134,8 @@ extension ObjectPickViewModel {
     
     
     func resetObjectByCreatingFromName() {
+        //print("DETECT")
+        DataService.shared.objectChainLabelsDefaultDic = objectImageData.objectChainLabelsDefaultDic
         userEditedDics.dimensionUserEditedDic = [:]
         userEditedDics.angleUserEditedDic = [:]
         modifyObjectByCreatingFromName()
@@ -139,6 +143,8 @@ extension ObjectPickViewModel {
     
     
     func modifyObjectByCreatingFromName(){
+        DataService.shared.objectChainLabelsDefaultDic = objectImageData.objectChainLabelsDefaultDic
+        
         objectImageData =
             ObjectImageData(currentObjectType, userEditedDics)
         objectPickModel =
@@ -147,6 +153,8 @@ extension ObjectPickViewModel {
                 userEditedDic: userEditedDics,
                 defaultDictionaries: defaultDics,
                 objectImageData: objectImageData)
+        
+        DataService.shared.objectChainLabelsDefaultDic = objectImageData.objectChainLabelsDefaultDic
     
         setCurrentObjectFrameSize()
     }
@@ -308,36 +316,36 @@ extension ObjectPickViewModel {
 //MARK: Interogations
 extension ObjectPickViewModel {
     
-    func defaultObjectHasThisChainLabel(_ chainLabels: [Part]) -> Bool {
-        guard let defaultChainLabels =
-                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
-                    fatalError()
-                }
-        var action = false
-        for chainLabel in chainLabels {
-            if defaultChainLabels.contains(chainLabel) {
-                action = true
-            }
-        }
-        return action
-    }
-    
-    
-    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> Part {
-        guard let defaultChainLabels =
-                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
-                    fatalError()
-                }
-        var idenftifiedChainLabel: Part = .notFound
-        for chainLabel in chainLabels {
-            if defaultChainLabels.contains(chainLabel) {
-                idenftifiedChainLabel = chainLabel
-               break
-            }
-        }
-        return idenftifiedChainLabel
-    }
-    
+//    func defaultObjectHasThisChainLabel(_ chainLabels: [Part]) -> Bool {
+//        guard let defaultChainLabels =
+//                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+//                    fatalError()
+//                }
+//        var action = false
+//        for chainLabel in chainLabels {
+//            if defaultChainLabels.contains(chainLabel) {
+//                action = true
+//            }
+//        }
+//        return action
+//    }
+//    
+//    
+//    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> Part {
+//        guard let defaultChainLabels =
+//                objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+//                    fatalError()
+//                }
+//        var idenftifiedChainLabel: Part = .notFound
+//        for chainLabel in chainLabels {
+//            if defaultChainLabels.contains(chainLabel) {
+//                idenftifiedChainLabel = chainLabel
+//               break
+//            }
+//        }
+//        return idenftifiedChainLabel
+//    }
+//    
     
     func getList (_  version: DictionaryVersion) -> [String] {
         var list: [String] = []
@@ -387,6 +395,7 @@ extension ObjectPickViewModel {
     
     
     func setCurrentObjectName(_ objectName: String){
+        //print("DETECT")
         objectPickModel.currentObjectName = objectName
         guard let objectType = ObjectTypes(rawValue: objectName) else {
             fatalError()
@@ -395,8 +404,11 @@ extension ObjectPickViewModel {
         DataService.shared.currentObjectType = objectType
     }
     
-    
-
+//    
+//    func test() -> String {
+//        print ("DETECT")
+//        return ""
+//    }
 
     
     

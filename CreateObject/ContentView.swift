@@ -132,85 +132,53 @@ struct ContentView: View {
    
     
     var body: some View {
-       // PickSavedObjectView()
-        //let frameSize = objectPickVM.getScreenFrameSize()
-        let objectManipulationIsActive = true
 
+        let objectManipulationIsActive = true
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                    VStack{
-                            PickInitialObjectView()
-//                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
-                              //  .environmentObject(objectPickVM)
-                            ObjectView(
-                                uniquePartNames,
-                                name,
-                                objectManipulationIsActive)
-                    } )
-                    { Text("Default equipment")}
-
-                
-//                NavigationLink(destination:
-//                                PickSavedObjectView()
-//                                .environmentObject(objectPickVM)
-//                                .environmentObject(coreDataVM)
-//                              // , isActive: self.$isActive
-//                )
-//                    { Text("Saved equipment") }
-                
-                
-//                NavigationLink(destination:
-//                    VStack {
-//                    Text( objectPickVM.getCurrentObjectName())
-//                        ObjectView(
-//                            uniquePartNames,
-//                            name,
-//                            objectManipulationIsActive
-//                           )
-//
-//                    EditObjectMenuView()
-//                    saveButtonView
-//                    }
-//                )
-//                { Text("Edit equipment") }
-
-                
-                
-//                NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
-//                 Text("View current dictionary")
-//                }
-//
-//                NavigationLink(destination: ListView(equipmentName, initialObjectDictionaryAsList)){
-//                 Text("View initial dictionary")
-//                }
-//                
-//                NavigationLink(destination: ListView(equipmentName, dimensionsAsList)){
-//                 Text("View initial dimensions")
-//                }
-//                
-//                
-//                NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
-//                 Text("View saved dictionary")
-//                }
-//
-//                NavigationLink(destination: ListView(equipmentName, uniquePartNames) ) {
-//                    Text("View dictionary parts")
-//                }
-//
-//                NavigationLink(destination: ListView(equipmentName, uniquePartNames)) {
-//                    Text("Settings")
-//                }
-
+                    VStack {
+                        PickInitialObjectView()
+                        ObjectView(uniquePartNames, name, objectManipulationIsActive)
+                    }) {
+                        Text("Default equipment")
+                    }
+                    .foregroundColor(.blue) // Change text color to blue to indicate it's a link
+                    .onTapGesture {
+                        // Perform your action here before navigation
+                        // This code will execute when the "Default equipment" button is tapped
+                        print("Performing action before navigation")
+                    }
             }
             .navigationBarTitle("Equipment manager")
-
         }
 
-        
-    }
 
-    }
+//        NavigationView {
+//            VStack {
+//                NavigationLink(destination:
+//                    VStack{
+//                            PickInitialObjectView()
+//
+//                            ObjectView(
+//                                uniquePartNames,
+//                                name,
+//                                objectManipulationIsActive)
+//                    } )
+//                    { Text("Default equipment")
+//
+//                    }
+//
+//          }
+//
+//            }
+//            .navigationBarTitle("Equipment manager")
+        }
+}
+
+
+
+
 
 
    
@@ -391,3 +359,165 @@ struct ContentView: View {
 //    }
 //
 //}
+struct ContentViewX: View {
+
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var coreDataVM: CoreDataViewModel
+    @EnvironmentObject var sceneVM: SceneViewModel
+    
+    @State var isActive = true
+    @State var globalPosition: CGPoint?
+    @State var position: CGPoint = .zero
+    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
+   
+    @State var savedDictionaryAsList =  [""]
+    @State private var savedAsName: String = ""
+    
+    var currentObjectDictionaryAsList: [String] {
+        objectPickVM.getList(.useCurrent)
+    }
+
+    var initialObjectDictionaryAsList: [String] {
+        objectPickVM.getList(.useInitial)
+    }
+    
+    var loadedObjectDictionaryAsList: [String] {
+        objectPickVM.getList(.useLoaded)
+    }
+    
+    var dimensionsAsList: [String] {
+        objectPickVM.getList(.useDimension)
+    }
+    
+    var equipmentName: String  {
+        objectPickVM.getCurrentObjectName()
+    }
+
+    var enterTextView: some View {
+        VStack(alignment: .leading) {
+            TextField(equipmentName, text: $savedAsName)
+                .textFieldStyle(.roundedBorder)
+        }
+    }
+
+    var saveButtonView: some View {
+        HStack{
+            Button(action: {
+                saveData(equipmentName + "_" + savedAsName)
+            }, label: {
+                Text("save")
+                    .foregroundColor(.blue)
+            } )
+            enterTextView
+        }
+        .padding()
+    }
+       
+    var uniquePartNames: [String] {
+        objectPickVM.getUniquePartNamesFromObjectDictionary()
+    }
+
+
+    var currentDictionary: PositionDictionary {
+        objectPickVM.getPostTiltOneCornerPerKeyDic()
+    }
+    
+    var name: String {
+        objectPickVM.getCurrentObjectName()
+    }
+    
+    func saveData (_ objectName: String) {
+                coreDataVM.addObject(
+                    names: objectPickVM.getAllOriginNames(),
+                    values: objectPickVM.getAllOriginValues(),
+                    objectType: objectPickVM.getCurrentObjectName(),
+                objectName: objectName)
+                coreDataVM.fetchNames()
+    }
+
+
+   
+    
+    var body: some View {
+       // PickSavedObjectView()
+        //let frameSize = objectPickVM.getScreenFrameSize()
+        let objectManipulationIsActive = true
+
+        NavigationView {
+            VStack {
+                NavigationLink(destination:
+                    VStack{
+                            PickInitialObjectView()
+//                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
+                              //  .environmentObject(objectPickVM)
+                            ObjectView(
+                                uniquePartNames,
+                                name,
+                                objectManipulationIsActive)
+                    } )
+                    { Text("Default equipment")
+//                            .onTapGesture {
+//                                print("hello")
+//                            }
+                    }
+
+                
+//                NavigationLink(destination:
+//                                PickSavedObjectView()
+//                                .environmentObject(objectPickVM)
+//                                .environmentObject(coreDataVM)
+//                              // , isActive: self.$isActive
+//                )
+//                    { Text("Saved equipment") }
+                
+                
+//                NavigationLink(destination:
+//                    VStack {
+//                    Text( objectPickVM.getCurrentObjectName())
+//                        ObjectView(
+//                            uniquePartNames,
+//                            name,
+//                            objectManipulationIsActive
+//                           )
+//
+//                    EditObjectMenuView()
+//                    saveButtonView
+//                    }
+//                )
+//                { Text("Edit equipment") }
+
+                
+                
+//                NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
+//                 Text("View current dictionary")
+//                }
+//
+//                NavigationLink(destination: ListView(equipmentName, initialObjectDictionaryAsList)){
+//                 Text("View initial dictionary")
+//                }
+//
+//                NavigationLink(destination: ListView(equipmentName, dimensionsAsList)){
+//                 Text("View initial dimensions")
+//                }
+//
+//
+//                NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
+//                 Text("View saved dictionary")
+//                }
+//
+//                NavigationLink(destination: ListView(equipmentName, uniquePartNames) ) {
+//                    Text("View dictionary parts")
+//                }
+//
+//                NavigationLink(destination: ListView(equipmentName, uniquePartNames)) {
+//                    Text("Settings")
+//                }
+
+            }
+            .navigationBarTitle("Equipment manager")
+
+        }
+    }
+
+}

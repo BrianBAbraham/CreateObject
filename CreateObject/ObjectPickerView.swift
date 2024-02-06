@@ -12,7 +12,9 @@ struct PickInitialObjectView: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
-   
+//    var test: String {
+//        objectPickVM.test()
+//    }
     var objectNames: [String] {
         let unsortedObjectNames =
         ObjectChainLabel.dictionary.keys.map{$0.rawValue}
