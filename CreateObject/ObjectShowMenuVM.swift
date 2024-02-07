@@ -20,6 +20,7 @@ struct EditObjectMenuShowModel {
                 .allCasterStretcher: supportDimension,
                 .allCasterTiltInSpaceShowerChair: standardWheeledChair,
                 .allCasterTiltInSpaceArmChair: supportDimension + [.tiltInSpace] + [.headRest],
+                .fixedWheelRearDriveAssisted: standardWheeledChair,
                 .fixedWheelFrontDrive: standardWheeledChair,
                 .fixedWheelMidDrive: standardWheeledChair,
                 .fixedWheelRearDrive: standardWheeledChair ,
@@ -89,13 +90,13 @@ class ObjectShowMenuViewModel: ObservableObject {
 
 extension ObjectShowMenuViewModel {
     
-    func getShowMenuStatus(_ view: UserModifiers, _ objectName: String)-> Bool {
+    func getShowMenuStatus(
+        _ view: UserModifiers)
+    -> Bool {
         let dictionary = EditObjectMenuShowModel.dictionary
-        guard let objectType = ObjectTypes(rawValue: objectName) else {
-            fatalError("no object defined for this name!")
-        }
+
         var state: Bool = false
-        if let show = dictionary[objectType] {
+        if let show = dictionary[currentObjectType] {
             state = show.contains(view)
         }
        
@@ -118,17 +119,11 @@ extension ObjectShowMenuViewModel {
 //    }
 //
 //
-    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> (show: Bool, part: Part) {//Part {
-//        print(chainLabels)
-//        print(currentObjectType)
-//       print(objectChainLabelsDefaultDic[currentObjectType] )
-//        print("")
-//        guard
+    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> (show: Bool, part: Part) {
+
             let defaultChainLabels =
                 objectChainLabelsDefaultDic[currentObjectType] ?? []
-//        else {
-//                    fatalError()
-//                }
+
         var idenftifiedChainLabel: Part = .notFound
         for chainLabel in chainLabels {
             if defaultChainLabels.contains(chainLabel) {
@@ -140,8 +135,8 @@ extension ObjectShowMenuViewModel {
         var show: Bool {
             idenftifiedChainLabel == Part.notFound ? false: true
         }
-        return (show: show, part: idenftifiedChainLabel) //idenftifiedChainLabel
-    }
+
+        return (show: show, part: idenftifiedChainLabel)     }
     
     
 }

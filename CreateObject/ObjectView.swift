@@ -99,9 +99,6 @@ struct PartView: View {
 
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    //@EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-    
-    //@GestureState private var startLocation: CGPoint? = nil
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 200, y: 200)
     
@@ -125,16 +122,6 @@ struct ObjectView: View {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
     }
     
-    
-//    var objectOptionsDictionary: OptionDictionary {
-//        objectPickVM.getObjectOptionsDictionary()
-//    }
-    
-    
-//    var twinSitOnOptionsDictionary: TwinSitOnOptionDictionary {
-//        twinSitOnVM.getTwinSitOnOptions()  //TWIN
-//    }
-    
     var zoom: CGFloat {
         getZoom()
     }
@@ -151,14 +138,11 @@ struct ObjectView: View {
     init(
         _ names: [String],
         _ objectName: String,
-
         _ objectManipulationIsActive: Bool = false) {
             
         uniquePartNames = names
         self.objectName = objectName
         self.objectManipulationIsActive = objectManipulationIsActive
-            
-            
     }
     
 
@@ -172,29 +156,13 @@ struct ObjectView: View {
        
      return zoom
     }
-        
-//    var objectDrag: some Gesture {
-//        DragGesture()
-//            .onChanged { value in
-//                var newLocation = startLocation ?? location // 3
-//                newLocation.x += value.translation.width
-//                newLocation.y += value.translation.height
-//                self.location = newLocation
-//            }.updating($startLocation) { (value, startLocation, transaction) in
-//                startLocation = startLocation ?? location // 2
-//            }
-//    }
-    
+
 
     
     var body: some View {
         let dictionaryForScreen: CornerDictionary =
             objectPickVM.getObjectDictionaryForScreen()
-        //objectPickVM.getCurrentObjectDictionary()
-        
-//        let dictionaryForScreen =
-//            objectPickVM.getObjectDictionaryForScreen(currentDictionary)
-        
+       
         let frameSize =
             objectPickVM.getScreenFrameSize()
         
@@ -221,16 +189,6 @@ struct ObjectView: View {
                 ForObjectInDefaultView (
                     frameSize: frameSize, active: objectManipulationIsActive)
                 )
-//        } else {
-//
-//        }
-
-            
-        //.background(Color.red.opacity(0.3) )
-        //.position(location)
-//        .gesture(
-//            objectDrag
-//        )
         
         .offset(CGSize(width: 0, height:300))
         .scaleEffect(zoom)
@@ -246,27 +204,5 @@ struct ObjectView: View {
     }
 }
 
-////////////
-//extension CGRect {
-//    var midPoint: CGPoint {
-//        CGPoint(x: self.midX, y: self.midY)
-//    }
-//}
 
-////////////////////////
-//struct ObjectView_Previews: PreviewProvider {
-    
-//    let uniquePartNames: [String]
-//    
-//    init() {
-//        let uniquePartNames = ["footSupportHangerSitOnVerticalJoint_id0_sitOn_id0", "footSupport_id1_sitOn_id0", "fixedWheel_id1_sitOn_id0", "footSupportHangerLink_id0_sitOn_id0", "armVerticalJoint_id0_sitOn_id0", "footSupportHorizontalJoint_id0_sitOn_id0", "arm_id1_sitOn_id0", "casterVerticalJointAtFront_id0_sitOn_id0", "footSupportHangerLink_id1_sitOn_id0", "fixedWheel_id0_sitOn_id0", "arm_id0_sitOn_id0", "sitOn_id0", "casterWheelAtFront_id0_sitOn_id0", "casterWheelAtFront_id1_sitOn_id0", "footSupportHangerSitOnVerticalJoint_id1_sitOn_id0", "footSupport_id0_sitOn_id0", "footSupportHorizontalJoint_id1_sitOn_id0", "armVerticalJoint_id1_sitOn_id0", "casterVerticalJointAtFront_id1_sitOn_id0"]
-//    }
-//    static var previews: some View {
-//        ObjectView(
-//
-//            [""]
-//
-//            )
-//    }
-//}
 

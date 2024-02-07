@@ -122,55 +122,8 @@ extension ObjectEditViewModel {
         }
     }
     
-    
-    
-    func setWhenPartChangesOneOrTwoStatus(_ tag: String, _ part: Part) {
-        
-        let partChain = LabelInPartChainOut(part).partChain
-        
-        if tag == "left" || tag == "right" {
-
-            let newId: OneOrTwo<PartTag> = (tag == "left") ? .one(one: .id0) : .one(one: .id1)
-
-            let chainLabelForFootWasRemoved = DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
-
-            if chainLabelForFootWasRemoved {
-                restoreChainLabelToObject(part)
-            }
-
-            let ignoreFirstItem = 1 // relevant part subsequent
-            for index in ignoreFirstItem..<partChain.count {
-                DataService.shared.userEditedSharedDic.partIdsUserEditedDic[partChain[index]] = newId
-            }
-        }
-
-        if tag == "none" {
-            removeChainLabelFromObject(part)
-        }
-
-        if tag == "both" {
-            setPartIdDicInKeyToNilRestoringDefault(partChain)
-            DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
-            DataService.shared.scopeOfEditForSide = .both
-        }
-    }
-
-    
-    func updatePartBeingOnBothSides(isLeftSelected: Bool, isRightSelected: Bool) {
-       
-        if isLeftSelected && isRightSelected {
-            DataService.shared.presenceOfPartForSide = .both
-            setWhenPartChangesOneOrTwoStatus("both", Part.footSupport)
-        } else if isLeftSelected {
-            DataService.shared.presenceOfPartForSide = .left
-            setWhenPartChangesOneOrTwoStatus("left", Part.footSupport)
-        } else if isRightSelected {
-            DataService.shared.presenceOfPartForSide = .right
-            setWhenPartChangesOneOrTwoStatus("right", Part.footSupport)
-        } else {
-            DataService.shared.presenceOfPartForSide = .none
-            setWhenPartChangesOneOrTwoStatus("none", Part.footSupport)
-        }
+    func getDimensionToBeEdited() -> PartTag {
+        DataService.shared.dimensionForEditing
     }
     
     
@@ -181,6 +134,59 @@ extension ObjectEditViewModel {
     
     func getPresenceOfPartForSide() -> Side {
         DataService.shared.presenceOfPartForSide
+    }
+    
+    
+    func convertLeftRightSelectionToSideSelection(
+        _ isLeftSelected: Bool,
+        _ isRightSelected: Bool) -> Side {
+       
+        if isLeftSelected && isRightSelected {
+            return .both
+        } else if isLeftSelected {
+            return .left
+        } else if isRightSelected {
+            return .right
+        } else {
+            return .none
+        }
+    }
+
+    
+    func setWhenPartChangesOneOrTwoStatus(
+        _ isLeftSelected: Bool,
+        _ isRightSelected: Bool,
+        _ part: Part) {
+            
+        let side = convertLeftRightSelectionToSideSelection(isLeftSelected, isRightSelected)
+            
+        DataService.shared.presenceOfPartForSide = side
+        
+        let partChain = LabelInPartChainOut(part).partChain
+        
+        switch side {
+        case .left, .right:
+            let newId: OneOrTwo<PartTag> = (side == .left) ?
+                .one(one: .id0): //if left requires .id0 for x < 0
+                .one(one: .id1)  //if right requires .i1 for x >= 0
+            
+            let chainLabelForFootWasAlreadyRemoved = DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
+            
+            if chainLabelForFootWasAlreadyRemoved {
+                restoreChainLabelToObject(part) //toggle is restoring
+            }
+            
+            let ignoreFirstItem = 1 // relevant part subsequent
+            for index in ignoreFirstItem..<partChain.count {
+                DataService.shared.userEditedSharedDic.partIdsUserEditedDic[partChain[index]] = newId// if only either L or R change id to suit
+            }
+        case .none:
+            removeChainLabelFromObject(part)
+        case .both:
+            setPartIdDicInKeyToNilRestoringDefault(partChain)
+            DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+            DataService.shared.scopeOfEditForSide = .both
+        }
     }
     
     
@@ -253,7 +259,7 @@ extension ObjectEditViewModel {
         _ value: Double,
         _ part: Part,
         _ selectedDimension: PartTag) {
-
+//print(selectedDimension)
     let name = getName(.id0, part)
 
     let currentDimension =
@@ -267,7 +273,7 @@ extension ObjectEditViewModel {
         (width: currentDimension.width,
          length: value,
          height:currentDimension.height)
-
+ 
     DataService.shared.userEditedSharedDic.dimensionUserEditedDic +=
         [name: newDimension]
     }

@@ -60,19 +60,13 @@ struct ObjectImageData {
                 objectType,
                 userEditedDic)
                     .partValuesDic
+            
         DataService.shared.partDataSharedDic = partDataDic
-//MARK: - ORIGIN/DIMENSION DICTIONARY
-
-            func createPreTiltParentToPartOriginDictionary() {
-                
-            }
-            
-            
+                        
         createPreTiltDictionaryFromStructFactory()
         createPostTiltDictionaryFromStructFactory()
 
-//DictionaryInArrayOut().getNameValue(anglesMinMaxDic
-//).forEach{print($0)}
+
   
 //MARK: - POST-TILT
         // initially set postTilt to preTilt values
@@ -85,13 +79,21 @@ struct ObjectImageData {
             ConvertFourCornerPerKeyToOne(
                 fourCornerPerElement: postTiltObjectToPartFourCornerPerKeyDic).oneCornerPerKey
             
+            
+            let z = ZeroValue.iosLocation
+            postTiltObjectToPartFourCornerPerKeyDic[Part.objectOrigin.rawValue] = [z,z,z]
+            
+            
+            
+            
+//        DictionaryInArrayOut().getNameValue(postTiltObjectToOneCornerPerKeyDic
+//        ).forEach{print($0)}
+            
         dimension = getSize()
-            
-            
-            
             
         //createExteriorPointDictionary()
     }
+    
     
     func getSize() ->Dimension{
         let minMax =
@@ -150,7 +152,6 @@ struct ObjectImageData {
 extension ObjectImageData {
 
     mutating func createPreTiltDictionaryFromStructFactory() {
-
         for chainLabel in chainLabels {
             processChainLabelForDictionaryCreation(chainLabel)
         }
@@ -165,8 +166,6 @@ extension ObjectImageData {
         }
     }
             
-
-
     mutating func processPartForDictionaryCreation(
         _ part: Part) {
         guard let partValue = partDataDic[part]
@@ -176,7 +175,6 @@ extension ObjectImageData {
         let globalOrigin = partValue.globalOrigin
         let childOrigin = partValue.childOrigin
  
-            
         partValue.dimension.mapSixOneOrTwoToOneFuncWithVoidReturn  (
         partValue.originName,
         partValue.angles,
@@ -203,51 +201,6 @@ extension ObjectImageData {
         }
     }
             
-    
-//    mutating func updateDictionaries(
-//        _ dimension: Dimension3d,
-//        _ name: String,
-//        _ angle: RotationAngles,
-//        _ minMaxAngle: AngleMinMax,
-//        _ globalOrigin: PositionAsIosAxes) {
-//
-//        let dictionaryUpdate =
-//            DictionaryUpdate(
-//                name: name,
-//                dimension: dimension,
-//                globalOrigin: globalOrigin,
-//                angle: angle,
-//                minMaxAngle: minMaxAngle,
-//                corners: createCorner(dimension, globalOrigin))
-//
-//        process(dictionaryUpdate)
-//
-//
-//        func process(_ update: DictionaryUpdate) {
-//            let name = update.name
-//            angleUserEditDic +=
-//             [name: update.angle]
-//            angleMinMaxDic +=
-//             [name: update.minMaxAngle]
-//            dimensionDic +=
-//              [name: update.dimension]
-//            preTiltObjectToPartOriginDic +=
-//              [name: update.globalOrigin]
-//            preTiltObjectToPartFourCornerPerKeyDic +=
-//              [name: update.corners]
-//        }
-//
-//
-//        struct DictionaryUpdate {
-//            let name: String
-//            let dimension: Dimension3d
-//            let globalOrigin: PositionAsIosAxes
-//            let angle: RotationAngles
-//            let minMaxAngle: AngleMinMax
-//            let corners: [PositionAsIosAxes]
-//        }
-//    }
-     
     
     mutating func updateDictionaries(
         _ dimension: Dimension3d,
@@ -436,11 +389,7 @@ extension ObjectImageData {
                 zip(rotator.partsToBeRotatedDimension, allOriginAfterRotationByRotator) {
             let corners = dimension.mapSingleOneOrTwoWithOneFuncWithReturn { CreateIosPosition.getCornersFromDimension($0) }
             let result =
-//                getFromOneOrTwo.getForThreeValues(
-//                            originAfterRotationByRotator,
-//                            corners,
-//                            rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
-            originAfterRotationByRotator.map3New(
+                originAfterRotationByRotator.map3New(
                         corners,
                         rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
             

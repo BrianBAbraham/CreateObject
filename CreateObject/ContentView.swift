@@ -139,41 +139,16 @@ struct ContentView: View {
                 NavigationLink(destination:
                     VStack {
                         PickInitialObjectView()
+                        EditInitialObjectView()
                         ObjectView(uniquePartNames, name, objectManipulationIsActive)
                     }) {
                         Text("Default equipment")
-                    }
-                    .foregroundColor(.blue) // Change text color to blue to indicate it's a link
-                    .onTapGesture {
-                        // Perform your action here before navigation
-                        // This code will execute when the "Default equipment" button is tapped
-                        print("Performing action before navigation")
                     }
             }
             .navigationBarTitle("Equipment manager")
         }
 
-
-//        NavigationView {
-//            VStack {
-//                NavigationLink(destination:
-//                    VStack{
-//                            PickInitialObjectView()
-//
-//                            ObjectView(
-//                                uniquePartNames,
-//                                name,
-//                                objectManipulationIsActive)
-//                    } )
-//                    { Text("Default equipment")
-//
-//                    }
-//
-//          }
-//
-//            }
-//            .navigationBarTitle("Equipment manager")
-        }
+    }
 }
 
 

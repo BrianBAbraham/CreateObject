@@ -102,7 +102,9 @@ struct SideSelection: View {
     }
     var show: Bool {
         //objectPickVM.getViewStatus(.legLength)
-        objectShowMenuVM.getShowMenuStatus(.footSupport, objectName)
+        objectShowMenuVM.getShowMenuStatus(.footSupport
+                                           //, objectName
+        )
     }
     var body: some View {
         
@@ -140,7 +142,7 @@ struct DimensionSelection: View {
     var relevantCases: [PartTag] = [.length, .width]
 
     var body: some View {
-        Picker("side", selection: $selection) {
+        Picker("dimension", selection: $selection) {
             ForEach(relevantCases, id: \.self) { side in
                 Text(side.rawValue)
             }
@@ -161,10 +163,12 @@ struct LegLength: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
-    let objectName: String
+  //  let objectName: String
     
     var show: Bool {
-        objectShowMenuVM.getShowMenuStatus(.legLength, objectName)
+        objectShowMenuVM.getShowMenuStatus(.legLength
+        //                                   , objectName
+        )
     }
  
     var body: some View {
@@ -199,9 +203,9 @@ struct SitOnDimension: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 200.0
-    let objectName: String
+    //let objectName: String
     var show: Bool {
-        objectShowMenuVM.getShowMenuStatus(.supportWidth, objectName)
+        objectShowMenuVM.getShowMenuStatus(.supportWidth)
     }
 
     var minMaxLength: (min: Double, max: Double) {
@@ -211,16 +215,16 @@ struct SitOnDimension: View {
     var min: Double { minMaxLength.min }
     var max: Double { minMaxLength.max }
     
-    init (objectName: String) {
-        self.objectName = objectName
-    }
 
     var body: some View {
-        let dimensionToEdit = objectPickVM.getDimensionToBeEdited()
+        let dimensionToEdit = objectEditVM.getDimensionToBeEdited()
         
         
         let boundObjectType = Binding(
-            get: {objectPickVM.getInitialSliderValue(.id0, .sitOn)},
+            get: {objectPickVM.getInitialSliderValue(
+                .id0,
+                .sitOn,
+                dimensionToEdit)},
             set: {self.sliderValue = $0}
         )
        
@@ -422,19 +426,18 @@ struct Propeller: View {
 //}
 
 
+
+
 struct FootSupport: View {
     @State private var isLeftSelected = true
     @State private var isRightSelected = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
-    let objectName: String
-   
-    var show: Bool {
-        objecShowMenuVM.getShowMenuStatus(.footSupport, objectName)
-        //objectPickVM.getViewStatus(.footSupport)
-    }
     
+    var show: Bool {
+        objecShowMenuVM.getShowMenuStatus(.footSupport)
+    }
     
     var body: some View {
         if show {
@@ -442,28 +445,29 @@ struct FootSupport: View {
                 Text("foot support:")
                 Toggle("L", isOn: $isLeftSelected)
                     .onChange(of: isLeftSelected) { newValue in
-                        objectEditVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
-                        objectPickVM.modifyObjectByCreatingFromName()
+                        updateViewModel()
                     }
                 Toggle("R", isOn: $isRightSelected)
                     .onChange(of: isRightSelected) { newValue in
-                        objectEditVM.updatePartBeingOnBothSides(isLeftSelected: isLeftSelected, isRightSelected: isRightSelected)
-                        objectPickVM.modifyObjectByCreatingFromName()
+                        updateViewModel()
                     }
                     .padding(.leading, 30)
-
+                
             }
-            .onChange(of: objectPickVM.getCurrentObjectType()){ _ in
+            .onChange(of: objectPickVM.getCurrentObjectType()) { _ in
                 isLeftSelected = true
-                isRightSelected = true }
-        }
-        else {
+                isRightSelected = true
+            }
+        } else {
             EmptyView()
         }
-
+    }
+    
+    private func updateViewModel() {
+        objectEditVM.setWhenPartChangesOneOrTwoStatus(isLeftSelected, isRightSelected, .footSupport)
+        objectPickVM.modifyObjectByCreatingFromName()
     }
 }
-
 
 
 //

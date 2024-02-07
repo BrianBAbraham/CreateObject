@@ -12,9 +12,7 @@ struct PickInitialObjectView: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
-//    var test: String {
-//        objectPickVM.test()
-//    }
+
     var objectNames: [String] {
         let unsortedObjectNames =
         ObjectChainLabel.dictionary.keys.map{$0.rawValue}
@@ -34,40 +32,66 @@ struct PickInitialObjectView: View {
         VStack {
             Picker("Equipment",selection: boundObjectType ) {
                 ForEach(objectNames, id:  \.self)
-                        { equipment in
+                { equipment in
                     Text(equipment)
                 }
             }
             .onChange(of: objectName) {tag in
-
                 self.objectName = tag
                 objectPickVM.setCurrentObjectName(tag)
-                
                 objectPickVM.resetObjectByCreatingFromName()
             }
             .pickerStyle(DefaultPickerStyle())
+        }
+    }
+}
+
+struct EditInitialObjectView: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var coreDataVM: CoreDataViewModel
+    @EnvironmentObject var sceneVM: SceneViewModel
+
+    var objectNames: [String] {
+        let unsortedObjectNames =
+        ObjectChainLabel.dictionary.keys.map{$0.rawValue}
+        
+        return unsortedObjectNames.sorted()
+    }
+
+    @State private var objectName = ObjectTypes.fixedWheelRearDrive.rawValue
+   
+    
+    var body: some View {
+        let boundObjectType = Binding(
+            get: {objectPickVM.getCurrentObjectName()},
+            set: {self.objectName = $0}
+        )
+        
+        VStack {
            
-            
-            FootSupport(objectName: objectName)
+            FootSupport()
                 .padding(.horizontal)
+            
             HStack{
-              
                 SideSelection(objectName: objectName)
-                LegLength(objectName: objectName)
+                LegLength()
             }
-            
                 .padding(.horizontal)
+            
             HStack{
                 HeadSupport()
                     .padding(.horizontal)
                 Propeller()
                     .padding(.horizontal)
             }
+            
             TiltX()
                 .padding(.horizontal)
+            
             HStack {
                 DimensionSelection()
-                SitOnDimension(objectName: objectName)
+                SitOnDimension()
             }
                 .padding(.horizontal)
         }
@@ -76,7 +100,6 @@ struct PickInitialObjectView: View {
        // .scaleEffect(0.8)
     }
 }
-
 
 
 
