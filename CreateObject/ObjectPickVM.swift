@@ -309,11 +309,6 @@ extension ObjectPickViewModel {
     }
     
     
-}
- 
-
-//MARK: Interogations
-extension ObjectPickViewModel {
     func getMaximumDimensionOfObject (
     _ dictionary: PositionDictionary)
         -> Double {
@@ -354,47 +349,74 @@ extension ObjectPickViewModel {
     
     func getObjectDictionaryForScreen ()
         -> CornerDictionary {
-         
-        let currentDic =  objectPickModel.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
-        
-            
-        let currentObjectAsOneCornerPerKeyDic =
-            objectPickModel.objectImageData.postTiltObjectToOneCornerPerKeyDic
 
-        let minThenMax =
-             CreateIosPosition
-                .minMaxPosition(currentObjectAsOneCornerPerKeyDic)
-
-        let offset = CreateIosPosition.negative(minThenMax[0])
-
-        let objectDimension =
-            (width: minThenMax[1].x - minThenMax[0].x,length: minThenMax[1].y - minThenMax[0].y )
-
+        let originOffset = getOriginOffSet()
+        let objectDimension = getObjectDimensions()
         let maximumObjectDimension = getMaximumOfObject(objectDimension)
-        
         let scale = Screen.smallestDimension / maximumObjectDimension
-
-        let screenDictionary =
-            ForScreen2(
-                currentDic,
-                offset,
-                scale
-            ).dictionary
+        let dictionary =
+            makeAllPositionsPositive(
+                objectPickModel.objectImageData
+                    .postTiltObjectToPartFourCornerPerKeyDic,
+                scale,
+                originOffset
+            )
             
             
-            DictionaryInArrayOut().getNameValue(screenDictionary
-            ).forEach{print($0)}
-           
+//            DictionaryInArrayOut().getNameValue(currentDic
+//            ).forEach{print($0)}
+        
+        return dictionary
             
-        return screenDictionary
+            
+            func getObjectDimensions() -> Dimension{
+                let minThenMax =
+                    getMinThenMax()
+                return
+                    (width: minThenMax[1].x - minThenMax[0].x,length: minThenMax[1].y - minThenMax[0].y )
+            }
             
             
             func getMaximumOfObject(_ objectDimensions: Dimension)
                 -> Double {
                     [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
             }
+            
+            
+            func makeAllPositionsPositive(
+                _ actualSize: CornerDictionary,
+                _ scale: Double,
+                _ offset: PositionAsIosAxes)
+            -> CornerDictionary {
+                let scaleFactor = scale/scale
+                var postTiltObjectToPartFourCornerAllPositivePerKeyDic: CornerDictionary = [:]
+                for item in actualSize {
+                    var positivePositions: [PositionAsIosAxes] = []
+                    for position in item.value {
+                        positivePositions.append(
+                        (x: (position.x + offset.x) * scaleFactor,
+                         y: (position.y + offset.y) * scaleFactor,
+                         z: (position.z * scaleFactor) )  )
+                    }
+                    postTiltObjectToPartFourCornerAllPositivePerKeyDic[item.key] = positivePositions
+                }
+                return postTiltObjectToPartFourCornerAllPositivePerKeyDic
+            }
     }
     
+    func getMinThenMax() -> [PositionAsIosAxes] {
+        CreateIosPosition
+           .minMaxPosition(
+               objectPickModel.objectImageData
+                   .postTiltObjectToOneCornerPerKeyDic
+               )
+    }
+    
+    func getOriginOffSet() ->PositionAsIosAxes{
+        let minThenMax = getMinThenMax()
+        return
+            CreateIosPosition.negative(minThenMax[0])
+    }
     
     func getScreenFrameSize ()
         -> Dimension{

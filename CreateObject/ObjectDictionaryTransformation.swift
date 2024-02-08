@@ -9,44 +9,37 @@ import Foundation
 import SwiftUI
 
 
-
-struct ForScreen2 {
-    var dictionary: CornerDictionary = [:]
-    
-    init( _ actualSize: CornerDictionary,
-          _ offset: PositionAsIosAxes,
-          _ scale: Double
-    ) {
-        dictionary = createDictionaryForScreen(actualSize, scale, offset)
-    }
-    
-    func createDictionaryForScreen(
-        _ actualSize: CornerDictionary,
-        _ scale: Double,
-        _ offset: PositionAsIosAxes)
-    -> CornerDictionary {
-        let scaleFactor = scale/scale
-//print (scale)
-//print (offset)
-        var dictionaryForScreen: CornerDictionary = [:]
-        for item in actualSize {
-            var screenValues: [PositionAsIosAxes] = []
-            
-            for position in item.value {
-//print (position)
-                screenValues.append(
-                (x: (position.x + offset.x) * scaleFactor,
-                 y: (position.y + offset.y) * scaleFactor,
-                 z: (position.z * scaleFactor) )  )
-            }
-//print (screenValues)
-            dictionaryForScreen[item.key] = screenValues
-        }
-        
-        //print (dictionaryForScreen)
-        return dictionaryForScreen
-    }
-}
+//
+//struct ModifyForScreen {
+//    var dictionary: CornerDictionary = [:]
+//
+//    init( _ actualSize: CornerDictionary,
+//          _ offset: PositionAsIosAxes,
+//          _ scale: Double
+//    ) {
+//        dictionary = createDictionaryForScreen(actualSize, scale, offset)
+//    }
+//
+//    func createDictionaryForScreen(
+//        _ actualSize: CornerDictionary,
+//        _ scale: Double,
+//        _ offset: PositionAsIosAxes)
+//    -> CornerDictionary {
+//        let scaleFactor = scale/scale
+//        var dictionaryForScreen: CornerDictionary = [:]
+//        for item in actualSize {
+//            var screenValues: [PositionAsIosAxes] = []
+//            for position in item.value {
+//                screenValues.append(
+//                (x: (position.x + offset.x) * scaleFactor,
+//                 y: (position.y + offset.y) * scaleFactor,
+//                 z: (position.z * scaleFactor) )  )
+//            }
+//            dictionaryForScreen[item.key] = screenValues
+//        }
+//        return dictionaryForScreen
+//    }
+//}
 
 
 

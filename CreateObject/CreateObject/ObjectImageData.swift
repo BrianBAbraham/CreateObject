@@ -80,9 +80,9 @@ struct ObjectImageData {
                 fourCornerPerElement: postTiltObjectToPartFourCornerPerKeyDic).oneCornerPerKey
             
             
-            let z = ZeroValue.iosLocation
-            postTiltObjectToPartFourCornerPerKeyDic[Part.objectOrigin.rawValue] = [z,z,z]
-            
+//            let z = ZeroValue.iosLocation
+//            postTiltObjectToPartFourCornerPerKeyDic[Part.objectOrigin.rawValue] = [z,z,z,z]
+//            
             
             
             

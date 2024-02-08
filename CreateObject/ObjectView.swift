@@ -104,16 +104,15 @@ struct ObjectView: View {
     
     @State var currentZoom: CGFloat = 0.0
     @State var lastCurrentZoom: CGFloat = 0.0
+    @Binding var initialOrigin: CGPoint?
     private var  minimumZoom = 0.1
     private var maximimumZoom = 3.0
    
-    
-  //MARK: - ALWAYS UNIT SCALE 
-    
+      
     var postTiltOneCornerPerKeyDic: PositionDictionary {
         objectPickVM.getPostTiltOneCornerPerKeyDic()
     }
-    
+
     var defaultScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
     }
@@ -135,14 +134,21 @@ struct ObjectView: View {
     var preTiltFourCornerPerKeyDic: CornerDictionary {
         objectPickVM.getPreTiltFourCornerPerKeyDic()
     }
+    
+   //let geometry: GeometryProxy
+    
     init(
         _ names: [String],
         _ objectName: String,
-        _ objectManipulationIsActive: Bool = false) {
+        _ objectManipulationIsActive: Bool = false,
+        initialOrigin: Binding<CGPoint?>) {
             
         uniquePartNames = names
         self.objectName = objectName
         self.objectManipulationIsActive = objectManipulationIsActive
+            
+                self._initialOrigin = initialOrigin
+        
     }
     
 
@@ -162,20 +168,36 @@ struct ObjectView: View {
     var body: some View {
         let dictionaryForScreen: CornerDictionary =
             objectPickVM.getObjectDictionaryForScreen()
+        var originOffset: CGPoint{
+            let value =
+                objectPickVM.getOriginOffSet()
+            return CGPoint(x: 0.0, y: -value.y)
+        }
        
+       // let originOffsetInGlobal = geometry.frame(in: .global).origin
         let frameSize =
             objectPickVM.getScreenFrameSize()
         
        // GeometryReader { reader in
         //VStack{
             ZStack{
+                Text("\(Int(initialOrigin?.y ?? 0.0)) ")
+                    .font(.system(size: 100))
+                    .zIndex(10000)
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(
                         uniquePartName: name,
                         preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
-                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen//,
-                        //                    pretTiltObjectToAllPartCorner: pretTiltObjectToAllPartCorner
-                    )
+                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen)
+                }
+            }
+            .background(GeometryReader { geometry in
+                Color.clear
+                    .preference(key: InitialOriginPreferenceKey.self, value: geometry.frame(in: .global).origin)
+            })
+            .onPreferenceChange(InitialOriginPreferenceKey.self) { initialOrigin in
+                if self.initialOrigin == nil {
+                    self.initialOrigin = initialOrigin
                 }
             }
 //            Text(String(Int(defaultScale/measurementScale)))
@@ -185,11 +207,12 @@ struct ObjectView: View {
         .border(.red, width: 5)
         //.frame(width: frameSize.width, height: frameSize.length)
 //        if objectManipulationIsActive {
+        
+        
             .modifier(
                 ForObjectInDefaultView (
                     frameSize: frameSize, active: objectManipulationIsActive)
                 )
-        
         .offset(CGSize(width: 0, height:300))
         .scaleEffect(zoom)
         .gesture(MagnificationGesture()
@@ -206,3 +229,45 @@ struct ObjectView: View {
 
 
 
+//        GeometryReader { geometry in
+//
+//
+//            let originOffsetInGlobal = geometry.frame(in: .global).origin
+//            let frameSize =
+//            objectPickVM.getScreenFrameSize()
+//
+//            let dictionaryForScreen: CornerDictionary =
+//            objectPickVM.getObjectDictionaryForScreen()
+//            var originOffset: CGPoint{
+//                let value =
+//                objectPickVM.getOriginOffSet()
+//                return CGPoint(x: 0.0, y: -value.y)
+//            }
+//
+//            ZStack{
+//
+//                ForEach(uniquePartNames, id: \.self) { name in
+//                    PartView(
+//                        uniquePartName: name,
+//                        preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
+//                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen)
+//                }
+//            }
+//            .border(.red, width: 5)
+//            .modifier(
+//                ForObjectInDefaultView (
+//                    frameSize: frameSize, active: objectManipulationIsActive)
+//            )
+//
+//            .offset(CGSize(width: originOffsetInGlobal.x, height: originOffsetInGlobal.y))
+//            .scaleEffect(zoom)
+//            .gesture(MagnificationGesture()
+//                .onChanged { value in
+//                    currentZoom = value - 1
+//                }
+//                .onEnded { value in
+//                    lastCurrentZoom += currentZoom
+//                    currentZoom = 0.0
+//                }
+//            )
+//        }

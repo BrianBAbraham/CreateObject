@@ -58,11 +58,14 @@ struct ContentView: View {
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
     
+    
     @State var isActive = true
     @State var globalPosition: CGPoint?
     @State var position: CGPoint = .zero
     @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
-   
+    @State private var initialOrigin: CGPoint?
+    
+    
     @State var savedDictionaryAsList =  [""]
     @State private var savedAsName: String = ""
     
@@ -138,9 +141,14 @@ struct ContentView: View {
             VStack {
                 NavigationLink(destination:
                     VStack {
-                        PickInitialObjectView()
-                        EditInitialObjectView()
-                        ObjectView(uniquePartNames, name, objectManipulationIsActive)
+                        
+                        ObjectView(
+                            uniquePartNames,
+                            name,
+                            objectManipulationIsActive,
+                            initialOrigin: $initialOrigin)
+                    PickInitialObjectView()
+                    EditInitialObjectView()
                     }) {
                         Text("Default equipment")
                     }
@@ -153,7 +161,16 @@ struct ContentView: View {
 
 
 
-
+// PreferenceKey to store the initial origin of the child view
+struct InitialOriginPreferenceKey: PreferenceKey {
+    static var defaultValue: CGPoint?
+    
+    static func reduce(value: inout CGPoint?, nextValue: () -> CGPoint?) {
+        if let nextValue = nextValue() {
+            value = nextValue
+        }
+    }
+}
 
 
    
@@ -412,7 +429,7 @@ struct ContentViewX: View {
     }
 
 
-   
+    @State private var initialOrigin: CGPoint?
     
     var body: some View {
        // PickSavedObjectView()
@@ -429,7 +446,8 @@ struct ContentViewX: View {
                             ObjectView(
                                 uniquePartNames,
                                 name,
-                                objectManipulationIsActive)
+                                objectManipulationIsActive,
+                                initialOrigin: $initialOrigin)
                     } )
                     { Text("Default equipment")
 //                            .onTapGesture {
