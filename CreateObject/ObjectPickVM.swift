@@ -418,6 +418,15 @@ extension ObjectPickViewModel {
             CreateIosPosition.negative(minThenMax[0])
     }
     
+    func getOffSetToKeepOriginStatic() -> Double {
+        let halfFrameHeight = getScreenFrameSize().length/2
+        
+        let offSetOfOriginFromFrameTop = -getOriginOffSet().y
+        
+        return halfFrameHeight + offSetOfOriginFromFrameTop
+    }
+
+    
     func getScreenFrameSize ()
         -> Dimension{
             

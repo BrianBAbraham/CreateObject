@@ -144,7 +144,6 @@ struct ContentView: View {
                         
                         ObjectView(
                             uniquePartNames,
-                            name,
                             objectManipulationIsActive,
                             initialOrigin: $initialOrigin)
                     PickInitialObjectView()
@@ -162,15 +161,15 @@ struct ContentView: View {
 
 
 // PreferenceKey to store the initial origin of the child view
-struct InitialOriginPreferenceKey: PreferenceKey {
-    static var defaultValue: CGPoint?
-    
-    static func reduce(value: inout CGPoint?, nextValue: () -> CGPoint?) {
-        if let nextValue = nextValue() {
-            value = nextValue
-        }
-    }
-}
+//struct InitialOriginPreferenceKey: PreferenceKey {
+//    static var defaultValue: CGPoint?
+//
+//    static func reduce(value: inout CGPoint?, nextValue: () -> CGPoint?) {
+//        if let nextValue = nextValue() {
+//            value = nextValue
+//        }
+//    }
+//}
 
 
    
@@ -445,7 +444,6 @@ struct ContentViewX: View {
                               //  .environmentObject(objectPickVM)
                             ObjectView(
                                 uniquePartNames,
-                                name,
                                 objectManipulationIsActive,
                                 initialOrigin: $initialOrigin)
                     } )
