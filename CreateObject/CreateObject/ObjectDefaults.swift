@@ -108,9 +108,15 @@ struct ObjectChainLabel {
         .fixedWheelManualRearDrive:
             chairSupportWithFixedRearWheel + [.casterWheelAtFront] + [.fixedWheelAtRearWithPropeller],
         
-        .showerTray: [.sitOn],
+   
 
-        .fixedWheelSolo: [.sitOn] + [.fixedWheelAtMid]  + [.sideSupport] ]
+        .fixedWheelSolo: [.sitOn] + [.fixedWheelAtMid]  + [.sideSupport] ,
+    
+            .scooterRearDrive4Wheeler: chairSupportWithOutFoot + [.fixedWheelAtRear, .steeredWheelAtFront],
+    
+            .showerTray: [.sitOn],
+    
+    ]
 }
 
 
@@ -135,7 +141,9 @@ struct LabelInPartChainOut {
             [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront, .fixedWheelAtFrontWithPropeller],
             [.casterVerticalJointAtRear, .casterForkAtRear, .casterWheelAtRear],
             [.casterVerticalJointAtMid, .casterForkAtMid, .casterWheelAtMid],
-            [.casterVerticalJointAtFront, .casterForkAtFront, .casterWheelAtFront]
+            [.casterVerticalJointAtFront, .casterForkAtFront, .casterWheelAtFront],
+            [.steeredVerticalJointAtFront, .steeredWheelAtFront]
+            
         ]
 
         // Create the dictionary dynamically from the PartChain arrays
@@ -176,7 +184,18 @@ struct LabelInPartChainOut {
 
 
 
-
+//determine if a part is linked to another part for origin or dimension
+struct LinkedParts {
+    let dictionary: [Part: Part] = [
+        .fixedWheelHorizontalJointAtRear: .sitOn,
+        .fixedWheelHorizontalJointAtMid: .sitOn,
+        .fixedWheelHorizontalJointAtFront: .sitOn,
+        .casterVerticalJointAtRear: .sitOn,
+        .casterVerticalJointAtMid: .sitOn,
+        .casterVerticalJointAtFront: .sitOn,
+        .steeredVerticalJointAtFront: .sitOn
+        ]
+}
 
 
 
@@ -221,7 +240,10 @@ struct DefaultDictionaries {
     let generalDimensionMinMaxDic: [Part: (min: Dimension3d, max: Dimension3d)] = [
         .sitOn:
           (min: (width: 200.0, length: 200.0, height: 10.0),
-           max: (width: 1000.0, length: 1000.0, height: 2000.0))
+           max: (width: 1000.0, length: 2000.0, height: 40.0)),
+          .footSupportHangerLink:
+            (min: (width: 10.0, length: 0.0, height: 10.0),
+             max: (width: 50.0, length: 1000.0, height: 40.0))
         ]
     
     static var shared = DefaultDictionaries()

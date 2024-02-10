@@ -274,16 +274,6 @@ protocol Parts {
 //}
 
 
-struct LinkedParts {
-    let dictionary: [Part: Part] = [
-        .fixedWheelHorizontalJointAtRear: .sitOn,
-        .fixedWheelHorizontalJointAtMid: .sitOn,
-        .fixedWheelHorizontalJointAtFront: .sitOn,
-        .casterVerticalJointAtRear: .sitOn,
-        .casterVerticalJointAtMid: .sitOn,
-        .casterVerticalJointAtFront: .sitOn
-        ]
-}
 
 
 
@@ -873,6 +863,14 @@ struct StructFactory {
                 linkedOrParentData,
                 defaultDimensionOneOrTwo,
                 userEditedData.partIdAllowingForUserEdit)
+        
+//        if objectType == .scooterRearDrive4Wheeler && part == .steeredVerticalJointAtFront {
+//            print(defaultOrigin.userEditedOriginOneOrTwo)
+//        }
+//
+//        if objectType == .fixedWheelRearDrive && part == .fixedWheelHorizontalJointAtRear {
+//            print(defaultOrigin.userEditedOriginOneOrTwo)
+//        }
         
         setChildDimensionForPartData()
         setChilOriignForPartData()

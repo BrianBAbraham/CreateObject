@@ -150,7 +150,7 @@ extension ObjectPickViewModel {
     func getInitialSliderValue(_ id: PartTag, _ part: Part, _ dimensionToEdit: PartTag) -> Double {
         let name = getPartName(id, part)
         let dimension = objectImageData.dimensionDic[name] ?? ZeroValue.dimension3d
-        
+
         return
             dimensionToEdit == .length ? (dimension.length): (dimension.width)
         
@@ -191,6 +191,30 @@ extension ObjectPickViewModel {
         objectPickModel.angleMinMaxDic[name] ?? ZeroValue.angleMinMax
     }
     
+    func getCurrentObjectFrameSize() -> Dimension {
+        objectPickModel.currentObjectFrameSize
+    }
+    
+    
+    func getCurrentObjectName() -> String{
+        objectPickModel.currentObjectName
+    }
+    
+    func getCurrentObjectType()
+        -> ObjectTypes {
+        currentObjectType
+    }
+    
+    func getDimensionMinMax(_ part: Part) -> (min: Double, max: Double) {
+        let minMaxDimension = defaultDics.getDefault(part, currentObjectType)
+        return (min: minMaxDimension.min.length, max: minMaxDimension.max.length)
+    }
+    
+    func getInitialSliderValue(_ part: Part, _ id: PartTag) -> Double {
+        let objectType = getCurrentObjectType()
+        return 0.0
+    }
+    
     
     func getPostTiltOneCornerPerKeyDic()
     ->PositionDictionary{
@@ -208,28 +232,6 @@ extension ObjectPickViewModel {
     }
     
     
-    func getCurrentObjectFrameSize() -> Dimension {
-        objectPickModel.currentObjectFrameSize
-    }
-    
-    
-    func getCurrentObjectName() -> String{
-        objectPickModel.currentObjectName
-    }
-    
-    
-    func getDimensionMinMax(_ part: Part) -> (min: Double, max: Double) {
-        let minMaxDimension = defaultDics.getDefault(part, currentObjectType)
-        return (min: minMaxDimension.min.length, max: minMaxDimension.max.length)
-    }
-    
-    
-    func getCurrentObjectType()
-        -> ObjectTypes {
-        currentObjectType
-    }
-    
-
     func getObjectDictionaryFromSaved(_ entity: LocationEntity) -> [String]{
         let allOriginNames = entity.interOriginNames ?? ""
         let allOriginValues = entity.interOriginValues ?? ""

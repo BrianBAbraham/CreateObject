@@ -72,12 +72,16 @@ struct EditInitialObjectView: View {
            
             FootSupport()
                 .padding(.horizontal)
-            
+            if objectShowMenuVM.getShowMenuStatus(.supportWidth) {
             HStack{
                 SideSelection(objectName: objectName)
-                LegLength()
+                //DimensionMenu(.footSupportHangerLink, .id0, "leg length", .two)
+                LegLength() //USING DIMENSIKON MENU NOT WORKING PROPERLY IS IT REALATED TO boundObjectType having id argument??
             }
                 .padding(.horizontal)
+            } else {
+                EmptyView()
+            }
             
             HStack{
                 HeadSupport()
@@ -89,11 +93,18 @@ struct EditInitialObjectView: View {
             TiltX()
                 .padding(.horizontal)
             
-            HStack {
-                DimensionSelection()
-                SitOnDimension()
-            }
+            if objectShowMenuVM.getShowMenuStatus(.supportWidth) {
+                HStack {
+                    DimensionSelection()
+                    DimensionMenu(.sitOn, .id0, "seat", .one)
+                 // SitOnDimension()
+                }
                 .padding(.horizontal)
+            } else {
+                EmptyView()
+            }
+           
+                
         }
         .onAppear{objectName = objectPickVM.getCurrentObjectName()}
         .font(.caption)

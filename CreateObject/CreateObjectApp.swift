@@ -21,6 +21,7 @@ struct CreateObjectApp: App {
     @StateObject var objectEditVM = ObjectEditViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
+    @StateObject var unitsVM = Settings()
     
 
 
@@ -33,6 +34,7 @@ struct CreateObjectApp: App {
                     .environmentObject(objectEditVM)
                     .environmentObject(coreDataVM)
                     .environmentObject(sceneVM)
+                    .environmentObject(unitsVM)
         }
     }
 }

@@ -17,7 +17,7 @@ enum Part: String, Parts, Hashable {
     
     case assistantFootLever = "assistantFootLever"
     
-    case armSupport = "arm"
+    //case armSupport = "arm"
     case armVerticalJoint = "armVerticalJoint"
     
     case backSupport = "backSupport"
@@ -63,8 +63,8 @@ enum Part: String, Parts, Hashable {
     case casterWheelAtMid = "casterWheelAtMid"
     case casterWheelAtFront = "casterWheelAtFront"
 
-    case fixedWheel = "fixedWheel"
-    case fixedWheelPropeller = "fixedWheelPropeller"
+    //case fixedWheel = "fixedWheel"
+    //case fixedWheelPropeller = "fixedWheelPropeller"
     
   
     case fixedWheelAtRear = "fixedWheelAtRear"
@@ -91,7 +91,7 @@ enum Part: String, Parts, Hashable {
     
     
     case sitOn = "sitOn"
-    case sleepOnSupport = "sleepOn"
+    //case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"
     
     case sideSupport = "sideSupport"
@@ -103,6 +103,12 @@ enum Part: String, Parts, Hashable {
     case stabilizerAtFront = "stabilityAtFront"
     
     case sitOnTiltJoint = "tiltInSpaceHorizontalJoint"
+    
+    case steeredVerticalJointAtFront = "steeredVerticalBaseJointAtFront"
+    case steeredVerticallJointAtRear = "steeredVerticalBaseJointAtRear"
+    case steeredWheelAtFront = "steeredWheelAtFront"
+    case steeredWheelAtRear = "steeredWheelAtRear"
+    
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(rawValue)
@@ -215,6 +221,7 @@ struct PartDefaultDimension {
     static let casterForkDimension = (width: 50.0, length: 100.0, height: 50.0)
     static let casterWheelDimension = (width: 20.0, length: 75.0, height: 75.0)
     static let poweredWheelDimension = (width: 50.0, length: 200.0, height: 200.0)
+    static let steeredWheelDimension = (width: 50.0, length: 200.0, height: 200.0)
     static let joint = (width: 20.0, length: 20.0, height: 20.0)
 
     var linkedOrParentDimension = ZeroValue.dimension3d
@@ -280,6 +287,7 @@ struct PartDefaultDimension {
                 PartObject(.sitOn, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
                 PartObject(.stabilizerAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),
                 PartObject(.stabilizerAtFront, .fixedWheelMidDrive): (width: -50.0, length: 20.0, height: 0.0),
+                PartObject(.stabilizerAtFront, .scooterFrontDrive4Wheeler): (width: 0.0, length: Self.steeredWheelDimension.length, height: 0.0),
                 PartObject(.stabilizerAtRear, .allCasterTiltInSpaceShowerChair): (width: 150.0, length: -100.0, height: 0.0),
                 PartObject(.stabilizerAtRear, .fixedWheelRearDriveAssisted): (width: 50.0, length: -100.0, height: 0.0),
             ][PartObject(childOrParent, objectType)]
@@ -324,6 +332,8 @@ struct PartDefaultDimension {
                 .stabilizerAtFront: z,
                 .stabilizerAtMid: z,
                 .stabilizerAtRear: z,
+                .steeredWheelAtFront: Self.steeredWheelDimension,
+                .steeredVerticalJointAtFront: j,
                 ] [childOrParent]
         }
     }
@@ -463,7 +473,8 @@ struct PartDefaultOrigin {
                 .sideSupportRotationJoint: (x: linkedOrParentDimension.width/2, y: -linkedOrParentDimension.length/2, z: selfDimension.height),
                 .sitOn:  (x: 0.0, y: selfDimension.length/2, z: 500.0 ),
                 .sitOnTiltJoint: (x: 0.0, y: -linkedOrParentDimension.length/4, z: -100.0),
-
+                .steeredVerticalJointAtFront: wheelBaseJointOrigin,
+                .steeredWheelAtFront: ZeroValue.iosLocation
                 ] [part]
         }
     }
@@ -535,7 +546,8 @@ struct PartDefaultOrigin {
                                 z: wheelJointHeight)
                 case
                     .fixedWheelHorizontalJointAtFront,
-                    .casterVerticalJointAtFront:
+                    .casterVerticalJointAtFront,
+                    .steeredVerticalJointAtFront:
                         origin = [
                             .fixedWheelFrontDrive: (
                                     x: xPosition,
@@ -545,10 +557,15 @@ struct PartDefaultOrigin {
                                     x: xPosition + frontStability.width,
                                     y: sitOnLength/2 + frontStability.length,
                                     z: wheelJointHeight),
-                            .fixedWheelSolo: midDriveOrigin][objectType] ?? (
-                                    x: xPositionAtFront,
-                                    y: sitOnLength + frontStability.length,
-                                    z: wheelJointHeight)
+                            .fixedWheelSolo: midDriveOrigin,
+                            .scooterRearDrive4Wheeler: (
+                                            x: xPositionAtFront,
+                                            y: 800.0 + frontStability.length,
+                                            z: wheelJointHeight)
+                            ][objectType] ?? (
+                                        x: xPositionAtFront,
+                                        y: sitOnLength + frontStability.length,
+                                        z: wheelJointHeight)
                 default:
                     break
             }

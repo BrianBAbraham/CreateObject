@@ -190,7 +190,7 @@ extension ObjectEditViewModel {
     }
     
     
-    func setOneOrTwoDimensionForTwoInUserEditedDic(
+    func setOneDimensionForOneOrTwoBilateralPartInUserEditedDic(
         _ length: Double,
         _ part: Part) {
 
@@ -255,7 +255,7 @@ extension ObjectEditViewModel {
     }
     
     
-    func setOneOrTwoDimensionForOneInUserEditedDic(
+    func setEitherDimensionForOnePartInUserEditedDic(
         _ value: Double,
         _ part: Part,
         _ selectedDimension: PartTag) {

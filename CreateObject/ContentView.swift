@@ -20,8 +20,67 @@ struct EnterTextView: View {
 }
 
 
-struct ListView: View {
+
+extension Double {
+    func roundToNearest(_ increment: Double) -> Double {
+        return (self / increment).rounded() * increment
+    }
+}
+
+
+
+
+struct MeasurementView: View {
+    @EnvironmentObject var settings: Settings
+    var measurement: Measurement<UnitLength>
     
+    init(_ measurement: Measurement<UnitLength>) {
+        self.measurement = measurement
+    }
+
+    var body: some View {
+        Text(formatLength())
+    }
+
+    private func formatLength() -> String {
+        switch settings.unitSystem {
+        case .metric:
+            return String(Int(measurement.value)) + "mm"
+        case .imperial:
+            return String(
+                measurement.converted(to: .inches).value.roundToNearest(0.25)) + "\""
+        
+        }
+    }
+}
+enum UnitSystem: String {
+    case metric = "mm"
+    case imperial = "\""
+}
+class Settings: ObservableObject {
+    @Published var unitSystem: UnitSystem = .metric
+}
+struct UnitSystemSelectionView: View {
+    @EnvironmentObject var settings: Settings
+
+    var body: some View {
+        Picker("Unit System", selection: $settings.unitSystem) {
+            Text("mm").tag(UnitSystem.metric)
+            Text("inches").tag(UnitSystem.imperial)
+        }
+        .pickerStyle(SegmentedPickerStyle())
+        .frame(width: 200, height: 40)
+        .padding()
+    }
+}
+
+
+
+
+
+
+
+struct ListView: View {
     let equipmentName: String
     let list: [String]
     
@@ -146,11 +205,13 @@ struct ContentView: View {
                             uniquePartNames,
                             objectManipulationIsActive,
                             initialOrigin: $initialOrigin)
-                    PickInitialObjectView()
-                    EditInitialObjectView()
+                        PickInitialObjectView()
+                        EditInitialObjectView()
                     }) {
                         Text("Default equipment")
                     }
+                Spacer()
+                UnitSystemSelectionView()
             }
             .navigationBarTitle("Equipment manager")
         }
