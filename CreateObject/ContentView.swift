@@ -44,7 +44,9 @@ struct MeasurementView: View {
 
     private func formatLength() -> String {
         switch settings.unitSystem {
-        case .metric:
+        case .cm:
+            return String(format: "%.1f",measurement.value/10.0) + "cm"
+        case .mm:
             return String(Int(measurement.value)) + "mm"
         case .imperial:
             return String(
@@ -54,18 +56,20 @@ struct MeasurementView: View {
     }
 }
 enum UnitSystem: String {
-    case metric = "mm"
+    case cm  = "cm"
+    case mm = "mm"
     case imperial = "\""
 }
 class Settings: ObservableObject {
-    @Published var unitSystem: UnitSystem = .metric
+    @Published var unitSystem: UnitSystem = .mm
 }
 struct UnitSystemSelectionView: View {
     @EnvironmentObject var settings: Settings
 
     var body: some View {
         Picker("Unit System", selection: $settings.unitSystem) {
-            Text("mm").tag(UnitSystem.metric)
+            Text("cm").tag(UnitSystem.cm)
+            Text("mm").tag(UnitSystem.mm)
             Text("inches").tag(UnitSystem.imperial)
         }
         .pickerStyle(SegmentedPickerStyle())

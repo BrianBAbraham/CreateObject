@@ -124,6 +124,8 @@ enum PartTag: String, Parts {
     case stringLink = "_"
     case width = "width"
     case length = "length"
+    case dimension = "dimension"
+    case origin = "origin"
     
     var stringValue: String {
         return self.rawValue

@@ -175,7 +175,7 @@ struct ObjectView: View {
                 ForObjectInDefaultView (
                     frameSize: frameSize, active: objectManipulationIsActive)
                 )
-        .offset(CGSize(width: 0, height: objectPickVM.getOffSetToKeepOriginStatic()))
+        .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()))
         .scaleEffect(zoom)
         .gesture(MagnificationGesture()
         .onChanged { value in

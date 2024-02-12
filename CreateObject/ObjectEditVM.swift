@@ -16,7 +16,7 @@ class DataService: ObservableObject {
     @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     @Published var presenceOfPartForSide: Side = .both
     @Published var scopeOfEditForSide: Side = .both
-    @Published var dimensionForEditing: PartTag = .length
+    @Published var dimensionValueToEdit: PartTag = .length
 
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     static let shared = DataService()
@@ -31,6 +31,7 @@ class DataService: ObservableObject {
 class ObjectEditViewModel: ObservableObject {
     @Published  var userEditedDic: UserEditedDictionaries = UserEditedDictionaries.shared
     var objectType: ObjectTypes = .fixedWheelRearDrive
+    var dimensionValueToEdit: PartTag = .length
     private var cancellables: Set<AnyCancellable> = []
     
     
@@ -47,11 +48,23 @@ class ObjectEditViewModel: ObservableObject {
                 self?.objectType = newData
             }
             .store(in: &self.cancellables)
+        
+        DataService.shared.$dimensionValueToEdit
+            .sink { [weak self] newData in
+                self?.dimensionValueToEdit = newData
+            }
+            .store(in: &self.cancellables)
     }
     
 }
 
 extension ObjectEditViewModel {
+    
+    
+//    func getDimensionValueToBeEdited() -> PartTag{
+//        return dimensionValueToEdit
+//    }
+//
     
     func setCurrentRotation(
         _ maxMinusSliderValue: Double) {
@@ -122,12 +135,16 @@ extension ObjectEditViewModel {
         }
     }
     
-    func getDimensionToBeEdited() -> PartTag {
-        DataService.shared.dimensionForEditing
+    func getDimensionValueToBeEdited() -> PartTag {
+        //print(dimensionValueToEdit)
+        return
+        dimensionValueToEdit
+       // DataService.shared.dimensionValueToEdit
     }
     
     
     func setSidesToBeEdited(_ sides: Side) {
+        //print(sides)
         DataService.shared.scopeOfEditForSide = sides
     }
     
@@ -190,9 +207,11 @@ extension ObjectEditViewModel {
     }
     
     
-    func setOneDimensionForOneOrTwoBilateralPartInUserEditedDic(
-        _ length: Double,
-        _ part: Part) {
+    func setValueForBilateralPartInUserEditedDic(
+        _ value: Double,
+        _ part: Part,
+        _ dimensionOrOrigin: PartTag,
+        _ valueToBeChange: PartTag) {
 
         switch DataService.shared.scopeOfEditForSide {
         case .both:
@@ -218,16 +237,16 @@ extension ObjectEditViewModel {
     
         func dimensionWithModifiedLength(_ dimension: Dimension3d) -> Dimension3d {
             (width: dimension.width,
-             length: length,
+             length: value,
              height:dimension.height)
         }
         
         
-        func originModifiedByLength(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
-        (x: origin.x,
-         y: origin.y,
-         z: origin.z)
-        }
+//        func originModifiedByLength(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
+//        (x: origin.x,
+//         y: origin.y,
+//         z: origin.z)
+//        }
         
     }
     
@@ -257,15 +276,16 @@ extension ObjectEditViewModel {
     
     func setEitherDimensionForOnePartInUserEditedDic(
         _ value: Double,
-        _ part: Part,
-        _ selectedDimension: PartTag) {
+        _ part: Part//,
+    //    _ selectedDimension: PartTag
+    ) {
 //print(selectedDimension)
     let name = getName(.id0, part)
 
     let currentDimension =
             getEditedOrDefaultDimension(name, part, .id0)
 
-    let newDimension = selectedDimension == .width ?
+    let newDimension = dimensionValueToEdit == .width ?
         (width: value,
          length: currentDimension.length,
          height:currentDimension.height)
@@ -280,7 +300,9 @@ extension ObjectEditViewModel {
     
     
     func updateDimensionToBeEdited(_ dimension: PartTag) {
-        DataService.shared.dimensionForEditing = dimension
+      
+        DataService.shared.dimensionValueToEdit = dimension
+        //print(dimensionValueToEdit)
     }
 
 }

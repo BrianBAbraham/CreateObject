@@ -58,6 +58,7 @@ class ObjectPickViewModel: ObservableObject {
     let defaultDics: DefaultDictionaries
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionDic: Part3DimensionDictionary
+    var dimensionValueToEdit: PartTag = .length
     private var cancellables: Set<AnyCancellable> = []
     
 
@@ -98,6 +99,12 @@ class ObjectPickViewModel: ObservableObject {
                 self?.userEditedDics = newData
             }
             .store(in: &self.cancellables)
+        
+        DataService.shared.$dimensionValueToEdit
+            .sink { [weak self] newData in
+                self?.dimensionValueToEdit = newData
+            }
+            .store(in: &self.cancellables)
     }
 }
 
@@ -118,6 +125,10 @@ extension ObjectPickViewModel {
             ObjectImageData(currentObjectType, userEditedDics)
         
         DataService.shared.objectChainLabelsDefaultDic = objectImageData.objectChainLabelsDefaultDic//update for new object
+        
+//        print("creating start")
+//        print(objectImageData.objectChainLabelsDefaultDic)
+//        print("creating end")
         
         createNewPickModel()
     }
@@ -147,13 +158,15 @@ extension ObjectPickViewModel {
 //MARK: GET
 extension ObjectPickViewModel {
     
-    func getInitialSliderValue(_ id: PartTag, _ part: Part, _ dimensionToEdit: PartTag) -> Double {
+    func getInitialSliderValue(_ id: PartTag, _ part: Part, _ dimensionValueToEdit: PartTag) -> Double {
+//        print("initial")
+//       print(dimensionValueToEdit)
+//        print("")
         let name = getPartName(id, part)
         let dimension = objectImageData.dimensionDic[name] ?? ZeroValue.dimension3d
 
-        return
-            dimensionToEdit == .length ? (dimension.length): (dimension.width)
-        
+        return self.dimensionValueToEdit == .length ?
+            (dimension.length): (dimension.width)
     }
     
     
@@ -206,14 +219,17 @@ extension ObjectPickViewModel {
     }
     
     func getDimensionMinMax(_ part: Part) -> (min: Double, max: Double) {
+    
         let minMaxDimension = defaultDics.getDefault(part, currentObjectType)
         return (min: minMaxDimension.min.length, max: minMaxDimension.max.length)
     }
     
-    func getInitialSliderValue(_ part: Part, _ id: PartTag) -> Double {
-        let objectType = getCurrentObjectType()
-        return 0.0
-    }
+//    func getInitialSliderValue(_ part: Part, _ id: PartTag) -> Double {
+//        print(part)
+//        print(id)
+//        let objectType = getCurrentObjectType()
+//        return 100.0
+//    }
     
     
     func getPostTiltOneCornerPerKeyDic()
@@ -349,10 +365,12 @@ extension ObjectPickViewModel {
 //MARK: ENSURE DRAG
 extension ObjectPickViewModel {
     
+    //MARK: DEVELOPMENT scale = 1
+    ///objects larger than screen size behaviour not known
     func getObjectDictionaryForScreen ()
         -> CornerDictionary {
 
-        let originOffset = getOriginOffSet()
+        let originOffset = getOriginOffsetWhenAllPositionValueArePositive()
         let objectDimension = getObjectDimensions()
         let maximumObjectDimension = getMaximumOfObject(objectDimension)
         let scale = Screen.smallestDimension / maximumObjectDimension
@@ -406,7 +424,9 @@ extension ObjectPickViewModel {
             }
     }
     
+    
     func getMinThenMax() -> [PositionAsIosAxes] {
+
         CreateIosPosition
            .minMaxPosition(
                objectPickModel.objectImageData
@@ -414,18 +434,24 @@ extension ObjectPickViewModel {
                )
     }
     
-    func getOriginOffSet() ->PositionAsIosAxes{
+    
+    func getOriginOffsetWhenAllPositionValueArePositive() -> PositionAsIosAxes{
         let minThenMax = getMinThenMax()
         return
             CreateIosPosition.negative(minThenMax[0])
     }
+
     
-    func getOffSetToKeepOriginStatic() -> Double {
+    func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double {
         let halfFrameHeight = getScreenFrameSize().length/2
         
-        let offSetOfOriginFromFrameTop = -getOriginOffSet().y
+        // objects are created with origin at 0,0
+        // setting all part corner position value >= 0
+        // determines the most negative corner position is translated to 0,0
+        // so that translation is the transformed origin position
+        let offSetOfOriginFromFrameTop = getOriginOffsetWhenAllPositionValueArePositive().y
         
-        return halfFrameHeight + offSetOfOriginFromFrameTop
+        return halfFrameHeight - offSetOfOriginFromFrameTop
     }
 
     

@@ -26,8 +26,9 @@ struct EditObjectMenuShowModel {
                 .fixedWheelRearDrive: standardWheeledChair ,
                 .fixedWheelManualRearDrive: standardWheeledChair ,
                 .fixedWheelSolo: standardWheeledChair,
-                    //.fixedWheelTransfer : ,
-                .showerTray: supportDimension
+                .scooterRearDrive4Wheeler: supportDimension + [.tiltInSpace] ,
+                .showerTray: supportDimension,
+               
             ]
         }()
   
@@ -80,7 +81,9 @@ class ObjectShowMenuViewModel: ObservableObject {
         
         DataService.shared.$objectChainLabelsDefaultDic
             .sink { [weak self] newData in
+               
                 self?.objectChainLabelsDefaultDic = newData
+               // print(newData)
             }
             .store(in: &self.cancellables)
     }
@@ -121,8 +124,9 @@ extension ObjectShowMenuViewModel {
 //
     func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> (show: Bool, part: Part) {
 
-            let defaultChainLabels =
-                objectChainLabelsDefaultDic[currentObjectType] ?? []
+      
+        let defaultChainLabels =
+            objectChainLabelsDefaultDic[currentObjectType] ?? []
 
         var idenftifiedChainLabel: Part = .notFound
         for chainLabel in chainLabels {
@@ -135,7 +139,7 @@ extension ObjectShowMenuViewModel {
         var show: Bool {
             idenftifiedChainLabel == Part.notFound ? false: true
         }
-
+      
         return (show: show, part: idenftifiedChainLabel)     }
     
     

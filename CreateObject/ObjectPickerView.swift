@@ -49,6 +49,7 @@ struct PickInitialObjectView: View {
 struct EditInitialObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
 
@@ -63,6 +64,7 @@ struct EditInitialObjectView: View {
    
     
     var body: some View {
+       let dimensionValueToEdit = objectEditVM.getDimensionValueToBeEdited()
         let boundObjectType = Binding(
             get: {objectPickVM.getCurrentObjectName()},
             set: {self.objectName = $0}
@@ -70,36 +72,39 @@ struct EditInitialObjectView: View {
         
         VStack {
            
-            FootSupport()
+            FootSupportPresence()
                 .padding(.horizontal)
-            if objectShowMenuVM.getShowMenuStatus(.supportWidth) {
-            HStack{
-                SideSelection(objectName: objectName)
-                //DimensionMenu(.footSupportHangerLink, .id0, "leg length", .two)
-                LegLength() //USING DIMENSIKON MENU NOT WORKING PROPERLY IS IT REALATED TO boundObjectType having id argument??
-            }
+            
+            if objectShowMenuVM.getShowMenuStatus(.legLength) {
+                HStack{
+                   // SideSelection(objectName: objectName)
+                    BiLateralPartWithOneValueChange(
+                        .footSupportHangerLink,
+                        "leg",
+                        .dimension,
+                        .length)
+                }
                 .padding(.horizontal)
             } else {
                 EmptyView()
             }
             
             HStack{
-                HeadSupport()
+                HeadSupportPresence()
                     .padding(.horizontal)
-                Propeller()
+                PropellerPresence()
                     .padding(.horizontal)
             }
-            
-            TiltX()
-                .padding(.horizontal)
+
+            Tilt(.tiltInSpace)
+
             
             if objectShowMenuVM.getShowMenuStatus(.supportWidth) {
-                HStack {
-                    DimensionSelection()
-                    DimensionMenu(.sitOn, .id0, "seat", .one)
-                 // SitOnDimension()
-                }
-                .padding(.horizontal)
+                //HStack {
+                    //DimensionSelection()
+                    OnePartTwoDimensionValueMenu(.sitOn, "seat")
+//                }
+               // .padding(.horizontal)
             } else {
                 EmptyView()
             }

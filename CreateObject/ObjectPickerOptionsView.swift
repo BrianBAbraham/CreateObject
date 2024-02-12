@@ -134,181 +134,269 @@ struct SideSelection: View {
 }
 
 
-struct DimensionSelection: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @State private var selection: PartTag = .length
-  
-    var relevantCases: [PartTag] = [.length, .width]
+//struct DimensionSelection: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//    @State private var selection: PartTag = .length
+//    var relevantCases: [PartTag] = [.length, .width]
+//
+//    var body: some View {
+//        Picker("dimension", selection: $selection) {
+//            ForEach(relevantCases, id: \.self) { side in
+//                Text(side.rawValue)
+//            }
+//        }
+//        .pickerStyle(.segmented)
+//        //.disabled(relevantCases == [.none])
+//        .fixedSize()
+//        .onChange(of: selection) { newSelection in
+//            objectEditVM.updateDimensionToBeEdited(newSelection)
+//
+//        }
+//    }
+//}
 
-    var body: some View {
-        Picker("dimension", selection: $selection) {
-            ForEach(relevantCases, id: \.self) { side in
-                Text(side.rawValue)
-            }
-        }
-        .pickerStyle(.segmented)
-        //.disabled(relevantCases == [.none])
-        .fixedSize()
-        .onChange(of: selection) { newSelection in
-            objectEditVM.updateDimensionToBeEdited(newSelection)
-        }
-    }
-}
 
 
-
-struct LegLength: View {
+struct BiLateralPartWithOneValueChange: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
-    var show: Bool {
-        objectShowMenuVM.getShowMenuStatus(.legLength)
+    @State private var selection: Side = .both
+    var minMaxValue : (min: Double, max: Double){
+        objectPickVM.getDimensionMinMax(part)
+    }
+    var relevantCases: [Side]{
+        objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
+    }
+    let part: Part
+    let description: String
+    let dimensionOrOrigin: PartTag
+    let valueToBeChanged: PartTag
+    init (
+        _ part: Part,
+        _ description: String,
+        _ dimensionOrOrigin: PartTag,
+        _ valueToBeChanged: PartTag ) {
+            self.part = part
+            self.description = description
+            self.dimensionOrOrigin = dimensionOrOrigin
+            self.valueToBeChanged = valueToBeChanged
     }
  
     var body: some View {
+        let boundObjectType = Binding(
+            get: {
+                let selection = objectEditVM.getPresenceOfPartForSide()
+                let id = selection == .left ? PartTag.id0: PartTag.id1
+                return
+                objectPickVM.getInitialSliderValue(
+                    id,
+                    part,
+                    .length
+                    )},
+            set: {// self.sliderValue = $0
+                 //alt form
+                    newValue in
+                        sliderValue = newValue
+                            }
+            )
         
-//        let aminMax =
-//            objectPickVM.getAngleMinMaxDic(partName)
-        let max = 1000.0//aminMax.max.value
-        let min = 100.0//minMax.min.value
-        if show {
             HStack{
-                Text("leg length")
-                Slider(value: $sliderValue, in: min...max, step: 10.0)
-                Text(" mm: \(Int(sliderValue))")
-                    .onChange(of: sliderValue) { newValue in
-                        objectEditVM.setOneDimensionForOneOrTwoBilateralPartInUserEditedDic(
-                            sliderValue
-                            ,Part.footSupportHangerLink)
-                        
-                        objectPickVM.modifyObjectByCreatingFromName()
-                       }
-            }
+                Picker("side", selection: $selection) {
+                    ForEach(relevantCases, id: \.self) { side in
+                        Text(side.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .disabled(relevantCases == [.none])
+                .fixedSize()
+                .onChange(of: selection) { newSelection in
+                    objectEditVM.setSidesToBeEdited(newSelection)
+                }
+                .onChange(of: relevantCases) { newCases in
+                    if newCases == [.left] ||
+                        newCases == [.right] {
+                        objectEditVM.setSidesToBeEdited(newCases[0])
+                    }
+                }
+                
+                
+                Text(description)
+                
+                Slider(value: boundObjectType,
+                       in: minMaxValue.min...minMaxValue.max,
+                       step: 10.0)
+                MeasurementView(
+                    Measurement(value: boundObjectType.wrappedValue,
+                        unit: .millimeters))
+                }
+                .onChange(of: sliderValue) { newValue in
+                    objectEditVM
+                        .setValueForBilateralPartInUserEditedDic(
+                            newValue,
+                            part,
+                            dimensionOrOrigin,
+                            valueToBeChanged)
+                    
+                    objectPickVM.modifyObjectByCreatingFromName()
+                    }
+                .onChange(of: selection) { _ in
+                  //  print(selection == .left ? PartTag.id0: PartTag.id1)
+                    sliderValue =
+                    objectPickVM.getInitialSliderValue(
+                        selection == .left ? PartTag.id0: PartTag.id1,
+                    part,
+                        .length)
+                    }
+                .padding(.horizontal)
+                
+                
+//                Text(" mm: \(Int(sliderValue))")
+//                    .onChange(of: sliderValue) { newValue in
+//                        objectEditVM
+//                            .setValueForBilateralPartInUserEditedDic(
+//                            sliderValue
+//                            ,part,
+//                            dimensionOrOrigin,
+//                            valueToBeChanged)
+//
+//                        objectPickVM.modifyObjectByCreatingFromName()
+//                       }
+            //}
             .disabled(DataService.shared.presenceOfPartForSide == .none)
-        } else {
-            EmptyView()
-        }
     }
 }
 
 
-struct DimensionMenu: View {
+struct OnePartTwoDimensionValueMenu: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @State var sliderValue = 0.0
+    @State private var sliderValue = 0.0
+    @State private var selection: PartTag = .length
+    var relevantCases: [PartTag] = [.length, .width]
     var minMaxValue : (min: Double, max: Double){
         objectPickVM.getDimensionMinMax(part)
     }
     let part: Part
-    let id: PartTag
     let description: String
-    let bilateralOrOnePartDimensionEdit: BilateralOrOnePartDimensionEdit
     
     init(
         _ part: Part,
-        _ id: PartTag,
-        _ description: String,
-        _ bilateralOrOne: BilateralOrOnePartDimensionEdit ) {
+        _ description: String  ) {
         self.part = part
-        self.id = id
         self.description = description
-        self.bilateralOrOnePartDimensionEdit = bilateralOrOne
     }
-    
     var body: some View {
-        let dimensionToEdit = objectEditVM.getDimensionToBeEdited()
+       
         let boundObjectType = Binding(
-            get: {objectPickVM.getInitialSliderValue(
-                id,
-                part,
-                dimensionToEdit)},
-            set: {self.sliderValue = $0}
+            get: {
+                objectPickVM.getInitialSliderValue(
+                    .id0,
+                    part,
+                    selection
+                    )},
+            set: {// self.sliderValue = $0
+                 //alt form
+                    newValue in
+                        sliderValue = newValue
+                            }
             )
-     
-            HStack {
-                Text(description)
-                Slider(value: boundObjectType, in: minMaxValue.min...minMaxValue.max, step: 10.0)
-                MeasurementView(
-                    Measurement(value: boundObjectType.wrappedValue,
-                                unit: .millimeters) )
-                    .onChange(of: sliderValue) { newValue in
-                        
-                        switch bilateralOrOnePartDimensionEdit {
-                        case .one:
-                            objectEditVM.setEitherDimensionForOnePartInUserEditedDic(
-                                sliderValue,
-                                part,
-                                dimensionToEdit)
-                        case .two:
-                            objectEditVM.setOneDimensionForOneOrTwoBilateralPartInUserEditedDic(
-                                sliderValue
-                                ,part)
-                        }
-                        
-                        objectPickVM.modifyObjectByCreatingFromName()
-                    }
+        HStack {
+            Picker("dimension", selection: $selection) {
+                ForEach(relevantCases, id: \.self) { side in
+                    Text(side.rawValue)
+                }
             }
-            .onAppear {
-                sliderValue = boundObjectType.wrappedValue
+            .pickerStyle(.segmented)
+            .fixedSize()
+            .onChange(of: selection) { newSelection in
+                objectEditVM.updateDimensionToBeEdited(newSelection)
             }
-    }
-}
-
-enum BilateralOrOnePartDimensionEdit {
-    case one
-    case two
-}
-
-
-struct SitOnDimension: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @State private var sliderValue: Double = 200.0
-    var show: Bool {
-        objectShowMenuVM.getShowMenuStatus(.supportWidth)
-    }
-    var minMaxLength: (min: Double, max: Double) {
-        objectPickVM.getDimensionMinMax(.sitOn)
-    }
-    var min: Double { minMaxLength.min }
-    var max: Double { minMaxLength.max }
-
-    var body: some View {
-        let dimensionToEdit = objectEditVM.getDimensionToBeEdited()
-        let boundObjectType = Binding(
-            get: {objectPickVM.getInitialSliderValue(
+            
+            Text(description)
+  
+            Slider(value: boundObjectType,
+                   in: minMaxValue.min...minMaxValue.max,
+                   step: 10.0)
+            MeasurementView(
+                Measurement(value: boundObjectType.wrappedValue,
+                    unit: .millimeters))
+            }
+            .onChange(of: sliderValue) { newValue in
+                objectEditVM
+                    .setEitherDimensionForOnePartInUserEditedDic(
+                        newValue,
+                        part)
+                objectPickVM.modifyObjectByCreatingFromName()
+                }
+            .onChange(of: selection) { _ in
+                sliderValue =
+                objectPickVM.getInitialSliderValue(
                 .id0,
-                .sitOn,
-                dimensionToEdit)},
-            set: {self.sliderValue = $0}
-            )
-        if show {
-            HStack {
-                Text("support")
-                Slider(value: boundObjectType, in: min...max, step: 10.0)
-                MeasurementView(
-                    Measurement(value: boundObjectType.wrappedValue,
-                                unit: .millimeters) )
-                    .onChange(of: sliderValue) { newValue in
-                        objectEditVM.setEitherDimensionForOnePartInUserEditedDic(
-                            sliderValue,
-                            Part.sitOn,
-                            dimensionToEdit)
-                        objectPickVM.modifyObjectByCreatingFromName()
-                    }
-            }
-            .onAppear {
-                sliderValue = boundObjectType.wrappedValue
-            }
-        } else {
-            EmptyView()
-        }
+                part,
+                selection)
+                }
+            .padding(.horizontal)
     }
 }
+
+
+
+//enum BilateralOrOnePartDimensionEdit {
+//    case one
+//    case two
+//}
+
+
+//struct SitOnDimension: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+//    @State private var sliderValue: Double = 200.0
+//    var show: Bool {
+//        objectShowMenuVM.getShowMenuStatus(.supportWidth)
+//    }
+//    var minMaxLength: (min: Double, max: Double) {
+//        objectPickVM.getDimensionMinMax(.sitOn)
+//    }
+//    var min: Double { minMaxLength.min }
+//    var max: Double { minMaxLength.max }
+//
+//    var body: some View {
+//        let dimensionToEdit = objectEditVM.getDimensionToBeEdited()
+//        let boundObjectType = Binding(
+//            get: {objectPickVM.getInitialSliderValue(
+//                .id0,
+//                .sitOn,
+//                dimensionToEdit)},
+//            set: {self.sliderValue = $0}
+//            )
+//        if show {
+//            HStack {
+//                Text("support")
+//                Slider(value: boundObjectType, in: min...max, step: 10.0)
+//                MeasurementView(
+//                    Measurement(value: boundObjectType.wrappedValue,
+//                                unit: .millimeters) )
+//                    .onChange(of: sliderValue) { newValue in
+//                        objectEditVM.setEitherDimensionForOnePartInUserEditedDic(
+//                            sliderValue,
+//                            Part.sitOn,
+//                            dimensionToEdit)
+//                        objectPickVM.modifyObjectByCreatingFromName()
+//                    }
+//            }
+//            .onAppear {
+//                sliderValue = boundObjectType.wrappedValue
+//            }
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//}
 
 
 
@@ -350,14 +438,20 @@ struct SitOnDimension: View {
 
 
 
-struct TiltX: View {
+struct Tilt: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 0.0
-    let chainLabelsRequiringAction: [Part] = [.sitOnTiltJoint]
+   
+    let userModifier: UserModifiers
+    let title: String
     var show: Bool {
-        objecShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
+        objecShowMenuVM.getShowMenuStatus(userModifier) }
+    
+    init(_ userModifier: UserModifiers){
+        self.userModifier = userModifier
+        title = userModifier.rawValue
     }
  
     var body: some View {
@@ -369,9 +463,10 @@ struct TiltX: View {
             objectPickVM.getAngleMinMaxDic(partName)
         let max = angleMinMax.max.value
         let min = angleMinMax.min.value
+        
         if show {
             HStack{
-                Text("tilt-in-space")
+                Text(title)
                 Slider(value: $sliderValue, in: min...max, step: 1.0)
                 Text(" deg: \(Int(max - sliderValue))")
                     .onChange(of: sliderValue) { newValue in
@@ -380,6 +475,7 @@ struct TiltX: View {
                         objectPickVM.modifyObjectByCreatingFromName()
                        }
             }
+            .padding()
         } else {
             EmptyView()
         }
@@ -388,7 +484,7 @@ struct TiltX: View {
 
 
 
-struct HeadSupport: View {
+struct HeadSupportPresence: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -423,7 +519,7 @@ struct HeadSupport: View {
 
 
 
-struct Propeller: View {
+struct PropellerPresence: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -486,7 +582,7 @@ struct Propeller: View {
 
 
 
-struct FootSupport: View {
+struct FootSupportPresence: View {
     @State private var isLeftSelected = true
     @State private var isRightSelected = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
