@@ -9,9 +9,9 @@ import Foundation
 import Combine
 
 
-class DataService: ObservableObject {
+class DataService//: ObservableObject
+{
     @Published var userEditedSharedDic: UserEditedDictionaries = UserEditedDictionaries.shared
-    @Published var dimensionSharedDic: Part3DimensionDictionary = [:]
     @Published var partDataSharedDic: [Part: PartData] = [:]
     @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     @Published var presenceOfPartForSide: Side = .both
@@ -25,13 +25,23 @@ class DataService: ObservableObject {
     }
 }
 
-
+//class DataService: ObservableObject {
+//    @Published var userEditedSharedDic: UserEditedDictionaries = UserEditedDictionaries.shared
+//
+//    static let shared = DataService()
+//    private init() {
+//
+//    }
+//}
 
 
 class ObjectEditViewModel: ObservableObject {
-    @Published  var userEditedDic: UserEditedDictionaries = UserEditedDictionaries.shared
+    //@Published
+    var userEditedSharedDic: UserEditedDictionaries = UserEditedDictionaries.shared
     var objectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionValueToEdit: PartTag = .length
+    var scopeOfEditForSide: Side = .both
+    @Published var presenceOfPartForSide: Side = .both
     private var cancellables: Set<AnyCancellable> = []
     
     
@@ -39,9 +49,9 @@ class ObjectEditViewModel: ObservableObject {
     init () {
         DataService.shared.$userEditedSharedDic
             .sink { [weak self] newData in
-                self?.userEditedDic = newData
+                self?.userEditedSharedDic = newData
             }
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         
         DataService.shared.$currentObjectType
             .sink { [weak self] newData in
@@ -52,6 +62,18 @@ class ObjectEditViewModel: ObservableObject {
         DataService.shared.$dimensionValueToEdit
             .sink { [weak self] newData in
                 self?.dimensionValueToEdit = newData
+            }
+            .store(in: &self.cancellables)
+        
+        DataService.shared.$scopeOfEditForSide
+            .sink { [weak self] newData in
+                self?.scopeOfEditForSide = newData
+            }
+            .store(in: &self.cancellables)
+        
+        DataService.shared.$presenceOfPartForSide
+            .sink { [weak self] newData in
+                self?.presenceOfPartForSide = newData
             }
             .store(in: &self.cancellables)
     }
@@ -80,7 +102,8 @@ extension ObjectEditViewModel {
                   y: ZeroValue.angle,
                   z: ZeroValue.angle)]
             
-        DataService.shared.userEditedSharedDic.angleUserEditedDic += angleUserEditedDic
+        DataService.shared.userEditedSharedDic
+                .angleUserEditedDic += angleUserEditedDic
         }
     
     
@@ -177,7 +200,7 @@ extension ObjectEditViewModel {
             
         let side = convertLeftRightSelectionToSideSelection(isLeftSelected, isRightSelected)
             
-        DataService.shared.presenceOfPartForSide = side
+        presenceOfPartForSide = side
         
         let partChain = LabelInPartChainOut(part).partChain
         
@@ -187,7 +210,7 @@ extension ObjectEditViewModel {
                 .one(one: .id0): //if left requires .id0 for x < 0
                 .one(one: .id1)  //if right requires .i1 for x >= 0
             
-            let chainLabelForFootWasAlreadyRemoved = DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
+            let chainLabelForFootWasAlreadyRemoved = userEditedSharedDic.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
             
             if chainLabelForFootWasAlreadyRemoved {
                 restoreChainLabelToObject(part) //toggle is restoring
@@ -195,13 +218,13 @@ extension ObjectEditViewModel {
             
             let ignoreFirstItem = 1 // relevant part subsequent
             for index in ignoreFirstItem..<partChain.count {
-                DataService.shared.userEditedSharedDic.partIdsUserEditedDic[partChain[index]] = newId// if only either L or R change id to suit
+                userEditedSharedDic.partIdsUserEditedDic[partChain[index]] = newId// if only either L or R change id to suit
             }
         case .none:
             removeChainLabelFromObject(part)
         case .both:
             setPartIdDicInKeyToNilRestoringDefault(partChain)
-            DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+            userEditedSharedDic.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
             DataService.shared.scopeOfEditForSide = .both
         }
     }
@@ -213,7 +236,7 @@ extension ObjectEditViewModel {
         _ dimensionOrOrigin: PartTag,
         _ valueToBeChange: PartTag) {
 
-        switch DataService.shared.scopeOfEditForSide {
+        switch scopeOfEditForSide {
         case .both:
             process(.id0)
             process(.id1)
@@ -230,7 +253,7 @@ extension ObjectEditViewModel {
             let name = getName( id, part)
             let currentDimension = getEditedOrDefaultDimension(name, part, id)
             let newDimension = dimensionWithModifiedLength(currentDimension)
-            DataService.shared.userEditedSharedDic.dimensionUserEditedDic +=
+            userEditedSharedDic.dimensionUserEditedDic +=
             [name: newDimension]
         }
         

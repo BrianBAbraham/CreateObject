@@ -54,22 +54,17 @@ struct ObjectPickModel {
 class ObjectPickViewModel: ObservableObject {
     @Published private var objectPickModel: ObjectPickModel
     var objectImageData: ObjectImageData
-    var userEditedDics: UserEditedDictionaries
+    @Published var userEditedSharedDics: UserEditedDictionaries
     let defaultDics: DefaultDictionaries
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
-    var dimensionDic: Part3DimensionDictionary
     var dimensionValueToEdit: PartTag = .length
     private var cancellables: Set<AnyCancellable> = []
-    
-
-
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     
     init() {
         self.defaultDics = DefaultDictionaries.shared
-        self.userEditedDics = DataService.shared.userEditedSharedDic
-        self.dimensionDic = DataService.shared.dimensionSharedDic
- 
+        self.userEditedSharedDics = DataService.shared.userEditedSharedDic
+
         objectImageData =
             ObjectImageData(.fixedWheelRearDrive, nil)
  
@@ -80,23 +75,21 @@ class ObjectPickViewModel: ObservableObject {
             defaultDictionaries: defaultDics,
             objectImageData: ObjectImageData(.fixedWheelRearDrive, nil))
 
-        dimensionDic = objectImageData.dimensionDic
-
         DataService.shared.$currentObjectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
                 
-        DataService.shared.$dimensionSharedDic
+        DataService.shared.$objectChainLabelsDefaultDic
             .sink { [weak self] newData in
-                self?.dimensionDic = newData
+                self?.objectChainLabelsDefaultDic = newData
             }
             .store(in: &self.cancellables)
 
         DataService.shared.$userEditedSharedDic
             .sink { [weak self] newData in
-                self?.userEditedDics = newData
+                self?.userEditedSharedDics = newData
             }
             .store(in: &self.cancellables)
         
@@ -113,22 +106,31 @@ class ObjectPickViewModel: ObservableObject {
 extension ObjectPickViewModel {
     
     func resetObjectByCreatingFromName() {
-        userEditedDics.dimensionUserEditedDic = [:]
-        userEditedDics.angleUserEditedDic = [:]
-        //modifyObjectByCreatingFromName()
-        pickNewObjectByCreatingFromName()
+        userEditedSharedDics.dimensionUserEditedDic = [:]
+       
+        userEditedSharedDics.angleUserEditedDic = [:]
+        
+        print("")
+        print("Initial")
+        print(getCurrentObjectName())
+        print(userEditedSharedDics.dimensionUserEditedDic)
+        print("")
+        
+        modifyObjectByCreatingFromName()
+        //pickNewObjectByCreatingFromName()
     }
     
     
     func modifyObjectByCreatingFromName(){
+        
         objectImageData =
-            ObjectImageData(currentObjectType, userEditedDics)
+            ObjectImageData(currentObjectType, userEditedSharedDics)
         
-        DataService.shared.objectChainLabelsDefaultDic = objectImageData.objectChainLabelsDefaultDic//update for new object
-        
-//        print("creating start")
-//        print(objectImageData.objectChainLabelsDefaultDic)
-//        print("creating end")
+       objectChainLabelsDefaultDic = objectImageData.objectChainLabelsDefaultDic//update for new object
+
+        print("creating start")
+        print(objectImageData.dimensionDic["object_id0_sitOn_id0_sitOn_id0"] ?? "not found")
+        print("creating end")
         
         createNewPickModel()
     }
@@ -136,7 +138,7 @@ extension ObjectPickViewModel {
     
     func pickNewObjectByCreatingFromName(){
         objectImageData =
-            ObjectImageData(currentObjectType, userEditedDics)
+            ObjectImageData(currentObjectType, userEditedSharedDics)
         
         createNewPickModel()
     }
@@ -146,7 +148,7 @@ extension ObjectPickViewModel {
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: currentObjectType.rawValue,
-                userEditedDic: userEditedDics,
+                userEditedDic: userEditedSharedDics,
                 defaultDictionaries: defaultDics,
                 objectImageData: objectImageData)
         setCurrentObjectFrameSize()
@@ -171,8 +173,8 @@ extension ObjectPickViewModel {
     
     
     func getSidesPresentGivenUserEdit(_ part: Part) -> [Side] {
-        let oneOrTwoId = userEditedDics.partIdsUserEditedDic[part] ?? OneOrTwoId(currentObjectType, part).forPart
-        guard let chainLabels = userEditedDics.objectChainLabelsUserEditDic[currentObjectType] ?? objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+        let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[part] ?? OneOrTwoId(currentObjectType, part).forPart
+        guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] ?? objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
             fatalError()
         }
         if chainLabels.contains(part) {

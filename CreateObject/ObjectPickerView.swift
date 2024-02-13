@@ -64,12 +64,12 @@ struct EditInitialObjectView: View {
    
     
     var body: some View {
-       let dimensionValueToEdit = objectEditVM.getDimensionValueToBeEdited()
-        let boundObjectType = Binding(
-            get: {objectPickVM.getCurrentObjectName()},
-            set: {self.objectName = $0}
-        )
-        
+      // let dimensionValueToEdit = objectEditVM.getDimensionValueToBeEdited()
+//        let boundObjectType = Binding(
+//            get: {objectPickVM.getCurrentObjectName()},
+//            set: {self.objectName = $0}
+//        )
+//        
         VStack {
            
             FootSupportPresence()

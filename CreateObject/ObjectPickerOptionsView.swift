@@ -90,48 +90,48 @@ enum Side: String, CaseIterable {
 //
 //}
 
-struct SideSelection: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @State private var selection: Side = .both
-    let objectName: String
-    //let twoSidedPart: Part
-    var relevantCases: [Side]{
-        objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
-    }
-    var show: Bool {
-        //objectPickVM.getViewStatus(.legLength)
-        objectShowMenuVM.getShowMenuStatus(.footSupport
-                                           //, objectName
-        )
-    }
-    var body: some View {
-        
-        if show {
-            Picker("side", selection: $selection) {
-                ForEach(relevantCases, id: \.self) { side in
-                    Text(side.rawValue)
-                }
-            }
-            .pickerStyle(.segmented)
-            .disabled(relevantCases == [.none])
-            .fixedSize()
-            .onChange(of: selection) { newSelection in
-                objectEditVM.setSidesToBeEdited(newSelection)
-            }
-            .onChange(of: relevantCases) { newCases in
-                if newCases == [.left] ||
-                    newCases == [.right] {
-                    objectEditVM.setSidesToBeEdited(newCases[0])
-                }
-            }
-        } else {
-            EmptyView()
-        }
-
-    }
-}
+//struct SideSelection: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+//    @State private var selection: Side = .both
+//    let objectName: String
+//    //let twoSidedPart: Part
+//    var relevantCases: [Side]{
+//        objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
+//    }
+//    var show: Bool {
+//        //objectPickVM.getViewStatus(.legLength)
+//        objectShowMenuVM.getShowMenuStatus(.footSupport
+//                                           //, objectName
+//        )
+//    }
+//    var body: some View {
+//
+//        if show {
+//            Picker("side", selection: $selection) {
+//                ForEach(relevantCases, id: \.self) { side in
+//                    Text(side.rawValue)
+//                }
+//            }
+//            .pickerStyle(.segmented)
+//            .disabled(relevantCases == [.none])
+//            .fixedSize()
+//            .onChange(of: selection) { newSelection in
+//                objectEditVM.setSidesToBeEdited(newSelection)
+//            }
+//            .onChange(of: relevantCases) { newCases in
+//                if newCases == [.left] ||
+//                    newCases == [.right] {
+//                    objectEditVM.setSidesToBeEdited(newCases[0])
+//                }
+//            }
+//        } else {
+//            EmptyView()
+//        }
+//
+//    }
+//}
 
 
 //struct DimensionSelection: View {
@@ -191,11 +191,11 @@ struct BiLateralPartWithOneValueChange: View {
                 let selection = objectEditVM.getPresenceOfPartForSide()
                 let id = selection == .left ? PartTag.id0: PartTag.id1
                 return
-                objectPickVM.getInitialSliderValue(
-                    id,
-                    part,
-                    .length
-                    )},
+                    objectPickVM.getInitialSliderValue(
+                        id,
+                        part,
+                        .length
+                        )},
             set: {// self.sliderValue = $0
                  //alt form
                     newValue in
@@ -213,7 +213,7 @@ struct BiLateralPartWithOneValueChange: View {
                 .disabled(relevantCases == [.none])
                 .fixedSize()
                 .onChange(of: selection) { newSelection in
-                    objectEditVM.setSidesToBeEdited(newSelection)
+                    //objectEditVM.setSidesToBeEdited(newSelection)
                 }
                 .onChange(of: relevantCases) { newCases in
                     if newCases == [.left] ||
@@ -242,15 +242,14 @@ struct BiLateralPartWithOneValueChange: View {
                     
                     objectPickVM.modifyObjectByCreatingFromName()
                     }
-                .onChange(of: selection) { _ in
-                  //  print(selection == .left ? PartTag.id0: PartTag.id1)
-                    sliderValue =
-                    objectPickVM.getInitialSliderValue(
-                        selection == .left ? PartTag.id0: PartTag.id1,
-                    part,
-                        .length)
-                    }
-                .padding(.horizontal)
+//                .onChange(of: selection) { _ in
+//                    sliderValue =
+//                    objectPickVM.getInitialSliderValue(
+//                        selection == .left ? PartTag.id0: PartTag.id1,
+//                    part,
+//                        .length)
+//                    }
+//                .padding(.horizontal)
                 
                 
 //                Text(" mm: \(Int(sliderValue))")
