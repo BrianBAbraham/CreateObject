@@ -53,13 +53,13 @@ import SwiftUI
 //}
 
 
-enum Side: String, CaseIterable {
+enum SidesAffected: String, CaseIterable {
     case left = "L"
     case right = "R"
     case both = "L & R"
     case none = "none"
     
-    static let options: [String] = Self.allCases.map {$0.rawValue}
+    static let allOptions: [String] = Self.allCases.map {$0.rawValue}
 
 }
 
@@ -155,7 +155,46 @@ enum Side: String, CaseIterable {
 //        }
 //    }
 //}
-
+struct FootSupportPresence: View {
+    @State private var isLeftSelected = true
+    @State private var isRightSelected = true
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
+    
+    var show: Bool {
+        objecShowMenuVM.getShowMenuStatus(.footSupport)
+    }
+    
+    var body: some View {
+        if show {
+            HStack {
+                Text("foot support:")
+                Toggle("L", isOn: $isLeftSelected)
+                    .onChange(of: isLeftSelected) { newValue in
+                        updateViewModel()
+                    }
+                Toggle("R", isOn: $isRightSelected)
+                    .onChange(of: isRightSelected) { newValue in
+                        updateViewModel()
+                    }
+                    .padding(.leading, 30)
+                
+            }
+            .onChange(of: objectPickVM.getCurrentObjectType()) { _ in
+                isLeftSelected = true
+                isRightSelected = true
+            }
+        } else {
+            EmptyView()
+        }
+    }
+    
+    private func updateViewModel() {
+        objectEditVM.setWhenPartChangesOneOrTwoStatus(isLeftSelected, isRightSelected, .footSupport)
+        objectPickVM.modifyObjectByCreatingFromName()
+    }
+}
 
 
 struct BiLateralPartWithOneValueChange: View {
@@ -163,13 +202,11 @@ struct BiLateralPartWithOneValueChange: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
-    @State private var selection: Side = .both
+    @State private var sidesAffected: SidesAffected = .both
     var minMaxValue : (min: Double, max: Double){
         objectPickVM.getDimensionMinMax(part)
     }
-    var relevantCases: [Side]{
-        objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
-    }
+
     let part: Part
     let description: String
     let dimensionOrOrigin: PartTag
@@ -186,13 +223,16 @@ struct BiLateralPartWithOneValueChange: View {
     }
  
     var body: some View {
+        var allCurrentOptionsForSidesAffected: [SidesAffected]{
+            objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
+        }
         let boundObjectType = Binding(
             get: {
-                let selection = objectEditVM.getPresenceOfPartForSide()
-                let id = selection == .left ? PartTag.id0: PartTag.id1
+//                let present = objectEditVM.getScopeOfEditForSide()
+//                let id = present == .left ? PartTag.id0: PartTag.id1
                 return
                     objectPickVM.getInitialSliderValue(
-                        id,
+                        //id,
                         part,
                         .length
                         )},
@@ -200,71 +240,55 @@ struct BiLateralPartWithOneValueChange: View {
                  //alt form
                     newValue in
                         sliderValue = newValue
-                            }
-            )
-        
-            HStack{
-                Picker("side", selection: $selection) {
-                    ForEach(relevantCases, id: \.self) { side in
-                        Text(side.rawValue)
-                    }
+                            } )
+        ///when slider is slid
+        ///get sidesAffected which is one of allCurrentOptionsForSidesAffected
+        ///update allCurrentOptionsForSidesAffected
+        ///if
+        HStack{
+            Picker("side", selection: $sidesAffected) {
+                ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
+                    Text(side.rawValue)
                 }
-                .pickerStyle(.segmented)
-                .disabled(relevantCases == [.none])
-                .fixedSize()
-                .onChange(of: selection) { newSelection in
-                    //objectEditVM.setSidesToBeEdited(newSelection)
+            }
+            .pickerStyle(.segmented)
+            .disabled(allCurrentOptionsForSidesAffected == [.none])
+            .fixedSize()
+            .onChange(of: sidesAffected) { newSelection in
+                objectEditVM.setSidesToBeEdited( newSelection)
+               
+                //print(newSelection)
+                if newSelection == .left ||
+                    newSelection == .right {
+                    objectEditVM.setSidesToBeEdited(sidesAffected)
                 }
-                .onChange(of: relevantCases) { newCases in
-                    if newCases == [.left] ||
-                        newCases == [.right] {
-                        objectEditVM.setSidesToBeEdited(newCases[0])
-                    }
-                }
-                
-                
-                Text(description)
-                
-                Slider(value: boundObjectType,
-                       in: minMaxValue.min...minMaxValue.max,
-                       step: 10.0)
-                MeasurementView(
-                    Measurement(value: boundObjectType.wrappedValue,
-                        unit: .millimeters))
-                }
-                .onChange(of: sliderValue) { newValue in
-                    objectEditVM
-                        .setValueForBilateralPartInUserEditedDic(
-                            newValue,
-                            part,
-                            dimensionOrOrigin,
-                            valueToBeChanged)
                     
-                    objectPickVM.modifyObjectByCreatingFromName()
-                    }
-//                .onChange(of: selection) { _ in
-//                    sliderValue =
-//                    objectPickVM.getInitialSliderValue(
-//                        selection == .left ? PartTag.id0: PartTag.id1,
-//                    part,
-//                        .length)
-//                    }
-//                .padding(.horizontal)
+            }
+//            .onChange(of: allCurrentOptionsForSidesAffected) { _ in
+//                //print( objectEditVM.getScopeOfEditForSide())
+//            }
+            
+            
+            Text(description)
+            
+            Slider(value: boundObjectType,
+                   in: minMaxValue.min...minMaxValue.max,
+                   step: 10.0)
+            MeasurementView(
+                Measurement(value: boundObjectType.wrappedValue,
+                    unit: .millimeters))
+            }
+            .onChange(of: sliderValue) { newValue in
+                objectEditVM
+                    .setValueForBilateralPartInUserEditedDic(
+                        newValue,
+                        part,
+                        dimensionOrOrigin,
+                        valueToBeChanged)
                 
-                
-//                Text(" mm: \(Int(sliderValue))")
-//                    .onChange(of: sliderValue) { newValue in
-//                        objectEditVM
-//                            .setValueForBilateralPartInUserEditedDic(
-//                            sliderValue
-//                            ,part,
-//                            dimensionOrOrigin,
-//                            valueToBeChanged)
-//
-//                        objectPickVM.modifyObjectByCreatingFromName()
-//                       }
-            //}
-            .disabled(DataService.shared.presenceOfPartForSide == .none)
+                objectPickVM.modifyObjectByCreatingFromName()
+                }
+            .disabled(objectEditVM.scopeOfEditForSide == .none)
     }
 }
 
@@ -293,7 +317,7 @@ struct OnePartTwoDimensionValueMenu: View {
         let boundObjectType = Binding(
             get: {
                 objectPickVM.getInitialSliderValue(
-                    .id0,
+                   // .id0,
                     part,
                     selection
                     )},
@@ -334,7 +358,7 @@ struct OnePartTwoDimensionValueMenu: View {
             .onChange(of: selection) { _ in
                 sliderValue =
                 objectPickVM.getInitialSliderValue(
-                .id0,
+               // .id0,
                 part,
                 selection)
                 }
@@ -581,46 +605,7 @@ struct PropellerPresence: View {
 
 
 
-struct FootSupportPresence: View {
-    @State private var isLeftSelected = true
-    @State private var isRightSelected = true
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
-    
-    var show: Bool {
-        objecShowMenuVM.getShowMenuStatus(.footSupport)
-    }
-    
-    var body: some View {
-        if show {
-            HStack {
-                Text("foot support:")
-                Toggle("L", isOn: $isLeftSelected)
-                    .onChange(of: isLeftSelected) { newValue in
-                        updateViewModel()
-                    }
-                Toggle("R", isOn: $isRightSelected)
-                    .onChange(of: isRightSelected) { newValue in
-                        updateViewModel()
-                    }
-                    .padding(.leading, 30)
-                
-            }
-            .onChange(of: objectPickVM.getCurrentObjectType()) { _ in
-                isLeftSelected = true
-                isRightSelected = true
-            }
-        } else {
-            EmptyView()
-        }
-    }
-    
-    private func updateViewModel() {
-        objectEditVM.setWhenPartChangesOneOrTwoStatus(isLeftSelected, isRightSelected, .footSupport)
-        objectPickVM.modifyObjectByCreatingFromName()
-    }
-}
+
 
 
 //

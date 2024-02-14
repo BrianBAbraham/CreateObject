@@ -11,45 +11,75 @@ import Combine
 
 class DataService//: ObservableObject
 {
-    @Published var userEditedSharedDic: UserEditedDictionaries = UserEditedDictionaries.shared
+    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     @Published var partDataSharedDic: [Part: PartData] = [:]
     @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
-    @Published var presenceOfPartForSide: Side = .both
-    @Published var scopeOfEditForSide: Side = .both
+    //@Published var presenceOfPartForSide: SidesAffected = .both
+    @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var dimensionValueToEdit: PartTag = .length
 
-    @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     static let shared = DataService()
     private init() {
 
     }
+    
+    func angleUserEditedDicModifier(_ entry: AnglesDictionary){
+        userEditedSharedDics.angleUserEditedDic += entry
+    }
+    
+    func angleUserEditedDicReseter(){
+        userEditedSharedDics.angleUserEditedDic = [:]
+    }
+    
+    func dimensionUserEditedDicModifier(_ entry: Part3DimensionDictionary){
+        userEditedSharedDics.dimensionUserEditedDic += entry
+    }
+    
+    func dimensionUserEditedDicReseter(){
+        userEditedSharedDics.dimensionUserEditedDic = [:]
+    }
+    
+    func objectChainLabelsUserEditDicReseter(_ objectType: ObjectTypes) {
+        userEditedSharedDics.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+    }
+    
+    
+    func partDataSharedDicModifier(_ initialised: [Part: PartData] ) {
+        partDataSharedDic = initialised
+    }
+    
+    func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
+        userEditedSharedDics.partIdsUserEditedDic += entry
+    }
+    
+    func partIdsUserEditedDicReseter(_ part: Part) {
+        userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
+    }
+    
+    func setScopeOfEditForSide(_ sideChoice: SidesAffected) {
+        scopeOfEditForSide = sideChoice
+    }
 }
 
-//class DataService: ObservableObject {
-//    @Published var userEditedSharedDic: UserEditedDictionaries = UserEditedDictionaries.shared
-//
-//    static let shared = DataService()
-//    private init() {
-//
-//    }
-//}
+
 
 
 class ObjectEditViewModel: ObservableObject {
     //@Published
-    var userEditedSharedDic: UserEditedDictionaries = UserEditedDictionaries.shared
+    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     var objectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionValueToEdit: PartTag = .length
-    var scopeOfEditForSide: Side = .both
-    @Published var presenceOfPartForSide: Side = .both
+    var scopeOfEditForSide: SidesAffected = .both
+    var partDataSharedDic = DataService.shared.partDataSharedDic
+    //@Published var presenceOfPartForSide: SidesAffected = .both
     private var cancellables: Set<AnyCancellable> = []
     
     
     
     init () {
-        DataService.shared.$userEditedSharedDic
+        DataService.shared.$userEditedSharedDics
             .sink { [weak self] newData in
-                self?.userEditedSharedDic = newData
+                self?.userEditedSharedDics = newData
             }
             .store(in: &cancellables)
         
@@ -71,9 +101,15 @@ class ObjectEditViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-        DataService.shared.$presenceOfPartForSide
+//        DataService.shared.$presenceOfPartForSide
+//            .sink { [weak self] newData in
+//                self?.presenceOfPartForSide = newData
+//            }
+//            .store(in: &self.cancellables)
+        
+        DataService.shared.$partDataSharedDic
             .sink { [weak self] newData in
-                self?.presenceOfPartForSide = newData
+                self?.partDataSharedDic = newData
             }
             .store(in: &self.cancellables)
     }
@@ -101,9 +137,11 @@ extension ObjectEditViewModel {
                     Measurement(value: maxMinusSliderValue, unit: UnitAngle.degrees),
                   y: ZeroValue.angle,
                   z: ZeroValue.angle)]
+        //ANGLECHANGE
+//        DataService.shared.userEditedSharedDics
+//                .angleUserEditedDic += angleUserEditedDic
+            DataService.shared.angleUserEditedDicModifier(angleUserEditedDic)
             
-        DataService.shared.userEditedSharedDic
-                .angleUserEditedDic += angleUserEditedDic
         }
     
     
@@ -113,13 +151,13 @@ extension ObjectEditViewModel {
                  
         removeChainLabelFromObject(removal)
 
-        guard var curentObjectChainLabels = DataService.shared.userEditedSharedDic
+        guard var curentObjectChainLabels = DataService.shared.userEditedSharedDics
                 .objectChainLabelsUserEditDic[objectType]  else {
          fatalError()
         }
         curentObjectChainLabels += [replacement]
 
-        DataService.shared.userEditedSharedDic
+        DataService.shared.userEditedSharedDics
             .objectChainLabelsUserEditDic[objectType] =
                 curentObjectChainLabels
        
@@ -129,13 +167,13 @@ extension ObjectEditViewModel {
     func removeChainLabelFromObject(
         _ chainLabel: Part) {
         guard let currentObjectChainLabels =
-                DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic[objectType] ??
+                DataService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] ??
                     ObjectChainLabel.dictionary[objectType] else {
                           fatalError()
                         }
         let newChainLabels =
             currentObjectChainLabels.filter { $0 != chainLabel}
-        DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic[objectType] = newChainLabels
+        DataService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] = newChainLabels
     }
     
     
@@ -147,14 +185,16 @@ extension ObjectEditViewModel {
         }
         let newChainLabels = currentObjectChainLabels + [chainLabel]
         
-        DataService.shared.userEditedSharedDic.objectChainLabelsUserEditDic[objectType] =
+        DataService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] =
             newChainLabels
     }
     
     
     func setPartIdDicInKeyToNilRestoringDefault (_ partChainWithoutRoot: [Part]) {
+        //PARTIDUSEREDITEDICCHANGE
         for part in partChainWithoutRoot {
-            DataService.shared.userEditedSharedDic.partIdsUserEditedDic.removeValue(forKey: part)
+            DataService.shared.partIdsUserEditedDicReseter(part)
+//            DataService.shared.userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
         }
     }
     
@@ -166,20 +206,25 @@ extension ObjectEditViewModel {
     }
     
     
-    func setSidesToBeEdited(_ sides: Side) {
-        //print(sides)
-        DataService.shared.scopeOfEditForSide = sides
+    func setSidesToBeEdited(_ sideChoice: SidesAffected) {
+//        print(sideChoice)
+        //SCOPEOFEDITFORSIDECHANGE
+        //DataService.shared.scopeOfEditForSide = sides
+        DataService.shared.setScopeOfEditForSide(sideChoice)
     }
     
-    
-    func getPresenceOfPartForSide() -> Side {
-        DataService.shared.presenceOfPartForSide
+    func getScopeOfEditForSide() -> SidesAffected {
+        scopeOfEditForSide
     }
+    
+//    func getPresenceOfPartForSide() -> SidesAffected {
+//        presenceOfPartForSide
+//    }
     
     
     func convertLeftRightSelectionToSideSelection(
         _ isLeftSelected: Bool,
-        _ isRightSelected: Bool) -> Side {
+        _ isRightSelected: Bool) -> SidesAffected {
        
         if isLeftSelected && isRightSelected {
             return .both
@@ -200,17 +245,18 @@ extension ObjectEditViewModel {
             
         let side = convertLeftRightSelectionToSideSelection(isLeftSelected, isRightSelected)
             
-        presenceOfPartForSide = side
+        //presenceOfPartForSide = side
         
         let partChain = LabelInPartChainOut(part).partChain
-        
+            DataService.shared.setScopeOfEditForSide(side)
         switch side {
         case .left, .right:
+            
             let newId: OneOrTwo<PartTag> = (side == .left) ?
                 .one(one: .id0): //if left requires .id0 for x < 0
                 .one(one: .id1)  //if right requires .i1 for x >= 0
             
-            let chainLabelForFootWasAlreadyRemoved = userEditedSharedDic.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
+            let chainLabelForFootWasAlreadyRemoved = userEditedSharedDics.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
             
             if chainLabelForFootWasAlreadyRemoved {
                 restoreChainLabelToObject(part) //toggle is restoring
@@ -218,14 +264,20 @@ extension ObjectEditViewModel {
             
             let ignoreFirstItem = 1 // relevant part subsequent
             for index in ignoreFirstItem..<partChain.count {
-                userEditedSharedDic.partIdsUserEditedDic[partChain[index]] = newId// if only either L or R change id to suit
+                //PARTIDUSEREDITEDICCHANGE
+                DataService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
+               // userEditedSharedDics.partIdsUserEditedDic[partChain[index]] = newId// if only either L or R change id to suit
             }
         case .none:
             removeChainLabelFromObject(part)
         case .both:
             setPartIdDicInKeyToNilRestoringDefault(partChain)
-            userEditedSharedDic.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
-            DataService.shared.scopeOfEditForSide = .both
+            
+            DataService.shared.objectChainLabelsUserEditDicReseter(objectType)
+//            userEditedSharedDics.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+           
+            //DataService.shared.setScopeOfEditForSide(.both)
+           // DataService.shared.scopeOfEditForSide = .both
         }
     }
     
@@ -235,7 +287,7 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ dimensionOrOrigin: PartTag,
         _ valueToBeChange: PartTag) {
-
+           
         switch scopeOfEditForSide {
         case .both:
             process(.id0)
@@ -253,8 +305,12 @@ extension ObjectEditViewModel {
             let name = getName( id, part)
             let currentDimension = getEditedOrDefaultDimension(name, part, id)
             let newDimension = dimensionWithModifiedLength(currentDimension)
-            userEditedSharedDic.dimensionUserEditedDic +=
-            [name: newDimension]
+     
+            //DIMENSIONCHANGE
+//            userEditedSharedDics.dimensionUserEditedDic +=
+//            [name: newDimension]
+           //print([name: newDimension])
+            DataService.shared.dimensionUserEditedDicModifier([name: newDimension])
         }
         
     
@@ -289,9 +345,16 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ id: PartTag)
         -> Dimension3d {
-        guard let partData = DataService.shared.partDataSharedDic[part] else {
-            fatalError()
-        }
+//        guard let partData = DataService.shared.partDataSharedDic[part] else {
+//            fatalError()
+//        }
+            
+           // print(id)
+            guard let partData = partDataSharedDic[part] else {
+                fatalError()
+            }
+            
+            //print(partData.dimension.returnValue(id))
         return
             partData.dimension.returnValue(id)
     }
@@ -317,8 +380,11 @@ extension ObjectEditViewModel {
          length: value,
          height:currentDimension.height)
  
-    DataService.shared.userEditedSharedDic.dimensionUserEditedDic +=
-        [name: newDimension]
+        //DIMENSIONCHANGE
+//    DataService.shared.userEditedSharedDics.dimensionUserEditedDic +=
+//        [name: newDimension]
+        
+        DataService.shared.dimensionUserEditedDicModifier([name: newDimension])
     }
     
     

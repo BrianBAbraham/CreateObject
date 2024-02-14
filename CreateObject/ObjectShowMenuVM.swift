@@ -70,22 +70,29 @@ class ObjectShowMenuViewModel: ObservableObject {
         EditObjectMenuShowModel()
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
+    var userEditedSharedDics: UserEditedDictionaries = DataService.shared.userEditedSharedDics
     private var cancellables: Set<AnyCancellable> = []
     
     init () {
+        DataService.shared.$userEditedSharedDics
+            .sink { [weak self] newData in
+                self?.userEditedSharedDics = newData
+            }
+            .store(in: &cancellables)
+        
         DataService.shared.$currentObjectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
         
-        DataService.shared.$objectChainLabelsDefaultDic
-            .sink { [weak self] newData in
-               
-                self?.objectChainLabelsDefaultDic = newData
-               // print(newData)
-            }
-            .store(in: &self.cancellables)
+//        DataService.shared.$objectChainLabelsDefaultDic
+//            .sink { [weak self] newData in
+//
+//                self?.objectChainLabelsDefaultDic = newData
+//               // print(newData)
+//            }
+//            .store(in: &self.cancellables)
     }
     
 }

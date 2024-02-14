@@ -606,7 +606,7 @@ enum OneOrTwo <T> {
     }
     
     
-    func mapOneOrTwoToSide() -> [Side] {
+    func mapOneOrTwoToSide() -> [SidesAffected] {
         switch self {
         case .one (let one):
             if PartTag.id0 == one as! PartTag {
