@@ -163,7 +163,7 @@ struct FootSupportPresence: View {
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     
     var show: Bool {
-        objecShowMenuVM.getShowMenuStatus(.footSupport)
+        objecShowMenuVM.getShowMenuStatus(UserModifiers.footSupport)
     }
     
     var body: some View {
@@ -226,25 +226,16 @@ struct BiLateralPartWithOneValueChange: View {
         var allCurrentOptionsForSidesAffected: [SidesAffected]{
             objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
         }
-        let boundObjectType = Binding(
+        let boundSliderValue = Binding(
             get: {
-//                let present = objectEditVM.getScopeOfEditForSide()
-//                let id = present == .left ? PartTag.id0: PartTag.id1
-                return
                     objectPickVM.getInitialSliderValue(
-                        //id,
                         part,
-                        .length
-                        )},
-            set: {// self.sliderValue = $0
-                 //alt form
+                        .length) ?? sliderValue
+                    },
+            set: {
                     newValue in
                         sliderValue = newValue
                             } )
-        ///when slider is slid
-        ///get sidesAffected which is one of allCurrentOptionsForSidesAffected
-        ///update allCurrentOptionsForSidesAffected
-        ///if
         HStack{
             Picker("side", selection: $sidesAffected) {
                 ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
@@ -264,18 +255,15 @@ struct BiLateralPartWithOneValueChange: View {
                 }
                     
             }
-//            .onChange(of: allCurrentOptionsForSidesAffected) { _ in
-//                //print( objectEditVM.getScopeOfEditForSide())
-//            }
-            
+
             
             Text(description)
             
-            Slider(value: boundObjectType,
+            Slider(value: boundSliderValue ,
                    in: minMaxValue.min...minMaxValue.max,
                    step: 10.0)
             MeasurementView(
-                Measurement(value: boundObjectType.wrappedValue,
+                Measurement(value: boundSliderValue .wrappedValue,
                     unit: .millimeters))
             }
             .onChange(of: sliderValue) { newValue in
@@ -313,20 +301,16 @@ struct OnePartTwoDimensionValueMenu: View {
         self.description = description
     }
     var body: some View {
-       
-        let boundObjectType = Binding(
+        let boundSliderValue = Binding(
             get: {
-                objectPickVM.getInitialSliderValue(
-                   // .id0,
+                objectPickVM.getInitialSliderValue (
                     part,
                     selection
-                    )},
-            set: {// self.sliderValue = $0
-                 //alt form
-                    newValue in
-                        sliderValue = newValue
-                            }
+                ) ?? sliderValue
+            },
+            set: {self.sliderValue = $0 }
             )
+        
         HStack {
             Picker("dimension", selection: $selection) {
                 ForEach(relevantCases, id: \.self) { side in
@@ -341,11 +325,11 @@ struct OnePartTwoDimensionValueMenu: View {
             
             Text(description)
   
-            Slider(value: boundObjectType,
+            Slider(value: boundSliderValue,
                    in: minMaxValue.min...minMaxValue.max,
                    step: 10.0)
             MeasurementView(
-                Measurement(value: boundObjectType.wrappedValue,
+                Measurement(value: boundSliderValue.wrappedValue,
                     unit: .millimeters))
             }
             .onChange(of: sliderValue) { newValue in
@@ -358,9 +342,8 @@ struct OnePartTwoDimensionValueMenu: View {
             .onChange(of: selection) { _ in
                 sliderValue =
                 objectPickVM.getInitialSliderValue(
-               // .id0,
                 part,
-                selection)
+                selection) ?? boundSliderValue.wrappedValue
                 }
             .padding(.horizontal)
     }
@@ -461,39 +444,47 @@ struct OnePartTwoDimensionValueMenu: View {
 
 
 
-struct Tilt: View {
+struct TiltView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 0.0
-   
-    let userModifier: UserModifiers
-    let title: String
+
+    let description: String
+    let joint:  Part
     var show: Bool {
-        objecShowMenuVM.getShowMenuStatus(userModifier) }
+        objecShowMenuVM.getShowMenuStatus(joint) }
     
-    init(_ userModifier: UserModifiers){
-        self.userModifier = userModifier
-        title = userModifier.rawValue
+    init(_ joint: Part){
+        self.joint = joint
+        description = joint.rawValue
     }
  
     var body: some View {
-        var partName: String {
-            let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOnTiltJoint, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
-           return
-            CreateNameFromParts(parts ).name    }
         let angleMinMax =
-            objectPickVM.getAngleMinMaxDic(partName)
+            objectPickVM.getAngleMinMaxDic(joint)
         let max = angleMinMax.max.value
         let min = angleMinMax.min.value
+        let boundSliderValue = Binding(
+            get: {max -
+                (objectPickVM.getInitialSliderValue (
+                    joint,
+                    .angle)
+                 ?? sliderValue)
+            },
+            set: {self.sliderValue = $0 }
+            )
         
         if show {
             HStack{
-                Text(title)
-                Slider(value: $sliderValue, in: min...max, step: 1.0)
-                Text(" deg: \(Int(max - sliderValue))")
+                Text(description)
+                
+                Slider(value: boundSliderValue, in: min...max, step: 1.0)
+                
+                Text(" deg: \( Int(max - boundSliderValue.wrappedValue))")
                     .onChange(of: sliderValue) { newValue in
-                        objectEditVM.setCurrentRotation( max - sliderValue
+                        objectEditVM.setCurrentRotation(
+                           max - sliderValue
                         )
                         objectPickVM.modifyObjectByCreatingFromName()
                        }
@@ -507,32 +498,44 @@ struct Tilt: View {
 
 
 
-struct HeadSupportPresence: View {
+struct ParttPresence: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    let chainLabelsRequiringAction: [Part] = [.backSupportHeadSupport]
+   
+    let part: Part
     var show: Bool {
-        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
+      objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(part)
     }
-
+    var pair : [Part] {
+        PartSwapLabel(part).pair    }
+    var swappedPair: [Part] {
+        PartSwapLabel(part).swappedPair
+    }
+    
+    
+    
+    init (_ part: Part) {
+        self.part = part
+    }
     
     var body: some View {
         if show {
-            Toggle("headrest", isOn: $optionToggle)
+            Toggle(part.rawValue, isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
                     if !value {
                         objectEditVM.replaceChainLabelForObject(
-                            .backSupportHeadSupport,
-                            .backSupport)
+                            pair
+                        )
                     } else {
                         objectEditVM.replaceChainLabelForObject(
-                            .backSupport,
-                            .backSupportHeadSupport)
+                          swappedPair
+                        )
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
+                .padding(.horizontal)
         } else {
             EmptyView()
         }
@@ -542,41 +545,41 @@ struct HeadSupportPresence: View {
 
 
 
-struct PropellerPresence: View {
-    @State private var optionToggle = true
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    let chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
-    var chainLabelRequiringAction: Part {
-        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).part
-    }
-    var show: Bool {
-        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
-    }
-    
-    
-    var body: some View {
-        if show {
-            Toggle("propellers", isOn: $optionToggle)
-                .onChange(of: optionToggle) { value in
-                    if !value {
-                        objectEditVM.replaceChainLabelForObject(
-                            chainLabelRequiringAction,
-                            .fixedWheelAtRear)
-                        objectPickVM.modifyObjectByCreatingFromName()
-                    } else {
-                        objectEditVM.replaceChainLabelForObject(
-                            .fixedWheelAtRear,
-                            chainLabelRequiringAction)
-                        objectPickVM.modifyObjectByCreatingFromName()
-                    }
-                }
-        } else {
-            EmptyView()
-        }
-    }
-}
+//struct PropellerPresence: View {
+//    @State private var optionToggle = true
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+//    let chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
+//    var chainLabelRequiringAction: Part {
+//        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).part
+//    }
+//    var show: Bool {
+//        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
+//    }
+//
+//
+//    var body: some View {
+//        if show {
+//            Toggle("propellers", isOn: $optionToggle)
+//                .onChange(of: optionToggle) { value in
+//                    if !value {
+//                        objectEditVM.replaceChainLabelForObject(
+//                            chainLabelRequiringAction,
+//                            .fixedWheelAtRear)
+//                        objectPickVM.modifyObjectByCreatingFromName()
+//                    } else {
+//                        objectEditVM.replaceChainLabelForObject(
+//                            .fixedWheelAtRear,
+//                            chainLabelRequiringAction)
+//                        objectPickVM.modifyObjectByCreatingFromName()
+//                    }
+//                }
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//}
 
 
 //struct FootSupportX: View {

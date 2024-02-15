@@ -175,24 +175,30 @@ extension ObjectPickViewModel {
 extension ObjectPickViewModel {
     
     func getInitialSliderValue(
-        //_ id: PartTag,
         _ part: Part,
-        _ dimensionValueToEdit: PartTag) -> Double {
-        //MARK: DEVELOPMENT
-       let partData = partDataSharedDic[part]!
-        var id: PartTag
-        if  let oneId = partData.id.one {
-            id = oneId
-         print(id)
-        } else {
-            id = scopeOfEditForSide == .left ? PartTag.id0: PartTag.id1
+        _ editableProperty: PartTag) -> Double? {
+    
+        var value: Double? = nil
+        if let partData = partDataSharedDic[part] {//parts edited out do not exist
+            let idForLeftOrRight = scopeOfEditForSide == .left ? PartTag.id0: PartTag.id1
+            let id =  partData.id.one ?? idForLeftOrRight//two sources for id
+            
+            switch editableProperty {
+            case .length, .width:
+                let dimension = partData.dimension.returnValue(id)
+                value = editableProperty == .length ?
+                (dimension.length): (dimension.width)
+                
+            case .angle:
+                value =
+                    partData.angles.returnValue(id).x.converted(to: .degrees).value
+            default:
+                break
+            }
+          
+            
         }
-
-
-        let dimension = partData.dimension.returnValue(id)
-
-        return self.dimensionValueToEdit == .length ?
-        (dimension.length): (dimension.width)
+            return value
     }
     
     
@@ -234,10 +240,17 @@ extension ObjectPickViewModel {
     }
     
     
-    func getAngleMinMaxDic(_ name: String)
+    func getAngleMinMaxDic(_ part: Part)
     -> AngleMinMax {
-        objectPickModel.angleMinMaxDic[name] ?? ZeroValue.angleMinMax
+
+    var partName: String {
+        let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
+       return
+        CreateNameFromParts(parts ).name    }
+        return
+        objectPickModel.angleMinMaxDic[partName] ?? ZeroValue.angleMinMax
     }
+    
     
     func getCurrentObjectFrameSize() -> Dimension {
         objectPickModel.currentObjectFrameSize

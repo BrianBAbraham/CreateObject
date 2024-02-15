@@ -75,31 +75,27 @@ struct EditInitialObjectView: View {
             FootSupportPresence()
                 .padding(.horizontal)
             
-            if objectShowMenuVM.getShowMenuStatus(.legLength) {
-                HStack{
-                   // SideSelection(objectName: objectName)
-                    BiLateralPartWithOneValueChange(
-                        .footSupportHangerLink,
-                        "leg",
-                        .dimension,
-                        .length)
-                }
+            if objectShowMenuVM.getShowMenuStatus(UserModifiers.legLength) {
+                BiLateralPartWithOneValueChange(
+                    .footSupportHangerLink,
+                    "leg",
+                    .dimension,
+                    .length)
                 .padding(.horizontal)
+             
             } else {
                 EmptyView()
             }
             
             HStack{
-                HeadSupportPresence()
-                    .padding(.horizontal)
-                PropellerPresence()
-                    .padding(.horizontal)
+                ParttPresence(.fixedWheelAtRearWithPropeller)
+                ParttPresence(.backSupportHeadSupport)
             }
 
-            Tilt(.tiltInSpace)
+            TiltView(.sitOnTiltJoint)
 
             
-            if objectShowMenuVM.getShowMenuStatus(.supportWidth) {
+            if objectShowMenuVM.getShowMenuStatus(UserModifiers.supportWidth) {
                 //HStack {
                     //DimensionSelection()
                     OnePartTwoDimensionValueMenu(.sitOn, "seat")

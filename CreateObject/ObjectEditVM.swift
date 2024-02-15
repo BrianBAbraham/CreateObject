@@ -14,7 +14,6 @@ class DataService//: ObservableObject
     @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     @Published var partDataSharedDic: [Part: PartData] = [:]
     @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
-    //@Published var presenceOfPartForSide: SidesAffected = .both
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var dimensionValueToEdit: PartTag = .length
 
@@ -25,6 +24,8 @@ class DataService//: ObservableObject
     
     func angleUserEditedDicModifier(_ entry: AnglesDictionary){
         userEditedSharedDics.angleUserEditedDic += entry
+        
+        
     }
     
     func angleUserEditedDicReseter(){
@@ -137,25 +138,22 @@ extension ObjectEditViewModel {
                     Measurement(value: maxMinusSliderValue, unit: UnitAngle.degrees),
                   y: ZeroValue.angle,
                   z: ZeroValue.angle)]
-        //ANGLECHANGE
-//        DataService.shared.userEditedSharedDics
-//                .angleUserEditedDic += angleUserEditedDic
+
             DataService.shared.angleUserEditedDicModifier(angleUserEditedDic)
             
         }
     
     
     func replaceChainLabelForObject(
-        _ removal: Part,
-        _ replacement: Part) {
+        _ removalThenReplacment: [Part]) {
                  
-        removeChainLabelFromObject(removal)
+        removeChainLabelFromObject(removalThenReplacment[0])
 
-        guard var curentObjectChainLabels = DataService.shared.userEditedSharedDics
+        guard var curentObjectChainLabels = userEditedSharedDics
                 .objectChainLabelsUserEditDic[objectType]  else {
          fatalError()
         }
-        curentObjectChainLabels += [replacement]
+        curentObjectChainLabels += [removalThenReplacment[1]]
 
         DataService.shared.userEditedSharedDics
             .objectChainLabelsUserEditDic[objectType] =

@@ -26,7 +26,7 @@ enum Part: String, Parts, Hashable {
     case backSupportAssistantHandleInOnePiece = "backSupportRearHandleInOnePiece"
     case backSupportAssistantJoystick = "backSupportJoyStick"
     case backSupportRotationJoint = "backSupportRotationJoint"
-    case backSupportHeadSupport = "backSupportHeadSupport"
+    case backSupportHeadSupport = "headrest"
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
     case backSupportHeadLinkRotationJoint = "backSupportHeadSupportLinkHorizontalJoint"
@@ -70,7 +70,7 @@ enum Part: String, Parts, Hashable {
     case fixedWheelAtRear = "fixedWheelAtRear"
     case fixedWheelAtMid = "fixedWheelAtMid"
     case fixedWheelAtFront = "fixedWheelAtFront"
-    case fixedWheelAtRearWithPropeller = "fixedWheelAtRearithPropeller"
+    case fixedWheelAtRearWithPropeller = "propeller"
     case fixedWheelAtMidWithPropeller = "fixedWheelAtMidithPropeller"
     case fixedWheelAtFrontWithPropeller = "fixedWheelAtFrontithPropeller"
     
@@ -102,7 +102,7 @@ enum Part: String, Parts, Hashable {
     case stabilizerAtMid = "stabilityAtMid"
     case stabilizerAtFront = "stabilityAtFront"
     
-    case sitOnTiltJoint = "tiltInSpaceHorizontalJoint"
+    case sitOnTiltJoint = "tilt-in-space"
     
     case steeredVerticalJointAtFront = "steeredVerticalBaseJointAtFront"
     case steeredVerticallJointAtRear = "steeredVerticalBaseJointAtRear"
@@ -117,7 +117,7 @@ enum Part: String, Parts, Hashable {
 
 
 enum PartTag: String, Parts {
-    
+    case angle = "angle"
     case corner = "corner"
     case id0 = "_id0"
     case id1 = "_id1"
@@ -135,6 +135,38 @@ enum PartTag: String, Parts {
         hasher.combine(rawValue)
     }
 }
+
+
+///Alllow part removal or inclusion
+///replaces chainLabels
+struct PartSwapLabel {
+    
+    let part: Part
+    static let dictionary: [Part: Part] = [
+        .backSupportHeadSupport: .backSupport,
+        .fixedWheelAtRearWithPropeller: .fixedWheelAtRear,
+        .fixedWheelAtFrontWithPropeller: .fixedWheelAtFront,
+    ]
+        
+    let swappedPair: [Part]
+    let pair: [Part]
+    
+    init (_ part: Part) {
+        self.part = part
+        pair = Self.getPair(part)
+        swappedPair =  [pair[1], pair[0]]
+    }
+
+    
+  static func getPair(_ part: Part) -> [Part]{
+        guard let key = PartSwapLabel.dictionary[part] else {
+            fatalError()
+        }
+        
+        return [part, key]
+    }
+}
+
 
 
 

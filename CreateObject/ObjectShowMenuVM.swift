@@ -44,7 +44,11 @@ struct EditObjectMenuShowModel {
 }
 
 
-enum UserModifiers: String {
+enum UserModifiers: String, Parts, Hashable {
+    var stringValue: String {
+        return self.rawValue
+    }
+    
     case casterBaseSeparator = "open"
     case casterSepartionAtFront = "front caster"
     case casterSeparationAtRear = "rear caster"
@@ -60,6 +64,10 @@ enum UserModifiers: String {
     case supportLength = "support length"
     case supportWidth = "support width"
     case tiltInSpace = "tilt-in-space"
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
 }
 
 //MARK: DEVELOPMENT change to struct nothing changes
@@ -71,6 +79,7 @@ class ObjectShowMenuViewModel: ObservableObject {
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     var userEditedSharedDics: UserEditedDictionaries = DataService.shared.userEditedSharedDics
+    var partDataSharedDic = DataService.shared.partDataSharedDic
     private var cancellables: Set<AnyCancellable> = []
     
     init () {
@@ -86,13 +95,11 @@ class ObjectShowMenuViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-//        DataService.shared.$objectChainLabelsDefaultDic
-//            .sink { [weak self] newData in
-//
-//                self?.objectChainLabelsDefaultDic = newData
-//               // print(newData)
-//            }
-//            .store(in: &self.cancellables)
+        DataService.shared.$partDataSharedDic
+            .sink { [weak self] newData in
+                self?.partDataSharedDic = newData
+            }
+            .store(in: &self.cancellables)
     }
     
 }
@@ -101,58 +108,66 @@ class ObjectShowMenuViewModel: ObservableObject {
 extension ObjectShowMenuViewModel {
     
     func getShowMenuStatus(
-        _ view: UserModifiers)
-    -> Bool {
-        let dictionary = EditObjectMenuShowModel.dictionary
-
-        var state: Bool = false
-        if let show = dictionary[currentObjectType] {
-            state = show.contains(view)
+        _ menu: Parts) -> Bool {
+            var state: Bool = false
+            if let userModifierMenu = menu as? UserModifiers {
+                let dictionary = EditObjectMenuShowModel.dictionary
+                if let show = dictionary[currentObjectType] {
+                    state = show.contains(userModifierMenu)
+                }
+            }
+            
+            if let partMenu = menu as? Part {
+                //does the unedited object have this part?
+                if let chainLabel =  ObjectChainLabel.dictionary[currentObjectType]{
+                    state = chainLabel.contains(partMenu)
+                }
+                //has object partChain been edited?
+                if let editedPartChain = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] {
+                    //if edited out reset to false
+                    if !editedPartChain.contains(partMenu) {
+                        state = false
+                    }
+                }
+                
+            }
+            return state
         }
-       
-        return state
+    
+    
+    ///rotator part presence is non-editable
+    ///menus for conditional show
+    ///menus for conditional show
+    ///menus denoted by part
+    ///menus not denoted by modifiers
+    
+    
+    
+    func defaultObjectHasOneOfTheseChainLabels(_ chainLabel: Part) -> Bool//(show: Bool, part: Part)
+    {
+        var show = false
+        
+        let defaultChainLabels =
+        ObjectChainLabel.dictionary[currentObjectType] ?? []
+        
+       // var idenftifiedChainLabel: Part = .notFound
+        // for chainLabel in chainLabels {
+        show = defaultChainLabels.contains(chainLabel) //{
+        //    idenftifiedChainLabel = chainLabel
+        //               break
+        //            }
+        return show
     }
     
+    //        var show: Bool {
+    //            idenftifiedChainLabel == Part.notFound ? false: true
+    //        }
+    //(show: show, part: idenftifiedChainLabel)     }
     
-//    func defaultObjectHasThisChainLabel(_ chainLabels: [Part]) -> Bool {
-//
-//            let defaultChainLabels =
-//                objectChainLabelsDefaultDic[currentObjectType] ?? []
-//
-//        var action = false
-//        for chainLabel in chainLabels {
-//            if defaultChainLabels.contains(chainLabel) {
-//                action = true
-//            }
-//        }
-//        return action
-//    }
-//
-//
-    func defaultObjectHasOneOfTheseChainLabels(_ chainLabels: [Part]) -> (show: Bool, part: Part) {
-
-      
-        let defaultChainLabels =
-            objectChainLabelsDefaultDic[currentObjectType] ?? []
-
-        var idenftifiedChainLabel: Part = .notFound
-        for chainLabel in chainLabels {
-            if defaultChainLabels.contains(chainLabel) {
-                idenftifiedChainLabel = chainLabel
-               break
-            }
-        }
-        
-        var show: Bool {
-            idenftifiedChainLabel == Part.notFound ? false: true
-        }
-      
-        return (show: show, part: idenftifiedChainLabel)     }
     
+    //}
     
 }
-
-
 
 //    func getColorForPart(_ uniquePartName: String)-> Color {
 //
