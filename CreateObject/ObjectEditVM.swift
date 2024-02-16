@@ -9,12 +9,13 @@ import Foundation
 import Combine
 
 
-class DataService//: ObservableObject
+class DataService: ObservableObject
 {
     @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     @Published var partDataSharedDic: [Part: PartData] = [:]
     @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     @Published var scopeOfEditForSide: SidesAffected = .both
+    @Published var choiceOfEditForSide: SidesAffected = .both
     @Published var dimensionValueToEdit: PartTag = .length
 
     static let shared = DataService()
@@ -57,20 +58,39 @@ class DataService//: ObservableObject
         userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
     }
     
-    func setScopeOfEditForSide(_ sideChoice: SidesAffected) {
+    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
+       // print(sideChoice)
         scopeOfEditForSide = sideChoice
+        objectWillChange.send()
+    }
+    
+    func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
+       print("picker choice made")
+        print(sideChoice)
+        print("")
+        choiceOfEditForSide = sideChoice
+        objectWillChange.send()
     }
 }
 
-
-
+///LOGIC
+///picker determines choiceOfEditForSide
+///AND
+///scopeOfEditForSide-changes determine choiceOfEditForSide:
+///current choiceOfEditForSide removed?
+///if .both -> .left || .right set to .right || .left, respectively
+///if .left || .right -> .none set to .none
+///current choiceOfEditForSide add?
+///if .none -> .left || .right set to .left || .right, respectively
+///if .left || .right  -> .both, set to .both
 
 class ObjectEditViewModel: ObservableObject {
     //@Published
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     var objectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionValueToEdit: PartTag = .length
-    var scopeOfEditForSide: SidesAffected = .both
+    var scopeOfEditForSide: SidesAffected = DataService.shared.scopeOfEditForSide
+    var choiceOfEditForSide: SidesAffected = DataService.shared.choiceOfEditForSide
     var partDataSharedDic = DataService.shared.partDataSharedDic
     //@Published var presenceOfPartForSide: SidesAffected = .both
     private var cancellables: Set<AnyCancellable> = []
@@ -102,11 +122,11 @@ class ObjectEditViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-//        DataService.shared.$presenceOfPartForSide
-//            .sink { [weak self] newData in
-//                self?.presenceOfPartForSide = newData
-//            }
-//            .store(in: &self.cancellables)
+        DataService.shared.$choiceOfEditForSide
+            .sink { [weak self] newData in
+                self?.choiceOfEditForSide = newData
+            }
+            .store(in: &self.cancellables)
         
         DataService.shared.$partDataSharedDic
             .sink { [weak self] newData in
@@ -204,21 +224,22 @@ extension ObjectEditViewModel {
     }
     
     
-    func setSidesToBeEdited(_ sideChoice: SidesAffected) {
-//        print(sideChoice)
-        //SCOPEOFEDITFORSIDECHANGE
-        //DataService.shared.scopeOfEditForSide = sides
-        DataService.shared.setScopeOfEditForSide(sideChoice)
+    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
+        DataService.shared.setBothOrLeftOrRightAsEditibleChoice(sideChoice)
     }
+    
+    func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
+        DataService.shared.setBothOrLeftOrRightAsEditibleChoice(sideChoice)
+    }
+    
     
     func getScopeOfEditForSide() -> SidesAffected {
         scopeOfEditForSide
     }
     
-//    func getPresenceOfPartForSide() -> SidesAffected {
-//        presenceOfPartForSide
-//    }
-    
+    func getChoiceOfEditForSide() -> SidesAffected {
+        choiceOfEditForSide
+    }
     
     func convertLeftRightSelectionToSideSelection(
         _ isLeftSelected: Bool,
@@ -241,12 +262,17 @@ extension ObjectEditViewModel {
         _ isRightSelected: Bool,
         _ part: Part) {
             
-        let side = convertLeftRightSelectionToSideSelection(isLeftSelected, isRightSelected)
+        let side = //.both/.left/.right/.none
+            convertLeftRightSelectionToSideSelection(
+                isLeftSelected,
+                isRightSelected)
             
-        //presenceOfPartForSide = side
-        
         let partChain = LabelInPartChainOut(part).partChain
-            DataService.shared.setScopeOfEditForSide(side)
+            
+        let oldScope = scopeOfEditForSide
+        
+        DataService.shared.setBothOrLeftOrRightAsEditible(side)
+            
         switch side {
         case .left, .right:
             
@@ -262,21 +288,66 @@ extension ObjectEditViewModel {
             
             let ignoreFirstItem = 1 // relevant part subsequent
             for index in ignoreFirstItem..<partChain.count {
-                //PARTIDUSEREDITEDICCHANGE
+               
                 DataService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
-               // userEditedSharedDics.partIdsUserEditedDic[partChain[index]] = newId// if only either L or R change id to suit
             }
+            
+            
         case .none:
             removeChainLabelFromObject(part)
         case .both:
+            
             setPartIdDicInKeyToNilRestoringDefault(partChain)
             
             DataService.shared.objectChainLabelsUserEditDicReseter(objectType)
-//            userEditedSharedDics.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
-           
-            //DataService.shared.setScopeOfEditForSide(.both)
-           // DataService.shared.scopeOfEditForSide = .both
+
         }
+            
+            setNewValueForChoice()
+//            print(oldScope)
+//            print(choiceOfEditForSide)
+//            print("")
+            
+            func setNewValueForChoice() {
+                
+                var newChoice = SidesAffected.none
+                
+                //from both to one
+                if oldScope == .both && isRightSelected ||
+                    oldScope == .both && isLeftSelected
+                { newChoice = side
+                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
+                }
+                
+                //from one to both
+                if oldScope == .left && isRightSelected ||
+                   oldScope == .right && isLeftSelected {
+                    //first: true return right as newSelectedSide
+                    //second: true return left as newSelectedSide
+                    let newSelectedSide: SidesAffected =
+                        oldScope == .left && isRightSelected
+                            ? .right: .left
+                    newChoice = .both
+                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newSelectedSide)
+                    DataService.shared.setBothOrLeftOrRightAsEditible(newChoice)
+                }
+                
+                //from one to none
+                if oldScope == .left && !isRightSelected ||
+                   oldScope == .right && !isLeftSelected {
+                    newChoice = .none
+                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
+                }
+                
+                //from none to one
+                if oldScope == .none && isRightSelected ||
+                   oldScope == .none && isLeftSelected {
+                    newChoice = side
+                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
+                }
+                
+                
+            }
     }
     
     
@@ -285,8 +356,10 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ dimensionOrOrigin: PartTag,
         _ valueToBeChange: PartTag) {
-           
-        switch scopeOfEditForSide {
+            print("slider")
+           print(choiceOfEditForSide)
+            print("")
+        switch choiceOfEditForSide {
         case .both:
             process(.id0)
             process(.id1)

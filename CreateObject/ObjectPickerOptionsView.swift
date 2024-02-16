@@ -191,7 +191,11 @@ struct FootSupportPresence: View {
     }
     
     private func updateViewModel() {
-        objectEditVM.setWhenPartChangesOneOrTwoStatus(isLeftSelected, isRightSelected, .footSupport)
+        objectEditVM
+            .setWhenPartChangesOneOrTwoStatus(
+                isLeftSelected,
+                isRightSelected,
+                .footSupport)
         objectPickVM.modifyObjectByCreatingFromName()
     }
 }
@@ -226,46 +230,48 @@ struct BiLateralPartWithOneValueChange: View {
         var allCurrentOptionsForSidesAffected: [SidesAffected]{
             objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
         }
-        let boundSliderValue = Binding(
-            get: {
-                    objectPickVM.getInitialSliderValue(
-                        part,
-                        .length) ?? sliderValue
-                    },
-            set: {
-                    newValue in
-                        sliderValue = newValue
-                            } )
+       // let sidesAffected = objectEditVM.getChoiceOfEditForSide()
+     let boundSideValue =
+                Binding(
+                    get: {
+                            objectEditVM.getChoiceOfEditForSide()},
+                    set: {
+                            newValue in
+                                sidesAffected = newValue
+                                    } )
+        
+        
+        let boundSliderValue =
+                Binding(
+                    get: {
+                            objectPickVM.getInitialSliderValue(
+                                part,
+                                .length) ?? sliderValue},
+                    set: {
+                            newValue in
+                                sliderValue = newValue
+                                    } )
+        
         HStack{
-            Picker("side", selection: $sidesAffected) {
+            Picker("select side(s)", selection: $sidesAffected) {
                 ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
                     Text(side.rawValue)
                 }
             }
             .pickerStyle(.segmented)
-            .disabled(allCurrentOptionsForSidesAffected == [.none])
             .fixedSize()
-            .onChange(of: sidesAffected) { newSelection in
-                objectEditVM.setSidesToBeEdited( newSelection)
-               
-                //print(newSelection)
-                if newSelection == .left ||
-                    newSelection == .right {
-                    objectEditVM.setSidesToBeEdited(sidesAffected)
-                }
-                    
+            .onChange(of: sidesAffected ) { newSelection in
+                objectEditVM.setBothOrLeftOrRightAsEditibleChoice( newSelection)
+                //print (newSelection)
             }
-
+            .disabled(allCurrentOptionsForSidesAffected == [.none])
+            
             
             Text(description)
             
             Slider(value: boundSliderValue ,
                    in: minMaxValue.min...minMaxValue.max,
                    step: 10.0)
-            MeasurementView(
-                Measurement(value: boundSliderValue .wrappedValue,
-                    unit: .millimeters))
-            }
             .onChange(of: sliderValue) { newValue in
                 objectEditVM
                     .setValueForBilateralPartInUserEditedDic(
@@ -276,6 +282,11 @@ struct BiLateralPartWithOneValueChange: View {
                 
                 objectPickVM.modifyObjectByCreatingFromName()
                 }
+            
+            MeasurementView(
+                Measurement(value: boundSliderValue .wrappedValue,
+                    unit: .millimeters))
+            }
             .disabled(objectEditVM.scopeOfEditForSide == .none)
     }
 }
@@ -323,8 +334,10 @@ struct OnePartTwoDimensionValueMenu: View {
                 objectEditVM.updateDimensionToBeEdited(newSelection)
             }
             
+            
             Text(description)
   
+            
             Slider(value: boundSliderValue,
                    in: minMaxValue.min...minMaxValue.max,
                    step: 10.0)
@@ -498,7 +511,7 @@ struct TiltView: View {
 
 
 
-struct ParttPresence: View {
+struct PartPresence: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -545,41 +558,7 @@ struct ParttPresence: View {
 
 
 
-//struct PropellerPresence: View {
-//    @State private var optionToggle = true
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-//    let chainLabelsRequiringAction: [Part] = [.fixedWheelAtRearWithPropeller, .fixedWheelAtFrontWithPropeller]
-//    var chainLabelRequiringAction: Part {
-//        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).part
-//    }
-//    var show: Bool {
-//        objectShowMenuVM.defaultObjectHasOneOfTheseChainLabels(chainLabelsRequiringAction).show
-//    }
-//
-//
-//    var body: some View {
-//        if show {
-//            Toggle("propellers", isOn: $optionToggle)
-//                .onChange(of: optionToggle) { value in
-//                    if !value {
-//                        objectEditVM.replaceChainLabelForObject(
-//                            chainLabelRequiringAction,
-//                            .fixedWheelAtRear)
-//                        objectPickVM.modifyObjectByCreatingFromName()
-//                    } else {
-//                        objectEditVM.replaceChainLabelForObject(
-//                            .fixedWheelAtRear,
-//                            chainLabelRequiringAction)
-//                        objectPickVM.modifyObjectByCreatingFromName()
-//                    }
-//                }
-//        } else {
-//            EmptyView()
-//        }
-//    }
-//}
+
 
 
 //struct FootSupportX: View {

@@ -217,7 +217,9 @@ extension ObjectPickViewModel {
         } else {
             sidesPresent = [.none]
         }
-       // print(sidesPresent)
+//        print("input to View")
+//       print(sidesPresent)
+//        print("")
         return sidesPresent
     }
     

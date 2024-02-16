@@ -88,8 +88,8 @@ struct EditInitialObjectView: View {
             }
             
             HStack{
-                ParttPresence(.fixedWheelAtRearWithPropeller)
-                ParttPresence(.backSupportHeadSupport)
+                PartPresence(.fixedWheelAtRearWithPropeller)
+                PartPresence(.backSupportHeadSupport)
             }
 
             TiltView(.sitOnTiltJoint)
