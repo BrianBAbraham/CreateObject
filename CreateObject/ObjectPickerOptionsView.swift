@@ -208,11 +208,10 @@ struct BiLateralPartWithOneValueChange: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
-    
+//    @State private var picker: SidesAffected = .both
     var minMaxValue : (min: Double, max: Double){
         objectPickVM.getDimensionMinMax(part)
     }
-
     let part: Part
     let description: String
     let dimensionOrOrigin: PartTag
@@ -232,7 +231,16 @@ struct BiLateralPartWithOneValueChange: View {
         var allCurrentOptionsForSidesAffected: [SidesAffected]{
             objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
         }
-       
+        
+//        let boundPickerValue =
+//        Binding(
+//            get: {
+//                objectEditVM.choiceOfEditForSide},
+//            set: {
+//                    newValue in
+//                        picker = newValue
+//                            } )
+        
         let boundSliderValue =
                 Binding(
                     get: {
@@ -243,25 +251,30 @@ struct BiLateralPartWithOneValueChange: View {
                             newValue in
                                 sliderValue = newValue
                                     } )
-        
         HStack{
-            Picker("select side(s)", selection: $objectEditVM.choiceOfEditForSide) {
+            Picker("select side(s)", selection: $objectEditVM.choiceOfEditForSide
+                   //boundPickerValue
+            ) {
                 ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
                     Text(side.rawValue)
                 }
             }
+            .onChange(of: objectEditVM.choiceOfEditForSide) { newSelection in
+                print("sideSelectionPickerChanged - New selection: \(newSelection)")
+                ///even though this does not print  if the line below is not present L value of slider is not saved?????
+                objectEditVM.setBothOrLeftOrRightAsEditibleChoice( newSelection)
+              
+            }
             .pickerStyle(.segmented)
             .fixedSize()
-            .onChange(of:  objectEditVM.choiceOfEditForSide) { newSelection in
-                objectEditVM.setBothOrLeftOrRightAsEditibleChoice( newSelection)
-                print("sideSelectionPickerChanged - New selection: \(newSelection)")
-
-            }
+            
+           
+            
+            //.onAppear(){print(picker)}
             .disabled(allCurrentOptionsForSidesAffected == [.none])
             
-            
             Text(description)
-            
+
             Slider(value: boundSliderValue ,
                    in: minMaxValue.min...minMaxValue.max,
                    step: 10.0)
@@ -272,10 +285,10 @@ struct BiLateralPartWithOneValueChange: View {
                         part,
                         dimensionOrOrigin,
                         valueToBeChanged)
-                
+
                 objectPickVM.modifyObjectByCreatingFromName()
                 }
-            
+
             MeasurementView(
                 Measurement(value: boundSliderValue.wrappedValue,
                     unit: .millimeters))

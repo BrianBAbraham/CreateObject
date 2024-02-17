@@ -17,7 +17,15 @@ class DataService: ObservableObject
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var choiceOfEditForSide: SidesAffected = .both
     @Published var dimensionValueToEdit: PartTag = .length
-
+    
+    
+    var onChange: (() -> Void)?
+      
+      // Method to trigger the onChange closure when a change occurs
+      private func triggerChange() {
+          onChange?()
+      }
+    
     static let shared = DataService()
     private init() {
 
@@ -61,15 +69,16 @@ class DataService: ObservableObject
     func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
        // print(sideChoice)
         scopeOfEditForSide = sideChoice
-        objectWillChange.send()
+       // objectWillChange.send()
     }
     
     func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
        print("picker choice set by toggle")
         print(sideChoice)
         print("")
+        triggerChange()
         choiceOfEditForSide = sideChoice
-        objectWillChange.send()
+        //objectWillChange.send()
     }
 }
 
@@ -95,7 +104,7 @@ class ObjectEditViewModel: ObservableObject {
     //@Published var presenceOfPartForSide: SidesAffected = .both
     private var cancellables: Set<AnyCancellable> = []
     
-    
+   
     
     init () {
         DataService.shared.$userEditedSharedDics
@@ -133,7 +142,14 @@ class ObjectEditViewModel: ObservableObject {
                 self?.partDataSharedDic = newData
             }
             .store(in: &self.cancellables)
+        
+        DataService.shared.onChange = {
+            print("object")
+        }
+        
     }
+    
+    
     
 }
 
@@ -296,44 +312,32 @@ extension ObjectEditViewModel {
                 DataService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
             }
             
-            
         case .none:
             removeChainLabelFromObject(part)
         case .both:
-            
             setPartIdDicInKeyToNilRestoringDefault(partChain)
-            
             DataService.shared.objectChainLabelsUserEditDicReseter(objectType)
-
         }
             
         setNewValueForChoice()
-//            print(oldScope)
-//            print(choiceOfEditForSide)
-//            print("")
-            
+
             func setNewValueForChoice() {
-                
                 var newChoice = SidesAffected.none
                 
                 //from both to one
                 if oldScope == .both && isRightSelected ||
-                    oldScope == .both && isLeftSelected
-                { newChoice = side
-                    
-                }
+                    oldScope == .both && isLeftSelected{
+                    newChoice = side}
                 
                 //from one to both
                 if oldScope == .left && isRightSelected ||
                    oldScope == .right && isLeftSelected {
-                    newChoice = .both
-                }
+                    newChoice = .both}
                 
                 //from one to none
                 if oldScope == .left && !isRightSelected ||
                    oldScope == .right && !isLeftSelected {
-                    newChoice = .none
-                }
+                    newChoice = .none}
                 
                 //from none to one
                 if oldScope == .none && isRightSelected ||
