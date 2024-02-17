@@ -53,15 +53,7 @@ import SwiftUI
 //}
 
 
-enum SidesAffected: String, CaseIterable {
-    case left = "L"
-    case right = "R"
-    case both = "L & R"
-    case none = "none"
-    
-    static let allOptions: [String] = Self.allCases.map {$0.rawValue}
 
-}
 
 
 //struct SideSelection: View {
@@ -200,13 +192,23 @@ struct FootSupportPresence: View {
     }
 }
 
+enum SidesAffected: String, CaseIterable, Equatable {
+    case both = "L & R"
+    case left = "L"
+    case right = "R"
+
+    case none = "none"
+    
+    static let allOptions: [String] = Self.allCases.map {$0.rawValue}
+
+}
 
 struct BiLateralPartWithOneValueChange: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
-    @State private var sidesAffected: SidesAffected = .both
+    
     var minMaxValue : (min: Double, max: Double){
         objectPickVM.getDimensionMinMax(part)
     }
@@ -230,17 +232,7 @@ struct BiLateralPartWithOneValueChange: View {
         var allCurrentOptionsForSidesAffected: [SidesAffected]{
             objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
         }
-       // let sidesAffected = objectEditVM.getChoiceOfEditForSide()
-     let boundSideValue =
-                Binding(
-                    get: {
-                            objectEditVM.getChoiceOfEditForSide()},
-                    set: {
-                            newValue in
-                                sidesAffected = newValue
-                                    } )
-        
-        
+       
         let boundSliderValue =
                 Binding(
                     get: {
@@ -253,16 +245,17 @@ struct BiLateralPartWithOneValueChange: View {
                                     } )
         
         HStack{
-            Picker("select side(s)", selection: $sidesAffected) {
+            Picker("select side(s)", selection: $objectEditVM.choiceOfEditForSide) {
                 ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
                     Text(side.rawValue)
                 }
             }
             .pickerStyle(.segmented)
             .fixedSize()
-            .onChange(of: sidesAffected ) { newSelection in
+            .onChange(of:  objectEditVM.choiceOfEditForSide) { newSelection in
                 objectEditVM.setBothOrLeftOrRightAsEditibleChoice( newSelection)
-                //print (newSelection)
+                print("sideSelectionPickerChanged - New selection: \(newSelection)")
+
             }
             .disabled(allCurrentOptionsForSidesAffected == [.none])
             
@@ -284,7 +277,7 @@ struct BiLateralPartWithOneValueChange: View {
                 }
             
             MeasurementView(
-                Measurement(value: boundSliderValue .wrappedValue,
+                Measurement(value: boundSliderValue.wrappedValue,
                     unit: .millimeters))
             }
             .disabled(objectEditVM.scopeOfEditForSide == .none)

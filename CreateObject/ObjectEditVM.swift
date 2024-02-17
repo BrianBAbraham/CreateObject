@@ -65,7 +65,7 @@ class DataService: ObservableObject
     }
     
     func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
-       print("picker choice made")
+       print("picker choice set by toggle")
         print(sideChoice)
         print("")
         choiceOfEditForSide = sideChoice
@@ -225,7 +225,7 @@ extension ObjectEditViewModel {
     
     
     func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
-        DataService.shared.setBothOrLeftOrRightAsEditibleChoice(sideChoice)
+        DataService.shared.setBothOrLeftOrRightAsEditible(sideChoice)
     }
     
     func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
@@ -238,6 +238,10 @@ extension ObjectEditViewModel {
     }
     
     func getChoiceOfEditForSide() -> SidesAffected {
+        print("choice of edit for side obtained")
+        print(choiceOfEditForSide)
+        print("")
+        return
         choiceOfEditForSide
     }
     
@@ -303,7 +307,7 @@ extension ObjectEditViewModel {
 
         }
             
-            setNewValueForChoice()
+        setNewValueForChoice()
 //            print(oldScope)
 //            print(choiceOfEditForSide)
 //            print("")
@@ -316,37 +320,27 @@ extension ObjectEditViewModel {
                 if oldScope == .both && isRightSelected ||
                     oldScope == .both && isLeftSelected
                 { newChoice = side
-                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
+                    
                 }
                 
                 //from one to both
                 if oldScope == .left && isRightSelected ||
                    oldScope == .right && isLeftSelected {
-                    //first: true return right as newSelectedSide
-                    //second: true return left as newSelectedSide
-                    let newSelectedSide: SidesAffected =
-                        oldScope == .left && isRightSelected
-                            ? .right: .left
                     newChoice = .both
-                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newSelectedSide)
-                    DataService.shared.setBothOrLeftOrRightAsEditible(newChoice)
                 }
                 
                 //from one to none
                 if oldScope == .left && !isRightSelected ||
                    oldScope == .right && !isLeftSelected {
                     newChoice = .none
-                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
                 }
                 
                 //from none to one
                 if oldScope == .none && isRightSelected ||
                    oldScope == .none && isLeftSelected {
                     newChoice = side
-                    DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
                 }
-                
-                
+                DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
             }
     }
     
@@ -358,6 +352,7 @@ extension ObjectEditViewModel {
         _ valueToBeChange: PartTag) {
             print("slider")
            print(choiceOfEditForSide)
+            print(value)
             print("")
         switch choiceOfEditForSide {
         case .both:

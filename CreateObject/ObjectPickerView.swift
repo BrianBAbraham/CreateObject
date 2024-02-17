@@ -95,15 +95,13 @@ struct EditInitialObjectView: View {
             TiltView(.sitOnTiltJoint)
 
             
-            if objectShowMenuVM.getShowMenuStatus(UserModifiers.supportWidth) {
-                //HStack {
-                    //DimensionSelection()
-                    OnePartTwoDimensionValueMenu(.sitOn, "seat")
-//                }
-               // .padding(.horizontal)
-            } else {
-                EmptyView()
-            }
+//            if objectShowMenuVM.getShowMenuStatus(UserModifiers.supportWidth) {
+//
+//                    OnePartTwoDimensionValueMenu(.sitOn, "seat")
+//
+//            } else {
+//                EmptyView()
+//            }
            
                 
         }

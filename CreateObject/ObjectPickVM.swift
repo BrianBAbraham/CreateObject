@@ -59,6 +59,7 @@ class ObjectPickViewModel: ObservableObject {
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionValueToEdit: PartTag = .length
     var partDataSharedDic = DataService.shared.partDataSharedDic
+    var choiceOfEditForSide: SidesAffected = DataService.shared.choiceOfEditForSide
     var scopeOfEditForSide: SidesAffected = DataService.shared.scopeOfEditForSide
     private var cancellables: Set<AnyCancellable> = []
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
@@ -86,6 +87,12 @@ class ObjectPickViewModel: ObservableObject {
         DataService.shared.$scopeOfEditForSide
             .sink { [weak self] newData in
                 self?.scopeOfEditForSide = newData
+            }
+            .store(in: &self.cancellables)
+        
+        DataService.shared.$choiceOfEditForSide
+            .sink { [weak self] newData in
+                self?.choiceOfEditForSide = newData
             }
             .store(in: &self.cancellables)
 
@@ -180,7 +187,7 @@ extension ObjectPickViewModel {
     
         var value: Double? = nil
         if let partData = partDataSharedDic[part] {//parts edited out do not exist
-            let idForLeftOrRight = scopeOfEditForSide == .left ? PartTag.id0: PartTag.id1
+            let idForLeftOrRight = choiceOfEditForSide == .left ? PartTag.id0: PartTag.id1
             let id =  partData.id.one ?? idForLeftOrRight//two sources for id
             
             switch editableProperty {

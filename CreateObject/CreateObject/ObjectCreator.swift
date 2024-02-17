@@ -615,7 +615,7 @@ enum OneOrTwo <T> {
                 return [.right]
             }
         case .two:
-            return [.left, .right, .both]
+            return [ .both, .left, .right]
         }
     }
     
