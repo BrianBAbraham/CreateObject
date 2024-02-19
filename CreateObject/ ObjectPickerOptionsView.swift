@@ -208,7 +208,6 @@ struct BiLateralPartWithOneValueChange: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue: Double = 400.0
-//    @State private var picker: SidesAffected = .both
     var minMaxValue : (min: Double, max: Double){
         objectPickVM.getDimensionMinMax(part)
     }
@@ -232,15 +231,6 @@ struct BiLateralPartWithOneValueChange: View {
             objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
         }
         
-//        let boundPickerValue =
-//        Binding(
-//            get: {
-//                objectEditVM.choiceOfEditForSide},
-//            set: {
-//                    newValue in
-//                        picker = newValue
-//                            } )
-        
         let boundSliderValue =
                 Binding(
                     get: {
@@ -252,6 +242,61 @@ struct BiLateralPartWithOneValueChange: View {
                                 sliderValue = newValue
                                     } )
         HStack{
+            Picker("select side(s)", selection: $objectEditVM.choiceOfEditForSide
+            ) {
+                ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
+                    Text(side.rawValue)
+                }
+            }
+            .onChange(of: objectEditVM.choiceOfEditForSide) { newSelection in
+                print("sideSelectionPickerChanged - New selection: \(newSelection)")
+                ///even though this does not print  if the line below is not present L value of slider is not saved?????
+                objectEditVM.setBothOrLeftOrRightAsEditibleChoice( newSelection)
+              
+            }
+            .pickerStyle(.segmented)
+            .fixedSize()
+          
+            
+            Text(description)
+
+            Slider(value: boundSliderValue ,
+                   in: minMaxValue.min...minMaxValue.max,
+                   step: 10.0)
+            .onChange(of: sliderValue) { newValue in
+                objectEditVM
+                    .setValueForBilateralPartInUserEditedDic(
+                        newValue,
+                        part,
+                        dimensionOrOrigin,
+                        valueToBeChanged)
+
+                objectPickVM.modifyObjectByCreatingFromName()
+                }
+
+            MeasurementView(
+                Measurement(value: boundSliderValue.wrappedValue,
+                    unit: .millimeters))
+            }
+            .disabled(objectEditVM.scopeOfEditForSide == .none)
+    }
+}
+
+
+struct BiLateralPartWithOneValueChange1: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+
+    init ( ) {
+
+    }
+ 
+    var body: some View {
+        var allCurrentOptionsForSidesAffected: [SidesAffected]{
+            objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
+        }
+        
+
             Picker("select side(s)", selection: $objectEditVM.choiceOfEditForSide
                    //boundPickerValue
             ) {
@@ -272,6 +317,53 @@ struct BiLateralPartWithOneValueChange: View {
             
             //.onAppear(){print(picker)}
             .disabled(allCurrentOptionsForSidesAffected == [.none])
+            
+
+    }
+} 
+
+
+struct BiLateralPartWithOneValueChange2: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @State private var sliderValue: Double = 400.0
+//    @State private var picker: SidesAffected = .both
+    var minMaxValue : (min: Double, max: Double){
+        objectPickVM.getDimensionMinMax(part)
+    }
+    let part: Part
+    let description: String
+    let dimensionOrOrigin: PartTag
+    let valueToBeChanged: PartTag
+    init (
+        _ part: Part,
+        _ description: String,
+        _ dimensionOrOrigin: PartTag,
+        _ valueToBeChanged: PartTag ) {
+            self.part = part
+            self.description = description
+            self.dimensionOrOrigin = dimensionOrOrigin
+            self.valueToBeChanged = valueToBeChanged
+    }
+ 
+    var body: some View {
+        var allCurrentOptionsForSidesAffected: [SidesAffected]{
+            objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
+        }
+ 
+        let boundSliderValue =
+                Binding(
+                    get: {
+                            objectPickVM.getInitialSliderValue(
+                                part,
+                                .length) ?? sliderValue},
+                    set: {
+                            newValue in
+                                sliderValue = newValue
+                                    } )
+        HStack{
+
             
             Text(description)
 
