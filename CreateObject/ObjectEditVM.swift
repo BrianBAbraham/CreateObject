@@ -9,32 +9,35 @@ import Foundation
 import Combine
 
 
-class DataService: ObservableObject
-{
-    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
-    @Published var partDataSharedDic: [Part: PartData] = [:]
-    @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
+class BilateralPartWithOneValueToChangeService {
+   
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var choiceOfEditForSide: SidesAffected = .both
     @Published var dimensionValueToEdit: PartTag = .length
     
     
-    var onChange: (() -> Void)?
-      
-      // Method to trigger the onChange closure when a change occurs
-      private func triggerChange() {
-          onChange?()
-      }
+    static let shared = BilateralPartWithOneValueToChangeService()
     
-    static let shared = DataService()
-    private init() {
-
+    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
+        scopeOfEditForSide = sideChoice
     }
+    
+    func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
+        choiceOfEditForSide = sideChoice
+    }
+}
+
+class DictionaryService {
+    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
+    @Published var partDataSharedDic: [Part: PartData] = [:]
+    @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
+
+    @Published var dimensionValueToEdit: PartTag = .length
+        
+    static let shared = DictionaryService()
     
     func angleUserEditedDicModifier(_ entry: AnglesDictionary){
         userEditedSharedDics.angleUserEditedDic += entry
-        
-        
     }
     
     func angleUserEditedDicReseter(){
@@ -54,6 +57,11 @@ class DataService: ObservableObject
     }
     
     
+    func originUserEdtiedDicModifier(_ entry: PositionDictionary) {
+        userEditedSharedDics.objectToPartOrigintUserEditedDic += entry
+    }
+    
+    
     func partDataSharedDicModifier(_ initialised: [Part: PartData] ) {
         partDataSharedDic = initialised
     }
@@ -66,20 +74,6 @@ class DataService: ObservableObject
         userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
     }
     
-    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
-       // print(sideChoice)
-        scopeOfEditForSide = sideChoice
-       // objectWillChange.send()
-    }
-    
-    func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
-       print("picker choice set by toggle")
-        print(sideChoice)
-        print("")
-        triggerChange()
-        choiceOfEditForSide = sideChoice
-        //objectWillChange.send()
-    }
 }
 
 ///LOGIC
@@ -94,58 +88,58 @@ class DataService: ObservableObject
 ///if .left || .right  -> .both, set to .both
 
 class ObjectEditViewModel: ObservableObject {
-    //@Published
+
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     var objectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionValueToEdit: PartTag = .length
-    var scopeOfEditForSide: SidesAffected = DataService.shared.scopeOfEditForSide
-    var choiceOfEditForSide: SidesAffected = DataService.shared.choiceOfEditForSide
-    var partDataSharedDic = DataService.shared.partDataSharedDic
-    //@Published var presenceOfPartForSide: SidesAffected = .both
+    var scopeOfEditForSide: SidesAffected = BilateralPartWithOneValueToChangeService.shared.scopeOfEditForSide
+    var choiceOfEditForSide: SidesAffected = BilateralPartWithOneValueToChangeService.shared.choiceOfEditForSide
+    var partDataSharedDic = DictionaryService.shared.partDataSharedDic
+
     private var cancellables: Set<AnyCancellable> = []
     
    
     
     init () {
-        DataService.shared.$userEditedSharedDics
+        DictionaryService.shared.$userEditedSharedDics
             .sink { [weak self] newData in
                 self?.userEditedSharedDics = newData
             }
             .store(in: &cancellables)
         
-        DataService.shared.$currentObjectType
+        DictionaryService.shared.$currentObjectType
             .sink { [weak self] newData in
                 self?.objectType = newData
             }
             .store(in: &self.cancellables)
         
-        DataService.shared.$dimensionValueToEdit
+        DictionaryService.shared.$dimensionValueToEdit
             .sink { [weak self] newData in
                 self?.dimensionValueToEdit = newData
             }
             .store(in: &self.cancellables)
         
-        DataService.shared.$scopeOfEditForSide
+        
+        DictionaryService.shared.$partDataSharedDic
+            .sink { [weak self] newData in
+                self?.partDataSharedDic = newData
+            }
+            .store(in: &self.cancellables)
+
+        
+        BilateralPartWithOneValueToChangeService.shared.$scopeOfEditForSide
             .sink { [weak self] newData in
                 self?.scopeOfEditForSide = newData
             }
             .store(in: &self.cancellables)
         
-        DataService.shared.$choiceOfEditForSide
+        BilateralPartWithOneValueToChangeService.shared.$choiceOfEditForSide
             .sink { [weak self] newData in
                 self?.choiceOfEditForSide = newData
             }
             .store(in: &self.cancellables)
         
-        DataService.shared.$partDataSharedDic
-            .sink { [weak self] newData in
-                self?.partDataSharedDic = newData
-            }
-            .store(in: &self.cancellables)
         
-        DataService.shared.onChange = {
-            print("object")
-        }
         
     }
     
@@ -175,7 +169,7 @@ extension ObjectEditViewModel {
                   y: ZeroValue.angle,
                   z: ZeroValue.angle)]
 
-            DataService.shared.angleUserEditedDicModifier(angleUserEditedDic)
+            DictionaryService.shared.angleUserEditedDicModifier(angleUserEditedDic)
             
         }
     
@@ -191,7 +185,7 @@ extension ObjectEditViewModel {
         }
         curentObjectChainLabels += [removalThenReplacment[1]]
 
-        DataService.shared.userEditedSharedDics
+        DictionaryService.shared.userEditedSharedDics
             .objectChainLabelsUserEditDic[objectType] =
                 curentObjectChainLabels
        
@@ -201,13 +195,13 @@ extension ObjectEditViewModel {
     func removeChainLabelFromObject(
         _ chainLabel: Part) {
         guard let currentObjectChainLabels =
-                DataService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] ??
+                DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] ??
                     ObjectChainLabel.dictionary[objectType] else {
                           fatalError()
                         }
         let newChainLabels =
             currentObjectChainLabels.filter { $0 != chainLabel}
-        DataService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] = newChainLabels
+        DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] = newChainLabels
     }
     
     
@@ -219,7 +213,7 @@ extension ObjectEditViewModel {
         }
         let newChainLabels = currentObjectChainLabels + [chainLabel]
         
-        DataService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] =
+        DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] =
             newChainLabels
     }
     
@@ -227,7 +221,7 @@ extension ObjectEditViewModel {
     func setPartIdDicInKeyToNilRestoringDefault (_ partChainWithoutRoot: [Part]) {
         //PARTIDUSEREDITEDICCHANGE
         for part in partChainWithoutRoot {
-            DataService.shared.partIdsUserEditedDicReseter(part)
+            DictionaryService.shared.partIdsUserEditedDicReseter(part)
 //            DataService.shared.userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
         }
     }
@@ -241,23 +235,36 @@ extension ObjectEditViewModel {
     
     
     func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
-        DataService.shared.setBothOrLeftOrRightAsEditible(sideChoice)
+        BilateralPartWithOneValueToChangeService.shared.setBothOrLeftOrRightAsEditible(sideChoice)
     }
     
     func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
-        DataService.shared.setBothOrLeftOrRightAsEditibleChoice(sideChoice)
+        BilateralPartWithOneValueToChangeService.shared.setBothOrLeftOrRightAsEditibleChoice(sideChoice)
     }
     
     
-    func getScopeOfEditForSide() -> SidesAffected {
-        scopeOfEditForSide
+    func getScopeOfEditForSide() -> [SidesAffected] {
+       
+        switch scopeOfEditForSide{
+        case .both:
+            return [.both, .left, .right]
+        case .left:
+            return [.left]
+        case .right:
+            return [.right]
+        case .none:
+            return [.none]
+//        case .test:
+//            return [.test]
+        }
+
     }
     
     func getChoiceOfEditForSide() -> SidesAffected {
-        print("choice of edit for side obtained")
-        print(choiceOfEditForSide)
-        print("")
-        return
+//        print("choice of edit for side obtained")
+//        print(choiceOfEditForSide)
+//        print("")
+//        return
         choiceOfEditForSide
     }
     
@@ -291,7 +298,7 @@ extension ObjectEditViewModel {
             
         let oldScope = scopeOfEditForSide
         
-        DataService.shared.setBothOrLeftOrRightAsEditible(side)
+            BilateralPartWithOneValueToChangeService.shared.setBothOrLeftOrRightAsEditible(side)
             
         switch side {
         case .left, .right:
@@ -309,14 +316,14 @@ extension ObjectEditViewModel {
             let ignoreFirstItem = 1 // relevant part subsequent
             for index in ignoreFirstItem..<partChain.count {
                
-                DataService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
+                DictionaryService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
             }
-            
         case .none:
             removeChainLabelFromObject(part)
         case .both:
             setPartIdDicInKeyToNilRestoringDefault(partChain)
-            DataService.shared.objectChainLabelsUserEditDicReseter(objectType)
+            DictionaryService.shared.objectChainLabelsUserEditDicReseter(objectType)
+      
         }
             
         setNewValueForChoice()
@@ -344,7 +351,7 @@ extension ObjectEditViewModel {
                    oldScope == .none && isLeftSelected {
                     newChoice = side
                 }
-                DataService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
+                BilateralPartWithOneValueToChangeService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
             }
     }
     
@@ -352,12 +359,9 @@ extension ObjectEditViewModel {
     func setValueForBilateralPartInUserEditedDic(
         _ value: Double,
         _ part: Part,
-        _ dimensionOrOrigin: PartTag,
-        _ valueToBeChange: PartTag) {
-            print("slider")
-           print(choiceOfEditForSide)
-            print(value)
-            print("")
+        _ partPropertyToBeChanged: PartTag
+    ) {
+
         switch choiceOfEditForSide {
         case .both:
             process(.id0)
@@ -373,14 +377,23 @@ extension ObjectEditViewModel {
       
         func process(_ id: PartTag) {
             let name = getName( id, part)
-            let currentDimension = getEditedOrDefaultDimension(name, part, id)
-            let newDimension = dimensionWithModifiedLength(currentDimension)
+            
+            switch partPropertyToBeChanged {
+            case .length:
+                let currentDimension = getEditedOrDefaultDimension(name, part, id)
+                let newDimension = dimensionWithModifiedLength(currentDimension)
+                DictionaryService.shared.dimensionUserEditedDicModifier([name: newDimension])
+            
+            case .xOrigin:
+                let currentOrigin = getEditedOrDefaultOrigin(name, part, id)
+                let newOrigin = xOriginModified(currentOrigin)
+                DictionaryService.shared.originUserEdtiedDicModifier([name: newOrigin])
+                
+            default: break
+            }
+            
      
-            //DIMENSIONCHANGE
-//            userEditedSharedDics.dimensionUserEditedDic +=
-//            [name: newDimension]
-           //print([name: newDimension])
-            DataService.shared.dimensionUserEditedDicModifier([name: newDimension])
+           
         }
         
     
@@ -391,11 +404,11 @@ extension ObjectEditViewModel {
         }
         
         
-//        func originModifiedByLength(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
-//        (x: origin.x,
-//         y: origin.y,
-//         z: origin.z)
-//        }
+            func xOriginModified(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
+            (x: value,
+             y: origin.y,
+             z: origin.z)
+            }
         
     }
     
@@ -415,18 +428,26 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ id: PartTag)
         -> Dimension3d {
-//        guard let partData = DataService.shared.partDataSharedDic[part] else {
-//            fatalError()
-//        }
-            
-           // print(id)
+
             guard let partData = partDataSharedDic[part] else {
                 fatalError()
             }
-            
-            //print(partData.dimension.returnValue(id))
         return
             partData.dimension.returnValue(id)
+    }
+    
+    
+    func getEditedOrDefaultOrigin(
+        _ name: String,
+        _ part: Part,
+        _ id: PartTag)
+        -> PositionAsIosAxes {
+
+            guard let partData = partDataSharedDic[part] else {
+                fatalError()
+            }
+        return
+            partData.globalOrigin.returnValue(id)
     }
     
     
@@ -454,13 +475,13 @@ extension ObjectEditViewModel {
 //    DataService.shared.userEditedSharedDics.dimensionUserEditedDic +=
 //        [name: newDimension]
         
-        DataService.shared.dimensionUserEditedDicModifier([name: newDimension])
+        DictionaryService.shared.dimensionUserEditedDicModifier([name: newDimension])
     }
     
     
     func updateDimensionToBeEdited(_ dimension: PartTag) {
       
-        DataService.shared.dimensionValueToEdit = dimension
+        DictionaryService.shared.dimensionValueToEdit = dimension
         //print(dimensionValueToEdit)
     }
 

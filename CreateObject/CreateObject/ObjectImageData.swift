@@ -61,7 +61,7 @@ struct ObjectImageData {
                 userEditedDic)
                     .partValuesDic
             
-        DataService.shared.partDataSharedDic = partDataDic
+        DictionaryService.shared.partDataSharedDic = partDataDic
                         
         createPreTiltDictionaryFromStructFactory()
         createPostTiltDictionaryFromStructFactory()

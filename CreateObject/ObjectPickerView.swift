@@ -76,11 +76,15 @@ struct EditInitialObjectView: View {
                 .padding(.horizontal)
             
             if objectShowMenuVM.getShowMenuStatus(UserModifiers.legLength) {
-                BiLateralPartWithOneValueChange(
-                    .footSupportHangerLink,
-                    "leg",
-                    .dimension,
-                    .length)
+                HStack {
+                    PickerForBiLateralPartWithOneValueToChange()
+                   
+                    SliderForBilateralPartWithOneValueToChange(
+                        .footSupportHangerLink,
+                        "leg",
+                        .length)
+                }
+ 
                 .padding(.horizontal)
              
             } else {
@@ -95,13 +99,13 @@ struct EditInitialObjectView: View {
             TiltView(.sitOnTiltJoint)
 
             
-//            if objectShowMenuVM.getShowMenuStatus(UserModifiers.supportWidth) {
-//
-//                    OnePartTwoDimensionValueMenu(.sitOn, "seat")
-//
-//            } else {
-//                EmptyView()
-//            }
+            if objectShowMenuVM.getShowMenuStatus(UserModifiers.supportWidth) {
+
+                    OnePartTwoDimensionValueMenu(.sitOn, "seat")
+
+            } else {
+                EmptyView()
+            }
            
                 
         }
