@@ -238,37 +238,35 @@ struct SliderForBilateralPartWithOneValueToChange: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     var minMaxValue : (min: Double, max: Double){
-        objectPickVM.getDimensionMinMax(part)
+        objectPickVM.geMinMax(part, propertyToBeEdited)
     }
-    
     let part: Part
     let description: String
-    let partPropertyToBeChanged: PartTag
+    let propertyToBeEdited: PartTag
    
     init (
         _ part: Part,
         _ description: String,
-        _ propertyToBeChanged: PartTag ) {
+        _ propertyToBeEdited: PartTag ) {
             self.part = part
             self.description = description
-            self.partPropertyToBeChanged = propertyToBeChanged
+            self.propertyToBeEdited = propertyToBeEdited
         }
  
     var body: some View {
- 
         let boundSliderValue =
             Binding(
                 get: {
                         objectPickVM.getInitialSliderValue(
                             part,
-                            partPropertyToBeChanged) },
+                            propertyToBeEdited) },
                 set: {
                     newValue in
                         objectEditVM
                             .setValueForBilateralPartInUserEditedDic(
                                 newValue,
                                 part,
-                               partPropertyToBeChanged
+                               propertyToBeEdited
                             )
                         objectPickVM.modifyObjectByCreatingFromName()
                                 } )
@@ -293,10 +291,10 @@ struct OnePartTwoDimensionValueMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue = 0.0
-    @State private var selection: PartTag = .length
+    @State private var propertyToBeEdited: PartTag = .length
     var relevantCases: [PartTag] = [.length, .width]
     var minMaxValue : (min: Double, max: Double){
-        objectPickVM.getDimensionMinMax(part)
+        objectPickVM.geMinMax(part, propertyToBeEdited)
     }
     let part: Part
     let description: String
@@ -312,21 +310,21 @@ struct OnePartTwoDimensionValueMenu: View {
             get: {
                 objectPickVM.getInitialSliderValue (
                     part,
-                    selection
+                    propertyToBeEdited
                 ) ?? sliderValue
             },
             set: {self.sliderValue = $0 }
             )
         
         HStack {
-            Picker("dimension", selection: $selection) {
+            Picker("dimension", selection: $propertyToBeEdited) {
                 ForEach(relevantCases, id: \.self) { side in
                     Text(side.rawValue)
                 }
             }
             .pickerStyle(.segmented)
             .fixedSize()
-            .onChange(of: selection) { newSelection in
+            .onChange(of: propertyToBeEdited) { newSelection in
                 objectEditVM.updateDimensionToBeEdited(newSelection)
             }
             
@@ -348,11 +346,11 @@ struct OnePartTwoDimensionValueMenu: View {
                         part)
                 objectPickVM.modifyObjectByCreatingFromName()
                 }
-            .onChange(of: selection) { _ in
+            .onChange(of: propertyToBeEdited) { _ in
                 sliderValue =
                 objectPickVM.getInitialSliderValue(
                 part,
-                selection) ?? boundSliderValue.wrappedValue
+                propertyToBeEdited) ?? boundSliderValue.wrappedValue
                 }
             .padding(.horizontal)
     }

@@ -58,7 +58,8 @@ class DictionaryService {
     
     
     func originUserEdtiedDicModifier(_ entry: PositionDictionary) {
-        userEditedSharedDics.objectToPartOrigintUserEditedDic += entry
+//        print(entry)
+        userEditedSharedDics.parentToPartOriginUserEditedDic += entry
     }
     
     
@@ -361,7 +362,7 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ partPropertyToBeChanged: PartTag
     ) {
-
+        //print(value)
         switch choiceOfEditForSide {
         case .both:
             process(.id0)
@@ -386,7 +387,11 @@ extension ObjectEditViewModel {
             
             case .xOrigin:
                 let currentOrigin = getEditedOrDefaultOrigin(name, part, id)
+//                print(id)
+//                print(currentOrigin)
                 let newOrigin = xOriginModified(currentOrigin)
+//                print(newOrigin)
+//                print("")
                 DictionaryService.shared.originUserEdtiedDicModifier([name: newOrigin])
                 
             default: break
@@ -405,7 +410,7 @@ extension ObjectEditViewModel {
         
         
             func xOriginModified(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
-            (x: value,
+                (x: value ,
              y: origin.y,
              z: origin.z)
             }
@@ -447,7 +452,7 @@ extension ObjectEditViewModel {
                 fatalError()
             }
         return
-            partData.globalOrigin.returnValue(id)
+            partData.childOrigin.returnValue(id)
     }
     
     

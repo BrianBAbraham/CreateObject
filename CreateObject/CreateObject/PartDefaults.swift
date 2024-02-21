@@ -386,22 +386,27 @@ struct PartDefaultOrigin {
     let parentData: PartData
     var userEditedDimensionOneOrTwo: OneOrTwo<Dimension3d> = .one(one: ZeroValue.dimension3d)
     var userEditedOriginOneOrTwo: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
+    var userEditedOriginOneOrTwoOptional: OneOrTwoOptional<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
     
     init (_ part: Part,
           _ object: ObjectTypes,
           _ linkedOrParentData: PartData,
           _ userEditedDimensionOneOrTwo: OneOrTwo<Dimension3d>,
-          _ partIdAllowingForUserEdit: OneOrTwo<PartTag>
+          _ partIdAllowingForUserEdit: OneOrTwo<PartTag>,
+          _ userEditedOriginOneOrTwoOptional: OneOrTwoOptional<PositionAsIosAxes>
           ) {
         self.part = part
         self.objectType = object
         self.parentData = linkedOrParentData
         self.userEditedDimensionOneOrTwo = userEditedDimensionOneOrTwo
+        self.userEditedOriginOneOrTwoOptional = 
+            userEditedOriginOneOrTwoOptional//provide edited origin
         
         linkedOrParentDimension = linkedOrParentData.dimension.mapOneOrTwoToOneOrLeftValue()
 
         userEditedOriginOneOrTwo = getOneOrTwoOriginFromOptional()
-                
+        
+        //child origin is with respect to parent dimension
         func getOneOrTwoOriginFromOptional() -> OneOrTwo<PositionAsIosAxes>{
             let parentDimensionAsTouple = linkedOrParentData.dimension.mapToTouple()
             switch userEditedDimensionOneOrTwo {
@@ -416,7 +421,9 @@ struct PartDefaultOrigin {
                     returnOneOrigin = CreateIosPosition.getLeftFromRight(returnOneOrigin)
                 }
                 
-                return .one(one: returnOneOrigin)
+                return
+                userEditedOriginOneOrTwoOptional.mapOptionalToNonOptionalOneOrTwo(returnOneOrigin)
+                //return .one(one: returnOneOrigin)
                 
             case .two(let userEditedTwoLeftValue, let userEditedTwoRightValue):
                 var parentDimensionValue: Dimension3d
@@ -426,8 +433,15 @@ struct PartDefaultOrigin {
 
                 parentDimensionValue = parentDimensionAsTouple.right
                 let returnRight = getDefault(userEditedTwoRightValue, parentDimensionValue) ?? ZeroValue.iosLocation
-                
-                return .two(left: returnLeft, right: returnRight)
+                if part == .footSupportHangerLink {
+                 //   print(returnRight)
+                    
+//                    print(userEditedOriginOneOrTwoOptional.mapOptionalToNonOptionalOneOrTwo(returnLeft, returnRight))
+//                    
+//                    print("")
+                }
+                //return .two(left: returnLeft, right: returnRight)
+                return userEditedOriginOneOrTwoOptional.mapOptionalToNonOptionalOneOrTwo(returnLeft, returnRight)
             }
             
             func doesOneHaveId0RequiringRightToLeftTransform() -> PartTag? {
@@ -502,7 +516,7 @@ struct PartDefaultOrigin {
                 .footSupportHangerJoint: (x: linkedOrParentDimension.width/2.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
                 
                 
-                .footSupportHangerLink: (x: linkedOrParentDimension.width/2.0, y: (linkedOrParentDimension.length + selfDimension.length)/2.0, z: selfDimension.height/2.0),
+                    .footSupportHangerLink: (x: linkedOrParentDimension.width/2.0 + 100.0, y: (linkedOrParentDimension.length + selfDimension.length)/2.0, z: selfDimension.height/2.0),
                 
                 .footSupportInOnePiece: ZeroValue.iosLocation,
              

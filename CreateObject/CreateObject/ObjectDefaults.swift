@@ -229,7 +229,7 @@ struct OneOrTwoId {
 }
 
 
-struct DefaultDictionaries {
+struct DefaultMinMaxDimensionDictionary {
     let dimensionDic: Part3DimensionDictionary = [:]
     
     let fineDimensionMinMaxDic: [PartObject: (min: Dimension3d, max: Dimension3d)] = [
@@ -242,11 +242,11 @@ struct DefaultDictionaries {
           (min: (width: 200.0, length: 200.0, height: 10.0),
            max: (width: 1000.0, length: 2000.0, height: 40.0)),
           .footSupportHangerLink:
-            (min: (width: 10.0, length: 0.0, height: 10.0),
+            (min: (width: 10.0, length: 50.0, height: 10.0),
              max: (width: 50.0, length: 1000.0, height: 40.0))
         ]
     
-    static var shared = DefaultDictionaries()
+    static var shared = DefaultMinMaxDimensionDictionary()
     
     
     func getDefault(_ part: Part, _ objectType: ObjectTypes)  -> (min: Dimension3d, max: Dimension3d) {
@@ -265,6 +265,48 @@ struct DefaultDictionaries {
     func getGeneralMinMaxDimension(_ part: Part) -> (min: Dimension3d, max: Dimension3d) {
        
         guard let minMax = generalDimensionMinMaxDic[part] else {
+            fatalError("no minMax exists for \(part)")
+        }
+        
+        return minMax
+    }
+}
+
+
+
+struct DefaultMinMaxOriginDictionary {
+    let originDic: PositionDictionary = [:]
+    
+    let fineOriginMinMaxDic: [PartObject: (min: PositionAsIosAxes, max: PositionAsIosAxes)] = [
+        PartObject(.sitOn, .showerTray):
+            (min: (x: 600.0, y: 600.0, z: 10.0),
+             max: (x: 2000.0, y: 3000.0, z: 10.0))
+        ]
+    let generalOriginMinMaxDic: [Part: (min: PositionAsIosAxes, max: PositionAsIosAxes)] = [
+          .footSupportHangerLink:
+            (min: (x: -500.0, y: 0.0, z: 0.0),
+             max: (x: 500.0, y: 0.0, z: 0.0))
+        ]
+    
+    static var shared = DefaultMinMaxOriginDictionary()
+    
+    
+    func getDefault(_ part: Part, _ objectType: ObjectTypes)  -> (min: PositionAsIosAxes, max: PositionAsIosAxes) {
+        let minMaxDimension =
+        getFineTuneMinMaxOrigin(part, objectType) ??
+        getGeneralMinMaxOrigin(part)
+        return minMaxDimension
+    }
+    
+    
+    func getFineTuneMinMaxOrigin(_ part: Part, _ objectType: ObjectTypes) -> (min: PositionAsIosAxes, max: PositionAsIosAxes)? {
+       fineOriginMinMaxDic[PartObject(part, objectType)]
+    }
+    
+    
+    func getGeneralMinMaxOrigin(_ part: Part) -> (min: PositionAsIosAxes, max: PositionAsIosAxes) {
+       
+        guard let minMax = generalOriginMinMaxDic[part] else {
             fatalError("no minMax exists for \(part)")
         }
         

@@ -82,7 +82,7 @@ struct EditInitialObjectView: View {
                     SliderForBilateralPartWithOneValueToChange(
                         .footSupportHangerLink,
                         "leg",
-                        .length)
+                        .xOrigin)
                 }
  
                 .padding(.horizontal)
@@ -98,16 +98,11 @@ struct EditInitialObjectView: View {
 
             TiltView(.sitOnTiltJoint)
 
-            
             if objectShowMenuVM.getShowMenuStatus(UserModifiers.supportWidth) {
-
                     OnePartTwoDimensionValueMenu(.sitOn, "seat")
-
             } else {
                 EmptyView()
             }
-           
-                
         }
         .onAppear{objectName = objectPickVM.getCurrentObjectName()}
         .font(.caption)

@@ -25,7 +25,7 @@ struct ObjectPickModel {
     var currentObjectFrameSize: Dimension = ZeroValue.dimension
     
     var userEditedDic: UserEditedDictionaries?
-    var defaultDictionaries: DefaultDictionaries
+    var defaultDictionaries: DefaultMinMaxDimensionDictionary
     
     var objectImageData: ObjectImageData
 
@@ -33,7 +33,7 @@ struct ObjectPickModel {
     init(
         currentObjectName: String,
         userEditedDic: UserEditedDictionaries?,
-        defaultDictionaries: DefaultDictionaries,
+        defaultDictionaries: DefaultMinMaxDimensionDictionary,
         objectImageData: ObjectImageData
     ){
         self.userEditedDic = userEditedDic
@@ -55,7 +55,10 @@ class ObjectPickViewModel: ObservableObject {
     @Published private var objectPickModel: ObjectPickModel
     var objectImageData: ObjectImageData
     @Published var userEditedSharedDics: UserEditedDictionaries
-    let defaultDics: DefaultDictionaries
+    let defaultMinMaxDimensionDic = 
+        DefaultMinMaxDimensionDictionary.shared
+    let defaultMinMaxOriginDic =
+        DefaultMinMaxOriginDictionary.shared
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionValueToEdit: PartTag = .length
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
@@ -65,7 +68,7 @@ class ObjectPickViewModel: ObservableObject {
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     
     init() {
-        self.defaultDics = DefaultDictionaries.shared
+       
         self.userEditedSharedDics = DictionaryService.shared.userEditedSharedDics
 
         objectImageData =
@@ -75,7 +78,7 @@ class ObjectPickViewModel: ObservableObject {
             ObjectPickModel(
             currentObjectName: currentObjectType.rawValue,
             userEditedDic: nil,
-            defaultDictionaries: defaultDics,
+            defaultDictionaries: defaultMinMaxDimensionDic,
             objectImageData: ObjectImageData(.fixedWheelRearDrive, nil))
 
         DictionaryService.shared.$currentObjectType
@@ -160,7 +163,7 @@ extension ObjectPickViewModel {
             ObjectPickModel(
                 currentObjectName: currentObjectType.rawValue,
                 userEditedDic: userEditedSharedDics,
-                defaultDictionaries: defaultDics,
+                defaultDictionaries: defaultMinMaxDimensionDic,
                 objectImageData: objectImageData)
         setCurrentObjectFrameSize()
     }
@@ -186,9 +189,18 @@ extension ObjectPickViewModel {
                 value = editableProperty == .length ?
                 (dimension.length): (dimension.width)
                 
+            case .xOrigin, .yOrigin:
+                let origin = partData.childOrigin.returnValue(id)
+//                print(editableProperty)
+//                print(origin)
+                value = editableProperty == .xOrigin ?
+                    origin.x: origin.y
+                
             case .angle:
                 value =
                     partData.angles.returnValue(id).x.converted(to: .degrees).value
+                
+                
             default:
                 break
             }
@@ -196,7 +208,7 @@ extension ObjectPickViewModel {
             
         }
             let whenPartHasBeenRemovedAndValueNotUsed = 0.0
-          
+          //print (value)
             return value ?? whenPartHasBeenRemovedAndValueNotUsed
     }
     
@@ -266,15 +278,45 @@ extension ObjectPickViewModel {
         objectPickModel.currentObjectName
     }
     
+    
     func getCurrentObjectType()
         -> ObjectTypes {
         currentObjectType
     }
     
-    func getDimensionMinMax(_ part: Part) -> (min: Double, max: Double) {
     
-        let minMaxDimension = defaultDics.getDefault(part, currentObjectType)
-        return (min: minMaxDimension.min.length, max: minMaxDimension.max.length)
+    func geMinMax(
+        _ part: Part,
+        _ propertyToBeEdited: PartTag) -> (min: Double, max: Double) {
+    
+            var minMaxValue =
+                (min: 0.0, max: 0.0)
+            
+           
+            switch propertyToBeEdited {
+            case .length, .width:
+                let values =
+                    defaultMinMaxDimensionDic.getDefault(
+                        part,
+                        currentObjectType)
+                minMaxValue = (min: values.min.length,
+                               max: values.max.length)
+                
+            case .xOrigin, .yOrigin, .zOrigin:
+                let values =
+                    defaultMinMaxOriginDic.getDefault(
+                        part,
+                        currentObjectType)
+                minMaxValue = (min: values.min.x,
+                               max: values.max.x)
+               // print(minMaxValue)
+            default: break
+            }
+            
+            
+       
+        
+        return minMaxValue
     }
     
 //    func getInitialSliderValue(_ part: Part, _ id: PartTag) -> Double {
