@@ -1123,7 +1123,6 @@ struct UserEditedDictionaries {
 struct UserEditedData {
     let dimensionUserEditedDic: Part3DimensionDictionary
     let parentToPartOriginUserEditedDic: PositionDictionary
-//    let parentToPartOriginUserEditedDicNew: [PartId: PositionAsIosAxes]
     let objectToPartOrigintUserEditedDic: PositionDictionary
     let angleUserEditedDic: AnglesDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
@@ -1149,8 +1148,7 @@ struct UserEditedData {
             userEditedDic?.dimensionUserEditedDic ?? [:]
             parentToPartOriginUserEditedDic =
             userEditedDic?.parentToPartOriginUserEditedDic ?? [:]
-//            parentToPartOriginUserEditedDicNew =
-//            userEditedDic?.parentToPartOriginUserEditedDicNew ?? [:]
+
             objectToPartOrigintUserEditedDic =
             userEditedDic?.objectToPartOrigintUserEditedDic ?? [:]
             angleUserEditedDic =

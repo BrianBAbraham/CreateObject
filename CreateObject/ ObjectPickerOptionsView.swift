@@ -268,6 +268,7 @@ struct SliderForBilateralPartWithOneValueToChange: View {
                                 part,
                                propertyToBeEdited
                             )
+                    print(newValue)
                         objectPickVM.modifyObjectByCreatingFromName()
                                 } )
         HStack{
