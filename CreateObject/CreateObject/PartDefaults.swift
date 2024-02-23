@@ -384,9 +384,10 @@ struct PartDefaultOrigin {
     let objectType: ObjectTypes
   
     let parentData: PartData
-    var userEditedDimensionOneOrTwo: OneOrTwo<Dimension3d> = .one(one: ZeroValue.dimension3d)
-    var userEditedOriginOneOrTwo: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
+    var userEditedPartDimensionOneOrTwo: OneOrTwo<Dimension3d> //= .one(one: ZeroValue.dimension3d)
+    var         editedElseDefaultOriginOneOrTwo: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
     var userEditedOriginOneOrTwoOptional: OneOrTwoOptional<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
+//    var xOffset: Double = 0.0
     
     init (_ part: Part,
           _ object: ObjectTypes,
@@ -398,24 +399,36 @@ struct PartDefaultOrigin {
         self.part = part
         self.objectType = object
         self.parentData = linkedOrParentData
-        self.userEditedDimensionOneOrTwo = userEditedDimensionOneOrTwo
-        self.userEditedOriginOneOrTwoOptional = 
+        self.userEditedPartDimensionOneOrTwo = userEditedDimensionOneOrTwo
+        self.userEditedOriginOneOrTwoOptional =
             userEditedOriginOneOrTwoOptional//provide edited origin
+        
+       
         
         linkedOrParentDimension = linkedOrParentData.dimension.mapOneOrTwoToOneOrLeftValue()
 
-        userEditedOriginOneOrTwo = getOneOrTwoOriginFromOptional()
+        //xOffset = xOffsetProvider()
+        
+        editedElseDefaultOriginOneOrTwo = getOneOrTwoOriginFromOptional()
+        
+      
+
         
         //child origin is with respect to parent dimension
         func getOneOrTwoOriginFromOptional() -> OneOrTwo<PositionAsIosAxes>{
 
             let parentDimensionAsTouple = linkedOrParentData.dimension.mapToTouple()
-            switch userEditedDimensionOneOrTwo {
-            case .one (let userEditedDimensionForOneValue):
-                guard let parentDimensionValue = parentDimensionAsTouple.one else {
+            if part == .footSupportHangerLink{
+                print (parentDimensionAsTouple)
+            }
+            
+            switch userEditedPartDimensionOneOrTwo {
+            case .one (let onePart):
+                guard let oneParent = parentDimensionAsTouple.one else {
                     fatalError("one accessed but no one")
                 }
-                guard var returnOneOrigin = getDefault(userEditedDimensionForOneValue, parentDimensionValue) else {
+                
+                guard var returnOneOrigin = getDefaultFromDimensions(onePart, oneParent) else {
                     fatalError("no default dimension for this part \(part)")
                 }
                 
@@ -424,92 +437,62 @@ struct PartDefaultOrigin {
                 }
                 
                 let editedElseDefaultOrigin: OneOrTwo<PositionAsIosAxes> =
-                    getUserEditedChildOriginDetachedFromFutureParentChanges(returnOneOrigin)
-                
-                var xChangeToDefaultOrigin = 0.0
-                let defaultParentDimension = PartDefaultDimension(.sitOn, objectType).partDimension
-                let xDefaultOrigin = getDefault(userEditedDimensionForOneValue, defaultParentDimension)?.x ?? 0.0
-              
-                xChangeToDefaultOrigin = editedElseDefaultOrigin.mapOneOrTwoToOneOrLeftValue().x - xDefaultOrigin
-                let attachedOrigin = (x: xChangeToDefaultOrigin + returnOneOrigin.x,
-                                      y: returnOneOrigin.y,
-                                      z: returnOneOrigin.z)
-                
-                if part == .footSupportHangerLink {
-                    print("")
-                  
-                    print("default initial origin: \(xDefaultOrigin)")
-                    
-                   print("x change to origin: \(xChangeToDefaultOrigin)")
-                  
-                    print("new origin of default due to parent edit: \(returnOneOrigin.x)")
-                    print("origin change due to parent edit: \(returnOneOrigin.x - xDefaultOrigin)")
-                    print("edited else default origin \(editedElseDefaultOrigin.one?.x ?? 0.0)")
-                    print("")
-                }
-                
+                    getUserEditedPartOrigin(returnOneOrigin)
                 
                 return
-                    isTheOriginToBeDetachedFromParentDimension() ? editedElseDefaultOrigin: .one(one: attachedOrigin)
+                    editedElseDefaultOrigin
 
+            case .two(let leftPart, let rightPart):
+
+                var returnLeftOrigin = getDefaultFromDimensions(leftPart, parentDimensionAsTouple.left) ?? ZeroValue.iosLocation
+
+                returnLeftOrigin = CreateIosPosition.getLeftFromRight(returnLeftOrigin)
                 
-            case .two(let userEditedTwoLeftValue, let userEditedTwoRightValue):
-                var parentDimensionValue: Dimension3d
-                    parentDimensionValue = parentDimensionAsTouple.left
-                var returnLeft = getDefault(userEditedTwoLeftValue, parentDimensionValue) ?? ZeroValue.iosLocation
-                returnLeft = CreateIosPosition.getLeftFromRight(returnLeft)
-
-                parentDimensionValue = parentDimensionAsTouple.right
-                let returnRight = getDefault(userEditedTwoRightValue, parentDimensionValue) ?? ZeroValue.iosLocation
-                let newOrigin: OneOrTwo<PositionAsIosAxes> =
-                    getUserEditedChildOriginDetachedFromFutureParentChanges(returnLeft, returnRight)
+                let returnRightOrigin = getDefaultFromDimensions(rightPart, parentDimensionAsTouple.right) ?? ZeroValue.iosLocation
+                
+                let editedElseDefaultOrigin: OneOrTwo<PositionAsIosAxes> =
+                    getUserEditedPartOrigin(returnLeftOrigin, returnRightOrigin)
+                
                 return
-                    isTheOriginToBeDetachedFromParentDimension() ? newOrigin: .two(left: returnLeft, right: returnRight)
+                    editedElseDefaultOrigin
             }
             
-            ///even if the default origin depends on the parent dimension
-            ///this process means that changes in the parent dimension
-            ///leave the origin unchanged
-            ///only user edited changes to the origin are applied
-            func getUserEditedChildOriginDetachedFromFutureParentChanges(
-                _ value1: PositionAsIosAxes,
-                _ value2: PositionAsIosAxes? = nil ) -> OneOrTwo<PositionAsIosAxes>{
-                    
-                //edited values else default values
-                userEditedOriginOneOrTwoOptional.mapOptionalToNonOptionalOneOrTwo(value1, value2)
-            }
-            // initial dim -> initial org
-            //
-//            func getUserEditedChildOriginOneOrTwoOptionalChangeFromInitial() {
-//                let oneOrTwoOrigin
-//                switch {
-//                    
-//                }
-//                linkedOrParentData.dimension
-//                userEditedOriginOneOrTwoOptional
-//            }
-            
-            func isTheOriginToBeDetachedFromParentDimension()-> Bool {
-                true
-            }
-            
-            
-            func doesOneHaveId0RequiringRightToLeftTransform() -> PartTag? {
-                var idForOne: PartTag? = nil
-                switch partIdAllowingForUserEdit{
-                case .one(let one):
-                    if one == .id0 {
-                        idForOne = .id0
-                    }
-                default:
-                  break
-                }
-                return idForOne
-            }
         }
         
         
-        func getDefault(_ selfDimension: Dimension3d, _ parentDimension: Dimension3d)  -> PositionAsIosAxes? {
+        func restoreOriginUneditedComponent(){
+            
+        }
+        
+        
+        ///even if the default origin depends on the parent dimension
+        ///this process means that changes in the parent dimension
+        ///leave the origin unchanged
+        ///only user edited changes to the origin are applied
+        func getUserEditedPartOrigin(
+            _ value1: PositionAsIosAxes,
+            _ value2: PositionAsIosAxes? = nil ) -> OneOrTwo<PositionAsIosAxes>{
+                
+            //edited values else default values
+            userEditedOriginOneOrTwoOptional.mapOptionalToNonOptionalOneOrTwo(value1, value2)
+        }
+        
+        
+        func doesOneHaveId0RequiringRightToLeftTransform() -> PartTag? {
+            var idForOne: PartTag? = nil
+            switch partIdAllowingForUserEdit{
+            case .one(let one):
+                if one == .id0 {
+                    idForOne = .id0
+                }
+            default:
+              break
+            }
+            return idForOne
+        }
+        
+        
+        func getDefaultFromDimensions(_ selfDimension: Dimension3d, _ parentDimension: Dimension3d)  -> PositionAsIosAxes? {
             let origin =
             getFineTuneOriginDefault(selfDimension, parentDimension) ??
             getGeneralOriginDefault(selfDimension, parentDimension)
@@ -565,7 +548,7 @@ struct PartDefaultOrigin {
                 .footSupportJoint: (x: 0.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
                 .footSupportHangerJoint: (x: linkedOrParentDimension.width/2.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
                 
-                .footSupportHangerLink: (x: linkedOrParentDimension.width/2.0, y: (linkedOrParentDimension.length + selfDimension.length)/2.0, z: selfDimension.height/2.0),
+                .footSupportHangerLink: (x: linkedOrParentDimension.width/2.0 , y: (linkedOrParentDimension.length + selfDimension.length)/2.0, z: selfDimension.height/2.0),
             
                 .footSupportInOnePiece: ZeroValue.iosLocation,
              

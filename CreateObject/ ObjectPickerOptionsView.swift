@@ -197,8 +197,7 @@ enum SidesAffected: String, CaseIterable, Equatable {
     case left = "L"
     case right = "R"
     case none = "none"
-    static let allOptions: [String] = Self.allCases.map {$0.rawValue}
-
+    
 }
 
 
@@ -210,7 +209,7 @@ struct PickerForBiLateralPartWithOneValueToChange: View {
    
     var body: some View {
         var allCurrentOptionsForSidesAffected: [SidesAffected]{
-            objectEditVM.getScopeOfEditForSide()
+            objectEditVM.getScopeOfEditForSide()//.filter { $0 != .both }
         }
         let boundSideValue = Binding(
                     get: {
@@ -243,6 +242,7 @@ struct SliderForBilateralPartWithOneValueToChange: View {
     let part: Part
     let description: String
     let propertyToBeEdited: PartTag
+
    
     init (
         _ part: Part,
@@ -254,6 +254,7 @@ struct SliderForBilateralPartWithOneValueToChange: View {
         }
  
     var body: some View {
+
         let boundSliderValue =
             Binding(
                 get: {
@@ -273,10 +274,16 @@ struct SliderForBilateralPartWithOneValueToChange: View {
                                 } )
         HStack{
             Text(description)
+//
+            if propertyToBeEdited == .length{
+                Slider(value: boundSliderValue ,
+                       in: minMaxValue.min...minMaxValue.max,
+                       step: 10.0)
+            } else {
+                Stepper("", value: boundSliderValue, step: 10.0)
+            }
 
-            Slider(value: boundSliderValue ,
-                   in: minMaxValue.min...minMaxValue.max,
-                   step: 10.0)
+           
 
             MeasurementView(
                 Measurement(value: boundSliderValue.wrappedValue,

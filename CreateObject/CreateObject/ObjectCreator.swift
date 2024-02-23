@@ -549,6 +549,30 @@ enum OneOrTwo <T> {
     case two (left: T, right: T)
     case one (one: T)
     
+    
+    func mapOriginalValueToSomePropertyComponent<U>(
+        _ oneOrTwoOriginal: OneOrTwo<U>,
+        _ propertyToBeEdited: PartTag) -> OneOrTwo<PositionAsIosAxes>{
+        let z: PositionAsIosAxes = ZeroValue.iosLocation
+        let originalAsTouple = oneOrTwoOriginal.mapToTouple()
+        switch self {
+        case .two(let left , let right  ):
+            var leftReturn = z
+            var rightReturn = z
+            let leftOriginal = originalAsTouple.left as! PositionAsIosAxes
+            let rightOriginal = originalAsTouple.right as! PositionAsIosAxes
+            if propertyToBeEdited == .xOrigin {
+                leftReturn = (x: (left as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
+                rightReturn = (x: (right as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
+            }
+            return .two(left: leftReturn, right: rightReturn)
+        case .one(let one):
+            return .one(one: one as! PositionAsIosAxes)
+        }
+            
+       // func modify(_ new: OneOrTwo<T>, _ original: OneOrTwo<>T)->
+    }
+    
     //MARK: DEVELOPMENT
     ///a One parent is  mapped to left and right
     /// a Two parent is not mapped to one as two sided to one sided is not yet implemented
@@ -881,7 +905,7 @@ struct StructFactory {
         
         
         func setChildOriginForPartData() {
-            partOrigin = defaultOrigin.userEditedOriginOneOrTwo
+            partOrigin = defaultOrigin.editedElseDefaultOriginOneOrTwo
         }
 
         
@@ -943,7 +967,7 @@ extension StructFactory {
                 originName:sitOnName,
                 dimensionName: sitOnName,
                 dimension: partDimension,
-                origin: defaultOrigin.userEditedOriginOneOrTwo,
+                origin: defaultOrigin.editedElseDefaultOriginOneOrTwo,
                 minMaxAngle: nil,
                 angles: nil,
                 id: .one(one: PartTag.id0) )
@@ -1232,9 +1256,11 @@ struct UserEditedData {
                 .one(one: parentToPartOriginUserEditedDic[one ] )
         case .two(let left, let right):
             origin =
-                .two(left: parentToPartOriginUserEditedDic[ left ], right: parentToPartOriginUserEditedDic[right ] )
+                .two(left: parentToPartOriginUserEditedDic[ left ], 
+                     right: parentToPartOriginUserEditedDic[right ] )
         }
-        //print(origin)
+        if part == Part.footSupportHangerLink {
+        }
         return origin
     }
         

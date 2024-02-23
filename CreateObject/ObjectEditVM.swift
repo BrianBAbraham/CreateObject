@@ -362,7 +362,8 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ partPropertyToBeChanged: PartTag
     ) {
-        //print(value)
+    print("set: \(value)" )
+        print("")
         switch choiceOfEditForSide {
         case .both:
             process(.id0)

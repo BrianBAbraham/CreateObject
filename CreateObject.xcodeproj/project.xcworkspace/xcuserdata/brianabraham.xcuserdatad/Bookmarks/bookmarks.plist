@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>215</string>
+					<string>219</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>214</string>
+					<string>218</string>
 					<key>Timestamp</key>
-					<string>730229070.7478141</string>
+					<string>730395502.981046</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -181,60 +181,13 @@ struct </string>
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>85</string>
+					<string>453</string>
 					<key>StartingColumnNumber</key>
-					<string>33</string>
+					<string>60</string>
 					<key>StartingLineNumber</key>
-					<string>84</string>
+					<string>452</string>
 					<key>Timestamp</key>
-					<string>730235786.0977401</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ObjectPickerView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>
-</string>
-				<key>leading</key>
-				<string>                        .footSupportHangerLink,
-                        "leg",
-                        .xOrigin)</string>
-				<key>trailing</key>
-				<string>                }
- 
-                .padding(.horizontal)
-</string>
-			</dict>
-			<key>title</key>
-			<string>current method makes origin independent of seat width also L&amp;R does not work well</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>492</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>491</string>
-					<key>Timestamp</key>
-					<string>730313453.9316601</string>
+					<string>730401494.085346</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -250,20 +203,86 @@ struct </string>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>            func isTheOriginToBeDetachedFromParentDimension()-&gt; Bool {
+				<string>
 </string>
 				<key>leading</key>
-				<string>//            }
-            
-</string>
+				<string>                let returnRightOrigin = getDefaultFromDimensions(rightPart, parentDimensionAsTouple.right) ?? ZeroValue.iosLocation
+                
+                let editedElseDefaultOrigin: OneOrTwo&lt;PositionAsIosAxes&gt; =</string>
 				<key>trailing</key>
-				<string>                true
-            }
-            
+				<string>                    getUserEditedPartOrigin(returnLeftOrigin, returnRightOrigin)
+                
+                return
 </string>
 			</dict>
 			<key>title</key>
-			<string>Development not currently accessible from UI</string>
+			<string>both x and y become current values even if the default should be in force for one</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>553</string>
+					<key>StartingColumnNumber</key>
+					<string>52</string>
+					<key>StartingLineNumber</key>
+					<string>552</string>
+					<key>Timestamp</key>
+					<string>730407194.021095</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>    
+    
+    func mapOriginalValueToSomePropertyComponent&lt;U&gt;(</string>
+				<key>trailing</key>
+				<string>        _ oneOrTwoOriginal: OneOrTwo&lt;U&gt;,
+        _ propertyToBeEdited: PartTag) -&gt; OneOrTwo&lt;PositionAsIosAxes&gt;{
+        let z: PositionAsIosAxes = ZeroValue.iosLocation
+</string>
+			</dict>
+			<key>title</key>
+			<string>not complete on friday</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

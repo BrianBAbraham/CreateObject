@@ -180,7 +180,8 @@ extension ObjectPickViewModel {
     
         var value: Double? = nil
         if let partData = partDataSharedDic[part] {//parts edited out do not exist
-            let idForLeftOrRight = choiceOfEditForSide == .left ? PartTag.id0: PartTag.id1
+            let idForLeftOrRight = choiceOfEditForSide == .right ? PartTag.id1: PartTag.id0
+        
             let id =  partData.id.one ?? idForLeftOrRight//two sources for id
             
             switch editableProperty {
@@ -191,10 +192,13 @@ extension ObjectPickViewModel {
                 
             case .xOrigin, .yOrigin:
                 let origin = partData.childOrigin.returnValue(id)
-//                print(editableProperty)
-//                print(origin)
+                print("get \(origin)")
+                print(idForLeftOrRight)
+                print("")
                 value = editableProperty == .xOrigin ?
                     origin.x: origin.y
+                
+                //value = idForLeftOrRight == .id0 ? value: value.map{-$0}
                 
             case .angle:
                 value =
@@ -586,3 +590,4 @@ extension ObjectPickViewModel {
     }
     
 }
+
