@@ -327,6 +327,7 @@ extension ObjectImageData {
             let corners =
                 allCorners.mapSingleOneOrTwoWithOneFuncWithReturn {getTopViewCorners($0)}
         
+            //ignore warning no tilt without
             originName.mapSingleOneOrTwoAndOneFuncWithReturn(corners){addPartsToFourCornerDic($0, $1)}
         }
     }

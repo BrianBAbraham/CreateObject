@@ -210,6 +210,7 @@ struct ContentView: View {
                             objectManipulationIsActive,
                             initialOrigin: $initialOrigin)
                         PickInitialObjectView()
+                    Spacer()
                         EditInitialObjectView()
                     }) {
                         Text("Default equipment")
@@ -495,13 +496,16 @@ struct ContentViewX: View {
 
     @State private var initialOrigin: CGPoint?
     
+    
+   
+    
     var body: some View {
        // PickSavedObjectView()
         //let frameSize = objectPickVM.getScreenFrameSize()
         let objectManipulationIsActive = true
 
         NavigationView {
-            VStack {
+            ZStack {
                 NavigationLink(destination:
                     VStack{
                             PickInitialObjectView()

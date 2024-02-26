@@ -46,6 +46,74 @@ struct PickInitialObjectView: View {
     }
 }
 
+struct PickPartEdit: View {
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @State private var selectedItem = "sitOn"
+
+    var body: some View {
+      let menuItems = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
+
+        HStack {
+           // Text("edit part")
+            Picker("", selection: $selectedItem) {
+                ForEach(menuItems, id: \.self) { item in
+                        Text(item)
+                }
+            }
+           
+            .pickerStyle(MenuPickerStyle())
+           
+            //.scaleEffect(0.8)
+        }
+        .padding(.horizontal)
+//
+            ConditionalBilateralPartEditView(part: Part(rawValue: selectedItem)!)
+//
+        ConditionalOnePartTwoDimensionValueMenu(part: Part(rawValue: selectedItem)!)
+//
+        if [Part.sitOnTiltJoint].contains(Part(rawValue: selectedItem)!)  {
+            TiltView(Part(rawValue: selectedItem)!)
+        } else {
+            EmptyView()
+        }
+        
+//        if [Part.sitOn].contains(menuItems[selectedItem])  {
+//            OnePartTwoDimensionValueMenu(menuItems[selectedItem], Part.sitOn.rawValue)
+//        } else {
+//            EmptyView()
+
+
+    }
+}
+
+
+struct ConditionalOnePartTwoDimensionValueMenu: View {
+    let part: Part
+    var body: some View {
+        if [Part.sitOn].contains(part)  {
+            OnePartTwoDimensionValueMenu( part, part.rawValue)
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+struct ConditionalBilateralPartEditView: View {
+    let part: Part
+    var body: some View {
+        if [Part.footSupport, Part.armSupport, Part.assistantFootLever].contains(part)  {
+            BilateralPartEditView(part)
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+///edit park picker is an object dependant list
+///the list is of every part that can be edited for that object
+///every part which can be edited is linked to a specific part edit menu
+
 struct EditInitialObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
@@ -62,51 +130,92 @@ struct EditInitialObjectView: View {
 
     @State private var objectName = ObjectTypes.fixedWheelRearDrive.rawValue
    
-    
     var body: some View {
-      // let dimensionValueToEdit = objectEditVM.getDimensionValueToBeEdited()
-//        let boundObjectType = Binding(
-//            get: {objectPickVM.getCurrentObjectName()},
-//            set: {self.objectName = $0}
-//        )
-//        
-        VStack {
-           
-            FootSupportPresence()
-                .padding(.horizontal)
-            
-            if objectShowMenuVM.getShowMenuStatus(UserModifiers.legLength) {
-                HStack {
-                    PickerForBiLateralPartWithOneValueToChange()
-                   
-                    SliderForBilateralPartWithOneValueToChange(
-                        .footSupportHangerLink,
-                        "leg",
-                        .xOrigin)
-                }
- 
-                .padding(.horizontal)
-             
-            } else {
-                EmptyView()
-            }
-            
-            HStack{
-                PartPresence(.fixedWheelAtRearWithPropeller)
-                PartPresence(.backSupportHeadSupport)
-            }
-
-            TiltView(.sitOnTiltJoint)
-
-            if objectShowMenuVM.getShowMenuStatus(UserModifiers.supportWidth) {
-                    OnePartTwoDimensionValueMenu(.sitOn, "seat")
-            } else {
-                EmptyView()
-            }
-        }
-        .onAppear{objectName = objectPickVM.getCurrentObjectName()}
+        
+        
+        
+//        TabView {
+//            if objectShowMenuVM.getShowMenuStatus(.footSupport) {
+//                TiltView(.sitOnTiltJoint)
+//                    .tabItem {
+//                        Image(systemName: "figure.seated.side")
+//                        Text("Tilt")
+//                    }
+//                
+//            } else {
+//                EmptyView()
+//            }
+//
+//
+//            
+//            
+//            if objectShowMenuVM.getShowMenuStatus(.footSupport) {
+//                FootRelatedView()
+//                    .tabItem {
+//                        Image(systemName: "figure.kickboxing")
+//                        Text("leg")
+//                    }
+//            } else {
+//                EmptyView()
+//            }
+//
+//            
+//            HStack{
+//                PartPresence(.fixedWheelAtRearWithPropeller)
+//                PartPresence(.backSupportHeadSupport)
+//               
+//            }
+//            .backgroundModifier()
+//            .tabItem{
+//                Image(systemName: "wrench.and.screwdriver")
+//                Text("options")
+//            }
+//            
+//            
+//            if objectShowMenuVM.getShowMenuStatus(.sitOn) {
+//                OnePartTwoDimensionValueMenu(.sitOn, "seat")
+//                    .tabItem {
+//                        Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
+//                        Text("support")
+//                    }
+//            } else {
+//                EmptyView()
+//            }
+//            
+//            
+//            if objectShowMenuVM.getShowMenuStatus(.sideSupport) {
+//                HStack{
+//                }
+//                .tabItem{
+//                    Image(systemName: "figure.wave")
+//                    Text("arm")}
+//                
+//            } else {
+//                EmptyView()
+//            }
+//            
+//            
+//            
+//            if objectShowMenuVM.getShowAnyMenuStatus([
+//                .footSupport, .sideSupport, .fixedWheelAtRear]) {
+//                HStack{
+//                    
+//                }
+//                .tabItem{
+//                    Image(systemName: "person.2.fill")
+//                    Text("assist")}
+//                
+//            } else {
+//            EmptyView()
+//            }
+//        }
+        PickPartEdit()
         .font(.caption)
-       // .scaleEffect(0.8)
+        .frame(height: 200)
+        .onAppear{
+            objectName = objectPickVM.getCurrentObjectName()
+        }
+
     }
 }
 

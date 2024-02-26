@@ -39,26 +39,21 @@ struct RemoveObjectName {
 }
 
 
-//struct CreateNameFromParts {
-//    let name: String
-//    init(_ parts: [any Parts]) {
-//
-//        name = getNameFromParts(parts)
-//
-//        func getNameFromParts(_ parts: [any Parts])
-//            -> String {
-//            var name = ""
-//            for item in parts {
-//                if let newItem = item.stringValue as? String{
-//                    name += newItem
-//                } else {
-//                    fatalError()
-//                }
-//                }
-//            return name
-//        }
-//    }
-//}
+struct CreateNameFromIdAndPart {
+    var name: String
+    
+    init(_ id: PartTag, _ part: Part) {
+        
+        name = getNameFromParts(id, part)
+        func getNameFromParts(_ id: PartTag, _ part: Part)
+            -> String {
+                let parts: [Parts] =
+                [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
+                   return
+                    CreateNameFromParts(parts ).name
+        }
+    }
+}
 
 struct CreateNameFromParts {
     var name: String = ""

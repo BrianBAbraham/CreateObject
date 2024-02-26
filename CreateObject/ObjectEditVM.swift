@@ -57,6 +57,10 @@ class DictionaryService {
     }
     
     
+    func originOffsetUserEdtiedDicModifier(_ entry: PositionDictionary) {
+        userEditedSharedDics.parentToPartOriginOffsetUserEditedDic += entry
+    }
+    
     func originUserEdtiedDicModifier(_ entry: PositionDictionary) {
 //        print(entry)
         userEditedSharedDics.parentToPartOriginUserEditedDic += entry
@@ -362,8 +366,6 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ partPropertyToBeChanged: PartTag
     ) {
-    print("set: \(value)" )
-        print("")
         switch choiceOfEditForSide {
         case .both:
             process(.id0)
@@ -378,28 +380,20 @@ extension ObjectEditViewModel {
      
       
         func process(_ id: PartTag) {
-            let name = getName( id, part)
-            
+          
+            let name = CreateNameFromIdAndPart(id, part).name
             switch partPropertyToBeChanged {
             case .length:
                 let currentDimension = getEditedOrDefaultDimension(name, part, id)
                 let newDimension = dimensionWithModifiedLength(currentDimension)
                 DictionaryService.shared.dimensionUserEditedDicModifier([name: newDimension])
-            
             case .xOrigin:
-                let currentOrigin = getEditedOrDefaultOrigin(name, part, id)
-//                print(id)
-//                print(currentOrigin)
-                let newOrigin = xOriginModified(currentOrigin)
-//                print(newOrigin)
-//                print("")
-                DictionaryService.shared.originUserEdtiedDicModifier([name: newOrigin])
+                let currentOrigin = getEditedOrDefaultOriginOffset(name)
+                let newOriginOffset = xOriginModified(currentOrigin, id)
+                DictionaryService.shared.originOffsetUserEdtiedDicModifier([name: newOriginOffset])
                 
             default: break
             }
-            
-     
-           
         }
         
     
@@ -410,24 +404,37 @@ extension ObjectEditViewModel {
         }
         
         
-            func xOriginModified(_ origin: PositionAsIosAxes) -> PositionAsIosAxes {
-                (x: value ,
-             y: origin.y,
-             z: origin.z)
+        func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
+            let mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
+           let newOrigin =
+                (x: origin.x + value * mod,
+                 y: 0.0,
+                 z: 0.0)
+            
+        
+            return newOrigin
+            
+            func makeLeftAndRightMoveCloserWithNegAndApartWithPos() -> Double {
+                var reverseDirection = 1.0
+                if choiceOfEditForSide == .both {
+                    reverseDirection = id == .id1 ? 1.00: -1.00
+                }
+                return reverseDirection
             }
+        }
         
     }
     
     
-    func getName (_ id: PartTag, _ part: Part =  Part.footSupportHangerLink) -> String {
-        var name: String {
-            let parts: [Parts] =
-            [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
-           return
-            CreateNameFromParts(parts ).name    }
-        return name
-    }
-    
+//    func getName (_ id: PartTag, _ part: Part =  Part.footSupportHangerLink) -> String {
+//        var name: String {
+//            let parts: [Parts] =
+//            [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
+//           return
+//            CreateNameFromParts(parts ).name    }
+//        return name
+//    }
+//    
     
     func getEditedOrDefaultDimension(
         _ name: String,
@@ -440,6 +447,15 @@ extension ObjectEditViewModel {
             }
         return
             partData.dimension.returnValue(id)
+    }
+    
+    
+    func getEditedOrDefaultOriginOffset(
+        _ name: String)
+        -> PositionAsIosAxes {
+
+        return
+            userEditedSharedDics.parentToPartOriginOffsetUserEditedDic[name] ?? ZeroValue.iosLocation
     }
     
     
@@ -463,7 +479,7 @@ extension ObjectEditViewModel {
     //    _ selectedDimension: PartTag
     ) {
 //print(selectedDimension)
-    let name = getName(.id0, part)
+        let name = CreateNameFromIdAndPart(.id0, part).name
 
     let currentDimension =
             getEditedOrDefaultDimension(name, part, .id0)

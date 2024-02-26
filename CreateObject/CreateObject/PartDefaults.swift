@@ -94,6 +94,7 @@ enum Part: String, Parts, Hashable {
     //case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"
     
+    case armSupport = "armSupport"
     case sideSupport = "sideSupport"
     case sideSupportRotationJoint = "sideSupportRotatationJoint"
     case sideSupportJoystick = "sideSupportJoystick"
@@ -177,7 +178,7 @@ struct PartInRotationScopeOut {
     let partChainLabel: [Part]
     let dictionary: [Part: [Part]] = [
         .sitOnTiltJoint:
-            [.backSupport, .backSupportHeadSupport, .sitOn, .sideSupport, .footSupport],
+            [.backSupport, .backSupportHeadSupport, .sitOn, .armSupport, .footSupport],
     ]
     
     let part: Part
@@ -318,7 +319,7 @@ struct PartDefaultDimension {
                 PartObject(.casterWheelAtFront, .fixedWheelMidDrive): (width: 20.0, length: 50.0, height: 50.0),
                 PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (width: 20.0, length: 600.0, height: 600.0),
                 PartObject(.footOnly, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
-                PartObject(.sideSupport, .allCasterTiltInSpaceArmChair): (width: 100.0, length: linkedOrParentDimension.length, height: 150.0),
+                PartObject(.armSupport, .allCasterTiltInSpaceArmChair): (width: 100.0, length: linkedOrParentDimension.length, height: 150.0),
                 PartObject(.sitOn, .allCasterBed): (width: 900.0, length: 2000.0, height: 150.0),
                 PartObject(.sitOn, .allCasterStretcher): (width: 600.0, length: 1400.0, height: 10.0),
                 PartObject(.sitOn, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
@@ -363,7 +364,7 @@ struct PartDefaultDimension {
                 .footSupportHangerJoint: j,
                 .footSupportHangerLink: (width:20.0, length: 300.0, height: 20.0),
                 .objectOrigin: z,
-                .sideSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
+                .armSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
                 .sitOn: (width: 400.0, length: 400.0, height: 10.0),
                 .sitOnTiltJoint: j,
                 .stabilizerAtFront: z,
@@ -378,69 +379,57 @@ struct PartDefaultDimension {
 
 
 
-struct PartDefaultOrigin {
+struct PartEditedElseDefaultOrigin {
     var linkedOrParentDimension: Dimension3d
     let part: Part
     let objectType: ObjectTypes
   
     let parentData: PartData
-    var userEditedPartDimensionOneOrTwo: OneOrTwo<Dimension3d> //= .one(one: ZeroValue.dimension3d)
-    var         editedElseDefaultOriginOneOrTwo: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
-    var userEditedOriginOneOrTwoOptional: OneOrTwoOptional<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
-//    var xOffset: Double = 0.0
+    var userEditedPartDimensionOneOrTwo: OneOrTwo<Dimension3d>
+    var editedElseDefaultOriginOneOrTwo: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
+    var userEditedOptionalOriginOffset: OneOrTwoOptional<PositionAsIosAxes>
+
     
     init (_ part: Part,
           _ object: ObjectTypes,
           _ linkedOrParentData: PartData,
           _ userEditedDimensionOneOrTwo: OneOrTwo<Dimension3d>,
           _ partIdAllowingForUserEdit: OneOrTwo<PartTag>,
-          _ userEditedOriginOneOrTwoOptional: OneOrTwoOptional<PositionAsIosAxes>
+          _ userEditedOriginOffsetOneOrTwoOptional: OneOrTwoOptional<PositionAsIosAxes>
           ) {
         self.part = part
         self.objectType = object
         self.parentData = linkedOrParentData
         self.userEditedPartDimensionOneOrTwo = userEditedDimensionOneOrTwo
-        self.userEditedOriginOneOrTwoOptional =
-            userEditedOriginOneOrTwoOptional//provide edited origin
+        self.userEditedOptionalOriginOffset =
+            userEditedOriginOffsetOneOrTwoOptional//provide edited origin
         
        
         
         linkedOrParentDimension = linkedOrParentData.dimension.mapOneOrTwoToOneOrLeftValue()
-
-        //xOffset = xOffsetProvider()
         
-        editedElseDefaultOriginOneOrTwo = getOneOrTwoOriginFromOptional()
-        
-      
-
+        editedElseDefaultOriginOneOrTwo = getOneOrTwoOriginWithOptionalOffset()
         
         //child origin is with respect to parent dimension
-        func getOneOrTwoOriginFromOptional() -> OneOrTwo<PositionAsIosAxes>{
+        func getOneOrTwoOriginWithOptionalOffset() -> OneOrTwo<PositionAsIosAxes>{
 
             let parentDimensionAsTouple = linkedOrParentData.dimension.mapToTouple()
-            if part == .footSupportHangerLink{
-                print (parentDimensionAsTouple)
-            }
             
             switch userEditedPartDimensionOneOrTwo {
             case .one (let onePart):
                 guard let oneParent = parentDimensionAsTouple.one else {
                     fatalError("one accessed but no one")
                 }
-                
                 guard var returnOneOrigin = getDefaultFromDimensions(onePart, oneParent) else {
                     fatalError("no default dimension for this part \(part)")
                 }
-                
                 if doesOneHaveId0RequiringRightToLeftTransform() != nil {
                     returnOneOrigin = CreateIosPosition.getLeftFromRight(returnOneOrigin)
                 }
-                
                 let editedElseDefaultOrigin: OneOrTwo<PositionAsIosAxes> =
-                    getUserEditedPartOrigin(returnOneOrigin)
+                    getUserEditedElseDefaultPartOrigin(returnOneOrigin)
                 
-                return
-                    editedElseDefaultOrigin
+                return editedElseDefaultOrigin
 
             case .two(let leftPart, let rightPart):
 
@@ -451,30 +440,17 @@ struct PartDefaultOrigin {
                 let returnRightOrigin = getDefaultFromDimensions(rightPart, parentDimensionAsTouple.right) ?? ZeroValue.iosLocation
                 
                 let editedElseDefaultOrigin: OneOrTwo<PositionAsIosAxes> =
-                    getUserEditedPartOrigin(returnLeftOrigin, returnRightOrigin)
+                    getUserEditedElseDefaultPartOrigin(returnLeftOrigin, returnRightOrigin)
                 
-                return
-                    editedElseDefaultOrigin
+                return editedElseDefaultOrigin
             }
-            
         }
         
-        
-        func restoreOriginUneditedComponent(){
-            
-        }
-        
-        
-        ///even if the default origin depends on the parent dimension
-        ///this process means that changes in the parent dimension
-        ///leave the origin unchanged
-        ///only user edited changes to the origin are applied
-        func getUserEditedPartOrigin(
+        func getUserEditedElseDefaultPartOrigin(
             _ value1: PositionAsIosAxes,
             _ value2: PositionAsIosAxes? = nil ) -> OneOrTwo<PositionAsIosAxes>{
-                
             //edited values else default values
-            userEditedOriginOneOrTwoOptional.mapOptionalToNonOptionalOneOrTwo(value1, value2)
+            userEditedOriginOffsetOneOrTwoOptional.mapValuesToOptionalOneOrTwoAddition(value1, value2)
         }
         
         
@@ -552,7 +528,7 @@ struct PartDefaultOrigin {
             
                 .footSupportInOnePiece: ZeroValue.iosLocation,
              
-                .sideSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
+                .armSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
                 .sideSupportRotationJoint: (x: linkedOrParentDimension.width/2, y: -linkedOrParentDimension.length/2, z: selfDimension.height),
                 .sitOn:  (x: 0.0, y: selfDimension.length/2, z: 500.0 ),
                 .sitOnTiltJoint: (x: 0.0, y: -linkedOrParentDimension.length/4, z: -100.0),

@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>219</string>
+					<string>232</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>218</string>
+					<string>231</string>
 					<key>Timestamp</key>
-					<string>730395502.981046</string>
+					<string>730462220.813557</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -37,7 +37,7 @@
 				<string>    
 </string>
 				<key>leading</key>
-				<string>    }
+				<string>    
     
 </string>
 				<key>trailing</key>
@@ -133,15 +133,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>36</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>276</string>
+					<string>302</string>
 					<key>StartingColumnNumber</key>
-					<string>7</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>276</string>
+					<string>301</string>
 					<key>Timestamp</key>
-					<string>730213937.381873</string>
+					<string>730648115.063176</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -157,66 +157,20 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>DefaultMinMaxOriginDictionary</string>
+				<string>struct DefaultMinMaxOriginDictionary {
+</string>
 				<key>leading</key>
 				<string>
 
-struct </string>
+</string>
 				<key>trailing</key>
-				<string> {
-    let originDic: PositionDictionary = [:]
+				<string>    let originDic: PositionDictionary = [:]
     
+    let fineOriginMinMaxDic: [PartObject: (min: PositionAsIosAxes, max: PositionAsIosAxes)] = [
 </string>
 			</dict>
 			<key>title</key>
 			<string>Development determine values from default dimensions</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>453</string>
-					<key>StartingColumnNumber</key>
-					<string>60</string>
-					<key>StartingLineNumber</key>
-					<string>452</string>
-					<key>Timestamp</key>
-					<string>730401494.085346</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/PartDefaults.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>
-</string>
-				<key>leading</key>
-				<string>                let returnRightOrigin = getDefaultFromDimensions(rightPart, parentDimensionAsTouple.right) ?? ZeroValue.iosLocation
-                
-                let editedElseDefaultOrigin: OneOrTwo&lt;PositionAsIosAxes&gt; =</string>
-				<key>trailing</key>
-				<string>                    getUserEditedPartOrigin(returnLeftOrigin, returnRightOrigin)
-                
-                return
-</string>
-			</dict>
-			<key>title</key>
-			<string>both x and y become current values even if the default should be in force for one</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -247,13 +201,13 @@ struct </string>
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>553</string>
+					<string>608</string>
 					<key>StartingColumnNumber</key>
-					<string>52</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>552</string>
+					<string>607</string>
 					<key>Timestamp</key>
-					<string>730407194.021095</string>
+					<string>730633602.052272</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -269,12 +223,12 @@ struct </string>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>    func mapOriginalValueToSomePropertyComponent&lt;U&gt;(
 </string>
 				<key>leading</key>
 				<string>    
     
-    func mapOriginalValueToSomePropertyComponent&lt;U&gt;(</string>
+</string>
 				<key>trailing</key>
 				<string>        _ oneOrTwoOriginal: OneOrTwo&lt;U&gt;,
         _ propertyToBeEdited: PartTag) -&gt; OneOrTwo&lt;PositionAsIosAxes&gt;{
@@ -283,6 +237,53 @@ struct </string>
 			</dict>
 			<key>title</key>
 			<string>not complete on friday</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>407</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>406</string>
+					<key>Timestamp</key>
+					<string>730481704.048751</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectEditVM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -&gt; PositionAsIosAxes {
+</string>
+				<key>leading</key>
+				<string>        
+        
+</string>
+				<key>trailing</key>
+				<string>            let mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
+           let newOrigin =
+                (x: origin.x + value * mod,
+</string>
+			</dict>
+			<key>title</key>
+			<string>requires min max</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

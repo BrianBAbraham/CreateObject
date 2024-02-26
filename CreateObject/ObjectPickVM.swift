@@ -191,12 +191,14 @@ extension ObjectPickViewModel {
                 (dimension.length): (dimension.width)
                 
             case .xOrigin, .yOrigin:
-                let origin = partData.childOrigin.returnValue(id)
-                print("get \(origin)")
-                print(idForLeftOrRight)
-                print("")
+                let name = CreateNameFromIdAndPart(id, part).name
+                let offsetToOrigin = userEditedSharedDics.originOffsetUserEditedDic[name] ?? ZeroValue.iosLocation
+                //let origin = partData.childOrigin.returnValue(id)
+//                print("get \(origin)")
+//                print(idForLeftOrRight)
+//                print("")
                 value = editableProperty == .xOrigin ?
-                    origin.x: origin.y
+                offsetToOrigin.x: offsetToOrigin.y
                 
                 //value = idForLeftOrRight == .id0 ? value: value.map{-$0}
                 
@@ -215,6 +217,17 @@ extension ObjectPickViewModel {
           //print (value)
             return value ?? whenPartHasBeenRemovedAndValueNotUsed
     }
+    
+    
+//    func getName (_ id: PartTag, _ part: Part =  Part.footSupportHangerLink) -> String {
+//        var name: String {
+//            let parts: [Parts] =
+//            [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
+//           return
+//            CreateNameFromParts(parts ).name    }
+//        return name
+//    }
+    
     
     
     func getSidesPresentGivenUserEdit(_ associatedPart: Part) -> [SidesAffected] {

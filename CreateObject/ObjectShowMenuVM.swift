@@ -10,96 +10,103 @@ import SwiftUI
 import Combine
 
 struct EditObjectMenuShowModel {
-        static let supportDimension: [UserModifiers] = [.supportLength, .supportWidth]
-        static let footControl: [UserModifiers] = [.footSupport, .footSeparation]
-        static let standardWheeledChair = footControl + supportDimension + [.tiltInSpace] + [.headRest] + [.legLength]
-        static var dictionary: [ObjectTypes: [UserModifiers]] = {
-            [
-                .allCasterBed: supportDimension,
-                .allCasterChair: supportDimension + standardWheeledChair,
-                .allCasterStretcher: supportDimension,
-                .allCasterTiltInSpaceShowerChair: standardWheeledChair,
-                .allCasterTiltInSpaceArmChair: supportDimension + [.tiltInSpace] + [.headRest],
-                .fixedWheelRearDriveAssisted: standardWheeledChair,
-                .fixedWheelFrontDrive: standardWheeledChair,
-                .fixedWheelMidDrive: standardWheeledChair,
-                .fixedWheelRearDrive: standardWheeledChair ,
-                .fixedWheelManualRearDrive: standardWheeledChair ,
-                .fixedWheelSolo: standardWheeledChair,
-                .scooterRearDrive4Wheeler: supportDimension + [.tiltInSpace] ,
-                .showerTray: supportDimension,
-               
-            ]
-        }()
-  
-    struct UserModifiersPartDependency {
-        static var dictionary: [UserModifiers: [Part]] = {
-            [.footSupport: [.footSupport],
-             .footSeparation: [.footSupport]
-            ]
-        }()
+//        static let supportDimension: [UserModifiers] = [.supportLength, .supportWidth]
+//        static let footControl: [UserModifiers] = [.footSupport, .footSeparation]
+//        static let standardWheeledChair = footControl + supportDimension + [.tiltInSpace] + [.headRest] + [.legLength]
+//        static var dictionary: [ObjectTypes: [UserModifiers]] = {
+//            [
+//                .allCasterBed: supportDimension,
+//                .allCasterChair: supportDimension + standardWheeledChair,
+//                .allCasterStretcher: supportDimension,
+//                .allCasterTiltInSpaceShowerChair: standardWheeledChair,
+//                .allCasterTiltInSpaceArmChair: supportDimension + [.tiltInSpace] + [.headRest],
+//                .fixedWheelRearDriveAssisted: standardWheeledChair,
+//                .fixedWheelFrontDrive: standardWheeledChair,
+//                .fixedWheelMidDrive: standardWheeledChair,
+//                .fixedWheelRearDrive: standardWheeledChair ,
+//                .fixedWheelManualRearDrive: standardWheeledChair ,
+//                .fixedWheelSolo: standardWheeledChair,
+//                .scooterRearDrive4Wheeler: supportDimension + [.tiltInSpace] ,
+//                .showerTray: supportDimension,
+//               
+//            ]
+//        }()
+//  
+//    struct UserModifiersPartDependency {
+//        static var dictionary: [UserModifiers: [Part]] = {
+//            [.footSupport: [.footSupport],
+//             .footSeparation: [.footSupport]
+//            ]
+//        }()
     }
-
-    
-}
-
-
-enum UserModifiers: String, Parts, Hashable {
-    var stringValue: String {
-        return self.rawValue
-    }
-    
-    case casterBaseSeparator = "open"
-    case casterSepartionAtFront = "front caster"
-    case casterSeparationAtRear = "rear caster"
-    case backRecline = "back recline"
-    case footSupport = "foot support"
-    case footSeparation = "foot separtion"
-    case headRest = "head rest"
-    case independantJoyStick = "joy stick"
-    case legLength = "leg length"
-    case legSeparatation = "leg separation"
-    case propelleers = "propellers"
-    case rearJoyStick = "rear joy stick"
-    case supportLength = "support length"
-    case supportWidth = "support width"
-    case tiltInSpace = "tilt-in-space"
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(rawValue)
-    }
-}
+//
+//    
+//}
+//
+//
+//enum UserModifiers: String, Parts, Hashable {
+//    var stringValue: String {
+//        return self.rawValue
+//    }
+//    
+//    case casterBaseSeparator = "open"
+//    case casterSepartionAtFront = "front caster"
+//    case casterSeparationAtRear = "rear caster"
+//    case backRecline = "back recline"
+//    case footSupport = "foot support"
+//    case footSeparation = "foot separtion"
+//    case headRest = "head rest"
+//    case independantJoyStick = "joy stick"
+//    case legLength = "leg length"
+//    case legSeparatation = "leg separation"
+//    case propelleers = "propellers"
+//    case rearJoyStick = "rear joy stick"
+//    case supportLength = "support length"
+//    case supportWidth = "support width"
+//    case tiltInSpace = "tilt-in-space"
+//    
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(rawValue)
+//    }
+//}
 
 //MARK: DEVELOPMENT change to struct nothing changes
 ///Every object has associated menus providing user edit
 ///The View determines if it should display from this code
 class ObjectShowMenuViewModel: ObservableObject {
-    @Published private var editObjectMenuShowModel: EditObjectMenuShowModel =
-        EditObjectMenuShowModel()
-    var currentObjectType: ObjectTypes = .fixedWheelRearDrive
-    var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
-    var userEditedSharedDics: UserEditedDictionaries = DictionaryService.shared.userEditedSharedDics
-    var partDataSharedDic = DictionaryService.shared.partDataSharedDic
+
+    static let noneditablePart: [Part] = [
+        .backSupportHeadSupportLink,
+        .backSupportHeadSupportJoint,
+        .casterVerticalJointAtFront,
+        .fixedWheelHorizontalJointAtRear,
+        .footSupportHangerLink,
+    ]
+    var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
     private var cancellables: Set<AnyCancellable> = []
-    
+  //  var oneOfAllPartForObjectBeforeEdit: [Part] = []
     init () {
-        DictionaryService.shared.$userEditedSharedDics
-            .sink { [weak self] newData in
-                self?.userEditedSharedDics = newData
-            }
-            .store(in: &cancellables)
+//        DictionaryService.shared.$userEditedSharedDics
+//            .sink { [weak self] newData in
+//                self?.userEditedSharedDics = newData
+//            }
+//            .store(in: &cancellables)
         
         DictionaryService.shared.$currentObjectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
+//        
+//        DictionaryService.shared.$partDataSharedDic
+//            .sink { [weak self] newData in
+//                self?.partDataSharedDic = newData
+//            }
+//            .store(in: &self.cancellables)
         
-        DictionaryService.shared.$partDataSharedDic
-            .sink { [weak self] newData in
-                self?.partDataSharedDic = newData
-            }
-            .store(in: &self.cancellables)
+
+   
+   
     }
     
 }
@@ -107,32 +114,32 @@ class ObjectShowMenuViewModel: ObservableObject {
 
 extension ObjectShowMenuViewModel {
     
-    func getShowMenuStatus(
-        _ menu: Parts) -> Bool {
-            var state: Bool = false
-            if let userModifierMenu = menu as? UserModifiers {
-                let dictionary = EditObjectMenuShowModel.dictionary
-                if let show = dictionary[currentObjectType] {
-                    state = show.contains(userModifierMenu)
-                }
-            }
-            
-            if let partMenu = menu as? Part {
-                //does the unedited object have this part?
-                if let chainLabel =  ObjectChainLabel.dictionary[currentObjectType]{
-                    state = chainLabel.contains(partMenu)
-                }
-                //has object partChain been edited?
-                if let editedPartChain = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] {
-                    //if edited out reset to false
-                    if !editedPartChain.contains(partMenu) {
-                        state = false
-                    }
-                }
-                
-            }
-            return state
-        }
+//    func getShowMenuStatus2(
+//        _ menu: Parts) -> Bool {
+//            var state: Bool = false
+//            if let userModifierMenu = menu as? UserModifiers {
+//                let dictionary = EditObjectMenuShowModel.dictionary
+//                if let show = dictionary[currentObjectType] {
+//                    state = show.contains(userModifierMenu)
+//                }
+//            }
+//            
+//            if let partMenu = menu as? Part {
+//                //does the unedited object have this part?
+//                if let chainLabel =  ObjectChainLabel.dictionary[currentObjectType]{
+//                    state = chainLabel.contains(partMenu)
+//                }
+//                //has object partChain been edited?
+//                if let editedPartChain = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] {
+//                    //if edited out reset to false
+//                    if !editedPartChain.contains(partMenu) {
+//                        state = false
+//                    }
+//                }
+//                
+//            }
+//            return state
+//        }
     
     
     ///rotator part presence is non-editable
@@ -143,31 +150,68 @@ extension ObjectShowMenuViewModel {
     
     
     
-    func defaultObjectHasOneOfTheseChainLabels(_ chainLabel: Part) -> Bool//(show: Bool, part: Part)
-    {
-        var show = false
+//    func defaultObjectHasOneOfTheseChainLabels(_ chainLabel: Part) -> Bool
+//    {
+//        var show = false
+//        
+//        let defaultChainLabels =
+//        ObjectChainLabel.dictionary[currentObjectType] ?? []
+//    
+//        show = defaultChainLabels.contains(chainLabel) //{
+//
+//        return show
+//    }
+}
+
+
+extension ObjectShowMenuViewModel {
+    func getShowMenuStatus(_ part: Part) -> Bool{
+        let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
+        let allParts = oneOfAllPartForObjectBeforeEdit
         
-        let defaultChainLabels =
-        ObjectChainLabel.dictionary[currentObjectType] ?? []
-        
-       // var idenftifiedChainLabel: Part = .notFound
-        // for chainLabel in chainLabels {
-        show = defaultChainLabels.contains(chainLabel) //{
-        //    idenftifiedChainLabel = chainLabel
-        //               break
-        //            }
-        return show
+        let menuRequired = allParts.contains(part)
+        //print("\(currentObjectType) \(part)  \(menuRequired) ")
+        return menuRequired
     }
     
-    //        var show: Bool {
-    //            idenftifiedChainLabel == Part.notFound ? false: true
-    //        }
-    //(show: show, part: idenftifiedChainLabel)     }
+    func getShowMenuStatus(_ parts: [Part]) -> [Part: Bool]{
+        let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
+        var menuDic: [Part: Bool] = [:]
+        
+        for part in oneOfAllPartForObjectBeforeEdit {
+            menuDic[part] = oneOfAllPartForObjectBeforeEdit.contains(part)
+        }
+        
+        print("\(currentObjectType) \(menuDic) ")
+        return menuDic
+    }
     
     
-    //}
+    func getShowAnyMenuStatus(_ parts: [Part]) -> Bool {
+   
+     let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
+        var showAnyMenu = false
+        for part in parts {
+            showAnyMenu = oneOfAllPartForObjectBeforeEdit.contains(part)
+        }
+        return showAnyMenu
+    }
     
+    func getOneOfAllPartForObjectBeforeEdit() -> [Part] {
+      return
+            AllPartInObject.getOneOfAllPartInObjectBeforeEdit(currentObjectType)
+      }
+    
+    func getOneOfAllEditablePartForObjectBeforeEdit() -> [String] {
+        let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
+       // print(oneOfAllPartForObjectBeforeEdit)
+        let parts =
+            oneOfAllPartForObjectBeforeEdit.filter {!Self.noneditablePart.contains($0)}
+       // print(parts)
+        return parts.map{$0.rawValue}
+    }
 }
+
 
 //    func getColorForPart(_ uniquePartName: String)-> Color {
 //

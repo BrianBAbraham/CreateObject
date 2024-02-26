@@ -64,12 +64,12 @@ struct ObjectChainLabel {
         [.sitOn,
         .backSupportHeadSupport,
         .footSupport,
-        .sideSupport,
+        .armSupport,
         .sitOnTiltJoint]
     static let chairSupportWithOutFoot: [Part] =
         [.sitOn,
         .backSupportHeadSupport,
-        .sideSupport,
+        .armSupport,
         .sitOnTiltJoint]
     static let rearAndFrontCasterWheels: [Part] =
         [.casterWheelAtRear, .casterWheelAtFront]
@@ -79,7 +79,7 @@ struct ObjectChainLabel {
    static let dictionary: ObjectChainLabelDictionary =
         [
         .allCasterBed:
-            [.sitOn, .sideSupport ],
+            [.sitOn, .armSupport ],
           
         .allCasterChair:
             chairSupport + rearAndFrontCasterWheels,
@@ -91,7 +91,7 @@ struct ObjectChainLabel {
             chairSupport + rearAndFrontCasterWheels + [.sitOnTiltJoint],
         
         .allCasterStretcher:
-            [ .sitOn, .sideSupport] + rearAndFrontCasterWheels,
+            [ .sitOn, .armSupport] + rearAndFrontCasterWheels,
         
         .fixedWheelRearDriveAssisted:
             chairSupport + [.fixedWheelAtRear] + [.casterWheelAtFront] + [.assistantFootLever],
@@ -110,7 +110,7 @@ struct ObjectChainLabel {
         
    
 
-        .fixedWheelSolo: [.sitOn] + [.fixedWheelAtMid]  + [.sideSupport] ,
+        .fixedWheelSolo: [.sitOn] + [.fixedWheelAtMid]  + [.armSupport] ,
     
             .scooterRearDrive4Wheeler: chairSupportWithOutFoot + [.fixedWheelAtRear, .steeredWheelAtFront],
     
@@ -119,6 +119,25 @@ struct ObjectChainLabel {
     ]
 }
 
+
+struct AllPartInObject {
+    
+    static func getOneOfAllPartInObjectBeforeEdit(_ objectType: ObjectTypes) -> [Part] {
+        guard let allPartChainLabels = ObjectChainLabel.dictionary[objectType] else {
+            fatalError("chain labels not defined for object")
+        }
+        var oneOfEachPartInAllChainLabel: [Part] = []
+            for label in allPartChainLabels {
+               let partChain = LabelInPartChainOut(label).partChain
+                for part in partChain {
+                    if !oneOfEachPartInAllChainLabel.contains(part) {
+                        oneOfEachPartInAllChainLabel.append(part)
+                    }
+                }
+            }
+        return oneOfEachPartInAllChainLabel
+    }
+}
 
 
 //Source of truth for partChain
@@ -131,7 +150,7 @@ struct LabelInPartChainOut {
             [.sitOn, .footSupportHangerLink,  .footSupport],
             [.footOnly],
             [.sitOn, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
-            [.sitOn, .sideSupport],
+            [.sitOn, .armSupport],
             [.sitOn],
             [.sitOn, .sitOnTiltJoint],
             [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear],
@@ -238,12 +257,18 @@ struct DefaultMinMaxDimensionDictionary {
              max: (width: 2000.0, length: 3000.0, height: 10.0))
         ]
     let generalDimensionMinMaxDic: [Part: (min: Dimension3d, max: Dimension3d)] = [
+        .assistantFootLever:
+          (min: (width: 10.0, length: 10.0, height: 10.0),
+           max: (width: 100.0, length: 500.0, height: 40.0)),
+        .armSupport:
+          (min: (width: 10.0, length: 10.0, height: 10.0),
+           max: (width: 200.0, length: 1000.0, height: 40.0)),
         .sitOn:
           (min: (width: 200.0, length: 200.0, height: 10.0),
            max: (width: 1000.0, length: 2000.0, height: 40.0)),
-          .footSupportHangerLink:
-            (min: (width: 10.0, length: 50.0, height: 10.0),
-             max: (width: 50.0, length: 1000.0, height: 40.0))
+        .footSupportHangerLink:
+        (min: (width: 10.0, length: 50.0, height: 10.0),
+         max: (width: 50.0, length: 1000.0, height: 40.0))
         ]
     
     static var shared = DefaultMinMaxDimensionDictionary()

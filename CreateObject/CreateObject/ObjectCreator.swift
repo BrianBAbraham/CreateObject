@@ -21,6 +21,8 @@ struct ObjectData {
 
     var allPartChainLabels: [Part] = []
     
+    var oneOfEachPartInAllPartChain: [Part] = []
+    
     let linkedPartsDictionary = LinkedParts().dictionary
     
     init(
@@ -33,6 +35,8 @@ struct ObjectData {
             self.objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
         
         allPartChainLabels = getAllPartChainLabels()
+            
+        oneOfEachPartInAllPartChain = getOneOfEachPartInAllPartChain()
             
         checkObjectHasAtLeastOnePartChain()
         
@@ -54,7 +58,9 @@ struct ObjectData {
     
    mutating func postProcessGlobalOrigin(){
         let allPartChain = getAllPartChain()
-        var partsToHaveGlobalOriginSet = getOneOfEachPartInAllPartChain()
+        var partsToHaveGlobalOriginSet =
+       oneOfEachPartInAllPartChain
+       //getOneOfEachPartInAllPartChain()
         for chain in allPartChain {
             processPart( chain)
         }
@@ -136,8 +142,8 @@ extension ObjectData {
         
         //e,g. .sitOn is foundational to .fixedWheelHorizontalJoint...
         // object width is depenent on .sitOn
-        let orderedSoLinkedOrParentPartInitialisedFirst = getOneOfEachPartInAllPartChain()
-      
+        let orderedSoLinkedOrParentPartInitialisedFirst = //getOneOfEachPartInAllPartChain()
+          oneOfEachPartInAllPartChain
         if orderedSoLinkedOrParentPartInitialisedFirst.contains(.sitOn) {
             initialiseLinkedOrParentPart(.sitOn)
         }
@@ -408,55 +414,104 @@ enum OneOrTwoOptional <V> {
     case one(one: V?)
     
 
-        func mapOptionalToNonOptionalOneOrTwo<T>(
-            _ defaultValueL: T, _ defaultValueR: T? = nil) -> OneOrTwo<T> {
+    func mapOptionalToNonOptionalOneOrTwo<T>(
+        _ defaultValueL: T, _ defaultValueR: T? = nil) -> OneOrTwo<T> {
 
-            var optionalToNonOptional: OneOrTwo<T> = setToParameterType(defaultValueL)
-            switch self { //assign default to one or left and right if nil
-            case .one(let one):
-                if let one = one {
-                    optionalToNonOptional = .one(one: one as! T)
-                } else {
-                    optionalToNonOptional = .one(one: defaultValueL)
-                }
-
-            case .two(let left, let right):
-                var returnForLeft: T
-                var returnForRight: T
-                if let left = left {
-                    returnForLeft = left as! T
-                } else {
-                    returnForLeft = defaultValueL
-                }
-                if let right = right {
-                    returnForRight = right as! T
-                } else {
-                    returnForRight = defaultValueR ?? defaultValueL
-                }
-                optionalToNonOptional =
-                    .two(left: returnForLeft, right: returnForRight)
+        var optionalToNonOptional: OneOrTwo<T> = setToParameterType(defaultValueL)
+        switch self { //assign default to one or left and right if nil
+        case .one(let one):
+            if let one = one {
+                optionalToNonOptional = .one(one: one as! T)
+            } else {
+                optionalToNonOptional = .one(one: defaultValueL)
             }
-            
-            return optionalToNonOptional
+
+        case .two(let left, let right):
+            var returnForLeft: T
+            var returnForRight: T
+            if let left = left {
+                returnForLeft = left as! T
+            } else {
+                returnForLeft = defaultValueL
+            }
+            if let right = right {
+                returnForRight = right as! T
+            } else {
+                returnForRight = defaultValueR ?? defaultValueL
+            }
+            optionalToNonOptional =
+                .two(left: returnForLeft, right: returnForRight)
         }
         
-        private func setToParameterType<T>(_ defaultValue: T) -> OneOrTwo<T> {
-            switch defaultValue {
-            case is Dimension3d:
-                return OneOrTwo.one(one: ZeroValue.dimension3d) as! OneOrTwo<T>
-            case is PositionAsIosAxes:
-                return OneOrTwo.one(one: ZeroValue.iosLocation) as! OneOrTwo<T>
-            case is RotationAngles:
-                return OneOrTwo.one(one: ZeroValue.rotationAngles) as! OneOrTwo<T>
-            case is String:
-                return OneOrTwo.one(one: "") as! OneOrTwo<T>
-            case is AngleMinMax:
-                return OneOrTwo.one(one: ZeroValue.angleMinMax) as! OneOrTwo<T>
-            default:
-                fatalError()
-            }
-        }
+        return optionalToNonOptional
+    }
 
+    private func setToParameterType<T>(_ defaultValue: T) -> OneOrTwo<T> {
+        switch defaultValue {
+        case is Dimension3d:
+            return OneOrTwo.one(one: ZeroValue.dimension3d) as! OneOrTwo<T>
+        case is PositionAsIosAxes:
+            return OneOrTwo.one(one: ZeroValue.iosLocation) as! OneOrTwo<T>
+        case is RotationAngles:
+            return OneOrTwo.one(one: ZeroValue.rotationAngles) as! OneOrTwo<T>
+        case is String:
+            return OneOrTwo.one(one: "") as! OneOrTwo<T>
+        case is AngleMinMax:
+            return OneOrTwo.one(one: ZeroValue.angleMinMax) as! OneOrTwo<T>
+        default:
+            fatalError()
+        }
+    }
+
+    
+    func mapValuesToOptionalOneOrTwoAddition(
+        _ defaultValue: PositionAsIosAxes,
+        _ defaultValueR: PositionAsIosAxes? = nil) -> OneOrTwo <PositionAsIosAxes> {
+            let z = ZeroValue.iosLocation
+            var modifiedOnOrTwo: OneOrTwo<PositionAsIosAxes> = .one(one: defaultValue)
+            switch self {
+            case .one (let one ):
+                if one == nil {
+                    return .one(one: defaultValue)
+                } else {
+                    let addedOne =
+                    CreateIosPosition.addTwoTouples(one as! PositionAsIosAxes, defaultValue)
+                    return .one(one: addedOne)
+                }
+            case .two(let left, let right):
+            
+                var returnLeft = z
+                var returnRight = z
+                guard let unwrappedDefault = defaultValueR else {
+                    fatalError("no value for right")
+                }
+                modifiedOnOrTwo =
+                    .two(left: defaultValue, right: unwrappedDefault)
+                
+                if let unwrapped = left {
+                    returnLeft = unwrapped as! PositionAsIosAxes
+                    returnLeft =  CreateIosPosition.addTwoTouples(returnLeft, defaultValue)
+                }
+                
+                if let unwrapped = right {
+                    returnRight = unwrapped as! PositionAsIosAxes
+                    returnRight =  CreateIosPosition.addTwoTouples(returnRight, unwrappedDefault)
+                }
+                
+                if left == nil && right != nil {
+                    modifiedOnOrTwo = .two(left: defaultValue, right: returnRight)
+                }
+                
+                if left != nil && right == nil {
+                    modifiedOnOrTwo = .two(left: returnLeft, right: unwrappedDefault)
+                }
+                
+                if left != nil && right != nil {
+                    modifiedOnOrTwo = .two(left: returnLeft, right: returnRight)
+                }
+            }
+            return  modifiedOnOrTwo
+        }
 
     
     func isNotNil() -> V? {
@@ -849,7 +904,7 @@ struct StructFactory {
     let part: Part
     let parentPart: Part
     let chainLabel: [Part]
-    let defaultOrigin: PartDefaultOrigin
+    let defaultOrigin: PartEditedElseDefaultOrigin
     let userEditedData: UserEditedData
     var partOrigin: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
     var partDimension: OneOrTwo<Dimension3d> = .one(one: ZeroValue.dimension3d)
@@ -887,7 +942,7 @@ struct StructFactory {
                 defaultDimensionData.userEditedDimensionOneOrTwo
     
         defaultOrigin =
-            PartDefaultOrigin(
+            PartEditedElseDefaultOrigin(
                 part,
                 objectType,
                 linkedOrParentData,
@@ -1092,6 +1147,7 @@ struct UserEditedDictionaries {
 //    var parentToPartOriginUserEditedDicNew: [PartId: PositionAsIosAxes]
     var originOffsetUserEditedDic: PositionDictionary
     var parentToPartOriginUserEditedDic: PositionDictionary
+    var parentToPartOriginOffsetUserEditedDic: PositionDictionary
     var objectToPartOrigintUserEditedDic: PositionDictionary
 
     
@@ -1107,6 +1163,7 @@ struct UserEditedDictionaries {
         origin: PositionDictionary =
             [:] ,
         parentToPartOriginUserEditedDic: PositionDictionary = [:],
+        parentToPartOriginOffsetUserEditedDic: PositionDictionary = [:],
 //        parentToPartOriginUserEditedDicNew: [PartId: PositionAsIosAxes] = [:],
         objectToParOrigintUserEditedDic: PositionDictionary = [:],
         originOffsetUserEditedDic: PositionDictionary = [:],
@@ -1122,6 +1179,7 @@ struct UserEditedDictionaries {
         self.dimensionUserEditedDic = dimension
    
         self.parentToPartOriginUserEditedDic = parentToPartOriginUserEditedDic
+        self.parentToPartOriginOffsetUserEditedDic = parentToPartOriginUserEditedDic
 //        self.parentToPartOriginUserEditedDicNew = parentToPartOriginUserEditedDicNew
         self.objectToPartOrigintUserEditedDic = objectToParOrigintUserEditedDic
         self.originOffsetUserEditedDic = originOffsetUserEditedDic
@@ -1147,6 +1205,7 @@ struct UserEditedDictionaries {
 struct UserEditedData {
     let dimensionUserEditedDic: Part3DimensionDictionary
     let parentToPartOriginUserEditedDic: PositionDictionary
+    let parentToPartOriginOffsetUserEditedDic: PositionDictionary
     let objectToPartOrigintUserEditedDic: PositionDictionary
     let angleUserEditedDic: AnglesDictionary
     let angleMinMaxDic: AngleMinMaxDictionary
@@ -1172,6 +1231,8 @@ struct UserEditedData {
             userEditedDic?.dimensionUserEditedDic ?? [:]
             parentToPartOriginUserEditedDic =
             userEditedDic?.parentToPartOriginUserEditedDic ?? [:]
+            parentToPartOriginOffsetUserEditedDic =
+            userEditedDic?.parentToPartOriginOffsetUserEditedDic ?? [:]
 
             objectToPartOrigintUserEditedDic =
             userEditedDic?.objectToPartOrigintUserEditedDic ?? [:]
@@ -1253,11 +1314,11 @@ struct UserEditedData {
         switch originName.mapOptionalToNonOptionalOneOrTwo("") {
         case .one(let one):
             origin =
-                .one(one: parentToPartOriginUserEditedDic[one ] )
+                .one(one: parentToPartOriginOffsetUserEditedDic[one ] )
         case .two(let left, let right):
             origin =
-                .two(left: parentToPartOriginUserEditedDic[ left ], 
-                     right: parentToPartOriginUserEditedDic[right ] )
+                .two(left: parentToPartOriginOffsetUserEditedDic[ left ],
+                     right: parentToPartOriginOffsetUserEditedDic[right ] )
         }
         if part == Part.footSupportHangerLink {
         }
