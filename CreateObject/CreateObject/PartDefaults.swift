@@ -90,7 +90,7 @@ enum Part: String, Parts, Hashable {
     case notFound = "notAnyPart"
     
     
-    case sitOn = "sitOn"
+    case mainSupport = "sitOn"
     //case sleepOnSupport = "sleepOn"
     case standOnSupport = "standOn"
     
@@ -178,7 +178,7 @@ struct PartInRotationScopeOut {
     let partChainLabel: [Part]
     let dictionary: [Part: [Part]] = [
         .sitOnTiltJoint:
-            [.backSupport, .backSupportHeadSupport, .sitOn, .armSupport, .footSupport],
+            [.backSupport, .backSupportHeadSupport, .mainSupport, .armSupport, .footSupport],
     ]
     
     let part: Part
@@ -320,9 +320,9 @@ struct PartDefaultDimension {
                 PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (width: 20.0, length: 600.0, height: 600.0),
                 PartObject(.footOnly, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
                 PartObject(.armSupport, .allCasterTiltInSpaceArmChair): (width: 100.0, length: linkedOrParentDimension.length, height: 150.0),
-                PartObject(.sitOn, .allCasterBed): (width: 900.0, length: 2000.0, height: 150.0),
-                PartObject(.sitOn, .allCasterStretcher): (width: 600.0, length: 1400.0, height: 10.0),
-                PartObject(.sitOn, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
+                PartObject(.mainSupport, .allCasterBed): (width: 900.0, length: 2000.0, height: 150.0),
+                PartObject(.mainSupport, .allCasterStretcher): (width: 600.0, length: 1400.0, height: 10.0),
+                PartObject(.mainSupport, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
                 PartObject(.stabilizerAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),
                 PartObject(.stabilizerAtFront, .fixedWheelMidDrive): (width: -50.0, length: 20.0, height: 0.0),
                 PartObject(.stabilizerAtFront, .scooterFrontDrive4Wheeler): (width: 0.0, length: Self.steeredWheelDimension.length, height: 0.0),
@@ -365,7 +365,7 @@ struct PartDefaultDimension {
                 .footSupportHangerLink: (width:20.0, length: 300.0, height: 20.0),
                 .objectOrigin: z,
                 .armSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
-                .sitOn: (width: 400.0, length: 400.0, height: 10.0),
+                .mainSupport: (width: 400.0, length: 400.0, height: 10.0),
                 .sitOnTiltJoint: j,
                 .stabilizerAtFront: z,
                 .stabilizerAtMid: z,
@@ -481,11 +481,11 @@ struct PartEditedElseDefaultOrigin {
             return
                 [
                 PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (x: 75.0, y: 0.0, z: 0.0),
-                PartObject(.sitOn, .fixedWheelSolo): (x: 0.0, y: 0.0, z: chairHeight),
-                PartObject(.sitOn, .fixedWheelMidDrive): (x: 0.0, y: 0.0, z: chairHeight ),
-                PartObject(.sitOn, .fixedWheelFrontDrive): (x: 0.0, y: -selfDimension.length/2, z: chairHeight),
-                PartObject(.sitOn, .allCasterBed): (x: 0.0, y: selfDimension.length/2, z: 900.0),
-                PartObject(.sitOn, .allCasterStretcher): (x: 0.0, y: selfDimension.length/2, z: 900.0),
+                PartObject(.mainSupport, .fixedWheelSolo): (x: 0.0, y: 0.0, z: chairHeight),
+                PartObject(.mainSupport, .fixedWheelMidDrive): (x: 0.0, y: 0.0, z: chairHeight ),
+                PartObject(.mainSupport, .fixedWheelFrontDrive): (x: 0.0, y: -selfDimension.length/2, z: chairHeight),
+                PartObject(.mainSupport, .allCasterBed): (x: 0.0, y: selfDimension.length/2, z: 900.0),
+                PartObject(.mainSupport, .allCasterStretcher): (x: 0.0, y: selfDimension.length/2, z: 900.0),
                 
                 ][PartObject(part, object)]
         }
@@ -530,7 +530,7 @@ struct PartEditedElseDefaultOrigin {
              
                 .armSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
                 .sideSupportRotationJoint: (x: linkedOrParentDimension.width/2, y: -linkedOrParentDimension.length/2, z: selfDimension.height),
-                .sitOn:  (x: 0.0, y: selfDimension.length/2, z: 500.0 ),
+                .mainSupport:  (x: 0.0, y: selfDimension.length/2, z: 500.0 ),
                 .sitOnTiltJoint: (x: 0.0, y: -linkedOrParentDimension.length/4, z: -100.0),
                 .steeredVerticalJointAtFront: wheelBaseJointOrigin,
                 .steeredWheelAtFront: ZeroValue.iosLocation

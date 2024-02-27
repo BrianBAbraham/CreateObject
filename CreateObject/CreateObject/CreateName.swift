@@ -48,7 +48,7 @@ struct CreateNameFromIdAndPart {
         func getNameFromParts(_ id: PartTag, _ part: Part)
             -> String {
                 let parts: [Parts] =
-                [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
+                [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.mainSupport, PartTag.id0]
                    return
                     CreateNameFromParts(parts ).name
         }

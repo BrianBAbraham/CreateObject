@@ -436,7 +436,7 @@ struct OnePartTwoDimensionValueMenu: View {
                 }
                 .pickerStyle(.segmented)
                 .fixedSize()
-                .onChange(of: propertyToBeEdited) { newSelection in
+                .onChange(of: propertyToBeEdited) { oldSelection, newSelection in
                     objectEditVM.updateDimensionToBeEdited(newSelection)
                 }
                 
@@ -451,6 +451,7 @@ struct OnePartTwoDimensionValueMenu: View {
                     Measurement(value: boundSliderValue.wrappedValue,
                         unit: .millimeters))
                 }
+           // .padding(.horizontal)
                 .onChange(of: sliderValue) { newValue in
                     objectEditVM
                         .setEitherDimensionForOnePartInUserEditedDic(
@@ -464,11 +465,11 @@ struct OnePartTwoDimensionValueMenu: View {
                     part,
                     propertyToBeEdited)
                     }
-                .padding(.horizontal)
+               
         }
-        .padding()
+        //.padding(.horizontal)
         .backgroundModifier()
-
+       // .padding(.horizontal)
     }
 }
 

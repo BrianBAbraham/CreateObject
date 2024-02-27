@@ -144,12 +144,12 @@ extension ObjectData {
         // object width is depenent on .sitOn
         let orderedSoLinkedOrParentPartInitialisedFirst = //getOneOfEachPartInAllPartChain()
           oneOfEachPartInAllPartChain
-        if orderedSoLinkedOrParentPartInitialisedFirst.contains(.sitOn) {
-            initialiseLinkedOrParentPart(.sitOn)
+        if orderedSoLinkedOrParentPartInitialisedFirst.contains(.mainSupport) {
+            initialiseLinkedOrParentPart(.mainSupport)
         }
         
         for part in orderedSoLinkedOrParentPartInitialisedFirst {
-            if part != .sitOn {
+            if part != .mainSupport {
                 let parentPart = getLinkedOrParentPart(part)
                 initialisePart(parentPart, part )
             }
@@ -1018,7 +1018,7 @@ extension StructFactory {
             //print(defaultOrigin.userEditedOriginOneOrTwo)
         return
             PartData(
-                part: .sitOn,
+                part: .mainSupport,
                 originName:sitOnName,
                 dimensionName: sitOnName,
                 dimension: partDimension,
@@ -1254,7 +1254,7 @@ struct UserEditedData {
 
             optionalAngleMinMax =
             getOptionalValue(partIdAllowingForUserEdit, from: angleMinMaxDic) { part in
-                return CreateNameFromParts([Part.sitOn, sitOnId, part]).name }
+                return CreateNameFromParts([Part.mainSupport, sitOnId, part]).name }
             
             optionalAngles = getOptionalAngles()
             optionalDimension = getOptionalDimension()
@@ -1265,7 +1265,7 @@ struct UserEditedData {
     func getOriginName(_ partId: OneOrTwo<PartTag>)
     -> OneOrTwoOptional<String>{
         let start: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part]
-        let end: [Parts] = [PartTag.stringLink, Part.sitOn,  sitOnId]
+        let end: [Parts] = [PartTag.stringLink, Part.mainSupport,  sitOnId]
         
         switch partId {
         case .one(let one):
@@ -1346,7 +1346,7 @@ struct UserEditedData {
         from dictionary: [String: T?],
         using closure: @escaping (PartTag) -> String
     ) -> OneOrTwoOptional<T> {
-        if part == .sitOn {
+        if part == .mainSupport {
            // print(dictionary)
         }
         

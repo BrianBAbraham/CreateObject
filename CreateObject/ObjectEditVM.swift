@@ -100,6 +100,7 @@ class ObjectEditViewModel: ObservableObject {
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOneValueToChangeService.shared.scopeOfEditForSide
     var choiceOfEditForSide: SidesAffected = BilateralPartWithOneValueToChangeService.shared.choiceOfEditForSide
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
+    @Published var choiceOfPartForEdit = Part.mainSupport
 
     private var cancellables: Set<AnyCancellable> = []
     
@@ -160,10 +161,23 @@ extension ObjectEditViewModel {
 //    }
 //
     
+    func getChoiceOfPartToEdit() -> Part{
+//        print(choiceOfPartForEdit)
+//        return
+        choiceOfPartForEdit
+    }
+    
+    func setChoiceOfPartToEdit(_ partName: String) {
+        guard let part = Part(rawValue: partName) else {
+            fatalError("no part for that part name")
+        }
+        choiceOfPartForEdit = part
+    }
+    
     func setCurrentRotation(
         _ maxMinusSliderValue: Double) {
             var partName: String {
-                let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOnTiltJoint, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
+                let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOnTiltJoint, PartTag.id0, PartTag.stringLink, Part.mainSupport, PartTag.id0]
                return
                 CreateNameFromParts(parts ).name    }
             

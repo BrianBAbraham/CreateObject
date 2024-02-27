@@ -194,7 +194,11 @@ struct ContentView: View {
                 coreDataVM.fetchNames()
     }
 
-
+    init(){
+        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.05)
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
+       
+    }
    
     
     var body: some View {
@@ -209,9 +213,22 @@ struct ContentView: View {
                             uniquePartNames,
                             objectManipulationIsActive,
                             initialOrigin: $initialOrigin)
+                   // Spacer(minLength: 400)
+//                    Spacer()
+//                    Spacer()
                         PickInitialObjectView()
-                    Spacer()
+                       // .border(.blue)
+                        
                         EditInitialObjectView()
+                        //.border(.blue)
+                    
+                            ConditionalBilateralPartEditMenu()
+                    
+                    
+                            ConditionalOnePartTwoDimensionValueMenu()
+                    
+                            ConditionalTiltMenu()
+        
                     }) {
                         Text("Default equipment")
                     }

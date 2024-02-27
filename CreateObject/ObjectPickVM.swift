@@ -278,7 +278,7 @@ extension ObjectPickViewModel {
     -> AngleMinMax {
 
     var partName: String {
-        let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part, PartTag.id0, PartTag.stringLink, Part.sitOn, PartTag.id0]
+        let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part, PartTag.id0, PartTag.stringLink, Part.mainSupport, PartTag.id0]
        return
         CreateNameFromParts(parts ).name    }
         return
@@ -375,7 +375,7 @@ extension ObjectPickViewModel {
     func getPartName (_ id: PartTag, _ part: Part) -> String {
         var name: String {
             let parts: [Parts] =
-            [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.sitOn, PartTag.id0]
+            [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.mainSupport, PartTag.id0]
            return
             CreateNameFromParts(parts ).name    }
         return name

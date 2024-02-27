@@ -279,7 +279,7 @@ struct Filter {
                 }
                 
                 if let sitOnId {
-                    let parts: [Parts] = [PartTag.stringLink, Part.sitOn, sitOnId]
+                    let parts: [Parts] = [PartTag.stringLink, Part.mainSupport, sitOnId]
                     let sitOnName =
                             CreateNameFromParts(parts).name
                     switch sitOnId {

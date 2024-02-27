@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PickInitialObjectView: View {
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
@@ -28,82 +29,95 @@ struct PickInitialObjectView: View {
             get: {objectPickVM.getCurrentObjectName()},
             set: {self.objectName = $0}
         )
-        
-        VStack {
-            Picker("Equipment",selection: boundObjectType ) {
-                ForEach(objectNames, id:  \.self)
-                { equipment in
-                    Text(equipment)
-                }
-            }
-            .onChange(of: objectName) {tag in
-                self.objectName = tag
-                objectPickVM.setCurrentObjectName(tag)
-                objectPickVM.resetObjectByCreatingFromName()
-            }
-            .pickerStyle(DefaultPickerStyle())
-        }
+
+                    Picker("Equipment",selection: boundObjectType ) {
+                        ForEach(objectNames, id:  \.self)
+                        { equipment in
+                            Text(equipment)
+                        }
+                    }
+                    .onChange(of: objectName) {tag in
+                        self.objectName = tag
+                        objectPickVM.setCurrentObjectName(tag)
+                        objectPickVM.resetObjectByCreatingFromName()
+                        objectEditVM.setChoiceOfPartToEdit(Part.mainSupport.rawValue)
+                    }
+
+            
+       
     }
 }
 
 struct PickPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @State private var selectedItem = "sitOn"
+    @State private var selectedItem = Part.mainSupport.rawValue
 
+    
+    
     var body: some View {
-      let menuItems = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
-
-        HStack {
-           // Text("edit part")
-            Picker("", selection: $selectedItem) {
+        let menuItems = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
+        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
+       // HStack {
+           
+            Picker("Edit", selection: $selectedItem) {
                 ForEach(menuItems, id: \.self) { item in
                         Text(item)
                 }
             }
-           
-            .pickerStyle(MenuPickerStyle())
-           
-            //.scaleEffect(0.8)
-        }
-        .padding(.horizontal)
-//
-            ConditionalBilateralPartEditView(part: Part(rawValue: selectedItem)!)
-//
-        ConditionalOnePartTwoDimensionValueMenu(part: Part(rawValue: selectedItem)!)
-//
-        if [Part.sitOnTiltJoint].contains(Part(rawValue: selectedItem)!)  {
-            TiltView(Part(rawValue: selectedItem)!)
-        } else {
-            EmptyView()
-        }
-        
-//        if [Part.sitOn].contains(menuItems[selectedItem])  {
-//            OnePartTwoDimensionValueMenu(menuItems[selectedItem], Part.sitOn.rawValue)
-//        } else {
-//            EmptyView()
+            .onChange(of: selectedItem) {oldValue, newValue in
+                objectEditVM.setChoiceOfPartToEdit(selectedItem)
+            }
+            .onChange(of: objectPickVM.getCurrentObjectName()) {
+                selectedItem = Part.mainSupport.rawValue
+            }
+        //}
+        //.padding(.horizontal)
 
-
+//        ConditionalBilateralPartEditMenu(part: selectedPartToEdit)
+//        
+//
+//        ConditionalOnePartTwoDimensionValueMenu(part: selectedPartToEdit)
+//
+//        ConditionalTiltMenu(part: selectedPartToEdit)
     }
 }
 
 
 struct ConditionalOnePartTwoDimensionValueMenu: View {
-    let part: Part
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    //let part: Part
     var body: some View {
-        if [Part.sitOn].contains(part)  {
-            OnePartTwoDimensionValueMenu( part, part.rawValue)
+        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
+        if [Part.mainSupport].contains(selectedPartToEdit)  {
+            OnePartTwoDimensionValueMenu( selectedPartToEdit, selectedPartToEdit.rawValue)
         } else {
             EmptyView()
         }
     }
 }
 
-struct ConditionalBilateralPartEditView: View {
-    let part: Part
+struct ConditionalBilateralPartEditMenu: View {
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    //let part: Part
     var body: some View {
-        if [Part.footSupport, Part.armSupport, Part.assistantFootLever].contains(part)  {
-            BilateralPartEditView(part)
+        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
+        if [Part.footSupport, Part.armSupport, Part.assistantFootLever, Part.fixedWheelAtRear, Part.casterForkAtFront].contains(selectedPartToEdit)  {
+            BilateralPartEditView(selectedPartToEdit)
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+struct ConditionalTiltMenu: View {
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+   // let part: Part
+    var body: some View {
+        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
+        if [Part.sitOnTiltJoint].contains(selectedPartToEdit)  {
+            TiltView(selectedPartToEdit)
         } else {
             EmptyView()
         }
@@ -211,7 +225,7 @@ struct EditInitialObjectView: View {
 //        }
         PickPartEdit()
         .font(.caption)
-        .frame(height: 200)
+       // .frame(height: 200)
         .onAppear{
             objectName = objectPickVM.getCurrentObjectName()
         }

@@ -61,13 +61,13 @@ enum ObjectTypes: String, CaseIterable, Hashable {
 //MARK: ObjectsChainLabels
 struct ObjectChainLabel {
     static let chairSupport: [Part] =
-        [.sitOn,
+        [.mainSupport,
         .backSupportHeadSupport,
         .footSupport,
         .armSupport,
         .sitOnTiltJoint]
     static let chairSupportWithOutFoot: [Part] =
-        [.sitOn,
+        [.mainSupport,
         .backSupportHeadSupport,
         .armSupport,
         .sitOnTiltJoint]
@@ -79,7 +79,7 @@ struct ObjectChainLabel {
    static let dictionary: ObjectChainLabelDictionary =
         [
         .allCasterBed:
-            [.sitOn, .armSupport ],
+            [.mainSupport, .armSupport ],
           
         .allCasterChair:
             chairSupport + rearAndFrontCasterWheels,
@@ -91,7 +91,7 @@ struct ObjectChainLabel {
             chairSupport + rearAndFrontCasterWheels + [.sitOnTiltJoint],
         
         .allCasterStretcher:
-            [ .sitOn, .armSupport] + rearAndFrontCasterWheels,
+            [ .mainSupport, .armSupport] + rearAndFrontCasterWheels,
         
         .fixedWheelRearDriveAssisted:
             chairSupport + [.fixedWheelAtRear] + [.casterWheelAtFront] + [.assistantFootLever],
@@ -110,11 +110,11 @@ struct ObjectChainLabel {
         
    
 
-        .fixedWheelSolo: [.sitOn] + [.fixedWheelAtMid]  + [.armSupport] ,
+        .fixedWheelSolo: [.mainSupport] + [.fixedWheelAtMid]  + [.armSupport] ,
     
             .scooterRearDrive4Wheeler: chairSupportWithOutFoot + [.fixedWheelAtRear, .steeredWheelAtFront],
     
-            .showerTray: [.sitOn],
+            .showerTray: [.mainSupport],
     
     ]
 }
@@ -145,14 +145,14 @@ struct AllPartInObject {
 //MARK: ChainLabel
 struct LabelInPartChainOut {
     static let partChainArrays: [[Part]] = [
-            [.sitOn, .assistantFootLever],
-            [.sitOn, .backSupport],
-            [.sitOn, .footSupportHangerLink,  .footSupport],
+            [.mainSupport, .assistantFootLever],
+            [.mainSupport, .backSupport],
+            [.mainSupport, .footSupportHangerLink,  .footSupport],
             [.footOnly],
-            [.sitOn, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
-            [.sitOn, .armSupport],
-            [.sitOn],
-            [.sitOn, .sitOnTiltJoint],
+            [.mainSupport, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
+            [.mainSupport, .armSupport],
+            [.mainSupport],
+            [.mainSupport, .sitOnTiltJoint],
             [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear],
             [.fixedWheelHorizontalJointAtMid, .fixedWheelAtMid],
             [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront],
@@ -206,13 +206,13 @@ struct LabelInPartChainOut {
 //determine if a part is linked to another part for origin or dimension
 struct LinkedParts {
     let dictionary: [Part: Part] = [
-        .fixedWheelHorizontalJointAtRear: .sitOn,
-        .fixedWheelHorizontalJointAtMid: .sitOn,
-        .fixedWheelHorizontalJointAtFront: .sitOn,
-        .casterVerticalJointAtRear: .sitOn,
-        .casterVerticalJointAtMid: .sitOn,
-        .casterVerticalJointAtFront: .sitOn,
-        .steeredVerticalJointAtFront: .sitOn
+        .fixedWheelHorizontalJointAtRear: .mainSupport,
+        .fixedWheelHorizontalJointAtMid: .mainSupport,
+        .fixedWheelHorizontalJointAtFront: .mainSupport,
+        .casterVerticalJointAtRear: .mainSupport,
+        .casterVerticalJointAtMid: .mainSupport,
+        .casterVerticalJointAtFront: .mainSupport,
+        .steeredVerticalJointAtFront: .mainSupport
         ]
 }
 
@@ -237,7 +237,7 @@ struct OneOrTwoId {
                     .backSupportHeadSupport,
                     .footSupportInOnePiece,
                     .footOnly,
-                    .sitOn,
+                    .mainSupport,
                     .sitOnTiltJoint:
                     return .one(one: PartTag.id0)
                 default :
@@ -252,7 +252,7 @@ struct DefaultMinMaxDimensionDictionary {
     let dimensionDic: Part3DimensionDictionary = [:]
     
     let fineDimensionMinMaxDic: [PartObject: (min: Dimension3d, max: Dimension3d)] = [
-        PartObject(.sitOn, .showerTray):
+        PartObject(.mainSupport, .showerTray):
             (min: (width: 600.0, length: 600.0, height: 10.0),
              max: (width: 2000.0, length: 3000.0, height: 10.0))
         ]
@@ -263,12 +263,21 @@ struct DefaultMinMaxDimensionDictionary {
         .armSupport:
           (min: (width: 10.0, length: 10.0, height: 10.0),
            max: (width: 200.0, length: 1000.0, height: 40.0)),
-        .sitOn:
-          (min: (width: 200.0, length: 200.0, height: 10.0),
-           max: (width: 1000.0, length: 2000.0, height: 40.0)),
+        .casterForkAtFront:
+          (min: (width: 10.0, length: 50.0, height: 10.0),
+           max: (width: 100.0, length: 200.0, height: 500.0)),
+        .casterForkAtRear:
+          (min: (width: 10.0, length: 50.0, height: 10.0),
+           max: (width: 100.0, length: 200.0, height: 500.0)),
+         .fixedWheelAtRear:
+           (min: (width: 10.0, length: 100.0, height: 100.0),
+            max: (width: 100.0, length: 800.0, height: 800.0)),
         .footSupportHangerLink:
-        (min: (width: 10.0, length: 50.0, height: 10.0),
-         max: (width: 50.0, length: 1000.0, height: 40.0))
+            (min: (width: 10.0, length: 50.0, height: 10.0),
+             max: (width: 50.0, length: 1000.0, height: 40.0)),
+        .mainSupport:
+          (min: (width: 200.0, length: 200.0, height: 10.0),
+           max: (width: 1000.0, length: 2000.0, height: 40.0))
         ]
     
     static var shared = DefaultMinMaxDimensionDictionary()
@@ -303,7 +312,7 @@ struct DefaultMinMaxOriginDictionary {
     let originDic: PositionDictionary = [:]
     
     let fineOriginMinMaxDic: [PartObject: (min: PositionAsIosAxes, max: PositionAsIosAxes)] = [
-        PartObject(.sitOn, .showerTray):
+        PartObject(.mainSupport, .showerTray):
             (min: (x: 600.0, y: 600.0, z: 10.0),
              max: (x: 2000.0, y: 3000.0, z: 10.0))
         ]
