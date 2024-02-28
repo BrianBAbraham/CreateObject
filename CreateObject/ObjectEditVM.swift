@@ -397,32 +397,53 @@ extension ObjectEditViewModel {
           
             let name = CreateNameFromIdAndPart(id, part).name
             switch partPropertyToBeChanged {
-            case .length:
-                let currentDimension = getEditedOrDefaultDimension(name, part, id)
-                let newDimension = dimensionWithModifiedLength(currentDimension)
+            case .length, .width:
+                let currentDimension =
+                    getEditedOrDefaultDimension(name, part, id)
+                let newDimension =
+                    dimensionWithModifiedProperty(currentDimension, partPropertyToBeChanged)
                 DictionaryService.shared.dimensionUserEditedDicModifier([name: newDimension])
-            case .xOrigin:
+            case .xOrigin, .yOrigin:
                 let currentOrigin = getEditedOrDefaultOriginOffset(name)
-                let newOriginOffset = xOriginModified(currentOrigin, id)
+                let newOriginOffset = partPropertyToBeChanged == .xOrigin ? xOriginModified(currentOrigin, id) : yOriginModified(currentOrigin, id)
                 DictionaryService.shared.originOffsetUserEdtiedDicModifier([name: newOriginOffset])
                 
             default: break
             }
         }
         
-    
-        func dimensionWithModifiedLength(_ dimension: Dimension3d) -> Dimension3d {
-            (width: dimension.width,
-             length: value,
-             height:dimension.height)
+        func dimensionWithModifiedProperty(_ dimension: Dimension3d, _ property: PartTag) -> Dimension3d {
+            
+            switch property {
+            case .length:
+                return dimensionWithModifiedLength(dimension)
+            case.width:
+                return dimensionWithModifiedWidth(dimension)
+            default: return dimension
+            }
+            
+            func dimensionWithModifiedLength(_ dimension: Dimension3d) -> Dimension3d {
+                (width: dimension.width,
+                 length: value,
+                 height:dimension.height)
+            }
+            
+            func dimensionWithModifiedWidth(_ dimension: Dimension3d) -> Dimension3d {
+                (width: value,
+                 length: dimension.length,
+                 height:dimension.height)
+            }
+            
+           
         }
-        
+    
+       
         
         func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
             let mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
            let newOrigin =
                 (x: origin.x + value * mod,
-                 y: 0.0,
+                 y: origin.y,
                  z: 0.0)
             
         
@@ -435,6 +456,14 @@ extension ObjectEditViewModel {
                 }
                 return reverseDirection
             }
+        }
+        
+        
+        func yOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
+            return
+                (x: origin.x,
+                y: origin.y + value,
+                z: 0.0)
         }
         
     }
@@ -514,11 +543,14 @@ extension ObjectEditViewModel {
         DictionaryService.shared.dimensionUserEditedDicModifier([name: newDimension])
     }
     
-    
-    func updateDimensionToBeEdited(_ dimension: PartTag) {
-      
-        DictionaryService.shared.dimensionValueToEdit = dimension
-        //print(dimensionValueToEdit)
+//    func setDimensionProprtyToBeEdited(_ property: PartTag) {
+//        dimensionValueToEdit = property
+//    }
+    func updateDimensionPropertyToBeEdited(_ propertyToBeEdited: PartTag) {
+       
+        dimensionValueToEdit = propertyToBeEdited
+        DictionaryService.shared.dimensionValueToEdit = propertyToBeEdited
+        
     }
 
 }

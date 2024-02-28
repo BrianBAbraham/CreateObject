@@ -53,45 +53,44 @@ struct PickPartEdit: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @State private var selectedItem = Part.mainSupport.rawValue
-
-    
     
     var body: some View {
         let menuItems = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
         let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-       // HStack {
-           
-            Picker("Edit", selection: $selectedItem) {
-                ForEach(menuItems, id: \.self) { item in
+        HStack{
+            Text("edit")
+            Picker("", selection: $selectedItem) {
+                    ForEach(menuItems, id: \.self) { item in
                         Text(item)
+                    }
+                    
                 }
-            }
-            .onChange(of: selectedItem) {oldValue, newValue in
-                objectEditVM.setChoiceOfPartToEdit(selectedItem)
-            }
-            .onChange(of: objectPickVM.getCurrentObjectName()) {
-                selectedItem = Part.mainSupport.rawValue
-            }
-        //}
-        //.padding(.horizontal)
-
-//        ConditionalBilateralPartEditMenu(part: selectedPartToEdit)
-//        
-//
-//        ConditionalOnePartTwoDimensionValueMenu(part: selectedPartToEdit)
-//
-//        ConditionalTiltMenu(part: selectedPartToEdit)
+                .onChange(of: selectedItem) {oldValue, newValue in
+                    objectEditVM.setChoiceOfPartToEdit(selectedItem)
+                }
+                .onChange(of: objectPickVM.getCurrentObjectName()) {
+                    selectedItem = Part.mainSupport.rawValue
+                }
+        }
+        
     }
 }
 
 
 struct ConditionalOnePartTwoDimensionValueMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    //let part: Part
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    
+    
     var body: some View {
         let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-        if [Part.mainSupport].contains(selectedPartToEdit)  {
-            OnePartTwoDimensionValueMenu( selectedPartToEdit, selectedPartToEdit.rawValue)
+        let showmMenu = objectShowMenuVM.getPartIsOneOfAllUniletralPartForObjectBeforeEdit(selectedPartToEdit)
+        if showmMenu  {
+            HStack{
+                OnePartDimensionValuePickerMenu( selectedPartToEdit)
+                OnePartTwoDimensionValueMenu( selectedPartToEdit, selectedPartToEdit.rawValue)
+            }
+           
         } else {
             EmptyView()
         }
@@ -100,16 +99,19 @@ struct ConditionalOnePartTwoDimensionValueMenu: View {
 
 struct ConditionalBilateralPartEditMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    //let part: Part
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     var body: some View {
         let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-        if [Part.footSupport, Part.armSupport, Part.assistantFootLever, Part.fixedWheelAtRear, Part.casterForkAtFront].contains(selectedPartToEdit)  {
+        if objectShowMenuVM.getPartIsOneOfAllBilateralPartForObjectBeforeEdit(selectedPartToEdit)  {
             BilateralPartEditView(selectedPartToEdit)
         } else {
             EmptyView()
         }
     }
 }
+
+
+
 
 struct ConditionalTiltMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -128,112 +130,19 @@ struct ConditionalTiltMenu: View {
 ///the list is of every part that can be edited for that object
 ///every part which can be edited is linked to a specific part edit menu
 
-struct EditInitialObjectView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var coreDataVM: CoreDataViewModel
-    @EnvironmentObject var sceneVM: SceneViewModel
-
-    var objectNames: [String] {
-        let unsortedObjectNames =
-        ObjectChainLabel.dictionary.keys.map{$0.rawValue}
-        
-        return unsortedObjectNames.sorted()
-    }
-
-    @State private var objectName = ObjectTypes.fixedWheelRearDrive.rawValue
-   
-    var body: some View {
-        
-        
-        
-//        TabView {
-//            if objectShowMenuVM.getShowMenuStatus(.footSupport) {
-//                TiltView(.sitOnTiltJoint)
-//                    .tabItem {
-//                        Image(systemName: "figure.seated.side")
-//                        Text("Tilt")
-//                    }
-//                
-//            } else {
-//                EmptyView()
-//            }
+//struct EditInitialObjectView: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
 //
 //
-//            
-//            
-//            if objectShowMenuVM.getShowMenuStatus(.footSupport) {
-//                FootRelatedView()
-//                    .tabItem {
-//                        Image(systemName: "figure.kickboxing")
-//                        Text("leg")
-//                    }
-//            } else {
-//                EmptyView()
-//            }
+//   
+//   
+//    var body: some View {
+//        PickPartEdit()
+//        .font(.callout)
 //
-//            
-//            HStack{
-//                PartPresence(.fixedWheelAtRearWithPropeller)
-//                PartPresence(.backSupportHeadSupport)
-//               
-//            }
-//            .backgroundModifier()
-//            .tabItem{
-//                Image(systemName: "wrench.and.screwdriver")
-//                Text("options")
-//            }
-//            
-//            
-//            if objectShowMenuVM.getShowMenuStatus(.sitOn) {
-//                OnePartTwoDimensionValueMenu(.sitOn, "seat")
-//                    .tabItem {
-//                        Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
-//                        Text("support")
-//                    }
-//            } else {
-//                EmptyView()
-//            }
-//            
-//            
-//            if objectShowMenuVM.getShowMenuStatus(.sideSupport) {
-//                HStack{
-//                }
-//                .tabItem{
-//                    Image(systemName: "figure.wave")
-//                    Text("arm")}
-//                
-//            } else {
-//                EmptyView()
-//            }
-//            
-//            
-//            
-//            if objectShowMenuVM.getShowAnyMenuStatus([
-//                .footSupport, .sideSupport, .fixedWheelAtRear]) {
-//                HStack{
-//                    
-//                }
-//                .tabItem{
-//                    Image(systemName: "person.2.fill")
-//                    Text("assist")}
-//                
-//            } else {
-//            EmptyView()
-//            }
-//        }
-        PickPartEdit()
-        .font(.caption)
-       // .frame(height: 200)
-        .onAppear{
-            objectName = objectPickVM.getCurrentObjectName()
-        }
-
-    }
-}
-
-
+//
+//    }
+//}
 
 //struct ObjectPickerView_Previews: PreviewProvider {
 //    static var previews: some View {

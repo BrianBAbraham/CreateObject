@@ -45,12 +45,12 @@ struct MeasurementView: View {
     private func formatLength() -> String {
         switch settings.unitSystem {
         case .cm:
-            return String(format: "%.1f",measurement.value/10.0) + "cm"
+            return String(format: "%.1f",measurement.value/10.0)
         case .mm:
-            return String(Int(measurement.value)) + "mm"
+            return String(Int(measurement.value))
         case .imperial:
             return String(
-                measurement.converted(to: .inches).value.roundToNearest(0.25)) + "\""
+                measurement.converted(to: .inches).value.roundToNearest(0.25))
         
         }
     }
@@ -208,26 +208,29 @@ struct ContentView: View {
             VStack {
                 NavigationLink(destination:
                     VStack {
-                        
+                    PickInitialObjectView()
                         ObjectView(
                             uniquePartNames,
                             objectManipulationIsActive,
                             initialOrigin: $initialOrigin)
-                   // Spacer(minLength: 400)
-//                    Spacer()
-//                    Spacer()
-                        PickInitialObjectView()
-                       // .border(.blue)
-                        
-                        EditInitialObjectView()
-                        //.border(.blue)
-                    
+  
+                       //
+                    HStack{
+                        VStack {
+                            PickPartEdit()
+                              
                             ConditionalBilateralPartEditMenu()
-                    
                     
                             ConditionalOnePartTwoDimensionValueMenu()
                     
                             ConditionalTiltMenu()
+                        }
+                        
+                        .backgroundModifier()
+                        
+                    }
+    
+                        
         
                     }) {
                         Text("Default equipment")

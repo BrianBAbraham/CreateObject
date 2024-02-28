@@ -10,25 +10,25 @@ import Foundation
 
 enum ObjectTypes: String, CaseIterable, Hashable {
     
-    case allCasterBed = "Bed with caster base"
-    case allCasterChair = "Chair with caster base"
-    case allCasterHoist = "Hoist with caster base"
-    case allCasterSixHoist = "Hoist with caster base and six caster"
-    case allCasterTiltInSpaceShowerChair = "Tilting shower chair with caster base"
-    case allCasterTiltInSpaceArmChair = "Tilting arm chair with caster base"
-    case allCasterStandAid = "Stand aid with caster base"
-    case allCasterStretcher = "Stretcher with caster Base "
+    case allCasterBed = "Bed: caster base"
+    case allCasterChair = "Chair: caster base"
+    case allCasterHoist = "Hoist: caster base"
+    case allCasterSixHoist = "Hoist: six caster base"
+    case allCasterTiltInSpaceShowerChair = "Tilting shower chair: caster base"
+    case allCasterTiltInSpaceArmChair = "Tilting armchair: caster base"
+    case allCasterStandAid = "Stand aid: caster base"
+    case allCasterStretcher = "Stretcher: caster Base "
     
 //    case bathIntegralHoist = "IntegralBathHoist"
 //    case bathFloorFixedHoistOneRotationPoint = "SingleRotationPointBathHoist"
 //    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
     
     case fixedWheelRearDriveAssisted = "Assisted wheelchair"
-    case fixedWheelFrontDrive = "Power wheelchair with front drive"
-    case fixedWheelMidDrive  = "Power wheelchair with mid-drive"
-    case fixedWheelRearDrive = "Power wheelchair with rear drive"
-    case fixedWheelManualRearDrive = "Self-propelling wheelchair with rear drive"
-    case fixedWheelSolo = "Power wheelchair with active balance"
+    case fixedWheelFrontDrive = "Power chair front drive"
+    case fixedWheelMidDrive  = "Power chair mid-drive"
+    case fixedWheelRearDrive = "Power chair rear drive"
+    case fixedWheelManualRearDrive = "Self-propelling chair rear drive"
+    case fixedWheelSolo = "Power chair active balance"
     case fixedWheelTransfer = "Fixed wheel transfer device"
     
 //    case hingedDoorSingle = "Door"
@@ -220,6 +220,17 @@ struct LinkedParts {
 
 //MARK: OneOrTwoId
 struct OneOrTwoId {
+    static let partWhichAreAlwaysUnilateral: [Part] = [
+        .backSupportRotationJoint,
+        .backSupport,
+        .backSupportHeadSupportJoint,
+        .backSupportHeadSupportLink,
+        .backSupportHeadSupport,
+        .footSupportInOnePiece,
+        .footOnly,
+        .mainSupport,
+        .sitOnTiltJoint
+    ]
     let forPart: OneOrTwo<PartTag>
     init(_ objectType: ObjectTypes,_ part: Part){
         forPart = getIdForPart(part)
@@ -227,22 +238,13 @@ struct OneOrTwoId {
         
         func getIdForPart(_ part: Part)
         -> OneOrTwo<PartTag>{
-            switch part {
-                
-                case
-                    .backSupportRotationJoint,
-                    .backSupport,
-                    .backSupportHeadSupportJoint,
-                    .backSupportHeadSupportLink,
-                    .backSupportHeadSupport,
-                    .footSupportInOnePiece,
-                    .footOnly,
-                    .mainSupport,
-                    .sitOnTiltJoint:
-                    return .one(one: PartTag.id0)
-                default :
+            if Self.partWhichAreAlwaysUnilateral.contains(part) {
+                return  .one(one: PartTag.id0)
+            } else {
                 return .two(left: PartTag.id0, right: PartTag.id1)
             }
+            
+
         }
     }
 }
@@ -269,6 +271,9 @@ struct DefaultMinMaxDimensionDictionary {
         .casterForkAtRear:
           (min: (width: 10.0, length: 50.0, height: 10.0),
            max: (width: 100.0, length: 200.0, height: 500.0)),
+        .casterWheelAtFront:
+          (min: (width: 10.0, length: 20.0, height: 20.0),
+           max: (width: 100.0, length: 300.0, height: 300.0)),
          .fixedWheelAtRear:
            (min: (width: 10.0, length: 100.0, height: 100.0),
             max: (width: 100.0, length: 800.0, height: 800.0)),

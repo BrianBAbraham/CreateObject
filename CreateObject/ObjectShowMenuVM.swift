@@ -10,65 +10,9 @@ import SwiftUI
 import Combine
 
 struct EditObjectMenuShowModel {
-//        static let supportDimension: [UserModifiers] = [.supportLength, .supportWidth]
-//        static let footControl: [UserModifiers] = [.footSupport, .footSeparation]
-//        static let standardWheeledChair = footControl + supportDimension + [.tiltInSpace] + [.headRest] + [.legLength]
-//        static var dictionary: [ObjectTypes: [UserModifiers]] = {
-//            [
-//                .allCasterBed: supportDimension,
-//                .allCasterChair: supportDimension + standardWheeledChair,
-//                .allCasterStretcher: supportDimension,
-//                .allCasterTiltInSpaceShowerChair: standardWheeledChair,
-//                .allCasterTiltInSpaceArmChair: supportDimension + [.tiltInSpace] + [.headRest],
-//                .fixedWheelRearDriveAssisted: standardWheeledChair,
-//                .fixedWheelFrontDrive: standardWheeledChair,
-//                .fixedWheelMidDrive: standardWheeledChair,
-//                .fixedWheelRearDrive: standardWheeledChair ,
-//                .fixedWheelManualRearDrive: standardWheeledChair ,
-//                .fixedWheelSolo: standardWheeledChair,
-//                .scooterRearDrive4Wheeler: supportDimension + [.tiltInSpace] ,
-//                .showerTray: supportDimension,
-//               
-//            ]
-//        }()
-//  
-//    struct UserModifiersPartDependency {
-//        static var dictionary: [UserModifiers: [Part]] = {
-//            [.footSupport: [.footSupport],
-//             .footSeparation: [.footSupport]
-//            ]
-//        }()
+
     }
-//
-//    
-//}
-//
-//
-//enum UserModifiers: String, Parts, Hashable {
-//    var stringValue: String {
-//        return self.rawValue
-//    }
-//    
-//    case casterBaseSeparator = "open"
-//    case casterSepartionAtFront = "front caster"
-//    case casterSeparationAtRear = "rear caster"
-//    case backRecline = "back recline"
-//    case footSupport = "foot support"
-//    case footSeparation = "foot separtion"
-//    case headRest = "head rest"
-//    case independantJoyStick = "joy stick"
-//    case legLength = "leg length"
-//    case legSeparatation = "leg separation"
-//    case propelleers = "propellers"
-//    case rearJoyStick = "rear joy stick"
-//    case supportLength = "support length"
-//    case supportWidth = "support width"
-//    case tiltInSpace = "tilt-in-space"
-//    
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(rawValue)
-//    }
-//}
+
 
 //MARK: DEVELOPMENT change to struct nothing changes
 ///Every object has associated menus providing user edit
@@ -112,56 +56,7 @@ class ObjectShowMenuViewModel: ObservableObject {
 }
 
 
-extension ObjectShowMenuViewModel {
-    
-//    func getShowMenuStatus2(
-//        _ menu: Parts) -> Bool {
-//            var state: Bool = false
-//            if let userModifierMenu = menu as? UserModifiers {
-//                let dictionary = EditObjectMenuShowModel.dictionary
-//                if let show = dictionary[currentObjectType] {
-//                    state = show.contains(userModifierMenu)
-//                }
-//            }
-//            
-//            if let partMenu = menu as? Part {
-//                //does the unedited object have this part?
-//                if let chainLabel =  ObjectChainLabel.dictionary[currentObjectType]{
-//                    state = chainLabel.contains(partMenu)
-//                }
-//                //has object partChain been edited?
-//                if let editedPartChain = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] {
-//                    //if edited out reset to false
-//                    if !editedPartChain.contains(partMenu) {
-//                        state = false
-//                    }
-//                }
-//                
-//            }
-//            return state
-//        }
-    
-    
-    ///rotator part presence is non-editable
-    ///menus for conditional show
-    ///menus for conditional show
-    ///menus denoted by part
-    ///menus not denoted by modifiers
-    
-    
-    
-//    func defaultObjectHasOneOfTheseChainLabels(_ chainLabel: Part) -> Bool
-//    {
-//        var show = false
-//        
-//        let defaultChainLabels =
-//        ObjectChainLabel.dictionary[currentObjectType] ?? []
-//    
-//        show = defaultChainLabels.contains(chainLabel) //{
-//
-//        return show
-//    }
-}
+
 
 
 extension ObjectShowMenuViewModel {
@@ -182,7 +77,7 @@ extension ObjectShowMenuViewModel {
             menuDic[part] = oneOfAllPartForObjectBeforeEdit.contains(part)
         }
         
-        print("\(currentObjectType) \(menuDic) ")
+       // print("\(currentObjectType) \(menuDic) ")
         return menuDic
     }
     
@@ -197,17 +92,47 @@ extension ObjectShowMenuViewModel {
         return showAnyMenu
     }
     
+    
+    func getPartIsOneOfAllBilateralPartForObjectBeforeEdit(_ part: Part) -> Bool {
+        let showMenuStatus = !OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
+        return showMenuStatus
+    }
+    
+    
+    func getPartIsOneOfAllUniletralPartForObjectBeforeEdit(_ part: Part) -> Bool {
+        let showMenuStatus = OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
+        return showMenuStatus
+    }
+    
+    
+    func getBilateralityIsEditable(_ part: Part) -> Bool {
+        //you cannot edit out a wheel related part
+        let nonEditableBilaterality: [Part] = [
+            .fixedWheelAtFront,
+            .fixedWheelAtMid,
+            .fixedWheelAtRear,
+            .casterForkAtFront,
+            .casterForkAtMid,
+            .casterForkAtFront,
+            .casterWheelAtFront,
+            .casterWheelAtMid,
+            .casterWheelAtRear
+        ]
+        return
+            getPartIsOneOfAllBilateralPartForObjectBeforeEdit(part) &&
+            !nonEditableBilaterality.contains(part)
+    }
+    
+    
     func getOneOfAllPartForObjectBeforeEdit() -> [Part] {
-      return
             AllPartInObject.getOneOfAllPartInObjectBeforeEdit(currentObjectType)
       }
     
+    
     func getOneOfAllEditablePartForObjectBeforeEdit() -> [String] {
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
-       // print(oneOfAllPartForObjectBeforeEdit)
         let parts =
             oneOfAllPartForObjectBeforeEdit.filter {!Self.noneditablePart.contains($0)}
-       // print(parts)
         return parts.map{$0.rawValue}
     }
 }

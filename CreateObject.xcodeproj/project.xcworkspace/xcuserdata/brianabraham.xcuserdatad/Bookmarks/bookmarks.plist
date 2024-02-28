@@ -135,13 +135,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>311</string>
+					<string>316</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>310</string>
+					<string>315</string>
 					<key>Timestamp</key>
-					<string>730746123.368759</string>
+					<string>730818464.651843</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -248,13 +248,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>421</string>
+					<string>442</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>420</string>
+					<string>441</string>
 					<key>Timestamp</key>
-					<string>730744616.124655</string>
+					<string>730831480.881487</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -273,7 +273,7 @@
 				<string>        func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -&gt; PositionAsIosAxes {
 </string>
 				<key>leading</key>
-				<string>        
+				<string>       
         
 </string>
 				<key>trailing</key>
@@ -284,53 +284,6 @@
 			</dict>
 			<key>title</key>
 			<string>requires min max</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>439</string>
-					<key>StartingColumnNumber</key>
-					<string>81</string>
-					<key>StartingLineNumber</key>
-					<string>438</string>
-					<key>Timestamp</key>
-					<string>730727628.7545511</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ ObjectPickerOptionsView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>
-</string>
-				<key>leading</key>
-				<string>                .pickerStyle(.segmented)
-                .fixedSize()
-                .onChange(of: propertyToBeEdited) { oldSelection, newSelection in</string>
-				<key>trailing</key>
-				<string>                    objectEditVM.updateDimensionToBeEdited(newSelection)
-                }
-                
-</string>
-			</dict>
-			<key>title</key>
-			<string>ios 17 requires first parameter but I do not know why</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
