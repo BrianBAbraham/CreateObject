@@ -71,42 +71,45 @@ struct ObjectChainLabel {
         .backSupportHeadSupport,
         .armSupport,
         .sitOnTiltJoint]
-    static let rearAndFrontCasterWheels: [Part] =
-        [.casterWheelAtRear, .casterWheelAtFront]
+    ///setting the fork and not the casterWheel  as the terminal part
+    ///facilitates editing of the fork length and posiitiong
+    ///setting the casterWheel as the terminal part makes the edit loigic more complicated
+    static let rearAndFrontCasterFork: [Part] =
+        [.casterForkAtRear, .casterForkAtFront]
     static let chairSupportWithFixedRearWheel: [Part] =
     chairSupport + [.fixedWheelAtRear]
     
    static let dictionary: ObjectChainLabelDictionary =
         [
         .allCasterBed:
-            [.mainSupport, .armSupport ],
+            [.mainSupport, .sideSupport ],
           
         .allCasterChair:
-            chairSupport + rearAndFrontCasterWheels,
+            chairSupport + rearAndFrontCasterFork,
     
         .allCasterTiltInSpaceArmChair:
-            chairSupportWithOutFoot + rearAndFrontCasterWheels + [.sitOnTiltJoint],
+            chairSupportWithOutFoot + rearAndFrontCasterFork + [.sitOnTiltJoint],
           
         .allCasterTiltInSpaceShowerChair:
-            chairSupport + rearAndFrontCasterWheels + [.sitOnTiltJoint],
+            chairSupport + rearAndFrontCasterFork + [.sitOnTiltJoint],
         
         .allCasterStretcher:
-            [ .mainSupport, .armSupport] + rearAndFrontCasterWheels,
+            [ .mainSupport, .sideSupport] + rearAndFrontCasterFork,
         
         .fixedWheelRearDriveAssisted:
-            chairSupport + [.fixedWheelAtRear] + [.casterWheelAtFront] + [.assistantFootLever],
+            chairSupport + [.fixedWheelAtRear] + [.casterForkAtFront] + [.assistantFootLever],
         
         .fixedWheelMidDrive:
-            chairSupport + [.fixedWheelAtMid] + rearAndFrontCasterWheels,
+            chairSupport + [.fixedWheelAtMid] + rearAndFrontCasterFork,
         
         .fixedWheelFrontDrive:
-            chairSupport + [.fixedWheelAtFront] + [.casterWheelAtRear],
+            chairSupport + [.fixedWheelAtFront] + [.casterForkAtRear],
          
         .fixedWheelRearDrive:
-            chairSupportWithFixedRearWheel + [.casterWheelAtFront] ,
+            chairSupportWithFixedRearWheel + [.casterForkAtFront] ,
         
         .fixedWheelManualRearDrive:
-            chairSupportWithFixedRearWheel + [.casterWheelAtFront] + [.fixedWheelAtRearWithPropeller],
+            chairSupportWithFixedRearWheel + [.casterForkAtFront] + [.fixedWheelAtRearWithPropeller],
         
    
 
@@ -152,15 +155,16 @@ struct LabelInPartChainOut {
             [.mainSupport, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
             [.mainSupport, .armSupport],
             [.mainSupport],
+            [.mainSupport, .sideSupport],
             [.mainSupport, .sitOnTiltJoint],
             [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear],
             [.fixedWheelHorizontalJointAtMid, .fixedWheelAtMid],
             [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront],
             [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear, .fixedWheelAtRearWithPropeller],
             [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront, .fixedWheelAtFrontWithPropeller],
-            [.casterVerticalJointAtRear, .casterForkAtRear, .casterWheelAtRear],
-            [.casterVerticalJointAtMid, .casterForkAtMid, .casterWheelAtMid],
-            [.casterVerticalJointAtFront, .casterForkAtFront, .casterWheelAtFront],
+            [.casterVerticalJointAtRear, .casterWheelAtRear, .casterForkAtRear],
+            [.casterVerticalJointAtMid, .casterWheelAtMid, .casterForkAtMid],
+            [.casterVerticalJointAtFront, .casterWheelAtFront, .casterForkAtFront],
             [.steeredVerticalJointAtFront, .steeredWheelAtFront]
             
         ]
@@ -265,8 +269,11 @@ struct DefaultMinMaxDimensionDictionary {
         .armSupport:
           (min: (width: 10.0, length: 10.0, height: 10.0),
            max: (width: 200.0, length: 1000.0, height: 40.0)),
+       .backSupportHeadSupport:
+         (min: (width: 10.0, length: 10.0, height: 10.0),
+          max: (width: 1000.0, length: 400.0, height: 40.0)),
         .casterForkAtFront:
-          (min: (width: 10.0, length: 50.0, height: 10.0),
+          (min: (width: 10.0, length: 10.0, height: 10.0),
            max: (width: 100.0, length: 200.0, height: 500.0)),
         .casterForkAtRear:
           (min: (width: 10.0, length: 50.0, height: 10.0),
@@ -282,7 +289,10 @@ struct DefaultMinMaxDimensionDictionary {
              max: (width: 50.0, length: 1000.0, height: 40.0)),
         .mainSupport:
           (min: (width: 200.0, length: 200.0, height: 10.0),
-           max: (width: 1000.0, length: 2000.0, height: 40.0))
+           max: (width: 1000.0, length: 2000.0, height: 40.0)),
+          .sideSupport:
+            (min: (width: 10.0, length: 10.0, height: 10.0),
+             max: (width: 200.0, length: 1000.0, height: 40.0)),
         ]
     
     static var shared = DefaultMinMaxDimensionDictionary()
@@ -308,6 +318,77 @@ struct DefaultMinMaxDimensionDictionary {
         }
         
         return minMax
+    }
+}
+
+
+enum MenuName: String {
+    case armrest = "armrest"
+    case backrest = "back rest"
+    case casterForkAtFront = "front caster fork"
+    case casterForkAtMid = "mid caster fork"
+    case casterForkAtRear = "rear caster fork"
+    case footRest = "footrest"
+    case footLever = "foot tipper"
+    case headrest = "headrest"
+    case propeller = "propeller"
+    case sides = "sides"
+    case seat = "seat"
+    case tilt = "tilt"
+    case top = "top"
+
+
+    case wheelAtMid = "mid wheel"
+    case wheelAtRear = "rear wheel"
+    case wheelAtFront = "front wheel"
+}
+
+
+struct MenuNamesDictionary {
+    
+var names: [String] = []
+   static let partToMenuNameDictionary: [Part: MenuName] = [
+        .assistantFootLever: .footLever,
+        .armSupport: .armrest,
+        .backSupport: .backrest,
+        .backSupportHeadSupport: .headrest,
+        .casterForkAtFront: .casterForkAtFront,
+        .casterForkAtMid: .casterForkAtMid,
+        .casterForkAtRear: .casterForkAtRear,
+        .casterWheelAtFront: .wheelAtFront,
+        .casterWheelAtMid: .wheelAtMid,
+        .casterWheelAtRear: .wheelAtRear,
+
+        .fixedWheelAtFront: .wheelAtFront,
+        .fixedWheelAtMid: .wheelAtMid,
+        .fixedWheelAtRear: .wheelAtRear,
+        .footSupport: .footRest,
+        .fixedWheelAtFrontWithPropeller: .propeller,
+        .fixedWheelAtMidWithPropeller: .propeller,
+        .fixedWheelAtRearWithPropeller: .propeller,
+        .mainSupport: .seat,
+        .sitOnTiltJoint: .tilt
+
+        ]
+   static let partObjectToMenuNameDictionary: [PartObject: MenuName] = [
+    PartObject(.sideSupport, .allCasterBed): .sides,
+    PartObject(.sideSupport, .allCasterStretcher): .sides,
+        PartObject(.mainSupport, .allCasterBed): .top,
+        PartObject(.mainSupport, .allCasterStretcher): .top,
+    ]
+    
+    init(_ parts: [Part], _ objectType: ObjectTypes) {
+        var menuCase: MenuName?
+        for part in parts {
+            menuCase =
+                Self.partObjectToMenuNameDictionary[PartObject(part, objectType)] ?? Self.partToMenuNameDictionary[part]
+            
+            guard let unwrapped = menuCase else {
+                fatalError("no menu name for \(part)")
+            }
+            names += [unwrapped.rawValue]
+        }
+        
     }
 }
 

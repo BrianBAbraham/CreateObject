@@ -338,6 +338,7 @@ struct PartDefaultDimension {
             return
                 [
                 .assistantFootLever: (width: 20.0, length: 300.0, height: 20.0),
+                .armSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
                 .backSupport: (width: linkedOrParentDimension.width, length: 20.0 , height: 500.0),
                 .backSupportHeadSupport: (width: 150.0, length: 50.0, height: 100.0) ,
                 .backSupportHeadSupportJoint: Self.joint,
@@ -364,8 +365,9 @@ struct PartDefaultDimension {
                 .footSupportHangerJoint: j,
                 .footSupportHangerLink: (width:20.0, length: 300.0, height: 20.0),
                 .objectOrigin: z,
-                .armSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
+                
                 .mainSupport: (width: 400.0, length: 400.0, height: 10.0),
+                .sideSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
                 .sitOnTiltJoint: j,
                 .stabilizerAtFront: z,
                 .stabilizerAtMid: z,
@@ -496,6 +498,7 @@ struct PartEditedElseDefaultOrigin {
             
             return
                 [
+                .armSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
                 .assistantFootLever: (x: linkedOrParentDimension.width/2, y: -(selfDimension.length + linkedOrParentDimension.length)/2, z: wheelBaseJointOrigin.z),
                 .backSupport: (x: 0.0, y: -(linkedOrParentDimension.length + selfDimension.length)/2, z: selfDimension.height/2.0 ),
                 .backSupportHeadSupport: (x: 0.0, y: 0.0, z: linkedOrParentDimension.height/2),
@@ -503,8 +506,8 @@ struct PartEditedElseDefaultOrigin {
                 .backSupportHeadSupportLink:   (x: 0.0, y: 0.0, z: selfDimension.height/2),
                 .backSupportRotationJoint: (x: 0.0, y: -linkedOrParentDimension.length/2, z: 0.0) ,
                 
-                .casterForkAtFront: (x: 0.0, y: -selfDimension.length * 2.0/3.0, z: 0.0),
-                .casterForkAtRear: (x: 0.0, y: -selfDimension.length * 2.0/3.0, z: 0.0),
+                .casterForkAtFront: (x: 0.0, y: -selfDimension.length * 2.0/3.0, z:  200.0),
+                .casterForkAtRear: (x: 0.0, y: -selfDimension.length * 2.0/3.0, z:  200.0),
                 .casterWheelAtFront: (x: 0.0, y: -selfDimension.height/2.0, z: 0.0),
                 .casterWheelAtRear: (x: 0.0, y: -selfDimension.height/2.0, z: 0.0),
                 .casterVerticalJointAtFront: wheelBaseJointOrigin,
@@ -527,8 +530,8 @@ struct PartEditedElseDefaultOrigin {
                 .footSupportHangerLink: (x: linkedOrParentDimension.width/2.0 , y: (linkedOrParentDimension.length + selfDimension.length)/2.0, z: selfDimension.height/2.0),
             
                 .footSupportInOnePiece: ZeroValue.iosLocation,
-             
-                .armSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
+                .sideSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
+                
                 .sideSupportRotationJoint: (x: linkedOrParentDimension.width/2, y: -linkedOrParentDimension.length/2, z: selfDimension.height),
                 .mainSupport:  (x: 0.0, y: selfDimension.length/2, z: 500.0 ),
                 .sitOnTiltJoint: (x: 0.0, y: -linkedOrParentDimension.length/4, z: -100.0),
@@ -547,18 +550,9 @@ struct PartEditedElseDefaultOrigin {
         let midStability = PartDefaultDimension(.stabilizerAtMid, objectType).partDimension
         let rearStability = PartDefaultDimension(.stabilizerAtRear, objectType ).partDimension
         
-//        let fixedFrontWheel = PartDefaultDimension(.fixedWheelAtFront, objectType, .fixedWheelHorizontalJointAtFront)
-//        let fixedMidWheel = PartDefaultDimension(.fixedWheelAtMid, objectType, .fixedWheelHorizontalJointAtMid)
-//        let fixedRearWheel = PartDefaultDimension(.fixedWheelAtRear, objectType, .fixedWheelHorizontalJointAtRear)
-//
-//        let casterFrontWheel = PartDefaultDimension(.casterWheelAtFront, objectType, .casterVerticalJointAtFront)
-//        let casterMidWheel = PartDefaultDimension(.casterWheelAtMid, objectType, .casterVerticalJointAtMid)
-//        let casterRearWheel = PartDefaultDimension(.casterWheelAtRear, objectType, .casterVerticalJointAtRear)
-
         let sitOnWidth = linkedOrParentDimension.width
-       // print(sitOnWidth)
         let sitOnLength = linkedOrParentDimension.length
-        let wheelJointHeight = 100.0
+        let wheelJointHeight = 0.0
         let rearCasterVerticalJointOriginForMidDrive = (
                 x: sitOnWidth/2 + rearStability.width,
                 y: -sitOnLength/2 + rearStability.length,

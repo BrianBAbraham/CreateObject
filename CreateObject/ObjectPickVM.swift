@@ -25,7 +25,7 @@ struct ObjectPickModel {
     var currentObjectFrameSize: Dimension = ZeroValue.dimension
     
     var userEditedDic: UserEditedDictionaries?
-    var defaultDictionaries: DefaultMinMaxDimensionDictionary
+    var defaultMinMaxDictionaries: DefaultMinMaxDimensionDictionary
     
     var objectImageData: ObjectImageData
 
@@ -33,11 +33,11 @@ struct ObjectPickModel {
     init(
         currentObjectName: String,
         userEditedDic: UserEditedDictionaries?,
-        defaultDictionaries: DefaultMinMaxDimensionDictionary,
+        defaultMinMaxDictionaries: DefaultMinMaxDimensionDictionary,
         objectImageData: ObjectImageData
     ){
         self.userEditedDic = userEditedDic
-        self.defaultDictionaries = defaultDictionaries
+        self.defaultMinMaxDictionaries = defaultMinMaxDictionaries
         self.currentObjectName = currentObjectName
         self.preTiltFourCornerPerKeyDic = objectImageData.preTiltObjectToPartFourCornerPerKeyDic
       
@@ -62,8 +62,8 @@ class ObjectPickViewModel: ObservableObject {
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     var dimensionValueToEdit: PartTag = .length
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
-    var choiceOfEditForSide: SidesAffected = BilateralPartWithOneValueToChangeService.shared.choiceOfEditForSide
-    var scopeOfEditForSide: SidesAffected = BilateralPartWithOneValueToChangeService.shared.scopeOfEditForSide
+    var choiceOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
+    var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
     private var cancellables: Set<AnyCancellable> = []
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     
@@ -78,7 +78,7 @@ class ObjectPickViewModel: ObservableObject {
             ObjectPickModel(
             currentObjectName: currentObjectType.rawValue,
             userEditedDic: nil,
-            defaultDictionaries: defaultMinMaxDimensionDic,
+            defaultMinMaxDictionaries: defaultMinMaxDimensionDic,
             objectImageData: ObjectImageData(.fixedWheelRearDrive, nil))
 
         DictionaryService.shared.$currentObjectType
@@ -105,13 +105,13 @@ class ObjectPickViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-        BilateralPartWithOneValueToChangeService.shared.$scopeOfEditForSide
+        BilateralPartWithOnePropertyToChangeService.shared.$scopeOfEditForSide
             .sink { [weak self] newData in
                 self?.scopeOfEditForSide = newData
             }
             .store(in: &self.cancellables)
         
-        BilateralPartWithOneValueToChangeService.shared.$choiceOfEditForSide
+        BilateralPartWithOnePropertyToChangeService.shared.$choiceOfEditForSide
             .sink { [weak self] newData in
                 self?.choiceOfEditForSide = newData
             }
@@ -163,7 +163,7 @@ extension ObjectPickViewModel {
             ObjectPickModel(
                 currentObjectName: currentObjectType.rawValue,
                 userEditedDic: userEditedSharedDics,
-                defaultDictionaries: defaultMinMaxDimensionDic,
+                defaultMinMaxDictionaries: defaultMinMaxDimensionDic,
                 objectImageData: objectImageData)
         setCurrentObjectFrameSize()
     }
@@ -304,13 +304,22 @@ extension ObjectPickViewModel {
     
     func geMinMax(
         _ part: Part,
-        _ propertyToBeEdited: PartTag) -> (min: Double, max: Double) {
-    
+        _ propertyToBeEdited: PartTag,
+        _ callingFunc: String) -> (min: Double, max: Double) {
+//   print("\(part) \(callingFunc)")
             var minMaxValue =
                 (min: 0.0, max: 0.0)
             
            
             switch propertyToBeEdited {
+//            case .angle:
+//               let values =
+//                PartDefaultAngle(part, currentObjectType).minMaxAngle
+//                
+//                minMaxValue =
+//                    (min: values.min.value,
+//                     max: values.max.value)
+                
             case .length, .width:
                 let values =
                     defaultMinMaxDimensionDic.getDefault(

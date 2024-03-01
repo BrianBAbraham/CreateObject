@@ -8,50 +8,130 @@
 import SwiftUI
 
 
-//struct ReclinePreferenceKey: PreferenceKey {
-//    static var defaultValue: Bool = false
-//    static func reduce(value: inout Bool, nextValue: () -> Bool) {
-//        value = nextValue()
-//    }
-//}
 
-//struct BackSupportRecline: View {
-//    @State private var reclineToggle = false
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-//    let showRecline: Bool
-//    
-//    init(_ name: String) {
-//        showRecline =
-//        (name.contains("air") && !name.contains("ilting")) ?
-//            true: false
-//    }
-//    
-//    var body: some View {
-//        if showRecline {
-//            Toggle("Reclining back",isOn: $reclineToggle)
-//                .onChange(of: reclineToggle) { value in
-//                    let twinSitOnDictionary = twinSitOnVM.getTwinSitOnOptions()
-//                    //let name = objectPickVM.getCurrentObjectName()
-//                    objectPickVM.setObjectOptionDictionary(
-//                        ObjectOptions.angleBackSupport,
-//                        reclineToggle) //RECLINE
-//                    objectPickVM.setCurrentObjectByCreatingFromName(
-//                        //name,
-//                        twinSitOnDictionary)
-//                        
-//                        //.setCurrentObjectWithInitialOrEditedDictionary(
-//                        //name,
-//                         //twinSitOnOptions: dictionary)
-//                    
-//                }
-////                .preference(key: ReclinePreferenceKey.self, value: reclineToggle)
-//        } else {
-//            EmptyView()
-//        }
-//    }
-//}
 
+struct BilateralPartEditView: View {
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    let part: Part
+    let linkedPartForDimensionDic: [Part: Part] =
+    [.footSupport: .footSupportHangerLink,
+     ]
+    let linkedPartForOriginDic: [Part: Part] =
+    [.footSupport: .footSupportHangerLink,
+     .casterWheelAtFront: .casterVerticalJointAtFront]
+    
+    var origins: [PartTag] {
+        objectShowMenuVM.getEditableOrigin(part) }
+    let dimensionProperty: [PartTag] = [.width, .length]
+    let partOrLinkedPartForDimension: Part
+    let partOrLinkedPartForOrigin: Part
+    
+
+    init (_ part: Part) {
+        self.part = part
+        partOrLinkedPartForDimension = linkedPartForDimensionDic[part] ?? part
+        partOrLinkedPartForOrigin = linkedPartForOriginDic[part] ?? part
+    }
+    var body: some View {
+        ZStack{
+            VStack{
+                HStack {
+                    if objectShowMenuVM.getBilateralityIsEditable(part) {
+                        BiLateralPartSidePicker()
+                    } else {
+                        EmptyView()
+                    }
+                    
+                    
+//                    if objectShowMenuVM.getBilateralityIsEditable(part) {
+//                        BilateralPartPresence(part)
+//                    } else {
+//                        EmptyView()
+//                    }
+                    
+                }
+                    
+                    VStack {
+                        HStack {
+                            DimensionPropertyPickerMenu(part)
+                            
+                            SliderForOneDimensionPropertyForBilateralPart(
+                                partOrLinkedPartForDimension)
+//                            ForEach(dimensionProperty, id: \.self) { property in
+//                          SliderDimensionForBilateralPartWithOneValueToChange(
+//                                    partOrLinkedPartForDimension,
+//                                    property)
+//                            }
+                        }
+                                
+                        HStack {
+                            ForEach(origins, id: \.self) { origin in
+                                StepperOriginForBilateralPartWithOneValueToChange(
+                                    partOrLinkedPartForOrigin,
+                                    origin)
+                            }
+                        }
+                }
+                .padding(.horizontal)
+            }
+        }
+        .padding()
+    }
+}
+
+struct ConditionalBilateralPartPresence: View {
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    var part: Part {
+        objectEditVM.getChoiceOfPartToEdit()
+    }
+    
+    
+    
+    var body: some View {
+        if objectShowMenuVM.getBilateralityIsEditable(part) {
+            BilateralPartPresence(part)
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+struct DimensionPropertyPickerMenu: View {
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @State private var propertyToBeEdited: PartTag = .length
+    var relevantCases: [PartTag] {
+        objectShowMenuVM.getPropertyMenuForDimensionEdit(part)
+    }
+    let part: Part
+    var description: String {
+        part.rawValue
+    }
+    
+    init(
+        _ part: Part) {
+        self.part = part
+    }
+    var body: some View {
+        ZStack{
+            HStack {
+                Spacer()
+                Picker("dimension", selection: $propertyToBeEdited) {
+                    ForEach(relevantCases, id: \.self) { side in
+                        Text(side.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .fixedSize()
+                .onChange(of: propertyToBeEdited) { oldSelection, newSelection in
+                    objectEditVM.setDimensionPropertyToBeEdited(newSelection)
+                }
+            }
+        }
+    }
+}
 
 
 
@@ -82,48 +162,6 @@ import SwiftUI
 //
 //}
 
-//struct SideSelection: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-//    @State private var selection: Side = .both
-//    let objectName: String
-//    //let twoSidedPart: Part
-//    var relevantCases: [Side]{
-//        objectPickVM.getSidesPresentGivenUserEdit(.footSupport)
-//    }
-//    var show: Bool {
-//        //objectPickVM.getViewStatus(.legLength)
-//        objectShowMenuVM.getShowMenuStatus(.footSupport
-//                                           //, objectName
-//        )
-//    }
-//    var body: some View {
-//
-//        if show {
-//            Picker("side", selection: $selection) {
-//                ForEach(relevantCases, id: \.self) { side in
-//                    Text(side.rawValue)
-//                }
-//            }
-//            .pickerStyle(.segmented)
-//            .disabled(relevantCases == [.none])
-//            .fixedSize()
-//            .onChange(of: selection) { newSelection in
-//                objectEditVM.setSidesToBeEdited(newSelection)
-//            }
-//            .onChange(of: relevantCases) { newCases in
-//                if newCases == [.left] ||
-//                    newCases == [.right] {
-//                    objectEditVM.setSidesToBeEdited(newCases[0])
-//                }
-//            }
-//        } else {
-//            EmptyView()
-//        }
-//
-//    }
-//}
 
 
 //struct DimensionSelection: View {
@@ -172,75 +210,6 @@ extension View {
 
 ///Bilateral
 
-struct BilateralPartEditView: View {
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    let part: Part
-    let linkedPartForDimensionDic: [Part: Part] =
-    [.footSupport: .footSupportHangerLink,
-     ]
-    let linkedPartForOriginDic: [Part: Part] =
-    [.footSupport: .footSupportHangerLink,
-     .casterWheelAtFront: .casterVerticalJointAtFront]
-    
-    let origins: [PartTag] = [.xOrigin, .yOrigin]
-    let dimensionProperty: [PartTag] = [.length, .width]
-    let partOrLinkedPartForDimension: Part
-    let partOrLinkedPartForOrigin: Part
-    
-
-    init (_ part: Part) {
-        self.part = part
-        partOrLinkedPartForDimension = linkedPartForDimensionDic[part] ?? part
-        partOrLinkedPartForOrigin = linkedPartForOriginDic[part] ?? part
-    }
-    var body: some View {
-        ZStack{
-            VStack{
-                
-                HStack {
-                    if objectShowMenuVM.getBilateralityIsEditable(part) {
-                        BiLateralPartSidePicker()
-                    } else {
-                        EmptyView()
-                    }
-                    
-                    
-                    if objectShowMenuVM.getBilateralityIsEditable(part) {
-                        BilateralPartPresence(part)
-                    } else {
-                        EmptyView()
-                    }
-                    
-                }
-                    
-                    VStack {
-                        HStack {
-                            OnePartDimensionValuePickerMenu(part)
-                            SliderDimensionForBilateralPartWithOneValueToChange(
-                                partOrLinkedPartForDimension)
-//                            ForEach(dimensionProperty, id: \.self) { property in
-//                                SliderDimensionForBilateralPartWithOneValueToChange(
-//                                    partOrLinkedPartForDimension,
-//                                    property)
-//                            }
-                        }
-                                
-                        HStack {
-                            ForEach(origins, id: \.self) { origin in
-                                StepperOriginForBilateralPartWithOneValueToChange(
-                                    partOrLinkedPartForOrigin,
-                                    origin)
-                            }
-                        }
-                }
-                .padding(.horizontal)
-            }
-        }
-        .padding()
-        //.backgroundModifier()
-    }
-}
 
 
 
@@ -254,7 +223,8 @@ struct BilateralPartPresence: View {
     let part: Part
     
     var show: Bool {
-        objecShowMenuVM.getShowMenuStatus(.footSupport)
+        true
+        //objecShowMenuVM.getShowMenuStatus(.footSupport)
     }
     
     init (_ part: Part) {
@@ -264,25 +234,28 @@ struct BilateralPartPresence: View {
     var body: some View {
         if show {
             HStack {
-                Text("L")
-                Toggle("L", isOn: $isLeftSelected)
+              
+                Toggle("", isOn: $isLeftSelected)
                     .onChange(of: isLeftSelected) { newValue in
                         updateViewModel()
                     }
-                Spacer()
-                Text("R")
-                Toggle("R", isOn: $isRightSelected)
+                Text("L")
+             
+               
+                Toggle("", isOn: $isRightSelected)
                     .onChange(of: isRightSelected) { newValue in
                         updateViewModel()
                     }
-                   // .padding(.leading, 30)
+                Text("R")
+               
                 
             }
-            .padding(.horizontal)
+        
             .onChange(of: objectPickVM.getCurrentObjectType()) { _ in
                 isLeftSelected = true
                 isRightSelected = true
             }
+           
         } else {
             EmptyView()
         }
@@ -322,31 +295,35 @@ struct BiLateralPartSidePicker: View {
                             newValue in
                                objectEditVM.setBothOrLeftOrRightAsEditibleChoice(newValue)
                                     } )
-        Picker("side(s)", selection: boundSideValue
-        ) {
-            ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
-                Text(side.rawValue)
+        HStack {
+           // Text("select")
+            
+            Picker("", selection: boundSideValue
+            ) {
+                ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
+                    Text(side.rawValue)
+                }
             }
+            .onChange(of: boundSideValue.wrappedValue) { newSelection in
+                objectEditVM.setBothOrLeftOrRightAsEditibleChoice( newSelection)
+                }
+            .pickerStyle(.segmented)
         }
-        .onChange(of: boundSideValue.wrappedValue) { newSelection in
-            objectEditVM.setBothOrLeftOrRightAsEditibleChoice( newSelection)
-            }
-        .pickerStyle(.segmented)
-       // .fixedSize()
+
     }
 } 
 
 
-struct SliderDimensionForBilateralPartWithOneValueToChange: View {
+struct SliderForOneDimensionPropertyForBilateralPart: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     var minMaxValue : (min: Double, max: Double){
-        objectPickVM.geMinMax(part, propertyToBeEdited)
+        objectPickVM.geMinMax(part, propertyToBeEdited, "SliderForOneDimensionPropertyForBilateralPart")
     }
     let part: Part
 
     var propertyToBeEdited: PartTag {
-        objectEditVM.getDimensionValueToBeEdited()
+        objectEditVM.getDimensionPropertyToBeEdited()
     }
     var description: String {
         propertyToBeEdited.rawValue
@@ -427,56 +404,21 @@ struct StepperOriginForBilateralPartWithOneValueToChange: View {
                         objectPickVM.modifyObjectByCreatingFromName()
                                 } )
         HStack{
-            Spacer()
-            //
-            arrowImage
-
             Stepper("", value: boundStepperValue, step: 10.0)
-          
+            arrowImage
             MeasurementView(
                 Measurement(value: boundStepperValue.wrappedValue,
                     unit: .millimeters))
-            Spacer()
             }
+//        .padding(.horizontal)
+//        .alignmentGuide(HorizontalAlignment.center) { _ in
+//                                UIScreen.main.bounds.size.width / 2 // Center the content
+//                            }
             .disabled(objectEditVM.scopeOfEditForSide == .none)
     }
 }
 
 
-struct OnePartDimensionValuePickerMenu: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @State private var propertyToBeEdited: PartTag = .length
-    var relevantCases: [PartTag] = [.length, .width]
-
-    let part: Part
-    var description: String {
-        part.rawValue
-    }
-    
-    init(
-        _ part: Part) {
-        self.part = part
-        
-    }
-    var body: some View {
-      
-        ZStack{
-            HStack {
-                Spacer()
-                Picker("dimension", selection: $propertyToBeEdited) {
-                    ForEach(relevantCases, id: \.self) { side in
-                        Text(side.rawValue)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .fixedSize()
-                .onChange(of: propertyToBeEdited) { oldSelection, newSelection in
-                    objectEditVM.updateDimensionPropertyToBeEdited(newSelection)
-                }
-            }
-        }
-    }
-}
 
 
 struct OnePartTwoDimensionValueMenu: View {
@@ -484,10 +426,12 @@ struct OnePartTwoDimensionValueMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var sliderValue = 0.0
-    @State private var propertyToBeEdited: PartTag = .length
-//    var relevantCases: [PartTag] = [.length, .width]
+   
+    var propertyToBeEdited: PartTag {
+        objectEditVM.getDimensionPropertyToBeEdited()
+    }
     var minMaxValue : (min: Double, max: Double){
-        objectPickVM.geMinMax(part, propertyToBeEdited)
+        objectPickVM.geMinMax(part, propertyToBeEdited, "OnePartTwoDimensionValueMenu")
     }
     let part: Part
     let description: String
@@ -511,7 +455,7 @@ struct OnePartTwoDimensionValueMenu: View {
         ZStack{
             HStack {
 
-                Text(description)
+             
       
                 Slider(value: boundSliderValue,
                        in: minMaxValue.min...minMaxValue.max,
@@ -523,12 +467,15 @@ struct OnePartTwoDimensionValueMenu: View {
                 }
                 .onChange(of: sliderValue) { newValue in
                     objectEditVM
-                        .setEitherDimensionForOnePartInUserEditedDic(
+                        .setDimensionPropertyValueForOnePartInUserEditedDic(
                             newValue,
                             part)
                     objectPickVM.modifyObjectByCreatingFromName()
                     }
                 .onChange(of: propertyToBeEdited) { _ in
+                    print("DETECT")
+                    
+                    
                     sliderValue =
                     objectPickVM.getInitialSliderValue(
                     part,
@@ -641,9 +588,7 @@ struct TiltView: View {
 
     let description: String
     let joint:  Part
-//    var show: Bool {
-//        objecShowMenuVM.getShowMenuStatus(joint) }
-//    
+  
     init(_ joint: Part){
         self.joint = joint
         description = joint.rawValue
@@ -662,8 +607,7 @@ struct TiltView: View {
             },
             set: {self.sliderValue = $0 }
             )
-        
-//        if show {
+    
             ZStack{
                 HStack{
                     Text(description)
@@ -680,11 +624,6 @@ struct TiltView: View {
                 }
                 .padding()
             }
-            .backgroundModifier()
-
-//        } else {
-//            EmptyView()
-//        }
     }
 }
 

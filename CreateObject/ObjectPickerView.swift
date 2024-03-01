@@ -7,22 +7,23 @@
 
 import SwiftUI
 
+
+
+
+
 struct PickInitialObjectView: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var coreDataVM: CoreDataViewModel
     @EnvironmentObject var sceneVM: SceneViewModel
-
     var objectNames: [String] {
         let unsortedObjectNames =
         ObjectChainLabel.dictionary.keys.map{$0.rawValue}
         
         return unsortedObjectNames.sorted()
     }
-
-    @State private var objectName = ObjectTypes.fixedWheelRearDrive.rawValue
-   
+    @State private var objectName = DictionaryService.shared.currentObjectType.rawValue
     
     var body: some View {
         let boundObjectType = Binding(
@@ -30,23 +31,22 @@ struct PickInitialObjectView: View {
             set: {self.objectName = $0}
         )
 
-                    Picker("Equipment",selection: boundObjectType ) {
-                        ForEach(objectNames, id:  \.self)
-                        { equipment in
-                            Text(equipment)
-                        }
-                    }
-                    .onChange(of: objectName) {tag in
-                        self.objectName = tag
-                        objectPickVM.setCurrentObjectName(tag)
-                        objectPickVM.resetObjectByCreatingFromName()
-                        objectEditVM.setChoiceOfPartToEdit(Part.mainSupport.rawValue)
-                    }
-
-            
-       
+        Picker("Equipment",selection: boundObjectType ) {
+            ForEach(objectNames, id:  \.self)
+            { equipment in
+                Text(equipment)
+            }
+        }
+        .onChange(of: objectName) {tag in
+            self.objectName = tag
+            objectPickVM.setCurrentObjectName(tag)
+            objectPickVM.resetObjectByCreatingFromName()
+            objectEditVM.setChoiceOfPartToEdit(Part.mainSupport.rawValue)
+        }
     }
 }
+
+
 
 struct PickPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
@@ -55,47 +55,32 @@ struct PickPartEdit: View {
     @State private var selectedItem = Part.mainSupport.rawValue
     
     var body: some View {
-        let menuItems = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
-        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-        HStack{
-            Text("edit")
-            Picker("", selection: $selectedItem) {
-                    ForEach(menuItems, id: \.self) { item in
-                        Text(item)
-                    }
-                    
-                }
-                .onChange(of: selectedItem) {oldValue, newValue in
-                    objectEditVM.setChoiceOfPartToEdit(selectedItem)
-                }
-                .onChange(of: objectPickVM.getCurrentObjectName()) {
-                    selectedItem = Part.mainSupport.rawValue
-                }
-        }
+        //object creation and etc use Part for
+        //Part have to be unique and are not so friendly
+        //MenuName are friendly and as only subsets are present
+        //Names can such as front wheel can represent caster or fixed
+        //also names can be object sensitive
+        let menuItemsUsingPart = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
+        let menuItemsUsingMenuName = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
         
-    }
-}
-
-
-struct ConditionalOnePartTwoDimensionValueMenu: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    
-    
-    var body: some View {
-        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-        let showmMenu = objectShowMenuVM.getPartIsOneOfAllUniletralPartForObjectBeforeEdit(selectedPartToEdit)
-        if showmMenu  {
-            HStack{
-                OnePartDimensionValuePickerMenu( selectedPartToEdit)
-                OnePartTwoDimensionValueMenu( selectedPartToEdit, selectedPartToEdit.rawValue)
+        Picker("", selection: $selectedItem) {
+                ForEach(menuItemsUsingMenuName, id: \.self) { item in
+                    Text(item)
+                }
             }
-           
-        } else {
-            EmptyView()
-        }
+            .onChange(of: selectedItem) {oldValue, newValue in
+                guard let index = menuItemsUsingMenuName.firstIndex(where: { $0 == selectedItem }) else {
+                       fatalError("no index for part \(menuItemsUsingPart)")
+                   }
+                objectEditVM.setChoiceOfPartToEdit(menuItemsUsingPart[index])
+            }
+            .onChange(of: objectPickVM.getCurrentObjectName()) {
+                selectedItem = Part.mainSupport.rawValue
+            }
     }
 }
+
+
 
 struct ConditionalBilateralPartEditMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -113,9 +98,35 @@ struct ConditionalBilateralPartEditMenu: View {
 
 
 
+struct ConditionalOnePartTwoDimensionValueMenu: View {
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    
+    
+    var body: some View {
+        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
+        let showmMenu = objectShowMenuVM.getDoesPartHaveDimensionalPropertyMenu(selectedPartToEdit)
+        if showmMenu  {
+            HStack{
+                DimensionPropertyPickerMenu( selectedPartToEdit)
+                
+                OnePartTwoDimensionValueMenu( selectedPartToEdit, selectedPartToEdit.rawValue)
+            }
+           
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+
+
+
+
+
 struct ConditionalTiltMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-   // let part: Part
+
     var body: some View {
         let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
         if [Part.sitOnTiltJoint].contains(selectedPartToEdit)  {

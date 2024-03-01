@@ -30,53 +30,7 @@ extension Double {
 
 
 
-struct MeasurementView: View {
-    @EnvironmentObject var settings: Settings
-    var measurement: Measurement<UnitLength>
-    
-    init(_ measurement: Measurement<UnitLength>) {
-        self.measurement = measurement
-    }
 
-    var body: some View {
-        Text(formatLength())
-    }
-
-    private func formatLength() -> String {
-        switch settings.unitSystem {
-        case .cm:
-            return String(format: "%.1f",measurement.value/10.0)
-        case .mm:
-            return String(Int(measurement.value))
-        case .imperial:
-            return String(
-                measurement.converted(to: .inches).value.roundToNearest(0.25))
-        
-        }
-    }
-}
-enum UnitSystem: String {
-    case cm  = "cm"
-    case mm = "mm"
-    case imperial = "\""
-}
-class Settings: ObservableObject {
-    @Published var unitSystem: UnitSystem = .mm
-}
-struct UnitSystemSelectionView: View {
-    @EnvironmentObject var settings: Settings
-
-    var body: some View {
-        Picker("Unit System", selection: $settings.unitSystem) {
-            Text("cm").tag(UnitSystem.cm)
-            Text("mm").tag(UnitSystem.mm)
-            Text("inches").tag(UnitSystem.imperial)
-        }
-        .pickerStyle(SegmentedPickerStyle())
-        .frame(width: 200, height: 40)
-        .padding()
-    }
-}
 
 
 
@@ -208,30 +162,34 @@ struct ContentView: View {
             VStack {
                 NavigationLink(destination:
                     VStack {
-                    PickInitialObjectView()
+                        PickInitialObjectView()
+                        
                         ObjectView(
                             uniquePartNames,
                             objectManipulationIsActive,
                             initialOrigin: $initialOrigin)
+                    
+                  
   
-                       //
-                    HStack{
                         VStack {
-                            PickPartEdit()
-                              
+                            HStack{
+                                PickPartEdit()
+                                ConditionalBilateralPartPresence()
+                            }
+                            .padding(.top, 5)
+                            .padding(.horizontal)
+                           
                             ConditionalBilateralPartEditMenu()
                     
                             ConditionalOnePartTwoDimensionValueMenu()
                     
                             ConditionalTiltMenu()
                         }
-                        
+                        .transition(.move(edge: .bottom))
                         .backgroundModifier()
-                        
-                    }
-    
-                        
-        
+                    
+                    
+                    
                     }) {
                         Text("Default equipment")
                     }
@@ -243,7 +201,6 @@ struct ContentView: View {
 
     }
 }
-
 
 
 // PreferenceKey to store the initial origin of the child view

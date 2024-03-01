@@ -18,54 +18,43 @@ struct EditObjectMenuShowModel {
 ///Every object has associated menus providing user edit
 ///The View determines if it should display from this code
 class ObjectShowMenuViewModel: ObservableObject {
-
-    static let noneditablePart: [Part] = [
+    static let partsNotToAppearOnEditMenu: [Part] = [
         .backSupportHeadSupportLink,
         .backSupportHeadSupportJoint,
         .casterVerticalJointAtFront,
         .fixedWheelHorizontalJointAtRear,
         .footSupportHangerLink,
     ]
+    
     var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
+    
     private var cancellables: Set<AnyCancellable> = []
-  //  var oneOfAllPartForObjectBeforeEdit: [Part] = []
+
     init () {
-//        DictionaryService.shared.$userEditedSharedDics
-//            .sink { [weak self] newData in
-//                self?.userEditedSharedDics = newData
-//            }
-//            .store(in: &cancellables)
-        
         DictionaryService.shared.$currentObjectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
-//        
-//        DictionaryService.shared.$partDataSharedDic
-//            .sink { [weak self] newData in
-//                self?.partDataSharedDic = newData
-//            }
-//            .store(in: &self.cancellables)
-        
-
-   
-   
     }
-    
 }
 
 
-
-
-
 extension ObjectShowMenuViewModel {
+    
+    func getPropertyMenuForDimensionEdit(_ part: Part) -> [PartTag] {
+        switch part{
+        case .footSupport, .assistantFootLever:
+            return [.length]
+        default: return [.length, .width]
+        }
+    }
+    
     func getShowMenuStatus(_ part: Part) -> Bool{
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         let allParts = oneOfAllPartForObjectBeforeEdit
         
         let menuRequired = allParts.contains(part)
-        //print("\(currentObjectType) \(part)  \(menuRequired) ")
         return menuRequired
     }
     
@@ -76,14 +65,11 @@ extension ObjectShowMenuViewModel {
         for part in oneOfAllPartForObjectBeforeEdit {
             menuDic[part] = oneOfAllPartForObjectBeforeEdit.contains(part)
         }
-        
-       // print("\(currentObjectType) \(menuDic) ")
         return menuDic
     }
     
     
     func getShowAnyMenuStatus(_ parts: [Part]) -> Bool {
-   
      let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         var showAnyMenu = false
         for part in parts {
@@ -95,15 +81,22 @@ extension ObjectShowMenuViewModel {
     
     func getPartIsOneOfAllBilateralPartForObjectBeforeEdit(_ part: Part) -> Bool {
         let showMenuStatus = !OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
+       //print("\(part) \(showMenuStatus)")
         return showMenuStatus
     }
     
     
-    func getPartIsOneOfAllUniletralPartForObjectBeforeEdit(_ part: Part) -> Bool {
-        let showMenuStatus = OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
+ 
+    
+    func getDoesPartHaveDimensionalPropertyMenu(_ part: Part) -> Bool {
+        let exclusionsToDimensionPropertyMenu: [Part] = [
+            .sitOnTiltJoint]
+        let showMenuStatus =
+            OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part) &&
+            !exclusionsToDimensionPropertyMenu.contains(part)
+        
         return showMenuStatus
     }
-    
     
     func getBilateralityIsEditable(_ part: Part) -> Bool {
         //you cannot edit out a wheel related part
@@ -116,11 +109,33 @@ extension ObjectShowMenuViewModel {
             .casterForkAtFront,
             .casterWheelAtFront,
             .casterWheelAtMid,
-            .casterWheelAtRear
+            .casterWheelAtRear,
+            .sitOnTiltJoint
         ]
-        return
-            getPartIsOneOfAllBilateralPartForObjectBeforeEdit(part) &&
-            !nonEditableBilaterality.contains(part)
+        
+        let status = 
+        getPartIsOneOfAllBilateralPartForObjectBeforeEdit(part) &&
+        !nonEditableBilaterality.contains(part)
+        
+        print("\(part) \(status)")
+        return status
+            
+    }
+    
+    
+    func getEditableOrigin(_ part: Part) -> [PartTag] {
+        let yOnly: [PartTag] = [.yOrigin]
+        let xOnly: [PartTag] = [.xOrigin]
+        let editableOriginDic: [Part: [PartTag]] = [
+            .assistantFootLever: xOnly,
+            .casterForkAtFront: yOnly,
+            .casterForkAtMid: yOnly,
+            .casterForkAtRear: yOnly,
+        ]
+        
+      let editableOrigin = editableOriginDic[part] ?? [.xOrigin, .yOrigin]
+        
+        return editableOrigin
     }
     
     
@@ -132,8 +147,17 @@ extension ObjectShowMenuViewModel {
     func getOneOfAllEditablePartForObjectBeforeEdit() -> [String] {
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         let parts =
-            oneOfAllPartForObjectBeforeEdit.filter {!Self.noneditablePart.contains($0)}
+            oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains($0)}
         return parts.map{$0.rawValue}
+    }
+    
+    func getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit() -> [String] {
+        let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
+        let parts =
+            oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains($0)}
+        print( MenuNamesDictionary(parts, currentObjectType).names)
+        
+        return MenuNamesDictionary(parts, currentObjectType).names
     }
 }
 
