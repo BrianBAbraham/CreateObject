@@ -39,9 +39,10 @@ struct PickInitialObjectView: View {
         }
         .onChange(of: objectName) {tag in
             self.objectName = tag
+            objectEditVM.setChoiceOfPartToEdit(Part.mainSupport.rawValue)
             objectPickVM.setCurrentObjectName(tag)
             objectPickVM.resetObjectByCreatingFromName()
-            objectEditVM.setChoiceOfPartToEdit(Part.mainSupport.rawValue)
+           
         }
     }
 }
@@ -52,7 +53,10 @@ struct PickPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @State private var selectedItem = Part.mainSupport.rawValue
+
+    @State private var selectedMenuNameItem: String = Part.mainSupport.rawValue
+    let useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp = 0
+
     
     var body: some View {
         //object creation and etc use Part for
@@ -61,21 +65,25 @@ struct PickPartEdit: View {
         //Names can such as front wheel can represent caster or fixed
         //also names can be object sensitive
         let menuItemsUsingPart = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
-        let menuItemsUsingMenuName = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
+        let menuItemsUsingDisplayName = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
         
-        Picker("", selection: $selectedItem) {
-                ForEach(menuItemsUsingMenuName, id: \.self) { item in
+        Picker("", selection: $selectedMenuNameItem) {
+                ForEach(menuItemsUsingDisplayName, id: \.self) { item in
                     Text(item)
                 }
             }
-            .onChange(of: selectedItem) {oldValue, newValue in
-                guard let index = menuItemsUsingMenuName.firstIndex(where: { $0 == selectedItem }) else {
-                       fatalError("no index for part \(menuItemsUsingPart)")
-                   }
+            .onChange(of: selectedMenuNameItem) {oldValue, newValue in
+                
+                let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
+                    useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp
+//
+//                else {
+//                       fatalError("no index for part \(selectedMenuNameItem) in \(menuItemsUsingMenuName)")
+//                   }
                 objectEditVM.setChoiceOfPartToEdit(menuItemsUsingPart[index])
             }
             .onChange(of: objectPickVM.getCurrentObjectName()) {
-                selectedItem = Part.mainSupport.rawValue
+                selectedMenuNameItem = Part.mainSupport.rawValue
             }
     }
 }

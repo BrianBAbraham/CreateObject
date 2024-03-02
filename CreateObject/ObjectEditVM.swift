@@ -24,7 +24,7 @@ class ObjectEditViewModel: ObservableObject {
     
     var objectType: ObjectTypes = .fixedWheelRearDrive
     
-    @Published  var dimensionPropertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
+   var dimensionPropertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
     
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
     
@@ -49,7 +49,7 @@ class ObjectEditViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-        DictionaryService.shared.$dimensionValueToEdit
+        BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
             .sink { [weak self] newData in
                 self?.dimensionPropertyToEdit = newData
             }
@@ -87,6 +87,7 @@ extension ObjectEditViewModel {
     
     
     func getDimensionPropertyToBeEdited() -> PartTag {
+        //print(dimensionPropertyToEdit)
         return
             dimensionPropertyToEdit
     }
@@ -220,7 +221,7 @@ extension ObjectEditViewModel {
         _ isLeftSelected: Bool,
         _ isRightSelected: Bool,
         _ part: Part) {
-            
+            print(part)
         let side = //.both/.left/.right/.none
             convertLeftRightSelectionToSideSelection(
                 isLeftSelected,
@@ -239,19 +240,21 @@ extension ObjectEditViewModel {
                 .one(one: .id0): //if left requires .id0 for x < 0
                 .one(one: .id1)  //if right requires .i1 for x >= 0
             
-            let chainLabelForFootWasAlreadyRemoved = userEditedSharedDics.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
+            let chainLabelWasAlreadyRemoved = userEditedSharedDics.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
             
-            if chainLabelForFootWasAlreadyRemoved {
+            if chainLabelWasAlreadyRemoved {
                 restoreChainLabelToObject(part) //toggle is restoring
             }
             
             let ignoreFirstItem = 1 // relevant part subsequent
             for index in ignoreFirstItem..<partChain.count {
+                print("\(partChain[index]) \(newId)")
                 DictionaryService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
             }
         case .none:
             removeChainLabelFromObject(part)
         case .both:
+
             setPartIdDicInKeyToNilRestoringDefault(partChain)
             DictionaryService.shared.objectChainLabelsUserEditDicReseter(objectType)
         }
@@ -397,8 +400,8 @@ extension ObjectEditViewModel {
     
 
     func setDimensionPropertyToBeEdited(_ propertyToBeEdited: PartTag) {
-        dimensionPropertyToEdit = propertyToBeEdited
-        DictionaryService.shared.dimensionValueToEdit = propertyToBeEdited
+        //dimensionPropertyToEdit = propertyToBeEdited
+        BilateralPartWithOnePropertyToChangeService.shared.setDimensionPropertyToEdit(propertyToBeEdited)
     }
 
 }
@@ -408,6 +411,7 @@ extension ObjectEditViewModel {
     
     func removeChainLabelFromObject(
         _ chainLabel: Part) {
+          //  print(chainLabel)
         guard let currentObjectChainLabels =
                 DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] ??
                     ObjectChainLabel.dictionary[objectType] else {

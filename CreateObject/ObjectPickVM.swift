@@ -60,7 +60,7 @@ class ObjectPickViewModel: ObservableObject {
     let defaultMinMaxOriginDic =
         DefaultMinMaxOriginDictionary.shared
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
-    var dimensionValueToEdit: PartTag = .length
+//    var dimensionPropertyToEdit = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     var choiceOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
@@ -93,11 +93,11 @@ class ObjectPickViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-        DictionaryService.shared.$dimensionValueToEdit
-            .sink { [weak self] newData in
-                self?.dimensionValueToEdit = newData
-            }
-            .store(in: &self.cancellables)
+//        BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
+//            .sink { [weak self] newData in
+//                self?.dimensionPropertyToEdit = newData
+//            }
+//            .store(in: &self.cancellables)
         
         DictionaryService.shared.$partDataSharedDic
             .sink { [weak self] newData in
@@ -236,7 +236,7 @@ extension ObjectPickViewModel {
             .footSupport: .footSupportHangerLink]
         
         let part = associatedPartDic[associatedPart] ?? associatedPart
-        print (part.rawValue)
+       // print (part.rawValue)
         let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[part] ?? OneOrTwoId(currentObjectType, part).forPart
         
 
@@ -306,7 +306,7 @@ extension ObjectPickViewModel {
         _ part: Part,
         _ propertyToBeEdited: PartTag,
         _ callingFunc: String) -> (min: Double, max: Double) {
-//   print("\(part) \(callingFunc)")
+  // print("\(part) \(propertyToBeEdited)")
             var minMaxValue =
                 (min: 0.0, max: 0.0)
             
@@ -320,13 +320,21 @@ extension ObjectPickViewModel {
 //                    (min: values.min.value,
 //                     max: values.max.value)
                 
-            case .length, .width:
+            case .length:
                 let values =
                     defaultMinMaxDimensionDic.getDefault(
                         part,
                         currentObjectType)
                 minMaxValue = (min: values.min.length,
                                max: values.max.length)
+                
+            case .width:
+                let values =
+                    defaultMinMaxDimensionDic.getDefault(
+                        part,
+                        currentObjectType)
+                minMaxValue = (min: values.min.width,
+                               max: values.max.width)
                 
             case .xOrigin, .yOrigin, .zOrigin:
                 let values =

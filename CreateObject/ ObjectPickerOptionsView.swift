@@ -19,7 +19,9 @@ struct BilateralPartEditView: View {
      ]
     let linkedPartForOriginDic: [Part: Part] =
     [.footSupport: .footSupportHangerLink,
-     .casterWheelAtFront: .casterVerticalJointAtFront]
+     .casterWheelAtFront: .casterVerticalJointAtFront,
+     .casterWheelAtRear: .casterVerticalJointAtRear,
+     .steeredWheelAtFront: .steeredVerticalJointAtFront,]
     
     var origins: [PartTag] {
         objectShowMenuVM.getEditableOrigin(part) }
@@ -87,8 +89,6 @@ struct ConditionalBilateralPartPresence: View {
         objectEditVM.getChoiceOfPartToEdit()
     }
     
-    
-    
     var body: some View {
         if objectShowMenuVM.getBilateralityIsEditable(part) {
             BilateralPartPresence(part)
@@ -98,10 +98,27 @@ struct ConditionalBilateralPartPresence: View {
     }
 }
 
+
+struct ConditionalOnePartPresence: View {
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    var part: Part {
+        objectEditVM.getChoiceOfPartToEdit()
+    }
+    
+    var body: some View {
+        if objectShowMenuVM.getOneIsEditable(part) {
+            SinglePartPresence(part)
+        } else {
+            EmptyView()
+        }
+    }
+}
+
 struct DimensionPropertyPickerMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @State private var propertyToBeEdited: PartTag = .length
+   @State private var propertyToBeEdited: PartTag = .length
     var relevantCases: [PartTag] {
         objectShowMenuVM.getPropertyMenuForDimensionEdit(part)
     }
@@ -114,7 +131,10 @@ struct DimensionPropertyPickerMenu: View {
         _ part: Part) {
         self.part = part
     }
+    
+    
     var body: some View {
+       
         ZStack{
             HStack {
                 Spacer()
@@ -222,17 +242,17 @@ struct BilateralPartPresence: View {
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     let part: Part
     
-    var show: Bool {
-        true
+//    var show: Bool {
+//        true
         //objecShowMenuVM.getShowMenuStatus(.footSupport)
-    }
+//    }
     
     init (_ part: Part) {
         self.part = part
     }
     
     var body: some View {
-        if show {
+       // if show {
             HStack {
               
                 Toggle("", isOn: $isLeftSelected)
@@ -256,9 +276,9 @@ struct BilateralPartPresence: View {
                 isRightSelected = true
             }
            
-        } else {
-            EmptyView()
-        }
+//        } else {
+//            EmptyView()
+//        }
     }
     
     private func updateViewModel() {
@@ -317,17 +337,17 @@ struct BiLateralPartSidePicker: View {
 struct SliderForOneDimensionPropertyForBilateralPart: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    var minMaxValue : (min: Double, max: Double){
-        objectPickVM.geMinMax(part, propertyToBeEdited, "SliderForOneDimensionPropertyForBilateralPart")
-    }
+//    var minMaxValue : (min: Double, max: Double){
+//        objectPickVM.geMinMax(part, propertyToBeEdited, "SliderForOneDimensionPropertyForBilateralPart")
+//    }
     let part: Part
 
-    var propertyToBeEdited: PartTag {
-        objectEditVM.getDimensionPropertyToBeEdited()
-    }
-    var description: String {
-        propertyToBeEdited.rawValue
-    }
+//    var propertyToBeEdited: PartTag {
+//        objectEditVM.getDimensionPropertyToBeEdited()
+//    }
+//    var description: String {
+//        propertyToBeEdited.rawValue
+//    }
     init (
         _ part: Part) {
             self.part = part
@@ -336,6 +356,8 @@ struct SliderForOneDimensionPropertyForBilateralPart: View {
         }
  
     var body: some View {
+        let propertyToBeEdited = objectEditVM.getDimensionPropertyToBeEdited()
+        let minMaxValue =  objectPickVM.geMinMax(part, propertyToBeEdited, "SliderForOneDimensionPropertyForBilateralPart")
         let boundSliderValue =
             Binding(
                 get: {
@@ -473,7 +495,7 @@ struct OnePartTwoDimensionValueMenu: View {
                     objectPickVM.modifyObjectByCreatingFromName()
                     }
                 .onChange(of: propertyToBeEdited) { _ in
-                    print("DETECT")
+                    //print("DETECT")
                     
                     
                     sliderValue =
@@ -629,16 +651,16 @@ struct TiltView: View {
 
 
 
-struct PartPresence: View {
+struct SinglePartPresence: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
    
     let part: Part
-    var show: Bool {
-      objectShowMenuVM.getShowMenuStatus(part)
-    }
+//    var show: Bool {
+//      objectShowMenuVM.getShowMenuStatus(part)
+//    }
     var pair : [Part] {
         PartSwapLabel(part).pair    }
     var swappedPair: [Part] {
@@ -652,7 +674,7 @@ struct PartPresence: View {
     }
     
     var body: some View {
-        if show {
+//        if show {
             Toggle(part.rawValue, isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
                     if !value {
@@ -668,9 +690,9 @@ struct PartPresence: View {
                 }
                
                 .padding(.horizontal)
-        } else {
-            EmptyView()
-        }
+//        } else {
+//            EmptyView()
+//        }
     }
 }
 

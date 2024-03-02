@@ -9,21 +9,25 @@ import Foundation
 import SwiftUI
 import Combine
 
-struct EditObjectMenuShowModel {
 
-    }
 
 
 //MARK: DEVELOPMENT change to struct nothing changes
 ///Every object has associated menus providing user edit
 ///The View determines if it should display from this code
 class ObjectShowMenuViewModel: ObservableObject {
+    
     static let partsNotToAppearOnEditMenu: [Part] = [
         .backSupportHeadSupportLink,
         .backSupportHeadSupportJoint,
         .casterVerticalJointAtFront,
+        .casterVerticalJointAtRear,
+        .fixedWheelHorizontalJointAtFront,
+        .fixedWheelHorizontalJointAtMid,
         .fixedWheelHorizontalJointAtRear,
         .footSupportHangerLink,
+        .steeredVerticalJointAtFront,
+       
     ]
     
     var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
@@ -45,6 +49,7 @@ extension ObjectShowMenuViewModel {
     func getPropertyMenuForDimensionEdit(_ part: Part) -> [PartTag] {
         switch part{
         case .footSupport, .assistantFootLever:
+            BilateralPartWithOnePropertyToChangeService.shared.setDimensionPropertyToEdit(.length)
             return [.length]
         default: return [.length, .width]
         }
@@ -53,7 +58,7 @@ extension ObjectShowMenuViewModel {
     func getShowMenuStatus(_ part: Part) -> Bool{
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         let allParts = oneOfAllPartForObjectBeforeEdit
-        
+        print(part)
         let menuRequired = allParts.contains(part)
         return menuRequired
     }
@@ -86,6 +91,7 @@ extension ObjectShowMenuViewModel {
     }
     
     
+
  
     
     func getDoesPartHaveDimensionalPropertyMenu(_ part: Part) -> Bool {
@@ -102,22 +108,42 @@ extension ObjectShowMenuViewModel {
         //you cannot edit out a wheel related part
         let nonEditableBilaterality: [Part] = [
             .fixedWheelAtFront,
+            .fixedWheelAtFrontWithPropeller,
             .fixedWheelAtMid,
             .fixedWheelAtRear,
+            .fixedWheelAtRearWithPropeller,
             .casterForkAtFront,
             .casterForkAtMid,
             .casterForkAtFront,
             .casterWheelAtFront,
             .casterWheelAtMid,
             .casterWheelAtRear,
-            .sitOnTiltJoint
+            .sitOnTiltJoint,
+            .steeredWheelAtFront
         ]
         
         let status = 
         getPartIsOneOfAllBilateralPartForObjectBeforeEdit(part) &&
         !nonEditableBilaterality.contains(part)
         
-        print("\(part) \(status)")
+       // print("\(part) \(status)")
+        return status
+            
+    }
+    
+    func getOneIsEditable(_ part: Part) -> Bool {
+        //you cannot edit out a wheel related part
+        let nonEditableBilaterality: [Part] = [
+            .backSupport,
+            .mainSupport,
+            .sitOnTiltJoint,
+        ]
+        
+        let status =
+        
+        !nonEditableBilaterality.contains(part)
+        
+       // print("\(part) \(status)")
         return status
             
     }
@@ -155,10 +181,21 @@ extension ObjectShowMenuViewModel {
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         let parts =
             oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains($0)}
-        print( MenuNamesDictionary(parts, currentObjectType).names)
+       // print( MenuDisplayPartDictionary(parts, currentObjectType).names)
         
-        return MenuNamesDictionary(parts, currentObjectType).names
+        return MenuDisplayPartDictionary(parts, currentObjectType).names
     }
+    
+//    func getOneMenuNameForPartName (_ part: Part) -> String {
+//    
+//        let menuName = MenuNamesDictionary([part], currentObjectType).name
+//        if menuName == "" {
+//            fatalError("no menu name for \(part)")
+//        } else {
+//            return menuName
+//        }
+//        
+//    }
 }
 
 

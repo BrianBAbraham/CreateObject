@@ -174,7 +174,9 @@ struct ContentView: View {
                         VStack {
                             HStack{
                                 PickPartEdit()
+                                    Spacer()
                                 ConditionalBilateralPartPresence()
+                                ConditionalOnePartPresence()
                             }
                             .padding(.top, 5)
                             .padding(.horizontal)

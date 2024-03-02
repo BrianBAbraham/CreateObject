@@ -25,15 +25,20 @@ class BilateralPartWithOnePropertyToChangeService {
     func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
         choiceOfEditForSide = sideChoice
     }
+    
+    func setDimensionPropertyToEdit(_ propertyToBeEdit: PartTag) {
+        //print(propertyToBeEdited)
+        dimensionPropertyToEdit = propertyToBeEdit
+    }
 }
+
+
 
 class DictionaryService {
     @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     @Published var partDataSharedDic: [Part: PartData] = [:]
     @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
 
-    @Published var dimensionValueToEdit: PartTag = .length
-        
     static let shared = DictionaryService()
     
     func angleUserEditedDicModifier(_ entry: AnglesDictionary){

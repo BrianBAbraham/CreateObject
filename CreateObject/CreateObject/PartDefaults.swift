@@ -420,7 +420,7 @@ struct PartEditedElseDefaultOrigin {
             switch userEditedPartDimensionOneOrTwo {
             case .one (let onePart):
                 guard let oneParent = parentDimensionAsTouple.one else {
-                    fatalError("one accessed but no one")
+                    fatalError("one accessed but no one only \(parentDimensionAsTouple) for \(part)")
                 }
                 guard var returnOneOrigin = getDefaultFromDimensions(onePart, oneParent) else {
                     fatalError("no default dimension for this part \(part)")
@@ -623,5 +623,81 @@ struct PartEditedElseDefaultOrigin {
                     break
             }
         return origin
+    }
+}
+
+
+enum MenuDisplayPart: String {
+    case armrest = "armrest"
+    case backrest = "back rest"
+    case base = "base"
+    case casterForkAtFront = "front caster fork"
+    case casterForkAtMid = "mid caster fork"
+    case casterForkAtRear = "rear caster fork"
+    case footRest = "footrest"
+    case footLever = "foot tipper"
+    case headrest = "headrest"
+    case propeller = "propeller"
+    case sides = "sides"
+    case seat = "seat"
+    case tilt = "tilt"
+    case top = "top"
+
+
+    case wheelAtMid = "mid wheel"
+    case wheelAtRear = "rear wheel"
+    case wheelAtFront = "front wheel"
+}
+
+
+struct MenuDisplayPartDictionary {
+var names: [String] = []
+var name: String = ""
+   static let partToMenuNameDictionary: [Part: MenuDisplayPart] = [
+        .assistantFootLever: .footLever,
+        .armSupport: .armrest,
+        .backSupport: .backrest,
+        .backSupportHeadSupport: .headrest,
+        .casterForkAtFront: .casterForkAtFront,
+        .casterForkAtMid: .casterForkAtMid,
+        .casterForkAtRear: .casterForkAtRear,
+        .casterWheelAtFront: .wheelAtFront,
+        .casterWheelAtMid: .wheelAtMid,
+        .casterWheelAtRear: .wheelAtRear,
+
+        .fixedWheelAtFront: .wheelAtFront,
+        .fixedWheelAtMid: .wheelAtMid,
+        .fixedWheelAtRear: .wheelAtRear,
+        .footSupport: .footRest,
+        .fixedWheelAtFrontWithPropeller: .propeller,
+        .fixedWheelAtMidWithPropeller: .propeller,
+        .fixedWheelAtRearWithPropeller: .propeller,
+        .mainSupport: .seat,
+        .sitOnTiltJoint: .tilt,
+        .steeredWheelAtFront: .wheelAtFront
+        ]
+   static let partObjectToMenuNameDictionary: [PartObject: MenuDisplayPart] = [
+    PartObject(.sideSupport, .allCasterBed): .sides,
+    PartObject(.sideSupport, .allCasterStretcher): .sides,
+    PartObject(.mainSupport, .allCasterBed): .top,
+    PartObject(.mainSupport, .allCasterStretcher): .top,
+    PartObject(.mainSupport, .showerTray): .base,
+    ]
+    
+    init(_ parts: [Part], _ objectType: ObjectTypes) {
+        var menuCase: MenuDisplayPart?
+        
+        for part in parts {
+            menuCase =
+                Self.partObjectToMenuNameDictionary[PartObject(part, objectType)] ?? Self.partToMenuNameDictionary[part]
+            
+            guard let unwrapped = menuCase else {
+                fatalError("no menu name for \(part)")
+            }
+            names += [unwrapped.rawValue]
+        }
+        
+        name = names.count == 1 ? names[0]: ""
+        
     }
 }
