@@ -99,6 +99,7 @@ struct ConditionalBilateralPartPresence: View {
 }
 
 
+
 struct ConditionalOnePartPresence: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -114,6 +115,8 @@ struct ConditionalOnePartPresence: View {
         }
     }
 }
+
+
 
 struct DimensionPropertyPickerMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -242,17 +245,14 @@ struct BilateralPartPresence: View {
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     let part: Part
     
-//    var show: Bool {
-//        true
-        //objecShowMenuVM.getShowMenuStatus(.footSupport)
-//    }
+
     
     init (_ part: Part) {
         self.part = part
     }
     
     var body: some View {
-       // if show {
+     
             HStack {
               
                 Toggle("", isOn: $isLeftSelected)
@@ -276,9 +276,7 @@ struct BilateralPartPresence: View {
                 isRightSelected = true
             }
            
-//        } else {
-//            EmptyView()
-//        }
+
     }
     
     private func updateViewModel() {
@@ -655,26 +653,19 @@ struct SinglePartPresence: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
    
     let part: Part
-//    var show: Bool {
-//      objectShowMenuVM.getShowMenuStatus(part)
-//    }
     var pair : [Part] {
         PartSwapLabel(part).pair    }
     var swappedPair: [Part] {
         PartSwapLabel(part).swappedPair
     }
     
-    
-    
     init (_ part: Part) {
         self.part = part
     }
     
     var body: some View {
-//        if show {
             Toggle(part.rawValue, isOn: $optionToggle)
                 .onChange(of: optionToggle) { value in
                     if !value {
@@ -688,11 +679,8 @@ struct SinglePartPresence: View {
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
-               
                 .padding(.horizontal)
-//        } else {
-//            EmptyView()
-//        }
+
     }
 }
 

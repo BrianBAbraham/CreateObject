@@ -132,18 +132,15 @@ extension ObjectShowMenuViewModel {
     }
     
     func getOneIsEditable(_ part: Part) -> Bool {
-        //you cannot edit out a wheel related part
-        let nonEditableBilaterality: [Part] = [
-            .backSupport,
-            .mainSupport,
-            .sitOnTiltJoint,
+
+        let editable: [Part] = [
+            .backSupportHeadSupport
         ]
         
         let status =
         
-        !nonEditableBilaterality.contains(part)
-        
-       // print("\(part) \(status)")
+        editable.contains(part)
+
         return status
             
     }

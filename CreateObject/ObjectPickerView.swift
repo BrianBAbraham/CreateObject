@@ -48,7 +48,6 @@ struct PickInitialObjectView: View {
 }
 
 
-
 struct PickPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -67,24 +66,29 @@ struct PickPartEdit: View {
         let menuItemsUsingPart = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
         let menuItemsUsingDisplayName = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
         
-        Picker("", selection: $selectedMenuNameItem) {
+        
+     
+            Picker("", selection: $selectedMenuNameItem) {
                 ForEach(menuItemsUsingDisplayName, id: \.self) { item in
                     Text(item)
+                     
                 }
             }
+          
+            
             .onChange(of: selectedMenuNameItem) {oldValue, newValue in
                 
                 let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
-                    useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp
-//
-//                else {
-//                       fatalError("no index for part \(selectedMenuNameItem) in \(menuItemsUsingMenuName)")
-//                   }
+                useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp
                 objectEditVM.setChoiceOfPartToEdit(menuItemsUsingPart[index])
             }
             .onChange(of: objectPickVM.getCurrentObjectName()) {
                 selectedMenuNameItem = Part.mainSupport.rawValue
             }
+            
+            
+       
+           
     }
 }
 
