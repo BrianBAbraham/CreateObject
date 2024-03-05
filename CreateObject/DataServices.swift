@@ -77,6 +77,12 @@ class DictionaryService {
     }
     
     func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
+        
+//        if let check = entry[.fixedWheelAtRearWithPropeller] {
+//            print("")
+//            print("data service")
+//            print (entry)
+//        }
         userEditedSharedDics.partIdsUserEditedDic += entry
     }
     

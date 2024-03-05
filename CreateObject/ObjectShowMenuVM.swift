@@ -58,7 +58,7 @@ extension ObjectShowMenuViewModel {
     func getShowMenuStatus(_ part: Part) -> Bool{
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         let allParts = oneOfAllPartForObjectBeforeEdit
-        print(part)
+       // print(part)
         let menuRequired = allParts.contains(part)
         return menuRequired
     }
@@ -111,7 +111,7 @@ extension ObjectShowMenuViewModel {
             .fixedWheelAtFrontWithPropeller,
             .fixedWheelAtMid,
             .fixedWheelAtRear,
-            .fixedWheelAtRearWithPropeller,
+           // .fixedWheelAtRearWithPropeller,
             .casterForkAtFront,
             .casterForkAtMid,
             .casterForkAtFront,
@@ -154,6 +154,7 @@ extension ObjectShowMenuViewModel {
             .casterForkAtFront: yOnly,
             .casterForkAtMid: yOnly,
             .casterForkAtRear: yOnly,
+            .fixedWheelAtRearWithPropeller: xOnly
         ]
         
       let editableOrigin = editableOriginDic[part] ?? [.xOrigin, .yOrigin]

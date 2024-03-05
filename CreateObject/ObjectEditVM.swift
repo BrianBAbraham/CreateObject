@@ -221,7 +221,7 @@ extension ObjectEditViewModel {
         _ isLeftSelected: Bool,
         _ isRightSelected: Bool,
         _ part: Part) {
-            print(part)
+            //print(part)
         let side = //.both/.left/.right/.none
             convertLeftRightSelectionToSideSelection(
                 isLeftSelected,
@@ -246,8 +246,12 @@ extension ObjectEditViewModel {
                 restoreChainLabelToObject(part) //toggle is restoring
             }
             
-            let ignoreFirstItem = 1 // relevant part subsequent
+            var ignoreFirstItem = 1 // relevant part subsequent
+            if part == .fixedWheelAtRearWithPropeller {
+                ignoreFirstItem += 1
+            }
             for index in ignoreFirstItem..<partChain.count {
+                print(part)
                 print("\(partChain[index]) \(newId)")
                 DictionaryService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
             }

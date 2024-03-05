@@ -14,27 +14,27 @@ struct BilateralPartEditView: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     let part: Part
-    let linkedPartForDimensionDic: [Part: Part] =
-    [.footSupport: .footSupportHangerLink,
-     ]
-    let linkedPartForOriginDic: [Part: Part] =
-    [.footSupport: .footSupportHangerLink,
-     .casterWheelAtFront: .casterVerticalJointAtFront,
-     .casterWheelAtRear: .casterVerticalJointAtRear,
-     .steeredWheelAtFront: .steeredVerticalJointAtFront,]
-    
     var origins: [PartTag] {
         objectShowMenuVM.getEditableOrigin(part) }
     let dimensionProperty: [PartTag] = [.width, .length]
     let partOrLinkedPartForDimension: Part
     let partOrLinkedPartForOrigin: Part
-    
 
+    
     init (_ part: Part) {
         self.part = part
-        partOrLinkedPartForDimension = linkedPartForDimensionDic[part] ?? part
-        partOrLinkedPartForOrigin = linkedPartForOriginDic[part] ?? part
+        //print(part)
+        let partsRequiringLinkedPartUse =
+                    PartsRequiringLinkedPartUse(part)
+        
+       
+        partOrLinkedPartForDimension = partsRequiringLinkedPartUse.partForDimension
+        partOrLinkedPartForOrigin = partsRequiringLinkedPartUse.partForOrigin
+//        print(partOrLinkedPartForOrigin)
+//        print("")
     }
+        
+    
     var body: some View {
         ZStack{
             VStack{
@@ -686,7 +686,8 @@ struct SinglePartPresence: View {
 
 
 
-
+///Bilateral removal of seat attachment without replacement
+///Unilateral removal with replacement
 
 
 

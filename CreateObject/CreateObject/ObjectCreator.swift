@@ -142,16 +142,37 @@ extension ObjectData {
         
         //e,g. .sitOn is foundational to .fixedWheelHorizontalJoint...
         // object width is depenent on .sitOn
-        let orderedSoLinkedOrParentPartInitialisedFirst = //getOneOfEachPartInAllPartChain()
+        let orderedSoLinkedOrParentPartInitialisedFirst =
           oneOfEachPartInAllPartChain
+        //print(orderedSoLinkedOrParentPartInitialisedFirst)
         if orderedSoLinkedOrParentPartInitialisedFirst.contains(.mainSupport) {
             initialiseLinkedOrParentPart(.mainSupport)
         }
         
         for part in orderedSoLinkedOrParentPartInitialisedFirst {
             if part != .mainSupport {
-                let parentPart = getLinkedOrParentPart(part)
-                initialisePart(parentPart, part )
+                let parentOrLinkedPart: Part
+                
+//                if let linkedPart = PartsRequiringLinkedPartUse(part).partForLink {
+//                 parentOrLinkedPart = linkedPart
+//                } else {
+                    parentOrLinkedPart = getLinkedOrParentPart(part)
+//                }
+                    
+                    
+                
+//if part == .fixedWheelAtRearWithPropeller {
+//print("object linkedPart \(linkedPart)")
+//}
+//                
+                
+               
+                
+                initialisePart(parentOrLinkedPart, part )
+                
+//                if part == .fixedWheelAtRearWithPropeller {
+//                print("initialise linkedPart \(parentOrLinkedPart)")
+//                }
             }
         
         }
@@ -179,6 +200,9 @@ extension ObjectData {
             guard let linkedOrParentData = partValuesDic[linkedlOrParentPart] else {
                 fatalError("no partValue for \(linkedlOrParentPart)")
             }
+
+             
+        
         childData =
             StructFactory(
                 objectType,
@@ -217,6 +241,10 @@ extension ObjectData {
         for label in allPartChainLabels {
             let partChain = LabelInPartChainOut(label).partChain
 
+//            if label == .fixedWheelAtRear {
+//            print("getLinkedOrParentPart \(partChain)")
+//            }
+            
             for i in 0..<partChain.count {
                 if let linkedPart = linkedPartsDictionary[childPart], linkedPart != .notFound {
                     linkedOrParentPart = linkedPart
@@ -921,6 +949,10 @@ struct StructFactory {
         self.parentPart = linkedOrParentData.part
         self.chainLabel = chainLabel
         let sitOnId: PartTag = .id0
+        
+//        if part == .fixedWheelAtRearWithPropeller {
+//            print("struct linkedPart \(linkedOrParentData.originName)")
+//        }
 
         userEditedData =
             UserEditedData(
@@ -937,6 +969,11 @@ struct StructFactory {
                     objectType,
                     linkedOrParentData,
                     userEditedData.optionalDimension)
+        
+        if part == .fixedWheelAtRearWithPropeller {
+            print("userEditedData.optionalDimension")
+            print (userEditedData.optionalDimension)
+        }
         
         let defaultDimensionOneOrTwo =
                 defaultDimensionData.userEditedDimensionOneOrTwo
@@ -1248,6 +1285,9 @@ struct UserEditedData {
             OneOrTwoId(objectType, part).forPart // default
                         
             
+          
+
+            
             originName = getOriginName(partIdAllowingForUserEdit)
                                        
            optionalOrigin = getOptionalOrigin()
@@ -1258,7 +1298,12 @@ struct UserEditedData {
             
             optionalAngles = getOptionalAngles()
             optionalDimension = getOptionalDimension()
-
+            
+            if part == .fixedWheelAtRearWithPropeller {
+                print("Edited Dic")
+                print (dimensionUserEditedDic)
+                print(partIdAllowingForUserEdit)
+            }
         }
     
     
