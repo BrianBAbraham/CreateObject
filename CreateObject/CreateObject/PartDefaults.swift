@@ -290,9 +290,9 @@ struct PartDefaultDimension {
         
         partDimension = unwrapped
        
-//        if part == .fixedWheelAtRearWithPropeller {
-//            print (linkedOrParentData.originName)
-//        }
+        if part == .fixedWheelAtRearWithPropeller {
+            print (linkedOrParentData.originName)
+        }
         
         if let unwrapped = userEditedDimensionOneOrTwoOptional {
             userEditedDimensionOneOrTwo = getDimensionFromOptional()
@@ -386,7 +386,8 @@ struct PartDefaultDimension {
 
 
 struct PartEditedElseDefaultOrigin {
-    var linkedOrParentDimension: Dimension3d
+    let linkedOrParentDimension: OneOrTwo<Dimension3d>
+    var linkedOrParentDimensionUsingOneValue: Dimension3d
     let part: Part
     let objectType: ObjectTypes
   
@@ -411,17 +412,17 @@ struct PartEditedElseDefaultOrigin {
             userEditedOriginOffsetOneOrTwoOptional//provide edited origin
 //        
 //        if part == .fixedWheelAtRearWithPropeller {
-//            print (PartDefaultDimension(.fixedWheelAtRear,objectType, linkedOrParentData).partDimension.width )
+//            print (partIdAllowingForUserEdit )
 //        }
-        
-        linkedOrParentDimension = linkedOrParentData.dimension.mapOneOrTwoToOneOrLeftValue()
+        linkedOrParentDimension = linkedOrParentData.dimension
+        linkedOrParentDimensionUsingOneValue = linkedOrParentDimension.mapOneOrTwoToOneOrLeftValue()
         
         editedElseDefaultOriginOneOrTwo = getOneOrTwoOriginWithOptionalOffset()
         
         //child origin is with respect to parent dimension
         func getOneOrTwoOriginWithOptionalOffset() -> OneOrTwo<PositionAsIosAxes>{
 
-            let parentDimensionAsTouple = linkedOrParentData.dimension.mapToTouple()
+            let parentDimensionAsTouple = linkedOrParentDimension.mapToTouple()
             
             
             
@@ -431,32 +432,59 @@ struct PartEditedElseDefaultOrigin {
             
             switch userEditedPartDimensionOneOrTwo {
             case .one (let onePart):
+                var oneParentValueIfOneChild: Dimension3d
                 
-                if parentDimensionAsTouple.one == nil &&
-                    partIdAllowingForUserEdit.mapToTouple().one != nil {
-                    print("one child id removed while there are two parent id remaining")
-                    let childId = partIdAllowingForUserEdit.mapToTouple().one
-                    
-                    let parentDimension = childId == .id0 ? parentDimensionAsTouple.left: parentDimensionAsTouple.right
-                    
-                    
+                if let unwrapped = parentDimensionAsTouple.one {
+                    //parent has one (unilateral) dimension
+                    oneParentValueIfOneChild = unwrapped
+                } else {
+                    //parent has two (bilateral) dimension
+                    if  partIdAllowingForUserEdit.mapToTouple().one != nil {
+                        //but child has one dimension
+                            oneParentValueIfOneChild = assignParentDimensionAccordingToId()
+                    } else {
+                        fatalError("child is one and parent is neither one or two")
+                    }
                 }
-                guard let oneParent = parentDimensionAsTouple.one else {
-                    fatalError("one accessed but no one only \(parentDimensionAsTouple) for \(part)")
-                }
-                guard var returnOneOrigin = getDefaultFromDimensions(onePart, oneParent) else {
+            
+                guard var returnOneOrigin = getDefaultFromDimensions(onePart, oneParentValueIfOneChild) else {
                     fatalError("no default dimension for this part \(part)")
                 }
+                
+                
+                
                 if doesOneHaveId0RequiringRightToLeftTransform() != nil {
                     returnOneOrigin = CreateIosPosition.getLeftFromRight(returnOneOrigin)
                 }
                 let editedElseDefaultOrigin: OneOrTwo<PositionAsIosAxes> =
                     getUserEditedElseDefaultPartOrigin(returnOneOrigin)
                 
+                
+if part == .fixedWheelAtRearWithPropeller {
+    print ("ONE origin activated")
+}
+                
+                
                 return editedElseDefaultOrigin
-
+                
+                
+                func assignParentDimensionAccordingToId() -> Dimension3d {
+                    guard let childId = partIdAllowingForUserEdit.mapToTouple().one else {
+                        fatalError("no child id")
+                    }
+                    let parentDimension: OneOrTwo<Dimension3d> =
+                    linkedOrParentDimension.mapTwoToOneUsingOneId(childId)
+                    
+                    return parentDimension.returnValue(childId)
+                }
+                
+                
+                
             case .two(let leftPart, let rightPart):
-
+                
+                if part == .fixedWheelAtRearWithPropeller {
+                    print ("TWO origin activated")
+                }
                 var returnLeftOrigin = getDefaultFromDimensions(leftPart, parentDimensionAsTouple.left) ?? ZeroValue.iosLocation
 
                 returnLeftOrigin = CreateIosPosition.getLeftFromRight(returnLeftOrigin)
@@ -474,7 +502,14 @@ struct PartEditedElseDefaultOrigin {
             _ value1: PositionAsIosAxes,
             _ value2: PositionAsIosAxes? = nil ) -> OneOrTwo<PositionAsIosAxes>{
             //edited values else default values
+                let origins =
             userEditedOriginOffsetOneOrTwoOptional.mapValuesToOptionalOneOrTwoAddition(value1, value2)
+                if part == .fixedWheelAtRearWithPropeller {
+                   
+                    print(userEditedOriginOffsetOneOrTwoOptional)
+                    print (origins )
+                }
+                return origins
         }
         
         
@@ -578,8 +613,8 @@ struct PartEditedElseDefaultOrigin {
         let midStability = PartDefaultDimension(.stabilizerAtMid, objectType).partDimension
         let rearStability = PartDefaultDimension(.stabilizerAtRear, objectType ).partDimension
         
-        let xOffset = linkedOrParentDimension.width
-        let yOffset = linkedOrParentDimension.length
+        let xOffset = linkedOrParentDimensionUsingOneValue.width
+        let yOffset = linkedOrParentDimensionUsingOneValue.length
         let wheelJointHeight = 0.0
         let rearCasterVerticalJointOriginForMidDrive = (
                 x: xOffset/2 + rearStability.width,

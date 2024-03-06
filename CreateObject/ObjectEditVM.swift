@@ -251,9 +251,13 @@ extension ObjectEditViewModel {
                 ignoreFirstItem += 1
             }
             for index in ignoreFirstItem..<partChain.count {
-                print(part)
-                print("\(partChain[index]) \(newId)")
+//if part == .fixedWheelAtRearWithPropeller {
+//                    print(part)
+//                    print("\(partChain[index]) \(newId)")
+//}
                 DictionaryService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
+                
+                //print(userEditedSharedDics.partIdsUserEditedDic)
             }
         case .none:
             removeChainLabelFromObject(part)

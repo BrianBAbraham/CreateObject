@@ -32,7 +32,7 @@ struct ObjectData {
         self.objectType = objectType
         self.userEditedDic = userEditedDic
         self.objectChainLabelsDefaultDic = ObjectChainLabel.dictionary
-            self.objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
+        self.objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
         
         allPartChainLabels = getAllPartChainLabels()
             
@@ -44,6 +44,15 @@ struct ObjectData {
         
         postProcessGlobalOrigin()
             
+            
+            for part in allPartChainLabels {
+                if part == .fixedWheelAtRearWithPropeller {
+                    print("")
+                    print("object creator")
+                    print(partValuesDic[.fixedWheelAtRearWithPropeller]?.globalOrigin)
+                    print("")
+                }
+            }
     }
     
     func checkObjectHasAtLeastOnePartChain(){
@@ -59,8 +68,8 @@ struct ObjectData {
    mutating func postProcessGlobalOrigin(){
         let allPartChain = getAllPartChain()
         var partsToHaveGlobalOriginSet =
-       oneOfEachPartInAllPartChain
-       //getOneOfEachPartInAllPartChain()
+           oneOfEachPartInAllPartChain
+     
         for chain in allPartChain {
             processPart( chain)
         }
@@ -70,7 +79,7 @@ struct ObjectData {
                 let part = chain[index]
                 if partsToHaveGlobalOriginSet.contains(part){
                 let parentGlobalOrigin = getParentGlobalOrigin(index)
-                setGlobalOrigin(part, parentGlobalOrigin)
+                    setGlobalOrigin(part, parentGlobalOrigin)
                   partsToHaveGlobalOriginSet = removePartFromArray(part)
                 }
             }
@@ -107,8 +116,21 @@ struct ObjectData {
                 fatalError("This part:\(part) has not been intialised where the parent global origin is \(parentGlobalOrigin)")
             }
             let childOrigin = partValue.childOrigin
+            
+            var modifiedParentGlobalOrigin: OneOrTwo<PositionAsIosAxes>
+            if childOrigin.oneNotTwo() && !parentGlobalOrigin.oneNotTwo() {
+                guard let childId = partValue.id.one else {
+                    fatalError("no child id")
+                }
+                modifiedParentGlobalOrigin = parentGlobalOrigin.mapTwoToOneUsingOneId(childId)
+            } else {
+                modifiedParentGlobalOrigin = parentGlobalOrigin
+            }
+            
+            
             let globalOrigin =
-                   getGlobalOrigin(childOrigin, parentGlobalOrigin)
+                   getGlobalOrigin(childOrigin, modifiedParentGlobalOrigin)
+            
             let modifiedPartValue = partValue.withNewGlobalOrigin(globalOrigin)
             partValuesDic[part] = modifiedPartValue
         }
@@ -119,7 +141,7 @@ struct ObjectData {
         _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>)
        -> OneOrTwo<PositionAsIosAxes> {
             let (modifiedChildOrigin, modifiedParentGlobalOrigin) =
-            OneOrTwo<Any>.convert2OneOrTwoToAllTwoIfMixedOneAndTwo (childOrigin, parentGlobalOrigin)
+                OneOrTwo<Any>.convert2OneOrTwoToAllTwoIfMixedOneAndTwo (childOrigin, parentGlobalOrigin)
             return
                 modifiedChildOrigin.mapWithDoubleOneOrTwoWithOneOrTwoReturn(modifiedParentGlobalOrigin)
         }
@@ -633,6 +655,8 @@ enum OneOrTwo <T> {
     case one (one: T)
     
     
+    
+    
     func mapOriginalValueToSomePropertyComponent<U>(
         _ oneOrTwoOriginal: OneOrTwo<U>,
         _ propertyToBeEdited: PartTag) -> OneOrTwo<PositionAsIosAxes>{
@@ -825,7 +849,28 @@ enum OneOrTwo <T> {
     }
 
     
+    func oneNotTwo()->Bool {
+        switch self {
+        case .one:
+            return true
+        case .two:
+            return false
+        }
+    }
     
+    
+    func mapTwoToOneUsingOneId<Dimension3d>(_ id: PartTag) -> OneOrTwo<Dimension3d> {
+        switch self {
+        case .two(let left, let right):
+            return id == .id0 ? .one(one: left as! Dimension3d): .one(one: right as! Dimension3d )
+        case .one(let one):
+           fatalError("only .two may be used")
+        }
+    }
+    
+    
+    ///if the child has one and the parent has two then the child should use the relevant
+    ///parent based on its id
   static func convert2OneOrTwoToAllTwoIfMixedOneAndTwo<U, V>(
         _ value1: OneOrTwo<U>,
         _ value2: OneOrTwo<V>
@@ -917,7 +962,8 @@ enum OneOrTwo <T> {
              transform(left0 as! Dimension3d, left1, left2, left3, left4, left5)
              transform(right0 as! Dimension3d, right1, right2, right3, right4, right5)
          default:
-              fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
+             break
+//              fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
          }
      }
 }
@@ -970,10 +1016,10 @@ struct StructFactory {
                     linkedOrParentData,
                     userEditedData.optionalDimension)
         
-        if part == .fixedWheelAtRearWithPropeller {
-            print("userEditedData.optionalDimension")
-            print (userEditedData.optionalDimension)
-        }
+//        if part == .fixedWheelAtRearWithPropeller {
+//            print("userEditedData.optionalDimension")
+//            print (userEditedData.optionalDimension)
+//        }
         
         let defaultDimensionOneOrTwo =
                 defaultDimensionData.userEditedDimensionOneOrTwo
@@ -1082,7 +1128,11 @@ extension StructFactory {
             partAnglesMinMax = getMinMaxAngles(minMaxAngle)
         }
  
-          
+//            if part == .fixedWheelAtRearWithPropeller {
+//                print("StructFactory")
+//                print (partId)
+//            }
+//          
         return
             PartData(
                 part: part,
@@ -1299,11 +1349,11 @@ struct UserEditedData {
             optionalAngles = getOptionalAngles()
             optionalDimension = getOptionalDimension()
             
-            if part == .fixedWheelAtRearWithPropeller {
-                print("Edited Dic")
-                print (dimensionUserEditedDic)
-                print(partIdAllowingForUserEdit)
-            }
+//            if part == .fixedWheelAtRearWithPropeller {
+//                print("Edited Dic")
+//                print (partIdDicIn)
+//                print(partIdAllowingForUserEdit)
+//            }
         }
     
     

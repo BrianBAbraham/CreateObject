@@ -61,6 +61,8 @@ struct ObjectImageData {
                 userEditedDic)
                     .partValuesDic
             
+//            print("Object image")
+//            print(partDataDic[.fixedWheelAtRearWithPropeller]?.id)
         DictionaryService.shared.partDataSharedDic = partDataDic
                         
         createPreTiltDictionaryFromStructFactory()
@@ -86,7 +88,7 @@ struct ObjectImageData {
             
             
             
-//        DictionaryInArrayOut().getNameValue(postTiltObjectToOneCornerPerKeyDic
+//        DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic
 //        ).forEach{print($0)}
             
         dimension = getSize()
@@ -174,6 +176,15 @@ extension ObjectImageData {
             
         let globalOrigin = partValue.globalOrigin
         let childOrigin = partValue.childOrigin
+            
+            if part == .fixedWheelAtRearWithPropeller {
+                print("")
+                print("ObjectImageData")
+                print (partValue.dimension)
+                print(partValue.globalOrigin)
+                print(partValue.id)
+                print("")
+            }
  
         partValue.dimension.mapSixOneOrTwoToOneFuncWithVoidReturn  (
         partValue.originName,
