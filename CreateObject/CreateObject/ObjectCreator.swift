@@ -45,14 +45,14 @@ struct ObjectData {
         postProcessGlobalOrigin()
             
             
-            for part in allPartChainLabels {
-                if part == .fixedWheelAtRearWithPropeller {
-                    print("")
-                    print("object creator")
-                    print(partValuesDic[.fixedWheelAtRearWithPropeller]?.globalOrigin)
-                    print("")
-                }
-            }
+//            for part in allPartChainLabels {
+//                if part == .fixedWheelAtRearWithPropeller {
+//                    print("")
+//                    print("object creator")
+//                    print(partValuesDic[.fixedWheelAtRearWithPropeller]?.globalOrigin)
+//                    print("")
+//                }
+//            }
     }
     
     func checkObjectHasAtLeastOnePartChain(){

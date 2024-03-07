@@ -290,9 +290,9 @@ struct PartDefaultDimension {
         
         partDimension = unwrapped
        
-        if part == .fixedWheelAtRearWithPropeller {
-            print (linkedOrParentData.originName)
-        }
+//        if part == .fixedWheelAtRearWithPropeller {
+//            print (linkedOrParentData.originName)
+//        }
         
         if let unwrapped = userEditedDimensionOneOrTwoOptional {
             userEditedDimensionOneOrTwo = getDimensionFromOptional()
@@ -482,9 +482,9 @@ if part == .fixedWheelAtRearWithPropeller {
                 
             case .two(let leftPart, let rightPart):
                 
-                if part == .fixedWheelAtRearWithPropeller {
-                    print ("TWO origin activated")
-                }
+//                if part == .fixedWheelAtRearWithPropeller {
+//                    print ("TWO origin activated")
+//                }
                 var returnLeftOrigin = getDefaultFromDimensions(leftPart, parentDimensionAsTouple.left) ?? ZeroValue.iosLocation
 
                 returnLeftOrigin = CreateIosPosition.getLeftFromRight(returnLeftOrigin)
@@ -504,11 +504,11 @@ if part == .fixedWheelAtRearWithPropeller {
             //edited values else default values
                 let origins =
             userEditedOriginOffsetOneOrTwoOptional.mapValuesToOptionalOneOrTwoAddition(value1, value2)
-                if part == .fixedWheelAtRearWithPropeller {
-                   
-                    print(userEditedOriginOffsetOneOrTwoOptional)
-                    print (origins )
-                }
+//                if part == .fixedWheelAtRearWithPropeller {
+//                   
+//                    print(userEditedOriginOffsetOneOrTwoOptional)
+//                    print (origins )
+//                }
                 return origins
         }
         

@@ -177,14 +177,14 @@ extension ObjectImageData {
         let globalOrigin = partValue.globalOrigin
         let childOrigin = partValue.childOrigin
             
-            if part == .fixedWheelAtRearWithPropeller {
-                print("")
-                print("ObjectImageData")
-                print (partValue.dimension)
-                print(partValue.globalOrigin)
-                print(partValue.id)
-                print("")
-            }
+//            if part == .fixedWheelAtRearWithPropeller {
+//                print("")
+//                print("ObjectImageData")
+//                print (partValue.dimension)
+//                print(partValue.globalOrigin)
+//                print(partValue.id)
+//                print("")
+//            }
  
         partValue.dimension.mapSixOneOrTwoToOneFuncWithVoidReturn  (
         partValue.originName,

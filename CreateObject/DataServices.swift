@@ -66,8 +66,8 @@ class DictionaryService {
         userEditedSharedDics.parentToPartOriginOffsetUserEditedDic += entry
     }
     
+    
     func originUserEdtiedDicModifier(_ entry: PositionDictionary) {
-//        print(entry)
         userEditedSharedDics.parentToPartOriginUserEditedDic += entry
     }
     
@@ -76,18 +76,18 @@ class DictionaryService {
         partDataSharedDic = initialised
     }
     
+    
     func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
-        
-//        if let check = entry[.fixedWheelAtRearWithPropeller] {
-//            print("")
-//            print("data service")
-//            print (entry)
-//        }
         userEditedSharedDics.partIdsUserEditedDic += entry
     }
+    
     
     func partIdsUserEditedDicReseter(_ part: Part) {
         userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
     }
     
+    
+    func partIdsUserEditedDicReseter() {
+        userEditedSharedDics.partIdsUserEditedDic = [:]
+    }
 }

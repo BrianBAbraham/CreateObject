@@ -160,7 +160,8 @@ struct LabelInPartChainOut {
             [.fixedWheelHorizontalJointAtRear, .fixedWheelAtRear],
             [.fixedWheelHorizontalJointAtMid, .fixedWheelAtMid],
             [.fixedWheelHorizontalJointAtFront, .fixedWheelAtFront],
-            [.fixedWheelHorizontalJointAtRear,  .fixedWheelAtRear, .fixedWheelAtRearWithPropeller],
+            [.fixedWheelHorizontalJointAtRear,  .fixedWheelAtRear, .fixedWheelAtRearWithPropeller ],
+        
             [.fixedWheelHorizontalJointAtFront,  .fixedWheelAtFrontWithPropeller],
             [.casterVerticalJointAtRear, .casterWheelAtRear, .casterForkAtRear],
             [.casterVerticalJointAtMid, .casterWheelAtMid, .casterForkAtMid],

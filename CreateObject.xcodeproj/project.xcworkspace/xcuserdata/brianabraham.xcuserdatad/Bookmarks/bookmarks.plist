@@ -7,141 +7,94 @@
 		<dict>
 			<key>destination</key>
 			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>232</string>
+					<string>342</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>231</string>
-					<key>Timestamp</key>
-					<string>730462220.813557</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ObjectPickVM.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    
-</string>
-				<key>leading</key>
-				<string>    
-    
-</string>
-				<key>trailing</key>
-				<string>    func getSidesPresentGivenUserEdit(_ associatedPart: Part) -&gt; [SidesAffected] {
-        //sometimes partChain are represented by part other than their chainLabel
-        let associatedPartDic: [Part: Part] = [
-</string>
-			</dict>
-			<key>title</key>
-			<string>this can be deleted once the view references are removed as there is no need to get via dictionary when scopeOfEdit contains this data</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
-					</dict>
-				</dict>
-				<key>type</key>
-				<string>DVTDocumentLocation</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
-					</dict>
-				</dict>
-				<key>type</key>
-				<string>DVTDocumentLocation</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
-					</dict>
-				</dict>
-				<key>type</key>
-				<string>DVTDocumentLocation</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
-					</dict>
-				</dict>
-				<key>type</key>
-				<string>DVTDocumentLocation</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>341</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>340</string>
 					<key>Timestamp</key>
-					<string>731084348.139909</string>
+					<string>731532681.801367</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -248,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>358</string>
+					<string>411</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>357</string>
+					<string>410</string>
 					<key>Timestamp</key>
-					<string>731427961.510968</string>
+					<string>731525617.512904</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -295,13 +248,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>339</string>
+					<string>353</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>338</string>
+					<string>352</string>
 					<key>Timestamp</key>
-					<string>731088470.295269</string>
+					<string>731526920.0631191</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -342,13 +295,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>250</string>
+					<string>307</string>
 					<key>StartingColumnNumber</key>
-					<string>55</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>249</string>
+					<string>306</string>
 					<key>Timestamp</key>
-					<string>731427722.88086</string>
+					<string>731525617.51287</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -364,12 +317,12 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>            if part == .fixedWheelAtRearWithPropeller {
 </string>
 				<key>leading</key>
 				<string>            
             var ignoreFirstItem = 1 // relevant part subsequent
-            if part == .fixedWheelAtRearWithPropeller {</string>
+</string>
 				<key>trailing</key>
 				<string>                ignoreFirstItem += 1
             }
@@ -378,6 +331,53 @@
 			</dict>
 			<key>title</key>
 			<string>Development bit of a hack</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>136</string>
+					<key>StartingColumnNumber</key>
+					<string>62</string>
+					<key>StartingLineNumber</key>
+					<string>135</string>
+					<key>Timestamp</key>
+					<string>731527080.807067</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectPickVM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>        
+        
+        DictionaryService.shared.partIdsUserEditedDicReseter()</string>
+				<key>trailing</key>
+				<string>        
+        modifyObjectByCreatingFromName()
+        //pickNewObjectByCreatingFromName()
+</string>
+			</dict>
+			<key>title</key>
+			<string>Development use this to not carry forward values to new objects </string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

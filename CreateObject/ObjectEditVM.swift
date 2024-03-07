@@ -8,6 +8,32 @@
 import Foundation
 import Combine
 
+
+//struct ObjectEditModel {
+//    var isLeftToggleSelected: Bool
+//    var isRightToggleSelected: Bool
+//    
+//    init(_ left: Bool, _ right: Bool) {
+//        isLeftToggleSelected = left
+//        isRightToggleSelected = right
+//    }
+//    
+//    mutating func toggleLeftToggle(){
+//        isLeftToggleSelected.toggle()
+//    }
+//    
+//    mutating func setLeftToggle(){
+//        isLeftToggleSelected = true
+//    }
+//    
+//    mutating func setRightToggle(){
+//        isLeftToggleSelected = true
+//    }
+//    
+//    mutating func toggleRightToggle(){
+//        isRightToggleSelected.toggle()
+//    }
+//}
 ///LOGIC
 ///picker determines choiceOfEditForSide
 ///AND
@@ -32,7 +58,11 @@ class ObjectEditViewModel: ObservableObject {
     
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     
+    
+    
     @Published var choiceOfPartForEdit = Part.mainSupport
+    
+//    @Published var objectEditModel = ObjectEditModel(true, true)
 
     private var cancellables: Set<AnyCancellable> = []
     
@@ -92,6 +122,32 @@ extension ObjectEditViewModel {
             dimensionPropertyToEdit
     }
     
+    
+//    func getLeftToggleState() -> Bool {
+//        objectEditModel.isLeftToggleSelected
+//    }
+    
+    
+//    func getRightToggleState() -> Bool {
+//        objectEditModel.isRightToggleSelected
+//    }
+    
+//    func toggleLeftToggle() {
+//        
+//        objectEditModel.toggleLeftToggle()
+//        
+//        print(objectEditModel.isLeftToggleSelected)
+//    }
+    
+    
+//    func toggleRightToggle() {
+//        objectEditModel.toggleRightToggle()
+//    }
+    
+//    func setLeftAndRightToggle() {
+//        objectEditModel.setLeftToggle()
+//        objectEditModel.setRightToggle()
+//    }
     
     func getScopeOfEditForSide() -> [SidesAffected] {
         switch scopeOfEditForSide{
@@ -217,11 +273,12 @@ extension ObjectEditViewModel {
     }
     
     
-    func setWhenPartChangesOneOrTwoStatus(
+    
+    func changeOneOrTwoStatusOfPart(
         _ isLeftSelected: Bool,
         _ isRightSelected: Bool,
         _ part: Part) {
-            //print(part)
+         
         let side = //.both/.left/.right/.none
             convertLeftRightSelectionToSideSelection(
                 isLeftSelected,
@@ -251,13 +308,9 @@ extension ObjectEditViewModel {
                 ignoreFirstItem += 1
             }
             for index in ignoreFirstItem..<partChain.count {
-//if part == .fixedWheelAtRearWithPropeller {
-//                    print(part)
-//                    print("\(partChain[index]) \(newId)")
-//}
+
                 DictionaryService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
-                
-                //print(userEditedSharedDics.partIdsUserEditedDic)
+
             }
         case .none:
             removeChainLabelFromObject(part)

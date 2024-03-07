@@ -132,6 +132,9 @@ extension ObjectPickViewModel {
         
         DictionaryService.shared.angleUserEditedDicReseter()
         
+        
+        DictionaryService.shared.partIdsUserEditedDicReseter()
+        
         modifyObjectByCreatingFromName()
         //pickNewObjectByCreatingFromName()
     }
@@ -229,11 +232,10 @@ extension ObjectPickViewModel {
 //    }
     
     
-    
-    func getSidesPresentGivenUserEdit(_ associatedPart: Part) -> [SidesAffected] {
+    func getSidesPresentGivenPossibleUserEdit(_ associatedPart: Part) -> [SidesAffected] {
         //sometimes partChain are represented by part other than their chainLabel
-        let associatedPartDic: [Part: Part] = [
-            .footSupport: .footSupportHangerLink]
+        let associatedPartDic: [Part: Part] = [:
+            ]
         
         let part = associatedPartDic[associatedPart] ?? associatedPart
        // print (part.rawValue)
@@ -243,7 +245,7 @@ extension ObjectPickViewModel {
         guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] ?? objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
             fatalError()
         }
-        
+    
         var sidesPresent: [SidesAffected] = []
         //the part may be removed from both sides by user edit
         if chainLabels.contains(part) {
@@ -251,8 +253,20 @@ extension ObjectPickViewModel {
         } else {
             sidesPresent = [.none]
         }
-
+print(sidesPresent)
         return sidesPresent
+    }
+    
+    
+    func getSidesPresentGivenUserEditContainsLeft(_ part: Part) -> Bool {
+        getSidesPresentGivenPossibleUserEdit(part).contains(SidesAffected.left) ? 
+            true: false
+    }
+    
+    
+    func getSidesPresentGivenUserEditContainsRight(_ part: Part) -> Bool {
+        getSidesPresentGivenPossibleUserEdit(part).contains(SidesAffected.right) ?
+            true: false
     }
     
     

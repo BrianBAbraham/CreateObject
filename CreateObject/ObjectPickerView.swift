@@ -71,16 +71,16 @@ struct PickPartEdit: View {
             Picker("", selection: $selectedMenuNameItem) {
                 ForEach(menuItemsUsingDisplayName, id: \.self) { item in
                     Text(item)
-                     
                 }
             }
-          
-            
             .onChange(of: selectedMenuNameItem) {oldValue, newValue in
                 
                 let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
                 useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp
                 objectEditVM.setChoiceOfPartToEdit(menuItemsUsingPart[index])
+                objectEditVM.setBothOrLeftOrRightAsEditibleChoice(.both)
+                objectEditVM.setBothOrLeftOrRightAsEditible(.both)
+//                objectEditVM.setLeftAndRightToggle()
             }
             .onChange(of: objectPickVM.getCurrentObjectName()) {
                 selectedMenuNameItem = Part.mainSupport.rawValue
