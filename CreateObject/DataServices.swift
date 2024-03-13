@@ -19,16 +19,18 @@ class BilateralPartWithOnePropertyToChangeService {
     static let shared = BilateralPartWithOnePropertyToChangeService()
     
     func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
+       // print("DETECT")
         scopeOfEditForSide = sideChoice
     }
     
-    func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
+    func setSideToEdit(_ sideChoice: SidesAffected) {
+      
         choiceOfEditForSide = sideChoice
     }
     
-    func setDimensionPropertyToEdit(_ propertyToBeEdit: PartTag) {
-        //print(propertyToBeEdited)
-        dimensionPropertyToEdit = propertyToBeEdit
+    func setPropertyToEdit(_ propertyToEdit: PartTag) {
+       // print(propertyToEdit)
+        dimensionPropertyToEdit = propertyToEdit
     }
 }
 

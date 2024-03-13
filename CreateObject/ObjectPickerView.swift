@@ -48,6 +48,8 @@ struct PickInitialObjectView: View {
 }
 
 
+
+
 struct PickPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -78,9 +80,8 @@ struct PickPartEdit: View {
                 let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
                 useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp
                 objectEditVM.setChoiceOfPartToEdit(menuItemsUsingPart[index])
-                objectEditVM.setBothOrLeftOrRightAsEditibleChoice(.both)
+                objectEditVM.setSideToEdit(.both)
                 objectEditVM.setBothOrLeftOrRightAsEditible(.both)
-//                objectEditVM.setLeftAndRightToggle()
             }
             .onChange(of: objectPickVM.getCurrentObjectName()) {
                 selectedMenuNameItem = Part.mainSupport.rawValue
@@ -94,78 +95,19 @@ struct PickPartEdit: View {
 
 
 
-struct ConditionalBilateralPartEditMenu: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    var body: some View {
-        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-        if objectShowMenuVM.getPartIsOneOfAllBilateralPartForObjectBeforeEdit(selectedPartToEdit)  {
-            BilateralPartEditView(selectedPartToEdit)
-        } else {
-            EmptyView()
-        }
-    }
-}
-
-
-
-
-struct ConditionalOnePartTwoDimensionValueMenu: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    
-    
-    var body: some View {
-        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-        let showmMenu = objectShowMenuVM.getDoesPartHaveDimensionalPropertyMenu(selectedPartToEdit)
-        if showmMenu  {
-            HStack{
-                DimensionPropertyPickerMenu( selectedPartToEdit)
-                
-                OnePartTwoDimensionValueMenu( selectedPartToEdit, selectedPartToEdit.rawValue)
-            }
-           
-        } else {
-            EmptyView()
-        }
-    }
-}
 
 
 
 
 
 
-struct ConditionalTiltMenu: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
 
-    var body: some View {
-        let selectedPartToEdit = objectEditVM.getChoiceOfPartToEdit()
-        if [Part.sitOnTiltJoint].contains(selectedPartToEdit)  {
-            TiltView(selectedPartToEdit)
-        } else {
-            EmptyView()
-        }
-    }
-}
 
-///edit park picker is an object dependant list
-///the list is of every part that can be edited for that object
-///every part which can be edited is linked to a specific part edit menu
 
-//struct EditInitialObjectView: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//
-//
-//   
-//   
-//    var body: some View {
-//        PickPartEdit()
-//        .font(.callout)
-//
-//
-//    }
-//}
+
+
+
+
 
 //struct ObjectPickerView_Previews: PreviewProvider {
 //    static var previews: some View {

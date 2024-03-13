@@ -26,63 +26,20 @@ struct ConditionaUniPartPresence: View {
     }
     
     var body: some View {
-        if objectShowMenuVM.getOneIsEditable(part) {
+        if objectShowMenuVM.getUniPresenceMenuStatus(part) {
             UniPartPresence(part)
         } else {
             EmptyView()
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 struct ConditionalUniPartEditMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     
     var body: some View {
         let partToEdit = objectEditVM.getPartToEdit()
-        let showmMenu = objectShowMenuVM.getDoesPartHaveDimensionalPropertyMenu(partToEdit)
+        let showmMenu = objectShowMenuVM.getUniEditMenuStatus(partToEdit)
         if showmMenu  {
             HStack{
                 
@@ -99,7 +56,7 @@ struct UniPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
    @State private var propertyToEdit: PartTag = .length
     var relevantCases: [PartTag] {
-        objectShowMenuVM.getPropertyMenuForDimensionEdit(part)
+        objectShowMenuVM.getPropertiesForDimensionMenu(part)
     }
     let part: Part
 
@@ -120,7 +77,7 @@ struct UniPartEdit: View {
                 .pickerStyle(.segmented)
                 .fixedSize()
                 .onChange(of: propertyToEdit) { oldSelection, newSelection in
-                    objectEditVM.setDimensionPropertyToBeEdited(newSelection)
+                    objectEditVM.setPropertyToEdit(newSelection)
                 }
                 
                 UniDimensionMenu(part, propertyToEdit)
@@ -213,18 +170,31 @@ struct UniPartPresence: View {
 
 
 
-
+struct ConditionalTiltMenu: View {
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objecPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    
+    var body: some View {
+        let selectedPartToEdit = objectEditVM.getPartToEdit()
+        if let tiltPart = objectShowMenuVM.getTiltMenuPart(selectedPartToEdit)  {
+            TiltEdit(tiltPart)
+        } else {
+            EmptyView()
+        }
+    }
+}
 struct TiltEdit: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
 
-    let description: String
+    let description: String = "tilt"
     let joint:  Part
+  
   
     init(_ joint: Part){
         self.joint = joint
-        description = joint.rawValue
         
     }
  
@@ -242,7 +212,8 @@ struct TiltEdit: View {
             },
             set: { newValue in
                 objectEditVM.setCurrentRotation(
-                   max - newValue
+                   max - newValue,
+                   joint
                 )
                 
                 objectPickVM.modifyObjectByCreatingFromName()

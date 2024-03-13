@@ -88,13 +88,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>342</string>
+					<string>134</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>341</string>
+					<string>133</string>
 					<key>Timestamp</key>
-					<string>731532681.801367</string>
+					<string>732025479.427159</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -154,13 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>660</string>
+					<string>600</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>659</string>
+					<string>599</string>
 					<key>Timestamp</key>
-					<string>731445234.162133</string>
+					<string>731952682.96056</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -176,16 +176,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>    func mapOriginalValueToSomePropertyComponent&lt;U&gt;(
+				<string>//    func mapOriginalValueToSomePropertyComponent&lt;U&gt;(
 </string>
 				<key>leading</key>
 				<string>    
     
 </string>
 				<key>trailing</key>
-				<string>        _ oneOrTwoOriginal: OneOrTwo&lt;U&gt;,
-        _ propertyToBeEdited: PartTag) -&gt; OneOrTwo&lt;PositionAsIosAxes&gt;{
-        let z: PositionAsIosAxes = ZeroValue.iosLocation
+				<string>//        _ oneOrTwoOriginal: OneOrTwo&lt;U&gt;,
+//        _ propertyToBeEdited: PartTag) -&gt; OneOrTwo&lt;PositionAsIosAxes&gt;{
+//        let z: PositionAsIosAxes = ZeroValue.iosLocation
 </string>
 			</dict>
 			<key>title</key>
@@ -201,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>411</string>
+					<string>396</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>410</string>
+					<string>395</string>
 					<key>Timestamp</key>
-					<string>731525617.512904</string>
+					<string>731963372.123553</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -248,13 +248,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>353</string>
+					<string>374</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>352</string>
+					<string>373</string>
 					<key>Timestamp</key>
-					<string>731526920.0631191</string>
+					<string>731686405.9060301</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -295,13 +295,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>307</string>
+					<string>282</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>306</string>
+					<string>281</string>
 					<key>Timestamp</key>
-					<string>731525617.51287</string>
+					<string>731963372.123468</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -342,13 +342,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>136</string>
+					<string>145</string>
 					<key>StartingColumnNumber</key>
-					<string>62</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>135</string>
+					<string>144</string>
 					<key>Timestamp</key>
-					<string>731527080.807067</string>
+					<string>731602381.088704</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -364,12 +364,12 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>        DictionaryService.shared.partIdsUserEditedDicReseter()
 </string>
 				<key>leading</key>
 				<string>        
         
-        DictionaryService.shared.partIdsUserEditedDicReseter()</string>
+</string>
 				<key>trailing</key>
 				<string>        
         modifyObjectByCreatingFromName()
@@ -378,6 +378,72 @@
 			</dict>
 			<key>title</key>
 			<string>Development use this to not carry forward values to new objects </string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectPickVM.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>275</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>274</string>
+					<key>Timestamp</key>
+					<string>731686405.906078</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectPickVM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        let firstSidesPresentGivesSidesAffected = 0
+</string>
+				<key>leading</key>
+				<string>        }
+//print(sidesPresent)
+</string>
+				<key>trailing</key>
+				<string>        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
+        
+        return sidesPresent
+</string>
+			</dict>
+			<key>title</key>
+			<string>cluncky</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

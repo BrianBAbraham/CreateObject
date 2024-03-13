@@ -7,12 +7,62 @@
 
 import SwiftUI
 
-struct BilateralPartPicker: View {
+struct ConditionalBilateralPartSidePicker: View {
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        let partToEdit = objectEditVM.getPartToEdit()
+        if objectShowMenuVM.getSidePickerMenuStatus(partToEdit)  {
+            BilateralPartSidePicker()
+        } else {
+            EmptyView()
+        }
     }
 }
-
-#Preview {
-    BilateralPartPicker()
+struct BilateralPartSidePicker: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+   
+    var body: some View {
+        var allCurrentOptionsForSidesAffected: [SidesAffected]{
+            objectEditVM.getScopeOfEditForSide()
+        }
+        let boundSideValue = Binding(
+            get: {
+                objectEditVM.getChoiceOfEditForSide()},
+            set: {
+                newValue in
+                objectEditVM.setSideToEdit(newValue)
+            } )
+        
+        Picker("", selection: boundSideValue
+        ) {
+            ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
+                Text(side.rawValue)
+            }
+        }
+        .pickerStyle(.segmented)
+        .fixedSize()
+    }
+}
+enum SidesAffected: String, CaseIterable, Equatable {
+    case both = "L&R"
+    case left = "L"
+    case right = "R"
+    case none = "none"
+    
+    
+    func getOneId() -> PartTag {
+        switch self {
+        case .both:
+            return .id0
+        case .left:
+            return .id0
+        case .right:
+            return .id1
+        case .none:
+            fatalError("sides required but none exists")
+        }
+    }
 }

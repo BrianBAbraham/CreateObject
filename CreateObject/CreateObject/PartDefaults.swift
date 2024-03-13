@@ -25,7 +25,7 @@ enum Part: String, Parts, Hashable {
     case backSupportAssistantHandle = "backSupportRearHandle"
     case backSupportAssistantHandleInOnePiece = "backSupportRearHandleInOnePiece"
     case backSupportAssistantJoystick = "backSupportJoyStick"
-    case backSupportRotationJoint = "backSupportRotationJoint"
+    case backSupportTiltJoint = "backSupportRotationJoint"
     case backSupportHeadSupport = "headrest"
     case backSupportHeadSupportJoint = "backSupportHeadSupportHorizontalJoint"
     case backSupportHeadSupportLink = "backSupportHeadSupportLink"
@@ -106,7 +106,7 @@ enum Part: String, Parts, Hashable {
     case sitOnTiltJoint = "tilt-in-space"
     
     case steeredVerticalJointAtFront = "steeredVerticalBaseJointAtFront"
-    case steeredVerticallJointAtRear = "steeredVerticalBaseJointAtRear"
+    case steeredVerticalJointAtRear = "steeredVerticalBaseJointAtRear"
     case steeredWheelAtFront = "steeredWheelAtFront"
     case steeredWheelAtRear = "steeredWheelAtRear"
     
@@ -114,7 +114,90 @@ enum Part: String, Parts, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(rawValue)
     }
+    
+    
+    
+    func transformPartToPartGroup() -> PartGroup {
+        switch self {
+        case
+            .backSupportHeadSupportJoint,
+            .backSupportHeadSupportLink:
+                return .backJointAndLink
+        case 
+            .casterForkAtFront,
+            .casterForkAtMid,
+            .casterForkAtRear:
+                return .casterFork
+        case
+            .casterVerticalJointAtFront,
+            .casterVerticalJointAtMid,
+            .casterVerticalJointAtRear:
+                return .casterJoint
+        case
+            .casterWheelAtFront,
+            .casterWheelAtMid,
+            .casterWheelAtRear:
+                return .caster
+        case  
+            .fixedWheelAtFront,
+            .fixedWheelAtMid,
+            .fixedWheelAtRear:
+                return .fixedWheel
+        case .fixedWheelHorizontalJointAtFront,.fixedWheelHorizontalJointAtMid,.fixedWheelHorizontalJointAtRear:
+                return .fixedWheelJoint
+            
+        case
+            .footSupportHangerJoint,
+            .footSupportHangerLink,
+            .footSupportJoint:
+                return .footJointAndLink
+//        case .fixedWheelAtFrontWithPropeller,
+//            .fixedWheelAtMidWithPropeller,
+//            .fixedWheelAtRearWithPropeller:
+//            return .propeller
+        case
+            .steeredVerticalJointAtFront,
+            .steeredVerticalJointAtRear:
+                return .steeredJoint
+        case
+            .steeredWheelAtFront,
+            .steeredWheelAtRear:
+                return .steeredWheel
+            
+        case
+            .sitOnTiltJoint,
+            .backSupportTiltJoint:
+                return .tilt
+        default:
+            return .none
+        }
+    }
 }
+
+
+/// Object creation requires greater part specification than
+/// edit so to minimise name multiple Part of the same group
+/// this enum provides the basis for a transform
+enum PartGroup: String, Parts {
+    case backJointAndLink
+    case caster
+    case casterFork
+    case casterJoint
+    case fixedWheel
+    case fixedWheelJoint
+    case footJointAndLink
+    case propeller
+    case steeredJoint
+    case steeredWheel
+    case tilt
+    case none
+    
+    var stringValue: String {
+          return String(describing: self)
+      }
+}
+
+
 
 
 enum PartTag: String, Parts {
@@ -127,8 +210,8 @@ enum PartTag: String, Parts {
     case length = "length"
     case dimension = "dimension"
     case origin = "origin"
-    case xOrigin = "xOrigin"
-    case yOrigin = "yOrigin"
+    case xOrigin = "x-origin"
+    case yOrigin = "y-origin"
     case zOrigin = "zOrigin"
     
     var stringValue: String {
@@ -174,29 +257,7 @@ struct PartSwapLabel {
 
 
 
-struct PartInRotationScopeOut {
-    let partChainLabel: [Part]
-    let dictionary: [Part: [Part]] = [
-        .sitOnTiltJoint:
-            [.backSupport, .backSupportHeadSupport, .mainSupport, .armSupport, .footSupport],
-    ]
-    
-    let part: Part
-    
-    var defaultRotationScope: [Part] {
-        dictionary[part] ?? []
-    }
-    
-    var rotationScopeAllowingForEditToChainLabel: [Part] {
-        defaultRotationScope.filter { partChainLabel.contains($0) }
-        
-    }
-    
-    init(_ part: Part, _ partChainLabel: [Part]) {
-        self.part = part
-        self.partChainLabel = partChainLabel
-    }
-}
+
 
 
 
@@ -231,7 +292,10 @@ struct PartDefaultAngle {
         func getGeneralAngleDfault(_ part: Part) -> RotationAngles?{
             let z: Measurement<UnitAngle> = ZeroValue.angleDeg
             let dictionary: [Part: RotationAngles] = [
-                .sitOnTiltJoint: (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z)
+                .sitOnTiltJoint: 
+                    (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
+                .backSupportTiltJoint:
+                    (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
             ]
             return dictionary[part]
         }
@@ -347,7 +411,7 @@ struct PartDefaultDimension {
                 .backSupportHeadSupport: (width: 150.0, length: 50.0, height: 100.0) ,
                 .backSupportHeadSupportJoint: Self.joint,
                 .backSupportHeadSupportLink: (width: 20.0, length: 20.0, height: 150.0),
-                .backSupportRotationJoint: j,
+                .backSupportTiltJoint: j,
                 .casterForkAtFront: Self.casterForkDimension,
                 .casterForkAtRear: Self.casterForkDimension,
                 .casterWheelAtFront: Self.casterWheelDimension,
@@ -460,9 +524,9 @@ struct PartEditedElseDefaultOrigin {
                     getUserEditedElseDefaultPartOrigin(returnOneOrigin)
                 
                 
-if part == .fixedWheelAtRearWithPropeller {
-    print ("ONE origin activated")
-}
+//if part == .fixedWheelAtRearWithPropeller {
+//    print ("ONE origin activated")
+//}
                 
                 
                 return editedElseDefaultOrigin
@@ -565,7 +629,7 @@ if part == .fixedWheelAtRearWithPropeller {
                 .backSupportHeadSupport: (x: 0.0, y: 0.0, z: linkedOrParentDimension.height/2),
                 .backSupportHeadSupportJoint: (x: 0.0, y: 0.0, z: linkedOrParentDimension.height/2.0),
                 .backSupportHeadSupportLink:   (x: 0.0, y: 0.0, z: selfDimension.height/2),
-                .backSupportRotationJoint: (x: 0.0, y: -linkedOrParentDimension.length/2, z: 0.0) ,
+                .backSupportTiltJoint: (x: 0.0, y: -linkedOrParentDimension.length/2, z: 0.0) ,
                 
                 .casterForkAtFront: (x: 0.0, y: -selfDimension.length * 2.0/3.0, z:  200.0),
                 .casterForkAtRear: (x: 0.0, y: -selfDimension.length * 2.0/3.0, z:  200.0),
@@ -699,6 +763,8 @@ if part == .fixedWheelAtRearWithPropeller {
 }
 
 
+
+
 enum MenuDisplayPart: String {
     case armrest = "armrest"
     case backrest = "back rest"
@@ -722,14 +788,15 @@ enum MenuDisplayPart: String {
 }
 
 
-struct MenuDisplayPartDictionary {
+struct PartToDisplay {
 var names: [String] = []
 var name: String = ""
-   static let partToMenuNameDictionary: [Part: MenuDisplayPart] = [
+   static let dictionary: [Part: MenuDisplayPart] = [
         .assistantFootLever: .footLever,
         .armSupport: .armrest,
         .backSupport: .backrest,
         .backSupportHeadSupport: .headrest,
+        .backSupportTiltJoint: .tilt,
         .casterForkAtFront: .casterForkAtFront,
         .casterForkAtMid: .casterForkAtMid,
         .casterForkAtRear: .casterForkAtRear,
@@ -761,7 +828,7 @@ var name: String = ""
         
         for part in parts {
             menuCase =
-                Self.partObjectToMenuNameDictionary[PartObject(part, objectType)] ?? Self.partToMenuNameDictionary[part]
+                Self.partObjectToMenuNameDictionary[PartObject(part, objectType)] ?? Self.dictionary[part]
             
             guard let unwrapped = menuCase else {
                 fatalError("no menu name for \(part)")
@@ -805,4 +872,19 @@ struct PartsRequiringLinkedPartUse {
         partForLink =
             Self.forPartLinkDic[part]
     }
+}
+
+
+
+//determine if a part is linked to another part for origin or dimension
+struct LinkedParts {
+    let dictionary: [Part: Part] = [
+        .fixedWheelHorizontalJointAtRear: .mainSupport,
+        .fixedWheelHorizontalJointAtMid: .mainSupport,
+        .fixedWheelHorizontalJointAtFront: .mainSupport,
+        .casterVerticalJointAtRear: .mainSupport,
+        .casterVerticalJointAtMid: .mainSupport,
+        .casterVerticalJointAtFront: .mainSupport,
+        .steeredVerticalJointAtFront: .mainSupport
+        ]
 }

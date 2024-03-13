@@ -64,6 +64,8 @@ class ObjectPickViewModel: ObservableObject {
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     var choiceOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
+    
+    var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
     private var cancellables: Set<AnyCancellable> = []
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
     
@@ -116,6 +118,13 @@ class ObjectPickViewModel: ObservableObject {
                 self?.choiceOfEditForSide = newData
             }
             .store(in: &self.cancellables)
+        
+        BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
+            .sink { [weak self] newData in
+                self?.propertyToEdit = newData
+            }
+            .store(in: &self.cancellables)
+        
     }
 }
 
@@ -179,20 +188,29 @@ extension ObjectPickViewModel {
     
     func getInitialSliderValue(
         _ part: Part,
-        _ editableProperty: PartTag) -> Double {
-    
+        _ propertyToEdit: PartTag,
+        _ sidesAffected: SidesAffected? = nil) -> Double {
+
         var value: Double? = nil
         if let partData = partDataSharedDic[part] {//parts edited out do not exist
             let idForLeftOrRight = choiceOfEditForSide == .right ? PartTag.id1: PartTag.id0
         
-            let id =  partData.id.one ?? idForLeftOrRight//two sources for id
+            var id: PartTag
+            if let sideAsId = sidesAffected?.getOneId() {
+                id = sideAsId
+                
+                //print(id)
+            } else {
+                id =  partData.id.one ?? idForLeftOrRight//two sources for id
+            }
+           
             
-            switch editableProperty {
+            switch propertyToEdit {
             case .length, .width:
                 let dimension = partData.dimension.returnValue(id)
-                value = editableProperty == .length ?
+                value = propertyToEdit == .length ?
                 (dimension.length): (dimension.width)
-                
+               // print(value)
             case .xOrigin, .yOrigin:
                 let name = CreateNameFromIdAndPart(id, part).name
                 let offsetToOrigin = userEditedSharedDics.originOffsetUserEditedDic[name] ?? ZeroValue.iosLocation
@@ -200,7 +218,7 @@ extension ObjectPickViewModel {
 //                print("get \(origin)")
 //                print(idForLeftOrRight)
 //                print("")
-                value = editableProperty == .xOrigin ?
+                value = propertyToEdit == .xOrigin ?
                 offsetToOrigin.x: offsetToOrigin.y
                 
                 //value = idForLeftOrRight == .id0 ? value: value.map{-$0}
@@ -253,7 +271,10 @@ extension ObjectPickViewModel {
         } else {
             sidesPresent = [.none]
         }
-print(sidesPresent)
+//print(sidesPresent)
+        let firstSidesPresentGivesSidesAffected = 0
+        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
+        
         return sidesPresent
     }
     

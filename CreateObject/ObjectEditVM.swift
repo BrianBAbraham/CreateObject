@@ -50,17 +50,17 @@ class ObjectEditViewModel: ObservableObject {
     
     var objectType: ObjectTypes = .fixedWheelRearDrive
     
-   var dimensionPropertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
+var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
     
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
     
-    var choiceOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
+    @Published var sideToEdit: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
     
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     
     
     
-    @Published var choiceOfPartForEdit = Part.mainSupport
+    @Published var partToEdit = Part.mainSupport
     
 //    @Published var objectEditModel = ObjectEditModel(true, true)
 
@@ -78,10 +78,9 @@ class ObjectEditViewModel: ObservableObject {
                 self?.objectType = newData
             }
             .store(in: &self.cancellables)
-        
         BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
             .sink { [weak self] newData in
-                self?.dimensionPropertyToEdit = newData
+                self?.propertyToEdit = newData
             }
             .store(in: &self.cancellables)
         
@@ -101,7 +100,7 @@ class ObjectEditViewModel: ObservableObject {
         
         BilateralPartWithOnePropertyToChangeService.shared.$choiceOfEditForSide
             .sink { [weak self] newData in
-                self?.choiceOfEditForSide = newData
+                self?.sideToEdit = newData
             }
             .store(in: &self.cancellables)
     }
@@ -111,45 +110,19 @@ class ObjectEditViewModel: ObservableObject {
 
 //MARK: get
 extension ObjectEditViewModel {
-    func getChoiceOfPartToEdit() -> Part{
-        choiceOfPartForEdit
+    func getPartToEdit() -> Part{
+       // print(partToEdit)
+        return partToEdit
     }
     
     
     func getDimensionPropertyToBeEdited() -> PartTag {
-        //print(dimensionPropertyToEdit)
-        return
-            dimensionPropertyToEdit
+            propertyToEdit
     }
     
     
-//    func getLeftToggleState() -> Bool {
-//        objectEditModel.isLeftToggleSelected
-//    }
-    
-    
-//    func getRightToggleState() -> Bool {
-//        objectEditModel.isRightToggleSelected
-//    }
-    
-//    func toggleLeftToggle() {
-//        
-//        objectEditModel.toggleLeftToggle()
-//        
-//        print(objectEditModel.isLeftToggleSelected)
-//    }
-    
-    
-//    func toggleRightToggle() {
-//        objectEditModel.toggleRightToggle()
-//    }
-    
-//    func setLeftAndRightToggle() {
-//        objectEditModel.setLeftToggle()
-//        objectEditModel.setRightToggle()
-//    }
-    
     func getScopeOfEditForSide() -> [SidesAffected] {
+       // print(scopeOfEditForSide)
         switch scopeOfEditForSide{
         case .both:
             return [.both, .left, .right]
@@ -164,7 +137,7 @@ extension ObjectEditViewModel {
     
     
     func getChoiceOfEditForSide() -> SidesAffected {
-        choiceOfEditForSide
+        sideToEdit
     }
     
     
@@ -217,7 +190,7 @@ extension ObjectEditViewModel {
             fatalError("no part for that part name")
         }
       
-        choiceOfPartForEdit = part
+        partToEdit = part
     }
     
     
@@ -242,26 +215,28 @@ extension ObjectEditViewModel {
     
     
     
-    func setBothOrLeftOrRightAsEditibleChoice(_ sideChoice: SidesAffected) {
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditibleChoice(sideChoice)
+    func setSideToEdit(_ sideChoice: SidesAffected) {
+        BilateralPartWithOnePropertyToChangeService.shared.setSideToEdit(sideChoice)
     }
     
 
     func setCurrentRotation(
-        _ maxMinusSliderValue: Double) {
+        _ maxMinusSliderValue: Double,
+        _ part: Part) {
             var partName: String {
-                let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, Part.sitOnTiltJoint, PartTag.id0, PartTag.stringLink, Part.mainSupport, PartTag.id0]
+                let parts: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part, PartTag.id0, PartTag.stringLink, Part.mainSupport, PartTag.id0]
                return
                 CreateNameFromParts(parts ).name    }
             
-        let angleUserEditedDic =
+            //print(maxMinusSliderValue)
+        let angleUserEditedDicEntry =
             [partName:
                  (x:
                     Measurement(value: maxMinusSliderValue, unit: UnitAngle.degrees),
                   y: ZeroValue.angle,
                   z: ZeroValue.angle)]
 
-            DictionaryService.shared.angleUserEditedDicModifier(angleUserEditedDic)
+            DictionaryService.shared.angleUserEditedDicModifier(angleUserEditedDicEntry)
     }
     
     
@@ -341,7 +316,7 @@ extension ObjectEditViewModel {
                    oldScope == .none && isLeftSelected {
                     newChoice = side
                 }
-                BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditibleChoice(newChoice)
+                BilateralPartWithOnePropertyToChangeService.shared.setSideToEdit(newChoice)
             }
     }
     
@@ -352,8 +327,18 @@ extension ObjectEditViewModel {
     func setValueForBilateralPartInUserEditedDic(
         _ value: Double,
         _ part: Part,
-        _ partPropertyToBeChanged: PartTag) {
-        switch choiceOfEditForSide {
+        _ propertyToEdit: PartTag,
+        _ sidesAffected: SidesAffected? = nil) {
+            
+        var sidesToEdit: SidesAffected
+            
+            if let unwrapped = sidesAffected {
+               sidesToEdit = unwrapped
+            } else {
+                sidesToEdit = sideToEdit
+            }
+            
+        switch sidesToEdit {
         case .both:
             process(.id0)
             process(.id1)
@@ -368,16 +353,16 @@ extension ObjectEditViewModel {
       
         func process(_ id: PartTag) {
             let name = CreateNameFromIdAndPart(id, part).name
-            switch partPropertyToBeChanged {
+            switch propertyToEdit {
             case .length, .width:
                 let currentDimension =
                     getEditedOrDefaultDimension(name, part, id)
                 let newDimension =
-                    dimensionWithModifiedProperty(currentDimension, partPropertyToBeChanged)
+                    dimensionWithModifiedProperty(currentDimension, propertyToEdit)
                 DictionaryService.shared.dimensionUserEditedDicModifier([name: newDimension])
             case .xOrigin, .yOrigin:
                 let currentOrigin = getEditedOrDefaultOriginOffset(name)
-                let newOriginOffset = partPropertyToBeChanged == .xOrigin ? xOriginModified(currentOrigin, id) : yOriginModified(currentOrigin, id)
+                let newOriginOffset = propertyToEdit == .xOrigin ? xOriginModified(currentOrigin, id) : yOriginModified(currentOrigin, id)
                 DictionaryService.shared.originOffsetUserEdtiedDicModifier([name: newOriginOffset])
                 
             default: break
@@ -420,7 +405,7 @@ extension ObjectEditViewModel {
             
             func makeLeftAndRightMoveCloserWithNegAndApartWithPos() -> Double {
                 var reverseDirection = 1.0
-                if choiceOfEditForSide == .both {
+                if sideToEdit == .both {
                     reverseDirection = id == .id1 ? 1.00: -1.00
                 }
                 return reverseDirection
@@ -447,7 +432,7 @@ extension ObjectEditViewModel {
         let currentDimension =
                 getEditedOrDefaultDimension(name, part, .id0)
 
-        let newDimension = dimensionPropertyToEdit == .width ?
+        let newDimension = propertyToEdit == .width ?
             (width: value,
              length: currentDimension.length,
              height:currentDimension.height)
@@ -460,9 +445,8 @@ extension ObjectEditViewModel {
     }
     
 
-    func setDimensionPropertyToBeEdited(_ propertyToBeEdited: PartTag) {
-        //dimensionPropertyToEdit = propertyToBeEdited
-        BilateralPartWithOnePropertyToChangeService.shared.setDimensionPropertyToEdit(propertyToBeEdited)
+    func setPropertyToEdit(_ propertyToEdit: PartTag) {
+        BilateralPartWithOnePropertyToChangeService.shared.setPropertyToEdit(propertyToEdit)
     }
 
 }

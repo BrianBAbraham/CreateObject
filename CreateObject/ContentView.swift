@@ -161,34 +161,40 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 NavigationLink(destination:
+                   
                     VStack {
                         PickInitialObjectView()
-                        
+
                         ObjectView(
                             uniquePartNames,
                             objectManipulationIsActive,
                             initialOrigin: $initialOrigin)
-                    
-                  
-  
-                        VStack {
-                            HStack{
-                                PickPartEdit()
-                                    Spacer()
-                                ConditionalBilateralPartPresence()
-                                ConditionalOnePartPresence()
-                            }
-                            .padding(.top, 5)
-                            .padding(.horizontal)
-                           
-                            ConditionalBilateralPartEditMenu()
-                    
-                            ConditionalOnePartTwoDimensionValueMenu()
-                    
-                            ConditionalTiltMenu()
+                     
+
+                    VStack (alignment: .leading) {
+                        
+                        HStack{
+                   
+                            ConditionalBilateralPartSidePicker()
+                            ConditionalBilateralPartPresence()
+
+                            ConditionaUniPartPresence()
+                            Spacer()
                         }
-                        .transition(.move(edge: .bottom))
-                        .backgroundModifier()
+                       
+                        ConditionalBilateralPartEditMenu()
+                            
+                        ConditionalUniPartEditMenu()
+
+                        ConditionalTiltMenu()
+                        
+                        PickPartEdit()
+                    }
+                    .padding(.horizontal)
+                    .transition(.move(edge: .bottom))
+                    .backgroundModifier()
+                   
+
                     
                     
                     

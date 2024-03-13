@@ -19,7 +19,7 @@ struct ObjectData {
     
     let size: Dimension = (width: 0.0, length: 0.0)
 
-    var allPartChainLabels: [Part] = []
+    var allChainLabels: [Part] = []
     
     var oneOfEachPartInAllPartChain: [Part] = []
     
@@ -34,7 +34,7 @@ struct ObjectData {
         self.objectChainLabelsDefaultDic = ObjectChainLabel.dictionary
         self.objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
         
-        allPartChainLabels = getAllPartChainLabels()
+        allChainLabels = getAllPartChainLabels()
             
         oneOfEachPartInAllPartChain = getOneOfEachPartInAllPartChain()
             
@@ -56,7 +56,7 @@ struct ObjectData {
     }
     
     func checkObjectHasAtLeastOnePartChain(){
-        for label in allPartChainLabels {
+        for label in allChainLabels {
             let labelInPartChainOut = LabelInPartChainOut(label)
             guard labelInPartChainOut.partChain.isEmpty == false else {
                 fatalError("chainLabel \(label) has no partChain in LabelInPartChainOut")
@@ -102,7 +102,7 @@ struct ObjectData {
        
         func getAllPartChain() -> [[Part]]{
             var allPartChain: [[Part]] = []
-            for label in allPartChainLabels {
+            for label in allChainLabels {
                 allPartChain.append(getPartChain(label))
             }
             return allPartChain
@@ -166,7 +166,6 @@ extension ObjectData {
         // object width is depenent on .sitOn
         let orderedSoLinkedOrParentPartInitialisedFirst =
           oneOfEachPartInAllPartChain
-        //print(orderedSoLinkedOrParentPartInitialisedFirst)
         if orderedSoLinkedOrParentPartInitialisedFirst.contains(.mainSupport) {
             initialiseLinkedOrParentPart(.mainSupport)
         }
@@ -175,28 +174,10 @@ extension ObjectData {
             if part != .mainSupport {
                 let parentOrLinkedPart: Part
                 
-//                if let linkedPart = PartsRequiringLinkedPartUse(part).partForLink {
-//                 parentOrLinkedPart = linkedPart
-//                } else {
-                    parentOrLinkedPart = getLinkedOrParentPart(part)
-//                }
-                    
-                    
-                
-//if part == .fixedWheelAtRearWithPropeller {
-//print("object linkedPart \(linkedPart)")
-//}
-//                
-                
-               
-                
+                parentOrLinkedPart = getLinkedOrParentPart(part)
+            
                 initialisePart(parentOrLinkedPart, part )
-                
-//                if part == .fixedWheelAtRearWithPropeller {
-//                print("initialise linkedPart \(parentOrLinkedPart)")
-//                }
             }
-        
         }
     }
 
@@ -231,7 +212,7 @@ extension ObjectData {
                 userEditedDic,
                 linkedOrParentData,
                 child,
-                allPartChainLabels)
+                allChainLabels)
                     .partData
         
         partValuesDic +=
@@ -241,7 +222,7 @@ extension ObjectData {
 
     func getOneOfEachPartInAllPartChain() -> [Part]{
         var oneOfEachPartInAllChainLabel: [Part] = []
-            for label in allPartChainLabels {
+            for label in allChainLabels {
                let partChain = LabelInPartChainOut(label).partChain
                 for part in partChain {
                     if !oneOfEachPartInAllChainLabel.contains(part) {
@@ -260,13 +241,9 @@ extension ObjectData {
     func getLinkedOrParentPart(_ childPart: Part) -> Part {
         var linkedOrParentPart: Part = .objectOrigin
         
-        for label in allPartChainLabels {
+        for label in allChainLabels {
             let partChain = LabelInPartChainOut(label).partChain
 
-//            if label == .fixedWheelAtRear {
-//            print("getLinkedOrParentPart \(partChain)")
-//            }
-            
             for i in 0..<partChain.count {
                 if let linkedPart = linkedPartsDictionary[childPart], linkedPart != .notFound {
                     linkedOrParentPart = linkedPart
@@ -286,7 +263,7 @@ extension ObjectData {
     
     
     func getAllPartChainLabels() -> [Part] {
-      //  print(objectsAndTheirChainLabelsDicIn[objectType] )
+
         guard let chainLabels =
         objectChainLabelsUserEditedDic[objectType] ??
                 objectChainLabelsDefaultDic[objectType] else {
@@ -308,35 +285,6 @@ extension ObjectData {
 protocol Parts {
     var stringValue: String { get }
 }
-
-
-
-
-
-
-
-//enum PartJoint: String, Parts {
-//
-//
-//
-//
-//    var stringValue: String {
-//        return self.rawValue
-//    }
-//
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(rawValue)
-//    }
-//}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -449,14 +397,6 @@ struct PartId: Hashable {
         self.id = id
     }
 }
-
-
-
-
-
-
-
-
 
 
 enum OneOrTwoOptional <V> {
@@ -657,28 +597,28 @@ enum OneOrTwo <T> {
     
     
     
-    func mapOriginalValueToSomePropertyComponent<U>(
-        _ oneOrTwoOriginal: OneOrTwo<U>,
-        _ propertyToBeEdited: PartTag) -> OneOrTwo<PositionAsIosAxes>{
-        let z: PositionAsIosAxes = ZeroValue.iosLocation
-        let originalAsTouple = oneOrTwoOriginal.mapToTouple()
-        switch self {
-        case .two(let left , let right  ):
-            var leftReturn = z
-            var rightReturn = z
-            let leftOriginal = originalAsTouple.left as! PositionAsIosAxes
-            let rightOriginal = originalAsTouple.right as! PositionAsIosAxes
-            if propertyToBeEdited == .xOrigin {
-                leftReturn = (x: (left as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
-                rightReturn = (x: (right as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
-            }
-            return .two(left: leftReturn, right: rightReturn)
-        case .one(let one):
-            return .one(one: one as! PositionAsIosAxes)
-        }
-            
-       // func modify(_ new: OneOrTwo<T>, _ original: OneOrTwo<>T)->
-    }
+//    func mapOriginalValueToSomePropertyComponent<U>(
+//        _ oneOrTwoOriginal: OneOrTwo<U>,
+//        _ propertyToBeEdited: PartTag) -> OneOrTwo<PositionAsIosAxes>{
+//        let z: PositionAsIosAxes = ZeroValue.iosLocation
+//        let originalAsTouple = oneOrTwoOriginal.mapToTouple()
+//        switch self {
+//        case .two(let left , let right  ):
+//            var leftReturn = z
+//            var rightReturn = z
+//            let leftOriginal = originalAsTouple.left as! PositionAsIosAxes
+//            let rightOriginal = originalAsTouple.right as! PositionAsIosAxes
+//            if propertyToBeEdited == .xOrigin {
+//                leftReturn = (x: (left as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
+//                rightReturn = (x: (right as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
+//            }
+//            return .two(left: leftReturn, right: rightReturn)
+//        case .one(let one):
+//            return .one(one: one as! PositionAsIosAxes)
+//        }
+//            
+//
+//    }
     
     //MARK: DEVELOPMENT
     ///a One parent is  mapped to left and right
@@ -977,7 +917,7 @@ struct StructFactory {
     let linkedOrParentData: PartData
     let part: Part
     let parentPart: Part
-    let chainLabel: [Part]
+    let allChainLabels: [Part]
     let defaultOrigin: PartEditedElseDefaultOrigin
     let userEditedData: UserEditedData
     var partOrigin: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
@@ -988,12 +928,12 @@ struct StructFactory {
          _ userEditedDic: UserEditedDictionaries?,
          _ linkedOrParentData: PartData,
          _ part: Part,
-         _ chainLabel: [Part]){
+         _ allChainLabels: [Part]){
         self.objectType = objectType
         self.linkedOrParentData = linkedOrParentData
         self.part = part
         self.parentPart = linkedOrParentData.part
-        self.chainLabel = chainLabel
+        self.allChainLabels = allChainLabels
         let sitOnId: PartTag = .id0
         
 //        if part == .fixedWheelAtRearWithPropeller {
@@ -1115,24 +1055,20 @@ extension StructFactory {
     func createPart()
         -> PartData {
         let partId = userEditedData.partIdAllowingForUserEdit//two sided default edited to one will be detected
-        let scopesOfRotation: [Part] =  setScopeOfRotation()
+        let scopesOfRotation: [Part] =  getChainLabelsSubjectToRotator()
         var partAnglesMinMax = partId.createOneOrTwoWithOneValue(ZeroValue.angleMinMax)
         var partAngles = partId.createOneOrTwoWithOneValue(ZeroValue.rotationAngles)
         let originName =
             userEditedData.originName.mapOptionalToNonOptionalOneOrTwo("")
      
 
-        if [.sitOnTiltJoint].contains(part) {
+            if [.sitOnTiltJoint, .backSupportTiltJoint].contains(part) {
             let (jointAngle, minMaxAngle) = getDefaultJointAnglesData()
             partAngles = getAngles(jointAngle)
             partAnglesMinMax = getMinMaxAngles(minMaxAngle)
         }
  
-//            if part == .fixedWheelAtRearWithPropeller {
-//                print("StructFactory")
-//                print (partId)
-//            }
-//          
+
         return
             PartData(
                 part: part,
@@ -1148,11 +1084,28 @@ extension StructFactory {
                 scopesOfRotation: scopesOfRotation)
             
             
-        func setScopeOfRotation() -> [Part]{
+        func getChainLabelsSubjectToRotator() -> [Part]{
+            
+            let chainLabelsToBeRotated =
                 PartInRotationScopeOut(
                     part,
-                    chainLabel)
+                    allChainLabels)
                         .rotationScopeAllowingForEditToChainLabel
+//            if chainLabelsToBeRotated != [] {
+//                print("\(part) \(chainLabelsToBeRotated)")
+//                print("")
+//            }
+            return chainLabelsToBeRotated
+            
+            
+            func getPartSubjecToRotation() -> [Part] {
+                var partsToBeRotated: [Part] = []
+                for chainLabel in chainLabelsToBeRotated {
+                    partsToBeRotated += //ignore first part which is the origin
+                        Array(LabelInPartChainOut(chainLabel).partChain.dropFirst())
+                }
+                return partsToBeRotated
+            }
         }
          
             
@@ -1349,10 +1302,10 @@ struct UserEditedData {
             optionalAngles = getOptionalAngles()
             optionalDimension = getOptionalDimension()
             
-//            if part == .fixedWheelAtRearWithPropeller {
+//            if part == .backSupportTiltJoint {
 //                print("Edited Dic")
-//                print (partIdDicIn)
-//                print(partIdAllowingForUserEdit)
+//                print (optionalAngles)
+//                print("")
 //            }
         }
     
