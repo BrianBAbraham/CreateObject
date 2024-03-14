@@ -233,7 +233,10 @@ struct TiltingAbility {
     var tilter: Part? {
         Self.dictionary[PartObject(part, objectType)]
     }
-    init (_ part: Part, _ objectType: ObjectTypes) {
+    var parts:[Part] {
+        Array(Self.dictionary.values)
+    }
+    init (_ part: Part = .notFound, _ objectType: ObjectTypes = .fixedWheelRearDrive) {
         self.part = part
         self.objectType = objectType
     }
@@ -251,8 +254,8 @@ struct PartInRotationScopeOut {
     let dictionary: [Part: [Part]] = [
         .sitOnTiltJoint:
             [.backSupport, .backSupportTiltJoint, .backSupportHeadSupportLink, .backSupportHeadSupport, .mainSupport, .armSupport, .footSupportHangerLink, .footSupport],
-//        .backSupportTiltJoint:
-//            [.backSupport, .backSupportHeadSupportLink, .backSupportHeadSupport]
+        .backSupportTiltJoint:
+            [.backSupport, .backSupportHeadSupportLink, .backSupportHeadSupport]
     ]
     
     let part: Part

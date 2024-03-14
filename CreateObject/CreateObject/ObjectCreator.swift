@@ -314,7 +314,7 @@ struct PartData {
     
     var sitOnId: Parts
     
-    var scopeOfRotation: [Part]
+    var partsToBeRotated: [Part]
     
   //  var color: Color = .black
     
@@ -344,7 +344,7 @@ struct PartData {
             
             self.id = id
             self.sitOnId = sitOnId
-            self.scopeOfRotation = scopesOfRotation
+            self.partsToBeRotated = scopesOfRotation
             self.angles = getAngles()
             self.minMaxAngle = getMinMaxAngle()
             
@@ -694,6 +694,82 @@ enum OneOrTwo <T> {
         }
     }
     
+    func getOneOrTwoPositions(  _ positions: [PositionAsIosAxes?]) -> OneOrTwo<PositionAsIosAxes> {
+        switch self {
+        case let (.two(left, right) ):
+            var leftPosition: PositionAsIosAxes
+            if let position = positions[0] {
+                leftPosition = position
+            } else {
+                leftPosition = left as! PositionAsIosAxes
+            }
+            var rightPosition: PositionAsIosAxes
+            if let position = positions[1] {
+                rightPosition = position
+            } else {
+                rightPosition = right as! PositionAsIosAxes
+            }
+            return .two(left: leftPosition, right: rightPosition)
+        case let (.one(one)):
+            var onePosition: PositionAsIosAxes
+            if let position = positions[0] {
+                onePosition = position
+            } else {
+                onePosition = one as! PositionAsIosAxes
+            }
+            return .one(one: onePosition)
+        }
+    }    
+    
+    
+    
+    func getNamesArray(  _ part: Part) -> [String] {
+        var names: [String] = []
+        switch (self) {
+        case let (.two(left0, right0) ):
+           names =
+            [CreateNameFromIdAndPart(left0 as! PartTag, part).name,
+             CreateNameFromIdAndPart(right0 as! PartTag, part).name]
+        case let (.one(one0)):
+            names =
+            [CreateNameFromIdAndPart(one0 as! PartTag, part).name]
+        }
+        return names
+    }
+    func getPositionsArray(  _ part: Part) -> [PositionAsIosAxes] {
+        var positions: [PositionAsIosAxes] = []
+        switch (self) {
+        case let (.two(left0, right0)):
+           positions =
+            [left0 as! PositionAsIosAxes,
+             right0 as! PositionAsIosAxes]
+        case let (.one(one0)):
+            positions =
+            [one0 as!PositionAsIosAxes]
+    
+        }
+        return positions
+    }
+    
+    
+    
+//    func createNameOriginEntry<U>(_ ids: OneOrTwo<U>,  _ part: Part) -> [String: PositionAsIosAxes] {
+//        var entries: [String: PositionAsIosAxes] = [:]
+//        switch (self, ids) {
+//        case let (.two(left0, right0), .two ):
+//           entries =
+//            [CreateNameFromIdAndPart(.id0, part).name: left0 as! PositionAsIosAxes,
+//             CreateNameFromIdAndPart(.id1, part).name: right0 as! PositionAsIosAxes]
+//        case let (.one(one0), .one(id)):
+//            entries =
+//            [CreateNameFromIdAndPart(id as! PartTag, part).name: one0 as!PositionAsIosAxes]
+//        default:
+//            fatalError("OneOrTwo properties for same part ar different cases \(part)")
+//          
+//        }
+//        return entries
+//    }
+    
     
     func createOneOrTwoWithOneValue<U>(_ value: U) -> OneOrTwo<U> {
         switch self {
@@ -754,6 +830,8 @@ enum OneOrTwo <T> {
     }
     
     
+    
+    
     func mapSingleOneOrTwoAndOneFuncWithReturn<U, V>(
         _ second: OneOrTwo<V>,
         _ transform: (T, V) -> U)
@@ -799,11 +877,21 @@ enum OneOrTwo <T> {
     }
     
     
+    func mapOneOrTwoToOneOrTwo(_ origin: [PositionAsIosAxes]) -> OneOrTwo<PositionAsIosAxes> {
+        switch self {
+        case .two:
+            return .two(left: origin[0], right: origin[1])
+        case .one:
+            return .one(one: origin[0])
+        }
+    }
+    
+    
     func mapTwoToOneUsingOneId<Dimension3d>(_ id: PartTag) -> OneOrTwo<Dimension3d> {
         switch self {
         case .two(let left, let right):
             return id == .id0 ? .one(one: left as! Dimension3d): .one(one: right as! Dimension3d )
-        case .one(let one):
+        case .one:
            fatalError("only .two may be used")
         }
     }
