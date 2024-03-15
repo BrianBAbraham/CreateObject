@@ -80,7 +80,7 @@ struct ObjectImageData {
    
             for index in 0..<rotators2.count {
                 
-                print(rotators2[index])
+              //  print(rotators2[index])
                 createPostTiltDictionaryFromPartDataDic(rotators2[index],rotatedParts2[index])
                 
                 //   createPostTiltDictionaryFromStructFactory()
@@ -401,36 +401,46 @@ extension ObjectImageData {
             for (name, position) in zip (names, positions) {
                 postTiltObjectToRotatedPartOriginDic += [name: position]
             }
-
-            
         }
             
 
             
-            func getOriginAllowingForRotatedRotator(_ rotatorPart: Part) -> OneOrTwo<PositionAsIosAxes>{
-                let name = CreateNameFromIdAndPart(.id0, rotatorPart).name
-                if let value = postTiltObjectToRotatedPartOriginDic[name] {
-                    return .one(one: value)
-                } else {
-                    return  rotatorPartData.globalOrigin
-                }
+        func getOriginAllowingForRotatedRotator(_ rotatorPart: Part) -> OneOrTwo<PositionAsIosAxes>{
+            let name = CreateNameFromIdAndPart(.id0, rotatorPart).name
+            if let value = postTiltObjectToRotatedPartOriginDic[name] {
+                return .one(one: value)
+            } else {
+                return  rotatorPartData.globalOrigin
             }
-            
- 
-            
-            
-        let allPartCornerPositionAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>]  =
-                getAllPartCornerPositionAfterRotationByOneRotator(
-                    allOriginsAfterRotationByRotator,
-                    rotatorData)
-        
-        for (originName, allCorners) in zip (originNames,allPartCornerPositionAfterRotationByOneRotator) {
-            let corners =
-                allCorners.mapSingleOneOrTwoWithOneFuncWithReturn {getTopViewCorners($0)}
-        
-            //ignore warning no tilt without
-            originName.mapSingleOneOrTwoAndOneFuncWithReturn(corners){addPartsToFourCornerDic($0, $1)}
         }
+            
+//        let allPartCornerPositionAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>]  =
+//                getAllPartCornerPositionAfterRotationByOneRotator(
+//                    allOriginsAfterRotationByRotator,
+//                    rotatorData)
+        
+            
+            
+        let allLocalCornerPositions =
+            getAllLocalCornerPositionsForAllRotatedPartAfterRotationByOneRotator(rotatorData)
+            
+        let allViewedCornerPositions =
+            getCornersWhichAreViewedByFilter(allLocalCornerPositions)
+          
+        let allViewedGlobalCornerPositions =
+            getAllViewedGlobalCornerPositionForAllRotatedPartAfterRotationByOneRotator(
+            allOriginsAfterRotationByRotator, allViewedCornerPositions)
+        
+        for (originName, allCorners) in zip(originNames, allViewedGlobalCornerPositions) {
+            originName.mapPairOfOneOrTwoWithFunc(allCorners){addPartsToFourCornerDic($0, $1)}
+        }
+            
+//        for (originName, allCorners) in zip (originNames,allPartCornerPositionAfterRotationByOneRotator) {
+//            let corners =
+//                allCorners.getOneOrTwoCornerArrayFromDimension {getTopViewCorners($0)}
+
+//            originName.mapPairOfOneOrTwoWithFunc(corners){addPartsToFourCornerDic($0, $1)}
+//        }
     }
             
             
@@ -475,7 +485,7 @@ extension ObjectImageData {
             for partOrigin in
                 rotator.originOfAllPartsToBeRotated {
                     allOriginAfterRotationByRotator.append(
-                    rotator.rotatorOrigin.map3New(
+                    rotator.rotatorOrigin.mapTripleOneOrTwoWithFunc(
                     partOrigin,
                     rotator.angle ) { calculateRotatedOrigin($0, $1, $2) } )
         }
@@ -483,51 +493,85 @@ extension ObjectImageData {
     }
 
             
-    func getAllPartCornerPositionAfterRotationByOneRotator (
-        _ allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>],
-        _ rotator: Rotator)
-    -> [OneOrTwo<[PositionAsIosAxes]> ]{
-        var allPartCornerPositionsAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>] = []
+//    func getAllPartCornerPositionAfterRotationByOneRotator (
+//        _ allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>],
+//        _ rotator: Rotator) -> [OneOrTwo<[PositionAsIosAxes]>] {
+//        var allPartCornerPositionsAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>] = []
+//        for index in 0..<allOriginAfterRotationByRotator.count {
+//            let dimension = rotator.partsToBeRotatedDimension[index]
+//            let originAfterRotationByRotator = allOriginAfterRotationByRotator[index]
+//            let part = rotator.allPartsToBeRotated[index]
+//            let cornerLocalPositions: OneOrTwo< [PositionAsIosAxes] > =
+//                dimension.getOneOrTwoCornerArrayFromDimension
+//                    { CreateIosPosition.getCornersFromDimension($0) }
+//            let cornerLocalPositionsAfterRotation =
+//                cornerLocalPositions.mapOneOrTwoPairWithFunc(
+//                    rotator.angle) {calculateRotatedCornerInLocal($0, $1)}
+//            let cornerGlobalPositionAfterRotation =
+//                cornerLocalPositionsAfterRotation.addOneOrTwoPair(originAfterRotationByRotator)
+//            allPartCornerPositionsAfterRotationByOneRotator.append(cornerGlobalPositionAfterRotation)
+//        }
+//            return allPartCornerPositionsAfterRotationByOneRotator
+//    }
+    
         
-        for (dimension, originAfterRotationByRotator) in
-                zip(rotator.partsToBeRotatedDimension, allOriginAfterRotationByRotator) {
-           
-            
-            let corners = dimension.mapSingleOneOrTwoWithOneFuncWithReturn { CreateIosPosition.getCornersFromDimension($0) }
-            
-            
-//            rotatedParts2
-            for part in rotator.allPartsToBeRotated {
-                if let partData = partDataDic[part] {
-                    let names = partData.id.getNamesArray(part)
-                    
-                    for name in names {
-                        print(name)
-                        print(corners)
-                       print( postTiltObjectToPartFourCornerPerKeyDic[name])
-                        print("")
-                    }
-                }
-              
+        
+    func getAllLocalCornerPositionsForAllRotatedPartAfterRotationByOneRotator (
+        _ rotator: Rotator) -> [OneOrTwo<[PositionAsIosAxes]>] {
+            var cornerLocalPositions: [OneOrTwo<[PositionAsIosAxes]>] = []
+            for dimension in rotator.partsToBeRotatedDimension {
+                let allCornerPositionsBeforeRotationByOneRotator: OneOrTwo<[PositionAsIosAxes]> =
+                dimension.getOneOrTwoCornerArrayFromDimension
+                { CreateIosPosition.getCornersFromDimension($0) }
+                let allCornerPositionsAfterRotationByOneRotator: OneOrTwo<[PositionAsIosAxes]> =
+                    allCornerPositionsBeforeRotationByOneRotator.mapOneOrTwoPairWithFunc(
+                        rotator.angle) {calculateRotatedCornerInLocal($0, $1)}
+                cornerLocalPositions.append(allCornerPositionsAfterRotationByOneRotator)
             }
-//            l
-            //postTiltObjectToPartFourCornerPerKeyDic[partData.name]
+            return cornerLocalPositions
             
-            
-          
-            
-            
-            let result =
-                originAfterRotationByRotator.map3New(
-                        corners,
-                        rotator.angle ) { calculateRotatedCorner($0, $1, $2) }
-            
-            allPartCornerPositionsAfterRotationByOneRotator.append(result)
-        }
-        return allPartCornerPositionsAfterRotationByOneRotator
+  
     }
+    func getCornersWhichAreViewedByFilter(
+        _ allLocalCornerPositionsForAllRotatedPartAfterRotationByOneRotator: [OneOrTwo<[PositionAsIosAxes]>]) -> [OneOrTwo<[PositionAsIosAxes]>]{
+            var allCorners: [OneOrTwo<[PositionAsIosAxes]>] = []
+            for corners in allLocalCornerPositionsForAllRotatedPartAfterRotationByOneRotator {
+                allCorners.append(
+                    corners.mapOneOrTwoSingleWithFunc {getTopViewCorners($0)}
+                )
+            }
+            return allCorners
+    }
+    func getAllViewedGlobalCornerPositionForAllRotatedPartAfterRotationByOneRotator(
+        _ allOriginAfterRotationByRotator: [OneOrTwo<PositionAsIosAxes>],
+        _ allLocalCornerPositionsForAllRotatedPartAfterRotationByOneRotator:
+            [OneOrTwo<[PositionAsIosAxes]>] ) -> [OneOrTwo<[PositionAsIosAxes]>] {
+                var cornerGlobalPositions: [OneOrTwo<[PositionAsIosAxes]>] = []
+                for (origin, corners) in zip( allOriginAfterRotationByRotator, allLocalCornerPositionsForAllRotatedPartAfterRotationByOneRotator) {
+               
+                    cornerGlobalPositions.append(
+                        corners.addOneOrTwoPair(origin)
+                    )
+                }
+              return cornerGlobalPositions
+                
+//                func useExistingCornersIfpreviouslyRotated(){
+//                  
+//                    for part in rotator.allPartsToBeRotated {
+//                        guard let partName = partDataDic[part]?.originName else {
+//                            fatalError("no partData for part name")
+//                        }
+//                        if let corners = postTiltObjectToPartFourCornerPerKeyDic[partName] {
+//                            
+//                        }
+//                    }
+//                   
+//                }
+    }
+        
     
-    
+        
+        
     func calculateRotatedOrigin(
         _ rotatorOrigin: PositionAsIosAxes,
         _ partOrigin: PositionAsIosAxes,
@@ -571,6 +615,28 @@ extension ObjectImageData {
         return rotatedCorners
     }
     
+        
+    func calculateRotatedCornerInLocal(
+        _ cornerPositions: [PositionAsIosAxes],
+        _ angle: RotationAngles = ZeroValue.rotationAngles)
+    -> [PositionAsIosAxes]  {
+        var rotatedCorners: [PositionAsIosAxes] = []
+        guard angle.y.value == 0.0 || angle.z.value == 0.0 else {
+            fatalError("\(String(describing: type(of: self))): \(#function ) only x rotation are coded \(angle.y.value)  \(angle.z.value) ")
+        }
+        for index in 0..<cornerPositions.count {
+            let newCornerPosition =
+            PositionOfPointAfterRotationAboutPoint(
+                staticPoint:ZeroValue.iosLocation,
+                movingPoint: cornerPositions[index],
+                angleChange: angle.x
+            ).fromObjectOriginToPointWhichHasMoved
+            rotatedCorners.append(
+             newCornerPosition)
+        }
+        return rotatedCorners
+    }
+        
     
     func getPartsToBeRotated ()
         -> ([Part], [[Part]]) {

@@ -820,7 +820,7 @@ enum OneOrTwo <T> {
     
     
     
-    func mapSingleOneOrTwoWithOneFuncWithReturn<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
+    func getOneOrTwoCornerArrayFromDimension<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
         case .one(let value):
             return .one(one: transform(value))
@@ -830,9 +830,61 @@ enum OneOrTwo <T> {
     }
     
     
+    func addOneOrTwoPair<U>(_ second: OneOrTwo<U>) -> OneOrTwo<[PositionAsIosAxes]> {
+        switch (self, second) {
+        case let (.two(left1 , right1), .two(left2 , right2)  ):
+            return .two(left: makeAddition(left1, left2 ), right: makeAddition(right1, right2 ) )
+        case let (.one( one1), .one(one2)):
+            return .one(one: makeAddition(one1, one2 ))
+        default:
+         fatalError("cases are not matched")
+        }
+        
+    
+        func makeAddition<V>(_ positions: V, _ origin: U) -> [PositionAsIosAxes] {
+            guard let positions = positions as? [PositionAsIosAxes] else {
+                fatalError("something has gone wrong should be PositionAsIosAxes")
+            }
+            guard let origin = origin as? PositionAsIosAxes else {
+                fatalError("something has gone wrong should be PositionAsIosAxes")
+            }
+            return
+                CreateIosPosition.addToupleToArrayOfTouples(origin, positions )
+        }
+    }
     
     
-    func mapSingleOneOrTwoAndOneFuncWithReturn<U, V>(
+    
+    func addToOneOrTwo(_ origin: PositionAsIosAxes) -> OneOrTwo<[PositionAsIosAxes]> {
+        switch self {
+        case .two(let left , let right ):
+            return .two(left: makeAddition(left ), right: makeAddition(right ) )
+        case .one(let one):
+            return .one(one: makeAddition(one ))
+        }
+        
+        func makeAddition<V>(_ positions: V) -> [PositionAsIosAxes] {
+            guard let positions = positions as? [PositionAsIosAxes] else {
+                fatalError("something has gone wrong should be PositionAsIosAxes")
+            }
+            return
+                CreateIosPosition.addToupleToArrayOfTouples(origin, positions )
+        }
+    }
+    
+    func mapOneOrTwoSingleWithFunc< U>(  _ transform: (T) -> U) -> OneOrTwo<U> {
+        switch self {
+        case let (.one(value1)):
+            return .one(one: transform(value1))
+        case let (.two(left1, right1)):
+            return .two(
+                left: transform(left1),
+                right: transform(right1))
+        }
+    }
+    
+    
+    func mapPairOfOneOrTwoWithFunc<U, V>(
         _ second: OneOrTwo<V>,
         _ transform: (T, V) -> U)
     -> OneOrTwo<U> {
@@ -849,8 +901,23 @@ enum OneOrTwo <T> {
     }
 
     
+    func mapOneOrTwoPairWithFunc<V, U>( _ second: OneOrTwo<V>, _ transform: (T, V) -> U) -> OneOrTwo<U> {
+        let (first,second) = OneOrTwo<Any>.convert2OneOrTwoToAllTwoIfMixedOneAndTwo(self, second)
+        switch (first, second) {
+        case let (.one(value1), .one(value2)):
+            return .one(one: transform(value1, value2))
+        case let (.two(left1, right1), .two(left2, right2)):
+            return .two(
+                        left: transform(left1, left2),
+                        right: transform(right1, right2))
+        default:
+            // Handle other cases if needed
+            fatalError("Incompatible cases for map3")
+        }
+    }
+    
 
-    func map3New<V, W, U>( _ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
+    func mapTripleOneOrTwoWithFunc<V, W, U>( _ second: OneOrTwo<V>, _ third: OneOrTwo<W>,_ transform: (T, V, W) -> U) -> OneOrTwo<U> {
 
        let (first,second, third) = convert3OneOrTwoToAllTwoIfMixedOneAndTwo(self, second, third)
         switch (first, second, third) {
