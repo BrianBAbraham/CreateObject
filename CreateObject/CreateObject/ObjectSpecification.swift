@@ -254,8 +254,8 @@ struct PartInRotationScopeOut {
     let dictionary: [Part: [Part]] = [
         .sitOnTiltJoint:
             [.backSupport, .backSupportTiltJoint, .backSupportHeadSupportLink, .backSupportHeadSupport, .mainSupport, .armSupport, .footSupportHangerLink, .footSupport],
-//        .backSupportTiltJoint:
-//            [.backSupport, .backSupportHeadSupportLink, .backSupportHeadSupport]
+        .backSupportTiltJoint:
+            [.backSupport, .backSupportHeadSupportLink, .backSupportHeadSupport]
     ]
     
     let part: Part

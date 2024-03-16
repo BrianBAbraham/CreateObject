@@ -694,8 +694,8 @@ enum OneOrTwo <T> {
         }
     }
     
-    func getOneOrTwoPositions(  _ positions: [PositionAsIosAxes?]) -> OneOrTwo<PositionAsIosAxes> {
-        switch self {
+    func getOneOrTWoDictionaryOrUseDefaultOrgin(  _ positions: [PositionAsIosAxes?]) -> OneOrTwo<PositionAsIosAxes> {
+        switch self {//
         case let (.two(left, right) ):
             var leftPosition: PositionAsIosAxes
             if let position = positions[0] {
@@ -722,6 +722,32 @@ enum OneOrTwo <T> {
     }    
     
     
+    func getOneOrTWoDictionaryOrUseDefaultOrgin2(  _ positions: [[PositionAsIosAxes]?]) -> OneOrTwo<[PositionAsIosAxes]> {
+        switch self {//
+        case let (.two(left, right) ):
+            var leftPosition: [PositionAsIosAxes]
+            if let position = positions[0] {
+                leftPosition = position
+            } else {
+                leftPosition = left as! [PositionAsIosAxes]
+            }
+            var rightPosition: [PositionAsIosAxes]
+            if let position = positions[1] {
+                rightPosition = position
+            } else {
+                rightPosition = right as! [PositionAsIosAxes]
+            }
+            return .two(left: leftPosition, right: rightPosition)
+        case let (.one(one)):
+            var onePosition: [PositionAsIosAxes]
+            if let position = positions[0] {
+                onePosition = position
+            } else {
+                onePosition = one as! [PositionAsIosAxes]
+            }
+            return .one(one: onePosition)
+        }
+    }
     
     func getNamesArray(  _ part: Part) -> [String] {
         var names: [String] = []
@@ -736,6 +762,8 @@ enum OneOrTwo <T> {
         }
         return names
     }
+    
+    
     func getPositionsArray(  _ part: Part) -> [PositionAsIosAxes] {
         var positions: [PositionAsIosAxes] = []
         switch (self) {
