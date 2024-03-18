@@ -722,7 +722,7 @@ enum OneOrTwo <T> {
     }    
     
     
-    func getOneOrTWoDictionaryOrUseDefaultOrgin2(  _ positions: [[PositionAsIosAxes]?]) -> OneOrTwo<[PositionAsIosAxes]> {
+    func getOneOrTwoDictionaryOrUseDefaultOrgin2(  _ positions: [[PositionAsIosAxes]?]) -> OneOrTwo<[PositionAsIosAxes]> {
         switch self {//
         case let (.two(left, right) ):
             var leftPosition: [PositionAsIosAxes]
@@ -761,6 +761,46 @@ enum OneOrTwo <T> {
             [CreateNameFromIdAndPart(one0 as! PartTag, part).name]
         }
         return names
+    }
+    
+    func getDictionaryValue(_ dictionary: [String: PositionAsIosAxes ])
+    -> OneOrTwo<PositionAsIosAxes>{
+        switch self {
+        case .two(let left, let right):
+            return .two(left: getValues(left), right: getValues(right))
+        case .one(let one):
+              return .one(one: getValues(one))
+        }
+        
+        func getValues(_ name: T) -> PositionAsIosAxes{
+            guard let name = name as? String else {
+                fatalError("cannot downcast to String")
+            }
+            guard let values = dictionary[name] else {
+                fatalError("no dictionary entry")
+            }
+            return values
+        }
+    }
+    
+    func getDictionaryValues(_ dictionary: [String: [PositionAsIosAxes] ])
+    -> OneOrTwo<[PositionAsIosAxes]>{
+        switch self {
+        case .two(let left, let right):
+            return .two(left: getValues(left), right: getValues(right))
+        case .one(let one):
+              return .one(one: getValues(one))
+        }
+        
+        func getValues(_ name: T) -> [PositionAsIosAxes]{
+            guard let name = name as? String else {
+                fatalError("cannot downcast to String")
+            }
+            guard let values = dictionary[name] else {
+                fatalError("no dictionary entry")
+            }
+            return values
+        }
     }
     
     
@@ -881,22 +921,102 @@ enum OneOrTwo <T> {
         }
     }
     
+    func getDefaultOrRotatedCorners<U>(
+        _ defaultValues: OneOrTwo<[PositionAsIosAxes]>,
+        _ postValues: OneOrTwo<U>,
+        _ originsPostTilt: OneOrTwo<PositionAsIosAxes>) {
+            switch (self, defaultValues, postValues, originsPostTilt) {
+            case let (.two(leftTruth, rightTruth), .two(leftDefautl, rightDefault), .two(leftPostValue, rightPostValue), .two(leftOrigin, rightOrigin ) ):
+                print("")
+            case let (.one(oneTruth), .one(oneDefault), .one(onePostValue), .one(oneOrigin)):
+                print("")
+            default:
+                fatalError("oneOrTwo do not match case")
+            }
+            
+            func getResult(
+                _ truth: T,
+                _ defaultValue: [PositionAsIosAxes],
+                _ postValue: [PositionAsIosAxes],
+                _ origin: PositionAsIosAxes) -> OneOrTwo<[PositionAsIosAxes]>{
+                    guard let truth = truth as? Bool else {
+                        fatalError()
+                    }
+                    
+                    if truth {
+                        return defaultValues
+                    } else {
+                        let negativeOrginsPostTilt = originsPostTilt.negateOneOrTwoValues()
+                        let cornersInLocalPostTilt = postValues.addToOneOrTwo(negativeOrginsPostTilt)
+                        return cornersInLocalPostTilt
+                    }
+                    
+            }
+        }
     
     
-    func addToOneOrTwo(_ origin: PositionAsIosAxes) -> OneOrTwo<[PositionAsIosAxes]> {
-        switch self {
-        case .two(let left , let right ):
-            return .two(left: makeAddition(left ), right: makeAddition(right ) )
-        case .one(let one):
-            return .one(one: makeAddition(one ))
+    func areEqual<U>(_ postValues:OneOrTwo<U>) -> OneOrTwo<Bool> {
+        switch (self, postValues) {
+        case let (.two(left1 , right1), .two(left2 , right2)  ):
+            return .two(left: areEqual(left1, left2), right: areEqual(right1, right2))
+        case let (.one( one1), .one(one2)):
+            return .one(one: areEqual(one1, one2))
+        default:
+            fatalError("dictionaries have different OneOrTwo")
         }
         
-        func makeAddition<V>(_ positions: V) -> [PositionAsIosAxes] {
-            guard let positions = positions as? [PositionAsIosAxes] else {
+        func areEqual(_ preValue: T, _ postValue: U) -> Bool{
+            guard let preValue = preValue as? PositionAsIosAxes
+                   else {
+                fatalError("cannot downcast")
+            }
+            guard let postValue = postValue as? PositionAsIosAxes
+                   else {
+                fatalError("cannot downcast")
+            }
+            return preValue.y == postValue.y
+        }
+    }
+    func negateOneOrTwoValues() -> OneOrTwo<PositionAsIosAxes>{
+        switch self {
+        case .two(let left, let right):
+            let leftResult = subtractFromZero(left)
+            let rightResult = subtractFromZero(right)
+            return .two(left: leftResult, right: rightResult)
+        case .one(let one):
+            let oneResult = subtractFromZero(one)
+            return .one(one: oneResult)
+        }
+        func subtractFromZero(_ position: T) -> PositionAsIosAxes {
+            guard let position = position as? PositionAsIosAxes else {
+                fatalError("cannot downcast to ")
+            }
+            return
+                CreateIosPosition.subtractSecondFromFirstTouple(ZeroValue.iosLocation, position)
+        }
+    }
+    
+    func addToOneOrTwo(_ origins: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<[PositionAsIosAxes]> {
+        switch (self, origins) {
+        case let(.two(left1 , right1 ), .two(left2, right2)):
+                    return .two(left: makeAddition(left1, left2 ), right: makeAddition(right1, right2 ) )
+        case let(.one(one1), .one(one2) ):
+                    return .one(one: makeAddition(one1, one2 ))
+          default:
+                fatalError()
+                  
+        }
+        
+        
+        func makeAddition<U, V>(_ positions: V, _ origins: U) -> [PositionAsIosAxes] {
+            guard let position = positions as? [PositionAsIosAxes] else {
+                fatalError("something has gone wrong should be PositionAsIosAxes")
+            }
+            guard let origin = origins as? PositionAsIosAxes else {
                 fatalError("something has gone wrong should be PositionAsIosAxes")
             }
             return
-                CreateIosPosition.addToupleToArrayOfTouples(origin, positions )
+                CreateIosPosition.addToupleToArrayOfTouples(origin, position )
         }
     }
     

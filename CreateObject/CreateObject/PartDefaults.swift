@@ -295,7 +295,7 @@ struct PartDefaultAngle {
                 .sitOnTiltJoint: 
                     (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
                 .backSupportTiltJoint:
-                    (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
+                    (x: Measurement(value: 50.0, unit: UnitAngle.degrees), y: z , z: z),
             ]
             return dictionary[part]
         }

@@ -14,3 +14,9 @@ struct Print {
        print("CALLED \(functionName) \(data) from \(callingMethod)")
     }
 }
+
+//struct PrintAll {
+//    static func ofThese <Any> (_ items: (Any) ){
+//        
+//    }
+//}
