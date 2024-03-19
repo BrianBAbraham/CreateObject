@@ -898,61 +898,47 @@ enum OneOrTwo <T> {
     }
     
     
-    func addOneOrTwoPair<U>(_ second: OneOrTwo<U>) -> OneOrTwo<[PositionAsIosAxes]> {
-        switch (self, second) {
-        case let (.two(left1 , right1), .two(left2 , right2)  ):
-            return .two(left: makeAddition(left1, left2 ), right: makeAddition(right1, right2 ) )
-        case let (.one( one1), .one(one2)):
-            return .one(one: makeAddition(one1, one2 ))
+    func addOneOrTwoPair(_ origin: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<[PositionAsIosAxes]> {
+        switch (self, origin) {
+        case let (.two(cornerL , cornerR), .two(originL , originR)  ):
+            return .two(left: makeAddition(cornerL, originL ), right: makeAddition(cornerR, originR ) )
+        case let (.one( cornerO), .one(originO)):
+            return .one(one: makeAddition(cornerO, originO ))
         default:
          fatalError("cases are not matched")
         }
         
     
-        func makeAddition<V>(_ positions: V, _ origin: U) -> [PositionAsIosAxes] {
+        func makeAddition(_ positions: T, _ origin: PositionAsIosAxes) -> [PositionAsIosAxes] {
             guard let positions = positions as? [PositionAsIosAxes] else {
                 fatalError("something has gone wrong should be PositionAsIosAxes")
             }
-            guard let origin = origin as? PositionAsIosAxes else {
-                fatalError("something has gone wrong should be PositionAsIosAxes")
-            }
+//            guard let origin = origin as? PositionAsIosAxes else {
+//                fatalError("something has gone wrong should be PositionAsIosAxes")
+//            }
             return
                 CreateIosPosition.addToupleToArrayOfTouples(origin, positions )
         }
     }
     
-    func getDefaultOrRotatedCorners<U>(
-        _ defaultValues: OneOrTwo<[PositionAsIosAxes]>,
-        _ postValues: OneOrTwo<U>,
-        _ originsPostTilt: OneOrTwo<PositionAsIosAxes>) {
-            switch (self, defaultValues, postValues, originsPostTilt) {
-            case let (.two(leftTruth, rightTruth), .two(leftDefautl, rightDefault), .two(leftPostValue, rightPostValue), .two(leftOrigin, rightOrigin ) ):
-                print("")
-            case let (.one(oneTruth), .one(oneDefault), .one(onePostValue), .one(oneOrigin)):
-                print("")
-            default:
-                fatalError("oneOrTwo do not match case")
-            }
-            
-            func getResult(
-                _ truth: T,
-                _ defaultValue: [PositionAsIosAxes],
-                _ postValue: [PositionAsIosAxes],
-                _ origin: PositionAsIosAxes) -> OneOrTwo<[PositionAsIosAxes]>{
-                    guard let truth = truth as? Bool else {
-                        fatalError()
-                    }
-                    
-                    if truth {
-                        return defaultValues
-                    } else {
-                        let negativeOrginsPostTilt = originsPostTilt.negateOneOrTwoValues()
-                        let cornersInLocalPostTilt = postValues.addToOneOrTwo(negativeOrginsPostTilt)
-                        return cornersInLocalPostTilt
-                    }
-                    
-            }
+    func getDefaultOrRotatedCorners(//self is pre-tilt part origin
+        _ originPostTilt: OneOrTwo<PositionAsIosAxes>, //post till part origin
+        _ preTiltCornersInLocal: OneOrTwo<[PositionAsIosAxes]>,//corners in local
+        _ postTiltCornersInGlobal: OneOrTwo<[PositionAsIosAxes]>//post-tilt corners in global
+        ) -> OneOrTwo <[PositionAsIosAxes]>{
+        let equality: OneOrTwo<Bool> = self.areEqual(originPostTilt)
+        let negativeOrigin: OneOrTwo<PositionAsIosAxes> = originPostTilt.negateOneOrTwoValues()
+        let postTiltCornersInLocal: OneOrTwo<[PositionAsIosAxes]> = postTiltCornersInGlobal.addToOneOrTwo(negativeOrigin)
+        
+        switch (equality, preTiltCornersInLocal, postTiltCornersInLocal) {
+        case let (.two(equalL, equalR), .two(preL, preR), .two(postL, postR) ) :
+            return .two(left: equalL ? preL: postL, right: equalR ? preR: postR )
+        case let ( .one(equalO), .one(preO), .one(postO)):
+            return .one(one: equalO ? preO: postO)
+        default:
+            fatalError("oneOrTwo do not match case")
         }
+    }
     
     
     func areEqual<U>(_ postValues:OneOrTwo<U>) -> OneOrTwo<Bool> {
@@ -996,29 +982,31 @@ enum OneOrTwo <T> {
         }
     }
     
-    func addToOneOrTwo(_ origins: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<[PositionAsIosAxes]> {
-        switch (self, origins) {
-        case let(.two(left1 , right1 ), .two(left2, right2)):
-                    return .two(left: makeAddition(left1, left2 ), right: makeAddition(right1, right2 ) )
-        case let(.one(one1), .one(one2) ):
-                    return .one(one: makeAddition(one1, one2 ))
+    func addToOneOrTwo(_ origin: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<[PositionAsIosAxes]> {
+        switch (self, origin) {
+        case let(.two(left1 , right1 ), .two(originL, originR)):
+                    return .two(left: makeAddition(left1, originL ), right: makeAddition(right1, originR ) )
+        case let(.one(one1), .one(originO) ):
+                    return .one(one: makeAddition(one1, originO ))
           default:
                 fatalError()
                   
         }
         
         
-        func makeAddition<U, V>(_ positions: V, _ origins: U) -> [PositionAsIosAxes] {
+        func makeAddition<U, V>(_ positions: V, _ origin: U) -> [PositionAsIosAxes] {
             guard let position = positions as? [PositionAsIosAxes] else {
                 fatalError("something has gone wrong should be PositionAsIosAxes")
             }
-            guard let origin = origins as? PositionAsIosAxes else {
+            guard let origin = origin as? PositionAsIosAxes else {
                 fatalError("something has gone wrong should be PositionAsIosAxes")
             }
             return
                 CreateIosPosition.addToupleToArrayOfTouples(origin, position )
         }
     }
+    
+    
     
     func mapOneOrTwoSingleWithFunc< U>(  _ transform: (T) -> U) -> OneOrTwo<U> {
         switch self {
