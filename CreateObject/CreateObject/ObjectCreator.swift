@@ -386,7 +386,16 @@ struct PartObject: Hashable {
     }
 }
 
-
+///provide proprties for tuple for part-groupaccess to dictionary
+struct PartObjectGroup: Hashable {
+    let part: Part
+    let group: ObjectGroup
+    
+    init (_ part: Part, _ group: ObjectGroup) {
+        self.part = part
+        self.group = group
+    }
+}
 ///provide proprties for tuple for part-id access to dictionary
 struct PartId: Hashable {
     let part: Part

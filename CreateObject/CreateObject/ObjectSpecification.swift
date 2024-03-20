@@ -15,9 +15,9 @@ enum ObjectTypes: String, CaseIterable, Hashable {
     case allCasterBed = "Bed: caster base"
     case allCasterChair = "Chair: caster base"
     case allCasterHoist = "Hoist: caster base"
-    case allCasterSixHoist = "Hoist: six caster base"
-    case allCasterTiltInSpaceShowerChair = "Tilting shower chair: caster base"
     case allCasterTiltInSpaceArmChair = "Tilting armchair: caster base"
+    case allCasterTiltInSpaceShowerChair = "Tilting shower chair: caster base"
+    
     case allCasterStandAid = "Stand aid: caster base"
     case allCasterStretcher = "Stretcher: caster Base "
     
@@ -53,8 +53,45 @@ enum ObjectTypes: String, CaseIterable, Hashable {
     case verticalLift = "Vertical Lift"
 }
 
+enum ObjectGroup {
+    case base
+    case chair
+    case hoist
+    case lieOn
+    case object
+   
+    case seat
+}
 
-
+struct ObjectTypesToGroups {
+  static  let dictionary: [ObjectTypes: ObjectGroup] = [
+        .allCasterBed: .lieOn,
+        .allCasterChair: .chair,
+        .allCasterHoist: .hoist,
+        .allCasterStretcher: .lieOn,
+        .allCasterTiltInSpaceArmChair: .chair,
+        .allCasterTiltInSpaceShowerChair: .chair,
+        .fixedWheelRearDrive: .chair,
+        .fixedWheelRearDriveAssisted: .chair,
+        .fixedWheelMidDrive: .chair,
+        .fixedWheelFrontDrive: .chair,
+        .fixedWheelManualRearDrive: .chair,
+        .fixedWheelSolo: .chair,
+        .fixedWheelTransfer: .seat,
+        .scooterRearDrive3Wheeler: .chair,
+        .scooterRearDrive4Wheeler: .chair,
+        .scooterFrontDrive3Wheeler: .chair,
+        .scooterFrontDrive4Wheeler: .chair,
+        .showerTray: .base,
+    ]
+    let objectType: ObjectTypes
+    var group: ObjectGroup {
+        guard let group = Self.dictionary[objectType] else {
+            fatalError("\(objectType)")
+        }
+        return group
+    }
+}
 
 
 
@@ -137,6 +174,7 @@ struct ObjectChainLabel {
         .sitOnTiltJoint]
     static let chairSupportWithOutFoot: [Part] =
         [.mainSupport,
+         .backSupportTiltJoint,
         .backSupportHeadSupport,
         .armSupport,
         .sitOnTiltJoint]
@@ -184,9 +222,9 @@ struct ObjectChainLabel {
 
         .fixedWheelSolo: [.mainSupport] + [.fixedWheelAtMid]  + [.armSupport] ,
     
-            .scooterRearDrive4Wheeler: chairSupportWithOutFoot + [.fixedWheelAtRear, .steeredWheelAtFront],
-    
-            .showerTray: [.mainSupport],
+        .scooterRearDrive4Wheeler: chairSupportWithOutFoot + [.fixedWheelAtRear, .steeredWheelAtFront],
+
+        .showerTray: [.mainSupport],
     
     ]
 }
@@ -225,20 +263,20 @@ struct OneOrTwoId {
 
 struct TiltingAbility {
     let part: Part
-    let objectType: ObjectTypes
-    static let dictionary: [PartObject: Part] = [
-        PartObject(.mainSupport, .fixedWheelRearDrive): .sitOnTiltJoint,
-        PartObject(.backSupport, .fixedWheelRearDrive): .backSupportTiltJoint,
+    let group: ObjectGroup
+    static let dictionary: [PartObjectGroup: Part] = [
+        PartObjectGroup(.mainSupport, .chair): .sitOnTiltJoint,
+        PartObjectGroup(.backSupport, .chair): .backSupportTiltJoint,
         ]
     var tilter: Part? {
-        Self.dictionary[PartObject(part, objectType)]
+        Self.dictionary[PartObjectGroup(part, group)]
     }
     var parts:[Part] {
         Array(Self.dictionary.values)
     }
     init (_ part: Part = .notFound, _ objectType: ObjectTypes = .fixedWheelRearDrive) {
         self.part = part
-        self.objectType = objectType
+            self.group = ObjectTypesToGroups(objectType: objectType).group
     }
 }
 

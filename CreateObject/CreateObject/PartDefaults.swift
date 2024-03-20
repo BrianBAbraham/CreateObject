@@ -295,7 +295,7 @@ struct PartDefaultAngle {
                 .sitOnTiltJoint: 
                     (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
                 .backSupportTiltJoint:
-                    (x: Measurement(value: 89.0, unit: UnitAngle.degrees), y: z , z: z),
+                    (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
             ]
             return dictionary[part]
         }
@@ -407,7 +407,7 @@ struct PartDefaultDimension {
                 [
                 .assistantFootLever: (width: 20.0, length: 300.0, height: 20.0),
                 .armSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
-                .backSupport: (width: linkedOrParentDimension.width, length: 20.0 , height: 1000.0),
+                .backSupport: (width: linkedOrParentDimension.width, length: 20.0 , height: 500.0),
                 .backSupportHeadSupport: (width: 150.0, length: 50.0, height: 100.0) ,
                 .backSupportHeadSupportJoint: Self.joint,
                 .backSupportHeadSupportLink: (width: 20.0, length: 20.0, height: 150.0),
@@ -661,7 +661,7 @@ struct PartEditedElseDefaultOrigin {
                 
                 .sideSupportRotationJoint: (x: linkedOrParentDimension.width/2, y: -linkedOrParentDimension.length/2, z: selfDimension.height),
                 .mainSupport:  (x: 0.0, y: selfDimension.length/2, z: 500.0 ),
-                .sitOnTiltJoint: (x: 0.0, y: linkedOrParentDimension.length/2, z: -100.0),
+                .sitOnTiltJoint: (x: 0.0, y: linkedOrParentDimension.length/12, z: -100.0),
                 .steeredVerticalJointAtFront: wheelBaseJointOrigin,
                 .steeredWheelAtFront: ZeroValue.iosLocation
                 ] [part]
