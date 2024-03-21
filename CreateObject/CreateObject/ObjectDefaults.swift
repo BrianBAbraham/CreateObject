@@ -32,6 +32,19 @@ struct AllPartInObject {
             }
         return oneOfEachPartInAllChainLabel
     }
+    
+    static func getOneOfAllPartInObjectAfterEdit(_ allChainLabels: [Part]) -> [Part] {
+        var oneOfEachPartInAllChainLabel: [Part] = []
+            for label in allChainLabels {
+               let partChain = LabelInPartChainOut(label).partChain
+                for part in partChain {
+                    if !oneOfEachPartInAllChainLabel.contains(part) {
+                        oneOfEachPartInAllChainLabel.append(part)
+                    }
+                }
+            }
+        return oneOfEachPartInAllChainLabel
+    }
 }
 
 

@@ -21,38 +21,34 @@ struct ObjectData {
 
     var allChainLabels: [Part] = []
     
-    var oneOfEachPartInAllPartChain: [Part] = []
+    let chainLabelsAccountingForEdit: [Part]
+    
+    var oneOfEachPartInAllPartChainAccountingForEdit: [Part] = []
     
     let linkedPartsDictionary = LinkedParts().dictionary
     
     init(
         _ objectType: ObjectTypes,
-        _ userEditedDic: UserEditedDictionaries?) {
+        _ userEditedDic: UserEditedDictionaries?,
+        _ chainLabelsAccountingForEdit: [Part]) {
         
         self.objectType = objectType
         self.userEditedDic = userEditedDic
         self.objectChainLabelsDefaultDic = ObjectChainLabel.dictionary
         self.objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
-        
+        self.chainLabelsAccountingForEdit = chainLabelsAccountingForEdit
         allChainLabels = getAllPartChainLabels()
             
-        oneOfEachPartInAllPartChain = getOneOfEachPartInAllPartChain()
+        
+        oneOfEachPartInAllPartChainAccountingForEdit = AllPartInObject.getOneOfAllPartInObjectAfterEdit(chainLabelsAccountingForEdit)
+       
             
-        checkObjectHasAtLeastOnePartChain()
+            checkObjectHasAtLeastOnePartChain()
         
         initialiseAllPart()
         
         postProcessGlobalOrigin()
-            
-            
-//            for part in allPartChainLabels {
-//                if part == .fixedWheelAtRearWithPropeller {
-//                    print("")
-//                    print("object creator")
-//                    print(partValuesDic[.fixedWheelAtRearWithPropeller]?.globalOrigin)
-//                    print("")
-//                }
-//            }
+    
     }
     
     func checkObjectHasAtLeastOnePartChain(){
@@ -68,7 +64,7 @@ struct ObjectData {
    mutating func postProcessGlobalOrigin(){
         let allPartChain = getAllPartChain()
         var partsToHaveGlobalOriginSet =
-           oneOfEachPartInAllPartChain
+           oneOfEachPartInAllPartChainAccountingForEdit
      
         for chain in allPartChain {
             processPart( chain)
@@ -165,7 +161,7 @@ extension ObjectData {
         //e,g. .sitOn is foundational to .fixedWheelHorizontalJoint...
         // object width is depenent on .sitOn
         let orderedSoLinkedOrParentPartInitialisedFirst =
-          oneOfEachPartInAllPartChain
+          oneOfEachPartInAllPartChainAccountingForEdit
         if orderedSoLinkedOrParentPartInitialisedFirst.contains(.mainSupport) {
             initialiseLinkedOrParentPart(.mainSupport)
         }
@@ -212,7 +208,7 @@ extension ObjectData {
                 userEditedDic,
                 linkedOrParentData,
                 child,
-                allChainLabels)
+                chainLabelsAccountingForEdit)
                     .partData
         
         partValuesDic +=
@@ -332,7 +328,7 @@ struct PartData {
         angles: OneOrTwo<RotationAngles>?,
         id: OneOrTwo<PartTag>,
         sitOnId: PartTag = .id0,
-        scopesOfRotation: [Part] = [] ) {
+        partsToBeRotated: [Part] = [] ) {
             self.part = part
             self.originName = originName
             self.dimensionName = dimensionName
@@ -344,7 +340,7 @@ struct PartData {
             
             self.id = id
             self.sitOnId = sitOnId
-            self.partsToBeRotated = scopesOfRotation
+            self.partsToBeRotated = partsToBeRotated
             self.angles = getAngles()
             self.minMaxAngle = getMinMaxAngle()
             
@@ -1217,7 +1213,7 @@ struct StructFactory {
     let linkedOrParentData: PartData
     let part: Part
     let parentPart: Part
-    let allChainLabels: [Part]
+    let chainLabelsAccountingForEdit: [Part]
     let defaultOrigin: PartEditedElseDefaultOrigin
     let userEditedData: UserEditedData
     var partOrigin: OneOrTwo<PositionAsIosAxes> = .one(one: ZeroValue.iosLocation)
@@ -1228,12 +1224,12 @@ struct StructFactory {
          _ userEditedDic: UserEditedDictionaries?,
          _ linkedOrParentData: PartData,
          _ part: Part,
-         _ allChainLabels: [Part]){
+         _ chainLabelsAccountingForEdit: [Part]){
         self.objectType = objectType
         self.linkedOrParentData = linkedOrParentData
         self.part = part
         self.parentPart = linkedOrParentData.part
-        self.allChainLabels = allChainLabels
+        self.chainLabelsAccountingForEdit = chainLabelsAccountingForEdit
         let sitOnId: PartTag = .id0
         
 //        if part == .fixedWheelAtRearWithPropeller {
@@ -1355,7 +1351,7 @@ extension StructFactory {
     func createPart()
         -> PartData {
         let partId = userEditedData.partIdAllowingForUserEdit//two sided default edited to one will be detected
-        let scopesOfRotation: [Part] =  getChainLabelsSubjectToRotator()
+        let partsToBeRotated: [Part] =  getPartsToBeRotated()
         var partAnglesMinMax = partId.createOneOrTwoWithOneValue(ZeroValue.angleMinMax)
         var partAngles = partId.createOneOrTwoWithOneValue(ZeroValue.rotationAngles)
         let originName =
@@ -1381,31 +1377,28 @@ extension StructFactory {
                 minMaxAngle: partAnglesMinMax,
                 angles: partAngles,
                 id: partId,
-                scopesOfRotation: scopesOfRotation)
+                partsToBeRotated: partsToBeRotated)
             
             
-        func getChainLabelsSubjectToRotator() -> [Part]{
-            
-            let chainLabelsToBeRotated =
+        func getPartsToBeRotated() -> [Part]{
+            let oneOfAllPartInObject = AllPartInObject.getOneOfAllPartInObjectAfterEdit(chainLabelsAccountingForEdit)
+            let partsToBeRotated =
                 PartInRotationScopeOut(
                     part,
-                    allChainLabels)
+                    oneOfAllPartInObject)
                         .rotationScopeAllowingForEditToChainLabel
-//            if chainLabelsToBeRotated != [] {
-//                print("\(part) \(chainLabelsToBeRotated)")
-//                print("")
+
+            return partsToBeRotated
+            
+            
+//            func getPartSubjecToRotation() -> [Part] {
+//                var partsToBeRotated: [Part] = []
+//                for chainLabel in chainLabelsToBeRotated {
+//                    partsToBeRotated += //ignore first part which is the origin
+//                        Array(LabelInPartChainOut(chainLabel).partChain.dropFirst())
+//                }
+//                return partsToBeRotated
 //            }
-            return chainLabelsToBeRotated
-            
-            
-            func getPartSubjecToRotation() -> [Part] {
-                var partsToBeRotated: [Part] = []
-                for chainLabel in chainLabelsToBeRotated {
-                    partsToBeRotated += //ignore first part which is the origin
-                        Array(LabelInPartChainOut(chainLabel).partChain.dropFirst())
-                }
-                return partsToBeRotated
-            }
         }
          
             

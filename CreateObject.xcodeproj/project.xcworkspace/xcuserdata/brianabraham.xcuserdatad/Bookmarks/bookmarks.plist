@@ -88,13 +88,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>134</string>
+					<string>147</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>133</string>
+					<string>146</string>
 					<key>Timestamp</key>
-					<string>732025479.427159</string>
+					<string>732723516.35229</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -154,13 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>609</string>
+					<string>605</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>608</string>
+					<string>604</string>
 					<key>Timestamp</key>
-					<string>732648229.573002</string>
+					<string>732730189.554719</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -444,6 +444,53 @@
 			</dict>
 			<key>title</key>
 			<string>cluncky</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>306</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>305</string>
+					<key>Timestamp</key>
+					<string>732732550.934798</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>            let rotatorOrder: [Part] = [.sitOnTiltJoint, .backSupportTiltJoint]
+</string>
+				<key>leading</key>
+				<string>        
+        func orderRotatorsForMultipleRotations(_ unorderedRotators: [Part]) -&gt; [Part] {
+</string>
+				<key>trailing</key>
+				<string>            var correctedRotatorOrder: [Part] = []
+            for rotator in rotatorOrder {
+                if unorderedRotators.contains(rotator) {
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT requires are more general approach</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

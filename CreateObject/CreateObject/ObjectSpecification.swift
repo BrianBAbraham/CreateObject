@@ -282,13 +282,7 @@ struct TiltingAbility {
 
 struct PartInRotationScopeOut {
     let allChainLabels: [Part]
-//    let dictionary: [Part: [Part]] = [
-//        .sitOnTiltJoint:
-//            [.backSupport, .backSupportHeadSupport, .mainSupport, .armSupport, .footSupport],
-//        .backSupportTiltJoint:
-//            [.backSupport, .backSupportHeadSupport]
-//    ]
-    
+
     let dictionary: [Part: [Part]] = [
         .sitOnTiltJoint:
             [.backSupport, .backSupportTiltJoint, .backSupportHeadSupportLink, .backSupportHeadSupport, .mainSupport, .armSupport, .footSupportHangerLink, .footSupport],
@@ -299,12 +293,13 @@ struct PartInRotationScopeOut {
     let part: Part
     
     var defaultRotationScope: [Part] {
-        dictionary[part] ?? []
+        let initial = dictionary[part] ?? []
+        
+        return initial.filter{allChainLabels.contains($0)}
     }
     
     var rotationScopeAllowingForEditToChainLabel: [Part] {
-        defaultRotationScope//.filter { allChainLabels.contains($0) }
-        
+        defaultRotationScope
     }
     
     init(_ part: Part, _ allChainLabels: [Part]) {
@@ -312,3 +307,5 @@ struct PartInRotationScopeOut {
         self.allChainLabels = allChainLabels
     }
 }
+
+
