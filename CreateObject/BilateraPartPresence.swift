@@ -55,6 +55,7 @@ struct BilateralPartPresence: View {
 
             Text("R")
         }
+        //.padding(.top)
     }
 
     private func updateViewModelForLeftToggle(_  left: Bool) {

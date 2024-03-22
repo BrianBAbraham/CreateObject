@@ -87,7 +87,7 @@ struct DefaultMinMaxDimensionDictionary {
            max: (width: 200.0, length: 1000.0, height: 40.0)),
         .backSupport:
           (min: (width: 10.0, length: 10.0, height: 10.0),
-           max: (width: 1000.0, length: 400.0, height: 40.0)),
+           max: (width: 1000.0, length: 100.0, height: 1400.0)),
        .backSupportHeadSupport:
          (min: (width: 10.0, length: 10.0, height: 10.0),
           max: (width: 1000.0, length: 400.0, height: 40.0)),

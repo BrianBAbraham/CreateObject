@@ -68,8 +68,8 @@ struct PickPartEdit: View {
         let menuItemsUsingPart = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
         let menuItemsUsingDisplayName = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
         
-        
-     
+        HStack{
+            Text("edit")
             Picker("", selection: $selectedMenuNameItem) {
                 ForEach(menuItemsUsingDisplayName, id: \.self) { item in
                     Text(item)
@@ -86,7 +86,7 @@ struct PickPartEdit: View {
             .onChange(of: objectPickVM.getCurrentObjectName()) {
                 selectedMenuNameItem = Part.mainSupport.rawValue
             }
-            
+        }
             
        
            

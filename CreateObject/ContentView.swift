@@ -161,44 +161,41 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                   
-                    VStack {
-                        PickInitialObjectView()
+                    ZStack{
+                        VStack {
+                            ObjectView(
+                                uniquePartNames,
+                                objectManipulationIsActive,
+                                initialOrigin: $initialOrigin)
+                            .zIndex(1000.9)
+                         
 
-                        ObjectView(
-                            uniquePartNames,
-                            objectManipulationIsActive,
-                            initialOrigin: $initialOrigin)
-                     
+                            VStack (alignment: .leading) {
+                                HStack{
+                                    PickInitialObjectView()
+                                    PickPartEdit()
+                                }
+                                .padding(.bottom)
+                                
+                                HStack{
+                                    ConditionalBilateralPartSidePicker()
+                                    ConditionalBilateralPartPresence()
+                                    ConditionaUniPartPresence()
+                                }
+                               
+                                ConditionalBilateralPartEditMenu()
+                                    
+                                ConditionalUniPartEditMenu()
 
-                    VStack (alignment: .leading) {
-                        
-                        HStack{
-                   
-                            ConditionalBilateralPartSidePicker()
-                            ConditionalBilateralPartPresence()
-
-                            ConditionaUniPartPresence()
-                            Spacer()
+                                ConditionalTiltMenu()
+                                
+                                
+                            }
+                            .padding(.horizontal)
+                            .transition(.move(edge: .bottom))
+                            .backgroundModifier()
                         }
-                       
-                        ConditionalBilateralPartEditMenu()
-                            
-                        ConditionalUniPartEditMenu()
-
-                        ConditionalTiltMenu()
-                        
-                        PickPartEdit()
-                    }
-                    .padding(.horizontal)
-                    .transition(.move(edge: .bottom))
-                    .backgroundModifier()
-                   
-
-                    
-                    
-                    
-                    }) {
+                   }) {
                         Text("Default equipment")
                     }
                 Spacer()

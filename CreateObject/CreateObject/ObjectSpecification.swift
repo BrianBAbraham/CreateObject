@@ -12,35 +12,35 @@ import Foundation
 
 enum ObjectTypes: String, CaseIterable, Hashable {
     
-    case allCasterBed = "Bed: caster base"
-    case allCasterChair = "Chair: caster base"
-    case allCasterHoist = "Hoist: caster base"
-    case allCasterTiltInSpaceArmChair = "Tilting armchair: caster base"
-    case allCasterTiltInSpaceShowerChair = "Tilting shower chair: caster base"
+    case allCasterBed = "Bed"
+    case allCasterChair = "Shower chair"
+    case allCasterHoist = "Mobile hoist"
+    case allCasterTiltInSpaceArmChair = "Armchair"
+    case allCasterTiltInSpaceShowerChair = "Tilting shower chair"
     
     case allCasterStandAid = "Stand aid: caster base"
-    case allCasterStretcher = "Stretcher: caster Base "
+    case allCasterStretcher = "Stretcher"
     
 //    case bathIntegralHoist = "IntegralBathHoist"
 //    case bathFloorFixedHoistOneRotationPoint = "SingleRotationPointBathHoist"
 //    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
     
-    case fixedWheelRearDriveAssisted = "Assisted wheelchair"
-    case fixedWheelFrontDrive = "Power chair front drive"
-    case fixedWheelMidDrive  = "Power chair mid-drive"
-    case fixedWheelRearDrive = "Power chair rear drive"
-    case fixedWheelManualRearDrive = "Self-propelling chair rear drive"
-    case fixedWheelSolo = "Power chair active balance"
+    case fixedWheelRearDriveAssisted = "Manual assisted"
+    case fixedWheelFrontDrive = "Powered (front)"
+    case fixedWheelMidDrive  = "Powered (mid)"
+    case fixedWheelRearDrive = "Powered (rear)"
+    case fixedWheelManualRearDrive = "Manual (rear)"
+    case fixedWheelSolo = "Powered (balancing)"
     case fixedWheelTransfer = "Fixed wheel transfer device"
     
 //    case hingedDoorSingle = "Door"
 //    case hingedDoorDouble = "Bi-FoldDoor"
 //    case hingedDoortripple = "Tri-FoldDoor"
 //
-    case scooterFrontDrive4Wheeler = "Scooter 4 wheel front drive"
-    case scooterFrontDrive3Wheeler =  "Scooter 3 wheel front drive"
-    case scooterRearDrive4Wheeler  = "Scooter 4 wheel rear drive"
-    case scooterRearDrive3Wheeler = "Scooter 3 wheel rear drive"
+    case scooterFrontDrive4Wheeler = "Scooter-4 (front)"
+    case scooterFrontDrive3Wheeler =  "Scooter-3 (front)"
+    case scooterRearDrive4Wheeler  = "Scooter-4 (rear)"
+    case scooterRearDrive3Wheeler = "Scooter-3 (rear)"
     
     case seatThatTilts = "Tilting chair"
     

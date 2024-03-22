@@ -46,6 +46,8 @@ extension ObjectShowMenuViewModel {
         switch part{
         case .footSupport, .assistantFootLever:
             return [.length]
+        case .backSupport:
+            return [.height, .width]
         default: return [.length, .width]
         }
     }
@@ -115,7 +117,7 @@ extension ObjectShowMenuViewModel {
     
     func getUniEditMenuStatus(_ part: Part) -> Bool {
         let editable: [Part] = [
-            .mainSupport
+            .mainSupport, .backSupport
         ]
         let status =
         editable.contains(part)

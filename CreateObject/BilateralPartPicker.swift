@@ -44,6 +44,7 @@ struct BilateralPartSidePicker: View {
         }
         .pickerStyle(.segmented)
         .fixedSize()
+        //.padding(.top)
     }
 }
 enum SidesAffected: String, CaseIterable, Equatable {

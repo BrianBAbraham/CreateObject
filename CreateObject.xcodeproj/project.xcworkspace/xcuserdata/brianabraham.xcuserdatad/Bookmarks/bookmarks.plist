@@ -154,60 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>605</string>
+					<string>392</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>604</string>
+					<string>391</string>
 					<key>Timestamp</key>
-					<string>732730189.554719</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>//    func mapOriginalValueToSomePropertyComponent&lt;U&gt;(
-</string>
-				<key>leading</key>
-				<string>    
-    
-</string>
-				<key>trailing</key>
-				<string>//        _ oneOrTwoOriginal: OneOrTwo&lt;U&gt;,
-//        _ propertyToBeEdited: PartTag) -&gt; OneOrTwo&lt;PositionAsIosAxes&gt;{
-//        let z: PositionAsIosAxes = ZeroValue.iosLocation
-</string>
-			</dict>
-			<key>title</key>
-			<string>not complete on friday</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>396</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>395</string>
-					<key>Timestamp</key>
-					<string>731963372.123553</string>
+					<string>732824466.073683</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -226,8 +179,8 @@
 				<string>        func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -&gt; PositionAsIosAxes {
 </string>
 				<key>leading</key>
-				<string>    
-       
+				<string>        
+            
 </string>
 				<key>trailing</key>
 				<string>            let mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
@@ -248,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>374</string>
+					<string>386</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>373</string>
+					<string>385</string>
 					<key>Timestamp</key>
-					<string>731686405.9060301</string>
+					<string>732809629.274596</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -295,13 +248,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>282</string>
+					<string>276</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>281</string>
+					<string>275</string>
 					<key>Timestamp</key>
-					<string>731963372.123468</string>
+					<string>732824466.0736639</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -408,13 +361,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>275</string>
+					<string>279</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>274</string>
+					<string>278</string>
 					<key>Timestamp</key>
-					<string>731686405.906078</string>
+					<string>732809278.382363</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -455,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>306</string>
+					<string>285</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>305</string>
+					<string>284</string>
 					<key>Timestamp</key>
-					<string>732732550.934798</string>
+					<string>732796564.226928</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -491,6 +444,100 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT requires are more general approach</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>613</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>612</string>
+					<key>Timestamp</key>
+					<string>732798506.519421</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    func getDictionaryValue(_ dictionary: [String: PositionAsIosAxes ])
+</string>
+				<key>leading</key>
+				<string>    
+    
+</string>
+				<key>trailing</key>
+				<string>    -&gt; OneOrTwo&lt;PositionAsIosAxes&gt;{
+        switch self {
+        case .two(let left, let right):
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT combine as one</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>679</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>678</string>
+					<key>Timestamp</key>
+					<string>732798506.519452</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    var one: T? {
+</string>
+				<key>leading</key>
+				<string>    
+    
+</string>
+				<key>trailing</key>
+				<string>        switch self {
+        case .two:
+            return nil
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT can this be removed with recoding</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

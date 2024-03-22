@@ -206,11 +206,15 @@ extension ObjectPickViewModel {
            
             
             switch propertyToEdit {
-            case .length, .width:
+            case .height:
                 let dimension = partData.dimension.returnValue(id)
-                value = propertyToEdit == .length ?
-                (dimension.length): (dimension.width)
-               // print(value)
+                value = dimension.height
+            case .width:
+                let dimension = partData.dimension.returnValue(id)
+                value = dimension.width
+            case.length:
+                let dimension = partData.dimension.returnValue(id)
+                value = dimension.length
             case .xOrigin, .yOrigin:
                 let name = CreateNameFromIdAndPart(id, part).name
                 let offsetToOrigin = userEditedSharedDics.originOffsetUserEditedDic[name] ?? ZeroValue.iosLocation
@@ -354,6 +358,14 @@ extension ObjectPickViewModel {
 //                minMaxValue =
 //                    (min: values.min.value,
 //                     max: values.max.value)
+                
+            case .height:
+                let values =
+                    defaultMinMaxDimensionDic.getDefault(
+                        part,
+                        currentObjectType)
+                minMaxValue = (min: values.min.height,
+                               max: values.max.height)
                 
             case .length:
                 let values =

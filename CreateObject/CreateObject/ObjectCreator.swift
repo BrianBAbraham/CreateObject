@@ -11,7 +11,7 @@ struct ObjectData {
     
     let objectChainLabelsUserEditedDic: ObjectChainLabelDictionary
     
-    var partValuesDic: [Part: PartData] = [:]
+    var partDataDic: [Part: PartData] = [:]
     
     let objectType: ObjectTypes
     
@@ -87,7 +87,7 @@ struct ObjectData {
                 } else {
                    let parentPart = chain[index - 1]
                     
-                    guard let parentPartValue = partValuesDic[parentPart] else {
+                    guard let parentPartValue = partDataDic[parentPart] else {
                         fatalError()
                     }
                     return parentPartValue.globalOrigin
@@ -108,7 +108,7 @@ struct ObjectData {
        func setGlobalOrigin(
         _ part: Part,
         _ parentGlobalOrigin: OneOrTwo<PositionAsIosAxes>) {
-            guard let partValue = partValuesDic[part] else {
+            guard let partValue = partDataDic[part] else {
                 fatalError("This part:\(part) has not been intialised where the parent global origin is \(parentGlobalOrigin)")
             }
             let childOrigin = partValue.childOrigin
@@ -128,7 +128,7 @@ struct ObjectData {
                    getGlobalOrigin(childOrigin, modifiedParentGlobalOrigin)
             
             let modifiedPartValue = partValue.withNewGlobalOrigin(globalOrigin)
-            partValuesDic[part] = modifiedPartValue
+            partDataDic[part] = modifiedPartValue
         }
         
         
@@ -186,7 +186,7 @@ extension ObjectData {
                   independantPart: child)
                     .partData
         
-        partValuesDic +=
+        partDataDic +=
             [child: foundationalData]
     }
     
@@ -196,7 +196,7 @@ extension ObjectData {
         _ child: Part
     ) {
         var childData: PartData = ZeroValue.partData
-            guard let linkedOrParentData = partValuesDic[linkedlOrParentPart] else {
+            guard let linkedOrParentData = partDataDic[linkedlOrParentPart] else {
                 fatalError("no partValue for \(linkedlOrParentPart)")
             }
 
@@ -211,7 +211,7 @@ extension ObjectData {
                 chainLabelsAccountingForEdit)
                     .partData
         
-        partValuesDic +=
+        partDataDic +=
             [child: childData]
     }
     
@@ -269,7 +269,7 @@ extension ObjectData {
     }
     
     mutating func setObjectOriginPartValue() {
-        partValuesDic +=
+        partDataDic +=
         [.objectOrigin: ZeroValue.partData]
     }
 }
@@ -508,122 +508,14 @@ enum OneOrTwoOptional <V> {
             return  modifiedOnOrTwo
         }
 
-    
-    func isNotNil() -> V? {
-        switch self {
-        case .one (let one):
-            if let value = one {
-                return value
-            } else {
-                return nil
-            }
-        case .two (let left, let right):
-            if left == nil && right == nil {
-                return nil
-            } else {
-                if left == nil {
-                   return right
-                } else {
-                    return left
-                }
-            }
-        }
-    }
-    
-    
-    func mapBeforeToNilAndAfterToNonNil(
-        _ before: PositionAsIosAxes,
-        _ after: PositionAsIosAxes) -> OneOrTwo<PositionAsIosAxes>{
-            switch self{
-            case .one:
-                return .one(one: after)
-            case .two (let left, let right):
-                let returnForLeft = left == nil ? before: after
-                let returnForRight = right == nil ? before: after
-                return .two(left: returnForLeft, right: returnForRight)
-            }
-    }
-    
 
-
-    func mapOptionalToNonOptionalOneOrTwoOrigin(_ defaultValue: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<PositionAsIosAxes> {
-        
-    
-
-        switch self { //assign default to one or left and right if nil
-        case .one(let one):
-            if let one {
-                return .one(one: one as! PositionAsIosAxes )
-            } else {
-               return defaultValue
-            }
-
-        case .two(let left, let right):
-            var leftDefault: PositionAsIosAxes = ZeroValue.iosLocation
-            var rightDefault: PositionAsIosAxes = ZeroValue.iosLocation
-            switch defaultValue{
-                case .two( let left, let right):
-                leftDefault = left
-                rightDefault = right
-                default:
-                    break
-            }
-            
-            var returnForLeft: PositionAsIosAxes
-            var returnForRight: PositionAsIosAxes
-            if let left {
-                returnForLeft = left as! PositionAsIosAxes
-            } else {
-                returnForLeft = leftDefault
-            }
-            if let right {
-                returnForRight = right as! PositionAsIosAxes
-            } else {
-                returnForRight = rightDefault
-            }
-            return .two(left: returnForLeft, right: returnForRight)
-        }
-
-    }
 }
-
-///representing  OneOrTwo when either of Two is removed
-///transform to .one(one: id) where id indicates left or right
-///-id of .one must always be read/  reprentativeness of double-sidedness is weaker  , + no nil simplifies
-///or to nil left or right
-///nil is more complex code,  representativeness of double-sidedness is stronger, .one is always .id0
 
 
 
 enum OneOrTwo <T> {
     case two (left: T, right: T)
     case one (one: T)
-    
-    
-    
-    
-//    func mapOriginalValueToSomePropertyComponent<U>(
-//        _ oneOrTwoOriginal: OneOrTwo<U>,
-//        _ propertyToBeEdited: PartTag) -> OneOrTwo<PositionAsIosAxes>{
-//        let z: PositionAsIosAxes = ZeroValue.iosLocation
-//        let originalAsTouple = oneOrTwoOriginal.mapToTouple()
-//        switch self {
-//        case .two(let left , let right  ):
-//            var leftReturn = z
-//            var rightReturn = z
-//            let leftOriginal = originalAsTouple.left as! PositionAsIosAxes
-//            let rightOriginal = originalAsTouple.right as! PositionAsIosAxes
-//            if propertyToBeEdited == .xOrigin {
-//                leftReturn = (x: (left as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
-//                rightReturn = (x: (right as! PositionAsIosAxes).x, y:leftOriginal.y, z: leftOriginal.z)
-//            }
-//            return .two(left: leftReturn, right: rightReturn)
-//        case .one(let one):
-//            return .one(one: one as! PositionAsIosAxes)
-//        }
-//            
-//
-//    }
     
     //MARK: DEVELOPMENT
     ///a One parent is  mapped to left and right
@@ -637,50 +529,25 @@ enum OneOrTwo <T> {
         }
     }
     
-    func mapDefaultToOneOrTwo(_ defaultValue: PositionAsIosAxes) -> OneOrTwo<PositionAsIosAxes>{
-        let symmetryValue = CreateIosPosition.getLeftFromRight(defaultValue)
-        switch self {
-        case .one (let one):
-            let id = one as! PartTag
-            let valueAdjustedForSymmetry = id == .id0 ? symmetryValue: defaultValue
-            return .one(one: valueAdjustedForSymmetry)
-        case .two:
-            return .two(left: symmetryValue,
-                        right: defaultValue)
-        }
-    }
-    
-    
+
     //MARK: CHANGE TO AVERAGE
     func mapOneOrTwoToOneOrLeftValue() -> T {
         switch self {
         case .one (let one):
             return one
-        case .two (let left, let right):
+        case .two (let left, _ ):
             return left
         }
     }
     
-    func mapOneOrTwoToOneOrRightValue() -> T {
-        switch self {
-        case .one (let one):
-            return one
-        case .two (let left, let right):
-            return right
-        }
-    }
+
     
     func returnValue(_ id: PartTag) -> T {
         switch self {
         case .one (let one):
-           // if id == .id0 {
                 return one
-           // } else {
-//            fatalError(" passed a non-id0 to one") }
-            
         case .two (let left, let right):
             let value = id == .id0 ?  left: right
-            
             return value
         }
     }
@@ -699,7 +566,8 @@ enum OneOrTwo <T> {
         }
     }
     
-    func getOneOrTWoDictionaryOrUseDefaultOrgin(  _ positions: [PositionAsIosAxes?]) -> OneOrTwo<PositionAsIosAxes> {
+    
+    func getOneOrTwoOriginAllowingForEdit(  _ positions: [PositionAsIosAxes?]) -> OneOrTwo<PositionAsIosAxes> {
         switch self {//
         case let (.two(left, right) ):
             var leftPosition: PositionAsIosAxes
@@ -727,33 +595,6 @@ enum OneOrTwo <T> {
     }    
     
     
-    func getOneOrTwoDictionaryOrUseDefaultOrgin2(  _ positions: [[PositionAsIosAxes]?]) -> OneOrTwo<[PositionAsIosAxes]> {
-        switch self {//
-        case let (.two(left, right) ):
-            var leftPosition: [PositionAsIosAxes]
-            if let position = positions[0] {
-                leftPosition = position
-            } else {
-                leftPosition = left as! [PositionAsIosAxes]
-            }
-            var rightPosition: [PositionAsIosAxes]
-            if let position = positions[1] {
-                rightPosition = position
-            } else {
-                rightPosition = right as! [PositionAsIosAxes]
-            }
-            return .two(left: leftPosition, right: rightPosition)
-        case let (.one(one)):
-            var onePosition: [PositionAsIosAxes]
-            if let position = positions[0] {
-                onePosition = position
-            } else {
-                onePosition = one as! [PositionAsIosAxes]
-            }
-            return .one(one: onePosition)
-        }
-    }
-    
     func getNamesArray(  _ part: Part) -> [String] {
         var names: [String] = []
         switch (self) {
@@ -768,6 +609,7 @@ enum OneOrTwo <T> {
         return names
     }
     
+    
     func getDictionaryValue(_ dictionary: [String: PositionAsIosAxes ])
     -> OneOrTwo<PositionAsIosAxes>{
         switch self {
@@ -781,13 +623,12 @@ enum OneOrTwo <T> {
             guard let name = name as? String else {
                 fatalError("cannot downcast to String")
             }
-            guard let values = dictionary[name] else {
+            guard let value = dictionary[name] else {
                 fatalError("no dictionary entry")
             }
-            return values
+            return value
         }
     }
-    
     func getDictionaryValues(_ dictionary: [String: [PositionAsIosAxes] ])
     -> OneOrTwo<[PositionAsIosAxes]>{
         switch self {
@@ -825,25 +666,6 @@ enum OneOrTwo <T> {
     }
     
     
-    
-//    func createNameOriginEntry<U>(_ ids: OneOrTwo<U>,  _ part: Part) -> [String: PositionAsIosAxes] {
-//        var entries: [String: PositionAsIosAxes] = [:]
-//        switch (self, ids) {
-//        case let (.two(left0, right0), .two ):
-//           entries =
-//            [CreateNameFromIdAndPart(.id0, part).name: left0 as! PositionAsIosAxes,
-//             CreateNameFromIdAndPart(.id1, part).name: right0 as! PositionAsIosAxes]
-//        case let (.one(one0), .one(id)):
-//            entries =
-//            [CreateNameFromIdAndPart(id as! PartTag, part).name: one0 as!PositionAsIosAxes]
-//        default:
-//            fatalError("OneOrTwo properties for same part ar different cases \(part)")
-//          
-//        }
-//        return entries
-//    }
-    
-    
     func createOneOrTwoWithOneValue<U>(_ value: U) -> OneOrTwo<U> {
         switch self {
         case .one:
@@ -852,6 +674,7 @@ enum OneOrTwo <T> {
             return .two(left: value, right: value)
         }
     }
+    
     
     var one: T? {
         switch self {
@@ -863,34 +686,14 @@ enum OneOrTwo <T> {
     }
     
     
-    func adjustForTwoToOneId() -> OneOrTwo<T> {
+    func oneNotTwo()->Bool {
         switch self {
         case .one:
-            return self
-        case .two (let left, let right):
-            //if equal then the values are not user edited
-            if left as! PositionAsIosAxes == right as! PositionAsIosAxes {
-                return .two(left:
-                                CreateIosPosition.getLeftFromRight(right as! PositionAsIosAxes) as! T,
-                            right: right)
-            } else {
-                return .two(left: left, right: right)
-            }
+            return true
+        case .two:
+            return false
         }
     }
-
-    func applySymmetry() -> OneOrTwo<T>{
-        
-        switch self {
-        case .one:
-            return self
-        case .two (let left, let right):
-            
-            return .two(left: CreateIosPosition.getLeftFromRight(left as! PositionAsIosAxes ) as! T , right: right )
-        }
-
-    }
-    
     
     
     func getOneOrTwoCornerArrayFromDimension<U>(_ transform: (T) -> U) -> OneOrTwo<U> {
@@ -902,29 +705,6 @@ enum OneOrTwo <T> {
         }
     }
     
-    
-    func addOneOrTwoPair(_ origin: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<[PositionAsIosAxes]> {
-        switch (self, origin) {
-        case let (.two(cornerL , cornerR), .two(originL , originR)  ):
-            return .two(left: makeAddition(cornerL, originL ), right: makeAddition(cornerR, originR ) )
-        case let (.one( cornerO), .one(originO)):
-            return .one(one: makeAddition(cornerO, originO ))
-        default:
-         fatalError("cases are not matched")
-        }
-        
-    
-        func makeAddition(_ positions: T, _ origin: PositionAsIosAxes) -> [PositionAsIosAxes] {
-            guard let positions = positions as? [PositionAsIosAxes] else {
-                fatalError("something has gone wrong should be PositionAsIosAxes")
-            }
-//            guard let origin = origin as? PositionAsIosAxes else {
-//                fatalError("something has gone wrong should be PositionAsIosAxes")
-//            }
-            return
-                CreateIosPosition.addToupleToArrayOfTouples(origin, positions )
-        }
-    }
     
     func getDefaultOrRotatedCorners(//self is pre-tilt part origin
         _ originPostTilt: OneOrTwo<PositionAsIosAxes>, //post till part origin
@@ -968,6 +748,8 @@ enum OneOrTwo <T> {
             return preValue.y == postValue.y
         }
     }
+    
+    
     func negateOneOrTwoValues() -> OneOrTwo<PositionAsIosAxes>{
         switch self {
         case .two(let left, let right):
@@ -986,6 +768,7 @@ enum OneOrTwo <T> {
                 CreateIosPosition.subtractSecondFromFirstTouple(ZeroValue.iosLocation, position)
         }
     }
+    
     
     func addToOneOrTwo(_ origin: OneOrTwo<PositionAsIosAxes>) -> OneOrTwo<[PositionAsIosAxes]> {
         switch (self, origin) {
@@ -1010,7 +793,6 @@ enum OneOrTwo <T> {
                 CreateIosPosition.addToupleToArrayOfTouples(origin, position )
         }
     }
-    
     
     
     func mapOneOrTwoSingleWithFunc< U>(  _ transform: (T) -> U) -> OneOrTwo<U> {
@@ -1074,27 +856,7 @@ enum OneOrTwo <T> {
         }
     }
 
-    
-    func oneNotTwo()->Bool {
-        switch self {
-        case .one:
-            return true
-        case .two:
-            return false
-        }
-    }
-    
-    
-    func mapOneOrTwoToOneOrTwo(_ origin: [PositionAsIosAxes]) -> OneOrTwo<PositionAsIosAxes> {
-        switch self {
-        case .two:
-            return .two(left: origin[0], right: origin[1])
-        case .one:
-            return .one(one: origin[0])
-        }
-    }
-    
-    
+ 
     func mapTwoToOneUsingOneId<Dimension3d>(_ id: PartTag) -> OneOrTwo<Dimension3d> {
         switch self {
         case .two(let left, let right):
@@ -1159,26 +921,6 @@ enum OneOrTwo <T> {
         }
     }
 
-    func mapFiveOneOrTwoToOneFuncWithVoidReturn(
-         _ value1: OneOrTwo<String>,
-         _ value2: OneOrTwo<RotationAngles>,
-         _ value3: OneOrTwo<AngleMinMax>,
-         _ value4: OneOrTwo<PositionAsIosAxes>,
-         _ transform: (Dimension3d, String, RotationAngles, AngleMinMax, PositionAsIosAxes)  -> ()) {
-             
-          //   print("\(value1), \(value2), \(value3), \(value4) ")
-         switch (self, value1, value2, value3, value4) {
-         case let (.one(one0), .one(one1), .one(one2), .one(one3), .one(one4)):
-             transform(one0 as! Dimension3d, one1, one2, one3, one4)
-         
-         
-         case let (.two(left0, right0), .two(left1, right1), .two(left2, right2), .two(left3, right3), .two(left4, right4) ):
-             transform(left0 as! Dimension3d, left1, left2, left3, left4)
-             transform(right0 as! Dimension3d, right1, right2, right3, right4)
-         default:
-              fatalError("\n\n\(String(describing: type(of: self))): \(#function ) the fmap has either one globalPosition and two id or vice versa for \(value1)")
-         }
-     }
     
     func mapSixOneOrTwoToOneFuncWithVoidReturn(
          _ value1: OneOrTwo<String>,
@@ -1187,8 +929,6 @@ enum OneOrTwo <T> {
          _ value4: OneOrTwo<PositionAsIosAxes>,
          _ value5: OneOrTwo<PositionAsIosAxes>,
          _ transform: (Dimension3d, String, RotationAngles, AngleMinMax, PositionAsIosAxes, PositionAsIosAxes)  -> ()) {
-             
-          //   print("\(value1), \(value2), \(value3), \(value4) ")
          switch (self, value1, value2, value3, value4, value5) {
          case let (.one(one0), .one(one1), .one(one2), .one(one3), .one(one4), .one(one5)):
              transform(one0 as! Dimension3d, one1, one2, one3, one4, one5)

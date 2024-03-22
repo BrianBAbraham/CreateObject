@@ -208,6 +208,7 @@ enum PartTag: String, Parts {
     case stringLink = "_"
     case width = "width"
     case length = "length"
+    case height = "height"
     case dimension = "dimension"
     case origin = "origin"
     case xOrigin = "x-origin"
@@ -255,55 +256,63 @@ struct PartSwapLabel {
 }
 
 
-
-
-
-
-
-
 struct PartDefaultAngle {
     
+    let allAngleData:
+        (min: RotationAngles, max: RotationAngles, initial: RotationAngles)
     let angle: RotationAngles
     var minMaxAngle: AngleMinMax = ZeroValue.angleMinMax
   
     
     init(_ part: Part, _ objectType: ObjectTypes) {
-        self.angle = getDefault(part, objectType)
+        allAngleData = getAllAngleData(part, objectType)
+        
+        
+        self.angle = allAngleData.initial
         minMaxAngle = getMinMaxAngle()
     
-        func getDefault(_ part: Part, _ objectType: ObjectTypes)  -> RotationAngles {
+        func getAllAngleData(_ part: Part, _ objectType: ObjectTypes)
+        -> (min: RotationAngles, max: RotationAngles, initial: RotationAngles) {
             let partObject = PartObject(part, objectType)
-            guard let angle =
+            guard let allAngleData =
                     getFineTunedAngleDefault(partObject) ??
-                    getGeneralAngleDfault(part) else {
+                    getGeneralAngleDefault(part) else {
                 fatalError("no angle defined for part \(part)")
             }
-            return angle
+            return allAngleData
         }
         
-        
-        func getFineTunedAngleDefault(_ partObject: PartObject) -> RotationAngles?{
-            let dictionary: [PartObject: RotationAngles] = [:]
+        func getFineTunedAngleDefault(_ partObject: PartObject) 
+        -> (min: RotationAngles, max: RotationAngles, initial: RotationAngles)?{
+            let dictionary: [PartObject: (min: RotationAngles, max: RotationAngles, initial: RotationAngles)] = [:]
             
             return dictionary[partObject]
         }
         
         
-        func getGeneralAngleDfault(_ part: Part) -> RotationAngles?{
+        func getGeneralAngleDefault(_ part: Part)
+        -> (min: RotationAngles, max: RotationAngles, initial: RotationAngles)?{
             let z: Measurement<UnitAngle> = ZeroValue.angleDeg
-            let dictionary: [Part: RotationAngles] = [
-                .sitOnTiltJoint: 
-                    (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
+            let zPlus = 1.0 * pow(10, -Double(10))//arbirtrarilly cose to zero
+            let dictionary: [Part: (min: RotationAngles, max: RotationAngles, initial: RotationAngles)] = [
+                .sitOnTiltJoint:
+                    (min: (x: Measurement(value: zPlus, unit: UnitAngle.degrees), y: z , z: z),
+                     max: (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
+                    initial: (x: Measurement(value: 0.0, unit: UnitAngle.degrees), y: z , z: z) ),
                 .backSupportTiltJoint:
-                    (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
+                    (min: (x: Measurement(value: zPlus, unit: UnitAngle.degrees), y: z , z: z),
+                     max: (x: Measurement(value: 90.0, unit: UnitAngle.degrees), y: z , z: z),
+                    initial: (x: Measurement(value: 0.0, unit: UnitAngle.degrees), y: z , z: z) )
             ]
             return dictionary[part]
         }
         
+        
         func getMinMaxAngle() -> AngleMinMax {
-            let min = Measurement(value: 0.0, unit: UnitAngle.degrees)
             
-            let max = extractNonZeroAngle(angle)
+            let min = extractNonZeroAngle(allAngleData.min)
+            
+            let max = extractNonZeroAngle(allAngleData.max)
             
             return (min: min, max: max)
             
@@ -316,7 +325,6 @@ struct PartDefaultAngle {
         }
     }
 }
-
 
 
 struct PartDefaultDimension {
@@ -354,10 +362,6 @@ struct PartDefaultDimension {
         
         partDimension = unwrapped
        
-//        if part == .fixedWheelAtRearWithPropeller {
-//            print (linkedOrParentData.originName)
-//        }
-        
         if let unwrapped = userEditedDimensionOneOrTwoOptional {
             userEditedDimensionOneOrTwo = getDimensionFromOptional()
             
@@ -394,7 +398,7 @@ struct PartDefaultDimension {
                 PartObject(.stabilizerAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),
                 PartObject(.stabilizerAtFront, .fixedWheelMidDrive): (width: -50.0, length: 20.0, height: 0.0),
                 PartObject(.stabilizerAtFront, .scooterFrontDrive4Wheeler): (width: 0.0, length: Self.steeredWheelDimension.length, height: 0.0),
-                PartObject(.stabilizerAtRear, .allCasterTiltInSpaceShowerChair): (width: 150.0, length: -100.0, height: 0.0),
+                PartObject(.stabilizerAtRear, .allCasterTiltInSpaceShowerChair): (width: 0.0, length: -100.0, height: 0.0),
                 PartObject(.stabilizerAtRear, .fixedWheelRearDriveAssisted): (width: 50.0, length: -100.0, height: 0.0),
             ][PartObject(childOrParent, objectType)]
         }
@@ -407,7 +411,7 @@ struct PartDefaultDimension {
                 [
                 .assistantFootLever: (width: 20.0, length: 300.0, height: 20.0),
                 .armSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
-                .backSupport: (width: linkedOrParentDimension.width, length: 20.0 , height: 500.0),
+                .backSupport: (width: linkedOrParentDimension.width, length: 10.0 , height: 500.0),
                 .backSupportHeadSupport: (width: 150.0, length: 50.0, height: 100.0) ,
                 .backSupportHeadSupportJoint: Self.joint,
                 .backSupportHeadSupportLink: (width: 20.0, length: 20.0, height: 150.0),
@@ -474,10 +478,7 @@ struct PartEditedElseDefaultOrigin {
         self.userEditedPartDimensionOneOrTwo = userEditedDimensionOneOrTwo
         self.userEditedOptionalOriginOffset =
             userEditedOriginOffsetOneOrTwoOptional//provide edited origin
-//        
-//        if part == .fixedWheelAtRearWithPropeller {
-//            print (partIdAllowingForUserEdit )
-//        }
+
         linkedOrParentDimension = linkedOrParentData.dimension
         linkedOrParentDimensionUsingOneValue = linkedOrParentDimension.mapOneOrTwoToOneOrLeftValue()
         
@@ -523,13 +524,7 @@ struct PartEditedElseDefaultOrigin {
                 let editedElseDefaultOrigin: OneOrTwo<PositionAsIosAxes> =
                     getUserEditedElseDefaultPartOrigin(returnOneOrigin)
                 
-                
-//if part == .fixedWheelAtRearWithPropeller {
-//    print ("ONE origin activated")
-//}
-                
-                
-                return editedElseDefaultOrigin
+            return editedElseDefaultOrigin
                 
                 
                 func assignParentDimensionAccordingToId() -> Dimension3d {
@@ -546,9 +541,6 @@ struct PartEditedElseDefaultOrigin {
                 
             case .two(let leftPart, let rightPart):
                 
-//                if part == .fixedWheelAtRearWithPropeller {
-//                    print ("TWO origin activated")
-//                }
                 var returnLeftOrigin = getDefaultFromDimensions(leftPart, parentDimensionAsTouple.left) ?? ZeroValue.iosLocation
 
                 returnLeftOrigin = CreateIosPosition.getLeftFromRight(returnLeftOrigin)

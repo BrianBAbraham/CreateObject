@@ -164,7 +164,7 @@ struct UniPartPresence: View {
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
-                .padding(.horizontal)
+                .padding([.horizontal, .top])
     }
 }
 
