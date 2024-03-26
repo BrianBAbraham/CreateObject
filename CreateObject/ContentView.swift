@@ -156,23 +156,23 @@ struct ContentView: View {
    
     
     var body: some View {
-
         let objectManipulationIsActive = true
         NavigationView {
             VStack {
                 NavigationLink(destination:
                     ZStack{
-                        VStack {
-                            ObjectView(
-                                uniquePartNames,
-                                objectManipulationIsActive,
-                                initialOrigin: $initialOrigin)
-                            .zIndex(1000.9)
-                         
-
-                            VStack (alignment: .leading) {
+                        ObjectView(
+                            uniquePartNames,
+                            objectManipulationIsActive,
+                            initialOrigin: $initialOrigin)
+                        .zIndex(1000.9)
+                       VStack {
+                            Spacer()
+                           VStack (alignment: .leading) {
+                              
                                 HStack{
                                     PickInitialObjectView()
+                                    Spacer()
                                     PickPartEdit()
                                 }
                                 .padding(.bottom)
@@ -188,8 +188,6 @@ struct ContentView: View {
                                 ConditionalUniPartEditMenu()
 
                                 ConditionalTiltMenu()
-                                
-                                
                             }
                             .padding(.horizontal)
                             .transition(.move(edge: .bottom))

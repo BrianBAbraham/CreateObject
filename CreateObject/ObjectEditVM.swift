@@ -487,10 +487,6 @@ extension ObjectEditViewModel {
 //MARK: CHAIN LABELS
 extension ObjectEditViewModel {
     
-
-    
-    
-    
     func removeChainLabelFromObject(
         _ chainLabel: Part) {
         guard let currentObjectChainLabels =

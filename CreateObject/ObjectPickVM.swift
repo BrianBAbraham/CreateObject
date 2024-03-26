@@ -67,39 +67,39 @@ class ObjectPickViewModel: ObservableObject {
     
     var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
     private var cancellables: Set<AnyCancellable> = []
+    
+    
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
+//    var makeWholeObjectOnScreen :        MakeWholeObjectOnScreen
+    
+    var ensureInitialObjectAllOnScreen =
+        EnsureInitialObjectAllOnScreen(fourCornerDic: [:], oneCornerDic: [:], objectDimension: ZeroValue.dimension)
     
     init() {
-       
+        
         self.userEditedSharedDics = DictionaryService.shared.userEditedSharedDics
-
+        
         objectImageData =
             ObjectImageData(.fixedWheelRearDrive, nil)
- 
+        
         objectPickModel =
             ObjectPickModel(
-            currentObjectName: currentObjectType.rawValue,
-            userEditedDic: nil,
-            defaultMinMaxDictionaries: defaultMinMaxDimensionDic,
-            objectImageData: ObjectImageData(.fixedWheelRearDrive, nil))
-
+                currentObjectName: currentObjectType.rawValue,
+                userEditedDic: nil,
+                defaultMinMaxDictionaries: defaultMinMaxDimensionDic,
+                objectImageData: ObjectImageData(.fixedWheelRearDrive, nil))
+        
         DictionaryService.shared.$currentObjectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
-                
+        
         DictionaryService.shared.$userEditedSharedDics
             .sink { [weak self] newData in
                 self?.userEditedSharedDics = newData
             }
             .store(in: &self.cancellables)
-        
-//        BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
-//            .sink { [weak self] newData in
-//                self?.dimensionPropertyToEdit = newData
-//            }
-//            .store(in: &self.cancellables)
         
         DictionaryService.shared.$partDataSharedDic
             .sink { [weak self] newData in
@@ -125,6 +125,25 @@ class ObjectPickViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
+        ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
+//        
+//        
+//        
+//        func getMakeWholeObjectOnScreen()
+//            -> MakeWholeObjectOnScreen {
+//                let objectDimension: Dimension =
+//                    getObjectDimension()
+//                let fourCornerDic: CornerDictionary =
+//                    objectPickModel.objectImageData
+//                        .postTiltObjectToPartFourCornerPerKeyDic
+//                let oneCornerDic: PositionDictionary =
+//                    objectPickModel.objectImageData
+//                        .postTiltObjectToOneCornerPerKeyDic
+//                print(objectDimension)
+//                return
+//                    MakeWholeObjectOnScreen(
+//                    fourCornerDic: fourCornerDic, oneCornerDic: oneCornerDic, objectDimension: objectDimension)
+//        }
     }
 }
 
@@ -177,6 +196,10 @@ extension ObjectPickViewModel {
                 userEditedDic: userEditedSharedDics,
                 defaultMinMaxDictionaries: defaultMinMaxDimensionDic,
                 objectImageData: objectImageData)
+        
+        ensureInitialObjectAllOnScreen =
+            getMakeWholeObjectOnScreen()
+        
         setCurrentObjectFrameSize()
     }
 }
@@ -510,10 +533,11 @@ extension ObjectPickViewModel {
     }
     
 
-    func getObjectDimension (
-        _ dictionary: PositionDictionary)
+    func getObjectDimension ( )
         -> Dimension {
-            objectImageData.dimension
+            //print(objectImageData.objectDimension)
+            return
+            objectImageData.objectDimension
     }
 }
 
@@ -522,7 +546,7 @@ extension ObjectPickViewModel {
 extension ObjectPickViewModel {
     
     func setCurrentObjectFrameSize() {
-        objectPickModel.currentObjectFrameSize = getScreenFrameSize()
+        objectPickModel.currentObjectFrameSize = getObjectOnScreenFrameSize()
     }
     
     
@@ -541,43 +565,78 @@ extension ObjectPickViewModel {
 //MARK: ENSURE DRAG
 extension ObjectPickViewModel {
     
+    
+    func  getObjectDictionaryForScreen ()
+    -> CornerDictionary {
+         ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
+        
+    }
+    
+    func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double{
+            ensureInitialObjectAllOnScreen
+                .getOffsetToKeepObjectOriginStaticInLengthOnScreen()
+    }
+    
+    
+    func getMakeWholeObjectOnScreen()
+        -> EnsureInitialObjectAllOnScreen {
+            let objectDimension: Dimension =
+                getObjectDimension()
+            let fourCornerDic: CornerDictionary =
+                objectPickModel.objectImageData
+                    .postTiltObjectToPartFourCornerPerKeyDic
+            let oneCornerDic: PositionDictionary =
+                objectPickModel.objectImageData
+                    .postTiltObjectToOneCornerPerKeyDic
+            return
+                EnsureInitialObjectAllOnScreen(
+                fourCornerDic: fourCornerDic, oneCornerDic: oneCornerDic, objectDimension: objectDimension)
+    }
+    
+    
+    func getObjectOnScreenFrameSize ()
+    -> Dimension {
+        let frameSize =
+          ensureInitialObjectAllOnScreen.getObjectOnScreenFrameSize()
+//        print("OBJECT")
+//        print(frameSize)
+        
+        return frameSize
+    }
+
+}
+
+
+
+
+
+
+
+
+struct EnsureInitialObjectAllOnScreen {
+    let fourCornerDic: CornerDictionary
+    let oneCornerDic: PositionDictionary
+    let objectDimension: Dimension
+    
+    
     //MARK: DEVELOPMENT scale = 1
     ///objects larger than screen size behaviour not known
     func getObjectDictionaryForScreen ()
         -> CornerDictionary {
 
         let originOffset = getOriginOffsetWhenAllPositionValueArePositive()
-        let objectDimension = getObjectDimensions()
-        let maximumObjectDimension = getMaximumOfObject(objectDimension)
-        let scale = Screen.smallestDimension / maximumObjectDimension
+
+        let scale = getScale()
+            
+            //INPUT DIC FOUR CORNER
         let dictionary =
             makeAllPositionsPositive(
-                objectPickModel.objectImageData
-                    .postTiltObjectToPartFourCornerPerKeyDic,
+                fourCornerDic,
                 scale,
                 originOffset
             )
             
-            
-//            DictionaryInArrayOut().getNameValue(currentDic
-//            ).forEach{print($0)}
-        
         return dictionary
-            
-            
-            func getObjectDimensions() -> Dimension{
-                let minThenMax =
-                    getMinThenMax()
-                return
-                    (width: minThenMax[1].x - minThenMax[0].x,length: minThenMax[1].y - minThenMax[0].y )
-            }
-            
-            
-            func getMaximumOfObject(_ objectDimensions: Dimension)
-                -> Double {
-                    [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
-            }
-            
             
             func makeAllPositionsPositive(
                 _ actualSize: CornerDictionary,
@@ -598,28 +657,34 @@ extension ObjectPickViewModel {
                 }
                 return postTiltObjectToPartFourCornerAllPositivePerKeyDic
             }
+            
+            func getScale() -> Double{
+                let objectDimension = getObjectDimensions()
+                let maximumObjectDimension = getMaximumOfObject(objectDimension)
+                let scale = Screen.smallestDimension / maximumObjectDimension
+                //print (scale)
+                return scale
+                
+                func getObjectDimensions() -> Dimension{
+                    let minThenMax =
+                        CreateIosPosition
+                           .minMaxPosition(
+                               oneCornerDic
+                               )
+                    return
+                        (width: minThenMax[1].x - minThenMax[0].x,length: minThenMax[1].y - minThenMax[0].y )
+                }
+                
+                func getMaximumOfObject(_ objectDimensions: Dimension)
+                    -> Double {
+                        [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
+                }
+            }
     }
     
-    
-    func getMinThenMax() -> [PositionAsIosAxes] {
 
-        CreateIosPosition
-           .minMaxPosition(
-               objectPickModel.objectImageData
-                   .postTiltObjectToOneCornerPerKeyDic
-               )
-    }
-    
-    
-    func getOriginOffsetWhenAllPositionValueArePositive() -> PositionAsIosAxes{
-        let minThenMax = getMinThenMax()
-        return
-            CreateIosPosition.negative(minThenMax[0])
-    }
-
-    
     func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double {
-        let halfFrameHeight = getScreenFrameSize().length/2
+        let halfFrameHeight = getObjectOnScreenFrameSize().length/2
         
         // objects are created with origin at 0,0
         // setting all part corner position value >= 0
@@ -631,40 +696,43 @@ extension ObjectPickViewModel {
     }
 
     
-    func getScreenFrameSize ()
-        -> Dimension{
+    func getOriginOffsetWhenAllPositionValueArePositive() -> PositionAsIosAxes{
+        
+        //INPUT DIC ONE CORNER
+        let minThenMax =
+            CreateIosPosition
+               .minMaxPosition(
+                   oneCornerDic
+                   )
+        return
+            CreateIosPosition.negative(minThenMax[0])
+    }
+    
+    func getObjectOnScreenFrameSize ()
+        -> Dimension {
+        let objectDimension = objectDimension
+                
             
-        let currentDic =  objectPickModel.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
-        let objectInitialDimension =
-            getObjectDimension( ConvertFourCornerPerKeyToOne(
-                fourCornerPerElement: currentDic).oneCornerPerKey)
-            
-        let objectDimensionWithLengthIncrease =
-            (
-            width: objectInitialDimension.width,length: objectInitialDimension.length)
-
         var frameSize: Dimension =
             (width: Screen.smallestDimension,
             length: Screen.smallestDimension
              )
 
-        if objectDimensionWithLengthIncrease.length < objectDimensionWithLengthIncrease.width {
+        if objectDimension.length < objectDimension.width {
             frameSize =
             (width: Screen.smallestDimension,
-            length: objectDimensionWithLengthIncrease.length
+            length: objectDimension.length
              )
         }
     
-        if objectDimensionWithLengthIncrease.length > objectDimensionWithLengthIncrease.width {
+        if objectDimension.length > objectDimension.width {
             frameSize = (
-                        width: objectDimensionWithLengthIncrease.width,
+                        width: objectDimension.width,
                         length: Screen.smallestDimension
                                  )
         }
-            frameSize = objectDimensionWithLengthIncrease
+            frameSize = objectDimension
            
         return frameSize
     }
-    
 }
-

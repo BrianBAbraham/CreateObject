@@ -38,9 +38,9 @@ struct ObjectImageData {
     var partDataDic: [Part: PartData] = [:]
     let chainLabelsAllowingForEdit: [Part]
     
-    var dimension: Dimension = (width: 0.0, length: 0.0)
+    var objectDimension: Dimension = (width: 0.0, length: 0.0)
     var maximumDimension: Double {
-        dimension.width > dimension.length ? dimension.width: dimension.length
+        objectDimension.width > objectDimension.length ? objectDimension.width: objectDimension.length
     }
     var rotators: [Part] = []
     var rotatedParts: [[Part]] = []
@@ -76,7 +76,7 @@ struct ObjectImageData {
 //        DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic
 //        ).forEach{print($0)}
             
-        dimension = getSize()
+        objectDimension = getSize()
             
         //createExteriorPointDictionary()
     }

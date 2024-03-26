@@ -22,6 +22,7 @@ struct CreateObjectApp: App {
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
     @StateObject var unitsVM = Settings()
+    @StateObject var rulerVM = RulerViewModel()
     
 
 
@@ -35,6 +36,7 @@ struct CreateObjectApp: App {
                     .environmentObject(coreDataVM)
                     .environmentObject(sceneVM)
                     .environmentObject(unitsVM)
+                    .environmentObject(rulerVM)
         }
     }
 }

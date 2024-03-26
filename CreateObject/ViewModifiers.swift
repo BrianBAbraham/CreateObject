@@ -7,11 +7,9 @@
 
 import SwiftUI
 
-struct ForObjectInDefaultView: ViewModifier {
+struct ForObjectDrag: ViewModifier {
     let frameSize: Dimension
-    @State private var location = CGPoint (x: 200, y: 200)
-    //var location: CGPoint
-    //let startLocation: CGPoint
+    @State private var location = CGPoint (x: 0, y: 0)
     @GestureState private var startLocation: CGPoint? = nil
     let active: Bool
 
@@ -45,8 +43,3 @@ struct ForObjectInDefaultView: ViewModifier {
 
 }
 
-//struct ViewModifiers_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ViewModifiers()
-//    }
-//}

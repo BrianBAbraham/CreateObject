@@ -67,6 +67,18 @@ struct DictionaryElementIn {
             points.append(CGPoint(x: corner.x , y: corner.y))
         }
         
+     
+        
+        return points
+    }
+    
+    
+    func cgPointsOut2() -> [CGPoint] {
+        var points: [CGPoint] = []
+        for corner in corners {
+            points.append(CGPoint(x: corner.x , y: corner.y))
+        }
+       // print(points)
         return points
     }
     
@@ -78,6 +90,7 @@ struct DictionaryElementIn {
     }
 
 }
+
 
 
 
