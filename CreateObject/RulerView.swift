@@ -73,6 +73,7 @@ struct Ruler: View {
         let rulerNumberDictionary = rulerVM.getNumberDictionary()
         
         ZStack{
+           
             PartView(
                 uniquePartName: "",
                 preTiltFourCornerPerKeyDic: rulerDictionary,

@@ -196,12 +196,12 @@ struct ContentView: View {
                    }) {
                         Text("Default equipment")
                     }
-                Spacer()
-                UnitSystemSelectionView()
+//                Spacer()
+//                UnitSystemSelectionView()
             }
             .navigationBarTitle("Equipment manager")
+            
         }
-
     }
 }
 

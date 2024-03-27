@@ -60,7 +60,7 @@ struct MeasurementUnitView: View {
 enum UnitSystem: String {
     case cm  = "cm"
     case mm = "mm"
-    case imperial = "inch"
+    case imperial = "\""
 }
 
 
@@ -76,10 +76,10 @@ struct UnitSystemSelectionView: View {
         Picker("Unit System", selection: $settings.unitSystem) {
             Text("cm").tag(UnitSystem.cm)
             Text("mm").tag(UnitSystem.mm)
-            Text("inches").tag(UnitSystem.imperial)
+            Text("\"").tag(UnitSystem.imperial)
         }
-        .pickerStyle(SegmentedPickerStyle())
-        .frame(width: 200, height: 40)
-        .padding()
+      //  .pickerStyle(SegmentedPickerStyle())
+//        .frame(width: 200, height: 40)
+//        .padding()
     }
 }

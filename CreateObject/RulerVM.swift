@@ -18,7 +18,9 @@ struct RulerModel {
 
 
 class RulerViewModel: ObservableObject {
-    let length: Double
+    let lengthBefore = 300.0
+    let lengthAfter = 50.0
+    let numberSpan: Double
     let width: Double
     @Published private var rulerModel: RulerModel
     let rulerData: RulerDataBackground
@@ -27,19 +29,19 @@ class RulerViewModel: ObservableObject {
    
 
     init(
-        _ length: Double = 3000.0,
+        _ numberSpan: Double = 2000.0,
         _ width: Double = 200.0
     ) {
-        self.length = length
+        self.numberSpan = numberSpan
         self.width = width
-        
+        let rulerLength = lengthBefore + numberSpan + lengthAfter
         rulerData =
         RulerDataBackground (
-            rulerLength: length,
+            rulerLength: rulerLength,
             rulerWidth: width
         )
         
-        rulerMarks = RulerDataMarks(rulerLength: length, ruleWidth: width, unitSystem: .mm)
+        rulerMarks = RulerDataMarks(lengthBefore: lengthBefore, numberSpan: numberSpan, ruleWidth: width, unitSystem: .mm)
         
         rulerModel = RulerModel(
             ensureInitialObjectAllOnScreen: EnsureInitialObjectAllOnScreen(
@@ -84,7 +86,7 @@ class RulerViewModel: ObservableObject {
             if !key.contains(Level.tertiary.rawValue)  && !key.contains(Level.halfSecondary.rawValue){
               
                 let value = value[0].y
-                let numberName = String(Int(value - RulerDataMarks.numbersOffSet))
+                let numberName = String(Int(value - lengthBefore))
                 labelDictionary += [numberName: (x: width/2.0, y: value, z: RulerDataMarks.rulerPositionOnZ)]
             }
         }
@@ -95,17 +97,16 @@ class RulerViewModel: ObservableObject {
 
 
 struct RulerDataMarks {
-    let rulerLength: Double
+    let lengthBefore: Double
+    let numberSpan: Double
     let ruleWidth: Double
     let unitSystem: UnitSystem
     var widthIndices: [Int] {
         (0..<10).map { $0 }
     }
     static let rulerPositionOnZ = 1000.0
-    static let numbersOffSet = 50.0
-    var numberLength: Double {
-    rulerLength - 100
-    }
+
+    
   
     
     func getMarksDictionary() -> CornerDictionary{
@@ -124,8 +125,6 @@ struct RulerDataMarks {
         }
     }
     
-
-
     
     func getPositions(_ level: Level) -> [[PositionAsIosAxes]]{
         let valuesForY = getValuesForY(level)
@@ -188,10 +187,10 @@ struct RulerDataMarks {
             
         }
         var valuesForY: [Double] = []
-        let offset = Self.numbersOffSet
-        let numberOfDivisions = Int(numberLength/division)
+       
+        let numberOfDivisions = Int(numberSpan/division)
         for i in 0...numberOfDivisions {
-            let positionY = Double(i) * division + offset
+            let positionY = Double(i) * division + lengthBefore
             valuesForY.append(positionY)
         }
         

@@ -330,9 +330,32 @@ struct ObjectView: View {
                     )
             .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()))
             
-            Ruler()
-                .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
-                .position(CGPoint(x: -200, y: 0))
+            ZStack (alignment: .top){
+                
+              
+                Ruler()
+                    .rotationEffect(Angle(degrees: -90.0))
+                
+                
+                VStack{
+//                    UnitSystemSelectionView()
+//                        .border(.blue)
+//                    .scaleEffect(4.0)
+//                    .padding()
+                   
+                    Text("t")
+                        .border(.green)
+                   
+                }
+                .scaleEffect(4.0)
+                .padding()
+                .border(.red)
+               
+            }
+                    .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
+                    .position(CGPoint(x: -200, y: 300))
+          
+           
            
         }
        
