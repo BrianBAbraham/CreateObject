@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Combine
+
 
 struct RulerModel {
     let ensureInitialObjectAllOnScreen: EnsureInitialObjectAllOnScreen
@@ -14,32 +16,55 @@ struct RulerModel {
     
     
     
+    
+}
+class MeasurementSystemService {
+    @Published var unitSystem: UnitSystem = .cm
+    
+    static let shared = MeasurementSystemService()
+    
+    
+    func getMeasurementSytem() -> UnitSystem {
+        unitSystem
+    }
+    
+    
+    func setMeasurementSystem(_ unitSystem: UnitSystem) {
+        print(unitSystem)
+        self.unitSystem = unitSystem
+    }
 }
 
-
 class RulerViewModel: ObservableObject {
-    let lengthBefore = 300.0
-    let lengthAfter = 50.0
+    
+    
+    private var cancellables: Set<AnyCancellable> = []
+    @Published var unitSystem: UnitSystem = MeasurementSystemService.shared.unitSystem
+    let lengthBefore = 170.0
+    let lengthAfter = 30.0
     let numberSpan: Double
     let width: Double
     @Published private var rulerModel: RulerModel
     let rulerData: RulerDataBackground
     let rulerMarks: RulerDataMarks
-
-   
-
+  
     init(
-        _ numberSpan: Double = 2000.0,
-        _ width: Double = 200.0
+        _ numberSpan: Double = 1500.0,
+        _ width: Double = 170.0
     ) {
+        
         self.numberSpan = numberSpan
         self.width = width
         let rulerLength = lengthBefore + numberSpan + lengthAfter
+        
+        
+
+        
         rulerData =
-        RulerDataBackground (
-            rulerLength: rulerLength,
-            rulerWidth: width
-        )
+            RulerDataBackground (
+                rulerLength: rulerLength,
+                rulerWidth: width
+            )
         
         rulerMarks = RulerDataMarks(lengthBefore: lengthBefore, numberSpan: numberSpan, ruleWidth: width, unitSystem: .mm)
         
@@ -54,11 +79,18 @@ class RulerViewModel: ObservableObject {
         )
         
         rulerModel.rulerNumbers = createNumberDictionary()
+        
+        MeasurementSystemService.shared.$unitSystem
+            .sink { [weak self] newData in
+                self?.unitSystem = newData
+            }
+            .store(in: &self.cancellables)
     }
     
-
-    
     func getDictionaryForScreen() -> CornerDictionary {
+        
+        
+        
         rulerModel.ensureInitialObjectAllOnScreen.fourCornerDic
     }
     
@@ -73,20 +105,22 @@ class RulerViewModel: ObservableObject {
     }
     
     func getNumberDictionary() -> PositionDictionary {
-       
-            rulerModel.rulerNumbers
+        createNumberDictionary()
+
     }
-    
-    
     
     func createNumberDictionary() -> PositionDictionary{
         let dictionary = getRulerMarks()
         var labelDictionary: PositionDictionary = [:]
+        print("ruler")
+        print(unitSystem)
+        print("")
+        let unitCorrection = unitSystem == UnitSystem.mm ? 1: 10
         for (key, value) in dictionary {
             if !key.contains(Level.tertiary.rawValue)  && !key.contains(Level.halfSecondary.rawValue){
               
                 let value = value[0].y
-                let numberName = String(Int(value - lengthBefore))
+                let numberName = String(Int(value - lengthBefore)/unitCorrection)
                 labelDictionary += [numberName: (x: width/2.0, y: value, z: RulerDataMarks.rulerPositionOnZ)]
             }
         }
@@ -204,6 +238,7 @@ struct RulerDataMarks {
 struct RulerDataBackground {
     let rulerLength: Double
     let rulerWidth: Double
+  //  let unitSystem: UnitSystem
     var fourCornerDic: CornerDictionary {
         getDictionary()
     }

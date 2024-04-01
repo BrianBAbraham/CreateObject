@@ -19,3 +19,4 @@ struct Screen {
     static let smallestDimension = [height, width].min() ?? height
 
 }
+  

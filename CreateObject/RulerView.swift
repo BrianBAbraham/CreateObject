@@ -7,31 +7,6 @@
 
 import SwiftUI
 
-//struct Ruler2: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//
-//    let cornerRadius = 2.0
-//    let opacity = 0.05
-//    let lineWidth = 1.0
-//    var body: some View {
-//        let scale = 0.5//objectPickVM.getScale()
-//        let scaleX = 200.0
-//        let scaleY = 2000.0
-//        let rectanglePoints: [CGPoint] = [
-//            CGPoint(x: 0, y: 0),
-//            CGPoint(x: scaleX, y: 0),
-//            CGPoint(x: scaleX, y: scaleY),
-//            CGPoint(x: 0, y: scaleY)]
-//
-//        ZStack{
-//            LocalOutlineRectangle.path(corners: rectanglePoints, .black, cornerRadius, opacity, lineWidth)
-//                
-//            Line(width: scaleX, height: scaleY)
-//            
-//        }
-//
-//    }
-//}
 
 
 struct Line: View {
@@ -58,19 +33,101 @@ struct Line: View {
     }
 }
 
+//struct RotatableRuler: View {
+//    @EnvironmentObject var rulerVM: RulerViewModel
+//    @State private var rulerAngle = 0.0
+//    
+//    var body: some View {
+//        let rulerFrameSize = rulerVM.getRulerFrameSize()
+//        let arrow = rulerAngle == 0 ? "arrow.counterclockwise": "arrow.clockwise"
+// 
+//            ZStack{
+//                ZStack (alignment: .top){
+//                    
+//                    Ruler()
+//                    
+//                    Button(action: {
+//                        rulerAngle = rulerAngle == 0 ? -90: 0
+//                    }) {
+//                        Image(systemName: arrow)
+//                            .font(.system(size: 100))
+//                            .padding(.top)
+//                    }
+//                }
+//                .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
+//                .rotationEffect(Angle(degrees: rulerAngle))
+//            }
+//    }
+//}
+struct RotatableRuler: View {
+    @EnvironmentObject var rulerVM: RulerViewModel
+    @State private var rulerAngle = 0.0
 
+    var body: some View {
+        let rulerFrameSize = rulerVM.getRulerFrameSize()
+        let arrow = rulerAngle == 0 ? "arrow.counterclockwise" : "arrow.clockwise"
+        
+        // Calculate the necessary offset to keep the ruler on screen after rotation.
+      //  let offset = rulerAngle == -90 ? CGFloat(rulerFrameSize.width / 2 - rulerFrameSize.length / 2) : 0
 
+        ZStack {
+            ZStack(alignment: .top) {
+                
+                Ruler()
+                
+                Button(action: {
+                    rulerAngle = rulerAngle == 0 ? -90 : 0
+                }) {
+                    Image(systemName: arrow)
+                        .font(.system(size: 100))
+                        .padding(.top)
+                }
+            }
+            .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
+            
+            // Apply offset here to adjust the position after rotation
+           // .offset(x: rulerAngle == -90 ? offset : 0, y: rulerAngle == -90 ? offset : 0)
+        }.rotationEffect(Angle(degrees: rulerAngle))    }
+}
+
+struct RightAngleRuler: View {
+    @EnvironmentObject var rulerVM: RulerViewModel
+    @EnvironmentObject var unitSystemVM: Settings
+   
+    var body: some View {
+        let rulerFrameSize = rulerVM.getRulerFrameSize()
+        let width = rulerVM.width
+        var unitSystem: UnitSystem {unitSystemVM.unitSystem}
+        ZStack(alignment: .topLeading ){
+            Text(unitSystem.rawValue)
+                .font(.system(size: 60))
+                .padding()
+            Ruler()
+            Ruler()
+                .rotationEffect(Angle(degrees: -90))
+                .offset(CGSize(
+                    width: (rulerFrameSize.length - width) / 2.0 , height: (-rulerFrameSize.length + width ) / 2.0))
+        }
+    
+        .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
+        }
+}
 
 struct Ruler: View {
     @EnvironmentObject var rulerVM: RulerViewModel
-
+    @EnvironmentObject var unitSystemVM: Settings
+    //let rulerModel = RulerViewModel()
     let cornerRadius = 0.0
     let opacity = 0.05
     let lineWidth = 0.1
+  // let unitSystem: UnitSystem
     var body: some View {
+        
+        var unitSystem: UnitSystem {unitSystemVM.unitSystem}
         let rulerDictionary = rulerVM.getDictionaryForScreen()
         let rulerMarksDictionary = rulerVM.getRulerMarks()
         let rulerNumberDictionary = rulerVM.getNumberDictionary()
+
         
         ZStack{
            
@@ -95,11 +152,7 @@ struct Ruler: View {
                     .position(x: value.x, y: value.y)
                 
             }
-            //.border(.blue)
-//            Text("2000")
-//                .font(.system(size: 60))
-//                .rotationEffect(.degrees(-90))
-//                .position(CGPoint(x: 100.0, y: 500))
+
         }
     }
 }

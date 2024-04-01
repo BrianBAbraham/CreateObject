@@ -66,6 +66,7 @@ class ObjectPickViewModel: ObservableObject {
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
     
     var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
+   
     private var cancellables: Set<AnyCancellable> = []
     
     

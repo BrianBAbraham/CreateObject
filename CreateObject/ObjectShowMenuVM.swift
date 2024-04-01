@@ -73,12 +73,12 @@ extension ObjectShowMenuViewModel {
     
     
     func getSidePickerMenuStatus(_ part: Part) -> Bool {
-        let neverBilateral =
-            !OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
-        let rigidlyBilateral =
-            (part.transformPartToPartGroup() == PartGroup.none ? false: true)
-        
-        let showMenu = (neverBilateral || rigidlyBilateral)
+        let alwaysUnilateral =
+            OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
+        let partGroup = part.transformPartToPartGroup()
+        let alwaysBilateral =
+            [.caster, .casterFork, .casterJoint, .fixedWheel, .fixedWheelJoint].contains(partGroup)
+        let showMenu = !(alwaysUnilateral || alwaysBilateral)
         
         return showMenu
     }

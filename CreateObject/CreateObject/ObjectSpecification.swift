@@ -16,7 +16,7 @@ enum ObjectTypes: String, CaseIterable, Hashable {
     case allCasterChair = "Shower chair"
     case allCasterHoist = "Mobile hoist"
     case allCasterTiltInSpaceArmChair = "Armchair"
-    case allCasterTiltInSpaceShowerChair = "Tilting shower chair"
+    case allCasterTiltInSpaceShowerChair = "Shower tilting"
     
     case allCasterStandAid = "Stand aid: caster base"
     case allCasterStretcher = "Stretcher"
@@ -26,11 +26,11 @@ enum ObjectTypes: String, CaseIterable, Hashable {
 //    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
     
     case fixedWheelRearDriveAssisted = "Manual assisted"
-    case fixedWheelFrontDrive = "Powered (front)"
-    case fixedWheelMidDrive  = "Powered (mid)"
-    case fixedWheelRearDrive = "Powered (rear)"
+    case fixedWheelFrontDrive = "Power (front)"
+    case fixedWheelMidDrive  = "Power (mid)"
+    case fixedWheelRearDrive = "Power (rear)"
     case fixedWheelManualRearDrive = "Manual (rear)"
-    case fixedWheelSolo = "Powered (balancing)"
+    case fixedWheelSolo = "Power (balance)"
     case fixedWheelTransfer = "Fixed wheel transfer device"
     
 //    case hingedDoorSingle = "Door"

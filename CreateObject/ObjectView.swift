@@ -287,6 +287,8 @@ struct ObjectView: View {
     var preTiltFourCornerPerKeyDic: CornerDictionary {
         objectPickVM.getPreTiltFourCornerPerKeyDic()
     }
+    
+   
   
     init(
         _ names: [String],
@@ -312,7 +314,7 @@ struct ObjectView: View {
             objectPickVM.getObjectDictionaryForScreen()
         let objectFrameSize =
             objectPickVM.getObjectOnScreenFrameSize()
-        let rulerFrameSize = rulerVM.getRulerFrameSize()
+       
         ZStack{
 
             ZStack{
@@ -330,36 +332,16 @@ struct ObjectView: View {
                     )
             .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()))
             
-            ZStack (alignment: .top){
-                
-              
-                Ruler()
-                    .rotationEffect(Angle(degrees: -90.0))
-                
-                
-                VStack{
-//                    UnitSystemSelectionView()
-//                        .border(.blue)
-//                    .scaleEffect(4.0)
-//                    .padding()
-                   
-                    Text("t")
-                        .border(.green)
-                   
-                }
-                .scaleEffect(4.0)
-                .padding()
-                .border(.red)
+            
                
-            }
-                    .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
-                    .position(CGPoint(x: -200, y: 300))
-          
+          RightAngleRuler()
            
            
         }
-       
+     
         .scaleEffect(zoom)
+                    .background(Color.green.opacity(0.0001))
+                    .frame(maxWidth: .infinity)
         .gesture(MagnificationGesture()
         .onChanged { value in
             currentZoom = value - 1
@@ -371,4 +353,55 @@ struct ObjectView: View {
          )
         
     }
+//    var body: some View {
+//            let dictionaryForScreen: CornerDictionary =
+//                objectPickVM.getObjectDictionaryForScreen()
+//            let objectFrameSize =
+//                objectPickVM.getObjectOnScreenFrameSize()
+//
+//            ZStack {
+//                ZStack {
+//                    ForEach(uniquePartNames, id: \.self) { name in
+//                        PartView(
+//                            uniquePartName: name,
+//                            preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
+//                            postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen)
+//                    }
+//                }
+//                .border(.red, width: 2)
+//                .modifier(
+//                    ForObjectDrag (
+//                        frameSize: objectFrameSize, active: objectManipulationIsActive)
+//                )
+//                .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()))
+//
+//                RightAngleRuler()
+//            }
+//            .scaleEffect(zoom * (1 + currentZoom)) // Adjust zooming based on gestures
+//            .gesture(
+//                MagnificationGesture()
+//                    .onChanged { value in
+//                        self.currentZoom = value - 1
+//                    }
+//                    .onEnded { value in
+//                        self.lastCurrentZoom *= (1 + currentZoom)
+//                        self.currentZoom = 0.0
+//                    }
+//            )
+//            .background(Color.green.opacity(0.0001))
+//            .frame(maxWidth: .infinity, maxHeight: .infinity)
+//            .overlay(
+//                Color.clear // Transparent overlay to capture magnification gestures over the entire area
+//                    .gesture(
+//                        MagnificationGesture()
+//                            .onChanged { value in
+//                                self.currentZoom = value - 1
+//                            }
+//                            .onEnded { value in
+//                                self.lastCurrentZoom *= (1 + currentZoom)
+//                                self.currentZoom = 0.0
+//                            }
+//                    )
+//            )
+//        }
 }

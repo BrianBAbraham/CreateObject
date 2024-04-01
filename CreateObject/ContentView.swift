@@ -153,23 +153,25 @@ struct ContentView: View {
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
        
     }
-   
+  
     
     var body: some View {
         let objectManipulationIsActive = true
+        
         NavigationView {
             VStack {
                 NavigationLink(destination:
                     ZStack{
-                        ObjectView(
-                            uniquePartNames,
-                            objectManipulationIsActive,
-                            initialOrigin: $initialOrigin)
-                        .zIndex(1000.9)
-                       VStack {
+                            ObjectView(
+                                uniquePartNames,
+                                objectManipulationIsActive,
+                                initialOrigin: $initialOrigin)
+                            //.zIndex(1000.9)
+                      
+                        VStack {
                             Spacer()
-                           VStack (alignment: .leading) {
-                              
+                            VStack (alignment: .leading) {
+                                
                                 HStack{
                                     PickInitialObjectView()
                                     Spacer()
@@ -182,25 +184,24 @@ struct ContentView: View {
                                     ConditionalBilateralPartPresence()
                                     ConditionaUniPartPresence()
                                 }
-                               
+                                
                                 ConditionalBilateralPartEditMenu()
-                                    
+                                
                                 ConditionalUniPartEditMenu()
-
+                                
                                 ConditionalTiltMenu()
                             }
                             .padding(.horizontal)
                             .transition(.move(edge: .bottom))
                             .backgroundModifier()
                         }
-                   }) {
-                        Text("Default equipment")
-                    }
-//                Spacer()
-//                UnitSystemSelectionView()
+                }) {
+                    Text("Default equipment")
+                }
+                Spacer()
+                UnitSystemSelectionView()
             }
             .navigationBarTitle("Equipment manager")
-            
         }
     }
 }

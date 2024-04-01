@@ -122,16 +122,16 @@ struct UniDimensionMenu: View {
                 }   
         )
 
-            HStack {
+//            HStack {
                 Slider(value: boundSliderValue,
                        in: minMaxValue.min...minMaxValue.max,
                        step: 10.0)
                 
-                MeasurementView(
-                    Measurement(value: boundSliderValue.wrappedValue,
-                        unit: .millimeters))
-                .padding(.horizontal)
-                }
+//                MeasurementView(
+//                    Measurement(value: boundSliderValue.wrappedValue,
+//                        unit: .millimeters))
+//                .padding(.horizontal)
+//                }
     }
 }
 struct UniPartPresence: View {

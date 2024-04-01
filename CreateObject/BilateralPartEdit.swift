@@ -145,16 +145,16 @@ struct BilateralDimensionSlider: View {
 
                         objectPickVM.modifyObjectByCreatingFromName()
                                 } )
-        HStack{
+       // HStack{
                 Slider(value: boundSliderValue ,
                        in: minMaxValue.min...minMaxValue.max,
                        step: 10.0)
 
-            MeasurementView(
-                Measurement(value: boundSliderValue.wrappedValue,
-                    unit: .millimeters))
-            }
-            .disabled(objectEditVM.scopeOfEditForSide == .none)
+//            MeasurementView(
+//                Measurement(value: boundSliderValue.wrappedValue,
+//                    unit: .millimeters))
+//            }
+//            .disabled(objectEditVM.scopeOfEditForSide == .none)
     }
 }
 
@@ -209,9 +209,9 @@ struct BilateralOriginMenu: View {
         HStack{
             Stepper("", value: boundStepperValue, step: 10.0)
             arrowImage
-            MeasurementView(
-                Measurement(value: boundStepperValue.wrappedValue,
-                    unit: .millimeters))
+//            MeasurementView(
+//                Measurement(value: boundStepperValue.wrappedValue,
+//                    unit: .millimeters))
             }
 
             .disabled(objectEditVM.scopeOfEditForSide == .none)
@@ -282,10 +282,10 @@ struct BilateralOriginMenuX: View {
             
             Stepper("", value: boundStepperValue, step: 10.0)
 
-            MeasurementView(
-                Measurement(value: propertyToEdit == .xOrigin  ?
-                                xStepperValue: yStepperValue,
-                    unit: .millimeters))
+//            MeasurementView(
+//                Measurement(value: propertyToEdit == .xOrigin  ?
+//                                xStepperValue: yStepperValue,
+//                    unit: .millimeters))
             }
 
             .disabled(objectEditVM.scopeOfEditForSide == .none)

@@ -759,11 +759,11 @@ struct PartEditedElseDefaultOrigin {
 
 enum MenuDisplayPart: String {
     case armrest = "armrest"
-    case backrest = "back rest"
+    case backrest = "backrest"
     case base = "base"
-    case casterForkAtFront = "front caster fork"
-    case casterForkAtMid = "mid caster fork"
-    case casterForkAtRear = "rear caster fork"
+    case casterForkAtFront = "front fork"
+    case casterForkAtMid = "mid fork"
+    case casterForkAtRear = "rear fork"
     case footRest = "footrest"
     case footLever = "foot tipper"
     case headrest = "headrest"

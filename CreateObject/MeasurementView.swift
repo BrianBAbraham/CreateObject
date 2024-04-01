@@ -42,32 +42,24 @@ struct MeasurementUnitView: View {
     var body: some View {
         Text(settings.unitSystem.rawValue)
     }
+}
 
-//    private func getUnit() -> String {
-//        switch settings.unitSystem {
-//        case .cm:
-//            return settings.unitSystem.rawValue
-//        case .mm:
-//            return String(Int(measurement.value))
-//        case .imperial:
-//            return String(
-//                measurement.converted(to: .inches).value.roundToNearest(0.25))
-//        
+
+
+//struct UnitSystemSelectionView: View {
+//    @EnvironmentObject var settings: Settings
+//
+//    var body: some View {
+//        Picker("Unit System", selection: $settings.unitSystem) {
+//            Text("cm").tag(UnitSystem.cm)
+//            Text("mm").tag(UnitSystem.mm)
+//            Text("\"").tag(UnitSystem.imperial)
 //        }
+//        .pickerStyle(SegmentedPickerStyle())
+//        .frame(width: 100, height: 40)
 //    }
-}
+//}
 
-enum UnitSystem: String {
-    case cm  = "cm"
-    case mm = "mm"
-    case imperial = "\""
-}
-
-
-class Settings: ObservableObject {
-    @Published var unitSystem: UnitSystem = .mm
-
-}
 
 struct UnitSystemSelectionView: View {
     @EnvironmentObject var settings: Settings
@@ -76,10 +68,17 @@ struct UnitSystemSelectionView: View {
         Picker("Unit System", selection: $settings.unitSystem) {
             Text("cm").tag(UnitSystem.cm)
             Text("mm").tag(UnitSystem.mm)
-            Text("\"").tag(UnitSystem.imperial)
+            Text("inch").tag(UnitSystem.imperial)
         }
-      //  .pickerStyle(SegmentedPickerStyle())
-//        .frame(width: 200, height: 40)
-//        .padding()
+        .pickerStyle(SegmentedPickerStyle())
+        .frame(width: 130, height: 40)
+        .onChange(of: settings.unitSystem) { oldValue, newValue in
+          
+            unitSystemChanged(newValue)
+        }
+    }
+
+    func unitSystemChanged(_ newUnitSystem: UnitSystem) {
+        settings.setUnitSystem(newUnitSystem)
     }
 }
