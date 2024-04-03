@@ -170,6 +170,7 @@ extension ObjectPickViewModel {
     
     
     func modifyObjectByCreatingFromName(){
+        print("CALLED")
         
         objectImageData =
             ObjectImageData(currentObjectType, userEditedSharedDics)

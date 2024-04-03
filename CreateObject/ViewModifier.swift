@@ -11,12 +11,12 @@ import SwiftUI
 struct GreenWithOpacity: ViewModifier {
     var opacity: Double
     
-    init(opacity: Double = 0.2) {
+    init(opacity: Double = 1.0) {
         self.opacity = opacity
     }
     
     func body(content: Content) -> some View {
-        content.background(Color.green.opacity(opacity))
+        content.background(Color(red: 220/255, green: 255/255, blue: 220/255))//(Color.green.opacity(opacity))
     }
 }
 

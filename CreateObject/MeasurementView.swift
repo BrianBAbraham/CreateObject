@@ -18,22 +18,12 @@ struct MeasurementView: View {
     }
 
     var body: some View {
-        Text(formatLength())
-    }
-
-    private func formatLength() -> String {
-        switch settings.unitSystem {
-        case .cm:
-            return String(format: "%.1f",measurement.value/10.0)
-        case .mm:
-            return String(Int(measurement.value))
-        case .imperial:
-            return String(
-                measurement.converted(to: .inches).value.roundToNearest(0.25))
-        
-        }
+        Text(
+            String(settings.unitSystem.formatLengthAsString(measurement)))
     }
 }
+
+
 
 struct MeasurementUnitView: View {
     @EnvironmentObject var settings: Settings
@@ -63,6 +53,7 @@ struct MeasurementUnitView: View {
 
 struct UnitSystemSelectionView: View {
     @EnvironmentObject var settings: Settings
+    @EnvironmentObject var rulerVM: RulerViewModel
 
     var body: some View {
         Picker("Unit System", selection: $settings.unitSystem) {
@@ -80,5 +71,6 @@ struct UnitSystemSelectionView: View {
 
     func unitSystemChanged(_ newUnitSystem: UnitSystem) {
         settings.setUnitSystem(newUnitSystem)
+        rulerVM.updateDependentProperties()
     }
 }

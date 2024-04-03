@@ -23,6 +23,7 @@ struct CreateObjectApp: App {
     @StateObject var sceneVM = SceneViewModel()
     @StateObject var unitsVM = Settings()
     @StateObject var rulerVM = RulerViewModel()
+    @StateObject var recenterVM = RecenterViewModel()
  
     
 
@@ -36,8 +37,10 @@ struct CreateObjectApp: App {
                     .environmentObject(objectEditVM)
                     .environmentObject(coreDataVM)
                     .environmentObject(sceneVM)
-                    .environmentObject(unitsVM)                    .environmentObject(rulerVM)
-                   
+                    .environmentObject(unitsVM)
+                    .environmentObject(rulerVM)
+                    .environmentObject(recenterVM)
+                       
                    
         }
     }

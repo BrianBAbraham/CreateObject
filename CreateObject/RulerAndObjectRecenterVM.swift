@@ -6,9 +6,31 @@
 //
 
 import Foundation
-
-
-class Recenter: ObservableObject {
-    @Published var recentre = Screen.height / 2.0
+struct RecenterModel {
+   
+    var recenterState = false
     
+    mutating func resetState(){
+       recenterState.toggle()
+    }
+}
+
+class RecenterViewModel: ObservableObject {
+    @Published var recenterModel: RecenterModel
+    
+    init() {
+     
+        
+        self.recenterModel = RecenterModel()
+    }
+    
+    func getRecenterState() -> Bool {
+        recenterModel.recenterState
+    }
+    
+   
+    func setRecenterState() {
+        print (getRecenterState())
+        recenterModel.resetState()
+    }
 }

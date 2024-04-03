@@ -59,36 +59,34 @@ struct Line: View {
 //            }
 //    }
 //}
-struct RotatableRuler: View {
-    @EnvironmentObject var rulerVM: RulerViewModel
-    @State private var rulerAngle = 0.0
-
-    var body: some View {
-        let rulerFrameSize = rulerVM.getRulerFrameSize()
-        let arrow = rulerAngle == 0 ? "arrow.counterclockwise" : "arrow.clockwise"
-        
-        // Calculate the necessary offset to keep the ruler on screen after rotation.
-      //  let offset = rulerAngle == -90 ? CGFloat(rulerFrameSize.width / 2 - rulerFrameSize.length / 2) : 0
-
-        ZStack {
-            ZStack(alignment: .top) {
-                
-                Ruler()
-                
-                Button(action: {
-                    rulerAngle = rulerAngle == 0 ? -90 : 0
-                }) {
-                    Image(systemName: arrow)
-                        .font(.system(size: 100))
-                        .padding(.top)
-                }
-            }
-            .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
-            
-            // Apply offset here to adjust the position after rotation
-           // .offset(x: rulerAngle == -90 ? offset : 0, y: rulerAngle == -90 ? offset : 0)
-        }.rotationEffect(Angle(degrees: rulerAngle))    }
-}
+//struct RotatableRuler: View {
+//    @EnvironmentObject var rulerVM: RulerViewModel
+//    @State private var rulerAngle = 0.0
+//
+//    var body: some View {
+//        let rulerFrameSize = rulerVM.getRulerFrameSize()
+//        let arrow = rulerAngle == 0 ? "arrow.counterclockwise" : "arrow.clockwise"
+//        
+//
+//
+//        ZStack {
+//            ZStack(alignment: .top) {
+//                
+//                Ruler()
+//                
+//                Button(action: {
+//                    rulerAngle = rulerAngle == 0 ? -90 : 0
+//                }) {
+//                    Image(systemName: arrow)
+//                        .font(.system(size: 100))
+//                        .padding(.top)
+//                }
+//            }
+//            .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
+//            
+//           
+//        }.rotationEffect(Angle(degrees: rulerAngle))    }
+//}
 
 struct RightAngleRuler: View {
     @EnvironmentObject var rulerVM: RulerViewModel
@@ -106,7 +104,8 @@ struct RightAngleRuler: View {
             Ruler()
                 .rotationEffect(Angle(degrees: -90))
                 .offset(CGSize(
-                    width: (rulerFrameSize.length - width) / 2.0 , height: (-rulerFrameSize.length + width ) / 2.0))
+                    width: (rulerFrameSize.length - width) / 2.0 , 
+                    height: (-rulerFrameSize.length + width ) / 2.0))
         }
     
         .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
@@ -115,15 +114,12 @@ struct RightAngleRuler: View {
 
 struct Ruler: View {
     @EnvironmentObject var rulerVM: RulerViewModel
-    @EnvironmentObject var unitSystemVM: Settings
-    //let rulerModel = RulerViewModel()
+    
     let cornerRadius = 0.0
     let opacity = 0.05
     let lineWidth = 0.1
-  // let unitSystem: UnitSystem
+  
     var body: some View {
-        
-        var unitSystem: UnitSystem {unitSystemVM.unitSystem}
         let rulerDictionary = rulerVM.getDictionaryForScreen()
         let rulerMarksDictionary = rulerVM.getRulerMarks()
         let rulerNumberDictionary = rulerVM.getNumberDictionary()
@@ -156,3 +152,5 @@ struct Ruler: View {
         }
     }
 }
+
+

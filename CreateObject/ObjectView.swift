@@ -8,30 +8,6 @@
 import SwiftUI
 
 
-//struct LocalOutlineRectangle {
-//    static func path(corners: [CGPoint], _ color: Color = .black) -> some View {
-//        ZStack {
-//            Path { path in
-//                path.move(to: corners[0])
-//                path.addLine(to: corners[1])
-//                path.addLine(to: corners[2])
-//                path.addLine(to: corners[3])
-//                path.closeSubpath()
-//            }
-//            .fill(color)
-//            .opacity(0.9)
-//
-//            Path { path in
-//                path.move(to: corners[0])
-//                path.addLine(to: corners[1])
-//                path.addLine(to: corners[2])
-//                path.addLine(to: corners[3])
-//                path.closeSubpath()
-//            }
-//            .stroke(.black)
-//        }
-//   }
-//}
 
 struct LocalOutlineRectangle {
     static func path(
@@ -153,121 +129,29 @@ struct PartView: View {
 }
 
 
-//struct ObjectView: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @GestureState private var fingerLocation: CGPoint? = nil
-//    @State private var location = CGPoint (x: 200, y: 200)
-//    
-//    @State var currentZoom: CGFloat = 0.0
-//    @State var lastCurrentZoom: CGFloat = 0.0
-//    private var  minimumZoom = 0.1
-//    private var maximimumZoom = 3.0
-//   
-//      
-//    var postTiltOneCornerPerKeyDic: PositionDictionary {
-//        objectPickVM.getPostTiltOneCornerPerKeyDic()
-//    }
-//
-//    var defaultScale: Double {
-//        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
-//    }
-//
-//    var measurementScale: Double {
-//        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
-//    }
-//    
-//    var zoom: CGFloat {
-//        getZoom()
-//    }
-//    
-//    var uniquePartNames: [String]
-//    
-//    var objectName: String {
-//        objectPickVM.getCurrentObjectName()
-//    }
-//    
-//    let objectManipulationIsActive: Bool
-//    
-//    var preTiltFourCornerPerKeyDic: CornerDictionary {
-//        objectPickVM.getPreTiltFourCornerPerKeyDic()
-//    }
-//  
-//    init(
-//        _ names: [String],
-//        _ objectManipulationIsActive: Bool = false,
-//        initialOrigin: Binding<CGPoint?>) {
-//        uniquePartNames = names
-//        self.objectManipulationIsActive = objectManipulationIsActive
-//    }
-//    
-//
-//    func limitZoom (_ zoom: CGFloat) -> CGFloat {
-//       max(min(zoom, maximimumZoom),minimumZoom)
-//    }
-//    
-//    func getZoom() -> CGFloat {
-//        let zoom =
-//        limitZoom( (0.2 + currentZoom + lastCurrentZoom) * defaultScale/measurementScale)
-//     return zoom
-//    }
-//
-//    var body: some View {
-//        let dictionaryForScreen: CornerDictionary =
-//            objectPickVM.getObjectDictionaryForScreen()
-//        let frameSize =
-//            objectPickVM.getScreenFrameSize()
-//        ZStack{
-//            Ruler()
-//            ZStack{
-//                ForEach(uniquePartNames, id: \.self) { name in
-//                    PartView(
-//                        uniquePartName: name,
-//                        preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
-//                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen)
-//                }
-//            }
-//            .border(.red, width: 2)
-//            .modifier(
-//                    ForObjectInDefaultView (
-//                        frameSize: frameSize, active: objectManipulationIsActive)
-//                    )
-//            .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()))
-//        }
-//        .scaleEffect(zoom)
-//        .gesture(MagnificationGesture()
-//        .onChanged { value in
-//            currentZoom = value - 1
-//        }
-//        .onEnded { value in
-//            lastCurrentZoom += currentZoom
-//            currentZoom = 0.0
-//            }
-//         )
-//    }
-//}
 
 
 
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
+   // @EnvironmentObject var recenter: RecenterViewModel
     @GestureState private var fingerLocation: CGPoint? = nil
-    @State private var location = CGPoint (x: 200, y: 200)
-    
+    @State private var location = CGPoint (x: 200, y: 0)
     @State var currentZoom: CGFloat = 0.0
     @State var lastCurrentZoom: CGFloat = 0.0
     private var  minimumZoom = 0.1
     private var maximimumZoom = 1.0
-   
-      
+    
+    
     var postTiltOneCornerPerKeyDic: PositionDictionary {
         objectPickVM.getPostTiltOneCornerPerKeyDic()
     }
-
+    
     var defaultScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
     }
-
+    
     var measurementScale: Double {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
     }
@@ -288,35 +172,34 @@ struct ObjectView: View {
         objectPickVM.getPreTiltFourCornerPerKeyDic()
     }
     
-   
-  
     init(
         _ names: [String],
-        _ objectManipulationIsActive: Bool = false,
-        initialOrigin: Binding<CGPoint?>) {
-        uniquePartNames = names
-        self.objectManipulationIsActive = objectManipulationIsActive
-    }
+        _ objectManipulationIsActive: Bool = false
+      
+    ) {
+            uniquePartNames = names
+            self.objectManipulationIsActive = objectManipulationIsActive
+        }
     
-
+    
     func limitZoom (_ zoom: CGFloat) -> CGFloat {
-       max(min(zoom, maximimumZoom),minimumZoom)
+        max(min(zoom, maximimumZoom),minimumZoom)
     }
     
     func getZoom() -> CGFloat {
         let zoom =
         limitZoom( (0.2 + currentZoom + lastCurrentZoom) * defaultScale/measurementScale)
-     return zoom
+        return zoom
     }
-
+    
     var body: some View {
         let dictionaryForScreen: CornerDictionary =
-            objectPickVM.getObjectDictionaryForScreen()
+        objectPickVM.getObjectDictionaryForScreen()
         let objectFrameSize =
-            objectPickVM.getObjectOnScreenFrameSize()
-       
+        objectPickVM.getObjectOnScreenFrameSize()
+        
         ZStack{
-
+            
             ZStack{
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(
@@ -327,81 +210,12 @@ struct ObjectView: View {
             }
             .border(.red, width: 2)
             .modifier(
-                    ForObjectDrag (
-                        frameSize: objectFrameSize, active: objectManipulationIsActive)
-                    )
-            .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()))
-            
-            
-               
-          RightAngleRuler()
-           
-           
+                ForObjectDrag (
+                    frameSize: objectFrameSize, active: objectManipulationIsActive)
+            )
+            .position(x: 0.0, y: -300)
+            .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
+                           ) )
         }
-     
-        .scaleEffect(zoom)
-                    .background(Color.green.opacity(0.0001))
-                    .frame(maxWidth: .infinity)
-        .gesture(MagnificationGesture()
-        .onChanged { value in
-            currentZoom = value - 1
-        }
-        .onEnded { value in
-            lastCurrentZoom += currentZoom
-            currentZoom = 0.0
-            }
-         )
-        
     }
-//    var body: some View {
-//            let dictionaryForScreen: CornerDictionary =
-//                objectPickVM.getObjectDictionaryForScreen()
-//            let objectFrameSize =
-//                objectPickVM.getObjectOnScreenFrameSize()
-//
-//            ZStack {
-//                ZStack {
-//                    ForEach(uniquePartNames, id: \.self) { name in
-//                        PartView(
-//                            uniquePartName: name,
-//                            preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
-//                            postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen)
-//                    }
-//                }
-//                .border(.red, width: 2)
-//                .modifier(
-//                    ForObjectDrag (
-//                        frameSize: objectFrameSize, active: objectManipulationIsActive)
-//                )
-//                .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()))
-//
-//                RightAngleRuler()
-//            }
-//            .scaleEffect(zoom * (1 + currentZoom)) // Adjust zooming based on gestures
-//            .gesture(
-//                MagnificationGesture()
-//                    .onChanged { value in
-//                        self.currentZoom = value - 1
-//                    }
-//                    .onEnded { value in
-//                        self.lastCurrentZoom *= (1 + currentZoom)
-//                        self.currentZoom = 0.0
-//                    }
-//            )
-//            .background(Color.green.opacity(0.0001))
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .overlay(
-//                Color.clear // Transparent overlay to capture magnification gestures over the entire area
-//                    .gesture(
-//                        MagnificationGesture()
-//                            .onChanged { value in
-//                                self.currentZoom = value - 1
-//                            }
-//                            .onEnded { value in
-//                                self.lastCurrentZoom *= (1 + currentZoom)
-//                                self.currentZoom = 0.0
-//                            }
-//                    )
-//            )
-//        }
 }

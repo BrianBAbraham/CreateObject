@@ -71,140 +71,173 @@ struct ListView: View {
 struct ContentView: View {
 
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var coreDataVM: CoreDataViewModel
-    @EnvironmentObject var sceneVM: SceneViewModel
+//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+//    @EnvironmentObject var coreDataVM: CoreDataViewModel
+//    @EnvironmentObject var sceneVM: SceneViewModel
     
     
-    @State var isActive = true
-    @State var globalPosition: CGPoint?
-    @State var position: CGPoint = .zero
-    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
+//    @State var isActive = true
+//    @State var globalPosition: CGPoint?
+//    @State var position: CGPoint = .zero
+//    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
     @State private var initialOrigin: CGPoint?
     
     
-    @State var savedDictionaryAsList =  [""]
-    @State private var savedAsName: String = ""
+//    @State var savedDictionaryAsList =  [""]
+//    @State private var savedAsName: String = ""
     
-    var currentObjectDictionaryAsList: [String] {
-        objectPickVM.getList(.useCurrent)
-    }
+//    var currentObjectDictionaryAsList: [String] {
+//        objectPickVM.getList(.useCurrent)
+//    }
+//
+//    var initialObjectDictionaryAsList: [String] {
+//        objectPickVM.getList(.useInitial)
+//    }
+//    
+//    var loadedObjectDictionaryAsList: [String] {
+//        objectPickVM.getList(.useLoaded)
+//    }
+//    
+//    var dimensionsAsList: [String] {
+//        objectPickVM.getList(.useDimension)
+//    }
+//    
+//    var equipmentName: String  {
+//        objectPickVM.getCurrentObjectName()
+//    }
 
-    var initialObjectDictionaryAsList: [String] {
-        objectPickVM.getList(.useInitial)
-    }
-    
-    var loadedObjectDictionaryAsList: [String] {
-        objectPickVM.getList(.useLoaded)
-    }
-    
-    var dimensionsAsList: [String] {
-        objectPickVM.getList(.useDimension)
-    }
-    
-    var equipmentName: String  {
-        objectPickVM.getCurrentObjectName()
-    }
+//    var enterTextView: some View {
+//        VStack(alignment: .leading) {
+//            TextField(equipmentName, text: $savedAsName)
+//                .textFieldStyle(.roundedBorder)
+//        }
+//    }
 
-    var enterTextView: some View {
-        VStack(alignment: .leading) {
-            TextField(equipmentName, text: $savedAsName)
-                .textFieldStyle(.roundedBorder)
-        }
-    }
-
-    var saveButtonView: some View {
-        HStack{
-            Button(action: {
-                saveData(equipmentName + "_" + savedAsName)
-            }, label: {
-                Text("save")
-                    .foregroundColor(.blue)
-            } )
-            enterTextView
-        }
-        .padding()
-    }
+//    var saveButtonView: some View {
+//        HStack{
+//            Button(action: {
+//                saveData(equipmentName + "_" + savedAsName)
+//            }, label: {
+//                Text("save")
+//                    .foregroundColor(.blue)
+//            } )
+//            enterTextView
+//        }
+//        .padding()
+//    }
        
     var uniquePartNames: [String] {
         objectPickVM.getUniquePartNamesFromObjectDictionary()
     }
 
 
-    var currentDictionary: PositionDictionary {
-        objectPickVM.getPostTiltOneCornerPerKeyDic()
-    }
+//    var currentDictionary: PositionDictionary {
+//        objectPickVM.getPostTiltOneCornerPerKeyDic()
+//    }
     
-    var name: String {
-        objectPickVM.getCurrentObjectName()
-    }
+//    var name: String {
+//        objectPickVM.getCurrentObjectName()
+//    }
     
-    func saveData (_ objectName: String) {
-                coreDataVM.addObject(
-                    names: objectPickVM.getAllOriginNames(),
-                    values: objectPickVM.getAllOriginValues(),
-                    objectType: objectPickVM.getCurrentObjectName(),
-                objectName: objectName)
-                coreDataVM.fetchNames()
-    }
+//    func saveData (_ objectName: String) {
+//                coreDataVM.addObject(
+//                    names: objectPickVM.getAllOriginNames(),
+//                    values: objectPickVM.getAllOriginValues(),
+//                    objectType: objectPickVM.getCurrentObjectName(),
+//                objectName: objectName)
+//                coreDataVM.fetchNames()
+//    }
 
     init(){
-        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.05)
+        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.1)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
        
     }
   
     
     var body: some View {
-        let objectManipulationIsActive = true
+        //let objectManipulationIsActive = true
         
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                    ZStack{
-                            ObjectView(
-                                uniquePartNames,
-                                objectManipulationIsActive,
-                                initialOrigin: $initialOrigin)
-                            //.zIndex(1000.9)
-                      
-                        VStack {
-                            Spacer()
-                            VStack (alignment: .leading) {
-                                
-                                HStack{
-                                    PickInitialObjectView()
-                                    Spacer()
-                                    PickPartEdit()
-                                }
-                                .padding(.bottom)
-                                
-                                HStack{
-                                    ConditionalBilateralPartSidePicker()
-                                    ConditionalBilateralPartPresence()
-                                    ConditionaUniPartPresence()
-                                }
-                                
-                                ConditionalBilateralPartEditMenu()
-                                
-                                ConditionalUniPartEditMenu()
-                                
-                                ConditionalTiltMenu()
-                            }
-                            .padding(.horizontal)
-                            .transition(.move(edge: .bottom))
-                            .backgroundModifier()
-                        }
-                }) {
-                    Text("Default equipment")
-                }
-                Spacer()
-                UnitSystemSelectionView()
+                    AllViews()
+            //.edgesIgnoringSafeArea(.all)//
+                )
+                        {Text("Default equipment")}
+                    Spacer()
+                    UnitSystemSelectionView()
             }
             .navigationBarTitle("Equipment manager")
         }
     }
 }
+
+
+
+
+struct AllViews: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var recenterVM: RecenterViewModel
+    @State private var initialOrigin: CGPoint?
+    @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
+    @State private var uniqueKey = 0
+
+    var uniquePartNames: [String] {
+        objectPickVM.getUniquePartNamesFromObjectDictionary()
+    }
+    var body: some View {
+        let objectManipulationIsActive = true
+        
+            ZStack{
+                ObjectAndRulerView(
+                    uniquePartNames,
+                    objectManipulationIsActive
+                )
+                .position(recenterPosition)
+                .onChange(of: recenterVM.getRecenterState()) {
+                    uniqueKey += 1
+                }
+                .id(uniqueKey)
+                
+                //MENU
+                VStack {
+                    Spacer()
+                    VStack (alignment: .leading) {
+                        
+                        HStack{
+                            PickInitialObjectView()
+                            Spacer()
+                            PickPartEdit()
+                        }
+                        .padding(.bottom)
+                        
+                        HStack{
+                            ConditionalBilateralPartSidePicker()
+                            ConditionalBilateralPartPresence()
+                            ConditionaUniPartPresence()
+                        }
+                        
+                        ConditionalBilateralPartEditMenu()
+                        
+                        ConditionalUniPartEditMenu()
+                        
+                        ConditionalTiltMenu()
+                        
+                        ObjectRulerRecenter(
+                            
+                        )
+                    }
+                    .padding(.horizontal)
+                    
+                    .backgroundModifier()
+                    .transition(.move(edge: .bottom))
+                }
+            }
+        //}
+    }
+}
+
 
 
 // PreferenceKey to store the initial origin of the child view
@@ -397,111 +430,113 @@ struct ContentView: View {
 //    }
 //
 //}
-struct ContentViewX: View {
-
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var coreDataVM: CoreDataViewModel
-    @EnvironmentObject var sceneVM: SceneViewModel
-    
-    @State var isActive = true
-    @State var globalPosition: CGPoint?
-    @State var position: CGPoint = .zero
-    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
-   
-    @State var savedDictionaryAsList =  [""]
-    @State private var savedAsName: String = ""
-    
-    var currentObjectDictionaryAsList: [String] {
-        objectPickVM.getList(.useCurrent)
-    }
-
-    var initialObjectDictionaryAsList: [String] {
-        objectPickVM.getList(.useInitial)
-    }
-    
-    var loadedObjectDictionaryAsList: [String] {
-        objectPickVM.getList(.useLoaded)
-    }
-    
-    var dimensionsAsList: [String] {
-        objectPickVM.getList(.useDimension)
-    }
-    
-    var equipmentName: String  {
-        objectPickVM.getCurrentObjectName()
-    }
-
-    var enterTextView: some View {
-        VStack(alignment: .leading) {
-            TextField(equipmentName, text: $savedAsName)
-                .textFieldStyle(.roundedBorder)
-        }
-    }
-
-    var saveButtonView: some View {
-        HStack{
-            Button(action: {
-                saveData(equipmentName + "_" + savedAsName)
-            }, label: {
-                Text("save")
-                    .foregroundColor(.blue)
-            } )
-            enterTextView
-        }
-        .padding()
-    }
-       
-    var uniquePartNames: [String] {
-        objectPickVM.getUniquePartNamesFromObjectDictionary()
-    }
-
-
-    var currentDictionary: PositionDictionary {
-        objectPickVM.getPostTiltOneCornerPerKeyDic()
-    }
-    
-    var name: String {
-        objectPickVM.getCurrentObjectName()
-    }
-    
-    func saveData (_ objectName: String) {
-                coreDataVM.addObject(
-                    names: objectPickVM.getAllOriginNames(),
-                    values: objectPickVM.getAllOriginValues(),
-                    objectType: objectPickVM.getCurrentObjectName(),
-                objectName: objectName)
-                coreDataVM.fetchNames()
-    }
-
-
-    @State private var initialOrigin: CGPoint?
-    
-    
-   
-    
-    var body: some View {
+//struct ContentViewX: View {
+//
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+//    @EnvironmentObject var coreDataVM: CoreDataViewModel
+//    @EnvironmentObject var sceneVM: SceneViewModel
+//    
+//    @State var isActive = true
+//    @State var globalPosition: CGPoint?
+//    @State var position: CGPoint = .zero
+//    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
+//   
+//    @State var savedDictionaryAsList =  [""]
+//    @State private var savedAsName: String = ""
+//    
+//    var currentObjectDictionaryAsList: [String] {
+//        objectPickVM.getList(.useCurrent)
+//    }
+//
+//    var initialObjectDictionaryAsList: [String] {
+//        objectPickVM.getList(.useInitial)
+//    }
+//    
+//    var loadedObjectDictionaryAsList: [String] {
+//        objectPickVM.getList(.useLoaded)
+//    }
+//    
+//    var dimensionsAsList: [String] {
+//        objectPickVM.getList(.useDimension)
+//    }
+//    
+//    var equipmentName: String  {
+//        objectPickVM.getCurrentObjectName()
+//    }
+//
+//    var enterTextView: some View {
+//        VStack(alignment: .leading) {
+//            TextField(equipmentName, text: $savedAsName)
+//                .textFieldStyle(.roundedBorder)
+//        }
+//    }
+//
+//    var saveButtonView: some View {
+//        HStack{
+//            Button(action: {
+//                saveData(equipmentName + "_" + savedAsName)
+//            }, label: {
+//                Text("save")
+//                    .foregroundColor(.blue)
+//            } )
+//            enterTextView
+//        }
+//        .padding()
+//    }
+//       
+//    var uniquePartNames: [String] {
+//        objectPickVM.getUniquePartNamesFromObjectDictionary()
+//    }
+//
+//
+//    var currentDictionary: PositionDictionary {
+//        objectPickVM.getPostTiltOneCornerPerKeyDic()
+//    }
+//    
+//    var name: String {
+//        objectPickVM.getCurrentObjectName()
+//    }
+//    
+//    func saveData (_ objectName: String) {
+//                coreDataVM.addObject(
+//                    names: objectPickVM.getAllOriginNames(),
+//                    values: objectPickVM.getAllOriginValues(),
+//                    objectType: objectPickVM.getCurrentObjectName(),
+//                objectName: objectName)
+//                coreDataVM.fetchNames()
+//    }
+//
+//
+//    @State private var initialOrigin: CGPoint?
+//    
+//    
+//   
+//    
+//    var body: some View {
        // PickSavedObjectView()
         //let frameSize = objectPickVM.getScreenFrameSize()
-        let objectManipulationIsActive = true
-
-        NavigationView {
-            ZStack {
-                NavigationLink(destination:
-                    VStack{
-                            PickInitialObjectView()
+//        let objectManipulationIsActive = true
+//
+//        NavigationView {
+//            ZStack {
+//                NavigationLink(destination:
+//                    VStack{
+//                            PickInitialObjectView()
 //                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
                               //  .environmentObject(objectPickVM)
-                            ObjectView(
-                                uniquePartNames,
-                                objectManipulationIsActive,
-                                initialOrigin: $initialOrigin)
-                    } )
-                    { Text("Default equipment")
+//                            ObjectView(
+//                                uniquePartNames,
+//                                objectManipulationIsActive
+                            //    ,
+                              //  initialOrigin: $initialOrigin
+//                            )
+//                    } )
+//                    { Text("Default equipment")
 //                            .onTapGesture {
 //                                print("hello")
 //                            }
-                    }
+//                    }
 
                 
 //                NavigationLink(destination:
@@ -555,10 +590,10 @@ struct ContentViewX: View {
 //                    Text("Settings")
 //                }
 
-            }
-            .navigationBarTitle("Equipment manager")
-
-        }
-    }
-
-}
+//            }
+//            .navigationBarTitle("Equipment manager")
+//
+//        }
+//    }
+//
+//}
