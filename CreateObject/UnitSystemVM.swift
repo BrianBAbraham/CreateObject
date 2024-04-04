@@ -15,6 +15,7 @@ enum UnitSystem: String {
 
     
     func formatLengthAsString( _ measurement: Measurement<UnitLength>) -> String {
+        let smallestImperialMeasure = 0.25
         switch self{
         case .cm:
             return String(format: "%.1f",measurement.value/10.0)
@@ -22,10 +23,9 @@ enum UnitSystem: String {
             return String(Int(measurement.value))
         case .imperial:
             return String(
-                measurement.converted(to: .inches).value.roundToNearest(0.25))
+                measurement.converted(to: .inches).value.roundToNearest(smallestImperialMeasure))
         }
     }
-    
 }
 
 
@@ -37,17 +37,17 @@ struct MeasurementModel{
         setUnitSystem(unitSystem)
     }
     
+    
     mutating func setUnitSystem(_ unitSystem: UnitSystem) {
-        print(unitSystem)
         self.unitSystem = unitSystem
     }
 }
 
 
-class Settings: ObservableObject {
+
+class UnitSystemViewModel: ObservableObject {
     @Published var unitSystem: UnitSystem = MeasurementSystemService.shared.unitSystem
     @Published var measurementModel = MeasurementModel( .cm)
-    
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -59,6 +59,7 @@ class Settings: ObservableObject {
             }
             .store(in: &self.cancellables)
     }
+
     
     func setUnitSystem(_ unitSystem: UnitSystem) {
         MeasurementSystemService.shared.setMeasurementSystem(unitSystem)
