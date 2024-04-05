@@ -198,7 +198,7 @@ struct AllViews: View {
                 .onChange(of: recenterVM.getRecenterState()) {
                     uniqueKey += 1
                 }
-                .id(uniqueKey)
+                .id(uniqueKey)//ensures redraw
                 
                 //MENU
                 VStack {
@@ -210,8 +210,7 @@ struct AllViews: View {
                             Spacer()
                             PickPartEdit()
                         }
-                        .padding(.bottom)
-                        
+                      
                         HStack{
                             ConditionalBilateralPartSidePicker()
                             ConditionalBilateralPartPresence()
@@ -224,9 +223,8 @@ struct AllViews: View {
                         
                         ConditionalTiltMenu()
                         
-                        ObjectRulerRecenter(
+                        ObjectRulerRecenter()
                             
-                        )
                     }
                     .padding(.horizontal)
                     

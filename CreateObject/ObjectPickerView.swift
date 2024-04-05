@@ -39,7 +39,7 @@ struct PickInitialObjectView: View {
         }
         .onChange(of: objectName) {tag in
             self.objectName = tag
-            objectEditVM.setChoiceOfPartToEdit(Part.mainSupport.rawValue)
+            objectEditVM.setPartToEdit(Part.mainSupport.rawValue)
             objectPickVM.setCurrentObjectName(tag)
             objectPickVM.resetObjectByCreatingFromName()
            
@@ -54,11 +54,9 @@ struct PickPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-
     @State private var selectedMenuNameItem: String = Part.mainSupport.rawValue
-    let useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp = 0
+    let useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp = 0
 
-    
     var body: some View {
         //object creation and etc use Part for
         //Part have to be unique and are not so friendly
@@ -78,18 +76,24 @@ struct PickPartEdit: View {
             .onChange(of: selectedMenuNameItem) {oldValue, newValue in
                 
                 let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
-                useIndexZeroIfForInitialSelectedMenuNameItemToAvoidDisplayLookUp
-                objectEditVM.setChoiceOfPartToEdit(menuItemsUsingPart[index])
-                objectEditVM.setSideToEdit(.both)
-                objectEditVM.setBothOrLeftOrRightAsEditible(.both)
+                useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp
+                
+                objectEditVM.setPartToEdit(menuItemsUsingPart[index])
+                
+                resetForNewPartEdit()
             }
             .onChange(of: objectPickVM.getCurrentObjectName()) {
+                //reset if new object
                 selectedMenuNameItem = Part.mainSupport.rawValue
             }
         }
-            
-       
-           
+    }
+    func resetForNewPartEdit(){
+        //what to edit
+        objectEditVM.setSideToEdit(.both)
+        
+        //what can be edited
+        objectEditVM.setBothOrLeftOrRightAsEditible(.both)
     }
 }
 

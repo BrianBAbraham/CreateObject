@@ -110,9 +110,10 @@ struct ObjectRulerRecenter: View {
                         Button(action: {
                             recenterVM.setRecenterState()
                         }) {
-                            Text("centralize")
+                            Text("center")
                                 .font(.system(size: 15))
-                                
                         }
+ 
+        
     }
 }

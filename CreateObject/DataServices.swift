@@ -9,6 +9,21 @@ import Foundation
 import Combine
 
 
+class MeasurementSystemService {
+    @Published var unitSystem: UnitSystem = .cm
+    static let shared = MeasurementSystemService()
+    
+    
+    func getMeasurementSytem() -> UnitSystem {
+        unitSystem
+    }
+    
+    
+    func setMeasurementSystem(_ unitSystem: UnitSystem) {
+    
+        self.unitSystem = unitSystem
+    }
+}
 
 
 
@@ -21,8 +36,11 @@ class BilateralPartWithOnePropertyToChangeService {
     
     static let shared = BilateralPartWithOnePropertyToChangeService()
     
-    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
-       // print("DETECT")
+    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected, _ track: String) {
+//        
+//        print(sideChoice)
+//        print(track)
+//        print("")
         scopeOfEditForSide = sideChoice
     }
     

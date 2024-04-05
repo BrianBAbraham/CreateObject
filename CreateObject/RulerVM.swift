@@ -10,29 +10,15 @@ import Combine
 
 
 struct RulerModel {
-    let ensureInitialObjectAllOnScreen: EnsureInitialObjectAllOnScreen
+    let ensureInitialRulerIsOnScreen:
+        EnsureInitialObjectAllOnScreen
     let rulerMarks: CornerDictionary
     var rulerNumbers: PositionDictionary
 }
 
 
 
-class MeasurementSystemService {
-    @Published var unitSystem: UnitSystem = .cm
-    
-    static let shared = MeasurementSystemService()
-    
-    
-    func getMeasurementSytem() -> UnitSystem {
-        unitSystem
-    }
-    
-    
-    func setMeasurementSystem(_ unitSystem: UnitSystem) {
-        //print(unitSystem.rawValue)
-        self.unitSystem = unitSystem
-    }
-}
+
 
 
 
@@ -44,20 +30,18 @@ class RulerViewModel: ObservableObject {
     let numberSpan: Double
     let width: Double
     @Published private var rulerModel: RulerModel
-    let rulerData: RulerDataBackground
+    let rulerDataBackGround: RulerDataBackground
     var rulerMarks: RulerDataMarks
   
     init(
         _ numberSpan: Double = 1500.0,
         _ width: Double = 170.0
     ) {
-        
         self.numberSpan = numberSpan
         self.width = width
         let rulerLength = lengthBefore + numberSpan + lengthAfter
         
-        
-        rulerData =
+        rulerDataBackGround =
             RulerDataBackground (
                 rulerLength: rulerLength,
                 rulerWidth: width
@@ -73,22 +57,15 @@ class RulerViewModel: ObservableObject {
         )
         
         rulerModel = RulerModel(
-            ensureInitialObjectAllOnScreen: EnsureInitialObjectAllOnScreen(
-                fourCornerDic: rulerData.fourCornerDic,
-                oneCornerDic: rulerData.oneCornerDic,
-                objectDimension: rulerData.dimension
+            ensureInitialRulerIsOnScreen: EnsureInitialObjectAllOnScreen(
+                fourCornerDic: rulerDataBackGround.fourCornerDic,
+                oneCornerDic: rulerDataBackGround.oneCornerDic,
+                objectDimension: rulerDataBackGround.dimension
             ),
             rulerMarks: rulerMarks.getMarksDictionary(),
             rulerNumbers: [:]
         )
         
-        switch unitSystem {
-        case .cm, .mm:
-            rulerModel.rulerNumbers = createMetricNumberDictionary()
-        case .imperial:
-            rulerModel.rulerNumbers = createImperialNumberDictionary()
-        }
-  
         
         MeasurementSystemService.shared.$unitSystem
             .sink { [weak self] newData in
@@ -101,8 +78,7 @@ class RulerViewModel: ObservableObject {
     
     
   func updateDependentProperties() {
-        print("ruler update")
-            // Update `rulerMarks` and potentially other dependent properties here.
+//        print("ruler update")
       self.rulerMarks = RulerDataMarks(
         lengthBefore: lengthBefore,
         numberSpan: numberSpan,
@@ -111,13 +87,13 @@ class RulerViewModel: ObservableObject {
       )
 
       self.rulerModel = RulerModel(
-          ensureInitialObjectAllOnScreen: EnsureInitialObjectAllOnScreen(
-              fourCornerDic: rulerData.fourCornerDic,
-              oneCornerDic: rulerData.oneCornerDic,
-              objectDimension: rulerData.dimension
+          ensureInitialRulerIsOnScreen: EnsureInitialObjectAllOnScreen(
+              fourCornerDic: rulerDataBackGround.fourCornerDic,
+              oneCornerDic: rulerDataBackGround.oneCornerDic,
+              objectDimension: rulerDataBackGround.dimension
           ),
           rulerMarks: self.rulerMarks.getMarksDictionary(),
-          rulerNumbers: self.createImperialNumberDictionary()
+          rulerNumbers: [:]
       )
       
       switch unitSystem {
@@ -130,23 +106,26 @@ class RulerViewModel: ObservableObject {
     
     
     func getDictionaryForScreen() -> CornerDictionary {
-        rulerModel.ensureInitialObjectAllOnScreen.fourCornerDic
+        rulerModel.ensureInitialRulerIsOnScreen.fourCornerDic
     }
     
     
     func getRulerFrameSize() -> Dimension {
-        let frameSize = rulerModel.ensureInitialObjectAllOnScreen.objectDimension
+        let frameSize = rulerModel.ensureInitialRulerIsOnScreen.objectDimension
         return frameSize
     }
+    
     
     func getRulerMarks() -> CornerDictionary{
         rulerModel.rulerMarks
     }
     
+    
     func getNumberDictionary() -> PositionDictionary {
-        createMetricNumberDictionary()
+        rulerModel.rulerNumbers
 
     }
+    
     
     func createMetricNumberDictionary() -> PositionDictionary{
         let dictionary = getRulerMarks()
@@ -164,24 +143,22 @@ class RulerViewModel: ObservableObject {
        return labelDictionary
     }
     
+    
     func createImperialNumberDictionary() -> PositionDictionary{
-        let dictionary = getRulerMarks()
-        var labelDictionary: PositionDictionary = [:]
+        let dictionary = getRulerMarks()//number name locations
+        var nameDictionary: PositionDictionary = [:]
 
-       
         for (key, value) in dictionary {
-          
-            if key.contains(Level.primary.rawValue) && value[0].x == 0.0 {
-//                print(value)
-//                print(Int((value[0].y) / 25.4))
-                let value = value[0].y
-                let numberName =
+            if (key.contains(Level.primary.rawValue) || //12"
+                key.contains(Level.secondary.rawValue)) //6"
+                && value[0].x == 0.0 { //line has 2 values, use 1
+                let value = value[0].y // y is source of name
+                let numberName = //string from y value
                 String(Int(((value - lengthBefore) / 25.4 ).rounded()))
-                print(numberName)
-                labelDictionary += [numberName: (x: width/2.0, y: value, z: RulerDataMarks.rulerPositionOnZ)]
+                nameDictionary += [numberName: (x: width/2.0, y: value, z: RulerDataMarks.rulerPositionOnZ)]
             }
         }
-       return labelDictionary
+       return nameDictionary
     }
 }
 
@@ -218,14 +195,11 @@ struct RulerDataMarks {
     
     
     func getPositions(_ level: Level) -> [[PositionAsIosAxes]]{
-       // print(unitSystem.rawValue)
-        var valuesForY: [Double]
+              var valuesForY: [Double]
         switch unitSystem {
         case .cm, .mm:
             valuesForY = getValuesForMetricY(level)
-        
         case .imperial:
-
             valuesForY = getValuesForImperialY(level)
         }
         
@@ -288,7 +262,6 @@ struct RulerDataMarks {
         }
         
         var valuesForY: [Double] = []
-       
         let numberOfDivisions = Int(numberSpan/division)
         for i in 0...numberOfDivisions {
             let positionY = Double(i) * division + lengthBefore
@@ -298,16 +271,16 @@ struct RulerDataMarks {
         return valuesForY
     }
     
+    
     func getValuesForImperialY( _ level: Level) -> [Double]{
-
         var division: Double
         switch level {
         case .primary:
             division = convertInchesToMillimeters(12)
         case .secondary:
-            division = convertInchesToMillimeters(1)
+            division = convertInchesToMillimeters(6)
         case .halfSecondary:
-            division = convertInchesToMillimeters(0.5)
+            division = convertInchesToMillimeters(1)
         case .tertiary:
             division = convertInchesToMillimeters(0.25)
         }
@@ -335,7 +308,6 @@ struct RulerDataMarks {
 struct RulerDataBackground {
     let rulerLength: Double
     let rulerWidth: Double
-  //  let unitSystem: UnitSystem
     var fourCornerDic: CornerDictionary {
         getDictionary()
     }
@@ -359,6 +331,7 @@ struct RulerDataBackground {
         }
 }
 
+///rulers have different levels of marks indicating mearurement division
 enum Level: String {
     case primary = "p"
     case halfSecondary = "h"

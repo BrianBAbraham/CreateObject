@@ -170,7 +170,7 @@ extension ObjectPickViewModel {
     
     
     func modifyObjectByCreatingFromName(){
-        print("CALLED")
+       // print("CALLED")
         
         objectImageData =
             ObjectImageData(currentObjectType, userEditedSharedDics)
@@ -279,43 +279,64 @@ extension ObjectPickViewModel {
 //    }
     
     
-    func getSidesPresentGivenPossibleUserEdit(_ associatedPart: Part) -> [SidesAffected] {
+    func getSidesPresentGivenPossibleUserEdit(_ part: Part, _ caller: String = "caller not given") -> [SidesAffected] {
+        
         //sometimes partChain are represented by part other than their chainLabel
-        let associatedPartDic: [Part: Part] = [:
+       
+        let associatedPartDic: [Part: Part] = [
+            .casterWheelAtFront: .casterForkAtFront,//chain order reversed
+            .casterWheelAtMid: .casterForkAtMid,//ditto
+            .casterWheelAtRear: .casterForkAtRear//ditto
             ]
         
-        let part = associatedPartDic[associatedPart] ?? associatedPart
-       // print (part.rawValue)
-        let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[part] ?? OneOrTwoId(currentObjectType, part).forPart
+        let partOrAssociatedPart = associatedPartDic[part] ?? part
+ 
+
+        let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(currentObjectType, partOrAssociatedPart).forPart
         
 
         guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] ?? objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
             fatalError()
         }
     
+//        if caller == "bilateral edit" {
+//              print ("\(partOrAssociatedPart.rawValue) \(part.rawValue) \(oneOrTwoId)  \(caller)")
+//            print(chainLabels)
+//              print("")
+//        }
+        
         var sidesPresent: [SidesAffected] = []
         //the part may be removed from both sides by user edit
-        if chainLabels.contains(part) {
+        if chainLabels.contains(partOrAssociatedPart) {
             sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
         } else {
             sidesPresent = [.none]
         }
 //print(sidesPresent)
         let firstSidesPresentGivesSidesAffected = 0
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
+        
+       // print("getSidesPresentGivenPossibleUserEdit \(part)")
+        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected]
+        ,"getSidesPresentGivenPossibleUserEdit"
+        )
         
         return sidesPresent
     }
     
     
-    func getSidesPresentGivenUserEditContainsLeft(_ part: Part) -> Bool {
-        getSidesPresentGivenPossibleUserEdit(part).contains(SidesAffected.left) ? 
+    func getSidesPresentGivenUserEditContainsLeft(_ part: Part, _ caller: String = "caller not given") -> Bool {
+        
+   //     print("left \(part)")
+        return
+        getSidesPresentGivenPossibleUserEdit(part,caller).contains(SidesAffected.left) ?
             true: false
     }
     
     
-    func getSidesPresentGivenUserEditContainsRight(_ part: Part) -> Bool {
-        getSidesPresentGivenPossibleUserEdit(part).contains(SidesAffected.right) ?
+    func getSidesPresentGivenUserEditContainsRight(_ part: Part, _ caller: String = "caller not given") -> Bool {
+   //     print("right \(part)")
+        return
+        getSidesPresentGivenPossibleUserEdit(part,caller).contains(SidesAffected.right) ?
             true: false
     }
     

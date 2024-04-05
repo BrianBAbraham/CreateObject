@@ -154,13 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>392</string>
+					<string>398</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>391</string>
+					<string>397</string>
 					<key>Timestamp</key>
-					<string>732824466.073683</string>
+					<string>734012411.9926291</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -201,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>411</string>
+					<string>432</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>410</string>
+					<string>431</string>
 					<key>Timestamp</key>
-					<string>733764561.588342</string>
+					<string>734021235.71173</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -248,13 +248,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>276</string>
+					<string>282</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>275</string>
+					<string>281</string>
 					<key>Timestamp</key>
-					<string>732824466.0736639</string>
+					<string>734012411.992677</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -361,13 +361,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>304</string>
+					<string>316</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>303</string>
+					<string>315</string>
 					<key>Timestamp</key>
-					<string>733764561.5883681</string>
+					<string>734021235.711744</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -390,9 +390,9 @@
 //print(sidesPresent)
 </string>
 				<key>trailing</key>
-				<string>        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
-        
-        return sidesPresent
+				<string>        
+       // print("getSidesPresentGivenPossibleUserEdit \(part)")
+        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected]
 </string>
 			</dict>
 			<key>title</key>
@@ -538,6 +538,119 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT can this be removed with recoding</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>93</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>92</string>
+					<key>Timestamp</key>
+					<string>734022402.871511</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectPickerView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        objectEditVM.setSideToEdit(.both)
+</string>
+				<key>leading</key>
+				<string>    func resetForNewPartEdit(){
+        //what to edit
+</string>
+				<key>trailing</key>
+				<string>        
+        //what can be edited
+        objectEditVM.setBothOrLeftOrRightAsEditible(.both)
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT is there a problem if the part has one side?</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/BilateralPartEdit.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>63</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>62</string>
+					<key>Timestamp</key>
+					<string>734014959.504935</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/BilateralPartEdit.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                        BilateralOriginMenu(part)
+</string>
+				<key>leading</key>
+				<string>                            part, partOrLinkedPartForDimension)
+                            
+</string>
+				<key>trailing</key>
+				<string>                }
+        }
+    }
+</string>
+			</dict>
+			<key>title</key>
+			<string>ERROR show this be linked part??</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

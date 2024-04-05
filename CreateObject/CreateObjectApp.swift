@@ -21,7 +21,7 @@ struct CreateObjectApp: App {
     @StateObject var objectEditVM = ObjectEditViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
-    @StateObject var unitsVM = Settings()
+    @StateObject var unitsVM = UnitSystemViewModel()
     @StateObject var rulerVM = RulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
  

@@ -206,13 +206,13 @@ enum PartTag: String, Parts {
     case id0 = "_id0"
     case id1 = "_id1"
     case stringLink = "_"
-    case width = "width"
-    case length = "length"
+    case width = "w"
+    case length = "l"
     case height = "height"
     case dimension = "dimension"
     case origin = "origin"
-    case xOrigin = "x-origin"
-    case yOrigin = "y-origin"
+    case xOrigin = "x"
+    case yOrigin = "y"
     case zOrigin = "zOrigin"
     
     var stringValue: String {
@@ -392,7 +392,7 @@ struct PartDefaultDimension {
                 PartObject(.fixedWheelAtRear, .fixedWheelManualRearDrive): (width: 20.0, length: 600.0, height: 600.0),
                 PartObject(.footOnly, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
                 PartObject(.armSupport, .allCasterTiltInSpaceArmChair): (width: 100.0, length: linkedOrParentDimension.length, height: 150.0),
-                PartObject(.mainSupport, .allCasterBed): (width: 900.0, length: 2000.0, height: 150.0),
+                PartObject(.mainSupport, .allCasterBed): (width: 900.0, length: 2200.0, height: 150.0),
                 PartObject(.mainSupport, .allCasterStretcher): (width: 600.0, length: 1400.0, height: 10.0),
                 PartObject(.mainSupport, .showerTray): (width: 900.0, length: 1200.0, height: 10.0),
                 PartObject(.stabilizerAtMid, .fixedWheelMidDrive): (width: 50.0, length: 0.0, height: 0.0),

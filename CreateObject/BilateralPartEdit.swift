@@ -18,6 +18,7 @@ import SwiftUI
 struct ConditionalBilateralPartEditMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    
     var body: some View {
         let partToEdit = objectEditVM.getPartToEdit()
         if objectShowMenuVM.getBilateralPartMenuStatus(partToEdit)  {
@@ -27,6 +28,9 @@ struct ConditionalBilateralPartEditMenu: View {
         }
     }
 }
+
+
+
 struct BilateralPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -41,6 +45,8 @@ struct BilateralPartEdit: View {
     init (_ part: Part) {
         self.part = part
 
+        //print("\n BilateralPartEdit \(part.rawValue)\n")
+        
         let partsRequiringLinkedPartUse =
                     PartsRequiringLinkedPartUse(part)
         partOrLinkedPartForDimension = partsRequiringLinkedPartUse.partForDimension
@@ -54,18 +60,14 @@ struct BilateralPartEdit: View {
                         BilateralDimensionMenu(
                             part, partOrLinkedPartForDimension)
                             
-//                    HStack {
-//                        ForEach(origins, id: \.self) { origin in
-//                            BilateralOriginMenu(
-//                                partOrLinkedPartForOrigin,
-//                                origin)
-//                        }
-//                    }
-                        BilateralOriginMenuX(partOrLinkedPartForOrigin)
+                        BilateralOriginMenu(part)
                 }
         }
     }
 }
+ 
+
+
 struct BilateralDimensionMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
@@ -85,7 +87,7 @@ struct BilateralDimensionMenu: View {
     var body: some View {
         ZStack{
             HStack {
-                Spacer()
+                Text("size")
                 Picker("dimension", selection: $propertyToEdit) {
                     ForEach(relevantCases, id: \.self) { side in
                         Text(side.rawValue)
@@ -94,14 +96,6 @@ struct BilateralDimensionMenu: View {
               
                 .pickerStyle(.segmented)
                 .fixedSize()
-//                .background(GeometryReader { geometry in
-//                               RoundedRectangle(cornerRadius: 9)
-//                                   .foregroundColor(.white)
-//                                   .shadow(color: Color.black.opacity(0.2), radius: 1, x: 3, y: 3)
-//                                   .clipShape(RoundedRectangle(cornerRadius: 12))
-//                                   .frame(width: geometry.size.width, height: geometry.size.height)
-//                           })
-                
                 .onChange(of: propertyToEdit) { oldSelection, newSelection in
                     objectEditVM.setPropertyToEdit(newSelection)
                 }
@@ -112,6 +106,10 @@ struct BilateralDimensionMenu: View {
         }
     }
 }
+
+
+
+
 struct BilateralDimensionSlider: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -160,65 +158,7 @@ struct BilateralDimensionSlider: View {
 
 
 
-
-
-
-
-
-
-
-
-
 struct BilateralOriginMenu: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-
-    let part: Part
-    let propertyToBeEdited: PartTag
-    var arrowImage: Image {
-        propertyToBeEdited == .xOrigin ?
-        Image(systemName: "arrow.left.and.right"):
-        Image(systemName: "arrow.up.and.down")
-    }
-   
-    init (
-        _ part: Part,
-        _ propertyToBeEdited: PartTag ) {
-            self.part = part
-            self.propertyToBeEdited = propertyToBeEdited
-            
-        }
- 
-    var body: some View {
-
-        let boundStepperValue =
-            Binding(
-                get: {
-                    0.0 },
-                set: {
-                    newValue in
-                        objectEditVM
-                            .setValueForBilateralPartInUserEditedDic(
-                                newValue,
-                                part,
-                               propertyToBeEdited
-                            )
-
-                        objectPickVM.modifyObjectByCreatingFromName()
-                                } )
-        HStack{
-            Stepper("", value: boundStepperValue, step: 10.0)
-            arrowImage
-//            MeasurementView(
-//                Measurement(value: boundStepperValue.wrappedValue,
-//                    unit: .millimeters))
-            }
-
-            .disabled(objectEditVM.scopeOfEditForSide == .none)
-    }
-}
-
-struct BilateralOriginMenuX: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
@@ -226,23 +166,20 @@ struct BilateralOriginMenuX: View {
     @State private var xStepperValue = 0.0
     @State private var yStepperValue = 0.0
     let part: Part
-    var relevantCases: [PartTag] {
-        objectShowMenuVM.getPropertiesForOriginMenu(part)
+    var relevantOrigin: [PartTag] {// both or one of x y
+        objectShowMenuVM.getScopeForOriginMenu(part)
     }
-//var arrowImage: [Image] {
-//
-//[    Image(systemName: "arrow.left.and.right"),
-//     Image(systemName: "arrow.up.and.down") ] }
-    
+  
     init (
         _ part: Part) {
             self.part = part
-           
+           // print("\n BilateralOriginMenu \(part.rawValue)\n")
             
         }
  
     var body: some View {
-
+        let sidesPresent =
+            objectPickVM.getSidesPresentGivenPossibleUserEdit(part, "bilateral edit")[0]
         let boundStepperValue =
             Binding(
                 get: {
@@ -263,32 +200,22 @@ struct BilateralOriginMenuX: View {
                         objectPickVM.modifyObjectByCreatingFromName()
                                 } )
         HStack{
-            Spacer()
-            Picker("", selection: $propertyToEdit) {
-                ForEach(relevantCases, id: \.self) { side in
-                    Text(side.rawValue)
+                Text("origin")
+                Picker("", selection: $propertyToEdit) {
+                    ForEach(relevantOrigin, id: \.self) { side in
+                        Text(side.rawValue)
+                    }
                 }
-            }
-            .pickerStyle(.segmented)
-            .fixedSize()
-            .onChange(of: propertyToEdit) { oldSelection, newSelection in
+                .pickerStyle(.segmented)
+                .fixedSize()
                 
-                objectEditVM.setPropertyToEdit(newSelection)
+                .onChange(of: propertyToEdit) { oldSelection, newSelection in
+                    objectEditVM.setPropertyToEdit(newSelection)
+                }
+                Stepper("", value: boundStepperValue, step: 10.0)
+                .fixedSize()
             }
-            
-            
-            
-            
-            
-            Stepper("", value: boundStepperValue, step: 10.0)
-
-//            MeasurementView(
-//                Measurement(value: propertyToEdit == .xOrigin  ?
-//                                xStepperValue: yStepperValue,
-//                    unit: .millimeters))
-            }
-
-            .disabled(objectEditVM.scopeOfEditForSide == .none)
+            .disabled(sidesPresent == .none)
     }
 }
 

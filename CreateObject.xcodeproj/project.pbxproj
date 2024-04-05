@@ -44,7 +44,7 @@
 		FDD422E82B9F1D19005B7950 /* BilateralPartPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD422E72B9F1D19005B7950 /* BilateralPartPicker.swift */; };
 		FDD7247D29B0DD1000B50259 /* Development.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD7247C29B0DD1000B50259 /* Development.swift */; };
 		FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEA615E2A2484D000A50ACC /* Calculate.swift */; };
-		FDEEB2BD2BB5DBD700000199 /* MeasurementVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEEB2BC2BB5DBD700000199 /* MeasurementVM.swift */; };
+		FDEEB2BD2BB5DBD700000199 /* UnitSystemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */; };
 		FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */; };
 /* End PBXBuildFile section */
 
@@ -87,7 +87,7 @@
 		FDD422E72B9F1D19005B7950 /* BilateralPartPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilateralPartPicker.swift; sourceTree = "<group>"; };
 		FDD7247C29B0DD1000B50259 /* Development.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Development.swift; sourceTree = "<group>"; };
 		FDEA615E2A2484D000A50ACC /* Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculate.swift; sourceTree = "<group>"; };
-		FDEEB2BC2BB5DBD700000199 /* MeasurementVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementVM.swift; sourceTree = "<group>"; };
+		FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystemVM.swift; sourceTree = "<group>"; };
 		FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectImageData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -132,7 +132,7 @@
 				FD1CB1942B90A58600A27657 /* DataServices.swift */,
 				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
 				FD5C57B82BAF5260007B9159 /* RulerVM.swift */,
-				FDEEB2BC2BB5DBD700000199 /* MeasurementVM.swift */,
+				FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */,
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD11E26E2B6E8597008D9C22 /* ObjectEditVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectShowMenuVM.swift */,
@@ -140,6 +140,7 @@
 				FD10BB5A2BBC46B7000C13A4 /* RulerAndObjectRecenterVM.swift */,
 				FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */,
 				FDA4743C29E46925003F1202 /* ObjectView.swift */,
+				FD1CB1962B90D91300A27657 /* MeasurementView.swift */,
 				FD08DB1E2BAEDBCE00F116AD /* RulerView.swift */,
 				FD08DB202BAEDE8200F116AD /* Ruler&ObjectView.swift */,
 				FD060BD42A0BB2F6005F31A0 /*  UniPart.swift */,
@@ -151,7 +152,6 @@
 				FDB931D32A01504D00F86B4F /* SceneView.swift */,
 				FDB931CF2A0134AE00F86B4F /* CircleView.swift */,
 				FDC71F02296C911200B68427 /* ContentView.swift */,
-				FD1CB1962B90D91300A27657 /* MeasurementView.swift */,
 				FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */,
 				FDC71F04296C911300B68427 /* Assets.xcassets */,
 				FDC71F06296C911300B68427 /* Preview Content */,
@@ -274,7 +274,7 @@
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
 				FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */,
-				FDEEB2BD2BB5DBD700000199 /* MeasurementVM.swift in Sources */,
+				FDEEB2BD2BB5DBD700000199 /* UnitSystemVM.swift in Sources */,
 				FDD422E82B9F1D19005B7950 /* BilateralPartPicker.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,
 				FD060BD52A0BB2F6005F31A0 /*  UniPart.swift in Sources */,

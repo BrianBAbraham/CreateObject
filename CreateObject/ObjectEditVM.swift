@@ -25,7 +25,7 @@ class ObjectEditViewModel: ObservableObject {
     
     var objectType: ObjectTypes = .fixedWheelRearDrive
     
-var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
+    var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
     
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
     
@@ -51,6 +51,7 @@ var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared
                 self?.objectType = newData
             }
             .store(in: &self.cancellables)
+        
         BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
             .sink { [weak self] newData in
                 self?.propertyToEdit = newData
@@ -153,11 +154,13 @@ extension ObjectEditViewModel {
 
 extension ObjectEditViewModel {
     
-    func setChoiceOfPartToEdit(_ partName: String) {
+    func setPartToEdit(_ partName: String) {
         guard let part = Part(rawValue: partName) else {
             fatalError("no part for that part name")
         }
       
+    //    print("\nsetPartToEdit: \(part.rawValue)\n")
+        
         partToEdit = part
     }
     
@@ -183,6 +186,7 @@ extension ObjectEditViewModel {
     ) {
         BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(
             sideChoice
+            ,"setBothOrLeftOrRightAsEditible"
         )
     }
     
@@ -256,8 +260,10 @@ extension ObjectEditViewModel {
         let partChain = LabelInPartChainOut(part).partChain
             
         let oldScope = scopeOfEditForSide
-        
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(side)
+        print("changeOneOrTwoStatusOfPart")
+        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(side
+        ,"changeOneOrTwoStatusOfPart"
+        )
             
         switch side {
         case .left, .right:

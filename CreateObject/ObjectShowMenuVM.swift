@@ -53,11 +53,13 @@ extension ObjectShowMenuViewModel {
     }
     
     
-    func getPropertiesForOriginMenu(_ part: Part) -> [PartTag] {
+    func getScopeForOriginMenu(_ part: Part) -> [PartTag] {
         if  let displayPart = PartToDisplay.dictionary[part] {
                 switch displayPart {
                 case .propeller, .footLever:
                     return [.xOrigin]
+                case .casterForkAtFront, .casterForkAtMid, .casterForkAtRear:
+                    return [.yOrigin]
                 default:
                     return [.xOrigin, .yOrigin]
                 }

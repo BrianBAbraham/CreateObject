@@ -90,7 +90,7 @@ struct Line: View {
 
 struct RightAngleRuler: View {
     @EnvironmentObject var rulerVM: RulerViewModel
-    @EnvironmentObject var unitSystemVM: Settings
+    @EnvironmentObject var unitSystemVM: UnitSystemViewModel
    
     var body: some View {
         let rulerFrameSize = rulerVM.getRulerFrameSize()
