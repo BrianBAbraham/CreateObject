@@ -8,13 +8,6 @@
 import SwiftUI
 
 
-
-
-
-
-
-
-
 struct ConditionalBilateralPartEditMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
@@ -22,7 +15,7 @@ struct ConditionalBilateralPartEditMenu: View {
     var body: some View {
         let partToEdit = objectEditVM.getPartToEdit()
         if objectShowMenuVM.getBilateralPartMenuStatus(partToEdit)  {
-            BilateralPartEdit(partToEdit)
+            BilateralPartMenu(partToEdit)
         } else {
             EmptyView()
         }
@@ -31,90 +24,71 @@ struct ConditionalBilateralPartEditMenu: View {
 
 
 
-struct BilateralPartEdit: View {
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+struct BilateralPartMenu: View {
     let part: Part
-    var origins: [PartTag] {
-        objectShowMenuVM.getEditableOrigin(part) }
-    let dimensionProperty: [PartTag] = [.width, .length]
-    let partOrLinkedPartForDimension: Part
-    let partOrLinkedPartForOrigin: Part
-
     
     init (_ part: Part) {
         self.part = part
-
-        //print("\n BilateralPartEdit \(part.rawValue)\n")
-        
-        let partsRequiringLinkedPartUse =
-                    PartsRequiringLinkedPartUse(part)
-        partOrLinkedPartForDimension = partsRequiringLinkedPartUse.partForDimension
-        partOrLinkedPartForOrigin = partsRequiringLinkedPartUse.partForOrigin
-
     }
         
     var body: some View {
         ZStack{
-                VStack {
-                        BilateralDimensionMenu(
-                            part, partOrLinkedPartForDimension)
-                            
-                        BilateralOriginMenu(part)
-                }
+            VStack {
+                BilateralDimensionMenu(
+                    part)
+                    
+                BilateralOriginMenu(
+                    part)
+            }
         }
     }
 }
  
 
-
 struct BilateralDimensionMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @State private var propertyToEdit: PartTag = .length
-    var relevantCases: [PartTag] {
+    
+    let part: Part
+    var editableDimension: [PartTag] {
         objectShowMenuVM.getPropertiesForDimensionMenu(part)
     }
-    let part: Part
-    let partOrLinkedPart: Part
-
+    
     init(
-        _ part: Part, _ partOrLinkedPart: Part) {
+        _ part: Part) {
         self.part = part
-        self.partOrLinkedPart = partOrLinkedPart
     }
     
     var body: some View {
         ZStack{
             HStack {
-                Text("size")
                 Picker("dimension", selection: $propertyToEdit) {
-                    ForEach(relevantCases, id: \.self) { side in
+                    ForEach(editableDimension, id: \.self) { side in
                         Text(side.rawValue)
                     }
                 }
-              
                 .pickerStyle(.segmented)
                 .fixedSize()
                 .onChange(of: propertyToEdit) { oldSelection, newSelection in
                     objectEditVM.setPropertyToEdit(newSelection)
                 }
                 
-                BilateralDimensionSlider(
-                    partOrLinkedPart, propertyToEdit)
+                BilateralDimensionStepper(
+                    part, propertyToEdit)
             }
         }
     }
 }
 
 
-
-
 struct BilateralDimensionSlider: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-
     let part: Part
+    var partOrLinkedPartForDimension: Part {
+        PartsRequiringLinkedPartUse(part).partForDimensionEdit
+    }
     let propertyToEdit: PartTag
     
 
@@ -126,36 +100,82 @@ struct BilateralDimensionSlider: View {
  
     var body: some View {
         
-        let minMaxValue =  objectPickVM.geMinMax(part, propertyToEdit, "SliderForOneDimensionPropertyForBilateralPart")
+        let minMaxValue =  objectPickVM.geMinMax(partOrLinkedPartForDimension, propertyToEdit, "SliderForOneDimensionPropertyForBilateralPart")
         let boundSliderValue =
             Binding(
                 get: {
                         objectPickVM.getInitialSliderValue(
-                            part, propertyToEdit) },
+                            partOrLinkedPartForDimension, propertyToEdit) },
                 set: {
                     newValue in
                         objectEditVM
                             .setValueForBilateralPartInUserEditedDic(
                                 newValue,
-                                part,
+                                partOrLinkedPartForDimension,
                                propertyToEdit
                             )
 
                         objectPickVM.modifyObjectByCreatingFromName()
                                 } )
-       // HStack{
                 Slider(value: boundSliderValue ,
                        in: minMaxValue.min...minMaxValue.max,
                        step: 10.0)
-
-//            MeasurementView(
-//                Measurement(value: boundSliderValue.wrappedValue,
-//                    unit: .millimeters))
-//            }
-//            .disabled(objectEditVM.scopeOfEditForSide == .none)
     }
 }
 
+
+struct BilateralDimensionStepper: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @State private var xStepperValue = 0.0
+    @State private var yStepperValue = 0.0
+    let part: Part
+    var partOrLinkedPartForDimension: Part {
+        PartsRequiringLinkedPartUse(part).partForDimensionEdit
+    }
+    var partOrLinkedPartForShow: Part {
+        PartsRequiringLinkedPartUse(part).partForEditableOrigin
+    }
+    let propertyToEdit: PartTag
+    
+
+    init (
+        _ part: Part, _ propertyToEdit: PartTag) {
+            self.part = part
+            self.propertyToEdit = propertyToEdit
+        }
+ 
+    var body: some View {
+        let sidesPresent =
+            objectPickVM.getSidesPresentGivenPossibleUserEdit(partOrLinkedPartForShow, "bilateral edit")[0]
+        let boundStepperValue =
+            Binding(
+                get: {
+                        objectPickVM.getInitialSliderValue(
+                            partOrLinkedPartForDimension, propertyToEdit)
+                }
+                ,
+                set: {
+                    newValue in
+                        objectEditVM
+                            .setValueForBilateralPartInUserEditedDic(
+                                newValue,
+                                partOrLinkedPartForDimension,
+                                propertyToEdit
+                                )
+                    if propertyToEdit == .length {
+                        yStepperValue += newValue
+                    } else {
+                        xStepperValue += newValue
+                    }
+                        objectPickVM.modifyObjectByCreatingFromName()
+                                } )
+
+                Stepper("", value: boundStepperValue, step: 10.0)
+                .fixedSize()
+            .disabled(sidesPresent == .none)
+    }
+}
 
 
 struct BilateralOriginMenu: View {
@@ -166,20 +186,25 @@ struct BilateralOriginMenu: View {
     @State private var xStepperValue = 0.0
     @State private var yStepperValue = 0.0
     let part: Part
-    var relevantOrigin: [PartTag] {// both or one of x y
+    var partOrLinkedPartForOrigin: Part {
+        PartsRequiringLinkedPartUse(part).partForOriginEdit
+    }
+    var partOrLinkedPartForShow: Part {
+        PartsRequiringLinkedPartUse(part).partForEditableOrigin
+    }
+    var editableOrigin: [PartTag] {// both or one of x y
         objectShowMenuVM.getScopeForOriginMenu(part)
     }
-  
+       
+        
     init (
         _ part: Part) {
             self.part = part
-           // print("\n BilateralOriginMenu \(part.rawValue)\n")
-            
         }
  
     var body: some View {
         let sidesPresent =
-            objectPickVM.getSidesPresentGivenPossibleUserEdit(part, "bilateral edit")[0]
+            objectPickVM.getSidesPresentGivenPossibleUserEdit(partOrLinkedPartForShow, "bilateral edit")[0]
         let boundStepperValue =
             Binding(
                 get: {
@@ -189,9 +214,9 @@ struct BilateralOriginMenu: View {
                         objectEditVM
                             .setValueForBilateralPartInUserEditedDic(
                                 newValue,
-                                part,
-                               propertyToEdit
-                            )
+                                partOrLinkedPartForOrigin,
+                                propertyToEdit
+                                )
                     if propertyToEdit == .xOrigin {
                         xStepperValue += newValue
                     } else {
@@ -200,9 +225,8 @@ struct BilateralOriginMenu: View {
                         objectPickVM.modifyObjectByCreatingFromName()
                                 } )
         HStack{
-                Text("origin")
                 Picker("", selection: $propertyToEdit) {
-                    ForEach(relevantOrigin, id: \.self) { side in
+                    ForEach(editableOrigin, id: \.self) { side in
                         Text(side.rawValue)
                     }
                 }
