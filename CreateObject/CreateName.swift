@@ -8,7 +8,9 @@
 import Foundation
 
 
-
+struct ObjectId {
+   static let objectId = PartTag.id0
+}
 
 
 struct ConnectStrings {
@@ -25,18 +27,18 @@ struct ConnectStrings {
 }
 
 
-struct RemoveObjectName {
-    let nameToBeRemovedCharacterCount = CreateNameFromParts([Part.objectOrigin, PartTag.id0, PartTag.stringLink]).name.count
-    
-    func remove(_ name: String)
-        -> String {
-        let startIndex =
-           name.index(name.startIndex, offsetBy: nameToBeRemovedCharacterCount)
-        
-        return
-         String(name[startIndex...])
-    }
-}
+//struct RemoveObjectName {
+//    let nameToBeRemovedCharacterCount = CreateNameFromParts([Part.objectOrigin, PartTag.id0, PartTag.stringLink]).name.count
+//    
+//    func remove(_ name: String)
+//        -> String {
+//        let startIndex =
+//           name.index(name.startIndex, offsetBy: nameToBeRemovedCharacterCount)
+//        
+//        return
+//         String(name[startIndex...])
+//    }
+//}
 
 
 struct CreateNameFromIdAndPart {
@@ -45,10 +47,12 @@ struct CreateNameFromIdAndPart {
     init(_ id: PartTag, _ part: Part) {
         
         name = getNameFromParts(id, part)
-        func getNameFromParts(_ id: PartTag, _ part: Part)
+        
+        func getNameFromParts(_ id: PartTag, _ part: Parts)
             -> String {
+                let downcastPart = part as! Part
                 let parts: [Parts] =
-                [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part , id, PartTag.stringLink, Part.mainSupport, PartTag.id0]
+                [Part.objectOrigin, ObjectId.objectId, PartTag.stringLink, downcastPart , id, PartTag.stringLink, Part.mainSupport, PartTag.id0]
                    return
                     CreateNameFromParts(parts ).name
         }
@@ -72,15 +76,12 @@ struct CreateNameFromParts {
 }
 
 
-struct GetUniqueNames {
+struct GetUniqueNamesX {
     let forPart: [String]
   
-    
-    
     init(_ dictionary: PositionDictionary) {
         forPart = getUniquePartNamesOfCornerItems(dictionary)
        
-        
         func getUniquePartNamesOfCornerItems(_ dictionary: [String: PositionAsIosAxes] ) -> [String] {
             var uniqueNames: [String] = []
             let cornerKeys = dictionary.filter({$0.key.contains(PartTag.corner.rawValue)}).keys
@@ -100,10 +101,10 @@ struct GetUniqueNames {
             }
             return uniqueNames.removingDuplicates()
         }
-        
-
     }
 }
+
+
 
 //struct UniqueNamesForDimensions {
 //
@@ -149,14 +150,12 @@ struct GetUniqueNames {
 
 
 struct ParentToPartName {
-    
-    
     func convertedToObjectToPart(_ parentToPartName: String)
         -> String {
         var editedString = parentToPartName
         var underscoreCount = 0
         var startIndex: String.Index?
-        let objectName = Part.objectOrigin.rawValue + PartTag.id0.rawValue + PartTag.stringLink.rawValue
+            let objectName = Part.objectOrigin.rawValue + ObjectId.objectId.rawValue + PartTag.stringLink.rawValue
 
         for (index, character) in editedString.enumerated() {
             if character == "_" {
@@ -180,6 +179,55 @@ struct ParentToPartName {
 }
 
 
+struct UniqueToGeneralName {
+    let uniqueName: String
+    let generalName: String
+    
+    init(_ uniqueName: String) {
+        self.uniqueName = uniqueName
+        generalName = getGeneralName()
+        
+        func getGeneralName() -> String {
+            let components = uniqueName.split(separator: "_")
+            
+            if components.count > 2 {
+                let desiredSubstring = String(components[2])
+                return desiredSubstring
+            } else {
+               return ""
+            }
+        }
+    }
+}
+
+
+
+func replaceCharBeforeSecondUnderscore(in string: String, with replacement: String) -> String {
+    let underscoreIndexes = string.enumerated().filter { $0.element == "_" }.map { $0.offset }
+    
+    guard underscoreIndexes.count >= 2 else {
+        print("Error: Expected at least two underscores in the string.")
+        return string
+    }
+    
+    let secondUnderscoreIndex = underscoreIndexes[1]
+    let indexBeforeSecondUnderscore = string.index(string.startIndex, offsetBy: secondUnderscoreIndex - 1)
+    
+    if secondUnderscoreIndex > 0, string.distance(from: string.startIndex, to: indexBeforeSecondUnderscore) >= 0 {
+        let startIndex = string.startIndex
+        let endIndex = string.index(before: indexBeforeSecondUnderscore)
+        let stringStart = string[startIndex...endIndex]
+        
+        let replacementStartIndex = string.index(after: endIndex)
+        let replacementEndIndex = string.index(after: indexBeforeSecondUnderscore)
+        let stringEnd = string[replacementEndIndex...]
+        
+        return stringStart + replacement + stringEnd
+    } else {
+        print("Error: Cannot replace character before the second underscore.")
+        return string
+    }
+}
 
 
 //}
