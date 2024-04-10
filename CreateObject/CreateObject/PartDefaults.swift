@@ -206,13 +206,13 @@ enum PartTag: String, Parts {
     case id0 = "_id0"
     case id1 = "_id1"
     case stringLink = "_"
-    case width = "w"
-    case length = "l"
+    case width = "width"
+    case length = "length"
     case height = "height"
     case dimension = "dimension"
     case origin = "origin"
-    case xOrigin = "x"
-    case yOrigin = "y"
+    case xOrigin = "x-origin"
+    case yOrigin = "y-orgin"
     case zOrigin = "zOrigin"
     
     var stringValue: String {
@@ -836,33 +836,65 @@ var name: String = ""
 
 
 struct PartsRequiringLinkedPartUse {
-    static let forDimensionDic: [Part: Part] =
-    [.footSupport: .footSupportHangerLink,
+    static let forDimensionEditDic: [Part: Part] =
+    [// dimension edit for one part effected by different part
+        .footSupport: .footSupportHangerLink,
      ]
     
-    static let forOriginDic: [Part: Part] =
-    [.footSupport: .footSupportHangerLink,
-     .casterWheelAtFront: .casterVerticalJointAtFront,
-     .casterWheelAtRear: .casterVerticalJointAtRear,
-     .steeredWheelAtFront: .steeredVerticalJointAtFront,]
+    static let forOriginEditDic: [Part: Part] =
+        [//origin edit for these parts required edits by a different part
+        .casterWheelAtFront: .casterVerticalJointAtFront,//chain order reversed
+        .casterWheelAtMid: .casterForkAtMid,//ditto
+        .casterWheelAtRear: .casterVerticalJointAtRear,//ditto
+        .footSupport: .footSupportHangerLink,
+        ]
+    
+    static let forEditableOriginDic: [Part: Part] =
+    [// show depends on user edits, edits act on chain label
+    // chain label need to take account of linked part changes
+        .casterWheelAtFront: .casterForkAtFront,//chain order reversed
+        .casterWheelAtMid: .casterForkAtMid,//ditto
+        .casterWheelAtRear: .casterForkAtRear,//ditto
+    ]
+    
+    static let forEditableDimensionDic: [Part: Part] =
+    [
+        .footSupport: .footSupportHangerLink,
+    ]
+
     
     static let forPartLinkDic: [Part: Part] = [
         .fixedWheelAtRearWithPropeller: .fixedWheelAtRear
     ]
     
-   let partForDimension: Part
+   let partForDimensionEdit: Part
     
-    let partForOrigin: Part
+    let partForOriginEdit: Part
     
     let partForLink: Part?
     
+    let partForEditableOrigin: Part
+    
+    let partForEditableDimension: Part
+    
     init(_ part: Part) {
-        partForDimension =
-            Self.forDimensionDic[part] ?? part
-        partForOrigin =
-            Self.forOriginDic[part] ?? part
+        partForDimensionEdit =
+            Self.forDimensionEditDic[part] ?? part
+        partForOriginEdit =
+            Self.forOriginEditDic[part] ?? part
         partForLink =
             Self.forPartLinkDic[part]
+        
+        partForEditableOrigin =
+            Self.forEditableOriginDic[part] ?? part
+        
+        partForEditableDimension =
+            Self.forEditableDimensionDic[part] ?? part
+        
+//        print("\nORIGIN in \(part) out \(partForOriginEdit)")
+//        print("DIMENSION in \(part) out \(partForDimensionEdit)")
+//        print("EDITABLE ORIGIN in \(part) out \(partForEditableOrigin)")
+//        print("EDITABLE DIMENSION in \(part) out \(partForEditableOrigin)\n")
     }
 }
 

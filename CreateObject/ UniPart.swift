@@ -164,7 +164,7 @@ struct UniPartPresence: View {
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
-                .padding([.horizontal, .top])
+              //  .padding([.horizontal, .top])
     }
 }
 
@@ -229,7 +229,7 @@ struct TiltEdit: View {
                     Text(" deg: \( Int(max - boundSliderValue.wrappedValue))")
                         
                 }
-                .padding()
+               // .padding()
             }
     }
 }

@@ -61,6 +61,7 @@ struct LocalOutlineRectangle {
 struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
+    let partToEdit: Part
     let uniquePartName: String
     var preTiltFourCornerPerKeyDic: CornerDictionary
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary
@@ -96,17 +97,30 @@ struct PartView: View {
         color: Color = .white,
         cornerRadius: Double = 30.0,
         opacity: Double = 0.9,
-        lineWidth: Double = 5.0
+        lineWidth: Double = 5.0,
+        _ partToEdit: Part
+ 
     ){
-        
+        self.partToEdit = partToEdit
         self.uniquePartName = uniquePartName
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.postTiltObjectToFourCornerPerKeyDic = postTiltObjectToFourCornerPerKeyDic
-        fillColor = color
+        fillColor = getColor()
         self.cornerRadius = cornerRadius
         self.opacity = opacity
         self.lineWidth = lineWidth
+        //print("\(uniquePartName) ")
         
+        func getColor() -> Color {
+            if color == .white { // only change undefined colors, let ruler color remain
+                if UniqueToGeneralName(uniquePartName).generalName.contains(partToEdit.rawValue) {
+                    return .red
+                } else {
+                    return .white}
+            } else {
+                return color
+            }
+        }
     }
     
     
@@ -134,6 +148,7 @@ struct PartView: View {
 
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
    // @EnvironmentObject var recenter: RecenterViewModel
     @GestureState private var fingerLocation: CGPoint? = nil
@@ -205,7 +220,9 @@ struct ObjectView: View {
                     PartView(
                         uniquePartName: name,
                         preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
-                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen)
+                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
+                        objectEditVM.partToEdit
+                    )
                 }
             }
             .border(.red, width: 2)

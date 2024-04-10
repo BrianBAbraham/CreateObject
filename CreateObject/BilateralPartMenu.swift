@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct ConditionalBilateralPartEditMenu: View {
+struct ConditionalBilateralPartMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     
@@ -69,7 +69,7 @@ struct BilateralDimensionMenu: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .fixedSize()
+      
                 .onChange(of: propertyToEdit) { oldSelection, newSelection in
                     objectEditVM.setPropertyToEdit(newSelection)
                 }
@@ -231,7 +231,7 @@ struct BilateralOriginMenu: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .fixedSize()
+                //.fixedSize()
                 
                 .onChange(of: propertyToEdit) { oldSelection, newSelection in
                     objectEditVM.setPropertyToEdit(newSelection)

@@ -97,15 +97,17 @@ struct RightAngleRuler: View {
         let width = rulerVM.width
         var unitSystem: UnitSystem {unitSystemVM.unitSystem}
         ZStack(alignment: .topLeading ){
-            Text(unitSystem.rawValue)
-                .font(.system(size: 60))
-                .padding()
+//            Text(unitSystem.rawValue)
+//                .font(.system(size: 60))
+//                .padding()
+            
             Ruler()
             Ruler()
                 .rotationEffect(Angle(degrees: -90))
                 .offset(CGSize(
                     width: (rulerFrameSize.length - width) / 2.0 , 
                     height: (-rulerFrameSize.length + width ) / 2.0))
+          
         }
     
         .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
@@ -134,7 +136,8 @@ struct Ruler: View {
                 color: .black,
                 cornerRadius: 0.0,
                 opacity: 0.08,
-                lineWidth: 0.5
+                lineWidth: 0.5,
+                Part.joint
             )
             
             ForEach(rulerMarksDictionary.map { key, value in (key, value) }, id: \.0) { key, value in

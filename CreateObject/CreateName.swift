@@ -179,7 +179,7 @@ struct ParentToPartName {
 }
 
 
-struct UniqueToGeneralName {
+struct UniqueToGeneralNameX {
     let uniqueName: String
     let generalName: String
     
@@ -201,31 +201,88 @@ struct UniqueToGeneralName {
 }
 
 
-
-func replaceCharBeforeSecondUnderscore(in string: String, with replacement: String) -> String {
-    let underscoreIndexes = string.enumerated().filter { $0.element == "_" }.map { $0.offset }
+struct UniqueToGeneralName {
+    let uniqueName: String
+    let generalName: String
     
-    guard underscoreIndexes.count >= 2 else {
-        print("Error: Expected at least two underscores in the string.")
-        return string
+    init(_ uniqueName: String) {
+        self.uniqueName = uniqueName
+        self.generalName = UniqueToGeneralName.getGeneralName(from: uniqueName)
     }
     
-    let secondUnderscoreIndex = underscoreIndexes[1]
-    let indexBeforeSecondUnderscore = string.index(string.startIndex, offsetBy: secondUnderscoreIndex - 1)
+    private static func getGeneralName(from uniqueName: String) -> String {
+        let components = uniqueName.split(separator: "_")
+        if components.count > 2 {
+            let desiredSubstring = String(components[2])
+            return desiredSubstring
+        } else {
+            return ""
+        }
+    }
+}
+
+
+
+struct BilateralSideIsRight {
     
-    if secondUnderscoreIndex > 0, string.distance(from: string.startIndex, to: indexBeforeSecondUnderscore) >= 0 {
-        let startIndex = string.startIndex
-        let endIndex = string.index(before: indexBeforeSecondUnderscore)
-        let stringStart = string[startIndex...endIndex]
+    // Public method to check the string
+    static func checkCharacter(in input: String) -> PartTag {
+        return checkCharacterPrivately(input)
+    }
+    
+    // Private method that actually does the checking
+    private static func checkCharacterPrivately(_ input: String) -> PartTag {
+        let parts = input.split(separator: "_")
         
-        let replacementStartIndex = string.index(after: endIndex)
-        let replacementEndIndex = string.index(after: indexBeforeSecondUnderscore)
-        let stringEnd = string[replacementEndIndex...]
+        if parts.count > 3 {
+            let targetPart = parts[3] // This is the part after the third underscore
+            
+            if targetPart.count >= 3 {
+                let index = targetPart.index(targetPart.startIndex, offsetBy: 2)
+                let character = targetPart[index]
+                
+                if character == "1" {
+                    return .id1
+                } else if character == "0" {
+                    return .id0
+                }
+            }
+        }
         
-        return stringStart + replacement + stringEnd
-    } else {
-        print("Error: Cannot replace character before the second underscore.")
-        return string
+        fatalError()
+        // If the string doesn't match the expected format
+    }
+}
+
+
+
+struct ReplaceCharBeforeSecondUnderscore {
+    
+  static  func get(in string: String, with replacement: String) -> String {
+        let underscoreIndexes = string.enumerated().filter { $0.element == "_" }.map { $0.offset }
+        
+        guard underscoreIndexes.count >= 2 else {
+            print("Error: Expected at least two underscores in the string.")
+            return string
+        }
+        
+        let secondUnderscoreIndex = underscoreIndexes[1]
+        let indexBeforeSecondUnderscore = string.index(string.startIndex, offsetBy: secondUnderscoreIndex - 1)
+        
+        if secondUnderscoreIndex > 0, string.distance(from: string.startIndex, to: indexBeforeSecondUnderscore) >= 0 {
+            let startIndex = string.startIndex
+            let endIndex = string.index(before: indexBeforeSecondUnderscore)
+            let stringStart = string[startIndex...endIndex]
+            
+            let replacementStartIndex = string.index(after: endIndex)
+            let replacementEndIndex = string.index(after: indexBeforeSecondUnderscore)
+            let stringEnd = string[replacementEndIndex...]
+            
+            return stringStart + replacement + stringEnd
+        } else {
+            print("Error: Cannot replace character before the second underscore.")
+            return string
+        }
     }
 }
 

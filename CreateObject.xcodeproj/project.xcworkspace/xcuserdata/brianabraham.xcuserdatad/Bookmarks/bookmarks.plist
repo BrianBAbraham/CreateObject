@@ -154,13 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>398</string>
+					<string>387</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>397</string>
+					<string>386</string>
 					<key>Timestamp</key>
-					<string>734012411.9926291</string>
+					<string>734275962.785318</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -201,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>432</string>
+					<string>405</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>431</string>
+					<string>404</string>
 					<key>Timestamp</key>
-					<string>734021235.71173</string>
+					<string>734286311.867404</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -248,13 +248,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>282</string>
+					<string>271</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>281</string>
+					<string>270</string>
 					<key>Timestamp</key>
-					<string>734012411.992677</string>
+					<string>734275962.785349</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -295,13 +295,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>165</string>
+					<string>153</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>164</string>
+					<string>152</string>
 					<key>Timestamp</key>
-					<string>733666733.3251899</string>
+					<string>734286243.460276</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -326,7 +326,7 @@
 				<key>trailing</key>
 				<string>        
         modifyObjectByCreatingFromName()
-        //pickNewObjectByCreatingFromName()
+       
 </string>
 			</dict>
 			<key>title</key>
@@ -361,13 +361,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>316</string>
+					<string>288</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>315</string>
+					<string>287</string>
 					<key>Timestamp</key>
-					<string>734021235.711744</string>
+					<string>734286311.867438</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -408,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>285</string>
+					<string>348</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>284</string>
+					<string>347</string>
 					<key>Timestamp</key>
-					<string>732796564.226928</string>
+					<string>734446069.479601</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -549,13 +549,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>93</string>
+					<string>116</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>92</string>
+					<string>115</string>
 					<key>Timestamp</key>
-					<string>734022402.871511</string>
+					<string>734115230.620867</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -615,13 +615,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>63</string>
+					<string>140</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>62</string>
+					<string>139</string>
 					<key>Timestamp</key>
-					<string>734014959.504935</string>
+					<string>734265085.6156811</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -630,27 +630,168 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>CreateObject/BilateralPartEdit.swift</string>
+						<string>CreateObject/RulerView.swift</string>
 					</dict>
 				</dict>
 			</dict>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                        BilateralOriginMenu(part)
+				<string>                Part.joint
 </string>
 				<key>leading</key>
-				<string>                            part, partOrLinkedPartForDimension)
-                            
+				<string>                opacity: 0.08,
+                lineWidth: 0.5,
 </string>
 				<key>trailing</key>
-				<string>                }
-        }
-    }
+				<string>            )
+            
+            ForEach(rulerMarksDictionary.map { key, value in (key, value) }, id: \.0) { key, value in
 </string>
 			</dict>
 			<key>title</key>
-			<string>ERROR show this be linked part??</string>
+			<string>DEVELOPMENT convenience part</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>62</string>
+					<key>StartingColumnNumber</key>
+					<string>87</string>
+					<key>StartingLineNumber</key>
+					<string>61</string>
+					<key>Timestamp</key>
+					<string>734373179.8156281</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/PositionTransformation.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>ht: [PositionAsIosAxes]) {
+</string>
+				<key>leading</key>
+				<string>    
+
+//    static func removeInteriorPoints(_ positionsLeft: [PositionAsIosAxes], positionsRig</string>
+				<key>trailing</key>
+				<string>//
+//        
+//        let leftSides = getSides(positionsLeft)
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT assume a rectangle</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>650</string>
+					<key>StartingColumnNumber</key>
+					<string>39</string>
+					<key>StartingLineNumber</key>
+					<string>649</string>
+					<key>Timestamp</key>
+					<string>734454993.709235</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>                movingPoint: positionRelativeToRotator,
+                angleChange: angle.x,
+                rotationAxis: .yAxis //</string>
+				<key>trailing</key>
+				<string>            ).fromObjectOriginToPointWhichHasMoved + rotatorOrigin
+
+        return   rotatedPosition
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT NEEDS TO BE ROTATOR DEPENDENT</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>694</string>
+					<key>StartingColumnNumber</key>
+					<string>36</string>
+					<key>StartingLineNumber</key>
+					<string>693</string>
+					<key>Timestamp</key>
+					<string>734455032.856568</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>                movingPoint: cornerPositions[index],
+                angleChange: angle.x,
+                rotationAxis: .yAxis</string>
+				<key>trailing</key>
+				<string>            ).fromObjectOriginToPointWhichHasMoved
+            rotatedCorners.append(
+             newCornerPosition)
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT needs to be rotator dependant</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

@@ -35,24 +35,10 @@ struct MeasurementUnitView: View {
 
 
 
-//struct UnitSystemSelectionView: View {
-//    @EnvironmentObject var settings: Settings
-//
-//    var body: some View {
-//        Picker("Unit System", selection: $settings.unitSystem) {
-//            Text("cm").tag(UnitSystem.cm)
-//            Text("mm").tag(UnitSystem.mm)
-//            Text("\"").tag(UnitSystem.imperial)
-//        }
-//        .pickerStyle(SegmentedPickerStyle())
-//        .frame(width: 100, height: 40)
-//    }
-//}
-
-
 struct UnitSystemSelectionView: View {
     @EnvironmentObject var unitSystemVM: UnitSystemViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
+    @State private var selectMenuNameItem: String = "cm"
 
     var body: some View {
         Picker("Unit System", selection: $unitSystemVM.unitSystem) {
@@ -60,12 +46,14 @@ struct UnitSystemSelectionView: View {
             Text("mm").tag(UnitSystem.mm)
             Text("inch").tag(UnitSystem.imperial)
         }
-        .pickerStyle(SegmentedPickerStyle())
-        .frame(width: 130, height: 40)
+        .pickerStyle(.segmented)
         .onChange(of: unitSystemVM.unitSystem) { oldValue, newValue in
           
             unitSystemChanged(newValue)
+            selectMenuNameItem = newValue.rawValue
         }
+        .padding(.horizontal)
+
     }
 
     func unitSystemChanged(_ newUnitSystem: UnitSystem) {

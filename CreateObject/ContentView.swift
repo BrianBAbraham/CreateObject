@@ -164,11 +164,11 @@ struct ContentView: View {
                     AllViews()
             //.edgesIgnoringSafeArea(.all)//
                 )
-                        {Text("Default equipment")}
+                        {Text("default")}
                     Spacer()
                     UnitSystemSelectionView()
             }
-            .navigationBarTitle("Equipment manager")
+            .navigationBarTitle("Equipment")
         }
     }
 }
@@ -190,6 +190,8 @@ struct AllViews: View {
         let objectManipulationIsActive = true
         
             ZStack{
+                
+                
                 ObjectAndRulerView(
                     uniquePartNames,
                     objectManipulationIsActive
@@ -200,8 +202,10 @@ struct AllViews: View {
                 }
                 .id(uniqueKey)//ensures redraw
                 
+               
                 //MENU
                 VStack {
+                    ObjectRulerRecenter()
                     Spacer()
                     VStack (alignment: .leading) {
                         
@@ -217,13 +221,13 @@ struct AllViews: View {
                             ConditionaUniPartPresence()
                         }
                         
-                        ConditionalBilateralPartEditMenu()
+                        ConditionalBilateralPartMenu()
                         
                         ConditionalUniPartEditMenu()
                         
                         ConditionalTiltMenu()
                         
-                        ObjectRulerRecenter()
+                       
                             
                     }
                     .padding(.horizontal)

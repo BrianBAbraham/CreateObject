@@ -59,7 +59,64 @@ struct CreateIosPosition {
     }
     
 
-    
+//    static func removeInteriorPoints(_ positionsLeft: [PositionAsIosAxes], positionsRight: [PositionAsIosAxes]) {
+//
+//        
+//        let leftSides = getSides(positionsLeft)
+//        let rightSides = getSides(positionsRight)
+//        var modifiedPositions: [PositionAsIosAxes] = []
+//      
+//       
+//        let useAnyIndex = 0
+//        let notSwappedOrOverlap = //ignore rigth side of left and left side of right
+//            leftSides.right[useAnyIndex].x < rightSides.left[useAnyIndex].x
+//        let swappedWithOverlap =
+//            leftSides.left[useAnyIndex].x > rightSides.right[useAnyIndex].x
+//        
+//        
+//  
+//        
+//        func getSides(
+//            _ positions: [PositionAsIosAxes]
+//        ) -> (
+//            top: [PositionAsIosAxes],
+//            bottom: [PositionAsIosAxes],
+//            left: [PositionAsIosAxes],
+//            right: [PositionAsIosAxes]
+//        ) {
+//            let top = [
+//                0,
+//                1
+//            ].map {
+//                positions[$0]
+//            }
+//            let bottom = [
+//                2,
+//                3
+//            ].map {
+//                positions[$0]
+//            }
+//            let left = [
+//                0,
+//                3
+//            ].map{
+//                positions[$0]
+//            }
+//            let right = [
+//                2,
+//                3
+//            ].map{
+//                positions[$0]
+//            }
+//            
+//            return (
+//                top: top,
+//                bottom: bottom,
+//                left: left,
+//                right: right
+//            )
+//        }
+//    }
     
     static func getCornersFromDimension (
         _ dimension: Dimension3d)
@@ -69,10 +126,10 @@ struct CreateIosPosition {
             [
             (x: -w/2,  y: -l/2, z: -h/2 ),//c0
             (x: w/2,   y: -l/2, z: -h/2 ),//c1
-            (x: w/2,   y: l/2, z: -h/2 ),//c2
-            (x: -w/2,  y: l/2, z: -h/2),//c3
-            (x: -w/2,  y: -l/2, z: h/2 ),//c4
-            (x: w/2,   y: -l/2, z: h/2 ),//c5
+            (x: w/2,   y: l/2, z: -h/2 ),//c2 thirdOfTopView bottomRightOnScreen
+            (x: -w/2,  y: l/2, z: -h/2),//c3 fourthOfTopView bottomLeftOnScreen
+            (x: -w/2,  y: -l/2, z: h/2 ),//c4 firstOfTopView topLeftOnScreen
+            (x: w/2,   y: -l/2, z: h/2 ),//c5 seondOfTopView topRightOnScreen
             (x: w/2,   y: l/2, z: h/2 ),//c6
             (x: -w/2,  y: l/2, z: h/2) ]//c7
             return

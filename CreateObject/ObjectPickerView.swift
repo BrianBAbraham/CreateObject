@@ -30,23 +30,37 @@ struct PickInitialObjectView: View {
             get: {objectPickVM.getCurrentObjectName()},
             set: {self.objectName = $0}
         )
-
-        Picker("Equipment",selection: boundObjectType ) {
-            ForEach(objectNames, id:  \.self)
-            { equipment in
-                Text(equipment)
+     
+        ZStack{
+            Picker("Equipment",selection: boundObjectType ) {
+                ForEach(objectNames, id:  \.self)
+                { equipment in
+                    Text(equipment)
+                }
             }
-        }
-        .onChange(of: objectName) {tag in
-            self.objectName = tag
-            objectEditVM.setPartToEdit(Part.mainSupport.rawValue)
-            objectPickVM.setCurrentObjectName(tag)
-            objectPickVM.resetObjectByCreatingFromName()
-           
+            .onChange(of: objectName) {oldTag, newTag in
+                self.objectName = newTag
+                objectEditVM.setPartToEdit(Part.mainSupport.rawValue)
+                objectPickVM.setCurrentObjectName(newTag)
+                objectPickVM.resetObjectByCreatingFromName()
+                }
+            //Start work around: removes grey background from iPhone 13 mini
+            //physical device
+            .opacityAndScaleToHidePickerLabel()
+            DuplicatePickerText(name: objectName)
+            //End work around
         }
     }
 }
 
+
+struct DuplicatePickerText: View {
+    let name: String
+    var body: some View {
+        Text(name)
+            .allowsHitTesting(false)
+            .foregroundColor(Color.blue)    }
+}
 
 
 
@@ -67,25 +81,34 @@ struct PickPartEdit: View {
         let menuItemsUsingDisplayName = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
         
         HStack{
-            Text("edit")
-            Picker("", selection: $selectedMenuNameItem) {
-                ForEach(menuItemsUsingDisplayName, id: \.self) { item in
-                    Text(item)
+            Text(Image(systemName: "scissors"))
+            
+            ZStack {
+                Picker("", selection: $selectedMenuNameItem) {
+                    ForEach(menuItemsUsingDisplayName, id: \.self) { item in
+                        Text(item)
+                    }
                 }
+                .onChange(of: selectedMenuNameItem) {oldValue, newValue in
+                    
+                    let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
+                    useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp
+                    
+                    objectEditVM.setPartToEdit(menuItemsUsingPart[index])
+                    
+                    resetForNewPartEdit()
+                }
+                .onChange(of: objectPickVM.getCurrentObjectName()) {
+                    //reset if new object
+                    selectedMenuNameItem = Part.mainSupport.rawValue
+                }
+                //Start work around: removes grey background from iPhone 13 mini
+                //physical device
+                .opacityAndScaleToHidePickerLabel()
+                DuplicatePickerText(name: selectedMenuNameItem)
+                //End work around
             }
-            .onChange(of: selectedMenuNameItem) {oldValue, newValue in
-                
-                let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
-                useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp
-                
-                objectEditVM.setPartToEdit(menuItemsUsingPart[index])
-                
-                resetForNewPartEdit()
-            }
-            .onChange(of: objectPickVM.getCurrentObjectName()) {
-                //reset if new object
-                selectedMenuNameItem = Part.mainSupport.rawValue
-            }
+
         }
     }
     func resetForNewPartEdit(){

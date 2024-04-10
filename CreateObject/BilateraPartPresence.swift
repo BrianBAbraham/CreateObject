@@ -37,7 +37,7 @@ struct BilateralPartPresence: View {
     init (_ part: Part
     ) {
         self.part = part
-        print("\n BilateralPartPresence \(part.rawValue)\n")
+       // print("\n BilateralPartPresence \(part.rawValue)\n")
     }
     
     var body: some View {

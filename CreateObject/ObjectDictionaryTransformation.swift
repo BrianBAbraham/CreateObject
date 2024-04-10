@@ -55,6 +55,7 @@ struct DictionaryElementIn {
 
         self.dictionary = dictionary
         self.uniqueName = uniqueName
+            print("\(uniqueName) \(dictionary[uniqueName])")
         corners =
             dictionary[uniqueName] ??
             [ZeroValue.iosLocation, ZeroValue.iosLocation, ZeroValue.iosLocation, ZeroValue.iosLocation]
@@ -248,69 +249,69 @@ struct SuccessivelyFilteredDictionary {
     }
 }
 
-struct Filter {
-    let dictionary: PositionDictionary
-    
-    init (
-        _ parts: [Parts],
-        _ dictionary: PositionDictionary,
-        _ originOrAndCorner: Parts?,
-        _ sitOnId: PartTag?) {
-            
-            self.dictionary =
-            filterDictionary (
-                parts,
-                dictionary,
-                originOrAndCorner,
-                sitOnId)
-            
-            func filterDictionary(
-                _ parts: [Parts],
-                _ dictionary: PositionDictionary,
-                _ originOrAndCorner: Parts?,
-                _ sitOnId: PartTag?
-            )
-            -> PositionDictionary {
-                let partNameTermination = PartTag.stringLink.rawValue
-                var filteredDictionary: PositionDictionary = [:]
-                for part in parts {
-                    filteredDictionary  +=
-                    dictionary.filter({$0.key.contains(part.stringValue + partNameTermination )})
-                }
-                
-                if let originOrAndCorner {
-                    switch originOrAndCorner {
-                    case PartTag.corner:
-                        filteredDictionary =
-                        filteredDictionary.filter({$0.key.contains(PartTag.corner.stringValue)})
-                    case Part.objectOrigin:
-                        filteredDictionary =
-                        filteredDictionary.filter({$0.key.contains(Part.objectOrigin.rawValue)})
-                    default:
-                        break
-                    }
-                }
-                
-                if let sitOnId {
-                    let parts: [Parts] = [PartTag.stringLink, Part.mainSupport, sitOnId]
-                    let sitOnName =
-                            CreateNameFromParts(parts).name
-                    switch sitOnId {
-                    case PartTag.id0:
-                        filteredDictionary =
-                        filteredDictionary.filter({$0.key.contains(sitOnName)})
-                    case PartTag.id1:
-                        filteredDictionary =
-                        filteredDictionary.filter({$0.key.contains(sitOnName)})
-                    default:
-                        break
-                    }
-                }
-                
-                return filteredDictionary
-            }
-        }
-}
+//struct Filter {
+//    let dictionary: PositionDictionary
+//    
+//    init (
+//        _ parts: [Parts],
+//        _ dictionary: PositionDictionary,
+//        _ originOrAndCorner: Parts?,
+//        _ sitOnId: PartTag?) {
+//            
+//            self.dictionary =
+//            filterDictionary (
+//                parts,
+//                dictionary,
+//                originOrAndCorner,
+//                sitOnId)
+//            
+//            func filterDictionary(
+//                _ parts: [Parts],
+//                _ dictionary: PositionDictionary,
+//                _ originOrAndCorner: Parts?,
+//                _ sitOnId: PartTag?
+//            )
+//            -> PositionDictionary {
+//                let partNameTermination = PartTag.stringLink.rawValue
+//                var filteredDictionary: PositionDictionary = [:]
+//                for part in parts {
+//                    filteredDictionary  +=
+//                    dictionary.filter({$0.key.contains(part.stringValue + partNameTermination )})
+//                }
+//                
+//                if let originOrAndCorner {
+//                    switch originOrAndCorner {
+//                    case PartTag.corner:
+//                        filteredDictionary =
+//                        filteredDictionary.filter({$0.key.contains(PartTag.corner.stringValue)})
+//                    case Part.objectOrigin:
+//                        filteredDictionary =
+//                        filteredDictionary.filter({$0.key.contains(Part.objectOrigin.rawValue)})
+//                    default:
+//                        break
+//                    }
+//                }
+//                
+//                if let sitOnId {
+//                    let parts: [Parts] = [PartTag.stringLink, Part.mainSupport, sitOnId]
+//                    let sitOnName =
+//                            CreateNameFromParts(parts).name
+//                    switch sitOnId {
+//                    case PartTag.id0:
+//                        filteredDictionary =
+//                        filteredDictionary.filter({$0.key.contains(sitOnName)})
+//                    case PartTag.id1:
+//                        filteredDictionary =
+//                        filteredDictionary.filter({$0.key.contains(sitOnName)})
+//                    default:
+//                        break
+//                    }
+//                }
+//                
+//                return filteredDictionary
+//            }
+//        }
+//}
 
 struct OriginStringInDictionaryOut {
     var dictionary: [String: PositionAsIosAxes ] = [:]    //CHANGE

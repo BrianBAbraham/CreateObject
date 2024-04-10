@@ -43,7 +43,7 @@ struct ObjectData {
         oneOfEachPartInAllPartChainAccountingForEdit = AllPartInObject.getOneOfAllPartInObjectAfterEdit(chainLabelsAccountingForEdit)
        
             
-            checkObjectHasAtLeastOnePartChain()
+        checkObjectHasAtLeastOnePartChain()
         
         initialiseAllPart()
         
@@ -624,7 +624,7 @@ enum OneOrTwo <T> {
                 fatalError("cannot downcast to String")
             }
             guard let value = dictionary[name] else {
-                fatalError("no dictionary entry")
+                fatalError("no dictionary entry for \(name)")
             }
             return value
         }
@@ -972,9 +972,6 @@ struct StructFactory {
         self.chainLabelsAccountingForEdit = chainLabelsAccountingForEdit
         let sitOnId: PartTag = .id0
         
-//        if part == .fixedWheelAtRearWithPropeller {
-//            print("struct linkedPart \(linkedOrParentData.originName)")
-//        }
 
         userEditedData =
             UserEditedData(
@@ -983,20 +980,13 @@ struct StructFactory {
                 sitOnId,
                 part)
         
-   
-        
         let defaultDimensionData =
                 PartDefaultDimension(
                     part,
                     objectType,
                     linkedOrParentData,
                     userEditedData.optionalDimension)
-        
-//        if part == .fixedWheelAtRearWithPropeller {
-//            print("userEditedData.optionalDimension")
-//            print (userEditedData.optionalDimension)
-//        }
-        
+    
         let defaultDimensionOneOrTwo =
                 defaultDimensionData.userEditedDimensionOneOrTwo
     
@@ -1006,7 +996,7 @@ struct StructFactory {
                 objectType,
                 linkedOrParentData,
                 defaultDimensionOneOrTwo,
-                userEditedData.partIdAllowingForUserEdit,
+                userEditedData.partIdAccountingForUserEdit,
                 userEditedData.optionalOrigin)
         
         setChildDimensionForPartData()
@@ -1073,8 +1063,7 @@ struct StructFactory {
 extension StructFactory {
     func createSitOn()
         -> PartData {
-        let sitOnName: OneOrTwo<String> = .one(one: "object_id0_sitOn_id0_sitOn_id0")
-            //print(defaultOrigin.userEditedOriginOneOrTwo)
+            let sitOnName: OneOrTwo<String> = .one(one: "object" + ObjectId.objectId.rawValue + "_sitOn_id0_sitOn_id0")
         return
             PartData(
                 part: .mainSupport,
@@ -1090,7 +1079,7 @@ extension StructFactory {
     
     func createPart()
         -> PartData {
-        let partId = userEditedData.partIdAllowingForUserEdit//two sided default edited to one will be detected
+        let partId = userEditedData.partIdAccountingForUserEdit//two sided default edited to one will be detected
         let partsToBeRotated: [Part] =  getPartsToBeRotated()
         var partAnglesMinMax = partId.createOneOrTwoWithOneValue(ZeroValue.angleMinMax)
         var partAngles = partId.createOneOrTwoWithOneValue(ZeroValue.rotationAngles)
@@ -1098,7 +1087,7 @@ extension StructFactory {
             userEditedData.originName.mapOptionalToNonOptionalOneOrTwo("")
      
 
-            if [.sitOnTiltJoint, .backSupportTiltJoint].contains(part) {
+        if [.sitOnTiltJoint, .backSupportTiltJoint].contains(part) {
             let (jointAngle, minMaxAngle) = getDefaultJointAnglesData()
             partAngles = getAngles(jointAngle)
             partAnglesMinMax = getMinMaxAngles(minMaxAngle)
@@ -1129,16 +1118,6 @@ extension StructFactory {
                         .rotationScopeAllowingForEditToChainLabel
 
             return partsToBeRotated
-            
-            
-//            func getPartSubjecToRotation() -> [Part] {
-//                var partsToBeRotated: [Part] = []
-//                for chainLabel in chainLabelsToBeRotated {
-//                    partsToBeRotated += //ignore first part which is the origin
-//                        Array(LabelInPartChainOut(chainLabel).partChain.dropFirst())
-//                }
-//                return partsToBeRotated
-//            }
         }
          
             
@@ -1291,7 +1270,7 @@ struct UserEditedData {
     var optionalAngleMinMax: OneOrTwoOptional <AngleMinMax> = .one(one: nil)
     var optionalDimension: OneOrTwoOptional <Dimension3d> = .one(one: nil)
     var optionalOrigin: OneOrTwoOptional <PositionAsIosAxes> = .one(one: nil)
-    var partIdAllowingForUserEdit: OneOrTwo <PartTag>
+    var partIdAccountingForUserEdit: OneOrTwo <PartTag>//bilateral parts can be edited to unilateral
     
     init(
         _ objectType: ObjectTypes,
@@ -1316,47 +1295,39 @@ struct UserEditedData {
             partIdDicIn =
             userEditedDic?.partIdsUserEditedDic ?? [:]
 
-            partIdAllowingForUserEdit = //non-optional as must iterate through id
+            partIdAccountingForUserEdit = //non-optional as must iterate through id
             partIdDicIn[part] ?? //UI edit:.two(left:.id0,right:.id1)<->.one(one:.id0) ||.one(one:.id1)
             OneOrTwoId(objectType, part).forPart // default
                         
-            
-          
-
-            
-            originName = getOriginName(partIdAllowingForUserEdit)
+            originName = getOriginName(partIdAccountingForUserEdit)
                                        
-           optionalOrigin = getOptionalOrigin()
+            optionalOrigin = getOptionalOrigin()
 
             optionalAngleMinMax =
-            getOptionalValue(partIdAllowingForUserEdit, from: angleMinMaxDic) { part in
-                return CreateNameFromParts([Part.mainSupport, sitOnId, part]).name }
+            getOptionalValue(partIdAccountingForUserEdit, from: angleMinMaxDic) { item in
+                return CreateNameFromIdAndPart(sitOnId, part).name
+            }
             
             optionalAngles = getOptionalAngles()
             optionalDimension = getOptionalDimension()
-            
-//            if part == .backSupportTiltJoint {
-//                print("Edited Dic")
-//                print (optionalAngles)
-//                print("")
-//            }
         }
     
     
     func getOriginName(_ partId: OneOrTwo<PartTag>)
     -> OneOrTwoOptional<String>{
-        let start: [Parts] = [Part.objectOrigin, PartTag.id0, PartTag.stringLink, part]
-        let end: [Parts] = [PartTag.stringLink, Part.mainSupport,  sitOnId]
         
         switch partId {
         case .one(let one):
+            let oneName = CreateNameFromIdAndPart(one, part).name
             return
-                .one(one: CreateNameFromParts(start + [one] + end).name)
+                .one(one: oneName)
         case .two(let left, let right):
+            let leftName = CreateNameFromIdAndPart(left, part).name
+            let rightName = CreateNameFromIdAndPart(right, part).name
             return
                 .two(
-                    left: CreateNameFromParts(start + [left] + end).name,
-                    right:  CreateNameFromParts(start + [right] + end).name)
+                    left: leftName,
+                    right: rightName)
         }
     }
     
@@ -1428,7 +1399,6 @@ struct UserEditedData {
         using closure: @escaping (PartTag) -> String
     ) -> OneOrTwoOptional<T> {
         if part == .mainSupport {
-           // print(dictionary)
         }
         
         let commonPart = { (id: PartTag) -> T? in
@@ -1441,6 +1411,8 @@ struct UserEditedData {
             return .two(left: commonPart(left), right: commonPart(right))
         }
     }
+    
+
 }
 
 

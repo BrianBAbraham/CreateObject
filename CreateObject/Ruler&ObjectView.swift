@@ -16,8 +16,8 @@ struct ObjectAndRulerView: View {
     
     @State var currentZoom: CGFloat = 0.0
     @State var lastCurrentZoom: CGFloat = 0.0
-    private var  minimumZoom = 0.1
-    private var maximimumZoom = 1.0
+    private var  minimumZoom = 0.2
+    private var maximimumZoom = 0.5
     
     
     var postTiltOneCornerPerKeyDic: PositionDictionary {
@@ -103,17 +103,82 @@ struct ObjectAndRulerView: View {
 }
 
 
-struct ObjectRulerRecenter: View {
+struct ObjectRulerRecenterX: View {
     @EnvironmentObject var recenterVM: RecenterViewModel
     var body: some View {
         
                         Button(action: {
                             recenterVM.setRecenterState()
                         }) {
-                            Text("center")
-                                .font(.system(size: 15))
+                            Text("center ruler & object")
+                                .font(.system(size: 10))
+                                .foregroundColor(.blue)
+                            
                         }
+                        .buttonStyle(.plain )
  
         
+    }
+}
+
+struct ObjectRulerRecenterY: View {
+    @EnvironmentObject var recenterVM: RecenterViewModel
+    @State private var isPressed = false
+
+    var body: some View {
+        Button(action: {
+            // Toggle the effect only while the button is being pressed
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isPressed = true
+            }
+            recenterVM.setRecenterState()
+
+            // Reset the state after a slight delay, if needed
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    isPressed = false
+                }
+            }
+        }) {
+            Text("center ruler & object")
+                .font(.system(size: 10))
+                .foregroundColor(.blue)
+                .scaleEffect(isPressed ? 2.0 : 1) // Apply scale effect based on the isPressed state
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+
+
+
+struct ObjectRulerRecenter: View {
+    @EnvironmentObject var recenterVM: RecenterViewModel
+    @State private var isPressed = false
+
+    var body: some View {
+        Button(action: {
+            // Start the button press animation
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isPressed = true
+            }
+
+            // Schedule the recenter action and the reset of the button state after the animation completes
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                // Execute the recenter function after the initial animation
+                recenterVM.setRecenterState()
+
+                // Then, with a slight delay, reset the button state with another animation
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    isPressed = false
+                }
+            }
+        }) {
+            Text("Center Ruler & Object")
+                .font(.system(size: 10))
+                .foregroundColor(.blue)
+                .scaleEffect(isPressed ? 2.0 : 1) // Apply scale effect based on the isPressed state
+        }
+        .buttonStyle(.plain)
     }
 }

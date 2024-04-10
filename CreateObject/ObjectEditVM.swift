@@ -206,21 +206,10 @@ extension ObjectEditViewModel {
         _ part: Part
     ) {
         var partName: String {
-            let parts: [Parts] = [
-                Part.objectOrigin,
-                PartTag.id0,
-                PartTag.stringLink,
-                part,
-                PartTag.id0,
-                PartTag.stringLink,
-                Part.mainSupport,
-                PartTag.id0
-            ]
-            return
-                CreateNameFromParts(
-                    parts
-                ).name    }
+            CreateNameFromIdAndPart(.id0, part).name
+        }
         
+     
         let angleUserEditedDicEntry =
         [partName:
             (
@@ -260,7 +249,7 @@ extension ObjectEditViewModel {
         let partChain = LabelInPartChainOut(part).partChain
             
         let oldScope = scopeOfEditForSide
-        print("changeOneOrTwoStatusOfPart")
+      //  print("changeOneOrTwoStatusOfPart")
         BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(side
         ,"changeOneOrTwoStatusOfPart"
         )
@@ -329,7 +318,7 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ propertyToEdit: PartTag,
         _ sidesAffected: SidesAffected? = nil) {
-            
+         //   print(part)
         var sidesToEdit: SidesAffected
             
             if let unwrapped = sidesAffected {

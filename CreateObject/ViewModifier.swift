@@ -27,6 +27,24 @@ extension View {
 }
 
 
+
+struct OpacityAndScaleModifierForPicker: ViewModifier {
+    var opacity: Double
+    var scale: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(opacity)
+            .scaleEffect(scale)
+    }
+}
+
+extension View {
+    func opacityAndScaleToHidePickerLabel() -> some View {
+        self.modifier(OpacityAndScaleModifierForPicker(opacity: 0.1, scale: 0.9))
+    }
+}
+
 //struct AddShadowToPickerModifier: ViewModifier {
 //    func body(content: Content) -> some View {
 //        GeometryReader { geometry in
