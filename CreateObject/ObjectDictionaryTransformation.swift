@@ -55,7 +55,7 @@ struct DictionaryElementIn {
 
         self.dictionary = dictionary
         self.uniqueName = uniqueName
-            print("\(uniqueName) \(dictionary[uniqueName])")
+//            print("\(uniqueName) \(dictionary[uniqueName])")
         corners =
             dictionary[uniqueName] ??
             [ZeroValue.iosLocation, ZeroValue.iosLocation, ZeroValue.iosLocation, ZeroValue.iosLocation]

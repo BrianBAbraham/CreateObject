@@ -91,21 +91,25 @@ struct ObjectImageData {
             postTiltObjectToOneCornerPerKeyDic.map {$0.value}
         )
         
-        let arcNames = postTiltObjectToOneCornerPerKeyDic.map{$0.key}
+        var arcNames = postTiltObjectToOneCornerPerKeyDic.map{$0.key}
+        arcNames = PrependArcNameToGenericNamePart.get(arcNames)
         
+        //print(arcNames)
+        let side = 1.0
+        let arcPointDimension: Dimension3d = (width: side, length: side, height: side)
         
-        let arcPointDimension: Dimension3d = (width: 10, length: 10, height: 10)
-        
-        let arcPointAllCorners = CreateIosPosition.getCornersFromDimension(arcPointDimension)
-        
-        let arcPointTopCorners = getTopViewCorners(arcPointAllCorners)
+//        let arcPointAllCorners = CreateIosPosition.getCornersFromDimension(arcPointDimension)
+//        
+//        let arcPointTopCorners = getTopViewCorners(arcPointAllCorners)
         
         for index in 0..<arcNames.count {
             
             if arcPoints[index].x != Double.infinity {
-                let corners =
-                    CreateIosPosition.addToupleToArrayOfTouples(arcPoints[index], arcPointTopCorners)
+//                let corners =
+//                    CreateIosPosition.addToupleToArrayOfTouples(arcPoints[index], arcPointTopCorners)
                 //print(arcNames[index])
+                
+                let corners = Array(repeating: arcPoints[index], count: 4)
                 postTiltObjectToPartFourCornerPerKeyDic += [arcNames[index]: corners]
             }
             

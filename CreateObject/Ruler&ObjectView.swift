@@ -36,7 +36,8 @@ struct ObjectAndRulerView: View {
         getZoom()
     }
     
-    var uniquePartNames: [String]
+    let uniquePartNames: [String]
+    let uniqueArcPointNames: [String]
     
     var objectName: String {
         objectPickVM.getCurrentObjectName()
@@ -51,11 +52,13 @@ struct ObjectAndRulerView: View {
     
     
     init(
-        _ names: [String],
+        _ partNames: [String],
+        _ arcPointNames: [String],
         _ objectManipulationIsActive: Bool = false
       
     ) {
-            uniquePartNames = names
+            uniquePartNames = partNames
+            uniqueArcPointNames = arcPointNames
             self.objectManipulationIsActive = objectManipulationIsActive
         }
     
@@ -77,6 +80,7 @@ struct ObjectAndRulerView: View {
             
             ObjectView(
             uniquePartNames,
+            uniqueArcPointNames,
             objectManipulationIsActive
             )
             .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }

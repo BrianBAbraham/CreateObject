@@ -488,9 +488,12 @@ extension ObjectPickViewModel {
     func getUniquePartNamesFromObjectDictionary() -> [String] {
      // GetUniqueNames(  getPostTiltFourCornerPerKeyDic()).forPart
        // Array(movementImageData.getUniquePartNamesFromObjectDictionary().keys)
-        Array(getPostTiltFourCornerPerKeyDic().keys)
+        Array(getPostTiltFourCornerPerKeyDic().keys).filter { !$0.contains(PartTag.arcPoint.rawValue) }
     }
     
+    func getUniqueArcPointNamesFromObjectDictionary() -> [String] {
+             Array(getPostTiltFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
+    }
     
     
     func getList (_  version: DictionaryVersion) -> [String] {
@@ -562,7 +565,11 @@ extension ObjectPickViewModel {
         let dictionary =
          ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
         
-        return dictionary
+        let identifiableDictionary = IdentifiableDictionary(
+            dictionary: dictionary
+        )
+        
+        return identifiableDictionary.dictionary
     }
     
     func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double{
@@ -600,6 +607,14 @@ extension ObjectPickViewModel {
 
 
 
+struct IdentifiableDictionary: Identifiable {
+    let id: UUID // Provides a unique identifier for each instance
+    var dictionary: CornerDictionary // Example dictionary, can be of any type
 
+    init(dictionary: CornerDictionary) {
+        self.id = UUID() // Generate a new UUID for each new instance
+        self.dictionary = dictionary
+    }
+}
 
-
+    

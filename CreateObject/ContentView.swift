@@ -125,12 +125,12 @@ struct ContentView: View {
 //        }
 //        .padding()
 //    }
-       
-    var uniquePartNames: [String] {
-        objectPickVM.getUniquePartNamesFromObjectDictionary()
-    }
+//       
+//    var uniquePartNames: [String] {
+//        objectPickVM.getUniquePartNamesFromObjectDictionary()
+//    }
 
-
+ 
 //    var currentDictionary: PositionDictionary {
 //        objectPickVM.getPostTiltOneCornerPerKeyDic()
 //    }
@@ -151,7 +151,7 @@ struct ContentView: View {
     init(){
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.1)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
-       
+        //print(uniquePartNames)
     }
   
     
@@ -186,6 +186,9 @@ struct AllViews: View {
     var uniquePartNames: [String] {
         objectPickVM.getUniquePartNamesFromObjectDictionary()
     }
+    var uniqueArcPointNames: [String] {
+        objectPickVM.getUniqueArcPointNamesFromObjectDictionary()
+    }
     var body: some View {
         let objectManipulationIsActive = true
         
@@ -194,6 +197,7 @@ struct AllViews: View {
                 
                 ObjectAndRulerView(
                     uniquePartNames,
+                    uniqueArcPointNames,
                     objectManipulationIsActive
                 )
                 .position(recenterPosition)

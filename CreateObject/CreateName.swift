@@ -255,6 +255,31 @@ struct BilateralSideIsRight {
 }
 
 
+//immediately after second underscore prepends to generic name
+struct PrependArcNameToGenericNamePart {
+    
+    static func get(_ originalStrings: [String]) -> [String] {
+        let name = PartTag.arcPoint.rawValue
+        // Map each original string to a new string with the insertion
+        return originalStrings.map { originalString -> String in
+            // Split the original string by underscore
+            var components = originalString.split(separator: "_").map(String.init)
+            
+            // Check if there are at least three elements
+            guard components.count >= 3 else {
+                print("One of the strings does not contain enough components: \(originalString)")
+                return originalString
+            }
+            
+            // Insert the string to insert before the third component
+            components[2] = name + components[2]
+            
+            // Join the components back together with underscores
+            return components.joined(separator: "_")
+        }
+    }
+}
+
 
 struct ReplaceCharBeforeSecondUnderscore {
     

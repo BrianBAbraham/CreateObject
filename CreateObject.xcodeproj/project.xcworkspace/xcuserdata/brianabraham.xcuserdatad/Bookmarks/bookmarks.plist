@@ -408,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>348</string>
+					<string>352</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>347</string>
+					<string>351</string>
 					<key>Timestamp</key>
-					<string>734446069.479601</string>
+					<string>734540429.031291</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -709,13 +709,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>650</string>
+					<string>654</string>
 					<key>StartingColumnNumber</key>
-					<string>39</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>649</string>
+					<string>653</string>
 					<key>Timestamp</key>
-					<string>734454993.709235</string>
+					<string>734540429.0313441</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -731,12 +731,12 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>                rotationAxis: .yAxis //
 </string>
 				<key>leading</key>
 				<string>                movingPoint: positionRelativeToRotator,
                 angleChange: angle.x,
-                rotationAxis: .yAxis //</string>
+</string>
 				<key>trailing</key>
 				<string>            ).fromObjectOriginToPointWhichHasMoved + rotatorOrigin
 
@@ -756,13 +756,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>694</string>
+					<string>698</string>
 					<key>StartingColumnNumber</key>
-					<string>36</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>693</string>
+					<string>697</string>
 					<key>Timestamp</key>
-					<string>734455032.856568</string>
+					<string>734540429.031354</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -778,12 +778,12 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>                rotationAxis: .yAxis
 </string>
 				<key>leading</key>
 				<string>                movingPoint: cornerPositions[index],
                 angleChange: angle.x,
-                rotationAxis: .yAxis</string>
+</string>
 				<key>trailing</key>
 				<string>            ).fromObjectOriginToPointWhichHasMoved
             rotatedCorners.append(
@@ -792,6 +792,53 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT needs to be rotator dependant</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>90</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>89</string>
+					<key>Timestamp</key>
+					<string>734535424.46898</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/MovementImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>            newValues = CreateIosPosition.addToupleToArrayOfTouples(
+</string>
+				<key>leading</key>
+				<string>            )
+            
+</string>
+				<key>trailing</key>
+				<string>                (
+                    x: 0.0,
+                    y: 0.0,
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT control on top or below</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

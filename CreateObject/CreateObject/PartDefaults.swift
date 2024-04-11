@@ -201,7 +201,9 @@ enum PartGroup: String, Parts {
 
 
 enum PartTag: String, Parts {
+    
     case angle = "angle"
+    case arcPoint = "arcPoint"
     case corner = "corner"
     case id0 = "_id0"
     case id1 = "_id1"
