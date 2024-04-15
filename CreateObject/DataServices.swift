@@ -25,6 +25,25 @@ class MeasurementSystemService {
     }
 }
 
+class ObjectImageService {
+    @Published var objectImageData: ObjectImageData = ObjectImageData(
+        .fixedWheelRearDrive,
+        nil
+    )
+    static let shared = ObjectImageService()
+    
+    
+    func getObjectImage() -> ObjectImageData {
+        objectImageData
+    }
+    
+    
+    func setObjectImage(_ objectImageData: ObjectImageData) {
+   // print("set object image")
+        self.objectImageData = objectImageData
+    }
+}
+
 
 
 class BilateralPartWithOnePropertyToChangeService {
@@ -55,12 +74,22 @@ class BilateralPartWithOnePropertyToChangeService {
     }
 }
 
+//class ObjectOriginOffsetService {
+//    @Published var objectOriginOffset: PositionAsIosAxes = ZeroValue.iosLocation
+//    static let shared = ObjectOriginOffsetService()
+//    
+//    func setObjectOriginOffset(_ offset: PositionAsIosAxes) {
+//        objectOriginOffset = offset
+//    }
+//    
+//}
 
 
 class DictionaryService {
     @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
     @Published var partDataSharedDic: [Part: PartData] = [:]
     @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
+    @Published var screenDictionary: CornerDictionary = [:]
 
     static let shared = DictionaryService()
     
@@ -112,5 +141,14 @@ class DictionaryService {
     
     func partIdsUserEditedDicReseter() {
         userEditedSharedDics.partIdsUserEditedDic = [:]
+    }
+    
+    func getScreenDictionary() -> CornerDictionary {
+        screenDictionary
+    }
+    
+    func setScreenDictionary(_ dictionary: CornerDictionary) {
+        print("data service sets screen dic")
+        screenDictionary = dictionary
     }
 }

@@ -78,11 +78,29 @@ struct ObjectImageData {
             
             addArcPointsToDictionary()
             
+            getSize()
+            
         }
     
     //        DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic
     //        ).forEach{print($0)}
 
+   mutating func getSize() {
+        let  postTiltObjectToOneCornerPerKeyDic =
+        ConvertFourCornerPerKeyToOne(
+            fourCornerPerElement:  postTiltObjectToPartFourCornerPerKeyDic
+        ).oneCornerPerKey
+        let minMax =
+        CreateIosPosition.minMaxPosition(
+            postTiltObjectToOneCornerPerKeyDic
+        )
+        
+      objectDimension =
+        (
+            width: minMax[1].x - minMax[0].x,
+            length: minMax[1].y - minMax[0].y
+        )
+    }
     
     
     mutating func addArcPointsToDictionary( ) {

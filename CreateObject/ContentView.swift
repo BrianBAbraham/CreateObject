@@ -69,106 +69,91 @@ struct ListView: View {
 //All data is requested from view models
 //All data is passed to view models to set model
 struct ContentView: View {
-
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-//    @EnvironmentObject var coreDataVM: CoreDataViewModel
-//    @EnvironmentObject var sceneVM: SceneViewModel
-    
-    
-//    @State var isActive = true
-//    @State var globalPosition: CGPoint?
-//    @State var position: CGPoint = .zero
-//    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
+
+    @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
+
     @State private var initialOrigin: CGPoint?
-    
-    
-//    @State var savedDictionaryAsList =  [""]
-//    @State private var savedAsName: String = ""
-    
-//    var currentObjectDictionaryAsList: [String] {
-//        objectPickVM.getList(.useCurrent)
-//    }
-//
-//    var initialObjectDictionaryAsList: [String] {
-//        objectPickVM.getList(.useInitial)
-//    }
-//    
-//    var loadedObjectDictionaryAsList: [String] {
-//        objectPickVM.getList(.useLoaded)
-//    }
-//    
-//    var dimensionsAsList: [String] {
-//        objectPickVM.getList(.useDimension)
-//    }
-//    
-//    var equipmentName: String  {
-//        objectPickVM.getCurrentObjectName()
-//    }
-
-//    var enterTextView: some View {
-//        VStack(alignment: .leading) {
-//            TextField(equipmentName, text: $savedAsName)
-//                .textFieldStyle(.roundedBorder)
-//        }
-//    }
-
-//    var saveButtonView: some View {
-//        HStack{
-//            Button(action: {
-//                saveData(equipmentName + "_" + savedAsName)
-//            }, label: {
-//                Text("save")
-//                    .foregroundColor(.blue)
-//            } )
-//            enterTextView
-//        }
-//        .padding()
-//    }
-//       
-//    var uniquePartNames: [String] {
-//        objectPickVM.getUniquePartNamesFromObjectDictionary()
-//    }
-
- 
-//    var currentDictionary: PositionDictionary {
-//        objectPickVM.getPostTiltOneCornerPerKeyDic()
-//    }
-    
-//    var name: String {
-//        objectPickVM.getCurrentObjectName()
-//    }
-    
-//    func saveData (_ objectName: String) {
-//                coreDataVM.addObject(
-//                    names: objectPickVM.getAllOriginNames(),
-//                    values: objectPickVM.getAllOriginValues(),
-//                    objectType: objectPickVM.getCurrentObjectName(),
-//                objectName: objectName)
-//                coreDataVM.fetchNames()
-//    }
+   // @State private var resetPicker: Bool? = nil
 
     init(){
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.1)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
-        //print(uniquePartNames)
     }
   
-    
     var body: some View {
-        //let objectManipulationIsActive = true
+        var uniquePartNames: [String] {
+         let names =
+            movementPickVM.getUniquePartNamesFromObjectDictionary()
+           //print (names)
+            return names
+        }
+        var uniqueArcPointNames: [String] {
+            movementPickVM.getUniqueArcPointNamesFromObjectDictionary()
+        }
+        
+        var postTiltOneCornerPerKeyDic: PositionDictionary {
+            let dic =
+            movementPickVM.getPostTiltOneCornerPerKeyDic()
+            return dic
+        }
+        
+        var preTiltFourCornerPerKeyDic: CornerDictionary {
+            movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
+        }
+        
+        var dictionaryForScreen: CornerDictionary {
+            let dic =
+            movementPickVM.getObjectDictionaryForScreen()
+            return dic
+        }
+        
+        var objectFrameSize: Dimension {
+            movementPickVM.getObjectOnScreenFrameSize()
+        }
+        
+        var movement: Movement {
+            movementPickVM.getCurrentMovement()
+        }
         
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                    AllViews()
-            //.edgesIgnoringSafeArea(.all)//
+                        AllViews()
                 )
-                        {Text("default")}
-                    Spacer()
-                    UnitSystemSelectionView()
+                    {Text("select equipment")}
+                  
+                NavigationLink(destination:
+                    VStack {
+                        ObjectAndRulerView(
+                            uniquePartNames,
+                            uniqueArcPointNames,
+                            preTiltFourCornerPerKeyDic,
+                            dictionaryForScreen,
+                            objectFrameSize,
+                            movement
+                        )
+                        .position(recenterPosition)
+                    
+                        Spacer()
+                            HStack {
+                                MovementPickerView()
+                                Text("angle start")
+                                Text("angle end")
+                        }
+                        .padding()
+                        .backgroundModifier()
+                        //.transition(.move(edge: .bottom))
+                    }
+                )
+                    {Text("see movement space")}
+                
+                Spacer()
+                
+                UnitSystemSelectionView()
             }
-            .navigationBarTitle("Equipment")
+            .navigationBarTitle("equipment")
         }
     }
 }
@@ -179,26 +164,48 @@ struct ContentView: View {
 struct AllViews: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
     @State private var initialOrigin: CGPoint?
     @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
     @State private var uniqueKey = 0
-
+    
     var uniquePartNames: [String] {
         objectPickVM.getUniquePartNamesFromObjectDictionary()
     }
     var uniqueArcPointNames: [String] {
         objectPickVM.getUniqueArcPointNamesFromObjectDictionary()
     }
+    
+    var postTiltOneCornerPerKeyDic: PositionDictionary {
+        objectPickVM.getPostTiltOneCornerPerKeyDic()
+    }
+    
+    var preTiltFourCornerPerKeyDic: CornerDictionary {
+        objectPickVM.getPreTiltFourCornerPerKeyDic()
+    }
+    
+    var dictionaryForScreen: CornerDictionary {
+        objectPickVM.getObjectDictionaryForScreen()
+    }
+   
+    var objectFrameSize: Dimension{
+        objectPickVM.getObjectOnScreenFrameSize()
+    }
+    
+    var movement: Movement {
+        movementPickVM.getCurrentMovement()
+    }
     var body: some View {
-        let objectManipulationIsActive = true
+    
         
             ZStack{
-                
-                
                 ObjectAndRulerView(
                     uniquePartNames,
                     uniqueArcPointNames,
-                    objectManipulationIsActive
+                    preTiltFourCornerPerKeyDic,
+                    dictionaryForScreen,
+                    objectFrameSize,
+                    .none
                 )
                 .position(recenterPosition)
                 .onChange(of: recenterVM.getRecenterState()) {
@@ -214,6 +221,7 @@ struct AllViews: View {
                     VStack (alignment: .leading) {
                         
                         HStack{
+                            MovementPickerView()
                             PickInitialObjectView()
                             Spacer()
                             PickPartEdit()

@@ -11,15 +11,17 @@ struct EnsureInitialObjectAllOnScreen {
     let fourCornerDic: CornerDictionary
     let oneCornerDic: PositionDictionary
     let objectDimension: Dimension
+    var originOffset = ZeroValue.iosLocation
+    
     
     
     //MARK: DEVELOPMENT scale = 1
     ///objects larger than screen size behaviour not known
-    func getObjectDictionaryForScreen ()
+  mutating func getObjectDictionaryForScreen ()
         -> CornerDictionary {
 
-        let originOffset = getOriginOffsetWhenAllPositionValueArePositive()
-
+        originOffset = getOriginOffsetWhenAllPositionValueArePositive()
+print("offset \(originOffset)")
         let scale = getScale()
             
             //INPUT DIC FOUR CORNER
@@ -56,7 +58,6 @@ struct EnsureInitialObjectAllOnScreen {
                 let objectDimension = getObjectDimensions()
                 let maximumObjectDimension = getMaximumOfObject(objectDimension)
                 let scale = Screen.smallestDimension / maximumObjectDimension
-                //print (scale)
                 return scale
                 
                 func getObjectDimensions() -> Dimension{
@@ -105,8 +106,6 @@ struct EnsureInitialObjectAllOnScreen {
     func getObjectOnScreenFrameSize ()
         -> Dimension {
         let objectDimension = objectDimension
-                
-            
         var frameSize: Dimension =
             (width: Screen.smallestDimension,
             length: Screen.smallestDimension
@@ -126,7 +125,6 @@ struct EnsureInitialObjectAllOnScreen {
                                  )
         }
             frameSize = objectDimension
-           
         return frameSize
     }
 }

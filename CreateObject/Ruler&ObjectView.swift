@@ -12,30 +12,26 @@ struct ObjectAndRulerView: View {
     @EnvironmentObject var recenter: RecenterViewModel
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 200, y: 200)
-   // @Binding var moveRulerAndObjectInY: CGFloat
+   
     
     @State var currentZoom: CGFloat = 0.0
     @State var lastCurrentZoom: CGFloat = 0.0
     private var  minimumZoom = 0.2
     private var maximimumZoom = 0.5
     
-    
-    var postTiltOneCornerPerKeyDic: PositionDictionary {
-        objectPickVM.getPostTiltOneCornerPerKeyDic()
-    }
+    let preTiltFourCornerPerKeyDic: CornerDictionary
+    let dictionaryForScreen: CornerDictionary
+
     
     var defaultScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
+        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
     }
     
     var measurementScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
+        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
     }
     
-    var zoom: CGFloat {
-        getZoom()
-    }
-    
+   
     let uniquePartNames: [String]
     let uniqueArcPointNames: [String]
     
@@ -43,23 +39,29 @@ struct ObjectAndRulerView: View {
         objectPickVM.getCurrentObjectName()
     }
     
-    let objectManipulationIsActive: Bool
+    let objectFrameSize: Dimension
     
-    var preTiltFourCornerPerKeyDic: CornerDictionary {
-        objectPickVM.getPreTiltFourCornerPerKeyDic()
+    var zoom: CGFloat {
+        getZoom()
     }
-    
-    
-    
+
+    let movement: Movement
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
-        _ objectManipulationIsActive: Bool = false
+        _ preTiltFourCornerPerKeyDic: CornerDictionary,
+        _ dictionaryForScreen: CornerDictionary,
+        _ objectFrameSize: Dimension,
+        _ movement: Movement
+        
       
     ) {
             uniquePartNames = partNames
             uniqueArcPointNames = arcPointNames
-            self.objectManipulationIsActive = objectManipulationIsActive
+            self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
+        self.dictionaryForScreen = dictionaryForScreen
+        self.objectFrameSize = objectFrameSize
+        self.movement = movement
         }
     
     
@@ -81,7 +83,10 @@ struct ObjectAndRulerView: View {
             ObjectView(
             uniquePartNames,
             uniqueArcPointNames,
-            objectManipulationIsActive
+            preTiltFourCornerPerKeyDic,
+            dictionaryForScreen,
+            objectFrameSize,
+            movement
             )
             .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }
             

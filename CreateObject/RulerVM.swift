@@ -34,7 +34,7 @@ class RulerViewModel: ObservableObject {
     var rulerMarks: RulerDataMarks
   
     init(
-        _ numberSpan: Double = 1500.0,
+        _ numberSpan: Double = 3000.0,
         _ width: Double = 170.0
     ) {
         self.numberSpan = numberSpan

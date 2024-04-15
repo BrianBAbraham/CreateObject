@@ -22,15 +22,17 @@ struct CreateObjectApp: App {
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
     @StateObject var unitsVM = UnitSystemViewModel()
+   
+    @StateObject var movementPickVM = MovementPickViewModel()
+ 
     @StateObject var rulerVM = RulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
- 
-    
 
 
     var body: some Scene {
         WindowGroup {
                 ContentView()
+                .environmentObject(movementPickVM)
                     .environmentObject(objectPickVM)
                   
                     .environmentObject(objectShowMenuVM)
@@ -38,6 +40,9 @@ struct CreateObjectApp: App {
                     .environmentObject(coreDataVM)
                     .environmentObject(sceneVM)
                     .environmentObject(unitsVM)
+                    
+                    
+            
                     .environmentObject(rulerVM)
                     .environmentObject(recenterVM)
                        

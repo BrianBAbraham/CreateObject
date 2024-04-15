@@ -281,6 +281,51 @@ struct PrependArcNameToGenericNamePart {
 }
 
 
+struct SubstringBefore {
+   static func get(substring: String, in names: [String]) -> [String] {
+        var prefixNames: [String] = []
+        for name in names {
+            guard let range = name.range(of: substring) else {
+                fatalError()
+            }
+            
+            let startIndex = name.startIndex
+            let endIndex = range.lowerBound
+            
+            prefixNames.append(
+                String(name[startIndex..<endIndex]))
+        }
+       
+       if prefixNames.count < 2  {
+           fatalError()
+       }
+        return Array(Set(prefixNames))
+    }
+}
+
+
+
+struct RemovePrefix {
+    
+    static func get(_ prefix: String, _ names: [String]) -> [String] {
+        let anyNameWillDo = names[0]
+        let characterCount = countCharactersBefore(subString: prefix, in: anyNameWillDo)
+        let modifiedNames = names.map { $0.dropFirst(characterCount) }
+        return
+            modifiedNames.map { String($0) }
+    }
+    
+    static func countCharactersBefore(subString: String, in string: String) -> Int {
+        if let range = string.range(of: subString) {
+            let prefix = string[string.startIndex..<range.lowerBound]
+            return prefix.count
+        }
+        fatalError()
+    }
+
+}
+
+
 struct ReplaceCharBeforeSecondUnderscore {
     
   static  func get(in string: String, with replacement: String) -> String {

@@ -201,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>405</string>
+					<string>419</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>404</string>
+					<string>418</string>
 					<key>Timestamp</key>
-					<string>734286311.867404</string>
+					<string>734882039.309749</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -295,13 +295,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>153</string>
+					<string>160</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>152</string>
+					<string>159</string>
 					<key>Timestamp</key>
-					<string>734286243.460276</string>
+					<string>734882039.309705</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -361,13 +361,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>288</string>
+					<string>302</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>287</string>
+					<string>301</string>
 					<key>Timestamp</key>
-					<string>734286311.867438</string>
+					<string>734882039.309759</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -408,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>352</string>
+					<string>370</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>351</string>
+					<string>369</string>
 					<key>Timestamp</key>
-					<string>734540429.031291</string>
+					<string>734626844.342281</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -709,13 +709,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>654</string>
+					<string>672</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>653</string>
+					<string>671</string>
 					<key>Timestamp</key>
-					<string>734540429.0313441</string>
+					<string>734626844.342325</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -756,13 +756,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>698</string>
+					<string>716</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>697</string>
+					<string>715</string>
 					<key>Timestamp</key>
-					<string>734540429.031354</string>
+					<string>734626844.3423131</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -803,13 +803,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>90</string>
+					<string>104</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>89</string>
+					<string>103</string>
 					<key>Timestamp</key>
-					<string>734535424.46898</string>
+					<string>734863075.370452</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -839,6 +839,147 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT control on top or below</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>215</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>214</string>
+					<key>Timestamp</key>
+					<string>734890455.098196</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        self.origin = CGPoint(x: originOfObject.x + objectOriginToRotationPoint, y: originOfObject.y)
+</string>
+				<key>leading</key>
+				<string>    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes){
+        self.position = position
+</string>
+				<key>trailing</key>
+				<string>        point1 = CGPoint( x: position[0].x, y: position[0].y)
+        point2 = CGPoint( x: position[1].x, y: position[1].y)
+    }
+</string>
+			</dict>
+			<key>title</key>
+			<string>the rotation origin needs to be added dynamicall</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>120</string>
+					<key>StartingColumnNumber</key>
+					<string>24</string>
+					<key>StartingLineNumber</key>
+					<string>119</string>
+					<key>Timestamp</key>
+					<string>734894808.0239429</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ContentView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>        }
+        
+        NavigationView {</string>
+				<key>trailing</key>
+				<string>            VStack {
+                NavigationLink(destination:
+                        AllViews()
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT ipad will show menu items on screen at once</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>208</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>207</string>
+					<key>Timestamp</key>
+					<string>734900258.846928</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ContentView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                    .none
+</string>
+				<key>leading</key>
+				<string>                    dictionaryForScreen,
+                    objectFrameSize,
+</string>
+				<key>trailing</key>
+				<string>                )
+                .position(recenterPosition)
+                .onChange(of: recenterVM.getRecenterState()) {
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT THIS IS FOR IPHONE REMOVE FOR IPAD</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

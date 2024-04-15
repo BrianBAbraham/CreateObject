@@ -191,8 +191,9 @@ struct ArcPointView: View {
 
 
 
-struct ArcView: View {
-    var origin: CGPoint
+struct ArcViewX: View {
+    var origin: CGPoint = CGPoint(x: 0.0, y: 0.0)
+    let position: [PositionAsIosAxes]
     var point1: CGPoint
     var point2: CGPoint
 
@@ -208,13 +209,20 @@ struct ArcView: View {
         angle(from: origin, to: point2)
     }
 
+    let objectOriginToRotationPoint = 500.0
+    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes){
+        self.position = position
+        self.origin = CGPoint(x: originOfObject.x + objectOriginToRotationPoint, y: originOfObject.y)
+        point1 = CGPoint( x: position[0].x, y: position[0].y)
+        point2 = CGPoint( x: position[1].x, y: position[1].y)
+    }
     var body: some View {
         Path { path in
             path.addArc(center: origin,
                         radius: radius,
                         startAngle: startAngle,
                         endAngle: endAngle,
-                        clockwise: false)
+                        clockwise: true)
         }
         .stroke(Color.blue, lineWidth: 2)
     }
@@ -233,6 +241,62 @@ struct ArcView: View {
     }
 }
 
+
+struct ArcView: View {
+    var origin: CGPoint = CGPoint(x: 0.0, y: 0.0)
+    let position: [PositionAsIosAxes]
+    var point1: CGPoint
+    var point2: CGPoint
+
+    private var radius: CGFloat {
+        distance(from: origin, to: point1)
+    }
+
+    private var startAngle: Angle {
+        angle(from: origin, to: point1)
+    }
+
+    private var endAngle: Angle {
+        angle(from: origin, to: point2)
+    }
+
+    let objectOriginToRotationPoint = 500.0
+
+    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes) {
+        self.position = position
+        self.origin = CGPoint(x: originOfObject.x + objectOriginToRotationPoint, y: originOfObject.y)
+        point1 = CGPoint(x: position[0].x, y: position[0].y)
+        point2 = CGPoint(x: position[1].x, y: position[1].y)
+    }
+
+    var body: some View {
+        Path { path in
+            let clockwise = shouldDrawClockwise(start: startAngle, end: endAngle)
+            path.addArc(center: origin,
+                        radius: radius,
+                        startAngle: startAngle,
+                        endAngle: endAngle,
+                        clockwise: false)
+        }
+        .stroke(Color.blue, lineWidth: 2)
+    }
+
+    private func distance(from: CGPoint, to: CGPoint) -> CGFloat {
+        sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
+    }
+
+    private func angle(from origin: CGPoint, to point: CGPoint) -> Angle {
+        let dy = point.y - origin.y
+        let dx = point.x - origin.x
+        let angle = atan2(dy, dx)
+        return Angle(radians: Double(angle))
+    }
+
+    private func shouldDrawClockwise(start: Angle, end: Angle) -> Bool {
+        // This is a simple heuristic: change as needed for your specific situation
+        return start.degrees.truncatingRemainder(dividingBy: 360.0) < end.degrees.truncatingRemainder(dividingBy: 360.0)
+    }
+}
 
 
 struct PartView: View {
@@ -335,8 +399,9 @@ struct PartView: View {
 struct ObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
-   // @EnvironmentObject var recenter: RecenterViewModel
+   
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 200, y: 0)
     @State var currentZoom: CGFloat = 0.0
@@ -344,17 +409,12 @@ struct ObjectView: View {
     private var  minimumZoom = 0.1
     private var maximimumZoom = 1.0
     
-    
-    var postTiltOneCornerPerKeyDic: PositionDictionary {
-        objectPickVM.getPostTiltOneCornerPerKeyDic()
-    }
-    
     var defaultScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
+        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
     }
     
     var measurementScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject(postTiltOneCornerPerKeyDic)
+        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
     }
     
     var zoom: CGFloat {
@@ -368,21 +428,27 @@ struct ObjectView: View {
         objectPickVM.getCurrentObjectName()
     }
     
-    let objectManipulationIsActive: Bool
-    
-    var preTiltFourCornerPerKeyDic: CornerDictionary {
-        objectPickVM.getPreTiltFourCornerPerKeyDic()
+    let preTiltFourCornerPerKeyDic: CornerDictionary
+    let dictionaryForScreen: CornerDictionary
+    let objectFrameSize: Dimension
+    let movement: Movement
+    var objectOriginInScreen: PositionAsIosAxes {
+        movementPickVM.getOffsetForObjectOrigin()
     }
-    
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
-        _ objectManipulationIsActive: Bool = false
-      
+        _ preTiltFourCornerPerKeyDic: CornerDictionary,
+        _ dictionaryForScreen: CornerDictionary,
+        _ objectFrameSize: Dimension,
+        _ movement: Movement
     ) {
-            uniquePartNames = partNames
-            uniqueArcPointNames = arcPointNames
-            self.objectManipulationIsActive = objectManipulationIsActive
+        uniquePartNames = partNames
+        uniqueArcPointNames = arcPointNames
+        self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
+        self.dictionaryForScreen = dictionaryForScreen
+        self.objectFrameSize = objectFrameSize
+        self.movement = movement
         }
     
     
@@ -396,12 +462,12 @@ struct ObjectView: View {
         return zoom
     }
     
+   
+    
     var body: some View {
-        let dictionaryForScreen: CornerDictionary =
-        objectPickVM.getObjectDictionaryForScreen()
-        let objectFrameSize =
-        objectPickVM.getObjectOnScreenFrameSize()
         
+        let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen, movement): [:]
+        let uniqueArcNames = Array(arcDictionary.keys)
         ZStack{
             ZStack{
                 ZStack{
@@ -423,12 +489,24 @@ struct ObjectView: View {
                         )
                     }
                 }
+                if movement == .turn {
+                    ZStack{
+                        ForEach(uniqueArcNames, id: \.self) { name in
+                            ArcView(
+                                arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
+                                objectOriginInScreen
+                                
+                            )
+                        }
+                    }
+                }
+
             }
             
             .border(.red, width: 2)
             .modifier(
                 ForObjectDrag (
-                    frameSize: objectFrameSize, active: objectManipulationIsActive)
+                    frameSize: objectFrameSize, active: true)
             )
             .position(x: 0.0, y: -300)
             .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()

@@ -11,44 +11,58 @@ import Foundation
 ///renaming object with index as required
 struct MovementImageData {
     var objectImageData: ObjectImageData
+    let origin: PositionAsIosAxes
+    let startAngle: Double
+    let endAngle: Double
+    let angleChange: Double
     
     init(
-        _ objectType: ObjectTypes,
-        _ userEditedDic: UserEditedDictionaries?) {
+        _ objectImageData: ObjectImageData,
+        movementType: Movement,
+        origin: PositionAsIosAxes,
+        startAngle: Double,
+        endAngle: Double,
+        forward: Double ){
             
-            objectImageData = ObjectImageData(
-                objectType,
-                userEditedDic
-            )
+        self.objectImageData = objectImageData
+        self.origin = origin
+        self.startAngle = startAngle
+        self.endAngle = endAngle
+        angleChange = endAngle - startAngle
             
-//            translateObject(1,                    
-//            (
-//                x:0.0 ,
-//                1000.0,
-//                z:0.0
-//            ))//adds to dictionary
+        switch movementType {
+        case .none:
+            return
             
-//
-            let newObjectId = 1
-            let rotationAngle = Measurement(
-                value: 90.0,
-                unit: UnitAngle.degrees
-            )
-            let aboutPosition: PositionAsIosAxes = (
-                x: 600,
-                y:0.0,
-                z:0
-            )
+        case .linear:
+            translateObject(1,
+                            (x: forward, y: 0.0, z: 0.0))
+           
             
-            rotateObject(newObjectId, rotationAngle,aboutPosition)
+        case .turn:
+            for index in 0...1 {
+                let newObjectId = index
+                let rotationAngle = Measurement(
+                    value: [startAngle, angleChange][index],
+                    unit: UnitAngle.degrees
+                )
+                let aboutPosition: PositionAsIosAxes =
+                origin
+                
+                rotateObject(newObjectId, rotationAngle,aboutPosition)
+                
+                updateOneCornerPerKeyDictionary()
+            }
+
             
-            updateOneCornerPerKeyDictionary()
+       default:
+            return
+            
+        }
             
             
-//            DictionaryInArrayOut().getNameValue(objectImageData.postTiltObjectToOneCornerPerKeyDic
-//            ).forEach{print($0)}
-            
-            getSize()
+        getSize()
+           
         }
     
 
@@ -118,9 +132,7 @@ struct MovementImageData {
                 let rotatedPosition =
                 PositionOfPointAfterRotationAboutPoint(
                     staticPoint: (
-                        x: -600,
-                        y: 0,
-                        position.z
+                        aboutPosition
                     ),
                     movingPoint: position,
                     angleChange: angle,
@@ -163,15 +175,29 @@ struct MovementImageData {
 
     
     func getUniquePartNamesFromObjectDictionary() -> [String] {
-        // GetUniqueNames(  getPostTiltFourCornerPerKeyDic()).forPart
+
         
         Array(objectImageData.postTiltObjectToOneCornerPerKeyDic.keys)
     }
     
-    enum Movement {
-        case linear
-        case turn
-    }
+
     
 }
 
+struct IdentifiableDictionary: Identifiable {
+    let id: UUID // Provides a unique identifier for each instance
+    var dictionary: CornerDictionary // Example dictionary, can be of any type
+
+    init(dictionary: CornerDictionary) {
+        self.id = UUID() // Generate a new UUID for each new instance
+        self.dictionary = dictionary
+    }
+}
+enum Movement: String, CaseIterable {
+    case none = "static"
+    case linear = "forward"
+    case turn = "turn"
+    case slalom = "slalom"
+    case t = "T-turn"
+    case incremental = "off wall"
+}

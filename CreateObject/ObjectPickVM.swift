@@ -25,25 +25,25 @@ struct ObjectPickModel {
     
     var defaultMinMaxDictionaries: DefaultMinMaxDimensionDictionary
     
-    var movementImageData: ObjectImageData
+    var objectImageData: ObjectImageData
 
 
     init(
         currentObjectName: String,
         userEditedDic: UserEditedDictionaries?,
         defaultMinMaxDictionaries: DefaultMinMaxDimensionDictionary,
-        movementImageData: ObjectImageData
+        objectImageData: ObjectImageData
     ){
         self.userEditedDic = userEditedDic
         self.defaultMinMaxDictionaries = defaultMinMaxDictionaries
         self.currentObjectName = currentObjectName
-        self.preTiltFourCornerPerKeyDic = movementImageData.preTiltObjectToPartFourCornerPerKeyDic
+        self.preTiltFourCornerPerKeyDic = objectImageData.preTiltObjectToPartFourCornerPerKeyDic
       
         angleUserEditedDic = userEditedDic?.angleUserEditedDic ?? [:]
         
-        angleMinMaxDic = movementImageData.angleMinMaxDic
+        angleMinMaxDic = objectImageData.angleMinMaxDic
 
-        self.movementImageData = movementImageData
+        self.objectImageData = objectImageData
     }
 }
     
@@ -51,7 +51,7 @@ struct ObjectPickModel {
 class ObjectPickViewModel: ObservableObject {
     @Published private var objectPickModel: ObjectPickModel
     
-    var movementImageData: ObjectImageData
+    var objectImageData: ObjectImageData
     
     @Published var userEditedSharedDics: UserEditedDictionaries
     
@@ -73,6 +73,7 @@ class ObjectPickViewModel: ObservableObject {
    
     private var cancellables: Set<AnyCancellable> = []
     
+   // var objectOriginOffset: PositionAsIosAxes
     
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
 
@@ -83,17 +84,19 @@ class ObjectPickViewModel: ObservableObject {
         
         self.userEditedSharedDics = DictionaryService.shared.userEditedSharedDics
         
-        movementImageData = MovementImageData(
-            .fixedWheelRearDrive,
-            nil
-        ).objectImageData
+        objectImageData = ObjectImageService.shared.objectImageData
+        
+//        ObjectImageData(
+//            .fixedWheelRearDrive,
+//            nil
+//        )
         
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: currentObjectType.rawValue,
                 userEditedDic: nil,
                 defaultMinMaxDictionaries: defaultMinMaxDimensionDic,
-                movementImageData: MovementImageData(.fixedWheelRearDrive, nil).objectImageData)
+               objectImageData: ObjectImageData(.fixedWheelRearDrive, nil))
         
         DictionaryService.shared.$currentObjectType
             .sink { [weak self] newData in
@@ -132,7 +135,11 @@ class ObjectPickViewModel: ObservableObject {
             .store(in: &self.cancellables)
         
         ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
-
+        
+        
+        setScreenDictionary(getObjectDictionaryForScreen())//getSize()
+        
+       
     }
 }
 
@@ -154,47 +161,54 @@ extension ObjectPickViewModel {
         
         modifyObjectByCreatingFromName()
        
+        ObjectImageService.shared.setObjectImage(objectImageData)
     }
     
     
     func modifyObjectByCreatingFromName(){
-       // print("CALLED")
-        
-        movementImageData = MovementImageData(
+        objectImageData = ObjectImageData(
             currentObjectType,
             userEditedSharedDics
-        ).objectImageData
+        )
         
-       objectChainLabelsDefaultDic = movementImageData.objectChainLabelsDefaultDic//update for new object
+        objectChainLabelsDefaultDic = objectImageData.objectChainLabelsDefaultDic//update for new object
 
         createNewPickModel()
+        
+        ObjectImageService.shared.setObjectImage(
+            objectImageData
+        )
     }
     
     
     func pickNewObjectByCreatingFromName(){
-        movementImageData = MovementImageData(
+        objectImageData = ObjectImageData(
             currentObjectType,
             userEditedSharedDics
-        ).objectImageData
+        )
         
         createNewPickModel()
+        
+        ObjectImageService.shared.setObjectImage(objectImageData)
     }
     
     
     func createNewPickModel() {
-        DictionaryService.shared.partDataSharedDicModifier(movementImageData.partDataDic)
+        DictionaryService.shared.partDataSharedDicModifier(objectImageData.partDataDic)
         
         objectPickModel =
             ObjectPickModel(
                 currentObjectName: currentObjectType.rawValue,
                 userEditedDic: userEditedSharedDics,
                 defaultMinMaxDictionaries: defaultMinMaxDimensionDic,
-                movementImageData: movementImageData)
+                objectImageData: objectImageData)
         
         ensureInitialObjectAllOnScreen =
             getMakeWholeObjectOnScreen()
         
         setCurrentObjectFrameSize()
+        
+        ObjectImageService.shared.setObjectImage(objectImageData)
     }
 }
 
@@ -267,7 +281,7 @@ extension ObjectPickViewModel {
         let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(currentObjectType, partOrAssociatedPart).forPart
         
 
-        guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] ?? movementImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+        guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] ?? objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
             fatalError()
         }
     
@@ -429,17 +443,17 @@ extension ObjectPickViewModel {
     
     func getPostTiltOneCornerPerKeyDic()
     -> PositionDictionary {
-        objectPickModel.movementImageData.postTiltObjectToOneCornerPerKeyDic
+        objectPickModel.objectImageData.postTiltObjectToOneCornerPerKeyDic
     }
     
     
     func getPreTiltFourCornerPerKeyDic() -> CornerDictionary {
-        objectPickModel.movementImageData.preTiltObjectToPartFourCornerPerKeyDic
+        objectPickModel.objectImageData.preTiltObjectToPartFourCornerPerKeyDic
     }
     
     
     func getPostTiltFourCornerPerKeyDic() -> CornerDictionary {
-        objectPickModel.movementImageData.postTiltObjectToPartFourCornerPerKeyDic
+        objectPickModel.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
     }
     
     
@@ -486,8 +500,7 @@ extension ObjectPickViewModel {
     
 
     func getUniquePartNamesFromObjectDictionary() -> [String] {
-     // GetUniqueNames(  getPostTiltFourCornerPerKeyDic()).forPart
-       // Array(movementImageData.getUniquePartNamesFromObjectDictionary().keys)
+   
         Array(getPostTiltFourCornerPerKeyDic().keys).filter { !$0.contains(PartTag.arcPoint.rawValue) }
     }
     
@@ -515,22 +528,22 @@ extension ObjectPickViewModel {
              
                 list =
                     DictionaryInArrayOut().getNameValue(
-                        objectPickModel.movementImageData.dimensionDic)
+                        objectPickModel.objectImageData.dimensionDic)
                     }
         return list
     }
     
     
     func getMaximumDimensionOfObject (
-    _ dictionary: PositionDictionary)
+    )
         -> Double {
-        movementImageData.maximumDimension
+        objectImageData.maximumDimension
     }
     
 
     func getObjectDimension ( )
         -> Dimension {
-            movementImageData.objectDimension
+            objectImageData.objectDimension
     }
 }
 
@@ -558,39 +571,55 @@ extension ObjectPickViewModel {
 //MARK: ENSURE DRAG
 extension ObjectPickViewModel {
     
-    
     func  getObjectDictionaryForScreen ()
     -> CornerDictionary {
-        
         let dictionary =
          ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
+    
+       // print(dictionary)
         
-        let identifiableDictionary = IdentifiableDictionary(
-            dictionary: dictionary
-        )
-        
-        return identifiableDictionary.dictionary
+        return dictionary
     }
     
-    func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double{
+    
+    func setScreenDictionary(_ dictionary: CornerDictionary) {
+        DictionaryService.shared.setScreenDictionary(dictionary)
+    }
+    
+    
+    func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double {
             ensureInitialObjectAllOnScreen
                 .getOffsetToKeepObjectOriginStaticInLengthOnScreen()
     }
     
+    func getOffsetForObjectOrigin() -> PositionAsIosAxes {
+        let offset =
+        ensureInitialObjectAllOnScreen.getOriginOffsetWhenAllPositionValueArePositive()
+       // print(offset)
+    return offset
+    }
+    
+//    func setOffsetForObjectOrrigin() {
+//        ObjectOriginOffsetService.shared.setObjectOriginOffset(
+//        ensureInitialObjectAllOnScreen.getOriginOffsetWhenAllPositionValueArePositive() )
+//    }
     
     func getMakeWholeObjectOnScreen()
         -> EnsureInitialObjectAllOnScreen {
             let objectDimension: Dimension =
                 getObjectDimension()
             let fourCornerDic: CornerDictionary =
-                objectPickModel.movementImageData
+                objectPickModel.objectImageData
                     .postTiltObjectToPartFourCornerPerKeyDic
             let oneCornerDic: PositionDictionary =
-                objectPickModel.movementImageData
+                objectPickModel.objectImageData
                     .postTiltObjectToOneCornerPerKeyDic
             return
                 EnsureInitialObjectAllOnScreen(
-                fourCornerDic: fourCornerDic, oneCornerDic: oneCornerDic, objectDimension: objectDimension)
+                    fourCornerDic: fourCornerDic,
+                    oneCornerDic: oneCornerDic,
+                    objectDimension: objectDimension
+                )
     }
     
     
@@ -601,20 +630,14 @@ extension ObjectPickViewModel {
         return frameSize
     }
 
+    
+
 }
 
 
 
 
 
-struct IdentifiableDictionary: Identifiable {
-    let id: UUID // Provides a unique identifier for each instance
-    var dictionary: CornerDictionary // Example dictionary, can be of any type
 
-    init(dictionary: CornerDictionary) {
-        self.id = UUID() // Generate a new UUID for each new instance
-        self.dictionary = dictionary
-    }
-}
 
     
