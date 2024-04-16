@@ -148,7 +148,7 @@ class DictionaryService {
     }
     
     func setScreenDictionary(_ dictionary: CornerDictionary) {
-        print("data service sets screen dic")
+        //print("data service sets screen dic")
         screenDictionary = dictionary
     }
 }

@@ -75,7 +75,7 @@ struct ContentView: View {
     @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
 
     @State private var initialOrigin: CGPoint?
-   // @State private var resetPicker: Bool? = nil
+   
 
     init(){
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.1)
@@ -114,15 +114,26 @@ struct ContentView: View {
         }
         
         var movement: Movement {
-            movementPickVM.getCurrentMovement()
+            movementPickVM.getCurrentMovementType()
+        }
+        var startAngle: Double {
+            movementPickVM.getStartAngle()
         }
         
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                        AllViews()
+                        AllViews(
+                            uniquePartNames,
+                            uniqueArcPointNames,
+                            preTiltFourCornerPerKeyDic,
+                            dictionaryForScreen,
+                            objectFrameSize,
+                            movement
+                        )
                 )
                     {Text("select equipment")}
+                    .padding()
                   
                 NavigationLink(destination:
                     VStack {
@@ -135,25 +146,42 @@ struct ContentView: View {
                             movement
                         )
                         .position(recenterPosition)
-                    
                         Spacer()
-                            HStack {
-                                MovementPickerView()
-                                Text("angle start")
-                                Text("angle end")
+                    VStack{
+                        MovementPickerView()
+                        HStack {
+                            Spacer()
+                            AnglePickerView()
+                            AngleSetter(setAngle: movementPickVM.setStartAngle, label: "start")
+//                            Spacer()
+//                            AngleSetter(setAngle: movementPickVM.setEndAngle, label: "end")
+                            Spacer()
+//                            AngleSetter(setAngle: movementPickVM.setStartAndEndAngle, label: "both")
                         }
+                       
+                    }
+                            
                         .padding()
                         .backgroundModifier()
-                        //.transition(.move(edge: .bottom))
+                        .transition(.move(edge: .bottom))
                     }
                 )
-                    {Text("see movement space")}
+                    {Text("see size of movements")}
+                    .padding()
+                
+                NavigationLink(destination:
+                        Text("in development")
+                )
+                    {Text("import plan from photos")}
+                    .padding()
+                
                 
                 Spacer()
                 
                 UnitSystemSelectionView()
             }
-            .navigationBarTitle("equipment")
+            .navigationBarTitle("turning space")
+            //.foregroundColor(Color(red: 220/255, green: 255/255, blue: 220/255))
         }
     }
 }
@@ -165,90 +193,87 @@ struct AllViews: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @State private var initialOrigin: CGPoint?
+   
     @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
     @State private var uniqueKey = 0
     
-    var uniquePartNames: [String] {
-        objectPickVM.getUniquePartNamesFromObjectDictionary()
-    }
-    var uniqueArcPointNames: [String] {
-        objectPickVM.getUniqueArcPointNamesFromObjectDictionary()
-    }
+    let uniquePartNames: [String]
+    let uniqueArcPointNames: [String]
+    let preTiltFourCornerPerKeyDic: CornerDictionary
+    let dictionaryForScreen: CornerDictionary
+    let objectFrameSize: Dimension
+    let movement: Movement
     
-    var postTiltOneCornerPerKeyDic: PositionDictionary {
-        objectPickVM.getPostTiltOneCornerPerKeyDic()
-    }
     
-    var preTiltFourCornerPerKeyDic: CornerDictionary {
-        objectPickVM.getPreTiltFourCornerPerKeyDic()
-    }
-    
-    var dictionaryForScreen: CornerDictionary {
-        objectPickVM.getObjectDictionaryForScreen()
-    }
-   
-    var objectFrameSize: Dimension{
-        objectPickVM.getObjectOnScreenFrameSize()
-    }
-    
-    var movement: Movement {
-        movementPickVM.getCurrentMovement()
-    }
+    init(
+        _ partNames: [String],
+        _ arcPointNames: [String],
+        _ preTiltFourCornerPerKeyDic: CornerDictionary,
+        _ dictionaryForScreen: CornerDictionary,
+        _ objectFrameSize: Dimension,
+        _ movement: Movement
+    ) {
+            uniquePartNames = partNames
+            uniqueArcPointNames = arcPointNames
+            self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
+        self.dictionaryForScreen = dictionaryForScreen
+        self.objectFrameSize = objectFrameSize
+        self.movement = movement
+        }
     var body: some View {
-    
-        
-            ZStack{
-                ObjectAndRulerView(
-                    uniquePartNames,
-                    uniqueArcPointNames,
-                    preTiltFourCornerPerKeyDic,
-                    dictionaryForScreen,
-                    objectFrameSize,
-                    .none
-                )
-                .position(recenterPosition)
-                .onChange(of: recenterVM.getRecenterState()) {
-                    uniqueKey += 1
-                }
-                .id(uniqueKey)//ensures redraw
-                
-               
-                //MENU
-                VStack {
-                    ObjectRulerRecenter()
-                    Spacer()
-                    VStack (alignment: .leading) {
-                        
-                        HStack{
-                            MovementPickerView()
-                            PickInitialObjectView()
-                            Spacer()
-                            PickPartEdit()
-                        }
-                      
-                        HStack{
-                            ConditionalBilateralPartSidePicker()
-                            ConditionalBilateralPartPresence()
-                            ConditionaUniPartPresence()
-                        }
-                        
-                        ConditionalBilateralPartMenu()
-                        
-                        ConditionalUniPartEditMenu()
-                        
-                        ConditionalTiltMenu()
-                        
-                       
-                            
-                    }
-                    .padding(.horizontal)
-                    
-                    .backgroundModifier()
-                    .transition(.move(edge: .bottom))
-                }
+        ZStack{
+            ObjectAndRulerView(
+                uniquePartNames,
+                uniqueArcPointNames,
+                preTiltFourCornerPerKeyDic,
+                dictionaryForScreen,
+                objectFrameSize,
+                movement
+            )
+            .position(recenterPosition)
+            .onChange(of: recenterVM.getRecenterState()) {
+                uniqueKey += 1
             }
-        //}
+//            .onChange(of: movementPickVM.getStartAngle() ){
+//                uniqueKey += 1
+//            }
+            .id(uniqueKey)//ensures redraw
+            
+           
+            //MENU
+            VStack {
+                ObjectRulerRecenter()
+                Spacer()
+                VStack (alignment: .leading) {
+                    
+                    HStack{
+                        MovementPickerView()
+                        PickInitialObjectView()
+                        Spacer()
+                        PickPartEdit()
+                    }
+                  
+                    HStack{
+                        ConditionalBilateralPartSidePicker()
+                        ConditionalBilateralPartPresence()
+                        ConditionaUniPartPresence()
+                    }
+                    
+                    ConditionalBilateralPartMenu()
+                    
+                    ConditionalUniPartEditMenu()
+                    
+                    ConditionalTiltMenu()
+                    
+                   
+                        
+                }
+                .padding(.horizontal)
+                
+                .backgroundModifier()
+                .transition(.move(edge: .bottom))
+            }
+        }
     }
 }
 

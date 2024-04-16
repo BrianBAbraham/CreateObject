@@ -191,7 +191,7 @@ struct ArcPointView: View {
 
 
 
-struct ArcViewX: View {
+struct ArcView: View {
     var origin: CGPoint = CGPoint(x: 0.0, y: 0.0)
     let position: [PositionAsIosAxes]
     var point1: CGPoint
@@ -209,7 +209,7 @@ struct ArcViewX: View {
         angle(from: origin, to: point2)
     }
 
-    let objectOriginToRotationPoint = 500.0
+    let objectOriginToRotationPoint = -500.0
     init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes){
         self.position = position
         self.origin = CGPoint(x: originOfObject.x + objectOriginToRotationPoint, y: originOfObject.y)
@@ -217,15 +217,18 @@ struct ArcViewX: View {
         point2 = CGPoint( x: position[1].x, y: position[1].y)
     }
     var body: some View {
+       
         Path { path in
             path.addArc(center: origin,
                         radius: radius,
-                        startAngle: startAngle,
-                        endAngle: endAngle,
-                        clockwise: true)
+                        startAngle: startAngle < endAngle ? startAngle: endAngle,
+                        endAngle: endAngle > startAngle ? endAngle: startAngle,
+                        clockwise: false)
         }
         .stroke(Color.blue, lineWidth: 2)
+//        .onAppear{ print("radius \(radius)  Start angle: \(startAngle.degrees), End angle: \(endAngle.degrees)")}
     }
+    
 
     // Calculate the distance between two points
     private func distance(from: CGPoint, to: CGPoint) -> CGFloat {
@@ -237,66 +240,37 @@ struct ArcViewX: View {
         let dy = point.y - origin.y
         let dx = point.x - origin.x
         let angle = atan2(dy, dx)
+       
         return Angle(radians: Double(angle))
     }
 }
 
 
-struct ArcView: View {
-    var origin: CGPoint = CGPoint(x: 0.0, y: 0.0)
-    let position: [PositionAsIosAxes]
-    var point1: CGPoint
-    var point2: CGPoint
+//func getMarkAngleToConstraint() -> [Angle] {
+//    var  markAngles: [Angle] = []
+//    var angle = Angle(radians: 0.0)
+//    var xDimension: CGFloat
+//    var yDimension: CGFloat
+//    let transformToCorrectSignum = ((bottomToTopFlip || leftToRightFlip)) ? -1.0 : 1.0
+//    for location in locationOfMarkNameInLocal {
+//
+//            yDimension = (CGFloat(location[1] * scale) * transformToCorrectSignum + scaledConstraintToChairOriginBeforeTurn.y)
+//            xDimension = (CGFloat(location[0] * scale) + scaledConstraintToChairOriginBeforeTurn.x * transformToCorrectSignum)
+//            angle =
+//            Angle(radians:
+//            atan2(
+//                yDimension ,
+//                xDimension))
+//
+//
+//        markAngles.append(angle)
+//
+//    }
+//
+//    return markAngles
+//}
 
-    private var radius: CGFloat {
-        distance(from: origin, to: point1)
-    }
 
-    private var startAngle: Angle {
-        angle(from: origin, to: point1)
-    }
-
-    private var endAngle: Angle {
-        angle(from: origin, to: point2)
-    }
-
-    let objectOriginToRotationPoint = 500.0
-
-    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes) {
-        self.position = position
-        self.origin = CGPoint(x: originOfObject.x + objectOriginToRotationPoint, y: originOfObject.y)
-        point1 = CGPoint(x: position[0].x, y: position[0].y)
-        point2 = CGPoint(x: position[1].x, y: position[1].y)
-    }
-
-    var body: some View {
-        Path { path in
-            let clockwise = shouldDrawClockwise(start: startAngle, end: endAngle)
-            path.addArc(center: origin,
-                        radius: radius,
-                        startAngle: startAngle,
-                        endAngle: endAngle,
-                        clockwise: false)
-        }
-        .stroke(Color.blue, lineWidth: 2)
-    }
-
-    private func distance(from: CGPoint, to: CGPoint) -> CGFloat {
-        sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
-    }
-
-    private func angle(from origin: CGPoint, to point: CGPoint) -> Angle {
-        let dy = point.y - origin.y
-        let dx = point.x - origin.x
-        let angle = atan2(dy, dx)
-        return Angle(radians: Double(angle))
-    }
-
-    private func shouldDrawClockwise(start: Angle, end: Angle) -> Bool {
-        // This is a simple heuristic: change as needed for your specific situation
-        return start.degrees.truncatingRemainder(dividingBy: 360.0) < end.degrees.truncatingRemainder(dividingBy: 360.0)
-    }
-}
 
 
 struct PartView: View {
@@ -433,8 +407,8 @@ struct ObjectView: View {
     let objectFrameSize: Dimension
     let movement: Movement
     var objectOriginInScreen: PositionAsIosAxes {
-        movementPickVM.getOffsetForObjectOrigin()
-    }
+        movementPickVM.getOffsetForObjectOrigin()}
+    
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
@@ -449,6 +423,7 @@ struct ObjectView: View {
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+       
         }
     
     
@@ -462,7 +437,7 @@ struct ObjectView: View {
         return zoom
     }
     
-   
+    
     
     var body: some View {
         
@@ -498,6 +473,9 @@ struct ObjectView: View {
                                 
                             )
                         }
+                        
+                        MyCircle(fillColor: .red, strokeColor: .black, 100.0, CGPoint.zero )
+                            .position(CGPoint(x: objectOriginInScreen.x, y: objectOriginInScreen.y))
                     }
                 }
 
@@ -514,3 +492,11 @@ struct ObjectView: View {
         }
     }
 }
+
+
+//struct ObjectOriginView: View {
+//    //let position: PositionAsIosAxes
+//    var body: some View {
+//        OriginView()
+//    }
+//}

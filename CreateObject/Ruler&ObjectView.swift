@@ -10,6 +10,7 @@ struct ObjectAndRulerView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
     @EnvironmentObject var recenter: RecenterViewModel
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 200, y: 200)
    
@@ -44,8 +45,9 @@ struct ObjectAndRulerView: View {
     var zoom: CGFloat {
         getZoom()
     }
-
+   
     let movement: Movement
+ 
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
@@ -62,6 +64,7 @@ struct ObjectAndRulerView: View {
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+       
         }
     
     
@@ -88,8 +91,9 @@ struct ObjectAndRulerView: View {
             objectFrameSize,
             movement
             )
-            .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }
             
+            .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }
+
             RightAngleRuler()
             
             

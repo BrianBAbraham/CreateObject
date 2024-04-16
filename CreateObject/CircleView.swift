@@ -7,29 +7,29 @@
 
 import SwiftUI
 
-struct OriginView: View {
-    let originDictionary: [String: PositionAsIosAxes]
+//struct OriginView: View {
+//    let originDictionary: [String: PositionAsIosAxes]
+//    
+//
+//    var originDictionaryWithCGPointValues: [String: CGPoint] {
+//        DictionaryWithValue(originDictionary).asCGPoint()
+//    }
+//    
+//   var keys: [String] {
+//        originDictionaryWithCGPointValues.map {$0.key}
+//    }
+//    var values: [CGPoint] {
+//        originDictionaryWithCGPointValues.map {$0.value}
+//    }
     
 
-    var originDictionaryWithCGPointValues: [String: CGPoint] {
-        DictionaryWithValue(originDictionary).asCGPoint()
-    }
     
-   var keys: [String] {
-        originDictionaryWithCGPointValues.map {$0.key}
-    }
-    var values: [CGPoint] {
-        originDictionaryWithCGPointValues.map {$0.value}
-    }
-    
-
-    
-    var body: some View {
-        ForEach(0..<keys.count, id: \.self) {index in
-            MyCircle(fillColor: .black, strokeColor: .black, 10, values[index])
-        }
-    }
-}
+//    var body: some View {
+        //ForEach(0..<keys.count, id: \.self) {index in
+//            MyCircle(fillColor: .black, strokeColor: .black, 10, values)
+       // }
+//    }
+//}
 
 struct MyCircle: View {
     let strokeColor: Color

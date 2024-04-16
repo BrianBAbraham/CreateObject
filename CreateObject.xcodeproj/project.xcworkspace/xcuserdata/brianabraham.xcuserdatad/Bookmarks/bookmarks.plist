@@ -897,13 +897,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>120</string>
+					<string>123</string>
 					<key>StartingColumnNumber</key>
-					<string>24</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>119</string>
+					<string>122</string>
 					<key>Timestamp</key>
-					<string>734894808.0239429</string>
+					<string>734974391.7467051</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -919,16 +919,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>        NavigationView {
 </string>
 				<key>leading</key>
 				<string>        }
         
-        NavigationView {</string>
+</string>
 				<key>trailing</key>
 				<string>            VStack {
                 NavigationLink(destination:
-                        AllViews()
+                        AllViews(
 </string>
 			</dict>
 			<key>title</key>
@@ -944,13 +944,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>208</string>
+					<string>231</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>207</string>
+					<string>230</string>
 					<key>Timestamp</key>
-					<string>734900258.846928</string>
+					<string>734982119.578068</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -966,20 +966,67 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                    .none
+				<string>                movement
 </string>
 				<key>leading</key>
-				<string>                    dictionaryForScreen,
-                    objectFrameSize,
+				<string>                dictionaryForScreen,
+                objectFrameSize,
 </string>
 				<key>trailing</key>
-				<string>                )
-                .position(recenterPosition)
-                .onChange(of: recenterVM.getRecenterState()) {
+				<string>            )
+            .position(recenterPosition)
+            .onChange(of: recenterVM.getRecenterState()) {
 </string>
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT THIS IS FOR IPHONE REMOVE FOR IPAD</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>224</string>
+					<key>StartingColumnNumber</key>
+					<string>81</string>
+					<key>StartingLineNumber</key>
+					<string>223</string>
+					<key>Timestamp</key>
+					<string>734972679.707065</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>            path.addArc(center: origin,
+                        radius: radius,
+                        startAngle: startAngle &lt; endAngle ? startAngle: endAngle,</string>
+				<key>trailing</key>
+				<string>                        endAngle: endAngle &gt; startAngle ? endAngle: startAngle,
+                        clockwise: false)
+        }
+</string>
+			</dict>
+			<key>title</key>
+			<string>position appears to assign first and second position randomly: investigate</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

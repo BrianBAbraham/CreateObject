@@ -21,7 +21,7 @@ struct EnsureInitialObjectAllOnScreen {
         -> CornerDictionary {
 
         originOffset = getOriginOffsetWhenAllPositionValueArePositive()
-print("offset \(originOffset)")
+//print("offset \(originOffset)")
         let scale = getScale()
             
             //INPUT DIC FOUR CORNER

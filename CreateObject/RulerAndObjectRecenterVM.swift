@@ -30,7 +30,6 @@ class RecenterViewModel: ObservableObject {
     
    
     func setRecenterState() {
-        print (getRecenterState())
         recenterModel.resetState()
     }
 }
