@@ -41,12 +41,8 @@ struct MovementPickerView: View {
             
             movementPickVM.setMovementName(newValue)
             
-            movementPickVM.updateMovement(
-                to: newValue,
-                origin: -500.0,
-               // startAngle: 0.0,
-             //   endAngle: 90.0,
-                forward: 0.0
+            movementPickVM.updateMovementImageData(
+                to: newValue
             )
         }
     }
@@ -81,6 +77,28 @@ struct AngleSetter: View {
         }
     }
 }
+
+struct OriginSetter: View {
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
+    var setValue: (Double) -> Void  // Closure to set the angle
+    var label: String
+    var body: some View {
+        let boundStepperValue =
+        Binding(
+            get: {0.0}
+            ,
+            set: {
+                newValue in
+                self.setValue(newValue)
+            }
+        )
+        HStack{
+            //Text(label)
+            Stepper("", value: boundStepperValue, step: 10.0)
+        }
+    }
+}
+
 
 
 //struct MovementPickerViewX: View {

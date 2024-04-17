@@ -662,53 +662,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>62</string>
-					<key>StartingColumnNumber</key>
-					<string>87</string>
-					<key>StartingLineNumber</key>
-					<string>61</string>
-					<key>Timestamp</key>
-					<string>734373179.8156281</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/PositionTransformation.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>ht: [PositionAsIosAxes]) {
-</string>
-				<key>leading</key>
-				<string>    
-
-//    static func removeInteriorPoints(_ positionsLeft: [PositionAsIosAxes], positionsRig</string>
-				<key>trailing</key>
-				<string>//
-//        
-//        let leftSides = getSides(positionsLeft)
-</string>
-			</dict>
-			<key>title</key>
-			<string>DEVELOPMENT assume a rectangle</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>672</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -850,13 +803,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>215</string>
+					<string>208</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>214</string>
+					<string>207</string>
 					<key>Timestamp</key>
-					<string>734890455.098196</string>
+					<string>735056775.0560811</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -872,16 +825,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        self.origin = CGPoint(x: originOfObject.x + objectOriginToRotationPoint, y: originOfObject.y)
+				<string>        self.origin = CGPoint(x: originOfObject.x + objectToTurnOriginX, y: originOfObject.y)
 </string>
 				<key>leading</key>
-				<string>    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes){
+				<string>    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes, _ objectToTurnOriginX: Double){
         self.position = position
 </string>
 				<key>trailing</key>
 				<string>        point1 = CGPoint( x: position[0].x, y: position[0].y)
         point2 = CGPoint( x: position[1].x, y: position[1].y)
-    }
+        radius = distance(from: origin, to: point1)
 </string>
 			</dict>
 			<key>title</key>
@@ -944,13 +897,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>231</string>
+					<string>236</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>230</string>
+					<string>235</string>
 					<key>Timestamp</key>
-					<string>734982119.578068</string>
+					<string>735057104.675904</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -991,13 +944,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>224</string>
+					<string>238</string>
 					<key>StartingColumnNumber</key>
-					<string>81</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>223</string>
+					<string>237</string>
 					<key>Timestamp</key>
-					<string>734972679.707065</string>
+					<string>735056885.982928</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -1013,16 +966,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>                            startAngle: startAngle &lt; endAngle ? startAngle: endAngle,
 </string>
 				<key>leading</key>
-				<string>            path.addArc(center: origin,
-                        radius: radius,
-                        startAngle: startAngle &lt; endAngle ? startAngle: endAngle,</string>
+				<string>                path.addArc(center: origin,
+                            radius: radius,
+</string>
 				<key>trailing</key>
-				<string>                        endAngle: endAngle &gt; startAngle ? endAngle: startAngle,
-                        clockwise: false)
-        }
+				<string>                            endAngle: endAngle &gt; startAngle ? endAngle: startAngle,
+                            clockwise: false)
+            }
 </string>
 			</dict>
 			<key>title</key>

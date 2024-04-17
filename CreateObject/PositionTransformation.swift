@@ -34,10 +34,18 @@ struct ZeroValue {
     
 
 struct CreateIosPosition {
+    static func addToToupleX(_ touple: PositionAsIosAxes, _ value: Double) -> PositionAsIosAxes {
+        let p = touple
+        return
+            (x: p.x + value, y: p.y, z: p.z)
+    }
+    
+    
     static  func addTwoTouples(_ first: PositionAsIosAxes, _ second: PositionAsIosAxes) -> PositionAsIosAxes {
         
         (x: first.x + second.x,y: first.y + second.y, z: first.z + second.z )
     }
+    
     
     static func addArrayOfTouples(
         _ toupleArray: [PositionAsIosAxes])
@@ -58,65 +66,6 @@ struct CreateIosPosition {
         (x: first.x - second.x,y: first.y - second.y, z: first.z - second.z )
     }
     
-
-//    static func removeInteriorPoints(_ positionsLeft: [PositionAsIosAxes], positionsRight: [PositionAsIosAxes]) {
-//
-//        
-//        let leftSides = getSides(positionsLeft)
-//        let rightSides = getSides(positionsRight)
-//        var modifiedPositions: [PositionAsIosAxes] = []
-//      
-//       
-//        let useAnyIndex = 0
-//        let notSwappedOrOverlap = //ignore rigth side of left and left side of right
-//            leftSides.right[useAnyIndex].x < rightSides.left[useAnyIndex].x
-//        let swappedWithOverlap =
-//            leftSides.left[useAnyIndex].x > rightSides.right[useAnyIndex].x
-//        
-//        
-//  
-//        
-//        func getSides(
-//            _ positions: [PositionAsIosAxes]
-//        ) -> (
-//            top: [PositionAsIosAxes],
-//            bottom: [PositionAsIosAxes],
-//            left: [PositionAsIosAxes],
-//            right: [PositionAsIosAxes]
-//        ) {
-//            let top = [
-//                0,
-//                1
-//            ].map {
-//                positions[$0]
-//            }
-//            let bottom = [
-//                2,
-//                3
-//            ].map {
-//                positions[$0]
-//            }
-//            let left = [
-//                0,
-//                3
-//            ].map{
-//                positions[$0]
-//            }
-//            let right = [
-//                2,
-//                3
-//            ].map{
-//                positions[$0]
-//            }
-//            
-//            return (
-//                top: top,
-//                bottom: bottom,
-//                left: left,
-//                right: right
-//            )
-//        }
-//    }
     
     static func getCornersFromDimension (
         _ dimension: Dimension3d)
@@ -170,8 +119,6 @@ struct CreateIosPosition {
         return (x: xArray, y: yArray, z: zArray)
     }
     
- 
-
     
     static func addToupleToArrayOfTouples(_ touple: PositionAsIosAxes, _ toupleArray: [PositionAsIosAxes]) -> [PositionAsIosAxes] {
         var newArrayOfTouple: [PositionAsIosAxes] = []
@@ -197,10 +144,6 @@ struct CreateIosPosition {
             z: right.z)
     }
     
-
-    
-    
-
     static func minMaxPosition(
         _ corners: PositionDictionary)
         -> [PositionAsIosAxes] {
@@ -223,61 +166,8 @@ struct CreateIosPosition {
             }
             return  [(x: xValues[0], y: yValues[0], z: 0.0), (x: xValues[1], y: yValues[1], z: 0.0)]
     }
-
-    
-    
-   
-
-
-//      static func getInteriorPositions (_ polygon: [PositionAsIosAxes]) -> [PositionAsIosAxes] {
-//            var updatedPolygon = polygon
-//
-//            for point in polygon {
-//                let otherPoints = polygon.filter { $0 != point }
-//                if isPointInsidePolygon(point: point, polygon: otherPoints) {
-//                    updatedPolygon.removeAll { $0 == point }
-//                }
-//            }
-//
-//          func isPointInsidePolygon(point: PositionAsIosAxes, polygon: [PositionAsIosAxes]) -> Bool {
-//              var isInside = false
-//              let n = polygon.count
-//
-//              var i = 0
-//              var j = n - 1
-//
-//              while i < n {
-//                  let pi = polygon[i]
-//                  let pj = polygon[j]
-//
-//                  if ((pi.y > point.y) != (pj.y > point.y)) &&
-//                     (point.x < (pj.x - pi.x) * (point.y - pi.y) / (pj.y - pi.y) + pi.x) {
-//                      isInside = !isInside
-//                  }
-//
-//                  j = i
-//                  i += 1
-//              }
-//
-//              return isInside
-//          }
-//
-//            return updatedPolygon
-//        }
-        
-
-    
-    
-
-
-    // Example usage
-//    let polygon = [CGPoint(x: 0, y: 0), CGPoint(x: 0, y: 5), CGPoint(x: 5, y: 5), CGPoint(x: 5, y: 0)]
-
-//    let filteredPolygon = removeInteriorPoints(polygon: polygon)
-//    print(filteredPolygon)
-    
-    
 }
+
 
 struct DimensionChange {
     let from3Dto2D: Dimension

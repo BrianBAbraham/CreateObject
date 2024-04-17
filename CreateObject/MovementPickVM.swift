@@ -9,44 +9,58 @@ import Foundation
 import Combine
 
 struct MovementPickModel {
-    let origin: PositionAsIosAxes
-    let startAngle: Double = 0.0
-    let endAngle: Double = 0.0
-    let forward: Double = 0.0
+    var turnOriginToObjectOrigin: PositionAsIosAxes
+    let startAngle: Double
+    var endAngle: Double
+    let forward: Double
+    
+    mutating func setEndAngle(_ angleIncrement: Double) {
+        endAngle += angleIncrement
+    }
     
     
+    mutating func setTurnOriginToObjectOriginX( _ increment: Double) {
+        let p = turnOriginToObjectOrigin
+        turnOriginToObjectOrigin = CreateIosPosition.addToToupleX(p, increment)
+    }
 }
 
 
 class MovementPickViewModel: ObservableObject {
-    
     @Published var movementName: String = Movement.none.rawValue
+    
     var movementType: Movement {
         Movement(rawValue: movementName) ?? .none
     }
     
-    
-    var origin: PositionAsIosAxes // of turn
-    @Published var startAngle: Double {//of turn
+    var turnOriginToObjectOrigin: PositionAsIosAxes {//of turn
         didSet {
             movementImageData = getMovementImageData()
         }
     }
-    @Published var endAngle: Double {//of turn
+    var startAngle: Double {//of turn
         didSet {
             movementImageData = getMovementImageData()
         }
     }
-    
+    var endAngle: Double {//of turn
+        didSet {
+            movementImageData = getMovementImageData()
+        }
+    }
+
     var forward: Double //in direction facing
     
     @Published private var movementPickModel: MovementPickModel
     
-    @Published var objectImageData: ObjectImageData =
-    ObjectImageService.shared.objectImageData
+    //intialise object data
+   var objectImageData: ObjectImageData =
+        ObjectImageService.shared.objectImageData
     
     private var cancellables: Set<AnyCancellable> = []
     
+    //intialise movement data
+    //movement are object data plus transformed object data
     @Published private var movementImageData = MovementImageData (
         ObjectImageService.shared.objectImageData,
         movementType: .turn,
@@ -57,29 +71,32 @@ class MovementPickViewModel: ObservableObject {
     )
     
     var ensureInitialObjectAllOnScreen =
-    EnsureInitialObjectAllOnScreen(
-        fourCornerDic: [:],
-        oneCornerDic: [:],
-        objectDimension: ZeroValue.dimension
-    )
+        // drag will not work if coordinates are negative
+        EnsureInitialObjectAllOnScreen(
+            fourCornerDic: [:],
+            oneCornerDic: [:],
+            objectDimension: ZeroValue.dimension
+        )
     
     init(
         _ movement: String = Movement.none.rawValue,
         _ origin: PositionAsIosAxes = ZeroValue.iosLocation,
         _ startAngle: Double = 0.0,
-        _ endAngle: Double = 0.0,
+        _ endAngle: Double = 10.0,
         _ forward: Double = 0.0
         
     ){
-        
         self.movementName = movement
-        self.origin = origin
+        self.turnOriginToObjectOrigin = origin
         self.startAngle = startAngle
         self.endAngle = endAngle
         self.forward = forward
         
         movementPickModel = MovementPickModel(
-            origin: ZeroValue.iosLocation
+            turnOriginToObjectOrigin: origin,
+            startAngle: startAngle,
+            endAngle: endAngle,
+            forward: forward
         )
         
         ObjectImageService.shared.$objectImageData
@@ -88,7 +105,7 @@ class MovementPickViewModel: ObservableObject {
                 self?.movementImageData = self?.getMovementImageData() ?? MovementImageData(
                     newData,
                     movementType: self?.movementType ?? .none,
-                    origin: self?.origin ?? ZeroValue.iosLocation,
+                    origin: self?.turnOriginToObjectOrigin ?? ZeroValue.iosLocation,
                     startAngle: self?.startAngle ?? 0.0,
                     endAngle: self?.endAngle ?? 0.0,
                     forward: self?.forward ?? 0.0
@@ -105,90 +122,37 @@ class MovementPickViewModel: ObservableObject {
     }
 }
     
+
+//MARK: Get State A - Z
 extension MovementPickViewModel {
     
-    func updateMovement(
-        to newMovement: String,
-        origin: Double,
-        //startAngle: Double,
-        //endAngle: Double,
-        forward: Double
-    ) {
-        
-        movementName = newMovement
-       // print(startAngle)
-        self.origin = PositionAsIosAxes(x: origin, y: 0.0, z: 0.0)
-        self.startAngle = startAngle
-        self.endAngle = endAngle
-        self.forward = forward
-        
-        movementImageData = getMovementImageData()
-        //        ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
-        //
-        //
-        //        cancellables.forEach {
-        //            $0.cancel()
-        //        }
-        //        cancellables.removeAll()
-        //
-        //        ObjectImageService.shared.$objectImageData
-        //            .sink { [weak self] newData in
-        //                self?.objectImageData = newData
-        //                self?.movementImageData = self?.getMovementImageData() ?? MovementImageData(
-        //                    newData,
-        //                    movementType: newMovement,
-        //                    origin: (x: origin, y: 0.0, z: 0.0),
-        //                    startAngle: startAngle,
-        //                    endAngle: endAngle,
-        //                    forward: forward
-        //                )
-        //            }
-        //            .store(
-        //                in: &cancellables
-        //            )
-    }
-    
-    
-    func getCurrentMovementType() -> Movement {
+    func getMovementType() -> Movement {
         movementType
     }
     
     
-    func setMovementName(_ movementName: String) {
-        self.movementName = movementName
-    }
-    
     func getEndAngle() -> Double {
-        endAngle
+        movementPickModel.endAngle
     }
     
-    func setEndAngle(_ angle: Double) {
-        // print(angle)
-        endAngle += angle
-    }
-    
+
     func getStartAngle() -> Double {
         startAngle
     }
     
-    func setStartAngle(_ angle: Double) {
-        // print(angle)
-        startAngle += angle
-    }
     
-    func setStartAndEndAngle(_ angle: Double) {
-        startAngle += angle
-        endAngle += angle
+    func getObjectTurnOriginX() -> Double {
+        
+//        movementPickModel.turnOriginToObjectOrigin.x
+        turnOriginToObjectOrigin.x
     }
     
     
     func getMovementImageData() -> MovementImageData{
-        //print("getMovementImageData")
-        return
         MovementImageData(
             objectImageData,
             movementType: movementType,
-            origin: origin,
+            origin: turnOriginToObjectOrigin,
             startAngle: startAngle,
             endAngle: endAngle,
             forward: forward
@@ -196,8 +160,87 @@ extension MovementPickViewModel {
     }
 }
     
-    
+
+
+//MARK: Set State A - Z
 extension MovementPickViewModel {
+   
+    
+    func setEndAngle(_ angleIncrement: Double) {
+        movementPickModel.setEndAngle(angleIncrement)
+    }
+    
+    
+    func setMovementName(_ movementName: String) {
+        self.movementName = movementName
+    }
+    
+
+    func setObjectTurnOriginX(_ increment: Double ) {
+        let newValue = turnOriginToObjectOrigin.x + increment
+        turnOriginToObjectOrigin = (x: newValue, y: turnOriginToObjectOrigin.y, z: turnOriginToObjectOrigin.z)
+        
+//        movementPickModel.setTurnOriginToObjectOriginX(increment)
+    }
+    
+    
+    func setStartAngle(_ angle: Double) {
+        startAngle += angle
+    }
+    
+   
+    func setStartAndEndAngle(_ angle: Double) {
+        startAngle += angle
+        endAngle += angle
+    }
+    
+    
+    func updateMovementImageData(
+        to newMovement: String
+    ) {
+        movementName = newMovement
+        movementImageData = getMovementImageData()
+    }
+    
+}
+
+
+    
+//MARK: Names and Dictionaries
+extension MovementPickViewModel {
+    func createArcDictionary(_ dictionary: CornerDictionary, _ movement: Movement) -> CornerDictionary {
+        var arcDictionary: CornerDictionary = [:]
+        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
+        let names = Array(postTiltObjectToPartFourCornerPerKeyDic.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
+        let namesWithoutPrefix = Array(Set(RemovePrefix.get(PartTag.arcPoint.rawValue, names)))
+        let prefixNames = SubstringBefore.get(substring: PartTag.arcPoint.rawValue, in: names)
+        
+        for name in namesWithoutPrefix {
+           
+            let firstPointName = prefixNames[0] + name
+            let secondPointName = prefixNames[1] + name
+            guard let firstPointValue = postTiltObjectToPartFourCornerPerKeyDic[firstPointName] else {
+                fatalError("\(names)")
+            }
+            guard let secondPointValue = postTiltObjectToPartFourCornerPerKeyDic[secondPointName] else {
+                fatalError()
+            }
+            let any = 0//four identical values; conforms to corners; disregard three
+            arcDictionary += [name: [firstPointValue[any], secondPointValue[any]]]
+        }
+        
+        return arcDictionary
+    }
+    
+    
+    func  getObjectDictionaryForScreen ()
+        -> CornerDictionary {
+            ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
+        let dic =
+            ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
+
+        return dic
+    }
     
     
     func getPostTiltOneCornerPerKeyDic() -> PositionDictionary {
@@ -222,71 +265,14 @@ extension MovementPickViewModel {
     }
     
     
-    func createArcDictionary(_ dictionary: CornerDictionary, _ movement: Movement) -> CornerDictionary {
-       // print(movement)
-        var arcDictionary: CornerDictionary = [:]
-        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
-        let names = Array(postTiltObjectToPartFourCornerPerKeyDic.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
-        let namesWithoutPrefix = Array(Set(RemovePrefix.get(PartTag.arcPoint.rawValue, names)))
-        let prefixNames = SubstringBefore.get(substring: PartTag.arcPoint.rawValue, in: names)
-        let anyPrefixName = prefixNames[0]
-        
-        for name in namesWithoutPrefix {
-           // print(names)
-            let firstPointName = prefixNames[0] + name
-            let secondPointName = prefixNames[1] + name
-            guard let firstPointValue = postTiltObjectToPartFourCornerPerKeyDic[firstPointName] else {
-                fatalError("\(names)")
-            }
-            guard let secondPointValue = postTiltObjectToPartFourCornerPerKeyDic[secondPointName] else {
-                fatalError()
-            }
-            let any = 0//four identical values are created for arc point
-            arcDictionary += [name: [firstPointValue[any], secondPointValue[any]]]
-        }
-        
-      
-        return arcDictionary
-    }
-    
-    
     func getUniquePartNamesFromObjectDictionary() -> [String] {
-   
-        return
             Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { !$0.contains(PartTag.arcPoint.rawValue) }
     }
-    
-    
 }
 
 
-
+//MARK: Transform for Screen
 extension MovementPickViewModel {
-    
-    func  getObjectDictionaryForScreen ()
-        -> CornerDictionary {
-            ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
-        var dic =
-            ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
-
-    return dic
-    }
-    
-    
-    func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double{
-            ensureInitialObjectAllOnScreen
-                .getOffsetToKeepObjectOriginStaticInLengthOnScreen()
-    }
-    
-    
-    func getOffsetForObjectOrigin() -> PositionAsIosAxes {
-        let offset =
-        ensureInitialObjectAllOnScreen.originOffset
-        //print(offset)
-    return offset
-    }
-    
-    
     func getMakeWholeObjectOnScreen()
         -> EnsureInitialObjectAllOnScreen {
             let objectDimension: Dimension =
@@ -325,4 +311,21 @@ extension MovementPickViewModel {
     }
 
 }
+    
+
+//MARK: Movement Information
+extension MovementPickViewModel {
+    func getOffsetToKeepObjectOriginStaticInLengthOnScreen() -> Double{
+            ensureInitialObjectAllOnScreen
+                .getOffsetToKeepObjectOriginStaticInLengthOnScreen()
+    }
+    
+    
+    func getOffsetForObjectOrigin() -> PositionAsIosAxes {
+        let offset =
+        ensureInitialObjectAllOnScreen.originOffset
+    return offset
+    }
+}
+
     

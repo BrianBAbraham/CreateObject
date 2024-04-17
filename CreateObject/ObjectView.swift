@@ -192,57 +192,59 @@ struct ArcPointView: View {
 
 
 struct ArcView: View {
-    var origin: CGPoint = CGPoint(x: 0.0, y: 0.0)
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
+    let origin: CGPoint
     let position: [PositionAsIosAxes]
-    var point1: CGPoint
-    var point2: CGPoint
+    let point1: CGPoint
+    let point2: CGPoint
+    let radius: CGFloat
+    let startAngle: Angle
+    let endAngle: Angle
 
-    private var radius: CGFloat {
-        distance(from: origin, to: point1) // or point2, since they're equidistant
-    }
 
-    private var startAngle: Angle {
-        angle(from: origin, to: point1)
-    }
-
-    private var endAngle: Angle {
-        angle(from: origin, to: point2)
-    }
-
-    let objectOriginToRotationPoint = -500.0
-    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes){
+    
+    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes, _ objectToTurnOriginX: Double){
         self.position = position
-        self.origin = CGPoint(x: originOfObject.x + objectOriginToRotationPoint, y: originOfObject.y)
+        self.origin = CGPoint(x: originOfObject.x + objectToTurnOriginX, y: originOfObject.y)
         point1 = CGPoint( x: position[0].x, y: position[0].y)
         point2 = CGPoint( x: position[1].x, y: position[1].y)
+        radius = distance(from: origin, to: point1)
+        startAngle = angle(from: origin, to: point1)
+        endAngle = angle(from: origin, to: point2)
+        
+        // Calculate the distance between two points
+        func distance(from: CGPoint, to: CGPoint) -> CGFloat {
+            sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
+        }
+
+        // Calculate the angle from the origin to a point
+        func angle(from origin: CGPoint, to point: CGPoint) -> Angle {
+            let dy = point.y - origin.y
+            let dx = point.x - origin.x
+            let angle = atan2(dy, dx)
+           
+            return Angle(radians: Double(angle))
+        }
+        
+        
     }
     var body: some View {
-       
-        Path { path in
-            path.addArc(center: origin,
-                        radius: radius,
-                        startAngle: startAngle < endAngle ? startAngle: endAngle,
-                        endAngle: endAngle > startAngle ? endAngle: startAngle,
-                        clockwise: false)
+        ZStack{
+            MyCircle(fillColor: .green, strokeColor: .black, 50.0, origin )
+               // .position(origin)
+            Path { path in
+                path.addArc(center: origin,
+                            radius: radius,
+                            startAngle: startAngle < endAngle ? startAngle: endAngle,
+                            endAngle: endAngle > startAngle ? endAngle: startAngle,
+                            clockwise: false)
+            }
+            .stroke(Color.blue, lineWidth: 2)
         }
-        .stroke(Color.blue, lineWidth: 2)
-//        .onAppear{ print("radius \(radius)  Start angle: \(startAngle.degrees), End angle: \(endAngle.degrees)")}
     }
     
 
-    // Calculate the distance between two points
-    private func distance(from: CGPoint, to: CGPoint) -> CGFloat {
-        sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
-    }
 
-    // Calculate the angle from the origin to a point
-    private func angle(from origin: CGPoint, to point: CGPoint) -> Angle {
-        let dy = point.y - origin.y
-        let dx = point.x - origin.x
-        let angle = atan2(dy, dx)
-       
-        return Angle(radians: Double(angle))
-    }
 }
 
 
@@ -443,6 +445,9 @@ struct ObjectView: View {
         
         let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen, movement): [:]
         let uniqueArcNames = Array(arcDictionary.keys)
+        
+        let objectTurnOriginX = movementPickVM.getObjectTurnOriginX()
+        
         ZStack{
             ZStack{
                 ZStack{
@@ -469,13 +474,14 @@ struct ObjectView: View {
                         ForEach(uniqueArcNames, id: \.self) { name in
                             ArcView(
                                 arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
-                                objectOriginInScreen
+                                objectOriginInScreen,
+                                objectTurnOriginX
                                 
                             )
                         }
-                        
-                        MyCircle(fillColor: .red, strokeColor: .black, 100.0, CGPoint.zero )
-                            .position(CGPoint(x: objectOriginInScreen.x, y: objectOriginInScreen.y))
+//                        
+//                        MyCircle(fillColor: .red, strokeColor: .black, 100.0, CGPoint.zero )
+//                            .position(CGPoint(x: objectOriginInScreen.x, y: objectOriginInScreen.y))
                     }
                 }
 

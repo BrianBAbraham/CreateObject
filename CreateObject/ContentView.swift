@@ -114,7 +114,7 @@ struct ContentView: View {
         }
         
         var movement: Movement {
-            movementPickVM.getCurrentMovementType()
+            movementPickVM.getMovementType()
         }
         var startAngle: Double {
             movementPickVM.getStartAngle()
@@ -132,7 +132,7 @@ struct ContentView: View {
                             movement
                         )
                 )
-                    {Text("select equipment")}
+                    {Text("select and edit equipment")}
                     .padding()
                   
                 NavigationLink(destination:
@@ -158,15 +158,20 @@ struct ContentView: View {
                             Spacer()
 //                            AngleSetter(setAngle: movementPickVM.setStartAndEndAngle, label: "both")
                         }
-                       
-                    }
+                        HStack{
+                            Spacer()
+                            Text("turn tightness")
+                            OriginSetter(setValue: movementPickVM.setObjectTurnOriginX, label: "origin X")
+                            Spacer()
+                        }
+                        }
                             
                         .padding()
                         .backgroundModifier()
                         .transition(.move(edge: .bottom))
                     }
                 )
-                    {Text("see size of movements")}
+                    {Text("edit movements")}
                     .padding()
                 
                 NavigationLink(destination:
