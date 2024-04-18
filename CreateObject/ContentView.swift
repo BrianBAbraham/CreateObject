@@ -106,6 +106,8 @@ struct ContentView: View {
         var dictionaryForScreen: CornerDictionary {
             let dic =
             movementPickVM.getObjectDictionaryForScreen()
+//            print(dic)
+//            print("")
             return dic
         }
         
@@ -152,12 +154,12 @@ struct ContentView: View {
                         HStack {
                             Spacer()
                             AnglePickerView()
-                            AngleSetter(setAngle: movementPickVM.setStartAngle, label: "start")
-//                            Spacer()
-//                            AngleSetter(setAngle: movementPickVM.setEndAngle, label: "end")
+                            AngleSetter(setAngle: movementPickVM.setObjectAngle)
                             Spacer()
-//                            AngleSetter(setAngle: movementPickVM.setStartAndEndAngle, label: "both")
                         }
+                        .opacity(movementPickVM.getObjectIsStatic() ? 0.3: 1.0)
+                        .disabled(movementPickVM.getObjectIsStatic())
+                        
                         HStack{
                             Spacer()
                             Text("turn tightness")

@@ -76,14 +76,27 @@ struct ObjectImageData {
             
             createPostTiltDictionaries()
             
+            addOriginToDictionary()
+            
             addArcPointsToDictionary()
             
             getSize()
             
+//                    DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic
+//                    ).forEach{print($0)}
         }
     
-    //        DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic
-    //        ).forEach{print($0)}
+    mutating func addOriginToDictionary() {
+        
+      
+        let name =
+            CreateNameFromIdAndPart(PartTag.id0, PartTag.origin).name
+        let corners = getTopViewCorners(
+        createCorner(PartDefaultDimension.joint, ZeroValue.iosLocation))
+        postTiltObjectToPartFourCornerPerKeyDic[name] = corners
+
+       
+    }
 
    mutating func getSize() {
         let  postTiltObjectToOneCornerPerKeyDic =
@@ -116,17 +129,9 @@ struct ObjectImageData {
         let side = 1.0
         let arcPointDimension: Dimension3d = (width: side, length: side, height: side)
         
-//        let arcPointAllCorners = CreateIosPosition.getCornersFromDimension(arcPointDimension)
-//        
-//        let arcPointTopCorners = getTopViewCorners(arcPointAllCorners)
-        
         for index in 0..<arcNames.count {
             
             if arcPoints[index].x != Double.infinity {
-//                let corners =
-//                    CreateIosPosition.addToupleToArrayOfTouples(arcPoints[index], arcPointTopCorners)
-                //print(arcNames[index])
-                
                 let corners = Array(repeating: arcPoints[index], count: 4)
                 postTiltObjectToPartFourCornerPerKeyDic += [arcNames[index]: corners]
             }

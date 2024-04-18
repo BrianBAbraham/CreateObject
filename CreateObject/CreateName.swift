@@ -44,15 +44,15 @@ struct ConnectStrings {
 struct CreateNameFromIdAndPart {
     var name: String
     
-    init(_ id: PartTag, _ part: Part) {
+    init(_ id: PartTag, _ part: Parts) {
         
         name = getNameFromParts(id, part)
         
         func getNameFromParts(_ id: PartTag, _ part: Parts)
             -> String {
-                let downcastPart = part as! Part
+              //  let downcastPart = part as! Part
                 let parts: [Parts] =
-                [Part.objectOrigin, ObjectId.objectId, PartTag.stringLink, downcastPart , id, PartTag.stringLink, Part.mainSupport, PartTag.id0]
+                [Part.objectOrigin, ObjectId.objectId, PartTag.stringLink, part , id, PartTag.stringLink, Part.mainSupport, PartTag.id0]
                    return
                     CreateNameFromParts(parts ).name
         }

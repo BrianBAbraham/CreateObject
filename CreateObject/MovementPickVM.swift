@@ -9,40 +9,43 @@ import Foundation
 import Combine
 
 struct MovementPickModel {
-    var turnOriginToObjectOrigin: PositionAsIosAxes
-    let startAngle: Double
-    var endAngle: Double
+
     let forward: Double
+
     
-    mutating func setEndAngle(_ angleIncrement: Double) {
-        endAngle += angleIncrement
-    }
-    
-    
-    mutating func setTurnOriginToObjectOriginX( _ increment: Double) {
-        let p = turnOriginToObjectOrigin
-        turnOriginToObjectOrigin = CreateIosPosition.addToToupleX(p, increment)
-    }
+
 }
 
 
 class MovementPickViewModel: ObservableObject {
-    @Published var movementName: String = Movement.none.rawValue
-    
-    var movementType: Movement {
-        Movement(rawValue: movementName) ?? .none
+    @Published var movementName: String {
+        didSet {
+            setMovementType()
+        }
     }
+    var movementType: Movement = .none
     
-    var turnOriginToObjectOrigin: PositionAsIosAxes {//of turn
+    @Published var objectAngleName: String {
+        didSet {
+            setObjectAngleType()
+        }
+    }
+
+    var objectAngleType: WhichAngle = .end
+    
+    
+    @Published var turnOriginToObjectOrigin: PositionAsIosAxes {//of turn
         didSet {
             movementImageData = getMovementImageData()
         }
     }
+    
     var startAngle: Double {//of turn
         didSet {
             movementImageData = getMovementImageData()
         }
     }
+    
     var endAngle: Double {//of turn
         didSet {
             movementImageData = getMovementImageData()
@@ -51,13 +54,21 @@ class MovementPickViewModel: ObservableObject {
 
     var forward: Double //in direction facing
     
-    @Published private var movementPickModel: MovementPickModel
     
     //intialise object data
    var objectImageData: ObjectImageData =
         ObjectImageService.shared.objectImageData
     
     private var cancellables: Set<AnyCancellable> = []
+    
+   @Published var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
+    {
+        didSet{
+            
+            getObjectOrginDictionary()
+        }
+    }
+    
     
     //intialise movement data
     //movement are object data plus transformed object data
@@ -82,7 +93,7 @@ class MovementPickViewModel: ObservableObject {
         _ movement: String = Movement.none.rawValue,
         _ origin: PositionAsIosAxes = ZeroValue.iosLocation,
         _ startAngle: Double = 0.0,
-        _ endAngle: Double = 10.0,
+        _ endAngle: Double = 30.0,
         _ forward: Double = 0.0
         
     ){
@@ -92,19 +103,16 @@ class MovementPickViewModel: ObservableObject {
         self.endAngle = endAngle
         self.forward = forward
         
-        movementPickModel = MovementPickModel(
-            turnOriginToObjectOrigin: origin,
-            startAngle: startAngle,
-            endAngle: endAngle,
-            forward: forward
-        )
+        
+        objectAngleName = objectAngleType.rawValue
+        
         
         ObjectImageService.shared.$objectImageData
             .sink { [weak self] newData in
                 self?.objectImageData = newData
-                self?.movementImageData = self?.getMovementImageData() ?? MovementImageData(
-                    newData,
-                    movementType: self?.movementType ?? .none,
+                self?.movementImageData = self?.getMovementImageData() ?? MovementImageData(//original and transformed original
+                    newData,//original
+                    movementType: self?.movementType ?? .none,//transform param
                     origin: self?.turnOriginToObjectOrigin ?? ZeroValue.iosLocation,
                     startAngle: self?.startAngle ?? 0.0,
                     endAngle: self?.endAngle ?? 0.0,
@@ -114,6 +122,13 @@ class MovementPickViewModel: ObservableObject {
             .store(
                 in: &cancellables
             )
+        
+        DictionaryService.shared.$currentObjectType
+            .sink { [weak self] newData in
+                print("New currentObjectType: \(newData)")
+                self?.currentObjectType = newData
+            }
+            .store(in: &self.cancellables)
         
         movementImageData = getMovementImageData()
         
@@ -126,24 +141,28 @@ class MovementPickViewModel: ObservableObject {
 //MARK: Get State A - Z
 extension MovementPickViewModel {
     
+
+    func getObjectIsStatic() -> Bool{
+        movementType == .none ? true: false
+    }
+    
+    
+    func getEndAngle() -> Double {
+        endAngle
+    }
+    
+
     func getMovementType() -> Movement {
         movementType
     }
     
     
-    func getEndAngle() -> Double {
-        movementPickModel.endAngle
-    }
-    
-
     func getStartAngle() -> Double {
         startAngle
     }
     
     
     func getObjectTurnOriginX() -> Double {
-        
-//        movementPickModel.turnOriginToObjectOrigin.x
         turnOriginToObjectOrigin.x
     }
     
@@ -164,34 +183,41 @@ extension MovementPickViewModel {
 
 //MARK: Set State A - Z
 extension MovementPickViewModel {
-   
+    
+    func setObjectAngle(_ angleIncrement: Double) {
+        switch objectAngleType {
+        case .start:
+            setStartAngle(angleIncrement)
+        case .end:
+            setEndAngle(angleIncrement)
+        case .startAndEnd:
+            setStartAngle(angleIncrement)
+            setEndAngle(angleIncrement)
+        }
+    }
+    
     
     func setEndAngle(_ angleIncrement: Double) {
-        movementPickModel.setEndAngle(angleIncrement)
+        endAngle += angleIncrement
+    }
+    
+    func setMovementType() {
+        movementType = Movement(rawValue: movementName) ?? .none
     }
     
     
-    func setMovementName(_ movementName: String) {
-        self.movementName = movementName
+    func setObjectAngleType(){
+        objectAngleType = WhichAngle(rawValue: objectAngleName) ?? .end
     }
-    
 
     func setObjectTurnOriginX(_ increment: Double ) {
         let newValue = turnOriginToObjectOrigin.x + increment
         turnOriginToObjectOrigin = (x: newValue, y: turnOriginToObjectOrigin.y, z: turnOriginToObjectOrigin.z)
-        
-//        movementPickModel.setTurnOriginToObjectOriginX(increment)
     }
     
     
     func setStartAngle(_ angle: Double) {
         startAngle += angle
-    }
-    
-   
-    func setStartAndEndAngle(_ angle: Double) {
-        startAngle += angle
-        endAngle += angle
     }
     
     
@@ -242,6 +268,26 @@ extension MovementPickViewModel {
         return dic
     }
     
+    func getObjectOrginDictionary() {
+        
+        let origins: [PositionAsIosAxes] = []
+        let filteredDictionary =
+        getObjectDictionaryForScreen().filter { $0.key.contains(PartTag.origin.rawValue) }
+        //print(filteredDictionary)
+        //print(getObjectDictionaryForScreen())
+//        let positions = filteredDictionary.map{$0.value}
+//        if positions.count == 0 {
+//            fatalError()
+//        } else {
+//            let fourDuplicates = 0
+//            for position in positions {
+//                
+//            }
+//            return positions[fourDuplicates]
+//        }
+    }
+    
+    
     
     func getPostTiltOneCornerPerKeyDic() -> PositionDictionary {
         movementImageData.objectImageData.postTiltObjectToOneCornerPerKeyDic
@@ -252,7 +298,7 @@ extension MovementPickViewModel {
    
         let dictionary =
         movementImageData.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
-     
+    
         return dictionary
     }
     

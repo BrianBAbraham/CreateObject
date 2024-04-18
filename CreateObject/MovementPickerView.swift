@@ -10,10 +10,6 @@ import SwiftUI
 struct MovementPickerView: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     
-   // @State private var selectedMenuNameItem: String = Movement.none.rawValue
-    
-    
-    
     let menuItems = Movement.allCases.map {
         $0.rawValue
     }
@@ -22,7 +18,7 @@ struct MovementPickerView: View {
     var body: some View {
         Picker(
             "",
-            selection: $movementPickVM.movementName//selectedMenuNameItem
+            selection: $movementPickVM.movementName
         ) {
             ForEach(
                 menuItems,
@@ -38,8 +34,6 @@ struct MovementPickerView: View {
         ) {
             oldValue,
             newValue in
-            
-            movementPickVM.setMovementName(newValue)
             
             movementPickVM.updateMovementImageData(
                 to: newValue
@@ -60,7 +54,6 @@ struct MovementPickerView: View {
 struct AngleSetter: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     var setAngle: (Double) -> Void  // Closure to set the angle
-    var label: String
     var body: some View {
         let boundStepperValue =
         Binding(
@@ -72,11 +65,11 @@ struct AngleSetter: View {
             }
         )
         HStack{
-            //Text(label)
             Stepper("", value: boundStepperValue, step: 10.0)
         }
     }
 }
+
 
 struct OriginSetter: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
@@ -157,7 +150,7 @@ struct AnglePickerView: View {
           
             Picker(
                 "",
-                selection: $movementPickVM.movementName//selectedMenuNameItem
+                selection: $movementPickVM.objectAngleName
             ) {
                 ForEach(
                     menuItems,
