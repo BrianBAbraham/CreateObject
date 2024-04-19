@@ -335,7 +335,7 @@ struct PartDefaultDimension {
     static let fixedWheelDimension = (width: 20.0, length: 600.0, height: 600.0)
     static let poweredWheelDimension = (width: 50.0, length: 200.0, height: 200.0)
     static let steeredWheelDimension = (width: 50.0, length: 200.0, height: 200.0)
-    static let joint = (width: 100.0, length: 100.0, height: 20.0)
+    static let joint = (width: 10.0, length: 10.0, height: 10.0)
 
     var linkedOrParentDimension = ZeroValue.dimension3d
     var userEditedDimensionOneOrTwoOptional: OneOrTwoOptional<Dimension3d>?

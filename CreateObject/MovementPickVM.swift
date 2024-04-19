@@ -163,6 +163,8 @@ extension MovementPickViewModel {
     
     
     func getObjectTurnOriginX() -> Double {
+       // print(turnOriginToObjectOrigin.x)
+        return
         turnOriginToObjectOrigin.x
     }
     
@@ -234,7 +236,7 @@ extension MovementPickViewModel {
     
 //MARK: Names and Dictionaries
 extension MovementPickViewModel {
-    func createArcDictionary(_ dictionary: CornerDictionary, _ movement: Movement) -> CornerDictionary {
+    func createArcDictionary(_ dictionary: CornerDictionary) -> CornerDictionary {
         var arcDictionary: CornerDictionary = [:]
         let postTiltObjectToPartFourCornerPerKeyDic = dictionary
         let names = Array(postTiltObjectToPartFourCornerPerKeyDic.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
@@ -256,6 +258,33 @@ extension MovementPickViewModel {
         }
         
         return arcDictionary
+    }
+    
+    
+    func getObjectOrigins(_ dictionary: CornerDictionary) -> [PositionAsIosAxes] {
+        var origins: [PositionAsIosAxes] = []
+        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
+       
+        let originDictionary = postTiltObjectToPartFourCornerPerKeyDic.filter { $0.key.contains(PartTag.origin.rawValue) }
+        let any = 0//four identical values; conforms to corners; disregard three
+        let numberOfOrigin = originDictionary.count
+    
+        for index in 0..<numberOfOrigin {
+            let name = Part.objectOrigin.rawValue + PartTag.stringLink.rawValue + "id" + String(index)
+            
+            for (key, value) in originDictionary {
+                if key.contains(name) {
+                    //print(value)
+                    origins.append(value[any])
+                }
+            }
+        }
+        if origins.count == 0 {
+            fatalError()
+        } else {
+            
+            return origins
+        }
     }
     
     
@@ -303,6 +332,11 @@ extension MovementPickViewModel {
     }
     
     
+    func getOriginNamesFromObjectDictionary() -> [String] {
+        Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.origin.rawValue) }
+    }
+    
+    
     func getUniqueArcPointNamesFromObjectDictionary() -> [String] {
         let names =
              Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
@@ -312,7 +346,16 @@ extension MovementPickViewModel {
     
     
     func getUniquePartNamesFromObjectDictionary() -> [String] {
-            Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { !$0.contains(PartTag.arcPoint.rawValue) }
+        Array(
+            getPostTiltObjectToPartFourCornerPerKeyDic().keys
+        ).filter { 
+            !(
+                $0.contains(
+                    PartTag.arcPoint.rawValue //UI manages differently from parts
+                )  || $0.contains(
+                    PartTag.origin.rawValue// ditto
+                )
+            ) }
     }
 }
 

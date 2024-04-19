@@ -399,6 +399,7 @@ struct ObjectView: View {
     
     let uniquePartNames: [String]
     let uniqueArcPointNames: [String]
+    let uniqueOriginNames: [String]
     
     var objectName: String {
         objectPickVM.getCurrentObjectName()
@@ -410,21 +411,26 @@ struct ObjectView: View {
     let movement: Movement
     var objectOriginInScreen: PositionAsIosAxes {
         movementPickVM.getOffsetForObjectOrigin()}
+    var circleGeometry: GeometryProxy
     
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
+        _ originNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
-        _ movement: Movement
+        _ movement: Movement,
+        _ geometry: GeometryProxy
     ) {
         uniquePartNames = partNames
         uniqueArcPointNames = arcPointNames
+        uniqueOriginNames = originNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+        circleGeometry = geometry
        
         }
     
@@ -442,51 +448,60 @@ struct ObjectView: View {
     
     
     var body: some View {
-        
-        let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen, movement): [:]
+        let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen): [:]
+        let origins: [PositionAsIosAxes] =
+        movementPickVM.getObjectOrigins(dictionaryForScreen)
         let uniqueArcNames = Array(arcDictionary.keys)
         
         let objectTurnOriginX = movementPickVM.getObjectTurnOriginX()
-        
-        ZStack{
             ZStack{
                 ZStack{
-                    ForEach(uniquePartNames, id: \.self) { name in
-                        PartView(
-                            uniquePartName: name,
-                            preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
-                            postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
-                            objectEditVM.partToEdit
-                        )
-                    }
-                }
-                ZStack{
-                    ForEach(uniqueArcPointNames, id: \.self) { name in
-                        ArcPointView(
-                            
-                            position: dictionaryForScreen[name]
-                            
-                        )
-                    }
-                }
-                if movement == .turn {
                     ZStack{
-                        ForEach(uniqueArcNames, id: \.self) { name in
-                            ArcView(
-                                arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
-                                objectOriginInScreen,
-                                objectTurnOriginX
+                        ForEach(uniquePartNames, id: \.self) { name in
+                            PartView(
+                                uniquePartName: name,
+                                preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
+                                postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
+                                objectEditVM.partToEdit
+                            )
+                        }
+                        //ForEach(Array(origins.enumerated()), id: \.offset) { index, origin in
+                        
+                        MyCircle(fillColor: .black, strokeColor: .black, 50.0, CGPoint(x: origins[0].x, y: origins[0].y))
+                        // }
+                            .zIndex(5000)
+                        
+                    }
+                    ZStack{
+                        ForEach(uniqueArcPointNames, id: \.self) { name in
+                            ArcPointView(
+                                
+                                position: dictionaryForScreen[name]
                                 
                             )
                         }
-//                        
-//                        MyCircle(fillColor: .red, strokeColor: .black, 100.0, CGPoint.zero )
-//                            .position(CGPoint(x: objectOriginInScreen.x, y: objectOriginInScreen.y))
+                    }
+                    if movement == .turn {
+                        ZStack{
+                            ForEach(uniqueArcNames, id: \.self) { name in
+                                ArcView(
+                                    arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
+                                    objectOriginInScreen,
+                                    objectTurnOriginX
+                                    
+                                )
+                            }
+                        }
                     }
                 }
-
-            }
-            
+                .background(GeometryReader { circleGeometry in
+                                Color.clear
+                        .onChange(of: objectFrameSize.length) { _, _ in
+                                        let circleFrame = circleGeometry.frame(in: .global)
+                                        
+                            print("MyCircle's global center on size change: \(Int(circleFrame.minX * 0.0 + origins[0].x )) \(Int(circleFrame.minY * 0.0 + origins[0].y ))")
+                                    }
+                            })
             .border(.red, width: 2)
             .modifier(
                 ForObjectDrag (
@@ -504,5 +519,14 @@ struct ObjectView: View {
 //    //let position: PositionAsIosAxes
 //    var body: some View {
 //        OriginView()
+//    }
+//}
+
+//
+//struct CirclePositionKey: PreferenceKey {
+//    static var defaultValue: CGRect = .zero
+//
+//    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+//        value = nextValue()
 //    }
 //}

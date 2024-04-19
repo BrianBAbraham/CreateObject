@@ -498,15 +498,22 @@ extension ObjectPickViewModel {
         return relevantDictionary
     }
     
-
-    func getUniquePartNamesFromObjectDictionary() -> [String] {
-   
-        Array(getPostTiltFourCornerPerKeyDic().keys).filter { !$0.contains(PartTag.arcPoint.rawValue) }
-    }
     
-    func getUniqueArcPointNamesFromObjectDictionary() -> [String] {
-             Array(getPostTiltFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
-    }
+//    func getOriginNamesFromObjectDictionary() -> [String] {
+//        Array(getPostTiltFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.origin.rawValue) }
+//    }
+//    
+
+//    func getUniquePartNamesFromObjectDictionary() -> [String] {
+//        Array(getPostTiltFourCornerPerKeyDic().keys).filter { !$0.contains(PartTag.arcPoint.rawValue) }
+//    }
+//    
+//    
+//    func getUniqueArcPointNamesFromObjectDictionary() -> [String] {
+//             Array(getPostTiltFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
+//    }
+//    
+//    
     
     
     func getList (_  version: DictionaryVersion) -> [String] {

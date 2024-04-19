@@ -408,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>375</string>
+					<string>373</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>374</string>
+					<string>372</string>
 					<key>Timestamp</key>
-					<string>735159780.220935</string>
+					<string>735220277.973406</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -662,13 +662,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>677</string>
+					<string>675</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>676</string>
+					<string>674</string>
 					<key>Timestamp</key>
-					<string>735159780.220944</string>
+					<string>735220277.973437</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -709,13 +709,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>721</string>
+					<string>719</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>720</string>
+					<string>718</string>
 					<key>Timestamp</key>
-					<string>735159780.220879</string>
+					<string>735220277.973449</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -850,13 +850,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>125</string>
+					<string>129</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>124</string>
+					<string>128</string>
 					<key>Timestamp</key>
-					<string>735159282.4019721</string>
+					<string>735219604.536485</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -881,7 +881,7 @@
 				<key>trailing</key>
 				<string>            VStack {
                 NavigationLink(destination:
-                        AllViews(
+                                GeometryReader { geometry in
 </string>
 			</dict>
 			<key>title</key>
@@ -897,13 +897,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>238</string>
+					<string>258</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>237</string>
+					<string>257</string>
 					<key>Timestamp</key>
-					<string>735159282.401994</string>
+					<string>735240342.04431</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -919,16 +919,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                movement
+				<string>                movement,
 </string>
 				<key>leading</key>
 				<string>                dictionaryForScreen,
                 objectFrameSize,
 </string>
 				<key>trailing</key>
-				<string>            )
+				<string>                geometry
+            )
             .position(recenterPosition)
-            .onChange(of: recenterVM.getRecenterState()) {
 </string>
 			</dict>
 			<key>title</key>
