@@ -231,7 +231,7 @@ struct ArcView: View {
     var body: some View {
         ZStack{
             MyCircle(fillColor: .green, strokeColor: .black, 50.0, origin )
-               // .position(origin)
+             //   .position(origin)
             Path { path in
                 path.addArc(center: origin,
                             radius: radius,
@@ -411,7 +411,7 @@ struct ObjectView: View {
     let movement: Movement
     var objectOriginInScreen: PositionAsIosAxes {
         movementPickVM.getOffsetForObjectOrigin()}
-    var circleGeometry: GeometryProxy
+    //var circleGeometryX: GeometryProxy
     
     init(
         _ partNames: [String],
@@ -420,8 +420,7 @@ struct ObjectView: View {
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
-        _ movement: Movement,
-        _ geometry: GeometryProxy
+        _ movement: Movement
     ) {
         uniquePartNames = partNames
         uniqueArcPointNames = arcPointNames
@@ -430,10 +429,9 @@ struct ObjectView: View {
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
-        circleGeometry = geometry
+       // circleGeometryX = geometry
        
         }
-    
     
     func limitZoom (_ zoom: CGFloat) -> CGFloat {
         max(min(zoom, maximimumZoom),minimumZoom)
@@ -445,7 +443,8 @@ struct ObjectView: View {
         return zoom
     }
     
-    
+    @State var initialOriginInScreenX = 0.0
+    @State var originInScreenX = 0.0
     
     var body: some View {
         let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen): [:]
@@ -454,7 +453,6 @@ struct ObjectView: View {
         let uniqueArcNames = Array(arcDictionary.keys)
         
         let objectTurnOriginX = movementPickVM.getObjectTurnOriginX()
-            ZStack{
                 ZStack{
                     ZStack{
                         ForEach(uniquePartNames, id: \.self) { name in
@@ -466,12 +464,43 @@ struct ObjectView: View {
                             )
                         }
                         //ForEach(Array(origins.enumerated()), id: \.offset) { index, origin in
-                        
-                        MyCircle(fillColor: .black, strokeColor: .black, 50.0, CGPoint(x: origins[0].x, y: origins[0].y))
-                        // }
-                            .zIndex(5000)
-                        
-                    }
+                        GeometryReader { circleGeometry in
+                            MyCircle(fillColor: .black, strokeColor: .black, 50.0, CGPoint(x: origins[0].x, y: origins[0].y))
+                               
+                            // }
+                                .onChange(of: movement) { oldValue, newValue in
+                                    if oldValue == .none && newValue == .turn {
+                                        /// geometry is calculated then posiition is updated
+                                        /// so print geometry shows the original value
+                                        print(circleGeometry.frame(in: .global).minX)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                                            let circleFrame = circleGeometry.frame(in: .global)
+                                            print(circleFrame.minX)
+                                            let codeToScreen = circleFrame.height/objectFrameSize.length
+                                            let newOriginInScreenX = circleFrame.minX + origins[0].x * codeToScreen
+                                            
+                                            //let originInScreenY = circleFrame.minY + origins[0].y * codeToScreen
+
+                                            initialOriginInScreenX = originInScreenX
+                                            originInScreenX = newOriginInScreenX
+                                            print("MOVEMENT initial frame in global:\(Int(circleFrame.minX))  ")
+                                                //  origin from frame:\(Int(origins[0].x * codeToScreen))
+                                            print("final frame in global:\(Int(circleFrame.minX - originInScreenX + initialOriginInScreenX ))")
+                                        }
+                                    }
+                                }
+
+                                .onChange(of: objectTurnOriginX) { _, _ in
+                                   // initialOriginInScreenX = originInScreenX
+                                    let circleFrame = circleGeometry.frame(in: .global)
+                                    let codeToScreen = circleFrame.height/objectFrameSize.length
+                                    let newOriginInScreenX = circleFrame.minX + origins[0].x * codeToScreen
+                                   
+                                    //let originInScreenY = circleFrame.minY + origins[0].y * codeToScreen
+                                    print("TIGHT frame \(circleFrame.minX) origin \(origins[0].x * codeToScreen)   ")
+                                }
+                        }
+                        .zIndex(5000)                    }
                     ZStack{
                         ForEach(uniqueArcPointNames, id: \.self) { name in
                             ArcPointView(
@@ -494,39 +523,25 @@ struct ObjectView: View {
                         }
                     }
                 }
-                .background(GeometryReader { circleGeometry in
-                                Color.clear
-                        .onChange(of: objectFrameSize.length) { _, _ in
-                                        let circleFrame = circleGeometry.frame(in: .global)
-                                        
-                            print("MyCircle's global center on size change: \(Int(circleFrame.minX * 0.0 + origins[0].x )) \(Int(circleFrame.minY * 0.0 + origins[0].y ))")
-                                    }
-                            })
-            .border(.red, width: 2)
-            .modifier(
-                ForObjectDrag (
-                    frameSize: objectFrameSize, active: true)
-            )
-            .position(x: 0.0, y: -300)
-            .offset(CGSize(width: 0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
-                           ) )
-        }
+                .border(.red, width: 2)
+                .modifier(
+                    ForObjectDrag (
+                        frameSize: objectFrameSize, active: true)
+                )
+                .position(x: -originInScreenX + initialOriginInScreenX, y: -300)
+                .offset(CGSize(width:0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
+                               ) )
     }
 }
 
 
-//struct ObjectOriginView: View {
-//    //let position: PositionAsIosAxes
-//    var body: some View {
-//        OriginView()
-//    }
-//}
-
-//
-//struct CirclePositionKey: PreferenceKey {
-//    static var defaultValue: CGRect = .zero
-//
-//    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-//        value = nextValue()
-//    }
-//}
+//                .background(GeometryReader { circleGeometry in
+//                                Color.clear
+//                        .onChange(of: objectFrameSize.length) { _, _ in
+//                            let circleFrame = circleGeometry.frame(in: .global)
+//                            let codeToScreen = circleFrame.height/objectFrameSize.length
+//                            let originInScreenX = circleFrame.minX + origins[0].x * codeToScreen
+//                            let originInScreenY = circleFrame.minY + origins[0].y * codeToScreen
+//                            print("\(Int(originInScreenX)) \(Int(originInScreenY))")
+//                                    }
+//                            })

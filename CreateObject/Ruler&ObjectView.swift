@@ -48,7 +48,7 @@ struct ObjectAndRulerView: View {
    
     let movement: Movement
     
-    let geometry: GeometryProxy
+    //let geometry: GeometryProxy
  
     init(
         _ partNames: [String],
@@ -69,7 +69,7 @@ struct ObjectAndRulerView: View {
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
-        self.geometry = geometry
+       // self.geometry = geometry
        
         }
     
@@ -96,8 +96,7 @@ struct ObjectAndRulerView: View {
                     preTiltFourCornerPerKeyDic,
                     dictionaryForScreen,
                     objectFrameSize,
-                    movement,
-                    geometry
+                    movement
                 )
                 
                 .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }
