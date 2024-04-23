@@ -850,13 +850,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>129</string>
+					<string>120</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>128</string>
+					<string>119</string>
 					<key>Timestamp</key>
-					<string>735219604.536485</string>
+					<string>735587175.150241</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -881,7 +881,7 @@
 				<key>trailing</key>
 				<string>            VStack {
                 NavigationLink(destination:
-                                GeometryReader { geometry in
+                    AllViews(
 </string>
 			</dict>
 			<key>title</key>
@@ -895,15 +895,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>0</string>
+					<string>24</string>
 					<key>EndingLineNumber</key>
-					<string>258</string>
+					<string>233</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>257</string>
+					<string>233</string>
 					<key>Timestamp</key>
-					<string>735240342.04431</string>
+					<string>735589007.966177</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -919,14 +919,13 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                movement,
-</string>
+				<string>                movement</string>
 				<key>leading</key>
 				<string>                dictionaryForScreen,
                 objectFrameSize,
 </string>
 				<key>trailing</key>
-				<string>                geometry
+				<string>
             )
             .position(recenterPosition)
 </string>

@@ -19,11 +19,19 @@ struct MovementPickModel {
 
 class MovementPickViewModel: ObservableObject {
     @Published var movementName: String {
+        willSet {
+            // Capture the old origin offset before movementName changes
+           oldOriginOffset = originOffset
+        }
         didSet {
             setMovementType()
+            
+            
+            
+            
+            
         }
     }
-    var movementType: Movement = .none
     
     @Published var objectAngleName: String {
         didSet {
@@ -31,12 +39,37 @@ class MovementPickViewModel: ObservableObject {
         }
     }
 
-    var objectAngleType: WhichAngle = .end
-    
-    
     @Published var turnOriginToObjectOrigin: PositionAsIosAxes {//of turn
         didSet {
             movementImageData = getMovementImageData()
+        }
+    }
+    
+    @Published var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
+    
+    //intialise object data
+    var objectImageData: ObjectImageData =
+        ObjectImageService.shared.objectImageData
+    
+    //intialise movement data
+    //movement are object data plus transformed object data
+    @Published private var movementImageData = MovementImageData (
+        ObjectImageService.shared.objectImageData,//object data
+        movementType: .turn, //transform data
+        origin: ZeroValue.iosLocation, //transform data
+        startAngle: 0.0, //transform data
+        endAngle: 0.0, //transform data
+        forward: 0.0 //transform data
+    ) {
+        didSet{
+            uniquePartNames = getUniquePartNamesFromObjectDictionary()
+            
+            
+            originOffset = getObjectZeroOrgin()
+            
+            
+            
+            print ("\(oldOriginOffset) \(originOffset)")
         }
     }
     
@@ -51,35 +84,20 @@ class MovementPickViewModel: ObservableObject {
             movementImageData = getMovementImageData()
         }
     }
-
+    
+    var movementType: Movement = .none
+    var objectAngleType: WhichAngle = .end
     var forward: Double //in direction facing
     
+    @Published var oldOriginOffset = ZeroValue.iosLocation
+    @Published var originOffset = ZeroValue.iosLocation
     
-    //intialise object data
-   var objectImageData: ObjectImageData =
-        ObjectImageService.shared.objectImageData
+    
+    @Published var uniquePartNames: [String] = []
+    
     
     private var cancellables: Set<AnyCancellable> = []
     
-   @Published var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
-    {
-        didSet{
-            
-            getObjectOrginDictionary()
-        }
-    }
-    
-    
-    //intialise movement data
-    //movement are object data plus transformed object data
-    @Published private var movementImageData = MovementImageData (
-        ObjectImageService.shared.objectImageData,
-        movementType: .turn,
-        origin: ZeroValue.iosLocation,
-        startAngle: 0.0,
-        endAngle: 0.0,
-        forward: 0.0
-    )
     
     var ensureInitialObjectAllOnScreen =
         // drag will not work if coordinates are negative
@@ -102,7 +120,6 @@ class MovementPickViewModel: ObservableObject {
         self.startAngle = startAngle
         self.endAngle = endAngle
         self.forward = forward
-        
         
         objectAngleName = objectAngleType.rawValue
         
@@ -134,12 +151,39 @@ class MovementPickViewModel: ObservableObject {
         
         ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
         
+        originOffset = getObjectZeroOrgin()
+        
+        uniquePartNames = getUniquePartNamesFromObjectDictionary()
     }
 }
     
 
 //MARK: Get State A - Z
 extension MovementPickViewModel {
+    
+    func  getObjectDictionaryForScreen ()
+        -> CornerDictionary {
+            ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
+        let dic =
+            ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
+
+        return dic
+    }
+    
+    
+    func getObjectZeroOrgin()  -> PositionAsIosAxes{
+        let dic = getObjectDictionaryForScreen()
+        let name = CreateNameFromIdAndPart(.id0, PartTag.origin).name
+        let filteredDictionary =
+        dic.filter { $0.key.contains(name) }
+        let useAnyOfFour = 0
+        guard let origin = filteredDictionary[name]?[useAnyOfFour] else {
+            fatalError()
+        }
+
+        return origin
+    }
+    
     
 
     func getObjectIsStatic() -> Bool{
@@ -170,6 +214,7 @@ extension MovementPickViewModel {
     
     
     func getMovementImageData() -> MovementImageData{
+        let movementImageData =
         MovementImageData(
             objectImageData,
             movementType: movementType,
@@ -178,7 +223,10 @@ extension MovementPickViewModel {
             endAngle: endAngle,
             forward: forward
         )
+       // print(getObjectZeroOrgin())
+        return movementImageData
     }
+    
 }
     
 
@@ -261,60 +309,34 @@ extension MovementPickViewModel {
     }
     
     
-    func getObjectOrigins(_ dictionary: CornerDictionary) -> [PositionAsIosAxes] {
-        var origins: [PositionAsIosAxes] = []
-        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
-       
-        let originDictionary = postTiltObjectToPartFourCornerPerKeyDic.filter { $0.key.contains(PartTag.origin.rawValue) }
-        let any = 0//four identical values; conforms to corners; disregard three
-        let numberOfOrigin = originDictionary.count
-    
-        for index in 0..<numberOfOrigin {
-            let name = Part.objectOrigin.rawValue + PartTag.stringLink.rawValue + "id" + String(index)
-            
-            for (key, value) in originDictionary {
-                if key.contains(name) {
-                    //print(value)
-                    origins.append(value[any])
-                }
-            }
-        }
-        if origins.count == 0 {
-            fatalError()
-        } else {
-            
-            return origins
-        }
-    }
-    
-    
-    func  getObjectDictionaryForScreen ()
-        -> CornerDictionary {
-            ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
-        let dic =
-            ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
-
-        return dic
-    }
-    
-    func getObjectOrginDictionary() {
-        
-        let origins: [PositionAsIosAxes] = []
-        let filteredDictionary =
-        getObjectDictionaryForScreen().filter { $0.key.contains(PartTag.origin.rawValue) }
-        //print(filteredDictionary)
-        //print(getObjectDictionaryForScreen())
-//        let positions = filteredDictionary.map{$0.value}
-//        if positions.count == 0 {
+//    func getObjectOrigins(_ dictionary: CornerDictionary) -> [PositionAsIosAxes] {
+//        var origins: [PositionAsIosAxes] = []
+//        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
+//       
+//        let originDictionary = postTiltObjectToPartFourCornerPerKeyDic.filter { $0.key.contains(PartTag.origin.rawValue) }
+//        let any = 0//four identical values; conforms to corners; disregard three
+//        let numberOfOrigin = originDictionary.count
+//    
+//        for index in 0..<numberOfOrigin {
+//            let name = Part.objectOrigin.rawValue + PartTag.stringLink.rawValue + "id" + String(index)
+//            
+//            for (key, value) in originDictionary {
+//                if key.contains(name) {
+//                    //print(value)
+//                    origins.append(value[any])
+//                }
+//            }
+//        }
+//        if origins.count == 0 {
 //            fatalError()
 //        } else {
-//            let fourDuplicates = 0
-//            for position in positions {
-//                
-//            }
-//            return positions[fourDuplicates]
+//            
+//            return origins
 //        }
-    }
+//    }
+    
+    
+
     
     
     
@@ -332,9 +354,10 @@ extension MovementPickViewModel {
     }
     
     
-    func getOriginNamesFromObjectDictionary() -> [String] {
-        Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.origin.rawValue) }
-    }
+//    func getOriginNamesFromObjectDictionary() -> [String] {
+//       
+//        Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.origin.rawValue) }
+//    }
     
     
     func getUniqueArcPointNamesFromObjectDictionary() -> [String] {

@@ -32,7 +32,6 @@ struct ObjectAndRulerView: View {
         Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
     }
     
-    let uniqueOriginNames: [String]
     let uniquePartNames: [String]
     let uniqueArcPointNames: [String]
     
@@ -48,29 +47,20 @@ struct ObjectAndRulerView: View {
    
     let movement: Movement
     
-    //let geometry: GeometryProxy
- 
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
-        _ originNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
-        _ movement: Movement,
-        _ geometry: GeometryProxy
-        
-      
+        _ movement: Movement
     ) {
-        uniqueOriginNames = originNames
         uniquePartNames = partNames
         uniqueArcPointNames = arcPointNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
-       // self.geometry = geometry
-       
         }
     
     
@@ -85,27 +75,21 @@ struct ObjectAndRulerView: View {
     }
     
     var body: some View {
-
-        //GeometryReader { geometry in
-            ZStack {
-                
-                ObjectView(
-                    uniquePartNames,
-                    uniqueArcPointNames,
-                    uniqueOriginNames,
-                    preTiltFourCornerPerKeyDic,
-                    dictionaryForScreen,
-                    objectFrameSize,
-                    movement
-                )
-                
-                .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }
-                
-                RightAngleRuler()
-            }
+        ZStack {
             
-        //}
-        
+            ObjectView(
+                uniquePartNames,
+                uniqueArcPointNames,
+                preTiltFourCornerPerKeyDic,
+                dictionaryForScreen,
+                objectFrameSize,
+                movement
+            )
+            
+            .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }
+            
+            RightAngleRuler()
+        }
         .scaleEffect(zoom)
         .background(Color.green.opacity(0.0001))
         .frame(maxWidth: .infinity)

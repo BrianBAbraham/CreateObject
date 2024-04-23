@@ -45,7 +45,7 @@ struct EnsureInitialObjectAllOnScreen {
                     var positivePositions: [PositionAsIosAxes] = []
                     for position in item.value {
                         positivePositions.append(
-                        (x: (position.x + offset.x) * scaleFactor,
+                            (x: (position.x + offset.x) * scaleFactor,
                          y: (position.y + offset.y) * scaleFactor,
                          z: (position.z * scaleFactor) )  )
                     }
@@ -72,7 +72,8 @@ struct EnsureInitialObjectAllOnScreen {
                 
                 func getMaximumOfObject(_ objectDimensions: Dimension)
                     -> Double {
-                        [objectDimensions.length, objectDimensions.width].max() ?? objectDimensions.length
+                      [objectDimensions.length, objectDimensions.width].max()  ?? objectDimensions.length
+                         
                 }
             }
     }
@@ -120,8 +121,8 @@ struct EnsureInitialObjectAllOnScreen {
     
         if objectDimension.length > objectDimension.width {
             frameSize = (
-                        width: objectDimension.width,
-                        length: Screen.smallestDimension
+                width: objectDimension.width,
+                length: Screen.smallestDimension
                                  )
         }
             frameSize = objectDimension

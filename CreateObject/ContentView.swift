@@ -83,16 +83,7 @@ struct ContentView: View {
     }
   
     var body: some View {
-        var uniqueOriginNames: [String] {
-            movementPickVM.getOriginNamesFromObjectDictionary()
-        }
-        
-        var uniquePartNames: [String] {
-         let names =
-            movementPickVM.getUniquePartNamesFromObjectDictionary()
-           //print (names)
-            return names
-        }
+
         var uniqueArcPointNames: [String] {
             movementPickVM.getUniqueArcPointNamesFromObjectDictionary()
         }
@@ -110,7 +101,7 @@ struct ContentView: View {
         var dictionaryForScreen: CornerDictionary {
             let dic =
             movementPickVM.getObjectDictionaryForScreen()
-//            print(dic)
+           // print(movementPickVM.changeInOriginPosition)
 //            print("")
             return dic
         }
@@ -129,35 +120,27 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 NavigationLink(destination:
-                                GeometryReader { geometry in
                     AllViews(
-                        uniquePartNames,
+                        movementPickVM.uniquePartNames,
                         uniqueArcPointNames,
-                        uniqueOriginNames,
                         preTiltFourCornerPerKeyDic,
                         dictionaryForScreen,
                         objectFrameSize,
-                        movement,
-                        geometry
+                        movement
                     )
-                }
-                    )
-                
-                    {Text("select and edit equipment")}
-                    .padding()
+                )
+                {Text("select and edit equipment")}
+                .padding()
                   
                 NavigationLink(destination:
-                GeometryReader { geometry in
                     VStack {
                         ObjectAndRulerView(
-                            uniquePartNames,
+                            movementPickVM.uniquePartNames,
                             uniqueArcPointNames,
-                            uniqueOriginNames,
                             preTiltFourCornerPerKeyDic,
                             dictionaryForScreen,
                             objectFrameSize,
-                            movement,
-                            geometry
+                            movement
                         )
                         .position(recenterPosition)
                         Spacer()
@@ -184,7 +167,6 @@ struct ContentView: View {
                         .backgroundModifier()
                         .transition(.move(edge: .bottom))
                     }
-                }
                 )
                     {Text("edit movements")}
                     .padding()
@@ -219,44 +201,37 @@ struct AllViews: View {
     
     let uniquePartNames: [String]
     let uniqueArcPointNames: [String]
-    let uniqueOriginNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
     let movement: Movement
-    let geometry: GeometryProxy
-    
     
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
-        _ originNames: [String],
+        
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
-        _ movement: Movement,
-        _ geometry: GeometryProxy
+        _ movement: Movement
     ) {
             uniquePartNames = partNames
             uniqueArcPointNames = arcPointNames
-        uniqueOriginNames = originNames
-            self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
+      
+        self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
-        self.geometry = geometry
         }
     var body: some View {
         ZStack{
             ObjectAndRulerView(
                 uniquePartNames,
                 uniqueArcPointNames,
-                uniqueOriginNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,
-                movement,
-                geometry
+                movement
             )
             .position(recenterPosition)
             .onChange(of: recenterVM.getRecenterState()) {
