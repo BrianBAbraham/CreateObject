@@ -27,6 +27,7 @@ struct CreateObjectApp: App {
  
     @StateObject var rulerVM = RulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
+    //@StateObject var  movementPositionVM = MovementPositionViewModel()
 
 
     var body: some Scene {
@@ -45,6 +46,7 @@ struct CreateObjectApp: App {
             
                     .environmentObject(rulerVM)
                     .environmentObject(recenterVM)
+                    //.environmentObject(movementPositionVM)
                        
                    
         }

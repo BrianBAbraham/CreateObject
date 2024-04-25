@@ -120,3 +120,4 @@ typealias ObjectChainLabelDictionary = [ObjectTypes: [Part]]
 
 
 //typealias s = KeyPath<(left: Dimension3d?, right: Dimension3d?, one: Dimension3d?), Dimension3d?>
+typealias AddOrPad = (addX: Double, addY: Double, padX: Double, padY: Double )

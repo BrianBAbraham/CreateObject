@@ -425,6 +425,7 @@ struct ObjectView: View {
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+        
         }
     
     func limitZoom (_ zoom: CGFloat) -> CGFloat {
@@ -437,29 +438,18 @@ struct ObjectView: View {
         return zoom
     }
     
-    //@State var oldObjectZeroOriginScreenX = 0.0
-    @State private var oldObjectZeroOriginInScreenX = 0.0
-    @State var objectZeroOriginInParentX = 0.0
-    @State var changeX = 0.0
-    @State var changeY = 0.0
-    @State private var viewIsReady = false
-    
     var body: some View {
         let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen): [:]
-//        let origins: [PositionAsIosAxes] =
-//        movementPickVM.getObjectOrigins(dictionaryForScreen)
+
         let uniqueArcNames = Array(arcDictionary.keys)
         
         let objectTurnOriginX = movementPickVM.getObjectTurnOriginX()
         
-        let originOffset = movementPickVM.originOffset
-        
-        let oldOriginOffset = movementPickVM.oldOriginOffset
+        let padding = movementPickVM.dataToCentreObjectZeroOrigin
        
-        GeometryReader { movementGeometry in
-        ZStack{
-            
-                ZStack{
+//        Color.clear
+//            .overlay(
+            ZStack{
                     ForEach(uniquePartNames, id: \.self) { name in
                         PartView(
                             uniquePartName: name,
@@ -468,76 +458,13 @@ struct ObjectView: View {
                             objectEditVM.partToEdit
                         )
                     }
-                    //ForEach(Array(origins.enumerated()), id: \.offset) { index, origin in
-                    
-                    //MyCircle(fillColor: .black, strokeColor: .black, 50.0, CGPoint(x: origins[0].x, y: origins[0].y))
-                        .onAppear(){
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {
-                                self.viewIsReady = true
-                                let movementFrame = movementGeometry.frame(in: .global)
-                                let codeToScreen = movementFrame.width/objectFrameSize.width
-                                oldObjectZeroOriginInScreenX = movementFrame.minX + oldOriginOffset.x * codeToScreen
-//                                print("appear \(oldObjectZeroOriginInScreenX)")
-//                                CORRECT print("appear \(origins[0].x )")
-//                                CORRECT print("appear \(movementFrame.width / codeToScreen)")
-//                                 oldObjectZeroOriginScreenX = movementFrame.minX + origins[0].x * codeToScreen
-//                                CORRECT print("appear \(oldObjectZeroOriginScreenX)")
-//                                getObjectZeroOriginInParentX("appear", movementGeometry, oldObjectZeroOriginInScreenX)
-                                changeX = movementFrame.minX
-                            }
-                        }
-                    
-                        .onChange(of: movement) { oldValue, newValue in
-                            if (oldValue == .none && newValue == .turn) || (oldValue == .turn && newValue == .none) {
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01){
-                                let movementFrame = movementGeometry.frame(in: .global)
-                                let codeToScreen = movementFrame.height/objectFrameSize.length
-                                    objectZeroOriginInParentX = movementFrame.minX + originOffset.x * codeToScreen
-                                    changeX = movementFrame.minX
-                                    //objectZeroOriginInParentX - oldObjectZeroOriginInScreenX
-//                                    getObjectZeroOriginInParentX("movementChange", movementGeometry, oldObjectZeroOriginInScreenX)
-                                    //movementFrame.minX + origins[0].x * codeToScreen
-                                    //CORRECT  print("move \(origins[0].x )")
-                                    //CORRECT print("move \(movementFrame.width / codeToScreen)")
-                                    //CORRECT print("move \(movementFrame.minX + origins[0].x * codeToScreen )")
-                                    // print("move \(changeInObjectZeroOriginInParentX)")
-//                                    getObjectZeroOriginInParentY("objectTurnOriginX", movementGeometry, oldObjectZeroOriginInScreenX)
-                                }
-                            }
-                        }
-                    
-                        .onChange(of: objectTurnOriginX) { _, _ in
-                             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            // print ("tightness change start \(objectZeroOriginInParentX)")
-                            // initialOriginInScreenX = originInScreenX
-                            //                                        let movementFrame = movementGeometry.frame(in: .global)
-                            //                                        let codeToScreen = movementFrame.height/objectFrameSize.length
-                            //                                       objectZeroOriginInParentX = movementFrame.minX + origins[0].x * codeToScreen
-                            getObjectZeroOriginInParentX("objectTurnOriginX", movementGeometry, oldObjectZeroOriginInScreenX)
-                                 
-                                 getObjectZeroOriginInParentY("objectTurnOriginX", movementGeometry, oldObjectZeroOriginInScreenX)
-                            // print ("tightness change end \(objectZeroOriginInParentX)")
-                            
-                            //oldObjectZeroOriginInScreenX = objectZeroOriginInParentX
-                            //let originInScreenY = circleFrame.minY + origins[0].y * codeToScreen
-                            //print("TIGHT frame \(circleFrame.minX) origin \(origins[0].x * codeToScreen)   ")
-                            }
-                        }
-                        .zIndex(5000)
-                }
-                
-            //}
-            ZStack{
-                ForEach(uniqueArcPointNames, id: \.self) { name in
-                    ArcPointView(
-                        
-                        position: dictionaryForScreen[name]
-                        
-                    )
-                }
-            }
-        }
+                    .zIndex(5000)
+         
+                    ForEach(uniqueArcPointNames, id: \.self) { name in
+                        ArcPointView(
+                            position: dictionaryForScreen[name]
+                        )
+                    }
                     if movement == .turn {
                         ZStack{
                             ForEach(uniqueArcNames, id: \.self) { name in
@@ -545,62 +472,33 @@ struct ObjectView: View {
                                     arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
                                     objectOriginInScreen,
                                     objectTurnOriginX
-                                    
                                 )
                             }
                         }
                     }
-                }
-                .border(.red, width: 2)
-                .modifier(
-                    ForObjectDrag (
-                        frameSize: objectFrameSize, active: true)
-                )
-                .position(x: 0.0, y: -300)
-                .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
-                               ) )
-    }
-    
-    private func getObjectZeroOriginInParentX(_ callName: String, _ movementGeometry: GeometryProxy, _ old: Double) {
-        let movementFrame = movementGeometry.frame(in: .global)
-        let codeToScreen = movementFrame.width/objectFrameSize.width
-//        let origin = movementPickVM.getObjectOrigins(dictionaryForScreen)[0].x
-//        changeX =  movementFrame.minX + origin * codeToScreen
-       
-//        print("\(callName) in screen points")
-//        print(objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen())
-//        print("pre-action objectZeroOriginX in global \(old)")
-//        print("post-action parent frame originX in global \(movementFrame.minX)")
-//       
-//        print("post-action objectZeroOriginX from parent frame  \(origin * codeToScreen)")
-//       
-//        print("change in objectZeroOriginX in global \(changeX)")
-    }
-    
-    private func getObjectZeroOriginInParentY(_ callName: String, _ movementGeometry: GeometryProxy, _ old: Double) {
-        let movementFrame = movementGeometry.frame(in: .global)
-        let codeToScreen = movementFrame.width/objectFrameSize.width
-//        let origin = movementPickVM.getObjectOrigins(dictionaryForScreen)[0].y
-//        changeY =  movementFrame.minY + origin * codeToScreen
-       
-//        print("\(callName) in screen points")
-//        print("pre-action objectZeroOriginX in global \(old)")
-//        print("post-action parent frame originX in global \(movementFrame.minX)")
-//       
-//        print("post-action objectZeroOriginX from parent frame  \(origin * codeToScreen)")
-//       
-//        print("change in objectZeroOriginX in global \(changeX)")
-    }
+            }
+//            .padding([.bottom], 100)
+//            .padding([.trailing], padding.padY)
+//            .padding([.top], padding.addY)
+//            .padding([.leading], padding.addX)
+           // .border(.red, width: 2)
+         
+//            .overlay(
+//                    RoundedRectangle(cornerRadius: 5) // Use RoundedRectangle for rounded corners
+//                        .stroke(Color.red, lineWidth: 2) // Red border with 2 points width
+//                        .frame(width: objectFrameSize.width, height: objectFrameSize.length)
+//                )
+            .frame(width: objectFrameSize.width + padding.padX * 0.32499999999999996, height: objectFrameSize.length, alignment: .center)
+            .border(.red, width: 2)
+            .modifier(
+                ForObjectDrag (
+                    frameSize: objectFrameSize, active: true)
+            )
+//            .position(x: 0.0, y: -300)
+//            .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
+//                           ) )
+           
+        }
+
 }
 
-
-//                .background(GeometryReader { circleGeometry in
-//                                Color.clear
-//                        .onChange(of: objectFrameSize.length) { _, _ in
-//                            let circleFrame = circleGeometry.frame(in: .global)
-//                            let codeToScreen = circleFrame.height/objectFrameSize.length
-//                            let originInScreenX = circleFrame.minX + origins[0].x * codeToScreen
-//                            let originInScreenY = circleFrame.minY + origins[0].y * codeToScreen
-//                            print("\(Int(originInScreenX)) \(Int(originInScreenY))")
-//                                    }
-//                            })

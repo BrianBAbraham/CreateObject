@@ -18,18 +18,15 @@ struct MovementPickModel {
 
 
 class MovementPickViewModel: ObservableObject {
+    @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
+    
     @Published var movementName: String {
         willSet {
             // Capture the old origin offset before movementName changes
-           oldOriginOffset = originOffset
+           oldOriginOffset = objectZeroOrigin
         }
         didSet {
             setMovementType()
-            
-            
-            
-            
-            
         }
     }
     
@@ -51,6 +48,7 @@ class MovementPickViewModel: ObservableObject {
     var objectImageData: ObjectImageData =
         ObjectImageService.shared.objectImageData
     
+    @Published var dataToCentreObjectZeroOrigin: AddOrPad = (addX: 0.0, addY: 0.0, padX: 0.0, padY: 0.0 )
     //intialise movement data
     //movement are object data plus transformed object data
     @Published private var movementImageData = MovementImageData (
@@ -63,13 +61,17 @@ class MovementPickViewModel: ObservableObject {
     ) {
         didSet{
             uniquePartNames = getUniquePartNamesFromObjectDictionary()
+            movementDictionaryForScreen = getMovementDictionaryForScreen()
+            objectZeroOrigin = getObjectZeroOrgin()
+            dataToCentreObjectZeroOrigin = getDataToCentreObjectZeroOrigin()
             
+            print(dataToCentreObjectZeroOrigin)
+            onScreenMovementFrameSize = getObjectOnScreenFrameSize()
             
-            originOffset = getObjectZeroOrgin()
-            
-            
-            
-            print ("\(oldOriginOffset) \(originOffset)")
+//            if dataToCentreObjectZeroOrigin.addX != 0.0 || dataToCentreObjectZeroOrigin.addY != 0.0 {
+//                transformMovementDictionaryForScreenToCentreObjectZeroOrigin()
+//
+//            }
         }
     }
     
@@ -90,10 +92,11 @@ class MovementPickViewModel: ObservableObject {
     var forward: Double //in direction facing
     
     @Published var oldOriginOffset = ZeroValue.iosLocation
-    @Published var originOffset = ZeroValue.iosLocation
+    @Published var objectZeroOrigin = ZeroValue.iosLocation
     
     
     @Published var uniquePartNames: [String] = []
+    @Published var movementDictionaryForScreen: CornerDictionary = [:]
     
     
     private var cancellables: Set<AnyCancellable> = []
@@ -101,12 +104,12 @@ class MovementPickViewModel: ObservableObject {
     
     var ensureInitialObjectAllOnScreen =
         // drag will not work if coordinates are negative
-        EnsureInitialObjectAllOnScreen(
+        EnsureNoNegativePositions(
             fourCornerDic: [:],
-            oneCornerDic: [:],
             objectDimension: ZeroValue.dimension
         )
     
+
     init(
         _ movement: String = Movement.none.rawValue,
         _ origin: PositionAsIosAxes = ZeroValue.iosLocation,
@@ -142,7 +145,7 @@ class MovementPickViewModel: ObservableObject {
         
         DictionaryService.shared.$currentObjectType
             .sink { [weak self] newData in
-                print("New currentObjectType: \(newData)")
+               // print("New currentObjectType: \(newData)")
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
@@ -151,9 +154,11 @@ class MovementPickViewModel: ObservableObject {
         
         ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
         
-        originOffset = getObjectZeroOrgin()
+        objectZeroOrigin = getObjectZeroOrgin()
         
         uniquePartNames = getUniquePartNamesFromObjectDictionary()
+        
+        onScreenMovementFrameSize = getObjectOnScreenFrameSize()
     }
 }
     
@@ -161,23 +166,24 @@ class MovementPickViewModel: ObservableObject {
 //MARK: Get State A - Z
 extension MovementPickViewModel {
     
-    func  getObjectDictionaryForScreen ()
+    func  getMovementDictionaryForScreen ()
         -> CornerDictionary {
             ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
         let dic =
-            ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
+            ensureInitialObjectAllOnScreen.getModifiedDictionary()
 
         return dic
     }
     
     
     func getObjectZeroOrgin()  -> PositionAsIosAxes{
-        let dic = getObjectDictionaryForScreen()
+        let dic = movementDictionaryForScreen
         let name = CreateNameFromIdAndPart(.id0, PartTag.origin).name
         let filteredDictionary =
         dic.filter { $0.key.contains(name) }
         let useAnyOfFour = 0
         guard let origin = filteredDictionary[name]?[useAnyOfFour] else {
+            print(dic)
             fatalError()
         }
 
@@ -207,8 +213,6 @@ extension MovementPickViewModel {
     
     
     func getObjectTurnOriginX() -> Double {
-       // print(turnOriginToObjectOrigin.x)
-        return
         turnOriginToObjectOrigin.x
     }
     
@@ -386,7 +390,7 @@ extension MovementPickViewModel {
 //MARK: Transform for Screen
 extension MovementPickViewModel {
     func getMakeWholeObjectOnScreen()
-        -> EnsureInitialObjectAllOnScreen {
+        -> EnsureNoNegativePositions {
             let objectDimension: Dimension =
                 getObjectDimension()
             let fourCornerDic: CornerDictionary =
@@ -398,9 +402,9 @@ extension MovementPickViewModel {
             movementImageData.objectImageData
                     .postTiltObjectToOneCornerPerKeyDic
             return
-                EnsureInitialObjectAllOnScreen(
+                EnsureNoNegativePositions(
                     fourCornerDic: fourCornerDic,
-                    oneCornerDic: oneCornerDic,
+                   // oneCornerDic: oneCornerDic,
                     objectDimension: objectDimension
                 )
     }
@@ -408,18 +412,39 @@ extension MovementPickViewModel {
     
     func getObjectOnScreenFrameSize ()
     -> Dimension {
+        
+        let ensureInitialObjectAllOnScreen =  getMakeWholeObjectOnScreen()
         let frameSize =
-        getMakeWholeObjectOnScreen().getObjectOnScreenFrameSize()
+            ensureInitialObjectAllOnScreen.getObjectOnScreenFrameSize()
        
         return frameSize
     }
 
+//    func getObjectOnScreenFrameSize() -> Dimension {
+//        let position = getDictionaryMaxForScreenDictionary()
+//        
+//        return (width: position.x, length: position.y)
+//    }
+//    
+    
+    
     func getObjectDimension ( )
         -> Dimension {
             let dim =
             movementImageData.objectImageData.objectDimension
         
             return dim
+    }
+    
+    
+    func transformMovementDictionaryForScreenToCentreObjectZeroOrigin(){
+        let addTouple = (x: dataToCentreObjectZeroOrigin.addX, y: dataToCentreObjectZeroOrigin.addY,z: 0.0)
+        
+        for (key, value) in movementDictionaryForScreen {
+            if let value = movementDictionaryForScreen[key] {
+                movementDictionaryForScreen[key] = CreateIosPosition.addToupleToArrayOfTouples(addTouple, value)
+            }
+        }
     }
 
 }
@@ -441,3 +466,98 @@ extension MovementPickViewModel {
 }
 
     
+//MARK: Centre ObjectZeroOrigin
+
+extension MovementPickViewModel {
+    
+    func getDictionaryMaxForScreenDictionary() -> PositionAsIosAxes{
+        let dic = ConvertFourCornerPerKeyToOne(
+            fourCornerPerElement: movementDictionaryForScreen
+        ).oneCornerPerKey
+        
+        let minMax = CreateIosPosition.minMaxPosition(
+            dic
+        )
+        let onlyMax = 1
+        let max = minMax[onlyMax]
+        
+        return max
+    }
+    
+    func getDataToCentreObjectZeroOrigin() -> AddOrPad{
+        
+//        let dic = ConvertFourCornerPerKeyToOne(
+//            fourCornerPerElement: movementDictionaryForScreen
+//        ).oneCornerPerKey
+//        
+//        let minMax = CreateIosPosition.minMaxPosition(
+//            dic
+//        )
+//        
+        let max = getDictionaryMaxForScreenDictionary() //minMax[1]
+        
+        var padX = 0.0
+        var padY = 0.0
+        var addX = 0.0
+        var addY = 0.0
+        
+        (
+            addX,
+            padX
+        ) = getCorrections(
+            max.x,
+            objectZeroOrigin.x
+        )
+        (
+            addY,
+            padY
+        ) = getCorrections(
+            max.y,
+            objectZeroOrigin.y
+        )
+        
+       return (addX: addX, addY: addY, padX: padX, padY: padY )
+        
+        func getCorrections(
+            _ max: Double,
+            _ origin: Double
+        ) -> (
+            Double,
+            Double
+        ) {
+            var pad = 0.0
+            var translate = 0.0
+            switch (
+                max,
+                origin
+            ) {
+            case let (
+                max,
+                origin
+            ) where max > 2 * origin:
+                translate = max - origin
+            case let (
+                max,
+                origin
+            ) where max < 2 * origin:
+                pad = 2 * origin
+            case let (
+                max,
+                origin
+            ) where max == origin:
+                break
+                //do nothing
+            default:
+                break
+            }
+            
+            return (
+                translate,
+                pad
+            )
+        }
+       
+    }
+    
+    
+}

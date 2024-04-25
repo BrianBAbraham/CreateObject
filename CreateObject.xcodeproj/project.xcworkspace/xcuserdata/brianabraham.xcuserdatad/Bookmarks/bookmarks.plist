@@ -201,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>419</string>
+					<string>428</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>418</string>
+					<string>427</string>
 					<key>Timestamp</key>
-					<string>734882039.309749</string>
+					<string>735758539.723007</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -295,13 +295,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>160</string>
+					<string>169</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>159</string>
+					<string>168</string>
 					<key>Timestamp</key>
-					<string>734882039.309705</string>
+					<string>735758539.723039</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -361,13 +361,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>302</string>
+					<string>311</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>301</string>
+					<string>310</string>
 					<key>Timestamp</key>
-					<string>734882039.309759</string>
+					<string>735758539.723029</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -850,13 +850,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>120</string>
+					<string>117</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>119</string>
+					<string>116</string>
 					<key>Timestamp</key>
-					<string>735587175.150241</string>
+					<string>735746873.473909</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -872,16 +872,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        NavigationView {
+				<string>        
 </string>
 				<key>leading</key>
-				<string>        }
-        
+				<string>        
+       
 </string>
 				<key>trailing</key>
-				<string>            VStack {
+				<string>        NavigationView {
+            VStack {
                 NavigationLink(destination:
-                    AllViews(
 </string>
 			</dict>
 			<key>title</key>
@@ -895,15 +895,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>24</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>233</string>
+					<string>269</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>233</string>
+					<string>268</string>
 					<key>Timestamp</key>
-					<string>735589007.966177</string>
+					<string>735746873.473945</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -919,15 +919,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                movement</string>
+				<string>                movement
+</string>
 				<key>leading</key>
 				<string>                dictionaryForScreen,
                 objectFrameSize,
 </string>
 				<key>trailing</key>
-				<string>
-            )
+				<string>            )
             .position(recenterPosition)
+            .onChange(of: recenterVM.getRecenterState()) {
 </string>
 			</dict>
 			<key>title</key>
@@ -979,6 +980,100 @@
 			</dict>
 			<key>title</key>
 			<string>position appears to assign first and second position randomly: investigate</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>106</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>105</string>
+					<key>Timestamp</key>
+					<string>735757638.297809</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/KeepImageInScreen.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    func getObjectOnScreenFrameSize ()
+</string>
+				<key>leading</key>
+				<string>    
+    
+</string>
+				<key>trailing</key>
+				<string>        -&gt; Dimension {
+        let objectDimension = objectDimension
+        var frameSize: Dimension =
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELPMENT this was written to allow screen rotation is it necessary?</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>35</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>34</string>
+					<key>Timestamp</key>
+					<string>735757638.297768</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/KeepImageInScreen.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                let scaleFactor = 1.0
+</string>
+				<key>leading</key>
+				<string>                _ offset: PositionAsIosAxes)
+            -&gt; CornerDictionary {
+</string>
+				<key>trailing</key>
+				<string>                var postTiltObjectToPartFourCornerAllPositivePerKeyDic: CornerDictionary = [:]
+                for item in actualSizeDic {
+                    var positivePositions: [PositionAsIosAxes] = []
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT no scale applied</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

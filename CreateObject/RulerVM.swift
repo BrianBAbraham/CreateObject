@@ -11,7 +11,7 @@ import Combine
 
 struct RulerModel {
     let ensureInitialRulerIsOnScreen:
-        EnsureInitialObjectAllOnScreen
+        EnsureNoNegativePositions
     let rulerMarks: CornerDictionary
     var rulerNumbers: PositionDictionary
 }
@@ -57,9 +57,9 @@ class RulerViewModel: ObservableObject {
         )
         
         rulerModel = RulerModel(
-            ensureInitialRulerIsOnScreen: EnsureInitialObjectAllOnScreen(
+            ensureInitialRulerIsOnScreen: EnsureNoNegativePositions(
                 fourCornerDic: rulerDataBackGround.fourCornerDic,
-                oneCornerDic: rulerDataBackGround.oneCornerDic,
+                //oneCornerDic: rulerDataBackGround.oneCornerDic,
                 objectDimension: rulerDataBackGround.dimension
             ),
             rulerMarks: rulerMarks.getMarksDictionary(),
@@ -87,9 +87,9 @@ class RulerViewModel: ObservableObject {
       )
 
       self.rulerModel = RulerModel(
-          ensureInitialRulerIsOnScreen: EnsureInitialObjectAllOnScreen(
+          ensureInitialRulerIsOnScreen: EnsureNoNegativePositions(
               fourCornerDic: rulerDataBackGround.fourCornerDic,
-              oneCornerDic: rulerDataBackGround.oneCornerDic,
+              //oneCornerDic: rulerDataBackGround.oneCornerDic,
               objectDimension: rulerDataBackGround.dimension
           ),
           rulerMarks: self.rulerMarks.getMarksDictionary(),

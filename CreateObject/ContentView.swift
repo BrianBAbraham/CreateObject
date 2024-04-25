@@ -71,11 +71,9 @@ struct ListView: View {
 struct ContentView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-
+   
     @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
 
-    @State private var initialOrigin: CGPoint?
-   
 
     init(){
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.1)
@@ -99,15 +97,13 @@ struct ContentView: View {
         }
         
         var dictionaryForScreen: CornerDictionary {
-            let dic =
-            movementPickVM.getObjectDictionaryForScreen()
-           // print(movementPickVM.changeInOriginPosition)
-//            print("")
-            return dic
+            movementPickVM.movementDictionaryForScreen
         }
         
         var objectFrameSize: Dimension {
-            movementPickVM.getObjectOnScreenFrameSize()
+            print( movementPickVM.onScreenMovementFrameSize)
+            return
+            movementPickVM.onScreenMovementFrameSize
         }
         
         var movement: Movement {
@@ -116,6 +112,8 @@ struct ContentView: View {
         var startAngle: Double {
             movementPickVM.getStartAngle()
         }
+        
+       
         
         NavigationView {
             VStack {
@@ -135,15 +133,17 @@ struct ContentView: View {
                 NavigationLink(destination:
                     VStack {
                         ObjectAndRulerView(
-                            movementPickVM.uniquePartNames,
-                            uniqueArcPointNames,
-                            preTiltFourCornerPerKeyDic,
-                            dictionaryForScreen,
-                            objectFrameSize,
-                            movement
-                        )
-                        .position(recenterPosition)
+                                movementPickVM.uniquePartNames,
+                                uniqueArcPointNames,
+                                preTiltFourCornerPerKeyDic,
+                                dictionaryForScreen,
+                                objectFrameSize,
+                                movement
+                            )
+
+                    
                         Spacer()
+                    
                         VStack{
                             MovementPickerView()
                             HStack {
@@ -188,7 +188,42 @@ struct ContentView: View {
     }
 }
 
-
+                               
+struct Test: View {
+    @State private var sliderValue: CGFloat = 0
+    
+    var body: some View {
+        VStack {
+            Slider(value: $sliderValue, in: 0...100)
+            GeometryReader { geo in
+                Text("Move me!")
+                    .frame(width: 100 + sliderValue, height: 100)
+                    .background(Color.blue)
+                    .preference(key: CGFloatPreferenceKey.self, value: sliderValue)
+            }
+          
+        }
+        .padding()
+    }
+}
+           
+struct CGFloatPreferenceKey: PreferenceKey {
+    
+    static var defaultValue: CGFloat = 0.0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+       print("activated")
+        value = nextValue()
+    }
+}
+                               
+struct ObjectGeometryPreferenceKey: PreferenceKey {
+    
+    static var defaultValue = CGRect(x: 10, y: 10, width: 100, height: 100)
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+       // print("activated")
+        value = nextValue()
+    }
+}
 
 
 struct AllViews: View {

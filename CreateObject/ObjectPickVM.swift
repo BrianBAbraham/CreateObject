@@ -78,7 +78,16 @@ class ObjectPickViewModel: ObservableObject {
     @Published var objectChainLabelsDefaultDic: ObjectChainLabelDictionary = [:]
 
     var ensureInitialObjectAllOnScreen =
-        EnsureInitialObjectAllOnScreen(fourCornerDic: [:], oneCornerDic: [:], objectDimension: ZeroValue.dimension)
+        EnsureNoNegativePositions(
+            fourCornerDic: [:],
+           objectDimension: ZeroValue.dimension)
+    
+    var makeObjectStaticWhenEdited =
+        MakeObjectStaticWhenEdited(
+            fourCornerDic: [:],
+            objectDimension: ZeroValue.dimension
+        )
+    
     
     init() {
         
@@ -581,7 +590,7 @@ extension ObjectPickViewModel {
     func  getObjectDictionaryForScreen ()
     -> CornerDictionary {
         let dictionary =
-         ensureInitialObjectAllOnScreen.getObjectDictionaryForScreen()
+         ensureInitialObjectAllOnScreen.getModifiedDictionary()
     
        // print(dictionary)
         
@@ -612,7 +621,7 @@ extension ObjectPickViewModel {
 //    }
     
     func getMakeWholeObjectOnScreen()
-        -> EnsureInitialObjectAllOnScreen {
+        -> EnsureNoNegativePositions {
             let objectDimension: Dimension =
                 getObjectDimension()
             let fourCornerDic: CornerDictionary =
@@ -622,9 +631,9 @@ extension ObjectPickViewModel {
                 objectPickModel.objectImageData
                     .postTiltObjectToOneCornerPerKeyDic
             return
-                EnsureInitialObjectAllOnScreen(
+                EnsureNoNegativePositions(
                     fourCornerDic: fourCornerDic,
-                    oneCornerDic: oneCornerDic,
+                   // oneCornerDic: oneCornerDic,
                     objectDimension: objectDimension
                 )
     }
