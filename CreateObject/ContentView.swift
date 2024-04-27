@@ -81,10 +81,6 @@ struct ContentView: View {
     }
   
     var body: some View {
-
-        var uniqueArcPointNames: [String] {
-            movementPickVM.getUniqueArcPointNamesFromObjectDictionary()
-        }
         
         var postTiltOneCornerPerKeyDic: PositionDictionary {
             let dic =
@@ -95,13 +91,10 @@ struct ContentView: View {
         var preTiltFourCornerPerKeyDic: CornerDictionary {
             movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
         }
-        
-        var dictionaryForScreen: CornerDictionary {
-            movementPickVM.movementDictionaryForScreen
-        }
+
         
         var objectFrameSize: Dimension {
-            print( movementPickVM.onScreenMovementFrameSize)
+         //   print( movementPickVM.onScreenMovementFrameSize)
             return
             movementPickVM.onScreenMovementFrameSize
         }
@@ -120,9 +113,9 @@ struct ContentView: View {
                 NavigationLink(destination:
                     AllViews(
                         movementPickVM.uniquePartNames,
-                        uniqueArcPointNames,
+                        movementPickVM.uniqueArcPointNames,
                         preTiltFourCornerPerKeyDic,
-                        dictionaryForScreen,
+                        movementPickVM.movementDictionaryForScreen,
                         objectFrameSize,
                         movement
                     )
@@ -134,9 +127,9 @@ struct ContentView: View {
                     VStack {
                         ObjectAndRulerView(
                                 movementPickVM.uniquePartNames,
-                                uniqueArcPointNames,
+                                movementPickVM.uniqueArcPointNames,
                                 preTiltFourCornerPerKeyDic,
-                                dictionaryForScreen,
+                                movementPickVM.movementDictionaryForScreen,
                                 objectFrameSize,
                                 movement
                             )
@@ -158,7 +151,7 @@ struct ContentView: View {
                             HStack{
                                 Spacer()
                                 Text("turn tightness")
-                                OriginSetter(setValue: movementPickVM.setObjectTurnOriginX, label: "origin X")
+                                OriginSetter(setValue: movementPickVM.modifyStaticPointInX, label: "origin X")
                                 Spacer()
                             }
                         }
@@ -188,42 +181,42 @@ struct ContentView: View {
     }
 }
 
-                               
-struct Test: View {
-    @State private var sliderValue: CGFloat = 0
-    
-    var body: some View {
-        VStack {
-            Slider(value: $sliderValue, in: 0...100)
-            GeometryReader { geo in
-                Text("Move me!")
-                    .frame(width: 100 + sliderValue, height: 100)
-                    .background(Color.blue)
-                    .preference(key: CGFloatPreferenceKey.self, value: sliderValue)
-            }
-          
-        }
-        .padding()
-    }
-}
+//                               
+//struct Test: View {
+//    @State private var sliderValue: CGFloat = 0
+//    
+//    var body: some View {
+//        VStack {
+//            Slider(value: $sliderValue, in: 0...100)
+//            GeometryReader { geo in
+//                Text("Move me!")
+//                    .frame(width: 100 + sliderValue, height: 100)
+//                    .background(Color.blue)
+//                    .preference(key: CGFloatPreferenceKey.self, value: sliderValue)
+//            }
+//          
+//        }
+//        .padding()
+//    }
+//}
            
-struct CGFloatPreferenceKey: PreferenceKey {
-    
-    static var defaultValue: CGFloat = 0.0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-       print("activated")
-        value = nextValue()
-    }
-}
-                               
-struct ObjectGeometryPreferenceKey: PreferenceKey {
-    
-    static var defaultValue = CGRect(x: 10, y: 10, width: 100, height: 100)
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-       // print("activated")
-        value = nextValue()
-    }
-}
+//struct CGFloatPreferenceKey: PreferenceKey {
+//    
+//    static var defaultValue: CGFloat = 0.0
+//    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+//       print("activated")
+//        value = nextValue()
+//    }
+//}
+//                               
+//struct ObjectGeometryPreferenceKey: PreferenceKey {
+//    
+//    static var defaultValue = CGRect(x: 10, y: 10, width: 100, height: 100)
+//    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+//       // print("activated")
+//        value = nextValue()
+//    }
+//}
 
 
 struct AllViews: View {

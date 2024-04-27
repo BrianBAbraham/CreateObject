@@ -73,7 +73,7 @@ struct AngleSetter: View {
 
 struct OriginSetter: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    var setValue: (Double) -> Void  // Closure to set the angle
+    var setValue: (Double) -> Void  // Closure to set the stepper
     var label: String
     var body: some View {
         let boundStepperValue =

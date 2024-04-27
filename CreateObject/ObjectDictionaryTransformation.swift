@@ -424,6 +424,40 @@ struct ConvertFourCornerPerKeyToOne {
 }
 
 
+struct FourCornerDictionryTo {
+    
+    var valueSize: Dimension = ZeroValue.dimension
+    
+    init(
+        _ dic: CornerDictionary
+    ) {
+        valueSize = getValueSize(
+            dic
+        )
+    }
+    
+    func getValueSize(
+        _ dic: CornerDictionary
+    ) -> Dimension {
+        
+        let  oneCornerPerKeyDic =
+    ConvertFourCornerPerKeyToOne(
+        fourCornerPerElement: dic
+    ).oneCornerPerKey
+        let minMax =
+        CreateIosPosition.minMaxPosition(
+            oneCornerPerKeyDic
+        )
+        
+        return
+            (
+                width: minMax[1].x - minMax[0].x,
+                length: minMax[1].y - minMax[0].y
+            )
+    }
+}
+
+
 enum DictionaryTypes  {
     case forScreen
     case forMeasurement

@@ -11,7 +11,7 @@ import Foundation
 ///renaming object with index as required
 struct MovementImageData {
     var objectImageData: ObjectImageData
-    let origin: PositionAsIosAxes
+    let staticPoint: PositionAsIosAxes
     let startAngle: Double
     let endAngle: Double
     let angleChange: Double
@@ -19,13 +19,13 @@ struct MovementImageData {
     init(
         _ objectImageData: ObjectImageData,
         movementType: Movement,
-        origin: PositionAsIosAxes,
+        staticPoint: PositionAsIosAxes,
         startAngle: Double,
         endAngle: Double,
         forward: Double ){
             
         self.objectImageData = objectImageData
-        self.origin = origin
+        self.staticPoint = staticPoint
         self.startAngle = startAngle
         self.endAngle = endAngle
         angleChange = endAngle - startAngle
@@ -46,10 +46,12 @@ struct MovementImageData {
                     value: [startAngle, angleChange][index],
                     unit: UnitAngle.degrees
                 )
-                let aboutPosition: PositionAsIosAxes =
-                origin
-                
-                rotateObject(newObjectId, rotationAngle,aboutPosition)
+              
+                rotateObject(
+                    newObjectId,
+                    rotationAngle,
+                    staticPoint
+                )
                 
                 updateOneCornerPerKeyDictionary()
             }
@@ -61,7 +63,7 @@ struct MovementImageData {
         }
             
             
-        getSize()
+        setSize()
            
         }
     
@@ -88,7 +90,7 @@ struct MovementImageData {
     mutating func rotateObject(
         _ objectIndex: Int,
         _ angle: Measurement<UnitAngle>,
-        _ aboutPosition: PositionAsIosAxes
+        _ staticPoint: PositionAsIosAxes
     ) {
         for (
             key,
@@ -98,7 +100,7 @@ struct MovementImageData {
             var newValues = rotatePart(
                 value,
                 angle,
-                aboutPosition
+                staticPoint
             )
             
             newValues = CreateIosPosition.addToupleToArrayOfTouples(
@@ -109,7 +111,6 @@ struct MovementImageData {
                 ),
                 newValues
             )
-            
             
             objectImageData.postTiltObjectToPartFourCornerPerKeyDic +=
             [ReplaceCharBeforeSecondUnderscore.get(
@@ -125,14 +126,14 @@ struct MovementImageData {
         func rotatePart(
             _ positions: [PositionAsIosAxes],
             _ angle: Measurement<UnitAngle>,
-            _ aboutPosition: PositionAsIosAxes
+            _ staticPoint: PositionAsIosAxes
         ) -> [PositionAsIosAxes]{
             var rotatedPositions: [PositionAsIosAxes] = []
             for position in positions {
                 let rotatedPosition =
                 PositionOfPointAfterRotationAboutPoint(
                     staticPoint: (
-                        aboutPosition
+                        staticPoint
                     ),
                     movingPoint: position,
                     angleChange: angle,
@@ -148,21 +149,24 @@ struct MovementImageData {
     }
     
     
-    mutating func getSize() {
-        let  postTiltObjectToOneCornerPerKeyDic =
-        ConvertFourCornerPerKeyToOne(
-            fourCornerPerElement: objectImageData.postTiltObjectToPartFourCornerPerKeyDic
-        ).oneCornerPerKey
-        let minMax =
-        CreateIosPosition.minMaxPosition(
-            postTiltObjectToOneCornerPerKeyDic
-        )
+    mutating func setSize() {
+//        let  postTiltObjectToOneCornerPerKeyDic =
+//        ConvertFourCornerPerKeyToOne(
+//            fourCornerPerElement: objectImageData.postTiltObjectToPartFourCornerPerKeyDic
+//        ).oneCornerPerKey
+//        let minMax =
+//        CreateIosPosition.minMaxPosition(
+//            postTiltObjectToOneCornerPerKeyDic
+//        )
+//        
+//        objectImageData.objectDimension =
+//        (
+//            width: minMax[1].x - minMax[0].x,
+//            length: minMax[1].y - minMax[0].y
+//        )
         
         objectImageData.objectDimension =
-        (
-            width: minMax[1].x - minMax[0].x,
-            length: minMax[1].y - minMax[0].y
-        )
+        FourCornerDictionryTo(objectImageData.postTiltObjectToPartFourCornerPerKeyDic).valueSize
     }
     
     
@@ -184,15 +188,17 @@ struct MovementImageData {
     
 }
 
-struct IdentifiableDictionary: Identifiable {
-    let id: UUID // Provides a unique identifier for each instance
-    var dictionary: CornerDictionary // Example dictionary, can be of any type
+//struct IdentifiableDictionary: Identifiable {
+//    let id: UUID // Provides a unique identifier for each instance
+//    var dictionary: CornerDictionary // Example dictionary, can be of any type
+//
+//    init(dictionary: CornerDictionary) {
+//        self.id = UUID() // Generate a new UUID for each new instance
+//        self.dictionary = dictionary
+//    }
+//}
 
-    init(dictionary: CornerDictionary) {
-        self.id = UUID() // Generate a new UUID for each new instance
-        self.dictionary = dictionary
-    }
-}
+
 enum Movement: String, CaseIterable {
     case none = "static"
     case linear = "forward"

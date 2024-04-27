@@ -89,7 +89,7 @@ struct CircularMotionChange {
 
 
 struct PositionOfPointAfterRotationAboutPoint {
-    let staticPoint: PositionAsIosAxes
+    let staticPoint: PositionAsIosAxes //primary origin to 
     let movingPoint: PositionAsIosAxes
     var fromStaticToPointAboutToMove: PositionAsIosAxes{
         CreateIosPosition.subtractSecondFromFirstTouple(

@@ -22,7 +22,6 @@
 		FD4BB15A2BC96EDD00DE8875 /* MovementPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */; };
 		FD5C57B92BAF5260007B9159 /* RulerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5C57B82BAF5260007B9159 /* RulerVM.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickVM.swift */; };
-		FD8E74982BD95386008E6940 /* MovementPositionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8E74972BD95386008E6940 /* MovementPositionVM.swift */; };
 		FD8FFC902B73E13F00AAA055 /* ObjectDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8FFC8F2B73E13F00AAA055 /* ObjectDefaults.swift */; };
 		FD8FFC922B73E20E00AAA055 /* PartDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8FFC912B73E20E00AAA055 /* PartDefaults.swift */; };
 		FD93EFBC29DC7EB900456380 /* ObjectShowMenuVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD93EFBB29DC7EB900456380 /* ObjectShowMenuVM.swift */; };
@@ -69,7 +68,6 @@
 		FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPickVM.swift; sourceTree = "<group>"; };
 		FD5C57B82BAF5260007B9159 /* RulerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulerVM.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickVM.swift; sourceTree = "<group>"; };
-		FD8E74972BD95386008E6940 /* MovementPositionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPositionVM.swift; sourceTree = "<group>"; };
 		FD8FFC8F2B73E13F00AAA055 /* ObjectDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDefaults.swift; sourceTree = "<group>"; };
 		FD8FFC912B73E20E00AAA055 /* PartDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartDefaults.swift; sourceTree = "<group>"; };
 		FD93EFBB29DC7EB900456380 /* ObjectShowMenuVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectShowMenuVM.swift; sourceTree = "<group>"; };
@@ -148,7 +146,6 @@
 				FD11E26E2B6E8597008D9C22 /* ObjectEditVM.swift */,
 				FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectShowMenuVM.swift */,
-				FD8E74972BD95386008E6940 /* MovementPositionVM.swift */,
 				FDCE3F0A299A8B5B00C19F2A /* Save.swift */,
 				FD10BB5A2BBC46B7000C13A4 /* RulerAndObjectRecenterVM.swift */,
 				FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */,
@@ -292,7 +289,6 @@
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
 				FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */,
-				FD8E74982BD95386008E6940 /* MovementPositionVM.swift in Sources */,
 				FDEEB2BD2BB5DBD700000199 /* UnitSystemVM.swift in Sources */,
 				FDD422E82B9F1D19005B7950 /* BilateralPartPicker.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,

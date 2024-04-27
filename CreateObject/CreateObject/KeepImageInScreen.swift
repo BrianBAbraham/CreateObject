@@ -97,6 +97,7 @@ struct EnsureNoNegativePositions {
                .minMaxPosition(
                    oneCornerDic
                    )
+        //the minimum values of the translated object is the offset for all part positions including origin
         return
             CreateIosPosition.negative(minThenMax[0])
     }

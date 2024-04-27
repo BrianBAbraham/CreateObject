@@ -18,122 +18,128 @@ struct MovementPickModel {
 
 
 class MovementPickViewModel: ObservableObject {
+    //INPUTS TO VIEW
     @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
+    @Published var staticPoint: PositionAsIosAxes = ZeroValue.iosLocation
+    @Published var objectZeroOrigin = ZeroValue.iosLocation
+    @Published var uniquePartNames: [String] = []
+    @Published var uniqueArcPointNames: [String] = []
+    @Published var uniqueCanvasNames: [String] = [
+        PartTag.canvas.rawValue + PartTag.origin.rawValue,
+        PartTag.canvas.rawValue + PartTag.corner.rawValue
+    ]
+    @Published var movementDictionaryForScreen: CornerDictionary = [:]
     
-    @Published var movementName: String {
-        willSet {
-            // Capture the old origin offset before movementName changes
-           oldOriginOffset = objectZeroOrigin
-        }
+    
+    //EDITS BY VIEW FOR DATA LAYER INPUTS
+    @Published var movementName: String = Movement.none.rawValue{
         didSet {
             setMovementType()
         }
     }
+    var movementType: Movement = .none
+    
+    @Published var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
     
     @Published var objectAngleName: String {
         didSet {
             setObjectAngleType()
         }
     }
-
-    @Published var turnOriginToObjectOrigin: PositionAsIosAxes {//of turn
+    var staticPointUpdate: PositionAsIosAxes = ZeroValue.iosLocation {
         didSet {
             movementImageData = getMovementImageData()
         }
     }
+    var startAngle: Double = 0.0 {//of turn
+        didSet {
+            movementImageData = getMovementImageData()
+        }
+    }
+    var endAngle: Double = 30.0 {//of turn
+        didSet {
+            movementImageData = getMovementImageData()
+        }
+    }
+    var objectAngleType: WhichAngle = .end
     
-    @Published var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
+    var forward: Double = 0.0//in direction facing
+    
     
     //intialise object data
     var objectImageData: ObjectImageData =
         ObjectImageService.shared.objectImageData
     
     @Published var dataToCentreObjectZeroOrigin: AddOrPad = (addX: 0.0, addY: 0.0, padX: 0.0, padY: 0.0 )
+    
+    
+    //EXTRACTIONS FROM DATA LAYER
     //intialise movement data
     //movement are object data plus transformed object data
     @Published private var movementImageData = MovementImageData (
         ObjectImageService.shared.objectImageData,//object data
         movementType: .turn, //transform data
-        origin: ZeroValue.iosLocation, //transform data
+        staticPoint: ZeroValue.iosLocation, //transform data
         startAngle: 0.0, //transform data
         endAngle: 0.0, //transform data
         forward: 0.0 //transform data
     ) {
         didSet{
-            uniquePartNames = getUniquePartNamesFromObjectDictionary()
-            movementDictionaryForScreen = getMovementDictionaryForScreen()
-            objectZeroOrigin = getObjectZeroOrgin()
-            dataToCentreObjectZeroOrigin = getDataToCentreObjectZeroOrigin()
             
-            print(dataToCentreObjectZeroOrigin)
-            onScreenMovementFrameSize = getObjectOnScreenFrameSize()
-            
-//            if dataToCentreObjectZeroOrigin.addX != 0.0 || dataToCentreObjectZeroOrigin.addY != 0.0 {
-//                transformMovementDictionaryForScreenToCentreObjectZeroOrigin()
-//
-//            }
+           // if movementType == .turn {
+                uniquePartNames = getUniquePartNamesFromObjectDictionary()
+                uniqueArcPointNames = getUniqueArcPointNamesFromObjectDictionary()
+                
+                movementDictionaryForScreen = getMovementDictionaryForScreen()
+                objectZeroOrigin = getObjectZeroOrgin()
+                staticPoint = objectZeroOrigin
+                translateStaticPointForAllValuesPositive()
+                dataToCentreObjectZeroOrigin = getDataToCentreObjectZeroOrigin()
+                
+                translateDictionaryToCentreObjectZeroOrigin()
+                print("on UI updatae before translate staticPoint \(staticPoint)")
+                
+                translateStaticPointForCentreObjectZeroOrigin()
+                print("on UI updatae after translate staticPoint \(staticPoint)\n")
+                
+                
+                objectZeroOrigin = getObjectZeroOrgin()
+                
+                
+                addCanvasOriginToDictionary()
+                
+                addCanvasCornerToDictionary()
+                onScreenMovementFrameSize = getObjectOnScreenFrameSize()
+            //}
         }
     }
     
-    var startAngle: Double {//of turn
-        didSet {
-            movementImageData = getMovementImageData()
-        }
-    }
-    
-    var endAngle: Double {//of turn
-        didSet {
-            movementImageData = getMovementImageData()
-        }
-    }
-    
-    var movementType: Movement = .none
-    var objectAngleType: WhichAngle = .end
-    var forward: Double //in direction facing
-    
-    @Published var oldOriginOffset = ZeroValue.iosLocation
-    @Published var objectZeroOrigin = ZeroValue.iosLocation
-    
-    
-    @Published var uniquePartNames: [String] = []
-    @Published var movementDictionaryForScreen: CornerDictionary = [:]
-    
-    
-    private var cancellables: Set<AnyCancellable> = []
-    
-    
+    //DATA MANIPULATION
     var ensureInitialObjectAllOnScreen =
         // drag will not work if coordinates are negative
+        // must be repeated as movement can make negative
         EnsureNoNegativePositions(
             fourCornerDic: [:],
             objectDimension: ZeroValue.dimension
         )
     
+    
+    private var cancellables: Set<AnyCancellable> = []
+    
+    
+    var movementFourCornerPerKeyDic: CornerDictionary = [:]
 
-    init(
-        _ movement: String = Movement.none.rawValue,
-        _ origin: PositionAsIosAxes = ZeroValue.iosLocation,
-        _ startAngle: Double = 0.0,
-        _ endAngle: Double = 30.0,
-        _ forward: Double = 0.0
-        
-    ){
-        self.movementName = movement
-        self.turnOriginToObjectOrigin = origin
-        self.startAngle = startAngle
-        self.endAngle = endAngle
-        self.forward = forward
-        
+    init(){
         objectAngleName = objectAngleType.rawValue
         
-        
+        //Initial build of movement data for image using a static image and default movement parameters
         ObjectImageService.shared.$objectImageData
-            .sink { [weak self] newData in
-                self?.objectImageData = newData
-                self?.movementImageData = self?.getMovementImageData() ?? MovementImageData(//original and transformed original
-                    newData,//original
-                    movementType: self?.movementType ?? .none,//transform param
-                    origin: self?.turnOriginToObjectOrigin ?? ZeroValue.iosLocation,
+            .sink { [weak self] original in
+                self?.objectImageData = original
+                self?.movementImageData = self?.getMovementImageData() ?? MovementImageData(
+                    original,//original
+                    movementType: self?.movementType ?? .none,//transform original with following param
+                    staticPoint: self?.staticPointUpdate ?? ZeroValue.iosLocation,
                     startAngle: self?.startAngle ?? 0.0,
                     endAngle: self?.endAngle ?? 0.0,
                     forward: self?.forward ?? 0.0
@@ -143,21 +149,44 @@ class MovementPickViewModel: ObservableObject {
                 in: &cancellables
             )
         
+        //Object may change
         DictionaryService.shared.$currentObjectType
             .sink { [weak self] newData in
-               // print("New currentObjectType: \(newData)")
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
         
+        //Final build of movement data for image using a static image and UI movement parameters
         movementImageData = getMovementImageData()
         
-        ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
+        //All dictionary values dervied from data image must be positive
+        movementDictionaryForScreen = getMovementDictionaryForScreen()
         
+        //With all positive values find objectZeroOrigin
+        objectZeroOrigin = getObjectZeroOrgin()
+        //staticPoint = objectZeroOrigin
+        dataToCentreObjectZeroOrigin = getDataToCentreObjectZeroOrigin()
+        translateStaticPointForAllValuesPositive()
+        //Dictionary values refer to key which are handled differently in view
+        //Part
+        //Arc
+        //Canvas: zero orgin and maximum position are static
+        //Extract these names
+        uniquePartNames = getUniquePartNamesFromObjectDictionary()
+        uniqueArcPointNames = getUniqueArcPointNamesFromObjectDictionary()
+        
+        
+        //To avoid manipulating View to make objectZeroOrigin static during movement edits
+        //Effect in data
+        translateDictionaryToCentreObjectZeroOrigin()
         objectZeroOrigin = getObjectZeroOrgin()
         
-        uniquePartNames = getUniquePartNamesFromObjectDictionary()
+        addCanvasOriginToDictionary()
+        addCanvasCornerToDictionary()
+        print("on initialisation before translate staticPoint \(staticPoint)")
+        translateStaticPointForCentreObjectZeroOrigin()
         
+        print("on intilialisation after translate staticPoint \(staticPoint)\n")
         onScreenMovementFrameSize = getObjectOnScreenFrameSize()
     }
 }
@@ -211,10 +240,10 @@ extension MovementPickViewModel {
         startAngle
     }
     
-    
-    func getObjectTurnOriginX() -> Double {
-        turnOriginToObjectOrigin.x
-    }
+//    
+//    func getObjectTurnOriginX() -> Double {
+//        staticPoint.x
+//    }
     
     
     func getMovementImageData() -> MovementImageData{
@@ -222,7 +251,7 @@ extension MovementPickViewModel {
         MovementImageData(
             objectImageData,
             movementType: movementType,
-            origin: turnOriginToObjectOrigin,
+            staticPoint: staticPointUpdate,
             startAngle: startAngle,
             endAngle: endAngle,
             forward: forward
@@ -264,9 +293,13 @@ extension MovementPickViewModel {
         objectAngleType = WhichAngle(rawValue: objectAngleName) ?? .end
     }
 
-    func setObjectTurnOriginX(_ increment: Double ) {
-        let newValue = turnOriginToObjectOrigin.x + increment
-        turnOriginToObjectOrigin = (x: newValue, y: turnOriginToObjectOrigin.y, z: turnOriginToObjectOrigin.z)
+    
+    func modifyStaticPointInX(_ increment: Double ) {
+        staticPointUpdate = CreateIosPosition.addTwoTouples(staticPointUpdate, (x: increment, y: 0.0, z: 0.0))
+        
+        //let newValue = staticPoint.x + increment
+       
+        staticPoint = CreateIosPosition.addTwoTouples((x: increment, y: 0.0, z: 0.0), staticPoint)/*(x: newValue, y: staticPoint.y, z: staticPoint.z)*/
     }
     
     
@@ -313,37 +346,6 @@ extension MovementPickViewModel {
     }
     
     
-//    func getObjectOrigins(_ dictionary: CornerDictionary) -> [PositionAsIosAxes] {
-//        var origins: [PositionAsIosAxes] = []
-//        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
-//       
-//        let originDictionary = postTiltObjectToPartFourCornerPerKeyDic.filter { $0.key.contains(PartTag.origin.rawValue) }
-//        let any = 0//four identical values; conforms to corners; disregard three
-//        let numberOfOrigin = originDictionary.count
-//    
-//        for index in 0..<numberOfOrigin {
-//            let name = Part.objectOrigin.rawValue + PartTag.stringLink.rawValue + "id" + String(index)
-//            
-//            for (key, value) in originDictionary {
-//                if key.contains(name) {
-//                    //print(value)
-//                    origins.append(value[any])
-//                }
-//            }
-//        }
-//        if origins.count == 0 {
-//            fatalError()
-//        } else {
-//            
-//            return origins
-//        }
-//    }
-    
-    
-
-    
-    
-    
     func getPostTiltOneCornerPerKeyDic() -> PositionDictionary {
         movementImageData.objectImageData.postTiltObjectToOneCornerPerKeyDic
     }
@@ -356,14 +358,8 @@ extension MovementPickViewModel {
     
         return dictionary
     }
-    
-    
-//    func getOriginNamesFromObjectDictionary() -> [String] {
-//       
-//        Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.origin.rawValue) }
-//    }
-    
-    
+
+        
     func getUniqueArcPointNamesFromObjectDictionary() -> [String] {
         let names =
              Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
@@ -375,7 +371,7 @@ extension MovementPickViewModel {
     func getUniquePartNamesFromObjectDictionary() -> [String] {
         Array(
             getPostTiltObjectToPartFourCornerPerKeyDic().keys
-        ).filter { 
+        ).filter {
             !(
                 $0.contains(
                     PartTag.arcPoint.rawValue //UI manages differently from parts
@@ -397,14 +393,9 @@ extension MovementPickViewModel {
             movementImageData.objectImageData
                     .postTiltObjectToPartFourCornerPerKeyDic
             
-           // print(fourCornerDic)
-            let oneCornerDic: PositionDictionary =
-            movementImageData.objectImageData
-                    .postTiltObjectToOneCornerPerKeyDic
             return
                 EnsureNoNegativePositions(
                     fourCornerDic: fourCornerDic,
-                   // oneCornerDic: oneCornerDic,
                     objectDimension: objectDimension
                 )
     }
@@ -412,24 +403,14 @@ extension MovementPickViewModel {
     
     func getObjectOnScreenFrameSize ()
     -> Dimension {
-        
-        let ensureInitialObjectAllOnScreen =  getMakeWholeObjectOnScreen()
-        let frameSize =
-            ensureInitialObjectAllOnScreen.getObjectOnScreenFrameSize()
-       
-        return frameSize
+        FourCornerDictionryTo(movementDictionaryForScreen).valueSize
     }
 
-//    func getObjectOnScreenFrameSize() -> Dimension {
-//        let position = getDictionaryMaxForScreenDictionary()
-//        
-//        return (width: position.x, length: position.y)
-//    }
-//    
-    
+
     
     func getObjectDimension ( )
         -> Dimension {
+           
             let dim =
             movementImageData.objectImageData.objectDimension
         
@@ -459,9 +440,17 @@ extension MovementPickViewModel {
     
     
     func getOffsetForObjectOrigin() -> PositionAsIosAxes {
-        let offset =
-        ensureInitialObjectAllOnScreen.originOffset
-    return offset
+        let oneCornerDic = ConvertFourCornerPerKeyToOne(fourCornerPerElement: movementDictionaryForScreen).oneCornerPerKey
+        let minThenMax =
+            CreateIosPosition
+               .minMaxPosition(
+                   oneCornerDic
+                   )
+        //the minimum values of the translated object is the offset for all part positions including origin
+        return
+            CreateIosPosition.negative(minThenMax[0])
+        
+        
     }
 }
 
@@ -484,18 +473,10 @@ extension MovementPickViewModel {
         return max
     }
     
+    
     func getDataToCentreObjectZeroOrigin() -> AddOrPad{
-        
-//        let dic = ConvertFourCornerPerKeyToOne(
-//            fourCornerPerElement: movementDictionaryForScreen
-//        ).oneCornerPerKey
-//        
-//        let minMax = CreateIosPosition.minMaxPosition(
-//            dic
-//        )
-//        
+
         let max = getDictionaryMaxForScreenDictionary() //minMax[1]
-        
         var padX = 0.0
         var padY = 0.0
         var addX = 0.0
@@ -515,8 +496,8 @@ extension MovementPickViewModel {
             max.y,
             objectZeroOrigin.y
         )
-        
-       return (addX: addX, addY: addY, padX: padX, padY: padY )
+      
+        return (addX: addX, addY: addY, padX: padX, padY: padY )
         
         func getCorrections(
             _ max: Double,
@@ -525,7 +506,7 @@ extension MovementPickViewModel {
             Double,
             Double
         ) {
-            var pad = 0.0
+            var pad = max
             var translate = 0.0
             switch (
                 max,
@@ -535,7 +516,7 @@ extension MovementPickViewModel {
                 max,
                 origin
             ) where max > 2 * origin:
-                translate = max - origin
+                translate = max - 2 * origin
             case let (
                 max,
                 origin
@@ -556,8 +537,70 @@ extension MovementPickViewModel {
                 pad
             )
         }
-       
+        
     }
     
     
+    func getTranslationToCentreObjectZeroOrigin() -> PositionAsIosAxes {
+        (dataToCentreObjectZeroOrigin.addX, y: dataToCentreObjectZeroOrigin.addY, z: 0.0)
+    }
+    
+    
+    func translateStaticPointForAllValuesPositive() {
+       
+        //print(objectZeroOrigin)
+        //staticPoint =
+        //print(CreateIosPosition.addTwoTouples(originOffset, staticPoint))
+    }
+    
+    
+    func translateStaticPointForCentreObjectZeroOrigin(){
+        let translation = getTranslationToCentreObjectZeroOrigin()
+       staticPoint = CreateIosPosition.addTwoTouples(translation, staticPoint)
+//        print("translation \(translation)")
+//        print("staticPoint \(staticPoint)")
+//        print("staticPointUpdate \(staticPointUpdate)")
+//        print("")
+        //print(CreateIosPosition.addTwoTouples(translation, staticPoint))
+    }
+    
+    
+    func translateDictionaryToCentreObjectZeroOrigin() {
+        let translation = getTranslationToCentreObjectZeroOrigin()
+                for (key, value) in movementDictionaryForScreen {
+                    let currentValue = value
+                    let newValue =
+                        CreateIosPosition.addToupleToArrayOfTouples(translation, currentValue)
+                    movementDictionaryForScreen[key] = newValue
+                }
+    }
+    
+    
+    func addCanvasCornerToDictionary() {
+        
+        let canvasCornerName = uniqueCanvasNames[1]
+        
+        let origin = getCanvasOrigin()
+        let max = getDictionaryMaxForScreenDictionary()
+        
+        let data = dataToCentreObjectZeroOrigin
+        let corner = (x: data.padX, y: data.padY, z: 0.0)
+        let corners = CreateIosPosition.addToupleToArrayOfTouples(corner, origin)
+
+        movementDictionaryForScreen[canvasCornerName] = corners
+        //print(movementDictionaryForScreen)
+    }
+    
+    func getCanvasOrigin() -> [PositionAsIosAxes] {
+        let size = 0.5
+        return
+            [(x: 0.0, y: 0.0, z: 0.0), (x: size, y: 0.0, z: 0.0), (x: size, y: size, z: 0.0), (x: 0.0, y: size, z: 0.0)]
+    }
+    
+    func addCanvasOriginToDictionary() {
+        let canvasOriginName = uniqueCanvasNames[0]
+
+        movementDictionaryForScreen[canvasOriginName] = getCanvasOrigin()
+
+    }
 }

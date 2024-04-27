@@ -204,6 +204,7 @@ enum PartTag: String, Parts {
     
     case angle = "angle"
     case arcPoint = "arcPoint"
+    case canvas = "canvas"
     case corner = "corner"
     case id0 = "_id0"
     case id1 = "_id1"
@@ -213,6 +214,7 @@ enum PartTag: String, Parts {
     case height = "height"
     case dimension = "dimension"
     case origin = "origin"
+    case turnPoint = "turnPoint"
     case xOrigin = "x-origin"
     case yOrigin = "y-orgin"
     case zOrigin = "zOrigin"

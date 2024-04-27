@@ -201,16 +201,39 @@ struct ArcView: View {
     let startAngle: Angle
     let endAngle: Angle
 
-
-    
-    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes, _ objectToTurnOriginX: Double){
+    init(
+        _ position: [PositionAsIosAxes],
+        _ originOfObject: PositionAsIosAxes,
+        _ objectToTurnOriginX: CGPoint
+    ){
+        
+        
         self.position = position
-        self.origin = CGPoint(x: originOfObject.x + objectToTurnOriginX, y: originOfObject.y)
-        point1 = CGPoint( x: position[0].x, y: position[0].y)
-        point2 = CGPoint( x: position[1].x, y: position[1].y)
-        radius = distance(from: origin, to: point1)
-        startAngle = angle(from: origin, to: point1)
-        endAngle = angle(from: origin, to: point2)
+        self.origin = objectToTurnOriginX
+//        CGPoint(
+//            x: originOfObject.x ,
+//            y: originOfObject.y
+//        )
+        point1 = CGPoint(
+            x: position[0].x,
+            y: position[0].y
+        )
+        point2 = CGPoint(
+            x: position[1].x,
+            y: position[1].y
+        )
+        radius = distance(
+            from: origin,
+            to: point1
+        )
+        startAngle = angle(
+            from: origin,
+            to: point1
+        )
+        endAngle = angle(
+            from: origin,
+            to: point2
+        )
         
         // Calculate the distance between two points
         func distance(from: CGPoint, to: CGPoint) -> CGFloat {
@@ -230,7 +253,7 @@ struct ArcView: View {
     }
     var body: some View {
         ZStack{
-            MyCircle(fillColor: .green, strokeColor: .black, 10.0, origin )
+           // MyCircle(fillColor: .green, strokeColor: .black, 10.0, origin )
              //   .position(origin)
             Path { path in
                 path.addArc(center: origin,
@@ -368,7 +391,27 @@ struct PartView: View {
     }
 }
 
+struct CanvasView: View {
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
+ 
+    var origin: CGPoint
+    
+    
+    init(
+        _ origin: PositionAsIosAxes
+    ){
+        
+        self.origin = CGPoint(x: origin.x, y: origin.y)
+        }
+        
+    
+    var body: some View {
 
+        MyCircle(fillColor: .green, strokeColor: .black, 40.0, origin )
+
+    }
+}
 
 
 
@@ -443,9 +486,11 @@ struct ObjectView: View {
 
         let uniqueArcNames = Array(arcDictionary.keys)
         
-        let objectTurnOriginX = movementPickVM.getObjectTurnOriginX()
+        let staticPoint = CGPoint(x: movementPickVM.staticPoint.x, y: movementPickVM.staticPoint.y)
         
-        let padding = movementPickVM.dataToCentreObjectZeroOrigin
+        
+        
+       // let padding = movementPickVM.turnOriginToObjectOrigin
        
 //        Color.clear
 //            .overlay(
@@ -457,8 +502,17 @@ struct ObjectView: View {
                             postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
                             objectEditVM.partToEdit
                         )
-                    }
-                    .zIndex(5000)
+                        
+//                    ForEach(movementPickVM.uniqueCanvasNames, id: \.self) { name in
+//                        CanvasView(
+//                            dictionaryForScreen[name]?[0] ?? ZeroValue.iosLocation
+//                        )
+//                    }
+                }
+                .zIndex(5000)
+                
+                MyCircle(fillColor: .black, strokeColor: .black, 50.0, staticPoint)
+                    .zIndex(6000)
          
                     ForEach(uniqueArcPointNames, id: \.self) { name in
                         ArcPointView(
@@ -471,25 +525,14 @@ struct ObjectView: View {
                                 ArcView(
                                     arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
                                     objectOriginInScreen,
-                                    objectTurnOriginX
+                                    staticPoint
                                 )
                             }
                         }
                     }
             }
-//            .padding([.bottom], 100)
-//            .padding([.trailing], padding.padY)
-//            .padding([.top], padding.addY)
-//            .padding([.leading], padding.addX)
-           // .border(.red, width: 2)
-         
-//            .overlay(
-//                    RoundedRectangle(cornerRadius: 5) // Use RoundedRectangle for rounded corners
-//                        .stroke(Color.red, lineWidth: 2) // Red border with 2 points width
-//                        .frame(width: objectFrameSize.width, height: objectFrameSize.length)
-//                )
-            .frame(width: objectFrameSize.width + padding.padX * 0.32499999999999996, height: objectFrameSize.length, alignment: .center)
-            .border(.red, width: 2)
+
+          //  .border(.red, width: 2)
             .modifier(
                 ForObjectDrag (
                     frameSize: objectFrameSize, active: true)

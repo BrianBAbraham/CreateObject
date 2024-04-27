@@ -756,13 +756,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>104</string>
+					<string>106</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>103</string>
+					<string>105</string>
 					<key>Timestamp</key>
-					<string>734863075.370452</string>
+					<string>735913537.340835</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -803,13 +803,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>208</string>
+					<string>212</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>207</string>
+					<string>211</string>
 					<key>Timestamp</key>
-					<string>735056775.0560811</string>
+					<string>735903168.867412</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -825,16 +825,17 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        self.origin = CGPoint(x: originOfObject.x + objectToTurnOriginX, y: originOfObject.y)
+				<string>        self.origin = objectToTurnOriginX
+//        CGPoint(
 </string>
 				<key>leading</key>
-				<string>    init(_ position: [PositionAsIosAxes], _ originOfObject: PositionAsIosAxes, _ objectToTurnOriginX: Double){
+				<string>        
         self.position = position
 </string>
 				<key>trailing</key>
-				<string>        point1 = CGPoint( x: position[0].x, y: position[0].y)
-        point2 = CGPoint( x: position[1].x, y: position[1].y)
-        radius = distance(from: origin, to: point1)
+				<string>//            x: originOfObject.x ,
+//            y: originOfObject.y
+//        )
 </string>
 			</dict>
 			<key>title</key>
@@ -850,13 +851,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>117</string>
+					<string>110</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>116</string>
+					<string>109</string>
 					<key>Timestamp</key>
-					<string>735746873.473909</string>
+					<string>735838091.394521</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -897,13 +898,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>269</string>
+					<string>262</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>268</string>
+					<string>261</string>
 					<key>Timestamp</key>
-					<string>735746873.473945</string>
+					<string>735838091.394551</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -944,13 +945,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>238</string>
+					<string>261</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>237</string>
+					<string>260</string>
 					<key>Timestamp</key>
-					<string>735056885.982928</string>
+					<string>735926579.623021</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -991,13 +992,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>106</string>
+					<string>107</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>105</string>
+					<string>106</string>
 					<key>Timestamp</key>
-					<string>735757638.297809</string>
+					<string>735902421.010705</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
