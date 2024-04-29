@@ -31,37 +31,37 @@ import SwiftUI
 //    }
 //}
 
-struct MyCircle: View {
-    let strokeColor: Color
-    let fillColor: Color?
-    let dimension: Double
-    let position: CGPoint
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    init(fillColor: Color?, strokeColor: Color,  _ dimension: Double, _ position: CGPoint) {
-        self.fillColor = fillColor
-        self.strokeColor = strokeColor
-        self.dimension = dimension
-        self.position = position
-    }
-    var body: some View {
-        ZStack{
-            if let fillColorUnwrapped = fillColor {
-                ZStack{
-                    Circle()
-                        .fill(fillColorUnwrapped)
-                        .modifier(CircleModifier( dimension: dimension, position: position))
-                    Circle()
-                        .fill(.black)
-                        .modifier(CircleModifier( dimension: 10, position: position))
-                        .opacity(0.0001)
-                }
-            }
-            Circle()
-                .stroke(self.strokeColor)
-                .modifier(CircleModifier( dimension: dimension, position: position))
-        }
-    }
-}
+//struct MyCircle: View {
+//    let strokeColor: Color
+//    let fillColor: Color?
+//    let dimension: Double
+//    let position: CGPoint
+//    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+//    init(fillColor: Color?, strokeColor: Color,  _ dimension: Double, _ position: CGPoint) {
+//        self.fillColor = fillColor
+//        self.strokeColor = strokeColor
+//        self.dimension = dimension
+//        self.position = position
+//    }
+//    var body: some View {
+//        ZStack{
+//            if let fillColorUnwrapped = fillColor {
+//                ZStack{
+//                    Circle()
+//                        .fill(fillColorUnwrapped)
+//                        .modifier(CircleModifier( dimension: dimension, position: position))
+//                    Circle()
+//                        .fill(.black)
+//                        .modifier(CircleModifier( dimension: 10, position: position))
+//                        .opacity(0.0001)
+//                }
+//            }
+//            Circle()
+//                .stroke(self.strokeColor)
+//                .modifier(CircleModifier( dimension: dimension, position: position))
+//        }
+//    }
+//}
 
 struct CircleModifier: ViewModifier {
     let dimension: Double
@@ -73,6 +73,38 @@ struct CircleModifier: ViewModifier {
             .position(self.position)
     }
 }
+
+
+
+
+
+
+
+//struct MyCircle: View {
+//
+//    let fillColor: Color?
+//    let strokeColor: Color
+//    let dimension: Double
+//    @State var position: CGPoint
+//
+//    var body: some View {
+//        ZStack {
+//            if let fillColorUnwrapped = fillColor {
+//                Circle()
+//                    .fill(fillColorUnwrapped)
+//                    .frame(width: dimension, height: dimension)
+//                    .position(position)
+//            }
+//            Circle()
+//                .stroke(strokeColor)
+//                .frame(width: dimension, height: dimension)
+//                .position(position)
+//        }
+//        .onTapGesture {
+//            self.position.x += 10 // Move the circle to the right to test updates
+//        }
+//    }
+//}
 
 //struct CircleView_Previews: PreviewProvider {
 //    static var previews: some View {

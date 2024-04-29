@@ -214,7 +214,7 @@ enum PartTag: String, Parts {
     case height = "height"
     case dimension = "dimension"
     case origin = "origin"
-    case turnPoint = "turnPoint"
+    case staticPoint = "staticPoint"
     case xOrigin = "x-origin"
     case yOrigin = "y-orgin"
     case zOrigin = "zOrigin"

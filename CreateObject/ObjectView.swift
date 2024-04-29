@@ -185,10 +185,153 @@ struct ArcPointView: View {
         self.position = position
     }
     var body: some View {
-        MyCircle(fillColor: .red, strokeColor: .black, 20, screenPosition)
+        MyCircle(fillColor: .red, strokeColor: .black, dimension
+                 :20, position: screenPosition)
     }
 }
 
+
+
+
+
+
+//import SwiftUI
+
+//struct ArcView: View {
+//    @EnvironmentObject var movementPickVM: MovementPickViewModel
+//    @State private var lastClockwise: Bool // No need for default value here since it's set within the initializer
+//
+//    let origin: CGPoint
+//    let position: [PositionAsIosAxes]
+//    let point1: CGPoint
+//    let point2: CGPoint
+//    let radius: CGFloat
+//    var startAngle: Angle
+//    var endAngle: Angle
+//
+//    init(
+//        _ position: [PositionAsIosAxes],
+//        _ staticPoint: [PositionAsIosAxes]
+//    ) {
+//        self.position = position
+//        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
+//        self.point1 = CGPoint(x: position[0].x, y: position[0].y)
+//        self.point2 = CGPoint(x: position[1].x, y: position[1].y)
+//        
+//        // Calculate the distance from origin to point1
+//        self.radius = sqrt(pow(point1.x - origin.x, 2) + pow(point1.y - origin.y, 2))
+//
+//        // Calculate the angle from origin to point1
+//        let dy1 = point1.y - origin.y
+//        let dx1 = point1.x - origin.x
+//        self.startAngle = Angle(radians: Double(atan2(dy1, dx1)))
+//
+//        // Calculate the angle from origin to point2
+//        let dy2 = point2.y - origin.y
+//        let dx2 = point2.x - origin.x
+//        self.endAngle = Angle(radians: Double(atan2(dy2, dx2)))
+//
+//        let deltaAngle = (self.endAngle.radians - self.startAngle.radians).truncatingRemainder(dividingBy: 2 * .pi)
+//        self.lastClockwise = deltaAngle > 0 ? deltaAngle > .pi : -deltaAngle <= .pi
+//    }
+//
+//    var body: some View {
+//        ZStack {
+//            Path { path in
+//                path.addArc(center: origin,
+//                            radius: radius,
+//                            startAngle: startAngle,
+//                            endAngle: endAngle,
+//                            clockwise: lastClockwise)
+//            }
+//            .stroke(Color.blue, lineWidth: 2)
+//        }
+//    }
+//}
+
+
+
+
+
+
+struct ArcViewXX: View {
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
+    let origin: CGPoint
+    let position: [PositionAsIosAxes]
+    let point1: CGPoint
+    let point2: CGPoint
+    let radius: CGFloat
+    let startAngle: Angle
+    let endAngle: Angle
+    @State private var lastClockwise: Bool? // State to keep track of the last direction only if not set
+
+    init(
+        _ position: [PositionAsIosAxes],
+        _ staticPoint: [PositionAsIosAxes]
+    ) {
+        self.position = position
+        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
+        self.point1 = CGPoint(x: position[0].x, y: position[0].y)
+        self.point2 = CGPoint(x: position[1].x, y: position[1].y)
+        
+        // Calculate the distance from origin to point1
+        self.radius = sqrt(pow(point1.x - origin.x, 2) + pow(point1.y - origin.y, 2))
+
+        // Calculate the angle from origin to point1
+        let dy1 = point1.y - origin.y
+        let dx1 = point1.x - origin.x
+        let angle1 = atan2(dy1, dx1)
+        self.startAngle = Angle(radians: Double(angle1))
+
+        // Calculate the angle from origin to point2
+        let dy2 = point2.y - origin.y
+        let dx2 = point2.x - origin.x
+        let angle2 = atan2(dy2, dx2)
+        self.endAngle = Angle(radians: Double(angle2))
+    }
+
+    var body: some View {
+        ZStack {
+            Path { path in
+                let clockwise: Bool
+                let deltaAngle = (endAngle.radians - startAngle.radians).truncatingRemainder(dividingBy: 2 * .pi)
+
+//                // Determine if clockwise direction is the shortest path
+//                if deltaAngle > 0 {
+//                    clockwise = deltaAngle > .pi
+//                } else {
+//                    clockwise = -deltaAngle <= .pi
+//                }
+
+                
+                // If lastClockwise is set, use it, otherwise determine new direction
+                if let lastClockwise = lastClockwise {
+                    clockwise = lastClockwise
+                } else {
+                    if deltaAngle > 0 {
+                        clockwise = deltaAngle > .pi
+                    } else {
+                        clockwise = -deltaAngle <= .pi
+                    }
+                    //self.lastClockwise = clockwise // Set the state if it's not already set
+                }
+                path.addArc(center: origin,
+                            radius: radius,
+                            startAngle: startAngle,
+                            endAngle: endAngle,
+                            clockwise: clockwise)
+            }
+            .stroke(Color.blue, lineWidth: 2)
+        }
+        .onAppear {
+            if lastClockwise == nil { // Set the initial direction only once when the view appears
+                let deltaAngle = (endAngle.radians - startAngle.radians).truncatingRemainder(dividingBy: 2 * .pi)
+                let initialClockwise = deltaAngle > 0 ? deltaAngle > .pi : -deltaAngle <= .pi
+                lastClockwise = initialClockwise
+            }
+        }
+    }
+}
 
 
 struct ArcView: View {
@@ -203,17 +346,11 @@ struct ArcView: View {
 
     init(
         _ position: [PositionAsIosAxes],
-        _ originOfObject: PositionAsIosAxes,
-        _ objectToTurnOriginX: CGPoint
+        _ staticPoint: [PositionAsIosAxes]
     ){
-        
-        
         self.position = position
-        self.origin = objectToTurnOriginX
-//        CGPoint(
-//            x: originOfObject.x ,
-//            y: originOfObject.y
-//        )
+        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
+
         point1 = CGPoint(
             x: position[0].x,
             y: position[0].y
@@ -248,13 +385,9 @@ struct ArcView: View {
            
             return Angle(radians: Double(angle))
         }
-        
-        
     }
     var body: some View {
         ZStack{
-           // MyCircle(fillColor: .green, strokeColor: .black, 10.0, origin )
-             //   .position(origin)
             Path { path in
                 path.addArc(center: origin,
                             radius: radius,
@@ -265,9 +398,6 @@ struct ArcView: View {
             .stroke(Color.blue, lineWidth: 2)
         }
     }
-    
-
-
 }
 
 
@@ -391,72 +521,49 @@ struct PartView: View {
     }
 }
 
-struct CanvasView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
- 
-    var origin: CGPoint
-    
-    
-    init(
-        _ origin: PositionAsIosAxes
-    ){
-        
-        self.origin = CGPoint(x: origin.x, y: origin.y)
-        }
-        
-    
-    var body: some View {
-
-        MyCircle(fillColor: .green, strokeColor: .black, 40.0, origin )
-
-    }
-}
+//struct CanvasView: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+//    @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
+// 
+//    var origin: CGPoint
+//    
+//    
+//    init(
+//        _ origin: PositionAsIosAxes
+//    ){
+//        
+//        self.origin = CGPoint(x: origin.x, y: origin.y)
+//        }
+//        
+//    
+//    var body: some View {
+//
+//        MyCircle(fillColor: .green, strokeColor: .black, dimension: 40.0, position: origin )
+//
+//    }
+//}
 
 
 
 struct ObjectView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var rulerVM: RulerViewModel
-   
-    @GestureState private var fingerLocation: CGPoint? = nil
-    @State private var location = CGPoint (x: 200, y: 0)
-    @State var currentZoom: CGFloat = 0.0
-    @State var lastCurrentZoom: CGFloat = 0.0
-    private var  minimumZoom = 0.1
-    private var maximimumZoom = 1.0
-    
-    var defaultScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
-    }
-    
-    var measurementScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
-    }
-    
-    var zoom: CGFloat {
-        getZoom()
-    }
-    
+  
     let uniquePartNames: [String]
     let uniqueArcPointNames: [String]
-    var objectName: String {
-        objectPickVM.getCurrentObjectName()
-    }
-    
+    let uniqueStaticPointNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
     let movement: Movement
     var objectOriginInScreen: PositionAsIosAxes {
         movementPickVM.getOffsetForObjectOrigin()}
-    
-    
+  
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
+        _ staticPointNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
@@ -464,84 +571,106 @@ struct ObjectView: View {
     ) {
         uniquePartNames = partNames
         uniqueArcPointNames = arcPointNames
+        uniqueStaticPointNames = staticPointNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
         
-        }
-    
-    func limitZoom (_ zoom: CGFloat) -> CGFloat {
-        max(min(zoom, maximimumZoom),minimumZoom)
-    }
-    
-    func getZoom() -> CGFloat {
-        let zoom =
-        limitZoom( (0.2 + currentZoom + lastCurrentZoom) * defaultScale/measurementScale)
-        return zoom
+       // print(uniqueArcPointNames)
     }
     
     var body: some View {
         let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen): [:]
+        let staticPointDictionary = movement == .turn ? movementPickVM.createStaticPointTurnDictionary(dictionaryForScreen) : [:]
+        
+        let uniqueArcNames = movementPickVM.getUniqueArcNames()
 
-        let uniqueArcNames = Array(arcDictionary.keys)
-        
-        let staticPoint = CGPoint(x: movementPickVM.staticPoint.x, y: movementPickVM.staticPoint.y)
-        
-        
-        
-       // let padding = movementPickVM.turnOriginToObjectOrigin
-       
-//        Color.clear
-//            .overlay(
             ZStack{
-                    ForEach(uniquePartNames, id: \.self) { name in
-                        PartView(
-                            uniquePartName: name,
-                            preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
-                            postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
-                            objectEditVM.partToEdit
+                ForEach(uniquePartNames, id: \.self) { name in
+                    PartView(
+                        uniquePartName: name,
+                        preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
+                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
+                        objectEditVM.partToEdit
+                    )
+                }
+         
+                ForEach(uniqueArcPointNames, id: \.self) { name in
+                    ArcPointView(
+                        position: dictionaryForScreen[name]
+                    )
+                }
+                
+
+                if movement == .turn {
+                    
+                    ForEach(uniqueStaticPointNames, id: \.self) { staticPointName in
+                        StaticPointView(
+                            position: dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
                         )
                         
-//                    ForEach(movementPickVM.uniqueCanvasNames, id: \.self) { name in
-//                        CanvasView(
-//                            dictionaryForScreen[name]?[0] ?? ZeroValue.iosLocation
-//                        )
-//                    }
-                }
-                .zIndex(5000)
-                
-                MyCircle(fillColor: .black, strokeColor: .black, 50.0, staticPoint)
-                    .zIndex(6000)
-         
-                    ForEach(uniqueArcPointNames, id: \.self) { name in
-                        ArcPointView(
-                            position: dictionaryForScreen[name]
-                        )
-                    }
-                    if movement == .turn {
-                        ZStack{
-                            ForEach(uniqueArcNames, id: \.self) { name in
-                                ArcView(
-                                    arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
-                                    objectOriginInScreen,
-                                    staticPoint
-                                )
-                            }
+                        
+                        ForEach(uniqueArcNames, id: \.self) { name in
+                            ArcView(
+                                arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
+                                dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
+                            )
                         }
+                        
                     }
+                    .zIndex(5000)
+                }
             }
-
-          //  .border(.red, width: 2)
+            .border(.red, width: 2)
             .modifier(
                 ForObjectDrag (
                     frameSize: objectFrameSize, active: true)
             )
-//            .position(x: 0.0, y: -300)
-//            .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
-//                           ) )
-           
+            .position(x: 0.0, y: -300)
+            .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
+                           ) )
         }
-
 }
 
+
+
+struct StaticPointView: View {
+    let position: [PositionAsIosAxes]
+    var body: some View {
+        MyCircle(fillColor: .black, strokeColor: .black, dimension
+                         :40, position: CGPoint(x: position[0].x ,y: position[0].y))
+        MyCircle(fillColor: .white, strokeColor: .black, dimension
+                         :20, position: CGPoint(x: position[0].x ,y: position[0].y))
+    }
+}
+
+
+    
+    struct MyCircle: View {
+       
+        let fillColor: Color?
+        let strokeColor: Color
+        let dimension: Double
+        let position: CGPoint
+        var body: some View {
+            ZStack {
+                if let fillColorUnwrapped = fillColor {
+                    Circle()
+                        .fill(fillColorUnwrapped)
+                        .frame(width: dimension, height: dimension)
+                        .position(position)
+
+                    Circle()
+                        .fill(.black)
+                        .frame(width: 10, height: 10)
+                        .position(position)
+                        .opacity(0.0001)
+                }
+                Circle()
+                    .stroke(strokeColor)
+                    .frame(width: dimension, height: dimension)
+                    .position(position)
+            }
+        }
+}

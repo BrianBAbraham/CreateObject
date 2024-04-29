@@ -756,13 +756,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>106</string>
+					<string>115</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>105</string>
+					<string>114</string>
 					<key>Timestamp</key>
-					<string>735913537.340835</string>
+					<string>736089459.422129</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -803,13 +803,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>212</string>
+					<string>352</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>211</string>
+					<string>351</string>
 					<key>Timestamp</key>
-					<string>735903168.867412</string>
+					<string>736105020.357127</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -825,17 +825,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        self.origin = objectToTurnOriginX
-//        CGPoint(
+				<string>        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
 </string>
 				<key>leading</key>
-				<string>        
+				<string>    ){
         self.position = position
 </string>
 				<key>trailing</key>
-				<string>//            x: originOfObject.x ,
-//            y: originOfObject.y
-//        )
+				<string>
+        point1 = CGPoint(
+            x: position[0].x,
 </string>
 			</dict>
 			<key>title</key>
@@ -851,13 +850,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>110</string>
+					<string>120</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>109</string>
+					<string>119</string>
 					<key>Timestamp</key>
-					<string>735838091.394521</string>
+					<string>736087615.7224931</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -873,16 +872,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        
+				<string>//        var movementDictionaryForScreen: CornerDictionary {
 </string>
 				<key>leading</key>
-				<string>        
+				<string>//        }
        
 </string>
 				<key>trailing</key>
-				<string>        NavigationView {
-            VStack {
-                NavigationLink(destination:
+				<string>//            let dic = movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
+//            
+//            print("TEST")
 </string>
 			</dict>
 			<key>title</key>
@@ -896,15 +895,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>0</string>
+					<string>24</string>
 					<key>EndingLineNumber</key>
-					<string>262</string>
+					<string>294</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>261</string>
+					<string>294</string>
 					<key>Timestamp</key>
-					<string>735838091.394551</string>
+					<string>736108641.006207</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -920,16 +919,15 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                movement
-</string>
+				<string>                movement</string>
 				<key>leading</key>
 				<string>                dictionaryForScreen,
                 objectFrameSize,
 </string>
 				<key>trailing</key>
-				<string>            )
+				<string>
+            )
             .position(recenterPosition)
-            .onChange(of: recenterVM.getRecenterState()) {
 </string>
 			</dict>
 			<key>title</key>
@@ -945,13 +943,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>261</string>
+					<string>394</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>260</string>
+					<string>393</string>
 					<key>Timestamp</key>
-					<string>735926579.623021</string>
+					<string>736105020.357139</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -1075,6 +1073,100 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT no scale applied</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>74</string>
+					<key>StartingColumnNumber</key>
+					<string>77</string>
+					<key>StartingLineNumber</key>
+					<string>73</string>
+					<key>Timestamp</key>
+					<string>736089486.890564</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/MovementImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>    
+    mutating func updateDicForStaticPoint(_ objectIndex: Int, _ staticPoint: PositionAsIosAxes){
+        let name = PartTag.staticPoint.rawValue + "_id" + String(objectIndex) + PartTag.stringLink.rawValue</string>
+				<key>trailing</key>
+				<string>        let p = staticPoint
+        objectImageData.postTiltObjectToPartFourCornerPerKeyDic[name] = [p,p,p,p]
+    }
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT make name automatic</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>379</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>378</string>
+					<key>Timestamp</key>
+					<string>736095760.313504</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/MovementPickVM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    func createStaticPointTurnDictionary(_ dictionary: CornerDictionary) -&gt; CornerDictionary {
+</string>
+				<key>leading</key>
+				<string>    
+    
+</string>
+				<key>trailing</key>
+				<string>        //let dic =
+        dictionary.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
+        
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT update for slalom</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

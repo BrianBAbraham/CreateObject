@@ -356,6 +356,29 @@ struct ReplaceCharBeforeSecondUnderscore {
     }
 }
 
+struct StringAfterSecondUnderscore {
+
+    static func get(in strings: [String]) -> [String] {
+        return strings.map { string in
+            let underscoreIndexes = string.enumerated().filter { $0.element == "_" }.map { $0.offset }
+            
+            guard underscoreIndexes.count >= 2 else {
+                print("Error: Expected at least two underscores in '\(string)'.")
+                return string
+            }
+            
+            let secondUnderscoreIndex = underscoreIndexes[1]
+            let indexAfterSecondUnderscore = string.index(string.startIndex, offsetBy: secondUnderscoreIndex + 1)
+            
+            if secondUnderscoreIndex > 0 {
+                return String(string[indexAfterSecondUnderscore...])  // Substring from the character after the second underscore to the end of the string
+            } else {
+                print("Error: Cannot remove characters before the second underscore in '\(string)'.")
+                return string
+            }
+        }
+    }
+}
 
 //}
 

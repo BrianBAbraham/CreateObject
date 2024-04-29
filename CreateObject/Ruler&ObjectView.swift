@@ -34,6 +34,7 @@ struct ObjectAndRulerView: View {
     
     let uniquePartNames: [String]
     let uniqueArcPointNames: [String]
+    let uniqueStaticPointNames: [String]
     
     var objectName: String {
         objectPickVM.getCurrentObjectName()
@@ -47,9 +48,12 @@ struct ObjectAndRulerView: View {
    
     let movement: Movement
     
+    
+    
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
+        _ staticPointNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
@@ -57,10 +61,12 @@ struct ObjectAndRulerView: View {
     ) {
         uniquePartNames = partNames
         uniqueArcPointNames = arcPointNames
+        uniqueStaticPointNames = staticPointNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+      
         }
     
     
@@ -80,10 +86,12 @@ struct ObjectAndRulerView: View {
             ObjectView(
                 uniquePartNames,
                 uniqueArcPointNames,
+                uniqueStaticPointNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,
                 movement
+             
             )
             
             .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }

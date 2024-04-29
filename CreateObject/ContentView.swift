@@ -78,6 +78,9 @@ struct ContentView: View {
     init(){
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.1)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
+        
+        
+        
     }
   
     var body: some View {
@@ -85,6 +88,8 @@ struct ContentView: View {
         var postTiltOneCornerPerKeyDic: PositionDictionary {
             let dic =
             movementPickVM.getPostTiltOneCornerPerKeyDic()
+//            print(dic)
+//                       print( DictionaryInArrayOut().getNameValue(dic).forEach{print($0)} )
             return dic
         }
         
@@ -105,8 +110,24 @@ struct ContentView: View {
         var startAngle: Double {
             movementPickVM.getStartAngle()
         }
-        
+//        var staticPointCG: CGPoint {
+//          //  print(movementPickVM.getStaticPointCG())
+//            
+//            return
+//            movementPickVM.getStaticPointCG()
+//        }
        
+//        var movementDictionaryForScreen: CornerDictionary {
+//            let dic = movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
+//            
+//            print("TEST")
+//            
+//           print( DictionaryInArrayOut().getNameValue(dic
+//                                ).forEach{print($0)} )
+//            
+//            return dic
+//        }
+        
         
         NavigationView {
             VStack {
@@ -114,6 +135,7 @@ struct ContentView: View {
                     AllViews(
                         movementPickVM.uniquePartNames,
                         movementPickVM.uniqueArcPointNames,
+                        movementPickVM.uniqueStaticPointNames,
                         preTiltFourCornerPerKeyDic,
                         movementPickVM.movementDictionaryForScreen,
                         objectFrameSize,
@@ -128,6 +150,7 @@ struct ContentView: View {
                         ObjectAndRulerView(
                                 movementPickVM.uniquePartNames,
                                 movementPickVM.uniqueArcPointNames,
+                                movementPickVM.uniqueStaticPointNames,
                                 preTiltFourCornerPerKeyDic,
                                 movementPickVM.movementDictionaryForScreen,
                                 objectFrameSize,
@@ -151,7 +174,10 @@ struct ContentView: View {
                             HStack{
                                 Spacer()
                                 Text("turn tightness")
-                                OriginSetter(setValue: movementPickVM.modifyStaticPointInX, label: "origin X")
+                                OriginSetter(
+                                    setValue: movementPickVM.modifyStaticPointUpdateInX,
+                                    label: "origin X"
+                                )
                                 Spacer()
                             }
                         }
@@ -229,15 +255,17 @@ struct AllViews: View {
     
     let uniquePartNames: [String]
     let uniqueArcPointNames: [String]
+    let uniqueStaticPointNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
     let movement: Movement
     
+    
     init(
         _ partNames: [String],
         _ arcPointNames: [String],
-        
+        _ staticPointNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
@@ -245,17 +273,22 @@ struct AllViews: View {
     ) {
             uniquePartNames = partNames
             uniqueArcPointNames = arcPointNames
-      
+      uniqueStaticPointNames = staticPointNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+        
+        
+// DictionaryInArrayOut().getNameValue(dictionaryForScreen
+//                                        ).forEach{print($0)}
         }
     var body: some View {
         ZStack{
             ObjectAndRulerView(
                 uniquePartNames,
                 uniqueArcPointNames,
+                uniqueStaticPointNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,
@@ -265,9 +298,6 @@ struct AllViews: View {
             .onChange(of: recenterVM.getRecenterState()) {
                 uniqueKey += 1
             }
-//            .onChange(of: movementPickVM.getStartAngle() ){
-//                uniqueKey += 1
-//            }
             .id(uniqueKey)//ensures redraw
             
            

@@ -46,6 +46,8 @@ struct MovementImageData {
                     value: [startAngle, angleChange][index],
                     unit: UnitAngle.degrees
                 )
+                
+                updateDicForStaticPoint(index, staticPoint)
               
                 rotateObject(
                     newObjectId,
@@ -66,6 +68,13 @@ struct MovementImageData {
         setSize()
            
         }
+    
+    
+    mutating func updateDicForStaticPoint(_ objectIndex: Int, _ staticPoint: PositionAsIosAxes){
+        let name = PartTag.staticPoint.rawValue + "_id" + String(objectIndex) + PartTag.stringLink.rawValue
+        let p = staticPoint
+        objectImageData.postTiltObjectToPartFourCornerPerKeyDic[name] = [p,p,p,p]
+    }
     
 
     mutating  func translateObject(_ objectIndex: Int, _ movement: PositionAsIosAxes) {
@@ -150,21 +159,6 @@ struct MovementImageData {
     
     
     mutating func setSize() {
-//        let  postTiltObjectToOneCornerPerKeyDic =
-//        ConvertFourCornerPerKeyToOne(
-//            fourCornerPerElement: objectImageData.postTiltObjectToPartFourCornerPerKeyDic
-//        ).oneCornerPerKey
-//        let minMax =
-//        CreateIosPosition.minMaxPosition(
-//            postTiltObjectToOneCornerPerKeyDic
-//        )
-//        
-//        objectImageData.objectDimension =
-//        (
-//            width: minMax[1].x - minMax[0].x,
-//            length: minMax[1].y - minMax[0].y
-//        )
-        
         objectImageData.objectDimension =
         FourCornerDictionryTo(objectImageData.postTiltObjectToPartFourCornerPerKeyDic).valueSize
     }
