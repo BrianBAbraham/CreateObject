@@ -25,6 +25,8 @@ class MeasurementSystemService {
     }
 }
 
+
+
 class ObjectImageService {
     @Published var objectImageData: ObjectImageData = ObjectImageData(
         .fixedWheelRearDrive,
@@ -41,6 +43,20 @@ class ObjectImageService {
     func setObjectImage(_ objectImageData: ObjectImageData) {
    // print("set object image")
         self.objectImageData = objectImageData
+    }
+}
+
+
+
+class MovementDictionaryForScreenService {
+    @Published var movementDictionaryForScreen: CornerDictionary = [:]
+    
+    static let shared = MovementDictionaryForScreenService()
+    
+    
+    func setMovementDictionaryForScreen(_ dic: CornerDictionary) {
+       // print("SET")
+        movementDictionaryForScreen = dic
     }
 }
 

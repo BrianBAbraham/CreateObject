@@ -326,6 +326,30 @@ struct RemovePrefix {
 }
 
 
+
+struct SortStringsByEmbeddedNumber {
+    func get(_ strings: [String]) -> [String] {
+        // Function to extract integer from string
+        func extractNumber(from string: String) -> Int? {
+            let pattern = "[0-9]+"
+            if let range = string.range(of: pattern, options: .regularExpression) {
+                let numberStr = String(string[range])
+                return Int(numberStr)
+            }
+            return nil
+        }
+        
+        // Sorting the array using the extracted numbers
+        return strings.sorted {
+            guard let num1 = extractNumber(from: $0), let num2 = extractNumber(from: $1) else {
+                return false
+            }
+            return num1 < num2
+        }
+    }
+}
+
+
 struct ReplaceCharBeforeSecondUnderscore {
     
   static  func get(in string: String, with replacement: String) -> String {

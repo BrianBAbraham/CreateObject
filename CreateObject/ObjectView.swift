@@ -334,7 +334,102 @@ struct ArcViewXX: View {
 }
 
 
+
+import SwiftUI
+
 struct ArcView: View {
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
+    let origin: CGPoint
+    let position: [PositionAsIosAxes]
+    let point1: CGPoint
+    let point2: CGPoint
+    let radius: CGFloat
+    var startAngle: Angle
+    var endAngle: Angle
+   var drawLongestArc: Bool //= false
+
+    init(
+        _ position: [PositionAsIosAxes],
+        _ staticPoint: [PositionAsIosAxes],
+       drawLongestArc: Bool = false
+    ){
+        self.position = position
+        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
+        self.point1 = CGPoint(x: position[0].x, y: position[0].y)
+        self.point2 = CGPoint(x: position[1].x, y: position[1].y)
+        self.radius = ArcView.distance(from: origin, to: point1)
+        let tempStartAngle = ArcView.angle(from: origin, to: point1)
+        let tempEndAngle = ArcView.angle(from: origin, to: point2)
+        self.drawLongestArc = drawLongestArc
+
+        let angleDifference = ArcView.normalizedAngleDifference(tempStartAngle, tempEndAngle)
+
+        
+        let adjustedDrawLongestArc = angleDifference == .pi ? !drawLongestArc : drawLongestArc
+
+            self.drawLongestArc = adjustedDrawLongestArc
+            self.startAngle = tempStartAngle
+        
+//                if angleDifference == .pi {
+//                    print("was longest? \(drawLongestArc)")
+//                    print("now longest? \(adjustedDrawLongestArc)")
+//                   // self.drawLongestArc.toggle()
+//                    //print(drawLongestArc)
+//                    print("")
+//                    
+//                    //angleDifference = angleDifference - 0.0001
+//                }
+        
+       // print(Int(angleDifference / .pi * 180))
+        self.startAngle = tempStartAngle
+        self.endAngle = Angle(radians: tempEndAngle.radians + (tempStartAngle.radians == tempEndAngle.radians ? 0.001 : 0))
+    }
+
+    // Static methods remain unchanged
+    // Calculate the distance between two points
+    static func distance(from: CGPoint, to: CGPoint) -> CGFloat {
+        sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
+    }
+
+    // Calculate the angle from the origin to a point
+    static func angle(from origin: CGPoint, to point: CGPoint) -> Angle {
+        let dy = point.y - origin.y
+        let dx = point.x - origin.x
+        let angle = atan2(dy, dx)
+        return Angle(radians: Double(angle))
+    }
+
+    // Calculate normalized angle difference
+    static func normalizedAngleDifference(_ angle1: Angle, _ angle2: Angle) -> Double {
+        var diff = (angle2.radians - angle1.radians).truncatingRemainder(dividingBy: 2 * .pi)
+        if diff < 0 {
+            diff += 2 * .pi
+        }
+        return diff
+    }
+
+    var body: some View {
+        ZStack {
+            Path { path in
+                let diff = ArcView.normalizedAngleDifference(startAngle, endAngle)
+                let shouldDrawClockwise = (diff > .pi) != drawLongestArc
+                path.addArc(center: origin,
+                            radius: radius,
+                            startAngle: startAngle,
+                            endAngle: endAngle,
+                            clockwise: shouldDrawClockwise)
+            }
+            .stroke(Color.blue, lineWidth: 2)
+        }
+    }
+}
+
+
+
+
+
+
+struct ArcViewX: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     let origin: CGPoint
     let position: [PositionAsIosAxes]
@@ -391,8 +486,8 @@ struct ArcView: View {
             Path { path in
                 path.addArc(center: origin,
                             radius: radius,
-                            startAngle: startAngle < endAngle ? startAngle: endAngle,
-                            endAngle: endAngle > startAngle ? endAngle: startAngle,
+                            startAngle: startAngle,
+                            endAngle: endAngle,
                             clockwise: false)
             }
             .stroke(Color.blue, lineWidth: 2)
@@ -549,10 +644,11 @@ struct ObjectView: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
+    @EnvironmentObject var arcVM: ArcViewModel
   
     let uniquePartNames: [String]
-    let uniqueArcPointNames: [String]
-    let uniqueStaticPointNames: [String]
+   // let uniqueArcPointNames: [String]
+    //let uniqueStaticPointNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
@@ -562,16 +658,18 @@ struct ObjectView: View {
   
     init(
         _ partNames: [String],
-        _ arcPointNames: [String],
-        _ staticPointNames: [String],
+        //_ arcPointNames: [String],
+      //  _ staticPointNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
         _ movement: Movement
     ) {
         uniquePartNames = partNames
-        uniqueArcPointNames = arcPointNames
-        uniqueStaticPointNames = staticPointNames
+//        uniqueArcPointNames = staticPointNames
+       // uniqueStaticPointNames = staticPointNames
+        
+        //print("view \(uniqueStaticPointNames) ")
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
@@ -581,11 +679,13 @@ struct ObjectView: View {
     }
     
     var body: some View {
-        let arcDictionary = movement == .turn ? movementPickVM.createArcDictionary(dictionaryForScreen): [:]
-        let staticPointDictionary = movement == .turn ? movementPickVM.createStaticPointTurnDictionary(dictionaryForScreen) : [:]
+        let arcDictionary = movement == .turn ? arcVM.arcDictionary: [:]
+        let staticPointDictionary = movement == .turn ? arcVM.staticPointDictionary: [:]//movementPickVM.createStaticPointTurnDictionary(dictionaryForScreen) : [:]
         
-        let uniqueArcNames = movementPickVM.getUniqueArcNames()
-
+        let uniqueArcNames = arcVM.getUniqueArcNames()  //movementPickVM.getUniqueArcNames()
+        let uniqueArcPointNames = arcVM.uniqueArcPointNames
+        let uniqueStaticPointNames = arcVM.uniqueStaticPointNames
+        let anglesRadiae: [AnglesRadius] = arcVM.angles
             ZStack{
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(
@@ -607,22 +707,28 @@ struct ObjectView: View {
                     
                     ForEach(uniqueStaticPointNames, id: \.self) { staticPointName in
                         StaticPointView(
-                            position: dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
+                            position: staticPointDictionary[staticPointName] ?? [ZeroValue.iosLocation]
                         )
+                        .zIndex(5000)
                         
-                        
-                        ForEach(uniqueArcNames, id: \.self) { name in
-                            ArcView(
-                                arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
-                                dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
-                            )
-                        }
+//                        ForEach(uniqueArcNames, id: \.self) { name in
+//                            ArcViewX(
+//                                arcDictionary[name] ?? [ZeroValue.iosLocation, ZeroValue.iosLocation],
+//                                dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
+//                            )
+//                        }
+                        ForEach(anglesRadiae, id: \.id) { anglesRadius in
+                                ArcViewXXX(
+                                    anglesRadius,
+                                    dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
+                                )
+                            }
                         
                     }
-                    .zIndex(5000)
+                    
                 }
             }
-            .border(.red, width: 2)
+          //  .border(.red, width: 2)
             .modifier(
                 ForObjectDrag (
                     frameSize: objectFrameSize, active: true)
@@ -632,6 +738,101 @@ struct ObjectView: View {
                            ) )
         }
 }
+
+//
+struct ArcViewXXX: View {
+ 
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
+    let origin: CGPoint
+    let radius: CGFloat
+    let startAngle: Angle
+    let endAngle: Angle
+    
+
+    init(
+        _ anglesRadius: AnglesRadius,
+        _ staticPoint: [PositionAsIosAxes]
+    ){
+        
+        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
+        
+        radius = anglesRadius.radius
+        
+        
+        
+        
+        
+        startAngle = Angle(radians: Double(anglesRadius.start))
+        endAngle = Angle(radians: Double(anglesRadius.end))
+    }
+        
+    var body: some View {
+        ZStack{
+            Path { path in
+                path.addArc(center: origin,
+                            radius: radius,
+                            startAngle: startAngle,
+                            endAngle: endAngle,
+                            clockwise: false
+                )
+            }
+            .stroke(Color.blue, lineWidth: 2)
+        }
+    }
+}
+
+//import SwiftUI
+
+//import SwiftUI
+
+//import SwiftUI
+
+
+//
+//struct ArcViewXXX: View {
+//    @EnvironmentObject var movementPickVM: MovementPickViewModel
+//    let origin: CGPoint
+//    let radius: CGFloat
+//    var startAngle: Angle
+//    var endAngle: Angle
+//
+//    init(_ anglesRadius: AnglesRadius, _ staticPoint: [PositionAsIosAxes]) {
+//        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
+//        self.radius = anglesRadius.radius
+//
+//        let startRadians = Double(anglesRadius.start).truncatingRemainder(dividingBy: 2 * .pi)
+//        var endRadians = Double(anglesRadius.end).truncatingRemainder(dividingBy: 2 * .pi)
+//
+//        // Ensure endRadians adjusts correctly if crossing 0 radians from the anticlockwise direction
+//        if endRadians < startRadians {
+//            endRadians += 2 * .pi
+//        }
+//
+//        self.startAngle = Angle(radians: startRadians)
+//        self.endAngle = Angle(radians: endRadians)
+//    }
+//
+//    var body: some View {
+//        ZStack {
+//            Path { path in
+//                path.addArc(center: origin,
+//                            radius: radius,
+//                            startAngle: startAngle,
+//                            endAngle: endAngle,
+//                            clockwise: false)
+//            }
+//            .stroke(Color.blue, lineWidth: 2)
+//        }
+//    }
+//}
+
+
+// Usage of ArcView might look like this:
+// ArcView(origin: CGPoint(x: 100, y: 100), radius: 50, staticAngleRadians: viewModel.staticAngle, movingAngleRadians: viewModel.movingAngle)
+
+
+
+
 
 
 

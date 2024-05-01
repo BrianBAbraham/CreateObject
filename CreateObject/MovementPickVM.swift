@@ -23,18 +23,18 @@ class MovementPickViewModel: ObservableObject {
     @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
     @Published var staticPoint: PositionAsIosAxes = ZeroValue.iosLocation
     
-//    @Published var staticPointCG: CGPoint = CGPoint.zero
+
     
     
     @Published var objectZeroOrigin = ZeroValue.iosLocation
     @Published var uniquePartNames: [String] = []
-    @Published var uniqueArcPointNames: [String] = []
-    @Published var uniqueStaticPointNames: [String] = []
+
+    //@Published var uniqueStaticPointNames: [String] = []
     @Published var uniqueCanvasNames: [String] = [
         PartTag.canvas.rawValue + PartTag.origin.rawValue,
         PartTag.canvas.rawValue + PartTag.corner.rawValue
     ]
-    @Published var movementDictionaryForScreen: CornerDictionary = [:]
+    @Published var movementDictionaryForScreen: CornerDictionary = MovementDictionaryForScreenService.shared.movementDictionaryForScreen
     
     
     //EDITS BY VIEW FOR DATA LAYER INPUTS
@@ -99,9 +99,7 @@ class MovementPickViewModel: ObservableObject {
     ) {
         didSet{
                 uniquePartNames = getUniquePartNamesFromObjectDictionary()
-                uniqueArcPointNames = getUniqueArcPointNamesFromObjectDictionary()
-            uniqueStaticPointNames = getUniqueStaticPointNamesFromObjectDictionary()
-            
+
           
                 
                 movementDictionaryForScreen = getMovementDictionaryForScreen()
@@ -116,9 +114,7 @@ class MovementPickViewModel: ObservableObject {
                // print("on UI updatae before translate staticPoint \(staticPoint)")
                 
                 translateStaticPointForCentreObjectZeroOrigin()
-              //  print("on UI updatae after translate staticPoint \(staticPoint)\n")
-                
-           // staticPointCG = CGPoint(x: staticPoint.x, y: staticPoint.y)
+   
             
             objectZeroOrigin = getObjectZeroOrgin()
                 
@@ -127,6 +123,9 @@ class MovementPickViewModel: ObservableObject {
                 
                 addCanvasCornerToDictionary()
                 onScreenMovementFrameSize = getObjectOnScreenFrameSize()
+            
+            MovementDictionaryForScreenService.shared.setMovementDictionaryForScreen(movementDictionaryForScreen)
+            
         }
     }
     
@@ -193,8 +192,7 @@ class MovementPickViewModel: ObservableObject {
         //Canvas: zero orgin and maximum position are static
         //Extract these names
         uniquePartNames = getUniquePartNamesFromObjectDictionary()
-        uniqueArcPointNames = getUniqueArcPointNamesFromObjectDictionary()
-        
+
         
         //To avoid manipulating View to make objectZeroOrigin static during movement edits
         //Effect in data
@@ -208,6 +206,8 @@ class MovementPickViewModel: ObservableObject {
         
       //  print("on intilialisation after translate staticPoint \(staticPoint)\n")
         onScreenMovementFrameSize = getObjectOnScreenFrameSize()
+        
+        MovementDictionaryForScreenService.shared.setMovementDictionaryForScreen(movementDictionaryForScreen)
     }
 }
     
@@ -351,37 +351,41 @@ extension MovementPickViewModel {
     
 //MARK: Names and Dictionaries
 extension MovementPickViewModel {
-    func createArcDictionary(_ dictionary: CornerDictionary) -> CornerDictionary {
-        var arcDictionary: CornerDictionary = [:]
-        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
-        let names = Array(postTiltObjectToPartFourCornerPerKeyDic.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
-        let namesWithoutPrefix = Array(Set(RemovePrefix.get(PartTag.arcPoint.rawValue, names)))
-        let prefixNames = SubstringBefore.get(substring: PartTag.arcPoint.rawValue, in: names)
-        
-        for name in namesWithoutPrefix {
-           
-            let firstPointName = prefixNames[0] + name
-            let secondPointName = prefixNames[1] + name
-            guard let firstPointValue = postTiltObjectToPartFourCornerPerKeyDic[firstPointName] else {
-                fatalError("\(names)")
-            }
-            guard let secondPointValue = postTiltObjectToPartFourCornerPerKeyDic[secondPointName] else {
-                fatalError()
-            }
-            let any = 0//four identical values; conforms to corners; disregard three
-            arcDictionary += [name: [firstPointValue[any], secondPointValue[any]]]
-        }
-    //    print(arcDictionary)
-        return arcDictionary
-    }
     
     
-    func createStaticPointTurnDictionary(_ dictionary: CornerDictionary) -> CornerDictionary {
-        //let dic =
-        dictionary.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
-        
-       //return dic.filter{$0.key.contains("0")}
-    }
+//    func createArcDictionary(_ dictionary: CornerDictionary) -> CornerDictionary {
+//        var arcDictionary: CornerDictionary = [:]
+//        let postTiltObjectToPartFourCornerPerKeyDic = dictionary
+//        let names = Array(postTiltObjectToPartFourCornerPerKeyDic.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
+//        let namesWithoutPrefix = Array(Set(RemovePrefix.get(PartTag.arcPoint.rawValue, names)))
+//        let prefixNames = SubstringBefore.get(substring: PartTag.arcPoint.rawValue, in: names)
+//        
+//        for name in namesWithoutPrefix {
+//           
+//            let firstPointName = prefixNames[0] + name
+//            let secondPointName = prefixNames[1] + name
+//            guard let firstPointValue = postTiltObjectToPartFourCornerPerKeyDic[firstPointName] else {
+//                fatalError("\(names)")
+//            }
+//            guard let secondPointValue = postTiltObjectToPartFourCornerPerKeyDic[secondPointName] else {
+//                fatalError()
+//            }
+//            let any = 0//four identical values; conforms to corners; disregard three
+//            arcDictionary += [name: [firstPointValue[any], secondPointValue[any]]]
+//        }
+//    //    print(arcDictionary)
+//        return arcDictionary
+//    }
+    
+    
+//    func createStaticPointTurnDictionary(_ dictionary: CornerDictionary) -> CornerDictionary {
+//        let dic =
+//        dictionary.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
+//    // print(dic)
+//        
+//        return dic
+//       //return dic.filter{$0.key.contains("0")}
+//    }
     
     
     func getPostTiltOneCornerPerKeyDic() -> PositionDictionary {
@@ -398,25 +402,34 @@ extension MovementPickViewModel {
     }
 
         
-    func getUniqueArcPointNamesFromObjectDictionary() -> [String] {
-        
-             Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
-        
-      
-    }
     
     
-    func getUniqueArcNames() -> [String] {
-       var names = getUniqueArcPointNamesFromObjectDictionary()
-        names = StringAfterSecondUnderscore.get(in: names)
     
-    names = Array(Set(names))
-        //print(names)
- 
     
-    return names
-        
-    }
+//    func getUniqueArcPointNamesFromObjectDictionary() -> [String] {
+//       
+//       Array(getPostTiltObjectToPartFourCornerPerKeyDic().keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
+////        Array( movementDictionaryForScreen.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
+//      
+//    }
+    
+    
+//    func getUniqueArcNames() -> [String] {
+//       var names = getUniqueArcPointNamesFromObjectDictionary()
+//        names = StringAfterSecondUnderscore.get(in: names)
+//    
+//    names = Array(Set(names))
+//        //print(names)
+// 
+//    
+//    return names
+//        
+//    }
+    
+    
+    
+    
+    
     
     
     
@@ -436,13 +449,13 @@ extension MovementPickViewModel {
     }
     
     
-    func getUniqueStaticPointNamesFromObjectDictionary() -> [String] {
-        Array(
-            getPostTiltObjectToPartFourCornerPerKeyDic().keys
-        ).filter {
-            $0.contains(
-                PartTag.staticPoint.rawValue) }
-    }
+//    func getUniqueStaticPointNamesFromObjectDictionary() -> [String] {
+//        Array(
+//            getPostTiltObjectToPartFourCornerPerKeyDic().keys
+//        ).filter {
+//            $0.contains(
+//                PartTag.staticPoint.rawValue) }
+//    }
 }
 
 

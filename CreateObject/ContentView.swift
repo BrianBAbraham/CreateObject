@@ -134,8 +134,8 @@ struct ContentView: View {
                 NavigationLink(destination:
                     AllViews(
                         movementPickVM.uniquePartNames,
-                        movementPickVM.uniqueArcPointNames,
-                        movementPickVM.uniqueStaticPointNames,
+                       // movementPickVM.uniqueArcPointNames,
+                       // movementPickVM.uniqueStaticPointNames,
                         preTiltFourCornerPerKeyDic,
                         movementPickVM.movementDictionaryForScreen,
                         objectFrameSize,
@@ -149,8 +149,8 @@ struct ContentView: View {
                     VStack {
                         ObjectAndRulerView(
                                 movementPickVM.uniquePartNames,
-                                movementPickVM.uniqueArcPointNames,
-                                movementPickVM.uniqueStaticPointNames,
+//                                movementPickVM.uniqueArcPointNames,
+                               // movementPickVM.uniqueStaticPointNames,
                                 preTiltFourCornerPerKeyDic,
                                 movementPickVM.movementDictionaryForScreen,
                                 objectFrameSize,
@@ -254,8 +254,8 @@ struct AllViews: View {
     @State private var uniqueKey = 0
     
     let uniquePartNames: [String]
-    let uniqueArcPointNames: [String]
-    let uniqueStaticPointNames: [String]
+//    let uniqueArcPointNames: [String]
+   // let uniqueStaticPointNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
@@ -264,16 +264,16 @@ struct AllViews: View {
     
     init(
         _ partNames: [String],
-        _ arcPointNames: [String],
-        _ staticPointNames: [String],
+//        _ arcPointNames: [String],
+   //     _ staticPointNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
         _ movement: Movement
     ) {
             uniquePartNames = partNames
-            uniqueArcPointNames = arcPointNames
-      uniqueStaticPointNames = staticPointNames
+//            uniqueArcPointNames = arcPointNames
+   //   uniqueStaticPointNames = staticPointNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
@@ -287,8 +287,8 @@ struct AllViews: View {
         ZStack{
             ObjectAndRulerView(
                 uniquePartNames,
-                uniqueArcPointNames,
-                uniqueStaticPointNames,
+//                uniqueArcPointNames,
+              //  uniqueStaticPointNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,

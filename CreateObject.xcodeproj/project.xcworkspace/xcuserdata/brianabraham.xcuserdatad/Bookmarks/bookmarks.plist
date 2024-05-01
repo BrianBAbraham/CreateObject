@@ -803,13 +803,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>352</string>
+					<string>447</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>351</string>
+					<string>446</string>
 					<key>Timestamp</key>
-					<string>736105020.357127</string>
+					<string>736180074.097559</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -943,13 +943,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>394</string>
+					<string>489</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>393</string>
+					<string>488</string>
 					<key>Timestamp</key>
-					<string>736105020.357139</string>
+					<string>736180074.0975929</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -965,14 +965,14 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                            startAngle: startAngle &lt; endAngle ? startAngle: endAngle,
+				<string>                            startAngle: startAngle,
 </string>
 				<key>leading</key>
 				<string>                path.addArc(center: origin,
                             radius: radius,
 </string>
 				<key>trailing</key>
-				<string>                            endAngle: endAngle &gt; startAngle ? endAngle: startAngle,
+				<string>                            endAngle: endAngle,
                             clockwise: false)
             }
 </string>
@@ -1131,13 +1131,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>379</string>
+					<string>381</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>378</string>
+					<string>380</string>
 					<key>Timestamp</key>
-					<string>736095760.313504</string>
+					<string>736193099.306484</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -1153,20 +1153,67 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>    func createStaticPointTurnDictionary(_ dictionary: CornerDictionary) -&gt; CornerDictionary {
+				<string>//    func createStaticPointTurnDictionary(_ dictionary: CornerDictionary) -&gt; CornerDictionary {
 </string>
 				<key>leading</key>
 				<string>    
     
 </string>
 				<key>trailing</key>
-				<string>        //let dic =
-        dictionary.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
-        
+				<string>//        let dic =
+//        dictionary.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
+//    // print(dic)
 </string>
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT update for slalom</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>98</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>97</string>
+					<key>Timestamp</key>
+					<string>736263081.7743241</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ArcViM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                let firstPointName = orderedPrefixNames[0] + name
+</string>
+				<key>leading</key>
+				<string>            for name in namesWithoutPrefix {
+                
+</string>
+				<key>trailing</key>
+				<string>                let secondPointName = orderedPrefixNames[1] + name
+                guard let firstPointValue = movementDictionaryForScreen[firstPointName] else {
+                    fatalError("\(names)")
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT change for slalom</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
