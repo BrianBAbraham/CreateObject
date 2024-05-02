@@ -723,6 +723,7 @@ struct ObjectView: View {
                                     dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
                                 )
                             }
+                        .zIndex(5000)
                         
                     }
                     
