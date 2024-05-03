@@ -748,6 +748,7 @@ struct ArcViewXXX: View {
     let radius: CGFloat
     let startAngle: Angle
     let endAngle: Angle
+    let clockwise: Bool
     
 
     init(
@@ -765,6 +766,7 @@ struct ArcViewXXX: View {
         
         startAngle = Angle(radians: Double(anglesRadius.start))
         endAngle = Angle(radians: Double(anglesRadius.end))
+        clockwise = anglesRadius.clockwise
     }
         
     var body: some View {
@@ -774,7 +776,7 @@ struct ArcViewXXX: View {
                             radius: radius,
                             startAngle: startAngle,
                             endAngle: endAngle,
-                            clockwise: false
+                            clockwise: !clockwise
                 )
             }
             .stroke(Color.blue, lineWidth: 2)
