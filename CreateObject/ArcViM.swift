@@ -24,6 +24,8 @@ class ArcViewModel: ObservableObject {
     
     var lastShortestDifference: [Double] = [0.0]
     
+    var clockwise = true
+    
     init(){
         MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
             .sink { [weak self] newData in
@@ -32,7 +34,7 @@ class ArcViewModel: ObservableObject {
                 self?.staticPointDictionary = self?.createStaticPointDictionary() ?? [:]
                 self?.uniqueStaticPointNames = self?.getUniqueStaticPointNames() ?? []
                 self?.uniqueArcPointNames = self?.getUniqueArcPointNames() ?? []
-                self?.angles = self?.getAngles() ?? []
+                self?.angles = self?.getArcViewData() ?? []
                 
               
             }
@@ -44,7 +46,7 @@ class ArcViewModel: ObservableObject {
         uniqueArcPointNames = getUniqueArcPointNames()
         uniqueStaticPointNames = getUniqueStaticPointNames()
         arcDictionary = createArcDictionary()
-        angles = getAngles()
+        angles = getArcViewData()
         
         
     }
@@ -109,8 +111,7 @@ class ArcViewModel: ObservableObject {
                 arcDictionary += [name: [firstPointValue[any], secondPointValue[any]]]
             }
         }
-        //getAngles()
-       // print(arcDictionary)
+
         return arcDictionary
     }
     
@@ -119,14 +120,12 @@ class ArcViewModel: ObservableObject {
         let dic =
         movementDictionaryForScreen.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
         
-        
         return dic
     }
     
     
-    func  getAngles() -> [AnglesRadius] {
+    func getArcViewData() -> [AnglesRadius] {
         var angles: [AnglesRadius] = []
-      
     
         if uniqueStaticPointNames.count > 0 { //ignore when empty
             guard let staticPoint = staticPointDictionary[uniqueStaticPointNames[0]]?[0] else {
@@ -139,51 +138,33 @@ class ArcViewModel: ObservableObject {
                 let pairs = pairsOfPoints[index]
                 let radius = distance(from: staticPoint, to: pairs[0])
                
-                var firstAngle = angle(pairs[0]) //<= angle(pairs[1]) ?  angle(pairs[0]) : angle(pairs[1])
-                var secondAngle = angle(pairs[1]) //> angle(pairs[0]) ? angle(pairs[1]) : angle(pairs[0])
-                var clockwise: Bool = true
+                var firstAngle = angle(pairs[0])
+                var secondAngle = angle(pairs[1])
+                var shortestDifference = 0.0
                 
                 if lastShortestDifference.count == pairsOfPoints.count {//not the first time
                     //subsequently use the last difference
-                    if index == 0 {
-                        clockwise =
-                        checkTruth( [firstAngle, secondAngle],lastShortestDifference[index], index )
-                    }
                     
-//                    update
-                    lastShortestDifference[index] = getShortestDifference([firstAngle, secondAngle])
-                 
+                    shortestDifference = getShortestDifference([firstAngle, secondAngle])
+                 //   if index == 0 {
+                        checkTruth(lastShortestDifference[index],shortestDifference)
+                   // }
+
+                    lastShortestDifference[index] = shortestDifference
 
                 } else {
                     let adjustFirstDifference = -0.0001//random value to indicate prior movement
-                    
+                    shortestDifference = getShortestDifference([firstAngle, secondAngle])
                     lastShortestDifference.append(getShortestDifference([firstAngle, secondAngle]) + adjustFirstDifference)
-                    if index == 0 {
-                        clockwise =
-                        checkTruth( [firstAngle, secondAngle],lastShortestDifference[index], index )
-                    }
+                   // if index == 0 {
+                        checkTruth(lastShortestDifference[index], shortestDifference)
+                    //}
                 }
                 
-//                if clockwise == false {
-//                    let temp = firstAngle
-//                    firstAngle = secondAngle
-//                    secondAngle = temp
-//                }
                 let anglesRadius = (id: index, start: firstAngle, end: secondAngle, radius: radius, clockwise: clockwise)
                 angles += [anglesRadius]
-                //print(anglesRadius)
-                
-//                if clockwise {
-//                    print("clockwise")
-//                } else {
-//                    print("anti-clockwise")
-//                }
             }
-//            
-//            print(atan2(0.0,1.0))
-//            print(atan2(1.0,0.0))
-//            print(atan2(-1.0,0.0))
-            print("")
+
             
             func angle(_ value: PositionAsIosAxes) -> Double{
                 let dy = value.y - staticPoint.y
@@ -191,143 +172,50 @@ class ArcViewModel: ObservableObject {
                 return atan2(dy, dx)
             }
             
-            func checkTruth(_ anglePairs: [Double], _ lastShortestDifference: Double, _ index: Int)  -> Bool {
-                var clockwise = true
-                let shortestDifference = getShortestDifference(anglePairs)
-                
-                let shortestDifferenceState = shortestDifference >= 0.0 ? true: false
-                let lastShortestDifferenceState = lastShortestDifference >= 0.0 ? true: false
-              //  let topQuadrantsState = lastShortestDifference.magnitude >= .pi / 2.0 ? true: false
-                let differenceState = shortestDifference - lastShortestDifference < 0.0 ? true: false
-                
-                let states24 = [lastShortestDifferenceState, shortestDifferenceState, differenceState]
-              //  let states13 = [lastShortestDifferenceState, shortestDifferenceState, differenceState]
-                
-                let stateC4 =  [true, false, true]
-                let stateAC4 = [false, true, false]
-//                let stateC2 = [false, true, true]
-//                let stateAC2 = [true, false, true]
-//                let stateAC1 = [true, true, true]
-//                let stateC1 = [true, true, false]
-//                let stateAC3 = [false, false, false]
-//                let stateC3 = [false, false, true]
-                
-               // print(index)
-         
-                print(anglePairs)
-                if states24 == stateC4 {
-                    print("anticlockwise through zero difference detected")
-                    print(shortestDifference)
-                    print(lastShortestDifference)
-                   
-                    clockwise = false
-                    
-                }
-                
-                
-                
-                if states24 == stateAC4  {
-                    print ("clockwise through zero differnce detected")
-                    print(shortestDifference)
-                    print(lastShortestDifference)
-                  
-                    clockwise = true
-                    //print("")
-                }
-//                
-//                
-//                if states24 == stateAC2  {
-//                    print ("ac2 detected")
-//                    print(shortestDifference)
-//                    print(lastShortestDifference)
-//                    //print("")
-//                }
-//                
-//                if states13 == stateAC1  {
-//                    print ("ac1 detected")
-//                    print(shortestDifference)
-//                    print(lastShortestDifference)
-//                    //print("")
-//                }
-//                
-//                if states24 == stateC2  {
-//                    print ("c2 detected")
-//                    print(shortestDifference)
-//                    print(lastShortestDifference)
-//                    //print("")
-//                }
-//                
-//                if states13 == stateAC3 {
-//                    print ("ac3 detected")
-//                    print(shortestDifference)
-//                    print(lastShortestDifference)
-//                    //print("")
-//                }
-//                
-//                if states13 == stateC3 {
-//                    print ("c3 detected")
-//                    print(shortestDifference)
-//                    print(lastShortestDifference)
-//                    //print("")
-//                }
-//                
-//                if states13 == stateC1 {
-//                    print ("c1 detected")
-//                    print(shortestDifference)
-//                    print(lastShortestDifference)
-//                    //print("")
-//                }
-                
-//                let clockwiseStates = [stateC1, stateC2, stateC3, stateC4]
-//                let antiClockwiseStates = [stateAC1, stateAC2, stateAC3, stateAC4]
-//                
-//                if clockwiseStates.contains(states24) || clockwiseStates.contains(states13) {
-//                    clockwise = true
-//                  
-//                }
-//                
-//                if antiClockwiseStates.contains(states24) || antiClockwiseStates.contains(states13) {
-//                    clockwise = false
-//                  
-//                    
-//                }
-//                print(states13)
-//                print(states24)
-//                if clockwise == true {
-//print("clockwise\n")
-//                } else {
-//                    print("anticlockwise\n")
-//                }
-                print(clockwise)
-                
-                return clockwise
-            }
             
-            
-            
-            
-            func swapIfEndAngleIsLeavingInAnticlockwiseDirection(_ anglePairs: [Double], _ lastShortestDifference: Double) -> [Double] {
+            func checkTruth(
+                _ lastShortestDifference: Double,
+                _ shortestDifference: Double
+            ) {
 
+                let anticlockwiseZeroTravere = zeroTraverse(
+                    zero: lastShortestDifference,
+                    nonZero: shortestDifference
+                )
+                let clockwiseZeroTravere = zeroTraverse(
+                    zero: shortestDifference,
+                    nonZero: lastShortestDifference
+                )
                 
-                // Determine the direction based on the sign of the shortest difference
+                if anticlockwiseZeroTravere {
+                    clockwise = false
+                }
                 
-            //    let swapRequired = shortestDifference <= 0 && shortestDifference > .pi / -2.0 ? "swap" : "no swap"
+                if clockwiseZeroTravere {
+                    clockwise = true
+                }
                 
-               // print(swapRequired)
-              //  let direction = shortestDifference >= 0  ? "counterclockwise" : "clockwise"
-//                print(" \(shortestDifference)  \(lastShortestDifference) start \(direction) of end by short route")
-//                    if swapRequired == "no swap"  {
-//
-//                            return [anglePairs[0], anglePairs[1]] // no swap
-//                    } else {
-//                        
-//                        return [anglePairs[1], anglePairs[0]] //swap
-//                    }
                 
-               return [anglePairs[0], anglePairs[1]] // no swap
+                    func zeroTraverse(
+                        zero zeroDifference: Double,
+                        nonZero nonZeroDifference: Double
+                    ) -> Bool{
+                        let zeroTest = Double(
+                            String(
+                                format:  "%.3f",
+                                zeroDifference
+                            )
+                        )
+                    let anticlockwiseZeroTraverse: Bool = nonZeroDifference < 0.0 ? true: false
+                    var state = false
+                    if  zeroTest == 0.0 && anticlockwiseZeroTraverse{
+                        state = true
+                    }
+                    return state
+                }
             }
-            
-            
+
+
             
             func getShortestDifference(_ anglePairs: [Double]) -> Double {
                 let difference = anglePairs[1] - anglePairs[0]
@@ -340,12 +228,9 @@ class ArcViewModel: ObservableObject {
                 sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
             }
             
-            func previousAngles() {
-                
-            }
+
+            
         }
-        
-       // print(angles)
         return angles
     }
     
