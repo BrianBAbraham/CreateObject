@@ -19,11 +19,8 @@ class ArcViewModel: ObservableObject {
     
     ///each element is the angle to an arc point on a  lower integer object and then a higher integer object
     @Published var angles: [AnglesRadius] = []
-    
     private var cancellables: Set<AnyCancellable> = []
-    
     var lastShortestDifference: [Double] = [0.0]
-    
     var clockwise = true
     
     init(){
@@ -47,28 +44,19 @@ class ArcViewModel: ObservableObject {
         uniqueStaticPointNames = getUniqueStaticPointNames()
         arcDictionary = createArcDictionary()
         angles = getArcViewData()
-        
-        
     }
     
     
     func getUniqueArcPointNames() -> [String] {
-        let names =
-        Array( movementDictionaryForScreen.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
-        
-        //print(names)
-        return names
-      
+       Array( movementDictionaryForScreen.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
     }
     
     
     func getUniqueArcNames() -> [String] {
        var names = getUniqueArcPointNames()
         names = StringAfterSecondUnderscore.get(in: names)
-    
-    names = Array(Set(names))
-    return names
-        
+        names = Array(Set(names))//remove duplicates
+        return names
     }
     
     
@@ -86,7 +74,6 @@ class ArcViewModel: ObservableObject {
     
     func createArcDictionary() -> CornerDictionary {
         var arcDictionary: CornerDictionary = [:]
-     
         let names = Array(movementDictionaryForScreen.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
         let namesWithoutPrefix = Array(Set(RemovePrefix.get(PartTag.arcPoint.rawValue, names)))
         let prefixNames = SubstringBefore.get(substring: PartTag.arcPoint.rawValue, in: names)
@@ -96,7 +83,6 @@ class ArcViewModel: ObservableObject {
             //objectZero will have the first value and etc
             let orderedPrefixNames = SortStringsByEmbeddedNumber().get(prefixNames)
             
-           // print(orderedPrefixNames)
             for name in namesWithoutPrefix {
                 
                 let firstPointName = orderedPrefixNames[0] + name
@@ -133,21 +119,19 @@ class ArcViewModel: ObservableObject {
             }
             
             let pairsOfPoints = arcDictionary.values.map{ $0}
-            
             for index in 0..<pairsOfPoints.count {
                 let pairs = pairsOfPoints[index]
-                let radius = distance(from: staticPoint, to: pairs[0])
+                let radius = radius(from: staticPoint, to: pairs[0])
                
-                var firstAngle = angle(pairs[0])
-                var secondAngle = angle(pairs[1])
+                let firstAngle = angle(pairs[0])
+                let secondAngle = angle(pairs[1])
                 var shortestDifference = 0.0
-                
                 if lastShortestDifference.count == pairsOfPoints.count {//not the first time
                     //subsequently use the last difference
                     
                     shortestDifference = getShortestDifference([firstAngle, secondAngle])
                  //   if index == 0 {
-                        checkTruth(lastShortestDifference[index],shortestDifference)
+                        getArcDrawDirection(lastShortestDifference[index],shortestDifference)
                    // }
 
                     lastShortestDifference[index] = shortestDifference
@@ -157,10 +141,11 @@ class ArcViewModel: ObservableObject {
                     shortestDifference = getShortestDifference([firstAngle, secondAngle])
                     lastShortestDifference.append(getShortestDifference([firstAngle, secondAngle]) + adjustFirstDifference)
                    // if index == 0 {
-                        checkTruth(lastShortestDifference[index], shortestDifference)
+                        getArcDrawDirection(lastShortestDifference[index], shortestDifference)
                     //}
                 }
                 
+                // input for view
                 let anglesRadius = (id: index, start: firstAngle, end: secondAngle, radius: radius, clockwise: clockwise)
                 angles += [anglesRadius]
             }
@@ -173,7 +158,21 @@ class ArcViewModel: ObservableObject {
             }
             
             
-            func checkTruth(
+            /// swift drawns arcs from start angle to end angle
+            /// clockwise or anticlockwise as specified
+            /// when a rotated point traverses its original position
+            /// and the direction of rotation is anticlockwise
+            /// if the angles created by the point positions are
+            /// input without change, the arc will be drawn
+            /// the long route round creating a visual discontinuity
+            /// this code detects this transition
+            /// and returns an anticlockwise state
+            /// when the rotation then returns to clockwise
+            /// the clockwise state is returned
+            /// to distinguish the two senses of the rotated point
+            /// traversing its original position the last
+            /// and shortest difference are required
+            func getArcDrawDirection(
                 _ lastShortestDifference: Double,
                 _ shortestDifference: Double
             ) {
@@ -187,21 +186,24 @@ class ArcViewModel: ObservableObject {
                     nonZero: lastShortestDifference
                 )
                 
-                if anticlockwiseZeroTravere {
+                if anticlockwiseZeroTravere && !clockwiseZeroTravere {
                     clockwise = false
                 }
                 
-                if clockwiseZeroTravere {
+                if clockwiseZeroTravere && !anticlockwiseZeroTravere {
                     clockwise = true
                 }
                 
+                if clockwiseZeroTravere && anticlockwiseZeroTravere {
+                    fatalError()
+                }
                 
                     func zeroTraverse(
                         zero zeroDifference: Double,
                         nonZero nonZeroDifference: Double
                     ) -> Bool{
                         let zeroTest = Double(
-                            String(
+                            String(// allow for possible numerical error
                                 format:  "%.3f",
                                 zeroDifference
                             )
@@ -216,7 +218,10 @@ class ArcViewModel: ObservableObject {
             }
 
 
-            
+            /// when a point is rotated about a static point
+            /// the angle between the intitial and rotated position
+            /// may be measured in either direction
+            /// the shortest angle is determined
             func getShortestDifference(_ anglePairs: [Double]) -> Double {
                 let difference = anglePairs[1] - anglePairs[0]
                 return
@@ -224,7 +229,7 @@ class ArcViewModel: ObservableObject {
             }
             
             
-            func distance(from: PositionAsIosAxes, to: PositionAsIosAxes) -> Double {
+            func radius(from: PositionAsIosAxes, to: PositionAsIosAxes) -> Double {
                 sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
             }
             
