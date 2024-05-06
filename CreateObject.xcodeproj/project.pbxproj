@@ -19,9 +19,11 @@
 		FD2713832BC55F9E00703F06 /* KeepImageInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */; };
 		FD271A522B9C932300444BD2 /* BilateralPartMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD271A512B9C932300444BD2 /* BilateralPartMenu.swift */; };
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
+		FD3E65352BE65F10007DFAA0 /* StaticPointVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3E65342BE65F10007DFAA0 /* StaticPointVM.swift */; };
+		FD3E65372BE68797007DFAA0 /* PartOneOrTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3E65362BE68797007DFAA0 /* PartOneOrTwo.swift */; };
 		FD4BB15A2BC96EDD00DE8875 /* MovementPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */; };
 		FD5C57B92BAF5260007B9159 /* RulerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5C57B82BAF5260007B9159 /* RulerVM.swift */; };
-		FD6BA10D2BE13D5A0047B139 /* ArcViM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6BA10C2BE13D5A0047B139 /* ArcViM.swift */; };
+		FD6BA10D2BE13D5A0047B139 /* ArcVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickVM.swift */; };
 		FD8FFC902B73E13F00AAA055 /* ObjectDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8FFC8F2B73E13F00AAA055 /* ObjectDefaults.swift */; };
 		FD8FFC922B73E20E00AAA055 /* PartDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8FFC912B73E20E00AAA055 /* PartDefaults.swift */; };
@@ -66,9 +68,11 @@
 		FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepImageInScreen.swift; sourceTree = "<group>"; };
 		FD271A512B9C932300444BD2 /* BilateralPartMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilateralPartMenu.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
+		FD3E65342BE65F10007DFAA0 /* StaticPointVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticPointVM.swift; sourceTree = "<group>"; };
+		FD3E65362BE68797007DFAA0 /* PartOneOrTwo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOneOrTwo.swift; sourceTree = "<group>"; };
 		FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPickVM.swift; sourceTree = "<group>"; };
 		FD5C57B82BAF5260007B9159 /* RulerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulerVM.swift; sourceTree = "<group>"; };
-		FD6BA10C2BE13D5A0047B139 /* ArcViM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcViM.swift; sourceTree = "<group>"; };
+		FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcVM.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickVM.swift; sourceTree = "<group>"; };
 		FD8FFC8F2B73E13F00AAA055 /* ObjectDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDefaults.swift; sourceTree = "<group>"; };
 		FD8FFC912B73E20E00AAA055 /* PartDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartDefaults.swift; sourceTree = "<group>"; };
@@ -141,16 +145,17 @@
 				FDFC686E2A2A1B0B0027E219 /* CreateObject */,
 				FD9B4B4329A1265600E408AA /* ObjectDictionaryTransformation.swift */,
 				FD1CB1942B90A58600A27657 /* DataServices.swift */,
-				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
+				FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */,
 				FD5C57B82BAF5260007B9159 /* RulerVM.swift */,
-				FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */,
-				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
-				FD11E26E2B6E8597008D9C22 /* ObjectEditVM.swift */,
 				FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */,
-				FD6BA10C2BE13D5A0047B139 /* ArcViM.swift */,
+				FD11E26E2B6E8597008D9C22 /* ObjectEditVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectShowMenuVM.swift */,
-				FDCE3F0A299A8B5B00C19F2A /* Save.swift */,
+				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
 				FD10BB5A2BBC46B7000C13A4 /* RulerAndObjectRecenterVM.swift */,
+				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
+				FD3E65342BE65F10007DFAA0 /* StaticPointVM.swift */,
+				FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */,
+				FDCE3F0A299A8B5B00C19F2A /* Save.swift */,
 				FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */,
 				FDA4743C29E46925003F1202 /* ObjectView.swift */,
 				FD1CB1962B90D91300A27657 /* MeasurementView.swift */,
@@ -187,6 +192,7 @@
 				FD8FFC912B73E20E00AAA055 /* PartDefaults.swift */,
 				FD8FFC8F2B73E13F00AAA055 /* ObjectDefaults.swift */,
 				FDD316632BA0B93400BF4E9E /* ObjectSpecification.swift */,
+				FD3E65362BE68797007DFAA0 /* PartOneOrTwo.swift */,
 				FDC71F0E296C916200B68427 /* ObjectCreator.swift */,
 				FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */,
 				FDAFEFF12BC44F5D004BC602 /* MovementImageData.swift */,
@@ -270,6 +276,7 @@
 				FD1CB1952B90A58600A27657 /* DataServices.swift in Sources */,
 				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
+				FD3E65352BE65F10007DFAA0 /* StaticPointVM.swift in Sources */,
 				FD271A522B9C932300444BD2 /* BilateralPartMenu.swift in Sources */,
 				FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */,
 				FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */,
@@ -277,6 +284,7 @@
 				FD8FFC902B73E13F00AAA055 /* ObjectDefaults.swift in Sources */,
 				FD2713832BC55F9E00703F06 /* KeepImageInScreen.swift in Sources */,
 				FDBD6EF829C4A6F700144603 /* Types.swift in Sources */,
+				FD3E65372BE68797007DFAA0 /* PartOneOrTwo.swift in Sources */,
 				FD9B4B4429A1265600E408AA /* ObjectDictionaryTransformation.swift in Sources */,
 				FD12A8F42BCAC62A00C2C30D /* MovementPickerView.swift in Sources */,
 				FD10BB5B2BBC46B7000C13A4 /* RulerAndObjectRecenterVM.swift in Sources */,
@@ -294,7 +302,7 @@
 				FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */,
 				FDEEB2BD2BB5DBD700000199 /* UnitSystemVM.swift in Sources */,
 				FDD422E82B9F1D19005B7950 /* BilateralPartPicker.swift in Sources */,
-				FD6BA10D2BE13D5A0047B139 /* ArcViM.swift in Sources */,
+				FD6BA10D2BE13D5A0047B139 /* ArcVM.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,
 				FD060BD52A0BB2F6005F31A0 /*  UniPart.swift in Sources */,
 				FDAFEFF22BC44F5D004BC602 /* MovementImageData.swift in Sources */,

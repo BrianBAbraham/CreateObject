@@ -99,24 +99,16 @@ class MovementPickViewModel: ObservableObject {
     ) {
         didSet{
                 uniquePartNames = getUniquePartNamesFromObjectDictionary()
-
-          
-                
                 movementDictionaryForScreen = getMovementDictionaryForScreen()
                 objectZeroOrigin = getObjectZeroOrgin()
                 staticPoint = objectZeroOrigin
                 translateStaticPointForAllValuesPositive()
                 dataToCentreObjectZeroOrigin = getDataToCentreObjectZeroOrigin()
-                
                 translateDictionaryToCentreObjectZeroOrigin()
             
-            
-               // print("on UI updatae before translate staticPoint \(staticPoint)")
-                
                 translateStaticPointForCentreObjectZeroOrigin()
    
-            
-            objectZeroOrigin = getObjectZeroOrgin()
+                objectZeroOrigin = getObjectZeroOrgin()
                 
                 
                 addCanvasOriginToDictionary()
@@ -263,16 +255,6 @@ extension MovementPickViewModel {
         startAngle
     }
     
-//    
-//    func getObjectTurnOriginX() -> Double {
-//        staticPoint.x
-//    }
-    
-//    func getStaticPointCG() -> CGPoint {
-//        //print(staticPointCG)
-//        return
-//            staticPointCG
-//    }
     
     func getMovementImageData() -> MovementImageData{
         let movementImageData =
@@ -284,7 +266,6 @@ extension MovementPickViewModel {
             endAngle: endAngle,
             forward: forward
         )
-       // print(getObjectZeroOrgin())
         return movementImageData
     }
     
@@ -322,14 +303,35 @@ extension MovementPickViewModel {
     }
 
     
-    func modifyStaticPointUpdateInX(_ increment: Double ) {
-        staticPointUpdate = CreateIosPosition.addTwoTouples(staticPointUpdate, (x: increment, y: 0.0, z: 0.0))
+    func modifyStaticPointUpdateInX(
+        _ increment: Double
+    ) {
+        staticPointUpdate = CreateIosPosition.addTwoTouples(
+            staticPointUpdate,
+            (
+                x: increment,
+                y: 0.0,
+                z: 0.0
+            )
+        )
         
-        modifyStaticPoint(increment)
+        modifyStaticPoint(
+            increment
+        )
     }
     
-    func modifyStaticPoint(_ increment: Double) {
-        staticPoint = CreateIosPosition.addTwoTouples((x: increment, y: 0.0, z: 0.0), staticPoint)
+    
+    func modifyStaticPoint(
+        _ increment: Double
+    ) {
+        staticPoint = CreateIosPosition.addTwoTouples(
+            (
+                x: increment,
+                y: 0.0,
+                z: 0.0
+            ),
+            staticPoint
+        )
     }
     
     
@@ -397,6 +399,8 @@ extension MovementPickViewModel {
    
         let dictionary =
         movementImageData.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
+        
+        //print(dictionary["object_id0_originWheelStabiliser_id0_sitOn_id0"])
     
         return dictionary
     }
@@ -434,8 +438,11 @@ extension MovementPickViewModel {
     
     
     func getUniquePartNamesFromObjectDictionary() -> [String] {
+        let dic = getPostTiltObjectToPartFourCornerPerKeyDic()
+       // print("dic[object_id0_originWheelStabiliser_id0_sitOn_id0"])
+        let names =
         Array(
-            getPostTiltObjectToPartFourCornerPerKeyDic().keys
+            dic.keys
         ).filter {
             !(
                 $0.contains(
@@ -444,8 +451,13 @@ extension MovementPickViewModel {
                     PartTag.origin.rawValue// ditto
                 )  || $0.contains(
                     PartTag.staticPoint.rawValue// ditto
-                )
+                ) //|| $0.contains(
+                    //Part.stabiliser.rawValue// fixed wheel edits this
+               // )
             ) }
+        print(names.contains(Part.stabiliser.rawValue))
+       // print(names.contains(Part.stabiliser.rawValue))
+        return names
     }
     
     

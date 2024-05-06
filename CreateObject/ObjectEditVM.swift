@@ -185,9 +185,7 @@ extension ObjectEditViewModel {
         _ sideChoice: SidesAffected
     ) {
         BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(
-            sideChoice
-            ,"setBothOrLeftOrRightAsEditible"
-        )
+            sideChoice)
     }
     
     
@@ -240,6 +238,11 @@ extension ObjectEditViewModel {
         _ isLeftSelected: Bool,
         _ isRightSelected: Bool,
         _ part: Part) {
+            
+        let linkedPartDic: [Part: Part] = [
+            .footSupport: .footSupportHangerLink,
+           
+        ]
          
         let side = //.both/.left/.right/.none
             convertLeftRightSelectionToSideSelection(
@@ -249,37 +252,39 @@ extension ObjectEditViewModel {
         let partChain = LabelInPartChainOut(part).partChain
             
         let oldScope = scopeOfEditForSide
-      //  print("changeOneOrTwoStatusOfPart")
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(side
-        ,"changeOneOrTwoStatusOfPart"
-        )
+      
+        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(side)
             
         switch side {
+            //if left xor right selected
+            //id of part may change
         case .left, .right:
             
             let newId: OneOrTwo<PartTag> = (side == .left) ?
                 .one(one: .id0): //if left requires .id0 for x < 0
                 .one(one: .id1)  //if right requires .i1 for x >= 0
             
+            //has part been removed?
             let chainLabelWasAlreadyRemoved = userEditedSharedDics.objectChainLabelsUserEditDic[objectType]?.contains(part) == false
-            
+            //replace chain label if removed
             if chainLabelWasAlreadyRemoved {
-                restoreChainLabelToObject(part) //toggle is restoring
+                restoreChainLabelToObject(part)
             }
+            //update id dic for part
+            print (part)
             
-            var ignoreFirstItem = 1 // relevant part subsequent
-            if part == .fixedWheelAtRearWithPropeller {
-                ignoreFirstItem += 1
+            let partOrLinkedPart = linkedPartDic[part] ?? part
+            guard let firstIndex = partChain.firstIndex(of: partOrLinkedPart) else {
+                fatalError("\(partChain)")
             }
-            for index in ignoreFirstItem..<partChain.count {
-
+            //provide id for the parts of the chain being edited
+            //as not all the chain may be removed
+            for index in firstIndex..<partChain.count {
                 DictionaryService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
-
             }
         case .none:
             removeChainLabelFromObject(part)
         case .both:
-
             setPartIdDicInKeyToNilRestoringDefault(partChain)
             DictionaryService.shared.objectChainLabelsUserEditDicReseter(objectType)
         }
@@ -318,13 +323,15 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ propertyToEdit: PartTag,
         _ sidesAffected: SidesAffected? = nil) {
-         //   print(part)
+            print("\(part) \(propertyToEdit) \(String(describing: sidesAffected))")
+            
         var sidesToEdit: SidesAffected
             
             if let unwrapped = sidesAffected {
                sidesToEdit = unwrapped
             } else {
                 sidesToEdit = sideToEdit
+                print(sidesToEdit)
             }
             
         switch sidesToEdit {

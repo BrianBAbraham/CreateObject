@@ -311,9 +311,7 @@ extension ObjectPickViewModel {
         let firstSidesPresentGivesSidesAffected = 0
         
        // print("getSidesPresentGivenPossibleUserEdit \(part)")
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected]
-        ,"getSidesPresentGivenPossibleUserEdit"
-        )
+        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
         
         return sidesPresent
     }

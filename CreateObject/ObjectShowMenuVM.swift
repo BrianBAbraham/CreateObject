@@ -23,6 +23,7 @@ class ObjectShowMenuViewModel: ObservableObject {
         .casterJoint,
         .fixedWheelJoint,
         .footJointAndLink,
+        .stabiliser,
         .steeredJoint,
     ]
     
@@ -54,7 +55,8 @@ extension ObjectShowMenuViewModel {
     
     
     func getScopeForOriginMenu(_ part: Part) -> [PartTag] {
-        if  let displayPart = PartToDisplay.dictionary[part] {
+       // print(part)
+        if  let displayPart = PartToDisplayInMenu.dictionary[part] {
                 switch displayPart {
                 case .propeller, .footLever:
                     return [.xOrigin]
@@ -79,7 +81,7 @@ extension ObjectShowMenuViewModel {
             OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
         let partGroup = part.transformPartToPartGroup()
         let alwaysBilateral =
-            [.caster, .casterFork, .casterJoint, .fixedWheel, .fixedWheelJoint].contains(partGroup)
+        [.caster, .casterFork, .casterJoint, .fixedWheel, .fixedWheelJoint].contains(partGroup)
         let showMenu = !(alwaysUnilateral || alwaysBilateral)
         
         return showMenu
@@ -162,8 +164,8 @@ extension ObjectShowMenuViewModel {
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         let parts =
         oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains($0.transformPartToPartGroup())}
-      
-        return PartToDisplay(parts, currentObjectType).names
+   //print(parts)
+        return PartToDisplayInMenu(parts, currentObjectType).names
     }
 }
 

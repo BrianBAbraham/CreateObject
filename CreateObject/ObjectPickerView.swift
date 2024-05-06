@@ -78,7 +78,7 @@ struct PickPartEdit: View {
         //Names can such as front wheel can represent caster or fixed
         //also names can be object sensitive
         let menuItemsUsingPart = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
-        let menuItemsUsingDisplayName = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
+        let menuItemsUsingDisplayName: [String] = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
         
         HStack{
             Text(Image(systemName: "scissors"))

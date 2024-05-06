@@ -154,13 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>387</string>
+					<string>394</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>386</string>
+					<string>393</string>
 					<key>Timestamp</key>
-					<string>734275962.785318</string>
+					<string>736687306.821623</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -201,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>428</string>
+					<string>426</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>427</string>
+					<string>425</string>
 					<key>Timestamp</key>
-					<string>735758539.723007</string>
+					<string>736685300.082474</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -237,53 +237,6 @@
 			</dict>
 			<key>title</key>
 			<string>requires work only returning for .x</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>271</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>270</string>
-					<key>Timestamp</key>
-					<string>734275962.785349</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ObjectEditVM.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>            if part == .fixedWheelAtRearWithPropeller {
-</string>
-				<key>leading</key>
-				<string>            
-            var ignoreFirstItem = 1 // relevant part subsequent
-</string>
-				<key>trailing</key>
-				<string>                ignoreFirstItem += 1
-            }
-            for index in ignoreFirstItem..&lt;partChain.count {
-</string>
-			</dict>
-			<key>title</key>
-			<string>Development bit of a hack</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -392,7 +345,7 @@
 				<key>trailing</key>
 				<string>        
        // print("getSidesPresentGivenPossibleUserEdit \(part)")
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected]
+        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
 </string>
 			</dict>
 			<key>title</key>
@@ -408,13 +361,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>373</string>
+					<string>384</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>372</string>
+					<string>383</string>
 					<key>Timestamp</key>
-					<string>735220277.973406</string>
+					<string>736701558.295872</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -444,100 +397,6 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT requires are more general approach</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>613</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>612</string>
-					<key>Timestamp</key>
-					<string>732798506.519421</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    func getDictionaryValue(_ dictionary: [String: PositionAsIosAxes ])
-</string>
-				<key>leading</key>
-				<string>    
-    
-</string>
-				<key>trailing</key>
-				<string>    -&gt; OneOrTwo&lt;PositionAsIosAxes&gt;{
-        switch self {
-        case .two(let left, let right):
-</string>
-			</dict>
-			<key>title</key>
-			<string>DEVELOPMENT combine as one</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>679</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>678</string>
-					<key>Timestamp</key>
-					<string>732798506.519452</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    var one: T? {
-</string>
-				<key>leading</key>
-				<string>    
-    
-</string>
-				<key>trailing</key>
-				<string>        switch self {
-        case .two:
-            return nil
-</string>
-			</dict>
-			<key>title</key>
-			<string>DEVELOPMENT can this be removed with recoding</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -662,13 +521,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>675</string>
+					<string>686</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>674</string>
+					<string>685</string>
 					<key>Timestamp</key>
-					<string>735220277.973437</string>
+					<string>736701558.2958601</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -709,13 +568,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>719</string>
+					<string>730</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>718</string>
+					<string>729</string>
 					<key>Timestamp</key>
-					<string>735220277.973449</string>
+					<string>736701558.295797</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -762,7 +621,7 @@
 					<key>StartingLineNumber</key>
 					<string>114</string>
 					<key>Timestamp</key>
-					<string>736089459.422129</string>
+					<string>736519875.395723</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -803,60 +662,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>447</string>
+					<string>263</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>446</string>
+					<string>262</string>
 					<key>Timestamp</key>
-					<string>736180074.097559</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ObjectView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>        self.origin = CGPoint(x: staticPoint[0].x, y: staticPoint[0].y)
-</string>
-				<key>leading</key>
-				<string>    ){
-        self.position = position
-</string>
-				<key>trailing</key>
-				<string>
-        point1 = CGPoint(
-            x: position[0].x,
-</string>
-			</dict>
-			<key>title</key>
-			<string>the rotation origin needs to be added dynamicall</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>120</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>119</string>
-					<key>Timestamp</key>
-					<string>736087615.7224931</string>
+					<string>736689010.924878</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -872,113 +684,20 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>//        var movementDictionaryForScreen: CornerDictionary {
+				<string>                movement
 </string>
-				<key>leading</key>
-				<string>//        }
-       
-</string>
-				<key>trailing</key>
-				<string>//            let dic = movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
-//            
-//            print("TEST")
-</string>
-			</dict>
-			<key>title</key>
-			<string>DEVELOPMENT ipad will show menu items on screen at once</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>24</string>
-					<key>EndingLineNumber</key>
-					<string>294</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>294</string>
-					<key>Timestamp</key>
-					<string>736108641.006207</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ContentView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>                movement</string>
 				<key>leading</key>
 				<string>                dictionaryForScreen,
                 objectFrameSize,
 </string>
 				<key>trailing</key>
-				<string>
-            )
+				<string>            )
             .position(recenterPosition)
+            .onChange(of: recenterVM.getRecenterState()) {
 </string>
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT THIS IS FOR IPHONE REMOVE FOR IPAD</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>489</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>488</string>
-					<key>Timestamp</key>
-					<string>736180074.0975929</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ObjectView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>                            startAngle: startAngle,
-</string>
-				<key>leading</key>
-				<string>                path.addArc(center: origin,
-                            radius: radius,
-</string>
-				<key>trailing</key>
-				<string>                            endAngle: endAngle,
-                            clockwise: false)
-            }
-</string>
-			</dict>
-			<key>title</key>
-			<string>position appears to assign first and second position randomly: investigate</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -1084,13 +803,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>74</string>
+					<string>70</string>
 					<key>StartingColumnNumber</key>
-					<string>77</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>73</string>
+					<string>69</string>
 					<key>Timestamp</key>
-					<string>736089486.890564</string>
+					<string>736517153.775153</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -1106,16 +825,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>        let name = PartTag.staticPoint.rawValue + "_id" + String(objectIndex) + PartTag.stringLink.rawValue
 </string>
 				<key>leading</key>
 				<string>    
     mutating func updateDicForStaticPoint(_ objectIndex: Int, _ staticPoint: PositionAsIosAxes){
-        let name = PartTag.staticPoint.rawValue + "_id" + String(objectIndex) + PartTag.stringLink.rawValue</string>
+</string>
 				<key>trailing</key>
-				<string>        let p = staticPoint
-        objectImageData.postTiltObjectToPartFourCornerPerKeyDic[name] = [p,p,p,p]
-    }
+				<string>        
+        
+        let p = staticPoint
 </string>
 			</dict>
 			<key>title</key>
@@ -1131,13 +850,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>381</string>
+					<string>383</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>380</string>
+					<string>382</string>
 					<key>Timestamp</key>
-					<string>736193099.306484</string>
+					<string>736518185.919371</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -1178,13 +897,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>102</string>
+					<string>88</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>101</string>
+					<string>87</string>
 					<key>Timestamp</key>
-					<string>736505150.722596</string>
+					<string>736516393.418758</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -1214,6 +933,53 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT change for slalom</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>235</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>234</string>
+					<key>Timestamp</key>
+					<string>736706745.887314</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    func getLinkedOrParentPart(_ childPart: Part) -&gt; Part {
+</string>
+				<key>leading</key>
+				<string>    
+    
+</string>
+				<key>trailing</key>
+				<string>        
+        
+       // let linkedPartObjectDic: [PartObject: Part] = getLinkePartObjectDic()
+</string>
+			</dict>
+			<key>title</key>
+			<string>defaults are determined on one depenancy code alteration required for more than one dependancy</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

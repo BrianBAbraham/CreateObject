@@ -86,11 +86,40 @@ struct OriginSetter: View {
             }
         )
         HStack{
-            //Text(label)
             Stepper("", value: boundStepperValue, step: 10.0)
         }
     }
+    
+    
 }
+
+
+//import PhotosUI
+//
+//struct Photo: View {
+//    @State private var photosPickerItem: PhotosPickerItem?
+//    @State var myImage: Image?
+//    var body: some View {
+//        
+//        PhotosPicker(selection: $photosPickerItem, matching: .screenshots){
+//            Image(uiImage: avatarImage ?? UIImage(resource: .defaultAvatar))
+//            myImage ??  Image(systemName:  "star.fill")
+//        }
+//        .onChange(of: photosPickerItem) {_ , _ in
+//            Task {
+//                if let photosPickerItem,
+//                   let data = try? await photosPickerItem.loadTransferable(type: Data.self){
+//                    
+//                    if let image = UIImage(data: data) {
+//                        myImage = image
+//                    }
+//                }
+//
+//            }
+//            
+//        }
+//    }
+//}
 
 
 

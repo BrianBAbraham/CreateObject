@@ -71,11 +71,7 @@ class BilateralPartWithOnePropertyToChangeService {
     
     static let shared = BilateralPartWithOnePropertyToChangeService()
     
-    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected, _ track: String) {
-//        
-//        print(sideChoice)
-//        print(track)
-//        print("")
+    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
         scopeOfEditForSide = sideChoice
     }
     

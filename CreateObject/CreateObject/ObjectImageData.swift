@@ -68,7 +68,7 @@ struct ObjectImageData {
                 chainLabelsAccountingForEdit)
             
             partDataDic =
-            objectData.partDataDic
+                objectData.partDataDic
             
             DictionaryService.shared.partDataSharedDic = partDataDic//provide intial values
             
@@ -82,6 +82,8 @@ struct ObjectImageData {
             
             getSize()
             
+            
+//            print(postTiltObjectToPartFourCornerPerKeyDic["object_id0_originWheelStabiliser_id0_sitOn_id0"])
 //                    DictionaryInArrayOut().getNameValue(preTiltObjectToPartOriginDic
 //                    ).forEach{print($0)}
         }
@@ -243,6 +245,10 @@ extension ObjectImageData {
             else {
             return fatalErrorGettingPartValue() }
             
+//            if part == .stabiliser {
+//                print("ObjectImage detects stabiliser")
+//            }
+            
         let globalOrigin = partValue.globalOrigin
         let childOrigin = partValue.childOrigin
             
@@ -282,7 +288,9 @@ extension ObjectImageData {
         _ childOrigin: PositionAsIosAxes) {
         let allCorners = createCorner(dimension, globalOrigin)
         let displayedCorners = [4,5,6,7].map {allCorners[$0]}
-        
+//            if name.contains(Part.stabiliser.rawValue) {
+//                print(name)
+//            }
         let dictionaryUpdate =
             DictionaryUpdate(
                 name: name,
@@ -300,6 +308,9 @@ extension ObjectImageData {
         func process(_ update: DictionaryUpdate) {
             let name = update.name
             
+//            if name.contains(Part.stabiliser.rawValue) {
+//                print(update.dispayedCorners)
+//            }
             angleUserEditDic +=
              [name: update.angle]
             angleMinMaxDic +=

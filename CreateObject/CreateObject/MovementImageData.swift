@@ -57,22 +57,22 @@ struct MovementImageData {
                 
                 updateOneCornerPerKeyDictionary()
             }
-
-            
        default:
             return
-            
         }
-            
             
         setSize()
            
-        }
+    }
     
     
     mutating func updateDicForStaticPoint(_ objectIndex: Int, _ staticPoint: PositionAsIosAxes){
         let name = PartTag.staticPoint.rawValue + "_id" + String(objectIndex) + PartTag.stringLink.rawValue
+        
+        
         let p = staticPoint
+        
+        //print("\(name) \(p)")
         objectImageData.postTiltObjectToPartFourCornerPerKeyDic[name] = [p,p,p,p]
     }
     
@@ -173,9 +173,13 @@ struct MovementImageData {
 
     
     func getUniquePartNamesFromObjectDictionary() -> [String] {
-
         
+        let names =
         Array(objectImageData.postTiltObjectToOneCornerPerKeyDic.keys)
+        
+        print(names)
+        
+    return names
     }
     
 
