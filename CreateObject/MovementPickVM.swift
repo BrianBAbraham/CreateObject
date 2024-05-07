@@ -98,6 +98,7 @@ class MovementPickViewModel: ObservableObject {
         forward: 0.0 //transform data
     ) {
         didSet{
+           
                 uniquePartNames = getUniquePartNamesFromObjectDictionary()
                 movementDictionaryForScreen = getMovementDictionaryForScreen()
                 objectZeroOrigin = getObjectZeroOrgin()
@@ -455,7 +456,7 @@ extension MovementPickViewModel {
                     //Part.stabiliser.rawValue// fixed wheel edits this
                // )
             ) }
-        print(names.contains(Part.stabiliser.rawValue))
+      //  print(names.contains(Part.stabiliser.rawValue))
        // print(names.contains(Part.stabiliser.rawValue))
         return names
     }

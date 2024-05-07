@@ -9,35 +9,49 @@ import SwiftUI
 
 struct MovementPickerView: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    
+    @State private var movementName: String// = Movement.none.rawValue
     let menuItems = Movement.allCases.map {
         $0.rawValue
     }
     
+    init (_ movementName: String) {
+        _movementName = State(initialValue: movementName)
+    }
     
     var body: some View {
-        Picker(
-            "",
-            selection: $movementPickVM.movementName
-        ) {
-            ForEach(
-                menuItems,
-                id: \.self
-            ) { item in
-                Text(
-                    item
-                )
+      
+        ZStack{
+            Picker(
+                "",
+                selection: $movementPickVM.movementName
+            ) {
+                ForEach(
+                    menuItems,
+                    id: \.self
+                ) { item in
+                    Text(
+                        item
+                    )
+                }
             }
-        }
-        .onChange(
-            of: movementPickVM.movementName
-        ) {
-            oldValue,
-            newValue in
+            .onChange(
+                of: movementPickVM.movementName
+            ) {
+                oldValue,
+                newValue in
+                
+                movementPickVM.updateMovementImageData(
+                    to: newValue
+                )
+                
+                movementName = newValue
+            }
+            //Start work around: removes grey background from iPhone 13 mini
+            //physical device
+            .opacityAndScaleToHidePickerLabel()
             
-            movementPickVM.updateMovementImageData(
-                to: newValue
-            )
+            DuplicatePickerText(name: movementName )
+            //End work around
         }
     }
 }

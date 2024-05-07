@@ -154,13 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>394</string>
+					<string>426</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>393</string>
+					<string>425</string>
 					<key>Timestamp</key>
-					<string>736687306.821623</string>
+					<string>736781111.726766</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -179,7 +179,7 @@
 				<string>        func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -&gt; PositionAsIosAxes {
 </string>
 				<key>leading</key>
-				<string>        
+				<string>            
             
 </string>
 				<key>trailing</key>
@@ -408,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>116</string>
+					<string>132</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>115</string>
+					<string>131</string>
 					<key>Timestamp</key>
-					<string>734115230.620867</string>
+					<string>736790640.683648</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -662,13 +662,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>263</string>
+					<string>265</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>262</string>
+					<string>264</string>
 					<key>Timestamp</key>
-					<string>736689010.924878</string>
+					<string>736797322.9804161</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -850,13 +850,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>383</string>
+					<string>384</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>382</string>
+					<string>383</string>
 					<key>Timestamp</key>
-					<string>736518185.919371</string>
+					<string>736796924.230128</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -942,15 +942,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>0</string>
+					<string>59</string>
 					<key>EndingLineNumber</key>
 					<string>235</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>234</string>
+					<string>235</string>
 					<key>Timestamp</key>
-					<string>736706745.887314</string>
+					<string>736798008.846307</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -966,20 +966,66 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>    func getLinkedOrParentPart(_ childPart: Part) -&gt; Part {
-</string>
+				<string>    func getLinkedOrParentPart(_ childPart: Part) -&gt; Part {</string>
 				<key>leading</key>
 				<string>    
     
 </string>
 				<key>trailing</key>
-				<string>        
-        
-       // let linkedPartObjectDic: [PartObject: Part] = getLinkePartObjectDic()
+				<string>
+        /// a part may have a physical parent part
+        /// or a part which  it is linked to
 </string>
 			</dict>
 			<key>title</key>
 			<string>defaults are determined on one depenancy code alteration required for more than one dependancy</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>753</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>752</string>
+					<key>Timestamp</key>
+					<string>736791175.684656</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/PartDefaults.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        let fixedWheelHeight = PartDefaultDimension.fixedWheelDimension.height / 2.0
+</string>
+				<key>leading</key>
+				<string>        let casterHeight =
+            PartDefaultDimension.casterForkDimension.height + PartDefaultDimension.casterWheelDimension.height
+</string>
+				<key>trailing</key>
+				<string>        var origin = ZeroValue.iosLocation
+        let linkedOrParentWidth = linkedOrParentDimensionUsingOneValue.width
+        let linkedOrParentLength = linkedOrParentDimensionUsingOneValue.length
+</string>
+			</dict>
+			<key>title</key>
+			<string>Static caster joint and fixed wheel height</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

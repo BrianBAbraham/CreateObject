@@ -76,12 +76,12 @@ struct ContentView: View {
 
 
     init(){
-        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.1)
+        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.15)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
     }
   
     var body: some View {
-        
+        let movementName = movementPickVM.getMovementType().rawValue        
         var postTiltOneCornerPerKeyDic: PositionDictionary {
             let dic =
             movementPickVM.getPostTiltOneCornerPerKeyDic()
@@ -120,7 +120,7 @@ struct ContentView: View {
                         movement
                     )
                 )
-                {Text("select and edit equipment")}
+                {Text("select-edit equipment")}
                 .padding()
                   
                 NavigationLink(destination:
@@ -137,7 +137,7 @@ struct ContentView: View {
                         Spacer()
                     
                         VStack{
-                            MovementPickerView()
+                            MovementPickerView(movementName)
                             HStack {
                                 Spacer()
                                 AnglePickerView()
@@ -177,7 +177,7 @@ struct ContentView: View {
                 
                 UnitSystemSelectionView()
             }
-            .navigationBarTitle("turning space")
+            .navigationBarTitle("main menu")
             //.foregroundColor(Color(red: 220/255, green: 255/255, blue: 220/255))
         }
     }
@@ -254,6 +254,8 @@ struct AllViews: View {
 //                                        ).forEach{print($0)}
         }
     var body: some View {
+        let objectType = objectPickVM.getCurrentObjectType()
+        let movementName = movementPickVM.getMovementType().rawValue
         ZStack{
             ObjectAndRulerView(
                 uniquePartNames,
@@ -276,10 +278,10 @@ struct AllViews: View {
                 VStack (alignment: .leading) {
                     
                     HStack{
-                        MovementPickerView()
+                        MovementPickerView(movementName)
                         PickInitialObjectView()
                         Spacer()
-                        PickPartEdit()
+                        PickPartEdit(objectType)
                     }
                   
                     HStack{

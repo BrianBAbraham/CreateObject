@@ -386,8 +386,8 @@ struct ObjectView: View {
                     frameSize: objectFrameSize, active: true)
             )
             .position(x: 0.0, y: -300)
-            .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
-                           ) )
+//            .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
+//                           ) )
         }
 }
 

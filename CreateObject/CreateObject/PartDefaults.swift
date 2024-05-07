@@ -350,7 +350,7 @@ struct PartDefaultDimension {
     static let poweredWheelDimension = (width: 50.0, length: 200.0, height: 200.0)
     static let steeredWheelDimension = (width: 50.0, length: 200.0, height: 200.0)
     static let joint = (width: 10.0, length: 10.0, height: 10.0)
-    static let wheelStabiliser = (width: 100.0, length: 300.0, height: 10.0)
+    static let wheelStabiliser = (width: 100.0, length: 50.0, height: 10.0)
 
     var linkedOrParentDimension = ZeroValue.dimension3d
     var userEditedDimensionOneOrTwoOptional: OneOrTwoOptional<Dimension3d>?
@@ -368,9 +368,9 @@ struct PartDefaultDimension {
           _ userEditedDimensionOneOrTwoOptional: OneOrTwoOptional<Dimension3d>? = nil) {
         self.part = part
         
-        if part == .stabiliser {
-            print("DETECT")
-        }
+//        if part == .stabiliser {
+//            print("DETECT")
+//        }
         
         self.objectType = objectType
         self.parentPart = linkedOrParentData.part
@@ -426,7 +426,7 @@ struct PartDefaultDimension {
             let j = Self.joint
             return
                 [
-                .assistantFootLever: (width: 20.0, length: 300.0, height: 20.0),
+                .assistantFootLever: (width: 20.0, length: 150.0, height: 20.0),
                 .armSupport: (width: 50.0, length: linkedOrParentDimension.length, height: 150.0),
                 .backSupport: (width: linkedOrParentDimension.width, length: 10.0 , height: 500.0),
                 .backSupportHeadSupport: (width: 150.0, length: 50.0, height: 100.0) ,
@@ -488,9 +488,9 @@ struct PartEditedElseDefaultOrigin {
           ) {
         self.part = part
         
-        if part == .mainSupport {
-            print(linkedOrParentData.part)
-        }
+//        if part == .mainSupport {
+//            print(linkedOrParentData.part)
+//        }
         
         self.objectType = object
         self.parentData = linkedOrParentData
@@ -620,7 +620,7 @@ struct PartEditedElseDefaultOrigin {
             return
                 [
                 .armSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
-                .assistantFootLever: (x: linkedOrParentDimension.width/2, y: -(selfDimension.length + linkedOrParentDimension.length)/2, z: wheelBaseJointOrigin.z),
+                .assistantFootLever: (x: linkedOrParentDimension.width/2.5, y: -(selfDimension.length + linkedOrParentDimension.length)/2, z: wheelBaseJointOrigin.z),
                 .backSupport: (x: 0.0, y: -(linkedOrParentDimension.length + selfDimension.length)/2, z: selfDimension.height/2.0 ),
                 .backSupportHeadSupport: (x: 0.0, y: 0.0, z: linkedOrParentDimension.height/2),
                 .backSupportHeadSupportJoint: (x: 0.0, y: 0.0, z: linkedOrParentDimension.height/2.0),
@@ -645,7 +645,7 @@ struct PartEditedElseDefaultOrigin {
                 .footOnly: ZeroValue.iosLocation,
                 
                 .footSupport: (x: -PartDefaultDimension(.footSupport,objectType, linkedOrParentData).partDimension.width/2.0,
-                               y: linkedOrParentDimension.length/2.0, z: 0.0),
+                               y: linkedOrParentDimension.length/2.0, z: 100.0),
                 
                 .footSupportJoint: (x: 0.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
                 .footSupportHangerJoint: (x: linkedOrParentDimension.width/2.0, y: linkedOrParentDimension.length/2.0, z: 0.0),
@@ -653,6 +653,7 @@ struct PartEditedElseDefaultOrigin {
                 .footSupportHangerLink: (x: linkedOrParentDimension.width/2.0 , y: (linkedOrParentDimension.length + selfDimension.length)/2.0, z: selfDimension.height/2.0),
             
                 .footSupportInOnePiece: ZeroValue.iosLocation,
+            
                 .sideSupport: (x: linkedOrParentDimension.width/2 + selfDimension.width/2, y: 0.0, z: selfDimension.height/2),
                 
                 .sideSupportRotationJoint: (x: linkedOrParentDimension.width/2, y: -linkedOrParentDimension.length/2, z: selfDimension.height),
@@ -747,49 +748,15 @@ struct PartEditedElseDefaultOrigin {
         return origin
     }
     func getWheelBaseJointOriginX() -> PositionAsIosAxes {
+        let casterHeight =
+            PartDefaultDimension.casterForkDimension.height + PartDefaultDimension.casterWheelDimension.height
+        let fixedWheelHeight = PartDefaultDimension.fixedWheelDimension.height / 2.0
         var origin = ZeroValue.iosLocation
-        let xOffset = linkedOrParentDimensionUsingOneValue.width
-        let yOffset = linkedOrParentDimensionUsingOneValue.length
-        let wheelJointHeight = 0.0
-        let rearCasterVerticalJointOriginForMidDrive = (
-                x: xOffset/2,
-                y: -yOffset/2,
-                z: wheelJointHeight)
+        let linkedOrParentWidth = linkedOrParentDimensionUsingOneValue.width
+        let linkedOrParentLength = linkedOrParentDimensionUsingOneValue.length
 
-        let xPosition = xOffset/2
-        let xPositionAtFront = xOffset/2
-        let rearOriginDic: [ObjectTypes: PositionAsIosAxes] =
-            [
-            .fixedWheelFrontDrive: (
-                x: xPosition,
-                y: 0.0, //-yOffset, //BECOMES ZERO
-                z: wheelJointHeight),
-            .fixedWheelMidDrive: rearCasterVerticalJointOriginForMidDrive]
-        let midOriginDic: [ObjectTypes: PositionAsIosAxes] =
-            [
-            .fixedWheelSolo: (
-                x: xPosition,
-                y: 0.0,
-                z: wheelJointHeight),
-            .fixedWheelMidDrive: (
-                x: xPosition,
-                y: 0.0,
-                z: wheelJointHeight) ]
-        let frontOriginDic: [ObjectTypes: PositionAsIosAxes] =
-            [
-            .fixedWheelFrontDrive: (
-                x: xPosition,
-                y: 0.0,
-                z: wheelJointHeight),
-            .fixedWheelMidDrive: (
-                x: xPosition,
-                y: 0.0,//yOffset/2,  //BECOMES ZERO
-                z: wheelJointHeight),
-            .scooterRearDrive4Wheeler: (
-                x: xPositionAtFront,
-                y: 800.0,
-                z: wheelJointHeight)
-            ]
+        let xPosition = linkedOrParentWidth/2
+
            switch part {
                 case//REAR
                     .fixedWheelAtRearWithPropeller,
@@ -799,30 +766,49 @@ struct PartEditedElseDefaultOrigin {
                         origin = (
                                     x: xPosition,
                                     y: 0.0,
-                                    z: wheelJointHeight)
+                                    z: fixedWheelHeight)
                
-                case  .casterVerticalJointAtRear:
-                   origin = rearOriginDic[objectType] ?? (
-                                   x: xPosition,
-                                   y: 0.0,
-                                   z: wheelJointHeight)
-                case//MID
-                    .casterVerticalJointAtMid:
-                        origin =  midOriginDic[objectType] ?? (
-                                x: xPosition,
-                                y: 0.0,
-                                z: wheelJointHeight)
-                case//FRONT
-                    .casterVerticalJointAtFront,
-                    .steeredVerticalJointAtFront:
-                        origin = frontOriginDic[objectType] ?? (
-                                        x: xPositionAtFront,
-                                        y: yOffset,
-                                        z: wheelJointHeight)
+           case .casterVerticalJointAtFront,
+                   .casterVerticalJointAtMid,
+                   .casterVerticalJointAtRear,
+                   .steeredVerticalJointAtFront:
+               origin =
+               getOrigin()
                 default:
                     break
             }
         return origin
+        
+        
+        func getOrigin() ->  PositionAsIosAxes {
+            let casterVerticalJointAtFrontForRearDriveOrFourCaster =
+                (x: linkedOrParentWidth, y: linkedOrParentLength ,z: casterHeight)
+           
+            let casterVerticalJointAtFrontForFrontDrive =
+                (x: linkedOrParentWidth, y: 0.0 ,z: casterHeight)
+            
+            let casterVerticalJointAtFrontForMidDrive =
+                (x: linkedOrParentWidth, y: linkedOrParentLength / 2.0 ,z: casterHeight)
+            
+            let casterVerticalJointAtRearForMidDrive =
+                (x: linkedOrParentWidth, y: -linkedOrParentLength / 2.0 ,z: casterHeight)
+            
+            let steeredVerticalJointAtFront =
+                ( x: linkedOrParentWidth, y: linkedOrParentLength * 1.5, z: fixedWheelHeight)
+            
+            let dic =
+           [
+                PartObject(.casterVerticalJointAtFront, .fixedWheelFrontDrive): casterVerticalJointAtFrontForFrontDrive,
+                PartObject(.casterVerticalJointAtFront, .fixedWheelMidDrive): casterVerticalJointAtFrontForMidDrive,
+                PartObject(.casterVerticalJointAtRear, .fixedWheelMidDrive): casterVerticalJointAtRearForMidDrive,
+                PartObject(.steeredVerticalJointAtFront, .scooterRearDrive4Wheeler): steeredVerticalJointAtFront,
+            ]
+            
+            return dic[PartObject(part, objectType)] ?? casterVerticalJointAtFrontForRearDriveOrFourCaster
+            
+        }
+        
+        
     }
     func getMainSupportOrigin() -> PositionAsIosAxes {
         var origin = ZeroValue.iosLocation

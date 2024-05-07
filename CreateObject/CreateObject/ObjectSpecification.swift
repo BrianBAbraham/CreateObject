@@ -12,39 +12,39 @@ import Foundation
 
 enum ObjectTypes: String, CaseIterable, Hashable {
     
-    case allCasterBed = "Bed"
-    case allCasterChair = "Shower chair"
-    case allCasterHoist = "Mobile hoist"
-    case allCasterTiltInSpaceArmChair = "Armchair"
-    case allCasterTiltInSpaceShowerChair = "Shower tilting"
+    case allCasterBed = "bed"
+    case allCasterChair = "shower chair"
+    case allCasterHoist = "mobile hoist"
+    case allCasterTiltInSpaceArmChair = "armchair"
+    case allCasterTiltInSpaceShowerChair = "shower-tilts"
     
     case allCasterStandAid = "Stand aid: caster base"
-    case allCasterStretcher = "Stretcher"
+    case allCasterStretcher = "stretcher"
     
 //    case bathIntegralHoist = "IntegralBathHoist"
 //    case bathFloorFixedHoistOneRotationPoint = "SingleRotationPointBathHoist"
 //    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
     
-    case fixedWheelRearDriveAssisted = "Manual assisted"
-    case fixedWheelFrontDrive = "Power (front)"
-    case fixedWheelMidDrive  = "Power (mid)"
-    case fixedWheelRearDrive = "Power (rear)"
-    case fixedWheelManualRearDrive = "Manual (rear)"
-    case fixedWheelSolo = "Power (balance)"
+    case fixedWheelRearDriveAssisted = "manual-assisted"
+    case fixedWheelFrontDrive = "power-front"
+    case fixedWheelMidDrive  = "power-mid"
+    case fixedWheelRearDrive = "power-rear"
+    case fixedWheelManualRearDrive = "manual-rear"
+    case fixedWheelSolo = "power-balance"
     case fixedWheelTransfer = "Fixed wheel transfer device"
     
 //    case hingedDoorSingle = "Door"
 //    case hingedDoorDouble = "Bi-FoldDoor"
 //    case hingedDoortripple = "Tri-FoldDoor"
 //
-    case scooterFrontDrive4Wheeler = "Scooter-4 (front)"
+    case scooterFrontDrive4Wheeler = "scooter-4 front"
     case scooterFrontDrive3Wheeler =  "Scooter-3 (front)"
-    case scooterRearDrive4Wheeler  = "Scooter-4 (rear)"
+    case scooterRearDrive4Wheeler  = "scooter4-rear"
     case scooterRearDrive3Wheeler = "Scooter-3 (rear)"
     
     case seatThatTilts = "Tilting chair"
     
-    case showerTray = "Shower tray"
+    case showerTray = "shower tray"
     
     case stairLiftStraight = "Straight stair-lift"
     case stairLiftInternalRadius = "Internal radius stair-lift"
@@ -105,7 +105,7 @@ struct LabelInPartChainOut {
             [.stabiliser,.mainSupport, .backSupportTiltJoint],
             [.stabiliser,.mainSupport, .footSupportHangerLink,  .footSupport],
             [.footOnly],
-            [.mainSupport, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
+            [.stabiliser,.mainSupport, .backSupport,.backSupportHeadSupportJoint, .backSupportHeadSupportLink, .backSupportHeadSupport],
             [.stabiliser, .mainSupport, .armSupport],
             [.stabiliser, .mainSupport],
             [.stabiliser,.mainSupport, .sideSupport],

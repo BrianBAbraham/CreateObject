@@ -44,18 +44,21 @@ class ObjectShowMenuViewModel: ObservableObject {
 extension ObjectShowMenuViewModel {
     
     func getPropertiesForDimensionMenu(_ part: Part) -> [PartTag] {
+        //print(part)
         switch part{
         case .footSupport, .assistantFootLever:
             return [.length]
         case .backSupport:
             return [.height, .width]
+        case .fixedWheelAtRearWithPropeller:
+            return [.width]
         default: return [.length, .width]
         }
     }
     
     
     func getScopeForOriginMenu(_ part: Part) -> [PartTag] {
-       // print(part)
+        //print(part)
         if  let displayPart = PartToDisplayInMenu.dictionary[part] {
                 switch displayPart {
                 case .propeller, .footLever:

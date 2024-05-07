@@ -36,7 +36,7 @@ struct MovementImageData {
             
         case .linear:
             translateObject(1,
-                            (x: forward, y: 0.0, z: 0.0))
+                            (x: 0.0, y: 1000.0, z: 0.0))
            
             
         case .turn:
@@ -177,7 +177,7 @@ struct MovementImageData {
         let names =
         Array(objectImageData.postTiltObjectToOneCornerPerKeyDic.keys)
         
-        print(names)
+       // print(names)
         
     return names
     }
@@ -201,7 +201,7 @@ enum Movement: String, CaseIterable {
     case none = "static"
     case linear = "forward"
     case turn = "turn"
-    case slalom = "slalom"
-    case t = "T-turn"
-    case incremental = "off wall"
+    //case slalom = "slalom"
+    //case t = "T-turn"
+    //case incremental = "off wall"
 }

@@ -271,7 +271,7 @@ extension ObjectEditViewModel {
                 restoreChainLabelToObject(part)
             }
             //update id dic for part
-            print (part)
+          //  print (part)
             
             let partOrLinkedPart = linkedPartDic[part] ?? part
             guard let firstIndex = partChain.firstIndex(of: partOrLinkedPart) else {
@@ -323,16 +323,23 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ propertyToEdit: PartTag,
         _ sidesAffected: SidesAffected? = nil) {
-            print("\(part) \(propertyToEdit) \(String(describing: sidesAffected))")
             
+        var partOrLinkedPart: Part = .notFound
+        var modifiedOrOriginalValue: Double = 0.0
+        
+        
+        
+        transformToStabiliserForDriveWheelModForOriginY ()
+
+        
         var sidesToEdit: SidesAffected
-            
-            if let unwrapped = sidesAffected {
-               sidesToEdit = unwrapped
-            } else {
-                sidesToEdit = sideToEdit
-                print(sidesToEdit)
-            }
+        
+        if let unwrapped = sidesAffected {
+           sidesToEdit = unwrapped
+        } else {
+            sidesToEdit = sideToEdit
+           
+        }
             
         switch sidesToEdit {
         case .both:
@@ -352,19 +359,19 @@ extension ObjectEditViewModel {
             ) {
                 let name = CreateNameFromIdAndPart(
                     id,
-                    part
+                    partOrLinkedPart
                 ).name
                 switch propertyToEdit {
                 case .length, .width:
                     let currentDimension =
                     getEditedOrDefaultDimension(
                         name,
-                        part,
+                        partOrLinkedPart,
                         id
                     )
                     let newDimension =
                     dimensionWithModifiedProperty(
-                        value,
+                        modifiedOrOriginalValue,
                         currentDimension,
                         propertyToEdit
                     )
@@ -389,7 +396,32 @@ extension ObjectEditViewModel {
             default: break
             }
         }
-        
+            
+            
+        func transformToStabiliserForDriveWheelModForOriginY () {
+            ///the static point is on the  common turn axis of the fixed wheels
+            ///increasing the stability of the main support by increasing the distance
+            ///between the main support and the drive wheels for a rear drive  wheelchair
+            ///therefore is an increase in stability rather than solely a motion of the drive wheels
+            ///however, it is cleaner to include y origin control of the drive wheelchair position
+            ///in the rear wheel menu rather than create a new stability menu
+            ///the code to do that is also conistant with the mid and front drive
+            let dic: [Part: Part] = [
+                .fixedWheelAtRear: .stabiliser,
+                .fixedWheelAtFront: .stabiliser,
+                .fixedWheelAtMid: .stabiliser,
+            ]
+            
+            if let unwrapped = dic[part],  propertyToEdit == .yOrigin {
+                partOrLinkedPart = unwrapped
+                modifiedOrOriginalValue = -value
+                
+            } else {
+                partOrLinkedPart = part
+                modifiedOrOriginalValue = value
+            }
+        }
+            
             
         func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
             let mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
@@ -414,7 +446,7 @@ extension ObjectEditViewModel {
         func yOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
             return
                 (x: origin.x,
-                y: origin.y + value,
+                y: origin.y + modifiedOrOriginalValue,
                 z: 0.0)
         }
     }

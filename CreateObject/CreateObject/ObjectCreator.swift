@@ -156,6 +156,7 @@ struct ObjectData {
 }
 
 
+
 //MARK: Create PartData Dictionary
 extension ObjectData {
     mutating func initialiseAllPart() {
@@ -202,9 +203,9 @@ extension ObjectData {
         _ child: Part
     ) {
         var childData: PartData = ZeroValue.partData
-            guard let linkedOrParentData = partDataDic[linkedlOrParentPart] else {
-                fatalError("no partValue for \(linkedlOrParentPart)")
-            }
+        guard let linkedOrParentData = partDataDic[linkedlOrParentPart] else {
+            fatalError("no partValue for \(linkedlOrParentPart)")
+        }
         childData =
             StructFactory(
                 objectType,
@@ -233,17 +234,18 @@ extension ObjectData {
     
     
     func getLinkedOrParentPart(_ childPart: Part) -> Part {
-        
-        
-       // let linkedPartObjectDic: [PartObject: Part] = getLinkePartObjectDic()
+        /// a part may have a physical parent part
+        /// or a part which  it is linked to
         let linkedPartDic: [Part: Part] = getLinkedPartDic()
         var linkedOrParentPart: Part = .stabiliser//default
         for label in allChainLabels {
-            let partChain = LabelInPartChainOut(label).partChain//get partChain for each chain label
+            let partChain = LabelInPartChainOut(label).partChain//get partChain for label
             for i in 0..<partChain.count {
                 if let linkedPart = linkedPartDic[childPart], linkedPart != .notFound {
+                    //use dictionary devined part as linked part
                     linkedOrParentPart = linkedPart
                 } else if childPart == partChain[i] && i != 0 {
+                    //use the preceding part in the partChain as parent
                     linkedOrParentPart = partChain[i - 1]
                 }
             }
@@ -263,23 +265,8 @@ extension ObjectData {
                     ]
         }
         
-        func getLinkePartObjectDic() ->  [PartObject: Part] {
-           [
-                PartObject(.casterVerticalJointAtFront, .allCasterBed): .mainSupport,
-                PartObject(.casterVerticalJointAtFront, .allCasterChair): .mainSupport,
-                PartObject(.casterVerticalJointAtFront, .allCasterTiltInSpaceArmChair): .mainSupport,
-                PartObject(.casterVerticalJointAtFront, .allCasterTiltInSpaceShowerChair): .mainSupport,
-                PartObject(.casterVerticalJointAtFront, .allCasterStretcher): .mainSupport,
-                
-                PartObject(.casterVerticalJointAtFront, .fixedWheelRearDriveAssisted): .mainSupport,
-                PartObject(.casterVerticalJointAtRear, .fixedWheelFrontDrive): .mainSupport,
-                PartObject(.casterVerticalJointAtRear, .fixedWheelMidDrive): .mainSupport,
-                PartObject(.casterVerticalJointAtFront, .fixedWheelRearDrive): .mainSupport,
-                PartObject(.casterVerticalJointAtFront, .fixedWheelManualRearDrive): .mainSupport,
-                
-                PartObject(.steeredVerticalJointAtFront, .scooterRearDrive4Wheeler): .mainSupport,
-            ]
-        }
+
+//        }
         
     }
     

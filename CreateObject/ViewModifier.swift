@@ -41,7 +41,7 @@ struct OpacityAndScaleModifierForPicker: ViewModifier {
 
 extension View {
     func opacityAndScaleToHidePickerLabel() -> some View {
-        self.modifier(OpacityAndScaleModifierForPicker(opacity: 0.1, scale: 0.9))
+        self.modifier(OpacityAndScaleModifierForPicker(opacity: 0.015, scale: 0.8))
     }
 }
 
