@@ -25,7 +25,7 @@ enum ObjectTypes: String, CaseIterable, Hashable {
 //    case bathFloorFixedHoistOneRotationPoint = "SingleRotationPointBathHoist"
 //    case bathFloorFixedHoistTwoRotationPoint = "DoubleRotationPointBathHoist"
     
-    case fixedWheelRearDriveAssisted = "manual-assisted"
+    case fixedWheelRearDriveAssisted = "manual-assist"
     case fixedWheelFrontDrive = "power-front"
     case fixedWheelMidDrive  = "power-mid"
     case fixedWheelRearDrive = "power-rear"

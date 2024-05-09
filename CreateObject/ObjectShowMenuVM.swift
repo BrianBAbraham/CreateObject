@@ -43,28 +43,44 @@ class ObjectShowMenuViewModel: ObservableObject {
 
 extension ObjectShowMenuViewModel {
     
-    func getPropertiesForDimensionMenu(_ part: Part) -> [PartTag] {
-        //print(part)
+    func getPropertiesForDimensionPicker(_ part: Part) -> [PartTag] {
+
         switch part{
-        case .footSupport, .assistantFootLever:
-            return [.length]
+        
         case .backSupport:
-            return [.height, .width]
+            return [ .width, .height]
+            
+        case .backSupportHeadSupport:
+            return [.length,  .width, .height]
+            
         case .fixedWheelAtRearWithPropeller:
             return [.width]
+        
+        case .footSupport, .assistantFootLever:
+            return [.length]
+        
         default: return [.length, .width]
         }
     }
     
     
-    func getScopeForOriginMenu(_ part: Part) -> [PartTag] {
-        //print(part)
+    func getPropertiesForOriginPicker(_ part: Part) -> [PartTag] {
+       
         if  let displayPart = PartToDisplayInMenu.dictionary[part] {
+            //print(displayPart)
                 switch displayPart {
-                case .propeller, .footLever:
+                case .seat:
+                    if currentObjectType == .showerTray {
+                        return []
+                    } else {
+                        return [.xOrigin, .yOrigin]
+                    }
+                case .propeller, .footLever, .headrest:
                     return [.xOrigin]
                 case .casterForkAtFront, .casterForkAtMid, .casterForkAtRear:
                     return [.yOrigin]
+                case .backrest:
+                   return []
                 default:
                     return [.xOrigin, .yOrigin]
                 }
@@ -75,7 +91,8 @@ extension ObjectShowMenuViewModel {
     
 
     func getBilateralPartMenuStatus(_ part: Part) -> Bool {
-        !OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
+        //!OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
+        true
     }
     
     
@@ -132,21 +149,21 @@ extension ObjectShowMenuViewModel {
     }
     
     
-    func getEditableOrigin(_ part: Part) -> [PartTag] {
-        let yOnly: [PartTag] = [.yOrigin]
-        let xOnly: [PartTag] = [.xOrigin]
-        let editableOriginDic: [Part: [PartTag]] = [
-            .assistantFootLever: xOnly,
-            .casterForkAtFront: yOnly,
-            .casterForkAtMid: yOnly,
-            .casterForkAtRear: yOnly,
-            .fixedWheelAtRearWithPropeller: xOnly
-        ]
-        
-      let editableOrigin = editableOriginDic[part] ?? [.xOrigin, .yOrigin]
-        
-        return editableOrigin
-    }
+//    func getEditableOrigin(_ part: Part) -> [PartTag] {
+//        let yOnly: [PartTag] = [.yOrigin]
+//        let xOnly: [PartTag] = [.xOrigin]
+//        let editableOriginDic: [Part: [PartTag]] = [
+//            .assistantFootLever: xOnly,
+//            .casterForkAtFront: yOnly,
+//            .casterForkAtMid: yOnly,
+//            .casterForkAtRear: yOnly,
+//            .fixedWheelAtRearWithPropeller: xOnly
+//        ]
+//        
+//      let editableOrigin = editableOriginDic[part] ?? [.xOrigin, .yOrigin]
+//        
+//        return editableOrigin
+//    }
     
     
     

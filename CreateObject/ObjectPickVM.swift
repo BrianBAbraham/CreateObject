@@ -248,6 +248,7 @@ extension ObjectPickViewModel {
             switch propertyToEdit {
             case .height:
                 let dimension = partData.dimension.returnValue(id)
+                
                 value = dimension.height
             case .width:
                 let dimension = partData.dimension.returnValue(id)
@@ -286,7 +287,6 @@ extension ObjectPickViewModel {
     
     func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part, _ caller: String = "caller not given") -> [SidesAffected] {
         
-
         let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(currentObjectType, partOrAssociatedPart).forPart
         
 
@@ -294,12 +294,6 @@ extension ObjectPickViewModel {
             fatalError()
         }
     
-//        if caller == "bilateral edit" {
-//              print ("\(partOrAssociatedPart.rawValue) \(part.rawValue) \(oneOrTwoId)  \(caller)")
-//            print(chainLabels)
-//              print("")
-//        }
-        
         var sidesPresent: [SidesAffected] = []
         //the part may be removed from both sides by user edit
         if chainLabels.contains(partOrAssociatedPart) {
@@ -307,13 +301,21 @@ extension ObjectPickViewModel {
         } else {
             sidesPresent = [.none]
         }
-//print(sidesPresent)
+
         let firstSidesPresentGivesSidesAffected = 0
         
-       // print("getSidesPresentGivenPossibleUserEdit \(part)")
+
         BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
-        
+
         return sidesPresent
+    }
+    
+    
+    func getPartNotPresent(_ partOrAssociatedPart: Part) ->Bool {
+       let first = getSidesPresentGivenPossibleUserEdit(partOrAssociatedPart)[0]
+        
+        return
+            first == .none ? true: false
     }
     
     

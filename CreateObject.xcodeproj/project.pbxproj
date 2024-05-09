@@ -17,7 +17,7 @@
 		FD1CB1952B90A58600A27657 /* DataServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1CB1942B90A58600A27657 /* DataServices.swift */; };
 		FD1CB1972B90D91300A27657 /* MeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1CB1962B90D91300A27657 /* MeasurementView.swift */; };
 		FD2713832BC55F9E00703F06 /* KeepImageInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */; };
-		FD271A522B9C932300444BD2 /* BilateralPartMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD271A512B9C932300444BD2 /* BilateralPartMenu.swift */; };
+		FD271A522B9C932300444BD2 /* BilateralPartEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD271A512B9C932300444BD2 /* BilateralPartEdit.swift */; };
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
 		FD3E65352BE65F10007DFAA0 /* StaticPointVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3E65342BE65F10007DFAA0 /* StaticPointVM.swift */; };
 		FD3E65372BE68797007DFAA0 /* PartOneOrTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3E65362BE68797007DFAA0 /* PartOneOrTwo.swift */; };
@@ -66,7 +66,7 @@
 		FD1CB1942B90A58600A27657 /* DataServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataServices.swift; sourceTree = "<group>"; };
 		FD1CB1962B90D91300A27657 /* MeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementView.swift; sourceTree = "<group>"; };
 		FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepImageInScreen.swift; sourceTree = "<group>"; };
-		FD271A512B9C932300444BD2 /* BilateralPartMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilateralPartMenu.swift; sourceTree = "<group>"; };
+		FD271A512B9C932300444BD2 /* BilateralPartEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilateralPartEdit.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		FD3E65342BE65F10007DFAA0 /* StaticPointVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticPointVM.swift; sourceTree = "<group>"; };
 		FD3E65362BE68797007DFAA0 /* PartOneOrTwo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOneOrTwo.swift; sourceTree = "<group>"; };
@@ -147,10 +147,10 @@
 				FD1CB1942B90A58600A27657 /* DataServices.swift */,
 				FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */,
 				FD5C57B82BAF5260007B9159 /* RulerVM.swift */,
-				FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */,
 				FD11E26E2B6E8597008D9C22 /* ObjectEditVM.swift */,
 				FD93EFBB29DC7EB900456380 /* ObjectShowMenuVM.swift */,
 				FD84594A29B38B6B00417084 /* ObjectPickVM.swift */,
+				FD4BB1592BC96EDD00DE8875 /* MovementPickVM.swift */,
 				FD10BB5A2BBC46B7000C13A4 /* RulerAndObjectRecenterVM.swift */,
 				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
 				FD3E65342BE65F10007DFAA0 /* StaticPointVM.swift */,
@@ -162,15 +162,15 @@
 				FD08DB1E2BAEDBCE00F116AD /* RulerView.swift */,
 				FD08DB202BAEDE8200F116AD /* Ruler&ObjectView.swift */,
 				FD060BD42A0BB2F6005F31A0 /*  UniPart.swift */,
-				FD271A512B9C932300444BD2 /* BilateralPartMenu.swift */,
+				FD271A512B9C932300444BD2 /* BilateralPartEdit.swift */,
 				FDD422E72B9F1D19005B7950 /* BilateralPartPicker.swift */,
 				FDD422E52B9F1C04005B7950 /* BilateraPartPresence.swift */,
-				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
 				FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */,
 				FDB931D32A01504D00F86B4F /* SceneView.swift */,
 				FDB931CF2A0134AE00F86B4F /* CircleView.swift */,
-				FDC71F02296C911200B68427 /* ContentView.swift */,
+				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
 				FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */,
+				FDC71F02296C911200B68427 /* ContentView.swift */,
 				FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */,
 				FDC71F04296C911300B68427 /* Assets.xcassets */,
 				FDC71F06296C911300B68427 /* Preview Content */,
@@ -277,7 +277,7 @@
 				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
 				FD3E65352BE65F10007DFAA0 /* StaticPointVM.swift in Sources */,
-				FD271A522B9C932300444BD2 /* BilateralPartMenu.swift in Sources */,
+				FD271A522B9C932300444BD2 /* BilateralPartEdit.swift in Sources */,
 				FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */,
 				FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */,
 				FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */,

@@ -154,13 +154,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>426</string>
+					<string>454</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>425</string>
+					<string>453</string>
 					<key>Timestamp</key>
-					<string>736781111.726766</string>
+					<string>736962274.207714</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -183,9 +183,9 @@
             
 </string>
 				<key>trailing</key>
-				<string>            let mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
-           let newOrigin =
-                (x: origin.x + value * mod,
+				<string>        
+            var mod: Double//eg armRest xMove '-' brings closer, but headRest moves left
+            
 </string>
 			</dict>
 			<key>title</key>
@@ -201,13 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>426</string>
+					<string>428</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>425</string>
+					<string>427</string>
 					<key>Timestamp</key>
-					<string>736685300.082474</string>
+					<string>736951355.57241</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -314,13 +314,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>311</string>
+					<string>305</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>310</string>
+					<string>304</string>
 					<key>Timestamp</key>
-					<string>735758539.723029</string>
+					<string>736951181.025484</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -340,11 +340,11 @@
 </string>
 				<key>leading</key>
 				<string>        }
-//print(sidesPresent)
+
 </string>
 				<key>trailing</key>
 				<string>        
-       // print("getSidesPresentGivenPossibleUserEdit \(part)")
+
         BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
 </string>
 			</dict>
@@ -1026,6 +1026,53 @@
 			</dict>
 			<key>title</key>
 			<string>Static caster joint and fixed wheel height</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>209</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>208</string>
+					<key>Timestamp</key>
+					<string>736951812.028435</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/BilateralPartEdit.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                        if let firstOrigin = editableOrigin.first {
+</string>
+				<key>leading</key>
+				<string>                    .onChange(of: objectEditVM.partToEdit) {
+                       //always make the first origin the intial active choice
+</string>
+				<key>trailing</key>
+				<string>                            objectEditVM.setOriginPropertiesToEdit(
+                                firstOrigin
+                            )
+</string>
+			</dict>
+			<key>title</key>
+			<string>first object dispalyed will not highlight y-move if there is no x-move so I left x-move in</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

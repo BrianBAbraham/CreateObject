@@ -76,7 +76,7 @@ struct ContentView: View {
 
 
     init(){
-        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.15)
+        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.2)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
     }
   
@@ -290,9 +290,9 @@ struct AllViews: View {
                         ConditionaUniPartPresence()
                     }
                     
-                    ConditionalBilateralPartMenu()
+                    ConditionalPartMenu()
                     
-                    ConditionalUniPartEditMenu()
+                  //  ConditionalUniPartEditMenu()
                     
                     ConditionalTiltMenu()
                     

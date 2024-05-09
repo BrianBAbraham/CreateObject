@@ -9,7 +9,7 @@ import SwiftUI
 struct ObjectAndRulerView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
-    @EnvironmentObject var recenter: RecenterViewModel
+    //@EnvironmentObject var recenter: RecenterViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 200, y: 200)
@@ -52,16 +52,12 @@ struct ObjectAndRulerView: View {
     
     init(
         _ partNames: [String],
-//        _ arcPointNames: [String],
-      //  _ staticPointNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
         _ movement: Movement
     ) {
         uniquePartNames = partNames
-//        uniqueArcPointNames = arcPointNames
-       // uniqueStaticPointNames = staticPointNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
@@ -85,8 +81,6 @@ struct ObjectAndRulerView: View {
             
             ObjectView(
                 uniquePartNames,
-//                uniqueArcPointNames,
-              //  uniqueStaticPointNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,
@@ -155,7 +149,7 @@ struct ObjectRulerRecenterY: View {
             Text("center ruler & object")
                 .font(.system(size: 10))
                 .foregroundColor(.blue)
-                .scaleEffect(isPressed ? 2.0 : 1) // Apply scale effect based on the isPressed state
+                .scaleEffect(isPressed ? 1.5 : 1) // Apply scale effect based on the isPressed state
         }
         .buttonStyle(.plain)
     }

@@ -226,8 +226,8 @@ enum PartTag: String, Parts {
     case dimension = "dimension"
     case origin = "origin"
     case staticPoint = "staticPoint"
-    case xOrigin = "x-origin"
-    case yOrigin = "y-orgin"
+    case xOrigin = "x-move"
+    case yOrigin = "y-move"
     case zOrigin = "zOrigin"
     
     var stringValue: String {
@@ -998,6 +998,10 @@ struct PartsRequiringLinkedPartUse {
         .casterWheelAtFront: .casterForkAtFront,//chain order reversed
         .casterWheelAtMid: .casterForkAtMid,//ditto
         .casterWheelAtRear: .casterForkAtRear,//ditto
+        
+        
+        //the menu display is back support but the chainLink lable is as below
+        .backSupport: .backSupportTiltJoint
     ]
     
     static let forEditableDimensionDic: [Part: Part] =

@@ -25,17 +25,23 @@ class ObjectEditViewModel: ObservableObject {
     
     var objectType: ObjectTypes = .fixedWheelRearDrive
     
-    var propertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
+ 
     
     var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
     
     @Published var sideToEdit: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
+   
+    @Published var partToEdit = Part.mainSupport
+   
+    @Published var dimensionPropertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
+    
+    @Published var originPropertiesToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.originPropertyToEdit
     
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     
     
     
-    @Published var partToEdit = Part.mainSupport
+   
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -54,7 +60,13 @@ class ObjectEditViewModel: ObservableObject {
         
         BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
             .sink { [weak self] newData in
-                self?.propertyToEdit = newData
+                self?.dimensionPropertyToEdit = newData
+            }
+            .store(in: &self.cancellables)
+        
+        BilateralPartWithOnePropertyToChangeService.shared.$originPropertyToEdit
+            .sink { [weak self] newData in
+                self?.originPropertiesToEdit = newData
             }
             .store(in: &self.cancellables)
         
@@ -89,8 +101,32 @@ extension ObjectEditViewModel {
     }
     
     
-    func getDimensionPropertyToBeEdited() -> PartTag {
-            propertyToEdit
+    func setPartToEdit(_ partName: String) {
+        guard let part = Part(rawValue: partName) else {
+            fatalError("no part for that part name")
+        }
+      
+        partToEdit = part
+    }
+    
+    
+    func getPropertyToBeEdited() -> PartTag {
+            dimensionPropertyToEdit
+    }
+    
+    
+    func setDimensionPropertyToEdit(_ propertyToEdit: PartTag) {
+        BilateralPartWithOnePropertyToChangeService.shared.setDimensionPropertyToEdit(propertyToEdit)
+    }
+    
+    
+    func getOriginPropertyToBeEdited() -> PartTag {
+            originPropertiesToEdit
+    }
+    
+    
+    func setOriginPropertiesToEdit(_ propertyToEdit: PartTag) {
+        BilateralPartWithOnePropertyToChangeService.shared.setOriginPropertyToEdit(propertyToEdit)
     }
     
     
@@ -154,15 +190,7 @@ extension ObjectEditViewModel {
 
 extension ObjectEditViewModel {
     
-    func setPartToEdit(_ partName: String) {
-        guard let part = Part(rawValue: partName) else {
-            fatalError("no part for that part name")
-        }
-      
-    //    print("\nsetPartToEdit: \(part.rawValue)\n")
-        
-        partToEdit = part
-    }
+
     
     
     func convertLeftRightSelectionToSideSelection(
@@ -323,76 +351,78 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ propertyToEdit: PartTag,
         _ sidesAffected: SidesAffected? = nil) {
-            
+    
         var partOrLinkedPart: Part = .notFound
-        var modifiedOrOriginalValue: Double = 0.0
-        
-        
-        
-        transformToStabiliserForDriveWheelModForOriginY ()
 
-        
-        var sidesToEdit: SidesAffected
-        
-        if let unwrapped = sidesAffected {
-           sidesToEdit = unwrapped
+        let allDimensionProperties: [PartTag] = [.width, .length, .height]
+
+        if value == 0.0 && allDimensionProperties.contains(propertyToEdit) {
+           //do not let dimensions cross zer0
         } else {
-            sidesToEdit = sideToEdit
-           
-        }
             
-        switch sidesToEdit {
-        case .both:
-            process(.id0)
-            process(.id1)
-        case.left:
-            process(.id0)
-        case.right:
-            process(.id1)
-        default:
-            break
-        }
-     
-      
-            func process(
-                _ id: PartTag
-            ) {
-                let name = CreateNameFromIdAndPart(
-                    id,
-                    partOrLinkedPart
-                ).name
-                switch propertyToEdit {
-                case .length, .width:
-                    let currentDimension =
-                    getEditedOrDefaultDimension(
-                        name,
-                        partOrLinkedPart,
-                        id
-                    )
-                    let newDimension =
-                    dimensionWithModifiedProperty(
-                        modifiedOrOriginalValue,
-                        currentDimension,
-                        propertyToEdit
-                    )
-                    DictionaryService.shared.dimensionUserEditedDicModifier(
-                        [name: newDimension]
-                    )
-                case .xOrigin, .yOrigin:
-                    let currentOrigin = getEditedOrDefaultOriginOffset(
-                        name
-                    )
-                    let newOriginOffset = propertyToEdit == .xOrigin ? xOriginModified(
-                        currentOrigin,
-                        id
-                    ) : yOriginModified(
-                        currentOrigin,
-                        id
-                    )
-                    DictionaryService.shared.originOffsetUserEdtiedDicModifier(
-                        [name: newOriginOffset]
-                    )
+            transformToStabiliserForDriveWheelModForOriginY ()
+
+            var sidesToEdit: SidesAffected
+            
+            if let unwrapped = sidesAffected {
+               sidesToEdit = unwrapped
+            } else {
+                sidesToEdit = sideToEdit
+               
+            }
                 
+            switch sidesToEdit {
+            case .both:
+                process(.id0)
+                process(.id1)
+            case.left:
+                process(.id0)
+            case.right:
+                process(.id1)
+            default:
+                break
+            }
+        }
+
+     
+        func process(
+            _ id: PartTag
+        ) {
+            let name = CreateNameFromIdAndPart(
+                id,
+                partOrLinkedPart
+            ).name
+            switch propertyToEdit {
+            case .length, .width, .height:
+                let currentDimension =
+                getEditedOrDefaultDimension(
+                    name,
+                    partOrLinkedPart,
+                    id
+                )
+                let newDimension =
+                dimensionWithModifiedProperty(
+                    value,
+                    currentDimension,
+                    propertyToEdit
+                )
+                DictionaryService.shared.dimensionUserEditedDicModifier(
+                    [name: newDimension]
+                )
+            case .xOrigin, .yOrigin:
+                let currentOrigin = getEditedOrDefaultOriginOffset(
+                    name
+                )
+                let newOriginOffset = propertyToEdit == .xOrigin ? xOriginModified(
+                    currentOrigin,
+                    id
+                ) : yOriginModified(
+                    currentOrigin,
+                    id
+                )
+                DictionaryService.shared.originOffsetUserEdtiedDicModifier(
+                    [name: newOriginOffset]
+                )
             default: break
             }
         }
@@ -414,18 +444,24 @@ extension ObjectEditViewModel {
             
             if let unwrapped = dic[part],  propertyToEdit == .yOrigin {
                 partOrLinkedPart = unwrapped
-                modifiedOrOriginalValue = -value
-                
+        
             } else {
                 partOrLinkedPart = part
-                modifiedOrOriginalValue = value
             }
         }
             
             
         func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
-            let mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
-           let newOrigin =
+        
+            var mod: Double//eg armRest xMove '-' brings closer, but headRest moves left
+            
+            if getNoModRequiredX(part) {
+                mod = 1.0
+            } else {
+                mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
+            }
+           
+            let newOrigin =
                 (x: origin.x + value * mod,
                  y: origin.y,
                  z: 0.0)
@@ -434,6 +470,7 @@ extension ObjectEditViewModel {
             return newOrigin
             
             func makeLeftAndRightMoveCloserWithNegAndApartWithPos() -> Double {
+
                 var reverseDirection = 1.0
                 if sideToEdit == .both {
                     reverseDirection = id == .id1 ? 1.00: -1.00
@@ -441,15 +478,28 @@ extension ObjectEditViewModel {
                 return reverseDirection
             }
         }
+            
+            
+        func getNoModRequiredX(_ part: Part) -> Bool{
+            let exclusionsForAlwaysUniPart: [Part] = [
+                .mainSupport,
+                .backSupport,
+                .backSupportHeadSupport
+            ]
+            
+            return
+                exclusionsForAlwaysUniPart.contains(part) ? true: false
+        }
         
         
         func yOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
             return
                 (x: origin.x,
-                y: origin.y + modifiedOrOriginalValue,
+                y: origin.y + value,
                 z: 0.0)
         }
     }
+    
     
     func dimensionWithModifiedProperty(
         _ value: Double,
@@ -504,7 +554,7 @@ extension ObjectEditViewModel {
         let newDimension = dimensionWithModifiedProperty(
             value,
             currentDimension,
-            propertyToEdit
+            dimensionPropertyToEdit
         )
         
         DictionaryService.shared.dimensionUserEditedDicModifier(
@@ -512,9 +562,8 @@ extension ObjectEditViewModel {
         )
     }
 
-    func setPropertyToEdit(_ propertyToEdit: PartTag) {
-        BilateralPartWithOnePropertyToChangeService.shared.setPropertyToEdit(propertyToEdit)
-    }
+    
+
     
 }
 
