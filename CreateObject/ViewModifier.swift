@@ -15,8 +15,11 @@ struct GreenWithOpacity: ViewModifier {
         self.opacity = opacity
     }
     
+    
     func body(content: Content) -> some View {
-        content.background(Color(red: 220/255, green: 255/255, blue: 220/255))//(Color.green.opacity(opacity))
+     
+            content.background(Color(red: 220/255, green: 255/255, blue: 220/255))
+
     }
 }
 

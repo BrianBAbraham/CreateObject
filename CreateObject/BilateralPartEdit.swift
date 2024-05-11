@@ -81,6 +81,7 @@ struct DimensionPicker: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .colorScheme(.light)
                 .onChange(of: objectEditVM.partToEdit) {
                    //always make the first dimension the intialy active choice
                     if let firstDimension = editableDimension.first {
@@ -144,6 +145,7 @@ struct DimensionStepper: View {
                                 } )
 
                 Stepper("", value: boundStepperValue, step: 10.0)
+                .colorScheme(.light)
                 .fixedSize()
             .disabled(sidesPresent == .none)
     }
@@ -204,6 +206,7 @@ struct OriginPicker: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    .colorScheme(.light)
                     .onChange(of: objectEditVM.partToEdit) {
                        //always make the first origin the intial active choice
                         if let firstOrigin = editableOrigin.first {
@@ -214,6 +217,7 @@ struct OriginPicker: View {
                     }
                 
                     Stepper("", value: boundStepperValue, step: 10.0)
+                    .colorScheme(.light)
                     .fixedSize()
                 }
                 .disabled(notPresent)

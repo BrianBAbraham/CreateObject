@@ -80,8 +80,12 @@ struct AngleSetter: View {
         )
         HStack{
             Stepper("", value: boundStepperValue, step: 10.0)
+                .colorScheme(.light)
         }
+     
+
     }
+       
 }
 
 
@@ -101,7 +105,9 @@ struct OriginSetter: View {
         )
         HStack{
             Stepper("", value: boundStepperValue, step: 10.0)
+                .colorScheme(.light)
         }
+        //.disabled(!movementPickVM.getObjectIsTurning())
     }
     
     
@@ -179,10 +185,6 @@ struct OriginSetter: View {
 struct AnglePickerView: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     
-   // @State private var selectedMenuNameItem: String = Movement.none.rawValue
-    
-    
-    
     let menuItems = WhichAngle.allCases.map {
         $0.rawValue
     }
@@ -190,36 +192,30 @@ struct AnglePickerView: View {
     
     var body: some View {
         HStack {
-          
-            Picker(
-                "",
-                selection: $movementPickVM.objectAngleName
-            ) {
-                ForEach(
-                    menuItems,
-                    id: \.self
-                ) { item in
-                    Text(
-                        item
-                    )
+            ZStack {
+                Picker(
+                    "",
+                    selection: $movementPickVM.objectAngleName
+                ) {
+                    ForEach(
+                        menuItems,
+                        id: \.self
+                    ) { item in
+                        Text(
+                            item
+                        )
+                    }
                 }
+                //Start work around: removes grey background from iPhone 13 mini
+                //physical device
+                .opacityAndScaleToHidePickerLabel()
+                
+                DuplicatePickerText(name: movementPickVM.objectAngleName)
             }
-    //        .onChange(
-    //            of: movementPickVM.movementName
-    //        ) {
-    //            oldValue,
-    //            newValue in
-    //
-    //            movementPickVM.setMovementName(newValue)
-    //
-    //            movementPickVM.updateMovement(
-    //                to: newValue,
-    //                origin: -500.0,
-    //
-    //                forward: 0.0
-    //            )
-    //        }
+            //End work around
+
             Text("angle")
+                .colorScheme(.light)
         }
         
     }

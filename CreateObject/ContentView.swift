@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import UIKit
 
 struct EnterTextView: View {
     @State private var name: String = ""
@@ -26,16 +26,6 @@ extension Double {
         return (self / increment).rounded() * increment
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 struct ListView: View {
@@ -64,29 +54,19 @@ struct ListView: View {
 }
 
 
-
-//Content view mediates data between view models
-//All data is requested from view models
-//All data is passed to view models to set model
-struct ContentView: View {
+struct EditMovementView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-   
-    @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
-
-
-    init(){
-        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.2)
-        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected )
-    }
-  
+    @EnvironmentObject var recenterVM: RecenterViewModel
+    var recenterPosition: CGPoint = CGPoint(x: 100, y: 350)
+    @State private var uniqueKey = 0
+    
     var body: some View {
-        let movementName = movementPickVM.getMovementType().rawValue        
+        let movementName = movementPickVM.getMovementType().rawValue
         var postTiltOneCornerPerKeyDic: PositionDictionary {
             let dic =
             movementPickVM.getPostTiltOneCornerPerKeyDic()
-//            print(dic)
-//                       print( DictionaryInArrayOut().getNameValue(dic).forEach{print($0)} )
+            
             return dic
         }
         
@@ -94,11 +74,8 @@ struct ContentView: View {
             movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
         }
 
-        
         var objectFrameSize: Dimension {
-         //   print( movementPickVM.onScreenMovementFrameSize)
-            return
-            movementPickVM.onScreenMovementFrameSize
+                movementPickVM.onScreenMovementFrameSize
         }
         
         var movement: Movement {
@@ -107,83 +84,136 @@ struct ContentView: View {
         var startAngle: Double {
             movementPickVM.getStartAngle()
         }
+        
+        
+        VStack {
+            //Object Menu
+            VStack{
+                ObjectRulerRecenter()
+                
+                ObjectAndRulerView(
+                    movementPickVM.uniquePartNames,
+                    preTiltFourCornerPerKeyDic,
+                    movementPickVM.movementDictionaryForScreen,
+                    objectFrameSize,
+                    movement,
+                    DisplayStyle.movement
+                )
+                .position(recenterPosition)
+                .onChange(of: recenterVM.getRecenterState()) {
+                    uniqueKey += 1
+                }
+                .id(uniqueKey)//ensures redraw
+            }
+           
+            
+            //Edit Menu
+            VStack(spacing: 5 ){
+                MovementPickerView(movementName)
+                HStack {
+                    AnglePickerView()
+                       
+                    AngleSetter(setAngle: movementPickVM.setObjectAngle)
+                    Spacer()
+                }
+                .opacity(!movementPickVM.getObjectIsTurning() ? 0.3: 1.0)
+                .disabled(!movementPickVM.getObjectIsTurning())
+                
+                HStack{
+                    Spacer()
+                    Text("turn tightness")
+                        .foregroundColor(movement == .turn ? .primary : .gray)
+                        .colorScheme(.light)
+                    
+                    OriginSetter(
+                        setValue: movementPickVM.modifyStaticPointUpdateInX,
+                        label: "origin X"
+                    )
+                    
+                    Spacer()
+                }
+                .disabled(!movementPickVM.getObjectIsTurning())
+            }
+            .backgroundModifier()
+            .transition(.move(edge: .bottom))
+        }
+    }
+}
 
+
+
+//Content view mediates data between view models
+//All data is requested from view models
+//All data is passed to view models to set model
+struct ContentView: View {
+    @EnvironmentObject var movementPickVM: MovementPickViewModel
+    init(){
+        
+        //make segemented picker buttons brigher green when picked
+        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.2)
+        
+        
+        //Control the appearance of the navigation back button view
+        let appearance = UINavigationBarAppearance()
+       // appearance.titleTextAttributes = [.font: UIFont.systemFont(ofSize: 14)]
+        appearance.largeTitleTextAttributes = [.font: UIFont.systemFont(ofSize: 18)]
+        appearance.backgroundColor = .green
+        appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.2)// Or any other color
+        appearance.buttonAppearance.normal.titleTextAttributes = [.font: UIFont.systemFont(ofSize: 12)]
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+  
+    var body: some View {
+        var preTiltFourCornerPerKeyDic: CornerDictionary {
+            movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
+        }
         
         NavigationView {
             VStack {
+                
+                
                 NavigationLink(destination:
-                    AllViews(
+                    EditEquipmentView(
                         movementPickVM.uniquePartNames,
                         preTiltFourCornerPerKeyDic,
                         movementPickVM.movementDictionaryForScreen,
-                        objectFrameSize,
-                        movement
+                        movementPickVM.onScreenMovementFrameSize,
+                        movementPickVM.movementType
                     )
                 )
-                {Text("select-edit equipment")}
+                {Text("select-edit equipment")
+                }
                 .padding()
                   
-                NavigationLink(destination:
-                    VStack {
-                        ObjectAndRulerView(
-                                movementPickVM.uniquePartNames,
-                                preTiltFourCornerPerKeyDic,
-                                movementPickVM.movementDictionaryForScreen,
-                                objectFrameSize,
-                                movement
-                            )
-
-                    
-                        Spacer()
-                    
-                        VStack{
-                            MovementPickerView(movementName)
-                            HStack {
-                                Spacer()
-                                AnglePickerView()
-                                AngleSetter(setAngle: movementPickVM.setObjectAngle)
-                                Spacer()
-                            }
-                            .opacity(movementPickVM.getObjectIsStatic() ? 0.3: 1.0)
-                            .disabled(movementPickVM.getObjectIsStatic())
-                            
-                            HStack{
-                                Spacer()
-                                Text("turn tightness")
-                                OriginSetter(
-                                    setValue: movementPickVM.modifyStaticPointUpdateInX,
-                                    label: "origin X"
-                                )
-                                Spacer()
-                            }
-                        }
-                        
-                        .padding()
-                        .backgroundModifier()
-                        .transition(.move(edge: .bottom))
-                    }
-                )
-                    {Text("edit movements")}
-                    .padding()
                 
-                NavigationLink(destination:
-                        Text("in development")
-                )
-                    {Text("import plan from photos")}
-                    .padding()
                 
+                NavigationLink(destination:  EditMovementView() ) {
+                    Text("edit movements")
+                }
+                
+                
+ 
+                NavigationLink(destination: Text("in development") ) {
+                    Text("import plan from photos")}
+                    .padding()
                 
                 Spacer()
                 
                 UnitSystemSelectionView()
             }
-            .navigationBarTitle("main menu")
-            //.foregroundColor(Color(red: 220/255, green: 255/255, blue: 220/255))
+            .navigationBarTitle("main menu", displayMode: .inline)
+           
         }
     }
 }
 
-//                               
+
+enum DisplayStyle {
+    case movement
+    case edit
+}
+
+//
 //struct Test: View {
 //    @State private var sliderValue: CGFloat = 0
 //    
@@ -221,12 +251,12 @@ struct ContentView: View {
 //}
 
 
-struct AllViews: View {
+struct EditEquipmentView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
    
-    @State private var recenterPosition: CGPoint = CGPoint(x:200, y:300)
+    var recenterPosition: CGPoint = CGPoint(x:100, y:400)
     @State private var uniqueKey = 0
     
     let uniquePartNames: [String]
@@ -262,7 +292,8 @@ struct AllViews: View {
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,
-                movement
+                movement,
+                DisplayStyle.edit
             )
             .position(recenterPosition)
             .onChange(of: recenterVM.getRecenterState()) {
@@ -270,56 +301,40 @@ struct AllViews: View {
             }
             .id(uniqueKey)//ensures redraw
             
-           
-            //MENU
+     
             VStack {
                 ObjectRulerRecenter()
                 Spacer()
-                VStack (alignment: .leading) {
-                    
-                    HStack{
-                        MovementPickerView(movementName)
-                        PickInitialObjectView()
-                        Spacer()
-                        PickPartEdit(objectType)
-                    }
-                  
-                    HStack{
-                        ConditionalBilateralPartSidePicker()
-                        ConditionalBilateralPartPresence()
-                        ConditionaUniPartPresence()
-                    }
-                    
-                    ConditionalPartMenu()
-                    
-                  //  ConditionalUniPartEditMenu()
-                    
-                    ConditionalTiltMenu()
-                    
-                   
-                        
-                }
-                .padding(.horizontal)
                 
-                .backgroundModifier()
-                .transition(.move(edge: .bottom))
+                ZStack{
+                        VStack (alignment: .leading) {
+                        
+                        HStack{
+                            MovementPickerView(movementName)
+                            PickInitialObjectView()
+                            PickPartEdit(objectType)
+                        }
+                        
+                        HStack{
+                            ConditionalBilateralPartSidePicker()
+                            ConditionalBilateralPartPresence()
+                            ConditionaUniPartPresence()
+                        }
+                        
+                        ConditionalPartMenu()
+                        
+                        ConditionalTiltMenu()
+                        
+                        }
+                    }
+                    .padding(.horizontal)
+                    .backgroundModifier()
+                    .transition(.move(edge: .bottom))
             }
         }
     }
 }
 
-
-
-// PreferenceKey to store the initial origin of the child view
-//struct InitialOriginPreferenceKey: PreferenceKey {
-//    static var defaultValue: CGPoint?
-//
-//    static func reduce(value: inout CGPoint?, nextValue: () -> CGPoint?) {
-//        if let nextValue = nextValue() {
-//            value = nextValue
-//        }
-//    }
-//}
 
 
    

@@ -9,16 +9,16 @@ import SwiftUI
 struct ObjectAndRulerView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
-    //@EnvironmentObject var recenter: RecenterViewModel
+    
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     @GestureState private var fingerLocation: CGPoint? = nil
-    @State private var location = CGPoint (x: 200, y: 200)
+    @State private var location = CGPoint (x: 100, y: 500)
    
     
     @State var currentZoom: CGFloat = 0.0
     @State var lastCurrentZoom: CGFloat = 0.0
-    private var  minimumZoom = 0.2
-    private var maximimumZoom = 0.5
+    private var  minimumZoom = 0.1
+    private var maximimumZoom = 0.4
     
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
@@ -33,8 +33,6 @@ struct ObjectAndRulerView: View {
     }
     
     let uniquePartNames: [String]
-//    let uniqueArcPointNames: [String]
-   // let uniqueStaticPointNames: [String]
     
     var objectName: String {
         objectPickVM.getCurrentObjectName()
@@ -47,6 +45,7 @@ struct ObjectAndRulerView: View {
     }
    
     let movement: Movement
+    let displayStyle: DisplayStyle
     
     
     
@@ -55,13 +54,15 @@ struct ObjectAndRulerView: View {
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
-        _ movement: Movement
+        _ movement: Movement,
+        _ displayStyle: DisplayStyle
     ) {
         uniquePartNames = partNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+        self.displayStyle = displayStyle
       
         }
     
@@ -78,84 +79,31 @@ struct ObjectAndRulerView: View {
     
     var body: some View {
         ZStack {
-            
             ObjectView(
                 uniquePartNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,
-                movement
-             
+                movement,
+                displayStyle
             )
-            
-            .alignmentGuide(VerticalAlignment.top) { d in d[VerticalAlignment.top] }
+            .position(x: 1000.0, y: 0.0)
             
             RightAngleRuler()
+            
         }
         .scaleEffect(zoom)
-        .background(Color.green.opacity(0.0001))
-        .frame(maxWidth: .infinity)
         .gesture(MagnificationGesture()
             .onChanged { value in
-                currentZoom = value - 1
+                currentZoom = (value - 1) * 0.3 //sensitivity
             }
             .onEnded { value in
                 lastCurrentZoom += currentZoom
                 currentZoom = 0.0
             }
         )
-        
     }
 }
-
-
-struct ObjectRulerRecenterX: View {
-    @EnvironmentObject var recenterVM: RecenterViewModel
-    var body: some View {
-        
-                        Button(action: {
-                            recenterVM.setRecenterState()
-                        }) {
-                            Text("center ruler & object")
-                                .font(.system(size: 10))
-                                .foregroundColor(.blue)
-                            
-                        }
-                        .buttonStyle(.plain )
- 
-        
-    }
-}
-
-struct ObjectRulerRecenterY: View {
-    @EnvironmentObject var recenterVM: RecenterViewModel
-    @State private var isPressed = false
-
-    var body: some View {
-        Button(action: {
-            // Toggle the effect only while the button is being pressed
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isPressed = true
-            }
-            recenterVM.setRecenterState()
-
-            // Reset the state after a slight delay, if needed
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {
-                withAnimation(.easeInOut(duration: 0.4)) {
-                    isPressed = false
-                }
-            }
-        }) {
-            Text("center ruler & object")
-                .font(.system(size: 10))
-                .foregroundColor(.blue)
-                .scaleEffect(isPressed ? 1.5 : 1) // Apply scale effect based on the isPressed state
-        }
-        .buttonStyle(.plain)
-    }
-}
-
-
 
 
 struct ObjectRulerRecenter: View {
@@ -167,6 +115,7 @@ struct ObjectRulerRecenter: View {
             // Start the button press animation
             withAnimation(.easeInOut(duration: 0.2)) {
                 isPressed = true
+                print("DETECT")
             }
 
             // Schedule the recenter action and the reset of the button state after the animation completes
@@ -186,5 +135,6 @@ struct ObjectRulerRecenter: View {
                 .scaleEffect(isPressed ? 2.0 : 1) // Apply scale effect based on the isPressed state
         }
         .buttonStyle(.plain)
+        .padding()
     }
 }

@@ -223,6 +223,8 @@ struct PartView: View {
         //ensures objects drawn in order of height
         dictionaryElementIn.maximumHeightOut()
     }
+    let movement: Movement
+    let displayStyle: DisplayStyle
     
     init(
         uniquePartName: String,
@@ -232,7 +234,9 @@ struct PartView: View {
         cornerRadius: Double = 30.0,
         opacity: Double = 0.9,
         lineWidth: Double = 5.0,
-        _ partToEdit: Part
+        _ partToEdit: Part,
+        _ movement: Movement,
+        _ displayStyle: DisplayStyle
  
     ){
         self.partToEdit = partToEdit
@@ -243,14 +247,16 @@ struct PartView: View {
         self.cornerRadius = cornerRadius
         self.opacity = opacity
         self.lineWidth = lineWidth
+        self.movement = movement
+        self.displayStyle = displayStyle
         //print("\(uniquePartName) ")
         
         func getColor() -> Color {
             if color == .white { // only change undefined colors, let ruler color remain
                 if UniqueToGeneralName(uniquePartName).generalName.contains(partToEdit.rawValue) {
-                    return .red
+                    return Color(displayStyle == .movement ? "movement" :"selectedPart")
                 } else {
-                    return .white}
+                    return Color(displayStyle == .movement ? "movement" :"unselectedPart")}
             } else {
                 return color
             }
@@ -320,15 +326,18 @@ struct ObjectView: View {
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
     let movement: Movement
+    let displayStyle: DisplayStyle
     var objectOriginInScreen: PositionAsIosAxes {
         movementPickVM.getOffsetForObjectOrigin()}
+
   
     init(
         _ partNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
-        _ movement: Movement
+        _ movement: Movement,
+        _ displayStyle: DisplayStyle
     ) {
         uniquePartNames = partNames
 
@@ -336,6 +345,7 @@ struct ObjectView: View {
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
+        self.displayStyle = displayStyle
 
     }
     
@@ -350,7 +360,9 @@ struct ObjectView: View {
                         uniquePartName: name,
                         preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
                         postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
-                        objectEditVM.partToEdit
+                        objectEditVM.partToEdit,
+                        movement,
+                        displayStyle
                     )
                 }
          
@@ -370,12 +382,12 @@ struct ObjectView: View {
                         .zIndex(5000)
                         
 
-                    ForEach(anglesRadiae, id: \.id) { anglesRadius in
-                            ArcView(
-                                anglesRadius,
-                                dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
-                            )
-                        }
+                        ForEach(anglesRadiae, id: \.id) { anglesRadius in
+                                ArcView(
+                                    anglesRadius,
+                                    dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
+                                )
+                            }
                     }
                     
                 }
@@ -385,7 +397,7 @@ struct ObjectView: View {
                 ForObjectDrag (
                     frameSize: objectFrameSize, active: true)
             )
-            .position(x: 0.0, y: -300)
+          //  .position(x: 500.0, y: -300)
 //            .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
 //                           ) )
         }

@@ -408,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>132</string>
+					<string>133</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>131</string>
+					<string>132</string>
 					<key>Timestamp</key>
-					<string>736790640.683648</string>
+					<string>737048091.286348</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -474,13 +474,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>140</string>
+					<string>141</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
 					<string>139</string>
 					<key>Timestamp</key>
-					<string>734265085.6156811</string>
+					<string>737109342.445956</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -496,16 +496,17 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                Part.joint
+				<string>                Part.joint,
+                Movement.none,      
 </string>
 				<key>leading</key>
 				<string>                opacity: 0.08,
                 lineWidth: 0.5,
 </string>
 				<key>trailing</key>
-				<string>            )
+				<string>                DisplayStyle.edit
+            )
             
-            ForEach(rulerMarksDictionary.map { key, value in (key, value) }, id: \.0) { key, value in
 </string>
 			</dict>
 			<key>title</key>
@@ -662,13 +663,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>265</string>
+					<string>295</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>264</string>
+					<string>294</string>
 					<key>Timestamp</key>
-					<string>736797322.9804161</string>
+					<string>737145861.299242</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -684,16 +685,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                movement
+				<string>                movement,
 </string>
 				<key>leading</key>
 				<string>                dictionaryForScreen,
                 objectFrameSize,
 </string>
 				<key>trailing</key>
-				<string>            )
+				<string>                DisplayStyle.edit
+            )
             .position(recenterPosition)
-            .onChange(of: recenterVM.getRecenterState()) {
 </string>
 			</dict>
 			<key>title</key>
@@ -1037,13 +1038,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>209</string>
+					<string>212</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>208</string>
+					<string>211</string>
 					<key>Timestamp</key>
-					<string>736951812.028435</string>
+					<string>737046852.935554</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>

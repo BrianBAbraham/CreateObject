@@ -237,8 +237,8 @@ extension MovementPickViewModel {
 //    }
     
 
-    func getObjectIsStatic() -> Bool{
-        movementType == .none ? true: false
+    func getObjectIsTurning() -> Bool{
+        movementType == .turn ? true: false
     }
     
     

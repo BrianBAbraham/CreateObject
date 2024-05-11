@@ -29,7 +29,7 @@ struct Line: View {
             path.move(to: CGPoint(x: partCorners[0].x, y: partCorners[0].y))
             path.addLine(to: CGPoint(x: partCorners[1].x, y: partCorners[1].y))
         }
-        .stroke(Color.red, lineWidth: 1)
+        .stroke(Color("rulerMarks"), lineWidth: 1)
     }
 }
 
@@ -133,11 +133,13 @@ struct Ruler: View {
                 uniquePartName: "",
                 preTiltFourCornerPerKeyDic: rulerDictionary,
                 postTiltObjectToFourCornerPerKeyDic:  rulerDictionary,
-                color: .black,
+                color: Color("rulerEdges"),
                 cornerRadius: 0.0,
                 opacity: 0.08,
                 lineWidth: 0.5,
-                Part.joint
+                Part.joint,
+                Movement.none,      
+                DisplayStyle.edit
             )
             
             ForEach(rulerMarksDictionary.map { key, value in (key, value) }, id: \.0) { key, value in

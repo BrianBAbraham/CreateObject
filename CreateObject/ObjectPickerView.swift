@@ -114,8 +114,8 @@ struct PickPartEdit: View {
                     selectedMenuNameItem = PartToDisplayInMenu([Part.mainSupport], newValue).name
                 }
                 
-                //Start work around: removes grey background from iPhone 13 mini
-                //physical device
+                //Start work around: removes grey background from
+                //iPhone 13 mini physical device
                 .opacityAndScaleToHidePickerLabel()
                 
                 DuplicatePickerText(name: selectedMenuNameItem)
@@ -123,6 +123,7 @@ struct PickPartEdit: View {
             }
             
             Text(Image(systemName: "scissors"))
+                .colorScheme(.light)
         }
     }
     

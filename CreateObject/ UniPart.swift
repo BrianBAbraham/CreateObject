@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-
-
-
-
-
-
-
-
-
-
-
 struct ConditionaUniPartPresence: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -240,6 +229,7 @@ struct UniPartPresence: View {
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
+                .colorScheme(.light)
               //  .padding([.horizontal, .top])
     }
 }
@@ -299,10 +289,12 @@ struct TiltEdit: View {
             ZStack{
                 HStack{
                     Text(description)
+                        .colorScheme(.light)
                     
                     Slider(value: boundSliderValue, in: min...max, step: 1.0)
 
                     Text(" deg: \( Int(max - boundSliderValue.wrappedValue))")
+                        .colorScheme(.light)
                         
                 }
                // .padding()

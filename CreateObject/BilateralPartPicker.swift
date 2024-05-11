@@ -43,6 +43,7 @@ struct BilateralPartSidePicker: View {
             }
         }
         .pickerStyle(.segmented)
+        .colorScheme(.light) 
         .fixedSize()
         //.padding(.top)
     }
