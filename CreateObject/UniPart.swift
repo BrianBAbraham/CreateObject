@@ -229,8 +229,7 @@ struct UniPartPresence: View {
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
-                .colorScheme(.light)
-              //  .padding([.horizontal, .top])
+               // .colorScheme(.light)
     }
 }
 
@@ -250,6 +249,8 @@ struct ConditionalTiltMenu: View {
         }
     }
 }
+
+
 struct TiltEdit: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -297,7 +298,6 @@ struct TiltEdit: View {
                         .colorScheme(.light)
                         
                 }
-               // .padding()
             }
     }
 }
