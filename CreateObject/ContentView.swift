@@ -56,7 +56,9 @@ struct ListView: View {
 
 struct EditMovementView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var movementDataVM: MovementDataViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
+    @EnvironmentObject var movementDataGiverVM: MovementDataGiverViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     var recenterPosition: CGPoint = CGPoint(x: 100, y: 350)
     @State private var uniqueKey = 0
@@ -65,24 +67,24 @@ struct EditMovementView: View {
         let movementName = movementPickVM.getMovementType().rawValue
         var postTiltOneCornerPerKeyDic: PositionDictionary {
             let dic =
-            movementPickVM.getPostTiltOneCornerPerKeyDic()
+            movementDataGiverVM.postTiltObjectToOneCornerPerKeyDic
             
             return dic
         }
         
         var preTiltFourCornerPerKeyDic: CornerDictionary {
-            movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
+            movementDataGiverVM.postTiltObjectToPartFourCornerPerKeyDic
         }
 
         var objectFrameSize: Dimension {
-                movementPickVM.onScreenMovementFrameSize
+            movementDataVM.onScreenMovementFrameSize
         }
         
         var movement: Movement {
             movementPickVM.getMovementType()
         }
         var startAngle: Double {
-            movementPickVM.getStartAngle()
+            movementPickVM.startAngle
         }
         
         
@@ -92,9 +94,9 @@ struct EditMovementView: View {
                 ObjectRulerRecenter()
                 
                 ObjectAndRulerView(
-                    movementPickVM.uniquePartNames,
+                    movementDataVM.uniquePartNames,
                     preTiltFourCornerPerKeyDic,
-                    movementPickVM.movementDictionaryForScreen,
+                    movementDataVM.movementDictionaryForScreen,
                     objectFrameSize,
                     movement,
                     DisplayStyle.movement
@@ -147,6 +149,7 @@ struct EditMovementView: View {
 //All data is passed to view models to set model
 struct ContentView: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
+    @EnvironmentObject var movementDataVM: MovementDataViewModel
     init(){
         
         //make segemented picker buttons brigher green when picked
@@ -165,7 +168,7 @@ struct ContentView: View {
   
     var body: some View {
         var preTiltFourCornerPerKeyDic: CornerDictionary {
-            movementPickVM.getPostTiltObjectToPartFourCornerPerKeyDic()
+            movementDataVM.postTiltObjectToPartFourCornerPerKeyDic
         }
         
         NavigationView {
@@ -174,10 +177,10 @@ struct ContentView: View {
                 
                 NavigationLink(destination:
                     EditEquipmentView(
-                        movementPickVM.uniquePartNames,
+                        movementDataVM.uniquePartNames,
                         preTiltFourCornerPerKeyDic,
-                        movementPickVM.movementDictionaryForScreen,
-                        movementPickVM.onScreenMovementFrameSize,
+                        movementDataVM.movementDictionaryForScreen,
+                        movementDataVM.onScreenMovementFrameSize,
                         movementPickVM.movementType
                     )
                 )
@@ -213,42 +216,6 @@ enum DisplayStyle {
     case edit
 }
 
-//
-//struct Test: View {
-//    @State private var sliderValue: CGFloat = 0
-//    
-//    var body: some View {
-//        VStack {
-//            Slider(value: $sliderValue, in: 0...100)
-//            GeometryReader { geo in
-//                Text("Move me!")
-//                    .frame(width: 100 + sliderValue, height: 100)
-//                    .background(Color.blue)
-//                    .preference(key: CGFloatPreferenceKey.self, value: sliderValue)
-//            }
-//          
-//        }
-//        .padding()
-//    }
-//}
-           
-//struct CGFloatPreferenceKey: PreferenceKey {
-//    
-//    static var defaultValue: CGFloat = 0.0
-//    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-//       print("activated")
-//        value = nextValue()
-//    }
-//}
-//                               
-//struct ObjectGeometryPreferenceKey: PreferenceKey {
-//    
-//    static var defaultValue = CGRect(x: 10, y: 10, width: 100, height: 100)
-//    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-//       // print("activated")
-//        value = nextValue()
-//    }
-//}
 
 
 struct EditEquipmentView: View {
@@ -285,7 +252,7 @@ struct EditEquipmentView: View {
         }
     var body: some View {
         let objectType = objectPickVM.getCurrentObjectType()
-        let movementName = movementPickVM.getMovementType().rawValue
+        let movementName = movementPickVM.movementName
         ZStack{
             ObjectAndRulerView(
                 uniquePartNames,
@@ -338,347 +305,3 @@ struct EditEquipmentView: View {
 
 
    
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//      
-//            ContentView("RearDriveWheelchair")
-//                .previewLayout(.fixed(width:1000, height: 1000))
-//                .environmentObject(ObjectPickViewModel())
-//                .environmentObject(ObjectEditViewModel())
-//                .environmentObject(SceneViewModel())
-//        
-//    }
-//}
-
-
-//struct ExclusiveToggles: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//
-//    let toggleCases: [ObjectOptions]
-//
-//    let toggleFor: Toggles
-//
-//    @State var flags: [Bool]
-//
-//
-//    init(_ optionStates: [Bool], _ toggleCases: [ObjectOptions], _ toggleFor: Toggles) {
-//
-//        self.toggleCases = toggleCases
-//        _flags = State(initialValue: optionStates)
-//        self.toggleFor = toggleFor
-//    }
-//
-//    var body: some View {
-//        ScrollView {
-//            ForEach(flags.indices, id: \.self) { i in
-//                ToggleItem(
-//                    storage: self.$flags,
-//                    tag: i,
-//                    label: toggleCases[i].rawValue,
-//                    toggleCases: toggleCases,
-//                    toggleFor: toggleFor)
-//                        .padding(.horizontal)
-//            }
-//        }
-//    }
-//}
-//
-//struct ExclusiveToggles: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-
-   // let toggleCases: [TwinSitOnOption]
-    
-//    let toggleFor: Toggles
-//
-//    @State var flags: [Bool]
-//
-    
-//    init(_ optionStates: [Bool],
-//         _ toggleCases: [TwinSitOnOption],
-//         _ toggleFor: Toggles) {
-//
-//        self.toggleCases = toggleCases
-//        _flags = State(initialValue: optionStates)
-//        self.toggleFor = toggleFor
-//
-//
-//
-//    }
-//
-//    var body: some View {
-//        HStack {
-//            ForEach(flags.indices, id: \.self) { i in
-//                ToggleItem(
-//                    storage: self.$flags,
-//                    tag: i,
-//                    label: toggleCases[i].rawValue,
-//                    toggleCases: toggleCases,
-//                    toggleFor: toggleFor)
-//                        .padding(.horizontal)
-//            }
-//        }
-//    }
-//}
-
-
-//struct ToggleItem: View {
-//    @Binding var storage: [Bool]
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//   // @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-//    var tag: Int
-//    var label: String = ""
-//    let toggleCases: [TwinSitOnOption]
-//    let toggleFor: Toggles
-//    
-//    var body: some View {
-//        
-//
-//        
-//        
-//        let isOn = Binding (get: { self.storage[self.tag] },
-//            set: { value in
-//            
-//            for index in 0..<toggleCases.count {
-//
-//                let setOption = index == tag ? true: false
-//
-//                switch toggleFor {
-//                case .twinSitOn:
-//                    twinSitOnVM.setTwinSitOnToFalse(toggleCases[index], setOption)
-//                    
-//
-//let twinSitOnOptions =
-//twinSitOnVM.getTwinSitOnOptions()
-//                    
-//                
-//objectPickVM.setCurrentObjectByCreatingFromName(
-//    twinSitOnOptions)
-//
-//                    
-//                case .sitOnPosition:
-//                    twinSitOnVM.setTwinSitOnOption(
-//                        toggleCases[index],
-//                        setOption
-//                    )
-//                }
-//            }
-//
-//                withAnimation {
-//                    self.storage = self.storage.enumerated().map { $0.0 == self.tag }
-//                }
-//            })
-//        return Toggle(label, isOn: isOn)
-//    }
-//
-//}
-
-//struct ToggleItem: View {
-//    @Binding var storage: [Bool]
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var twinSitOnVM: TwinSitOnViewModel
-//    var tag: Int
-//    var label: String = ""
-//    let toggleCases: [ObjectOptions]
-//    let toggleFor: Toggles
-//
-//    var body: some View {
-//        let isOn = Binding (get: { self.storage[self.tag] },
-//            set: { value in
-//
-//            for index in 0..<toggleCases.count {
-//
-//                let setOption = index == tag ? true: false
-//
-//                switch toggleFor {
-//                case .doubleSitOn:
-//                    objectPickVM.setObjectOptionDictionaryForDoubleSitOn(toggleCases[index], setOption)
-//
-//                    objectPickVM.setCurrentObjectDictionary(
-//                        objectPickVM.getCurrentObjectName (),
-//                        twinSitOnOptions: twinSitOnVM.getTwinSitOnOptions())
-//
-//                case .sitOnChoice:
-//                    objectPickVM.setObjectOptionDictionary(
-//                        toggleCases[index],
-//                        setOption
-//
-//                    )
-//                }
-//            }
-//
-//                withAnimation {
-//                    self.storage = self.storage.enumerated().map { $0.0 == self.tag }
-//                }
-//            })
-//        return Toggle(label, isOn: isOn)
-//    }
-//
-//}
-//struct ContentViewX: View {
-//
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-//    @EnvironmentObject var coreDataVM: CoreDataViewModel
-//    @EnvironmentObject var sceneVM: SceneViewModel
-//    
-//    @State var isActive = true
-//    @State var globalPosition: CGPoint?
-//    @State var position: CGPoint = .zero
-//    @State private var staticPositionOnObject = CGPoint(x: 200, y: 500)
-//   
-//    @State var savedDictionaryAsList =  [""]
-//    @State private var savedAsName: String = ""
-//    
-//    var currentObjectDictionaryAsList: [String] {
-//        objectPickVM.getList(.useCurrent)
-//    }
-//
-//    var initialObjectDictionaryAsList: [String] {
-//        objectPickVM.getList(.useInitial)
-//    }
-//    
-//    var loadedObjectDictionaryAsList: [String] {
-//        objectPickVM.getList(.useLoaded)
-//    }
-//    
-//    var dimensionsAsList: [String] {
-//        objectPickVM.getList(.useDimension)
-//    }
-//    
-//    var equipmentName: String  {
-//        objectPickVM.getCurrentObjectName()
-//    }
-//
-//    var enterTextView: some View {
-//        VStack(alignment: .leading) {
-//            TextField(equipmentName, text: $savedAsName)
-//                .textFieldStyle(.roundedBorder)
-//        }
-//    }
-//
-//    var saveButtonView: some View {
-//        HStack{
-//            Button(action: {
-//                saveData(equipmentName + "_" + savedAsName)
-//            }, label: {
-//                Text("save")
-//                    .foregroundColor(.blue)
-//            } )
-//            enterTextView
-//        }
-//        .padding()
-//    }
-//       
-//    var uniquePartNames: [String] {
-//        objectPickVM.getUniquePartNamesFromObjectDictionary()
-//    }
-//
-//
-//    var currentDictionary: PositionDictionary {
-//        objectPickVM.getPostTiltOneCornerPerKeyDic()
-//    }
-//    
-//    var name: String {
-//        objectPickVM.getCurrentObjectName()
-//    }
-//    
-//    func saveData (_ objectName: String) {
-//                coreDataVM.addObject(
-//                    names: objectPickVM.getAllOriginNames(),
-//                    values: objectPickVM.getAllOriginValues(),
-//                    objectType: objectPickVM.getCurrentObjectName(),
-//                objectName: objectName)
-//                coreDataVM.fetchNames()
-//    }
-//
-//
-//    @State private var initialOrigin: CGPoint?
-//    
-//    
-//   
-//    
-//    var body: some View {
-       // PickSavedObjectView()
-        //let frameSize = objectPickVM.getScreenFrameSize()
-//        let objectManipulationIsActive = true
-//
-//        NavigationView {
-//            ZStack {
-//                NavigationLink(destination:
-//                    VStack{
-//                            PickInitialObjectView()
-//                            AddToSceneView(objectPickVM.getPostTiltOneCornerPerKeyDic(), name)
-                              //  .environmentObject(objectPickVM)
-//                            ObjectView(
-//                                uniquePartNames,
-//                                objectManipulationIsActive
-                            //    ,
-                              //  initialOrigin: $initialOrigin
-//                            )
-//                    } )
-//                    { Text("Default equipment")
-//                            .onTapGesture {
-//                                print("hello")
-//                            }
-//                    }
-
-                
-//                NavigationLink(destination:
-//                                PickSavedObjectView()
-//                                .environmentObject(objectPickVM)
-//                                .environmentObject(coreDataVM)
-//                              // , isActive: self.$isActive
-//                )
-//                    { Text("Saved equipment") }
-                
-                
-//                NavigationLink(destination:
-//                    VStack {
-//                    Text( objectPickVM.getCurrentObjectName())
-//                        ObjectView(
-//                            uniquePartNames,
-//                            name,
-//                            objectManipulationIsActive
-//                           )
-//
-//                    EditObjectMenuView()
-//                    saveButtonView
-//                    }
-//                )
-//                { Text("Edit equipment") }
-
-                
-                
-//                NavigationLink(destination: ListView(equipmentName, currentObjectDictionaryAsList)){
-//                 Text("View current dictionary")
-//                }
-//
-//                NavigationLink(destination: ListView(equipmentName, initialObjectDictionaryAsList)){
-//                 Text("View initial dictionary")
-//                }
-//
-//                NavigationLink(destination: ListView(equipmentName, dimensionsAsList)){
-//                 Text("View initial dimensions")
-//                }
-//
-//
-//                NavigationLink(destination: ListView(equipmentName, loadedObjectDictionaryAsList)){
-//                 Text("View saved dictionary")
-//                }
-//
-//                NavigationLink(destination: ListView(equipmentName, uniquePartNames) ) {
-//                    Text("View dictionary parts")
-//                }
-//
-//                NavigationLink(destination: ListView(equipmentName, uniquePartNames)) {
-//                    Text("Settings")
-//                }
-
-//            }
-//            .navigationBarTitle("Equipment manager")
-//
-//        }
-//    }
-//
-//}

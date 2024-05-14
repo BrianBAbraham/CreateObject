@@ -16,7 +16,7 @@ class MovementPickViewModel: ObservableObject {
     @Published var staticPoint: PositionAsIosAxes = ZeroValue.iosLocation
     
   
-    var movementType: Movement = .none
+    @Published var movementType: Movement = .none
   
     
     var staticPointUpdate: PositionAsIosAxes = ZeroValue.iosLocation {
@@ -51,6 +51,7 @@ class MovementPickViewModel: ObservableObject {
     
     @Published var movementName: String = Movement.none.rawValue{
         didSet {
+           // print(movementName)
             setMovementType()
         }
     }

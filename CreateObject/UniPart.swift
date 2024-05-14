@@ -22,58 +22,7 @@ struct ConditionaUniPartPresence: View {
         }
     }
 }
-//struct ConditionalUniPartEditMenu: View {
-//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-//    
-//    var body: some View {
-//        let partToEdit = objectEditVM.getPartToEdit()
-//        let showmMenu = objectShowMenuVM.getUniEditMenuStatus(partToEdit)
-//        if showmMenu  {
-//            HStack{
-//                
-//                UniDimensionPicker(partToEdit)
-//            }
-//           
-//        } else {
-//            EmptyView()
-//        }
-//    }
-//}
-//struct UniDimensionPicker: View {
-//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-//   @State private var propertyToEdit: PartTag = .length
-//    var relevantCases: [PartTag] {
-//        objectShowMenuVM.getPropertiesForDimensionPicker(part)
-//    }
-//    let part: Part
-//
-//    init(
-//        _ part: Part) {
-//        self.part = part
-//    }
-//    
-//    var body: some View {
-//        ZStack{
-//            HStack {
-//                Spacer()
-//                Picker("dimension", selection: $propertyToEdit) {
-//                    ForEach(relevantCases, id: \.self) { side in
-//                        Text(side.rawValue)
-//                    }
-//                }
-//                .pickerStyle(.segmented)
-//                .fixedSize()
-//                .onChange(of: propertyToEdit) { oldSelection, newSelection in
-//                    objectEditVM.setPropertyToEdit(newSelection)
-//                }
-//                
-//                UniDimensionSlider(part, propertyToEdit)
-//            }
-//        }
-//    }
-//}
+
 struct UniDimensionSlider: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
@@ -115,90 +64,9 @@ struct UniDimensionSlider: View {
                        step: 10.0)
     }
 }
-//struct UniPartEditX: View {
-//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-//   @State private var propertyToEdit: PartTag = .length
-//    var relevantCases: [PartTag] {
-//        objectShowMenuVM.getPropertiesForDimensionPicker(part)
-//    }
-//    let part: Part
-//
-//    init(
-//        _ part: Part) {
-//        self.part = part
-//    }
-//    
-//    var body: some View {
-//        ZStack{
-//            HStack {
-//                Spacer()
-//                Picker("dimension", selection: $propertyToEdit) {
-//                    ForEach(relevantCases, id: \.self) { side in
-//                        Text(side.rawValue)
-//                    }
-//                }
-//                .pickerStyle(.segmented)
-//                .fixedSize()
-//                .onChange(of: propertyToEdit) { oldSelection, newSelection in
-//                    objectEditVM.setPropertyToEdit(newSelection)
-//                }
-//                
-//                UniDimensionSliderX(part, propertyToEdit)
-//            }
-//        }
-//    }
-//}
 
-struct UniDimensionSliderX: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
 
-   
-    var propertyToEdit: PartTag
-    var minMaxValue : (min: Double, max: Double){
-        objectPickVM.geMinMax(part, propertyToEdit, "OnePartTwoDimensionValueMenu")
-    }
-    let part: Part
-  
-    
-    init(
-        _ part: Part,
-        _ property: PartTag) {
-        self.part = part
-        propertyToEdit = property
-    }
-    var body: some View {
 
-        let boundSliderValue = Binding(
-            get: {
-                objectPickVM.getInitialSliderValue (
-                    part, propertyToEdit)
-            },
-            set: { newValue in
-                objectEditVM
-                    .setDimensionPropertyValueForOnePartInUserEditedDic(
-                        newValue,
-                        part)
-                
-                objectPickVM.modifyObjectByCreatingFromName()
-           
-                }   
-        )
-
-//            HStack {
-                Slider(value: boundSliderValue,
-                       in: minMaxValue.min...minMaxValue.max,
-                       step: 10.0)
-                
-//                MeasurementView(
-//                    Measurement(value: boundSliderValue.wrappedValue,
-//                        unit: .millimeters))
-//                .padding(.horizontal)
-//                }
-    }
-}
 struct UniPartPresence: View {
     @State private var optionToggle = true
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
@@ -229,7 +97,7 @@ struct UniPartPresence: View {
                     }
                     objectPickVM.modifyObjectByCreatingFromName()
                 }
-               // .colorScheme(.light)
+                .colorScheme(.light)
     }
 }
 

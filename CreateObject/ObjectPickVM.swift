@@ -82,11 +82,11 @@ class ObjectPickViewModel: ObservableObject {
             fourCornerDic: [:],
            objectDimension: ZeroValue.dimension)
     
-    var makeObjectStaticWhenEdited =
-        MakeObjectStaticWhenEdited(
-            fourCornerDic: [:],
-            objectDimension: ZeroValue.dimension
-        )
+//    var makeObjectStaticWhenEdited =
+//        MakeObjectStaticWhenEdited(
+//            fourCornerDic: [:],
+//            objectDimension: ZeroValue.dimension
+//        )
     
     
     init() {

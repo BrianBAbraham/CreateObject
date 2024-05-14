@@ -20,8 +20,58 @@ class MeasurementSystemService {
     
     
     func setMeasurementSystem(_ unitSystem: UnitSystem) {
-    
         self.unitSystem = unitSystem
+    }
+}
+
+class CenteredObjectZeroOriginService {
+    @Published var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter?
+    
+    static let shared = CenteredObjectZeroOriginService()
+    
+    func setCenteredObjectZeroOriginData(_ centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter) {
+       // print("set")
+        self.centeredObjectZeroOriginData = centeredObjectZeroOriginData
+    }
+    
+}
+
+class MovementImageService {
+    @Published var movementImageData: MovementImageData = MovementImageData (
+        ObjectImageService.shared.objectImageData,//object data
+        movementType: .turn, //transform data
+        staticPoint: ZeroValue.iosLocation, //transform data
+        startAngle: 0.0, //transform data
+        endAngle: 0.0, //transform data
+        forward: 0.0 //transform data
+    )
+    
+    static let shared = MovementImageService()
+    
+    
+    func getMovementImageData() -> MovementImageData {
+        movementImageData
+    }
+    
+    
+    func setMovementImageData(
+        _ objectImageData: ObjectImageData,
+        _ movementType: Movement,
+        _ staticPoint: PositionAsIosAxes,
+        _ startAngle: Double,
+        _ endAngle: Double,
+        _ forward: Double ) -> MovementImageData{
+        
+        movementImageData =
+            MovementImageData (
+                objectImageData,//object data
+                movementType: movementType, //transform data
+                staticPoint: staticPoint, //transform data
+                startAngle: startAngle, //transform data
+                endAngle: endAngle, //transform data
+                forward: forward //transform data
+                )
+            return movementImageData
     }
 }
 

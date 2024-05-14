@@ -10,7 +10,7 @@ struct ObjectAndRulerView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
     
-    @EnvironmentObject var movementPickVM: MovementPickViewModel
+   // @EnvironmentObject var movementPickVM: MovementDataViewModel
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 100, y: 500)
    
@@ -115,7 +115,7 @@ struct ObjectRulerRecenter: View {
             // Start the button press animation
             withAnimation(.easeInOut(duration: 0.2)) {
                 isPressed = true
-                print("DETECT")
+               // print("DETECT")
             }
 
             // Schedule the recenter action and the reset of the button state after the animation completes

@@ -33,60 +33,7 @@ struct Line: View {
     }
 }
 
-//struct RotatableRuler: View {
-//    @EnvironmentObject var rulerVM: RulerViewModel
-//    @State private var rulerAngle = 0.0
-//    
-//    var body: some View {
-//        let rulerFrameSize = rulerVM.getRulerFrameSize()
-//        let arrow = rulerAngle == 0 ? "arrow.counterclockwise": "arrow.clockwise"
-// 
-//            ZStack{
-//                ZStack (alignment: .top){
-//                    
-//                    Ruler()
-//                    
-//                    Button(action: {
-//                        rulerAngle = rulerAngle == 0 ? -90: 0
-//                    }) {
-//                        Image(systemName: arrow)
-//                            .font(.system(size: 100))
-//                            .padding(.top)
-//                    }
-//                }
-//                .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
-//                .rotationEffect(Angle(degrees: rulerAngle))
-//            }
-//    }
-//}
-//struct RotatableRuler: View {
-//    @EnvironmentObject var rulerVM: RulerViewModel
-//    @State private var rulerAngle = 0.0
-//
-//    var body: some View {
-//        let rulerFrameSize = rulerVM.getRulerFrameSize()
-//        let arrow = rulerAngle == 0 ? "arrow.counterclockwise" : "arrow.clockwise"
-//        
-//
-//
-//        ZStack {
-//            ZStack(alignment: .top) {
-//                
-//                Ruler()
-//                
-//                Button(action: {
-//                    rulerAngle = rulerAngle == 0 ? -90 : 0
-//                }) {
-//                    Image(systemName: arrow)
-//                        .font(.system(size: 100))
-//                        .padding(.top)
-//                }
-//            }
-//            .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
-//            
-//           
-//        }.rotationEffect(Angle(degrees: rulerAngle))    }
-//}
+
 
 struct RightAngleRuler: View {
     @EnvironmentObject var rulerVM: RulerViewModel
@@ -97,9 +44,9 @@ struct RightAngleRuler: View {
         let width = rulerVM.width
         var unitSystem: UnitSystem {unitSystemVM.unitSystem}
         ZStack(alignment: .topLeading ){
-//            Text(unitSystem.rawValue)
-//                .font(.system(size: 60))
-//                .padding()
+            Text(unitSystem.rawValue)
+                .font(.system(size: 60))
+                .padding()
             
             Ruler()
             Ruler()
@@ -107,12 +54,13 @@ struct RightAngleRuler: View {
                 .offset(CGSize(
                     width: (rulerFrameSize.length - width) / 2.0 , 
                     height: (-rulerFrameSize.length + width ) / 2.0))
-          
         }
     
         .modifier(ForObjectDrag(frameSize: rulerFrameSize, active: true))
         }
 }
+
+
 
 struct Ruler: View {
     @EnvironmentObject var rulerVM: RulerViewModel

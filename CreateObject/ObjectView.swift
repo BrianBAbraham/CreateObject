@@ -7,40 +7,6 @@
 
 import SwiftUI
 
-struct LocalOutlineRectangleX: View {
-    var corners: [CGPoint]
-    var color: Color
-    var opacity: Double
-    var lineWidth: Double
-
-    func path(corners: [CGPoint]) -> Path {
-        var path = Path()
-        
-        guard corners.count > 1 else { return path }
-        
-        path.move(to: corners.first!) // Start from the first point
-        
-        // Draw lines to the rest of the points
-        for corner in corners.dropFirst() {
-            path.addLine(to: corner)
-        }
-        
-        path.closeSubpath() // Connect the last point back to the first one
-        
-        return path
-    }
-
-    var body: some View {
-        ZStack {
-            path(corners: corners)
-                .fill(color)
-                .opacity(opacity)
-            
-            path(corners: corners)
-                .stroke(Color.black, lineWidth: lineWidth)
-        }
-    }
-}
 
 struct LocalOutlineRectangle: View {
     var corners: [CGPoint]
@@ -200,10 +166,6 @@ struct PartView: View {
     var preTiltFourCornerPerKeyDic: CornerDictionary
     var postTiltObjectToFourCornerPerKeyDic: CornerDictionary
     
-//    var color: Color {
-//        .white
-       // partEditVM.getColorForPart(uniquePartName)
-//    }
     let fillColor: Color
     let cornerRadius: Double
     let opacity: Double
@@ -249,7 +211,6 @@ struct PartView: View {
         self.lineWidth = lineWidth
         self.movement = movement
         self.displayStyle = displayStyle
-        //print("\(uniquePartName) ")
         
         func getColor() -> Color {
             if color == .white { // only change undefined colors, let ruler color remain
@@ -265,16 +226,7 @@ struct PartView: View {
     
     
     var body: some View {
-//        LocalOutlineRectangleX.path(
-//            corners: partCorners,
-//            fillColor,
-//            cornerRadius,
-//            opacity,
-//            lineWidth
-//        )
-//        .zIndex(
-//            zPosition
-//        )
+
         LocalOutlineRectangle(
             corners: partCorners,
             color: fillColor,
@@ -291,27 +243,7 @@ struct PartView: View {
     }
 }
 
-//struct CanvasView: View {
-//    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-//    @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
-// 
-//    var origin: CGPoint
-//    
-//    
-//    init(
-//        _ origin: PositionAsIosAxes
-//    ){
-//        
-//        self.origin = CGPoint(x: origin.x, y: origin.y)
-//        }
-//        
-//    
-//    var body: some View {
-//
-//        MyCircle(fillColor: .green, strokeColor: .black, dimension: 40.0, position: origin )
-//
-//    }
-//}
+
 
 
 
@@ -319,16 +251,17 @@ struct ObjectView: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
+    @EnvironmentObject var movementDataVM: MovementDataViewModel
     @EnvironmentObject var arcVM: ArcViewModel
   
     let uniquePartNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
-    let movement: Movement
+    //let movement: Movement
     let displayStyle: DisplayStyle
-    var objectOriginInScreen: PositionAsIosAxes {
-        movementPickVM.getOffsetForObjectOrigin()}
+//    var objectOriginInScreen: PositionAsIosAxes {
+//        movementDataVM.getOffsetForObjectOrigin()}
 
   
     init(
@@ -344,14 +277,15 @@ struct ObjectView: View {
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
-        self.movement = movement
+       // self.movement = movement
         self.displayStyle = displayStyle
 
     }
     
     var body: some View {
+        let movement = movementPickVM.getMovementType()
         let staticPointDictionary = movement == .turn ? arcVM.staticPointDictionary: [:]
-        let uniqueArcPointNames = arcVM.uniqueArcPointNames
+       // let uniqueArcPointNames = arcVM.uniqueArcPointNames
         let uniqueStaticPointNames = arcVM.uniqueStaticPointNames
         let anglesRadiae: [AnglesRadius] = arcVM.angles
             ZStack{
@@ -381,32 +315,27 @@ struct ObjectView: View {
                         )
                         .zIndex(5000)
                         
-
                         ForEach(anglesRadiae, id: \.id) { anglesRadius in
                                 ArcView(
                                     anglesRadius,
                                     dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
                                 )
-                            }
+                        }
                     }
                     
                 }
             }
-          //  .border(.red, width: 2)
             .modifier(
                 ForObjectDrag (
                     frameSize: objectFrameSize, active: true)
             )
-          //  .position(x: 500.0, y: -300)
-//            .offset(CGSize(width: 0.0, height: objectPickVM.getOffsetToKeepObjectOriginStaticInLengthOnScreen()
-//                           ) )
         }
 }
 
 
 
 struct ArcView: View {
-    @EnvironmentObject var movementPickVM: MovementPickViewModel
+   // @EnvironmentObject var movementPickVM: MovementPickViewModel
     let origin: CGPoint
     let radius: CGFloat
     let startAngle: Angle

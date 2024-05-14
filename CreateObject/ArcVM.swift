@@ -20,7 +20,7 @@ class ArcViewModel: ObservableObject {
     ///each element is the angle to an arc point on a  lower integer object and then a higher integer object
     @Published var angles: [AnglesRadius] = []
     private var cancellables: Set<AnyCancellable> = []
-    var lastShortestDifference: [Double] = [0.0]
+    var lastShortestDifference = 0.0
     var clockwise = true
     
     init(){
@@ -32,8 +32,6 @@ class ArcViewModel: ObservableObject {
                 self?.uniqueStaticPointNames = self?.getUniqueStaticPointNames() ?? []
                 self?.uniqueArcPointNames = self?.getUniqueArcPointNames() ?? []
                 self?.angles = self?.getArcViewData() ?? []
-                
-              
             }
             .store(
                 in: &cancellables
@@ -103,10 +101,7 @@ class ArcViewModel: ObservableObject {
     
     
     func createStaticPointDictionary() -> CornerDictionary {
-        let dic =
         movementDictionaryForScreen.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
-        
-        return dic
     }
     
     
@@ -122,29 +117,19 @@ class ArcViewModel: ObservableObject {
             for index in 0..<pairsOfPoints.count {
                 let pairs = pairsOfPoints[index]
                 let radius = radius(from: staticPoint, to: pairs[0])
-               
                 let firstAngle = angle(pairs[0])
                 let secondAngle = angle(pairs[1])
                 var shortestDifference = 0.0
-                if lastShortestDifference.count == pairsOfPoints.count {//not the first time
-                    //subsequently use the last difference
+               
+                if index == 0 {//rigid body one point will indicate direction
+        
+                    shortestDifference = getShortestDifference([firstAngle, secondAngle])
                     
-                    shortestDifference = getShortestDifference([firstAngle, secondAngle])
-                 //   if index == 0 {
-                        getArcDrawDirection(lastShortestDifference[index],shortestDifference)
-                   // }
-
-                    lastShortestDifference[index] = shortestDifference
-
-                } else {
-                    let adjustFirstDifference = -0.0001//random value to indicate prior movement
-                    shortestDifference = getShortestDifference([firstAngle, secondAngle])
-                    lastShortestDifference.append(getShortestDifference([firstAngle, secondAngle]) + adjustFirstDifference)
-                   // if index == 0 {
-                        getArcDrawDirection(lastShortestDifference[index], shortestDifference)
-                    //}
+                    getArcDrawDirection(lastShortestDifference,shortestDifference)
+                    
+                    lastShortestDifference = shortestDifference
                 }
-                
+              
                 // input for view
                 let anglesRadius = (id: index, start: firstAngle, end: secondAngle, radius: radius, clockwise: clockwise)
                 angles += [anglesRadius]
@@ -177,24 +162,26 @@ class ArcViewModel: ObservableObject {
                 _ shortestDifference: Double
             ) {
 
-                let anticlockwiseZeroTravere = zeroTraverse(
+                let anticlockwiseZeroTraverse = zeroTraverse(
                     zero: lastShortestDifference,
                     nonZero: shortestDifference
                 )
-                let clockwiseZeroTravere = zeroTraverse(
+                
+        
+                let clockwiseZeroTraverse = zeroTraverse(
                     zero: shortestDifference,
                     nonZero: lastShortestDifference
                 )
-                
-                if anticlockwiseZeroTravere && !clockwiseZeroTravere {
+            
+                if anticlockwiseZeroTraverse && !clockwiseZeroTraverse {
                     clockwise = false
                 }
                 
-                if clockwiseZeroTravere && !anticlockwiseZeroTravere {
+                if clockwiseZeroTraverse && !anticlockwiseZeroTraverse {
                     clockwise = true
                 }
                 
-                if clockwiseZeroTravere && anticlockwiseZeroTravere {
+                if clockwiseZeroTraverse && anticlockwiseZeroTraverse {
                     fatalError()
                 }
                 
@@ -202,15 +189,17 @@ class ArcViewModel: ObservableObject {
                         zero zeroDifference: Double,
                         nonZero nonZeroDifference: Double
                     ) -> Bool{
-                        let zeroTest = Double(
+                        let zeroTest = Double(//was the last value zero?
                             String(// allow for possible numerical error
                                 format:  "%.3f",
                                 zeroDifference
                             )
                         )
+
                     let anticlockwiseZeroTraverse: Bool = nonZeroDifference < 0.0 ? true: false
                     var state = false
                     if  zeroTest == 0.0 && anticlockwiseZeroTraverse{
+                       
                         state = true
                     }
                     return state

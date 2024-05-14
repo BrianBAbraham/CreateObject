@@ -408,13 +408,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>133</string>
+					<string>58</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>132</string>
+					<string>57</string>
 					<key>Timestamp</key>
-					<string>737048091.286348</string>
+					<string>737279366.652308</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -430,16 +430,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        objectEditVM.setSideToEdit(.both)
+				<string>
 </string>
 				<key>leading</key>
-				<string>    func resetForNewPartEdit(){
-        //what to edit
+				<string>
+
 </string>
 				<key>trailing</key>
-				<string>        
-        //what can be edited
-        objectEditVM.setBothOrLeftOrRightAsEditible(.both)
+				<string>
+
+
 </string>
 			</dict>
 			<key>title</key>
@@ -474,13 +474,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>141</string>
+					<string>88</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>139</string>
+					<string>87</string>
 					<key>Timestamp</key>
-					<string>737109342.445956</string>
+					<string>737281259.416041</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -497,16 +497,15 @@
 			<dict>
 				<key>focused</key>
 				<string>                Part.joint,
-                Movement.none,      
 </string>
 				<key>leading</key>
 				<string>                opacity: 0.08,
                 lineWidth: 0.5,
 </string>
 				<key>trailing</key>
-				<string>                DisplayStyle.edit
+				<string>                Movement.none,      
+                DisplayStyle.edit
             )
-            
 </string>
 			</dict>
 			<key>title</key>
@@ -663,13 +662,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>295</string>
+					<string>262</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>294</string>
+					<string>261</string>
 					<key>Timestamp</key>
-					<string>737145861.299242</string>
+					<string>737400791.413949</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -710,13 +709,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>107</string>
+					<string>81</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>106</string>
+					<string>80</string>
 					<key>Timestamp</key>
-					<string>735902421.010705</string>
+					<string>737376446.8127249</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -840,53 +839,6 @@
 			</dict>
 			<key>title</key>
 			<string>DEVELOPMENT make name automatic</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>384</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>383</string>
-					<key>Timestamp</key>
-					<string>736796924.230128</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/MovementPickVM.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>//    func createStaticPointTurnDictionary(_ dictionary: CornerDictionary) -&gt; CornerDictionary {
-</string>
-				<key>leading</key>
-				<string>    
-    
-</string>
-				<key>trailing</key>
-				<string>//        let dic =
-//        dictionary.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
-//    // print(dic)
-</string>
-			</dict>
-			<key>title</key>
-			<string>DEVELOPMENT update for slalom</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
