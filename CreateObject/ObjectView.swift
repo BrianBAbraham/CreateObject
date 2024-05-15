@@ -191,7 +191,7 @@ struct PartView: View {
     init(
         uniquePartName: String,
         preTiltFourCornerPerKeyDic: CornerDictionary,
-        postTiltObjectToFourCornerPerKeyDic: CornerDictionary,
+        dictionaryForScreen: CornerDictionary,
         color: Color = .white,
         cornerRadius: Double = 30.0,
         opacity: Double = 0.9,
@@ -204,7 +204,7 @@ struct PartView: View {
         self.partToEdit = partToEdit
         self.uniquePartName = uniquePartName
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
-        self.postTiltObjectToFourCornerPerKeyDic = postTiltObjectToFourCornerPerKeyDic
+        self.postTiltObjectToFourCornerPerKeyDic = dictionaryForScreen
         fillColor = getColor()
         self.cornerRadius = cornerRadius
         self.opacity = opacity
@@ -251,18 +251,15 @@ struct ObjectView: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var movementDataVM: MovementDataViewModel
+    @EnvironmentObject var movementDataVM: MovementDataGetterViewModel
     @EnvironmentObject var arcVM: ArcViewModel
   
     let uniquePartNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
-    //let movement: Movement
+   
     let displayStyle: DisplayStyle
-//    var objectOriginInScreen: PositionAsIosAxes {
-//        movementDataVM.getOffsetForObjectOrigin()}
-
   
     init(
         _ partNames: [String],
@@ -277,15 +274,14 @@ struct ObjectView: View {
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
-       // self.movement = movement
-        self.displayStyle = displayStyle
+            self.displayStyle = displayStyle
 
     }
     
     var body: some View {
         let movement = movementPickVM.getMovementType()
         let staticPointDictionary = movement == .turn ? arcVM.staticPointDictionary: [:]
-       // let uniqueArcPointNames = arcVM.uniqueArcPointNames
+       
         let uniqueStaticPointNames = arcVM.uniqueStaticPointNames
         let anglesRadiae: [AnglesRadius] = arcVM.angles
             ZStack{
@@ -293,7 +289,7 @@ struct ObjectView: View {
                     PartView(
                         uniquePartName: name,
                         preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
-                        postTiltObjectToFourCornerPerKeyDic: dictionaryForScreen,
+                        dictionaryForScreen: dictionaryForScreen,
                         objectEditVM.partToEdit,
                         movement,
                         displayStyle

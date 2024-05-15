@@ -24,9 +24,11 @@ class ArcViewModel: ObservableObject {
     var clockwise = true
     
     init(){
+       
         MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
             .sink { [weak self] newData in
                 self?.movementDictionaryForScreen = newData
+                
                 self?.arcDictionary = self?.createArcDictionary() ?? [:]
                 self?.staticPointDictionary = self?.createStaticPointDictionary() ?? [:]
                 self?.uniqueStaticPointNames = self?.getUniqueStaticPointNames() ?? []
@@ -40,6 +42,7 @@ class ArcViewModel: ObservableObject {
         uniqueArcNames = getUniqueArcNames()
         uniqueArcPointNames = getUniqueArcPointNames()
         uniqueStaticPointNames = getUniqueStaticPointNames()
+        //print(movementDictionaryForScreen)
         arcDictionary = createArcDictionary()
         angles = getArcViewData()
     }
@@ -73,6 +76,8 @@ class ArcViewModel: ObservableObject {
     func createArcDictionary() -> CornerDictionary {
         var arcDictionary: CornerDictionary = [:]
         let names = Array(movementDictionaryForScreen.keys).filter { $0.contains(PartTag.arcPoint.rawValue) }
+        
+      //  print(names)
         let namesWithoutPrefix = Array(Set(RemovePrefix.get(PartTag.arcPoint.rawValue, names)))
         let prefixNames = SubstringBefore.get(substring: PartTag.arcPoint.rawValue, in: names)
       

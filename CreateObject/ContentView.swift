@@ -56,28 +56,23 @@ struct ListView: View {
 
 struct EditMovementView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var movementDataVM: MovementDataViewModel
+    @EnvironmentObject var movementDataGetterVM: MovementDataGetterViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var movementDataGiverVM: MovementDataGiverViewModel
+    @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     var recenterPosition: CGPoint = CGPoint(x: 100, y: 350)
     @State private var uniqueKey = 0
     
     var body: some View {
         let movementName = movementPickVM.getMovementType().rawValue
-        var postTiltOneCornerPerKeyDic: PositionDictionary {
-            let dic =
-            movementDataGiverVM.postTiltObjectToOneCornerPerKeyDic
-            
-            return dic
-        }
         
         var preTiltFourCornerPerKeyDic: CornerDictionary {
-            movementDataGiverVM.postTiltObjectToPartFourCornerPerKeyDic
+            //provides height (z) info of equipment before tilt
+            movementDataGetterVM.preTiltObjectToPartFourCornerPerKeyDic
         }
 
         var objectFrameSize: Dimension {
-            movementDataVM.onScreenMovementFrameSize
+            movementDataProcessorVM.onScreenMovementFrameSize
         }
         
         var movement: Movement {
@@ -94,9 +89,9 @@ struct EditMovementView: View {
                 ObjectRulerRecenter()
                 
                 ObjectAndRulerView(
-                    movementDataVM.uniquePartNames,
+                    movementDataGetterVM.uniquePartNames,
                     preTiltFourCornerPerKeyDic,
-                    movementDataVM.movementDictionaryForScreen,
+                    movementDataProcessorVM.movementDictionaryForScreen,
                     objectFrameSize,
                     movement,
                     DisplayStyle.movement
@@ -149,7 +144,8 @@ struct EditMovementView: View {
 //All data is passed to view models to set model
 struct ContentView: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var movementDataVM: MovementDataViewModel
+    @EnvironmentObject var movementDataVM: MovementDataGetterViewModel
+    @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     init(){
         
         //make segemented picker buttons brigher green when picked
@@ -168,7 +164,10 @@ struct ContentView: View {
   
     var body: some View {
         var preTiltFourCornerPerKeyDic: CornerDictionary {
-            movementDataVM.postTiltObjectToPartFourCornerPerKeyDic
+            //provides the hieght information (z) before tilt
+            //display follows pretilt height data as
+            //the basis for .zIndex setting
+            movementDataVM.preTiltObjectToPartFourCornerPerKeyDic
         }
         
         NavigationView {
@@ -179,8 +178,8 @@ struct ContentView: View {
                     EditEquipmentView(
                         movementDataVM.uniquePartNames,
                         preTiltFourCornerPerKeyDic,
-                        movementDataVM.movementDictionaryForScreen,
-                        movementDataVM.onScreenMovementFrameSize,
+                        movementDataProcessorVM.movementDictionaryForScreen,
+                        movementDataProcessorVM.onScreenMovementFrameSize,
                         movementPickVM.movementType
                     )
                 )

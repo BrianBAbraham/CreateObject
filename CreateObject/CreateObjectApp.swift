@@ -16,40 +16,37 @@ import SwiftUI
 struct CreateObjectApp: App {
    
     @StateObject var objectPickVM = ObjectPickViewModel()
-    
     @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
     @StateObject var objectEditVM = ObjectEditViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
     @StateObject var unitsVM = UnitSystemViewModel()
    
-    @StateObject var movementDataVM = MovementDataViewModel()
+    @StateObject var movementDataGetterVM = MovementDataGetterViewModel()
     @StateObject var movementPickVM = MovementPickViewModel()
-    @StateObject var movementDataGiverVM = MovementDataGiverViewModel()
+    @StateObject var movementDataProcessorVM = MovementDataProcessorViewModel()
     
  
     @StateObject var rulerVM = RulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
-    @StateObject var  arcViewModel = ArcViewModel()
+    @StateObject var arcViewModel = ArcViewModel()
 
 
     var body: some Scene {
         WindowGroup {
                 ContentView()
-                .environmentObject(movementDataVM)
-                    .environmentObject(objectPickVM)
-                    .environmentObject(movementPickVM)
-                    .environmentObject(movementDataGiverVM)
-                    .environmentObject(objectShowMenuVM)
-                    .environmentObject(objectEditVM)
-                    .environmentObject(coreDataVM)
-                    .environmentObject(sceneVM)
-                    .environmentObject(unitsVM)
-                    .environmentObject(rulerVM)
-                    .environmentObject(recenterVM)
-                   .environmentObject(arcViewModel)
-                       
-                   
+                .environmentObject(movementDataGetterVM)
+                .environmentObject(objectPickVM)
+                .environmentObject(movementPickVM)
+                .environmentObject(movementDataProcessorVM)
+                .environmentObject(objectShowMenuVM)
+                .environmentObject(objectEditVM)
+                .environmentObject(coreDataVM)
+                .environmentObject(sceneVM)
+                .environmentObject(unitsVM)
+                .environmentObject(rulerVM)
+                .environmentObject(recenterVM)
+               .environmentObject(arcViewModel)
         }
     }
 }

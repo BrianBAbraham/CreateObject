@@ -196,6 +196,11 @@ struct EnsureObjectZeroOriginAtMovementCenter {
     }
 
     
+    func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
+        movementImageData.objectImageData.preTiltObjectToPartFourCornerPerKeyDic
+    }
+
+    
    mutating func  getMovementDictionaryForScreen ()
         -> CornerDictionary {
         ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
@@ -282,9 +287,7 @@ struct EnsureObjectZeroOriginAtMovementCenter {
         return max
     }
     
-    func getPostTiltOneCornerPerKeyDic() -> PositionDictionary {
-        movementImageData.objectImageData.postTiltObjectToOneCornerPerKeyDic
-    }
+
     
     func getDataToCentreObjectZeroOrigin(_ objectZeroOrigin: PositionAsIosAxes) -> AddOrPad{
 

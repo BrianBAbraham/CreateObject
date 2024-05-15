@@ -80,7 +80,7 @@ struct Ruler: View {
             PartView(
                 uniquePartName: "",
                 preTiltFourCornerPerKeyDic: rulerDictionary,
-                postTiltObjectToFourCornerPerKeyDic:  rulerDictionary,
+                dictionaryForScreen:  rulerDictionary,
                 color: Color("rulerEdges"),
                 cornerRadius: 0.0,
                 opacity: 0.08,
