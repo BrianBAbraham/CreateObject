@@ -195,7 +195,7 @@ struct ContentView: View {
                 
                 
  
-                NavigationLink(destination: Text("in development") ) {
+                NavigationLink(destination: Photo() ) {
                     Text("import plan from photos")}
                     .padding()
                 

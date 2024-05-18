@@ -9,6 +9,23 @@ import Foundation
 import Combine
 
 
+class ScaleService {
+    @Published var scale = 1.0
+    static let shared = ScaleService()
+    
+    
+    func getScale() -> Double {
+        scale
+    }
+    
+    
+    func setScale(_ scale: Double) {
+        self.scale = scale
+    }
+}
+
+
+
 class MeasurementSystemService {
     @Published var unitSystem: UnitSystem = .cm
     static let shared = MeasurementSystemService()
@@ -24,17 +41,22 @@ class MeasurementSystemService {
     }
 }
 
+
+
 class CenteredObjectZeroOriginService {
-    @Published var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter?
+    @Published var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter = EnsureObjectZeroOriginAtMovementCenter(MovementImageService.shared.movementImageData)//?
     
     static let shared = CenteredObjectZeroOriginService()
     
+    
     func setCenteredObjectZeroOriginData(_ centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter) {
-       // print("set")
+    
         self.centeredObjectZeroOriginData = centeredObjectZeroOriginData
     }
     
 }
+
+
 
 class MovementImageService {
     @Published var movementImageData: MovementImageData = MovementImageData (
@@ -54,14 +76,14 @@ class MovementImageService {
     }
     
     
-    func setMovementImageData(
+    func setAndGetMovementImageData(
         _ objectImageData: ObjectImageData,
         _ movementType: Movement,
         _ staticPoint: PositionAsIosAxes,
         _ startAngle: Double,
         _ endAngle: Double,
         _ forward: Double ) -> MovementImageData{
-        
+          //  print("set MovementImageService")
         movementImageData =
             MovementImageData (
                 objectImageData,//object data
@@ -91,7 +113,6 @@ class ObjectImageService {
     
     
     func setObjectImage(_ objectImageData: ObjectImageData) {
-   // print("set object image")
         self.objectImageData = objectImageData
     }
 }
@@ -113,7 +134,6 @@ class MovementDictionaryForScreenService {
 
 
 class BilateralPartWithOnePropertyToChangeService {
-   
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var choiceOfEditForSide: SidesAffected = .both
     @Published var dimensionPropertyToEdit: PartTag = .length

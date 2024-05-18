@@ -1,5 +1,5 @@
 //
-//  MovementPickVM.swift
+//  MovementDataGetterVM.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 12/04/2024.
@@ -7,7 +7,6 @@
 
 import Foundation
 import Combine
-import SwiftUI
 
 //struct MovementPickModel {
 //
@@ -21,7 +20,7 @@ import SwiftUI
 //provides the raw data from movmentImageData
 class MovementDataGetterViewModel: ObservableObject {
     
-    @Published var movementDictionaryForScreen: CornerDictionary =
+   var movementDictionaryForScreen: CornerDictionary =
         MovementDictionaryForScreenService.shared.movementDictionaryForScreen
     
     var movementImageData: MovementImageData =
@@ -40,6 +39,17 @@ class MovementDataGetterViewModel: ObservableObject {
             .sink { [weak self] newData in
                 guard let self = self else { return }
                 self.movementImageData = newData
+                // Call methods to update related data
+                self.updateData()
+            }
+            .store(in: &cancellables)
+        
+        
+        MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
+            .receive(on: DispatchQueue.main) // Ensure UI updates are on the main thread
+            .sink { [weak self] newData in
+                guard let self = self else { return }
+                self.movementDictionaryForScreen = newData
                 // Call methods to update related data
                 self.updateData()
             }
@@ -81,6 +91,23 @@ class MovementDataGetterViewModel: ObservableObject {
       
         return names
     }
+    
+    
+    func getMaximumDimensionOfMotion() -> Double {
+        let dic =  ConvertFourCornerPerKeyToOne(
+            fourCornerPerElement: movementDictionaryForScreen).oneCornerPerKey
+        
+        
+        
+        let minMax = CreateIosPosition.minMaxPosition(dic)
+        
+        let motionDimension =
+        CreateIosPosition.convertMinMaxToDimension(minMax)
+        
+        
+        return motionDimension.width > motionDimension.length ? motionDimension.width: motionDimension.length
+    }
+    
 }
     
 

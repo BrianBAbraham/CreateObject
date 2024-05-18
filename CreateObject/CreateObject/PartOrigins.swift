@@ -26,10 +26,6 @@ struct PartEditedElseDefaultOrigin {
           ) {
         self.part = part
         
-//        if part == .mainSupport {
-//            print(linkedOrParentData.part)
-//        }
-        
         self.objectType = object
         self.parentData = linkedOrParentData
         self.userEditedPartDimensionOneOrTwo = userEditedDimensionOneOrTwo
@@ -437,4 +433,42 @@ struct PartEditedElseDefaultOrigin {
 
 
 
-
+struct DefaultMinMaxOriginDictionary {
+    let originDic: PositionDictionary = [:]
+    
+    let fineOriginMinMaxDic: [PartObject: (min: PositionAsIosAxes, max: PositionAsIosAxes)] = [
+        PartObject(.mainSupport, .showerTray):
+            (min: (x: 600.0, y: 600.0, z: 10.0),
+             max: (x: 2000.0, y: 3000.0, z: 10.0))
+        ]
+    let generalOriginMinMaxDic: [Part: (min: PositionAsIosAxes, max: PositionAsIosAxes)] = [
+          .footSupportHangerLink:
+            (min: (x: -500.0, y: 0.0, z: 0.0),
+             max: (x: 500.0, y: 0.0, z: 0.0))
+        ]
+    
+    static var shared = DefaultMinMaxOriginDictionary()
+    
+    
+    func getDefault(_ part: Part, _ objectType: ObjectTypes)  -> (min: PositionAsIosAxes, max: PositionAsIosAxes) {
+        let minMaxDimension =
+        getFineTuneMinMaxOrigin(part, objectType) ??
+        getGeneralMinMaxOrigin(part)
+        return minMaxDimension
+    }
+    
+    
+    func getFineTuneMinMaxOrigin(_ part: Part, _ objectType: ObjectTypes) -> (min: PositionAsIosAxes, max: PositionAsIosAxes)? {
+       fineOriginMinMaxDic[PartObject(part, objectType)]
+    }
+    
+    
+    func getGeneralMinMaxOrigin(_ part: Part) -> (min: PositionAsIosAxes, max: PositionAsIosAxes) {
+       
+        guard let minMax = generalOriginMinMaxDic[part] else {
+            fatalError("no minMax exists for \(part)")
+        }
+        
+        return minMax
+    }
+}

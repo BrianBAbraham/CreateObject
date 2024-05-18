@@ -85,24 +85,32 @@ struct CreateIosPosition {
                 initialCorners
     }
     
-    static func dimensionFromIosPositions(_ positions: [PositionAsIosAxes])
-    -> Dimension {
-        
-        let arrayTouple = getArrayFromPositions(positions)
-        let xArray = arrayTouple.x
-        let yArray = arrayTouple.z
-        
-        func getDimension(_ measurements :[Double]) -> Double {
-            let defaultMeasurement = measurements[0]
-            let maxMeasurement = measurements.max() ?? defaultMeasurement
-            let minMeasurement = measurements.min() ?? defaultMeasurement
-            return maxMeasurement - minMeasurement
-        }
-        return
-            (
-            width: getDimension(xArray),
-            length: getDimension(yArray))
+//    static func dimensionFromIosPositions(_ positions: [PositionAsIosAxes])
+//    -> Dimension {
+//        
+//        let arrayTouple = getArrayFromPositions(positions)
+//        let xArray = arrayTouple.x
+//        let yArray = arrayTouple.z
+//        
+//        func getDimension(_ measurements :[Double]) -> Double {
+//            let defaultMeasurement = measurements[0]
+//            let maxMeasurement = measurements.max() ?? defaultMeasurement
+//            let minMeasurement = measurements.min() ?? defaultMeasurement
+//            return maxMeasurement - minMeasurement
+//        }
+//        return
+//            (
+//            width: getDimension(xArray),
+//            length: getDimension(yArray))
+//    }
+    
+    static func convertMinMaxToDimension(_ minMax: [PositionAsIosAxes]) -> Dimension {
+        return (
+            width: minMax[1].x - minMax[0].x,
+            length: minMax[1].y - minMax[0].y
+        )
     }
+    
     
     static func getArrayFromPositions( _ positions: [PositionAsIosAxes])
     -> PositionArrayAsIosAxes {
@@ -166,31 +174,61 @@ struct CreateIosPosition {
             }
             return  [(x: xValues[0], y: yValues[0], z: 0.0), (x: xValues[1], y: yValues[1], z: 0.0)]
     }
-}
-
-
-struct DimensionChange {
-    let from3Dto2D: Dimension
-    init(
-        _ threeDimension: Dimension3d
-    ) {
-        from3Dto2D = (length: threeDimension.length ,width: threeDimension.width)
-    }
-}
-
-struct HalfThis {
-    let dimension: Dimension3d
     
-    init(_ dimension: Dimension3d) {
-        self.dimension = get(dimension)
+    
+    static func filterPointsToConvexHull(points: [(x: Double, y: Double, z: Double)]) -> [(x: Double, y: Double, z: Double)] {
+        guard points.count >= 4 else { return points }
         
-        func  get(_ dimension: Dimension3d)
-          -> Dimension3d {
-              (width: dimension.width/2,
-               length: dimension.length/2,
-               height: dimension.height/2)
-          }
+        // Helper function to find the bottom-most point (or left-most if there are ties).
+        func lowestPoint() -> (x: Double, y: Double, z: Double) {
+            return points.min { $0.y == $1.y ? $0.x < $1.x : $0.y < $1.y }!
+        }
+        
+        // Helper function to calculate the orientation of three points
+        func orientation(_ p1: (Double, Double), _ p2: (Double, Double), _ p3: (Double, Double)) -> Int {
+            let val = (p2.1 - p1.1) * (p3.0 - p2.0) - (p2.0 - p1.0) * (p3.1 - p2.1)
+            if val == 0 { return 0 } // colinear
+            return val > 0 ? 1 : 2 // clock or counterclock wise
+        }
+        
+        let lowest = lowestPoint()
+        
+        // Sort points by polar angle with the lowest point. If angles are equal, sort by distance to the lowest point.
+        let sortedPoints = points.sorted {
+            let o1 = orientation((lowest.x, lowest.y), ($0.x, $0.y), ($1.x, $1.y))
+            if o1 == 0 {
+                return ($0.x - lowest.x) * ($0.x - lowest.x) + ($0.y - lowest.y) * ($0.y - lowest.y) <
+                       ($1.x - lowest.x) * ($1.x - lowest.x) + ($1.y - lowest.y) * ($1.y - lowest.y)
+            }
+            return o1 == 2
+        }
+        
+        // Initialize the hull with the lowest and the first sorted point
+        var hull: [(Double, Double, Double)] = [lowest, sortedPoints[1]]
+        
+        // Iterate through the sorted points and construct the hull
+        for p in sortedPoints[2...] {
+            while hull.count >= 2 && orientation((hull[hull.count-2].0, hull[hull.count-2].1), (hull.last!.0, hull.last!.1), (p.0, p.1)) != 2 {
+                hull.removeLast()
+            }
+            hull.append(p)
+        }
+        
+        // Convert the hull into a set for faster lookup
+        // Convert hull points to a Set of String for lookup
+        let hullPointIdentifiers = Set(hull.map { "\($0.0),\($0.1)" })
+        
+        // Replace non-hull points with (Double.infinity, Double.infinity, Double.infinity)
+        return points.map { point in
+            let pointIdentifier = "\(point.0),\(point.1)"
+            if hullPointIdentifiers.contains(pointIdentifier) {
+                return point
+            } else {
+                return (Double.infinity, Double.infinity, Double.infinity)
+            }
+        }
     }
-    
-
 }
+
+
+

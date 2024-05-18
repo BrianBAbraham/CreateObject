@@ -11,8 +11,6 @@ import SwiftUI
 
 
 @MainActor
-
-
 final class PhotoPickerViewModel: ObservableObject {
     
     @Published private (set) var selectedImage: UIImage? = nil
@@ -36,12 +34,9 @@ final class PhotoPickerViewModel: ObservableObject {
                         self.isLoading = false
                  
                 } else {
-            
                         self.isLoading = false
-            
                 }
             } else {
-            
                     self.isLoading = false
                 }
         }

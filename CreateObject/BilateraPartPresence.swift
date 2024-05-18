@@ -32,6 +32,7 @@ struct BilateralPartPresence: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
     let part: Part
  
     init (_ part: Part
@@ -43,7 +44,7 @@ struct BilateralPartPresence: View {
     var body: some View {
 
         let boundIsLeftSelected = Binding (
-            get: {objectPickVM.getSidesPresentGivenUserEditContainsLeft(part,"bilateral presence")},
+            get: {objectDataGetterVM.getSidesPresentGivenUserEditContainsLeft(part)},
             set: {   newvalue in
                    updateViewModelForLeftToggle(newvalue
                    )
@@ -51,7 +52,7 @@ struct BilateralPartPresence: View {
          )
         
         let boundIsRightSelected = Binding (
-           get: {objectPickVM.getSidesPresentGivenUserEditContainsRight(part,"bilateral presence")},
+           get: {objectDataGetterVM.getSidesPresentGivenUserEditContainsRight(part)},
            set: {newvalue in
                    updateViewModelForLRightToggle(newvalue
 
@@ -77,7 +78,7 @@ struct BilateralPartPresence: View {
             objectEditVM
                 .changeOneOrTwoStatusOfPart(
                     left,
-                    objectPickVM.getSidesPresentGivenUserEditContainsRight(part,"bilateral"),
+                    objectDataGetterVM.getSidesPresentGivenUserEditContainsRight(part),
                     part)
         
             objectPickVM.modifyObjectByCreatingFromName()
@@ -89,7 +90,7 @@ struct BilateralPartPresence: View {
     ) {
             objectEditVM
                 .changeOneOrTwoStatusOfPart(
-                    objectPickVM.getSidesPresentGivenUserEditContainsLeft(part,"bilateral"),
+                    objectDataGetterVM.getSidesPresentGivenUserEditContainsLeft(part),
                     right,
                     part)
         

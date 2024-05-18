@@ -33,7 +33,7 @@ struct ForObjectDrag: ViewModifier {
                 .frame(width: frameSize.width, height: frameSize.length)
                 .position(location)
                 .gesture(objectDrag)
-                //.simultaneousGesture(objectDrag)
+                
         } else {
             content
         }

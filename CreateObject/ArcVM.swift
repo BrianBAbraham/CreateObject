@@ -24,7 +24,7 @@ class ArcViewModel: ObservableObject {
     var clockwise = true
     
     init(){
-       
+       //print("init ArcViewModel")
         MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
             .sink { [weak self] newData in
                 self?.movementDictionaryForScreen = newData

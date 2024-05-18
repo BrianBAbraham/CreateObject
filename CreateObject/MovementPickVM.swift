@@ -1,5 +1,5 @@
 //
-//  MovementDataVM.swift
+//  MovementPickVM.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 13/05/2024.
@@ -7,31 +7,27 @@
 
 import Foundation
 import Combine
-import SwiftUI
 
 
 class MovementPickViewModel: ObservableObject {
     
-   
     @Published var staticPoint: PositionAsIosAxes = ZeroValue.iosLocation
-    
-  
+
     @Published var movementType: Movement = .none
   
-    
     var staticPointUpdate: PositionAsIosAxes = ZeroValue.iosLocation {
         didSet {
-            movementImageData = getMovementImageData()
+            movementImageData = setAndGetMovementImageData()
         }
     }
     var startAngle: Double = 0.0 {//of turn
         didSet {
-            movementImageData = getMovementImageData()
+            movementImageData = setAndGetMovementImageData()
         }
     }
     var endAngle: Double = 30.0 {//of turn
         didSet {
-            movementImageData = getMovementImageData()
+            movementImageData = setAndGetMovementImageData()
         }
     }
     var forward: Double = 0.0//in direction facing
@@ -51,7 +47,6 @@ class MovementPickViewModel: ObservableObject {
     
     @Published var movementName: String = Movement.none.rawValue{
         didSet {
-           // print(movementName)
             setMovementType()
         }
     }
@@ -75,15 +70,15 @@ class MovementPickViewModel: ObservableObject {
     init(){
         objectAngleName = objectAngleType.rawValue
         
-        //print("MovementDataVM init")
         //Initial build of movement data for image using a static image and default movement parameters
         ObjectImageService.shared.$objectImageData
             .sink { [weak self] newData in
                 self?.objectImageData = newData
                 
                 //update movement if objectData changes
-                self?.movementImageData = self?.getMovementImageData() ?? //MovementImageData(
-                MovementImageService.shared.setMovementImageData(            newData,//original
+                self?.movementImageData = self?.setAndGetMovementImageData() ??
+                
+                MovementImageService.shared.setAndGetMovementImageData(            newData,//original
                     self?.movementType ?? .none,//transform original with following param
                     self?.staticPointUpdate ?? ZeroValue.iosLocation,
                     self?.startAngle ?? 0.0,
@@ -99,8 +94,8 @@ class MovementPickViewModel: ObservableObject {
 
 
 extension MovementPickViewModel {
-    func getMovementImageData() -> MovementImageData{
-        MovementImageService.shared.setMovementImageData(
+    func setAndGetMovementImageData() -> MovementImageData{
+        MovementImageService.shared.setAndGetMovementImageData(
             objectImageData,
             movementType,
             staticPointUpdate,
@@ -119,7 +114,7 @@ extension MovementPickViewModel {
         to newMovement: String
     ) {
         movementName = newMovement
-        movementImageData = getMovementImageData()
+        movementImageData = setAndGetMovementImageData()
     }
     
     

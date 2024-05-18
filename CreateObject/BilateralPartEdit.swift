@@ -49,6 +49,8 @@ struct DimensionPicker: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
+    
     var partOrLinkedPartForShow: Part {
         PartsRequiringLinkedPartUse(part).partForEditableOrigin
     }
@@ -63,7 +65,7 @@ struct DimensionPicker: View {
     var body: some View {
      
         let notPresent =
-            objectPickVM.getPartNotPresent(partOrLinkedPartForShow)
+        objectDataGetterVM.getPartNotPresent(partOrLinkedPartForShow)
         
         let editableDimension: [PartTag] =
             objectShowMenuVM.getPropertiesForDimensionPicker(part)
@@ -106,6 +108,7 @@ struct DimensionPicker: View {
 struct DimensionStepper: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
 
     let part: Part
     var partOrLinkedPartForDimension: Part {
@@ -125,11 +128,11 @@ struct DimensionStepper: View {
  
     var body: some View {
         let sidesPresent =
-            objectPickVM.getSidesPresentGivenPossibleUserEdit(partOrLinkedPartForShow, "bilateral edit")[0]
+        objectDataGetterVM.getSidesPresentGivenPossibleUserEdit(partOrLinkedPartForShow)[0]
         let boundStepperValue =
             Binding(
                 get: {
-                        objectPickVM.getInitialSliderValue(
+                    objectDataGetterVM.getInitialSliderValue(
                             partOrLinkedPartForDimension, propertyToEdit)
                 }
                 ,
@@ -156,7 +159,7 @@ struct OriginPicker: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
     let part: Part
     var partOrLinkedPartForOrigin: Part {
         PartsRequiringLinkedPartUse(part).partForOriginEdit
@@ -178,7 +181,7 @@ struct OriginPicker: View {
         
         if editableOrigin != [] {
             let notPresent =
-                objectPickVM.getPartNotPresent(partOrLinkedPartForShow)
+            objectDataGetterVM.getPartNotPresent(partOrLinkedPartForShow)
             
             let propertiesToEdit = Binding(
                 get: {objectEditVM.originPropertiesToEdit},
@@ -236,6 +239,8 @@ struct OriginPickerX: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
+    
     @State private var propertyToEdit: PartTag = .xOrigin
 
     let part: Part
@@ -259,7 +264,7 @@ struct OriginPickerX: View {
         
         if editableOrigin != [] {
             let sidesPresent =
-                objectPickVM.getSidesPresentGivenPossibleUserEdit(partOrLinkedPartForShow, "bilateral edit")[0]
+            objectDataGetterVM.getSidesPresentGivenPossibleUserEdit(partOrLinkedPartForShow)[0]
             let boundStepperValue =
                 Binding(
                     get: {
@@ -305,6 +310,7 @@ struct OriginPickerX: View {
 struct BilateralDimensionSlider: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
     let part: Part
     var partOrLinkedPartForDimension: Part {
         PartsRequiringLinkedPartUse(part).partForDimensionEdit
@@ -320,11 +326,11 @@ struct BilateralDimensionSlider: View {
  
     var body: some View {
         
-        let minMaxValue =  objectPickVM.geMinMax(partOrLinkedPartForDimension, propertyToEdit, "SliderForOneDimensionPropertyForBilateralPart")
+        let minMaxValue =  objectDataGetterVM.geMinMax(partOrLinkedPartForDimension, propertyToEdit)
         let boundSliderValue =
             Binding(
                 get: {
-                        objectPickVM.getInitialSliderValue(
+                        objectDataGetterVM.getInitialSliderValue(
                             partOrLinkedPartForDimension, propertyToEdit) },
                 set: {
                     newValue in

@@ -27,11 +27,12 @@ struct UniDimensionSlider: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
 
    
     var propertyToEdit: PartTag
     var minMaxValue : (min: Double, max: Double){
-        objectPickVM.geMinMax(part, propertyToEdit, "OnePartTwoDimensionValueMenu")
+        objectDataGetterVM.geMinMax(part, propertyToEdit)
     }
     let part: Part
   
@@ -46,7 +47,7 @@ struct UniDimensionSlider: View {
 
         let boundSliderValue = Binding(
             get: {
-                objectPickVM.getInitialSliderValue (
+                objectDataGetterVM.getInitialSliderValue (
                     part, propertyToEdit)
             },
             set: { newValue in
@@ -123,7 +124,7 @@ struct TiltEdit: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
-
+    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
     let description: String = "tilt"
     let joint:  Part
   
@@ -142,7 +143,7 @@ struct TiltEdit: View {
         let boundSliderValue = Binding(
             get: {
                 max -
-                objectPickVM.getInitialSliderValue (
+                objectDataGetterVM.getInitialSliderValue (
                     joint, .angle)
             },
             set: { newValue in

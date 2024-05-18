@@ -458,7 +458,34 @@ struct FourCornerDictionryTo {
 }
 
 
-enum DictionaryTypes  {
-    case forScreen
-    case forMeasurement
+//enum DictionaryTypes  {
+//    case forScreen
+//    case forMeasurement
+//}
+
+
+extension Array where Element == PartData {
+    func getElement(withPart part: Part) -> PartData {
+        if let element = self.first(where: { $0.part == part }) {
+            return element
+        } else {
+            fatalError("StructFactory: \(#function) Element with part \(part) not found in [OneOrTwoGenericPartValue]: \(self)].")
+        }
+    }
+}
+
+
+
+extension Array where Element: Hashable {
+    func removingDuplicates() -> [Element] {
+        var addedDict = [Element: Bool]()
+
+        return filter {
+            addedDict.updateValue(true, forKey: $0) == nil
+        }
+    }
+
+    mutating func removeDuplicates() {
+        self = self.removingDuplicates()
+    }
 }

@@ -8,6 +8,7 @@ import SwiftUI
 
 struct ObjectAndRulerView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var movementDataGetterVM: MovementDataGetterViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
     
    // @EnvironmentObject var movementPickVM: MovementDataViewModel
@@ -25,11 +26,15 @@ struct ObjectAndRulerView: View {
 
     
     var defaultScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
+        Screen.smallestDimension /
+        movementDataGetterVM.getMaximumDimensionOfMotion()
+        
     }
     
     var measurementScale: Double {
-        Screen.smallestDimension / objectPickVM.getMaximumDimensionOfObject()
+        Screen.smallestDimension /
+        movementDataGetterVM.getMaximumDimensionOfMotion()
+       
     }
     
     let uniquePartNames: [String]

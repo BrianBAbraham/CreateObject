@@ -92,8 +92,7 @@ struct ObjectImageData {
         let z = ZeroValue.iosLocation
         let name =
             CreateNameFromIdAndPart(PartTag.id0, PartTag.origin).name
-//        let corners = getTopViewCorners(
-//        createCorner(PartDefaultDimension.joint, ZeroValue.iosLocation))
+
         postTiltObjectToPartFourCornerPerKeyDic[name] = [z,z,z,z]
     }
 
@@ -103,32 +102,27 @@ struct ObjectImageData {
         ConvertFourCornerPerKeyToOne(
             fourCornerPerElement:  postTiltObjectToPartFourCornerPerKeyDic
         ).oneCornerPerKey
+       
         let minMax =
         CreateIosPosition.minMaxPosition(
             postTiltObjectToOneCornerPerKeyDic
         )
         
       objectDimension =
-        (
-            width: minMax[1].x - minMax[0].x,
-            length: minMax[1].y - minMax[0].y
-        )
+       CreateIosPosition.convertMinMaxToDimension(minMax)
+
     }
     
     
     mutating func addArcPointsToDictionary( ) {
         let arcPoints =
-            filterPointsToConvexHull( points:
+        CreateIosPosition.filterPointsToConvexHull( points:
             postTiltObjectToOneCornerPerKeyDic.map {$0.value}
         )
         
         var arcNames = postTiltObjectToOneCornerPerKeyDic.map{$0.key}
         arcNames = PrependArcNameToGenericNamePart.get(arcNames)
-        
-        //print(arcNames)
-        //let side = 1.0
-        //let arcPointDimension: Dimension3d = (width: side, length: side, height: side)
-        
+                
         for index in 0..<arcNames.count {
             
             if arcPoints[index].x != Double.infinity {
@@ -140,58 +134,6 @@ struct ObjectImageData {
     }
     
     
-    func filterPointsToConvexHull(points: [(x: Double, y: Double, z: Double)]) -> [(x: Double, y: Double, z: Double)] {
-        guard points.count >= 4 else { return points }
-        
-        // Helper function to find the bottom-most point (or left-most if there are ties).
-        func lowestPoint() -> (x: Double, y: Double, z: Double) {
-            return points.min { $0.y == $1.y ? $0.x < $1.x : $0.y < $1.y }!
-        }
-        
-        // Helper function to calculate the orientation of three points
-        func orientation(_ p1: (Double, Double), _ p2: (Double, Double), _ p3: (Double, Double)) -> Int {
-            let val = (p2.1 - p1.1) * (p3.0 - p2.0) - (p2.0 - p1.0) * (p3.1 - p2.1)
-            if val == 0 { return 0 } // colinear
-            return val > 0 ? 1 : 2 // clock or counterclock wise
-        }
-        
-        let lowest = lowestPoint()
-        
-        // Sort points by polar angle with the lowest point. If angles are equal, sort by distance to the lowest point.
-        let sortedPoints = points.sorted {
-            let o1 = orientation((lowest.x, lowest.y), ($0.x, $0.y), ($1.x, $1.y))
-            if o1 == 0 {
-                return ($0.x - lowest.x) * ($0.x - lowest.x) + ($0.y - lowest.y) * ($0.y - lowest.y) <
-                       ($1.x - lowest.x) * ($1.x - lowest.x) + ($1.y - lowest.y) * ($1.y - lowest.y)
-            }
-            return o1 == 2
-        }
-        
-        // Initialize the hull with the lowest and the first sorted point
-        var hull: [(Double, Double, Double)] = [lowest, sortedPoints[1]]
-        
-        // Iterate through the sorted points and construct the hull
-        for p in sortedPoints[2...] {
-            while hull.count >= 2 && orientation((hull[hull.count-2].0, hull[hull.count-2].1), (hull.last!.0, hull.last!.1), (p.0, p.1)) != 2 {
-                hull.removeLast()
-            }
-            hull.append(p)
-        }
-        
-        // Convert the hull into a set for faster lookup
-        // Convert hull points to a Set of String for lookup
-        let hullPointIdentifiers = Set(hull.map { "\($0.0),\($0.1)" })
-        
-        // Replace non-hull points with (Double.infinity, Double.infinity, Double.infinity)
-        return points.map { point in
-            let pointIdentifier = "\(point.0),\(point.1)"
-            if hullPointIdentifiers.contains(pointIdentifier) {
-                return point
-            } else {
-                return (Double.infinity, Double.infinity, Double.infinity)
-            }
-        }
-    }
 
     
 

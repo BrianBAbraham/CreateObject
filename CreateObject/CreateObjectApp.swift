@@ -16,6 +16,7 @@ import SwiftUI
 struct CreateObjectApp: App {
    
     @StateObject var objectPickVM = ObjectPickViewModel()
+    @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
     @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
     @StateObject var objectEditVM = ObjectEditViewModel()
     @StateObject var coreDataVM = CoreDataViewModel()
@@ -37,6 +38,7 @@ struct CreateObjectApp: App {
                 ContentView()
                 .environmentObject(movementDataGetterVM)
                 .environmentObject(objectPickVM)
+                .environmentObject(objectDataGetterVM)
                 .environmentObject(movementPickVM)
                 .environmentObject(movementDataProcessorVM)
                 .environmentObject(objectShowMenuVM)

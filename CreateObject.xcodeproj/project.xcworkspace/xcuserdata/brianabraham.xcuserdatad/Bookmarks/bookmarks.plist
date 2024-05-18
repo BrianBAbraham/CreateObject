@@ -201,60 +201,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>428</string>
+					<string>116</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>427</string>
+					<string>115</string>
 					<key>Timestamp</key>
-					<string>736951355.57241</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ObjectPickVM.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>            case .xOrigin, .yOrigin, .zOrigin:
-</string>
-				<key>leading</key>
-				<string>                               max: values.max.width)
-                
-</string>
-				<key>trailing</key>
-				<string>                let values =
-                    defaultMinMaxOriginDic.getDefault(
-                        part,
-</string>
-			</dict>
-			<key>title</key>
-			<string>requires work only returning for .x</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>169</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>168</string>
-					<key>Timestamp</key>
-					<string>735758539.723039</string>
+					<string>737641716.88478</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -314,60 +267,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>305</string>
+					<string>326</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>304</string>
+					<string>325</string>
 					<key>Timestamp</key>
-					<string>736951181.025484</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/ObjectPickVM.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>        let firstSidesPresentGivesSidesAffected = 0
-</string>
-				<key>leading</key>
-				<string>        }
-
-</string>
-				<key>trailing</key>
-				<string>        
-
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
-</string>
-			</dict>
-			<key>title</key>
-			<string>cluncky</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>384</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>383</string>
-					<key>Timestamp</key>
-					<string>736701558.295872</string>
+					<string>737644012.2990381</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -521,13 +427,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>686</string>
+					<string>628</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>685</string>
+					<string>627</string>
 					<key>Timestamp</key>
-					<string>736701558.2958601</string>
+					<string>737644012.299058</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -568,13 +474,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>730</string>
+					<string>672</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>729</string>
+					<string>671</string>
 					<key>Timestamp</key>
-					<string>736701558.295797</string>
+					<string>737644012.2990659</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -895,61 +801,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>59</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>235</string>
+					<string>291</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>235</string>
+					<string>290</string>
 					<key>Timestamp</key>
-					<string>736798008.846307</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    func getLinkedOrParentPart(_ childPart: Part) -&gt; Part {</string>
-				<key>leading</key>
-				<string>    
-    
-</string>
-				<key>trailing</key>
-				<string>
-        /// a part may have a physical parent part
-        /// or a part which  it is linked to
-</string>
-			</dict>
-			<key>title</key>
-			<string>defaults are determined on one depenancy code alteration required for more than one dependancy</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>753</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>752</string>
-					<key>Timestamp</key>
-					<string>736791175.684656</string>
+					<string>737642235.703279</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -990,13 +850,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>212</string>
+					<string>215</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>211</string>
+					<string>214</string>
 					<key>Timestamp</key>
-					<string>737046852.935554</string>
+					<string>737569168.250963</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
