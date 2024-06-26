@@ -157,6 +157,8 @@
 		FDC71EF4296C911200B68427 = {
 			isa = PBXGroup;
 			children = (
+				FDC71F00296C911200B68427 /* CreateObjectApp.swift */,
+				FD1CB1942B90A58600A27657 /* DataServices.swift */,
 				FDC71EFF296C911200B68427 /* CreateObject */,
 				FDC71EFE296C911200B68427 /* Products */,
 			);
@@ -173,7 +175,6 @@
 		FDC71EFF296C911200B68427 /* CreateObject */ = {
 			isa = PBXGroup;
 			children = (
-				FDC71F00296C911200B68427 /* CreateObjectApp.swift */,
 				FDEA615E2A2484D000A50ACC /* Calculate.swift */,
 				FDD7247C29B0DD1000B50259 /* Development.swift */,
 				FDBD6EF929C4A81A00144603 /* PositionTransformation.swift */,
@@ -182,7 +183,6 @@
 				FDC71F18296C936600B68427 /* CreateName.swift */,
 				FD9B4B4329A1265600E408AA /* ObjectDictionaryTransformation.swift */,
 				FDFC686E2A2A1B0B0027E219 /* CreateObject */,
-				FD1CB1942B90A58600A27657 /* DataServices.swift */,
 				FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */,
 				FD5C57B82BAF5260007B9159 /* RulerVM.swift */,
 				FD11E26E2B6E8597008D9C22 /* ObjectEditVM.swift */,

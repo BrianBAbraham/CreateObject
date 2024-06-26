@@ -9,20 +9,15 @@ import Foundation
 import Combine
 
 
-class ScaleService {
-    @Published var scale = 1.0
-    static let shared = ScaleService()
-    
-    
-    func getScale() -> Double {
-        scale
-    }
-    
-    
-    func setScale(_ scale: Double) {
-        self.scale = scale
-    }
-}
+//class ScaleService {
+//    @Published var scale = 1.0
+//    static let shared = ScaleService()
+//     
+//    
+//    func setScale(_ scale: Double) {
+//        self.scale = scale
+//    }
+//}
 
 
 
@@ -30,12 +25,7 @@ class MeasurementSystemService {
     @Published var unitSystem: UnitSystem = .cm
     static let shared = MeasurementSystemService()
     
-    
-    func getMeasurementSytem() -> UnitSystem {
-        unitSystem
-    }
-    
-    
+
     func setMeasurementSystem(_ unitSystem: UnitSystem) {
         self.unitSystem = unitSystem
     }
@@ -70,11 +60,7 @@ class MovementImageService {
     
     static let shared = MovementImageService()
     
-    
-    func getMovementImageData() -> MovementImageData {
-        movementImageData
-    }
-    
+
     
     func setAndGetMovementImageData(
         _ objectImageData: ObjectImageData,
@@ -106,12 +92,7 @@ class ObjectImageService {
     )
     static let shared = ObjectImageService()
     
-    
-    func getObjectImage() -> ObjectImageData {
-        objectImageData
-    }
-    
-    
+   
     func setObjectImage(_ objectImageData: ObjectImageData) {
         self.objectImageData = objectImageData
     }
@@ -233,10 +214,10 @@ class DictionaryService {
         userEditedSharedDics.partIdsUserEditedDic = [:]
     }
     
-    func getScreenDictionary() -> CornerDictionary {
-        screenDictionary
-    }
-    
+//    func getScreenDictionary() -> CornerDictionary {
+//        screenDictionary
+//    }
+//    
     func setScreenDictionary(_ dictionary: CornerDictionary) {
         //print("data service sets screen dic")
         screenDictionary = dictionary

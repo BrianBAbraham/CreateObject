@@ -31,11 +31,6 @@ struct PartDefaultDimension {
           _ linkedOrParentData: PartData = ZeroValue.partData,
           _ userEditedDimensionOneOrTwoOptional: OneOrTwoOptional<Dimension3d>? = nil) {
         self.part = part
-        
-//        if part == .stabiliser {
-//            print("DETECT")
-//        }
-        
         self.objectType = objectType
         self.parentPart = linkedOrParentData.part
         self.userEditedDimensionOneOrTwoOptional = userEditedDimensionOneOrTwoOptional

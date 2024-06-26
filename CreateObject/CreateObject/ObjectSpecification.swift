@@ -227,36 +227,62 @@ struct PartInRotationScopeOut {
 }
 
 
-
-
 struct AllPartInObject {
     
     static func getOneOfAllPartInObjectBeforeEdit(_ objectType: ObjectTypes) -> [Part] {
         guard let allPartChainLabels = ObjectChainLabel.dictionary[objectType] else {
-            fatalError("chain labels not defined for object")
+            fatalError("Chain labels not defined for object")
         }
-        var oneOfEachPartInAllChainLabel: [Part] = []
-            for label in allPartChainLabels {
-               let partChain = LabelInPartChainOut(label).partChain
-                for part in partChain {
-                    if !oneOfEachPartInAllChainLabel.contains(part) {
-                        oneOfEachPartInAllChainLabel.append(part)
-                    }
-                }
-            }
-        return oneOfEachPartInAllChainLabel
+        return getOneOfAllPartInObject(allPartChainLabels)
     }
     
-    static func getOneOfAllPartInObjectAfterEdit(_ allChainLabels: [Part]) -> [Part] {
+    static func getOneOfAllPartInObjectAfterEdit(_ allPartChainLabels: [Part]) -> [Part] {
+        return getOneOfAllPartInObject(allPartChainLabels)
+    }
+    
+    private static func getOneOfAllPartInObject(_ allPartChainLabels: [Part]) -> [Part] {
         var oneOfEachPartInAllChainLabel: [Part] = []
-            for label in allChainLabels {
-               let partChain = LabelInPartChainOut(label).partChain
-                for part in partChain {
-                    if !oneOfEachPartInAllChainLabel.contains(part) {
-                        oneOfEachPartInAllChainLabel.append(part)
-                    }
+        for label in allPartChainLabels {
+            let partChain = LabelInPartChainOut(label).partChain
+            for part in partChain {
+                if !oneOfEachPartInAllChainLabel.contains(part) {
+                    oneOfEachPartInAllChainLabel.append(part)
                 }
             }
+        }
         return oneOfEachPartInAllChainLabel
     }
 }
+
+
+//struct AllPartInObject {
+//    
+//    static func getOneOfAllPartInObjectBeforeEdit(_ objectType: ObjectTypes) -> [Part] {
+//        guard let allPartChainLabels = ObjectChainLabel.dictionary[objectType] else {
+//            fatalError("chain labels not defined for object")
+//        }
+//        var oneOfEachPartInAllChainLabel: [Part] = []
+//            for label in allPartChainLabels {
+//               let partChain = LabelInPartChainOut(label).partChain
+//                for part in partChain {
+//                    if !oneOfEachPartInAllChainLabel.contains(part) {
+//                        oneOfEachPartInAllChainLabel.append(part)
+//                    }
+//                }
+//            }
+//        return oneOfEachPartInAllChainLabel
+//    }
+//    
+//    static func getOneOfAllPartInObjectAfterEdit(_ allPartChainLabels: [Part]) -> [Part] {
+//        var oneOfEachPartInAllChainLabel: [Part] = []
+//            for label in allPartChainLabels {
+//               let partChain = LabelInPartChainOut(label).partChain
+//                for part in partChain {
+//                    if !oneOfEachPartInAllChainLabel.contains(part) {
+//                        oneOfEachPartInAllChainLabel.append(part)
+//                    }
+//                }
+//            }
+//        return oneOfEachPartInAllChainLabel
+//    }
+//}
