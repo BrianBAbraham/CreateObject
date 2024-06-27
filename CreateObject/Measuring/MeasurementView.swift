@@ -8,23 +8,6 @@
 import Foundation
 import SwiftUI
 
-
-//struct MeasurementView: View {
-//    @EnvironmentObject var settings: UnitSystemViewModel
-//    var measurement: Measurement<UnitLength>
-//    
-//    init(_ measurement: Measurement<UnitLength>) {
-//        self.measurement = measurement
-//    }
-//
-//    var body: some View {
-//        Text(
-//            String(settings.unitSystem.formatLengthAsString(measurement)))
-//    }
-//}
-
-
-
 struct MeasurementUnitView: View {
     @EnvironmentObject var settings: UnitSystemViewModel
    

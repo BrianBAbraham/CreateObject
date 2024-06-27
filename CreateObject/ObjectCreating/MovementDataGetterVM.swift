@@ -67,12 +67,12 @@ class MovementDataGetterViewModel: ObservableObject {
     
     
     func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
-        movementImageData.objectImageData.preTiltObjectToPartFourCornerPerKeyDic
+        movementImageData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
     }
     
     
     func getUniquePartNamesFromObjectDictionary() -> [String] {
-        let dic = movementImageData.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
+        let dic = movementImageData.objectImageData.postTilt.objectToPartFourCornerPerKeyDic
         let names =
         Array(
             dic.keys

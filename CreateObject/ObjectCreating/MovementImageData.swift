@@ -73,7 +73,7 @@ struct MovementImageData {
         let p = staticPoint
         
         //print("\(name) \(p)")
-        objectImageData.postTiltObjectToPartFourCornerPerKeyDic[name] = [p,p,p,p]
+        objectImageData.postTilt.objectToPartFourCornerPerKeyDic[name] = [p,p,p,p]
     }
     
 
@@ -81,8 +81,8 @@ struct MovementImageData {
         for (
             key,
             value
-        ) in objectImageData.postTiltObjectToPartFourCornerPerKeyDic {
-            objectImageData.postTiltObjectToPartFourCornerPerKeyDic +=
+        ) in objectImageData.postTilt.objectToPartFourCornerPerKeyDic {
+            objectImageData.postTilt.objectToPartFourCornerPerKeyDic +=
             [ReplaceCharBeforeSecondUnderscore.get(
                 in: key,
                 with: String(objectIndex)
@@ -104,7 +104,7 @@ struct MovementImageData {
         for (
             key,
             value
-        ) in objectImageData.postTiltObjectToPartFourCornerPerKeyDic {
+        ) in objectImageData.postTilt.objectToPartFourCornerPerKeyDic {
             
             var newValues = rotatePart(
                 value,
@@ -121,7 +121,7 @@ struct MovementImageData {
                 newValues
             )
             
-            objectImageData.postTiltObjectToPartFourCornerPerKeyDic +=
+            objectImageData.postTilt.objectToPartFourCornerPerKeyDic +=
             [ReplaceCharBeforeSecondUnderscore.get(
                 in: key,
                 with: String(
@@ -160,14 +160,14 @@ struct MovementImageData {
     
     mutating func setSize() {
         objectImageData.objectDimension =
-        FourCornerDictionryTo(objectImageData.postTiltObjectToPartFourCornerPerKeyDic).valueSize
+        FourCornerDictionryTo(objectImageData.postTilt.objectToPartFourCornerPerKeyDic).valueSize
     }
     
     
     mutating func updateOneCornerPerKeyDictionary() {
-        objectImageData.postTiltObjectToOneCornerPerKeyDic =
+        objectImageData.postTilt.objectToOneCornerPerKeyDic =
         ConvertFourCornerPerKeyToOne(
-            fourCornerPerElement: objectImageData.postTiltObjectToPartFourCornerPerKeyDic
+            fourCornerPerElement: objectImageData.postTilt.objectToPartFourCornerPerKeyDic
         ).oneCornerPerKey
     }
 
@@ -175,7 +175,7 @@ struct MovementImageData {
     func getUniquePartNamesFromObjectDictionary() -> [String] {
         
         let names =
-        Array(objectImageData.postTiltObjectToOneCornerPerKeyDic.keys)
+        Array(objectImageData.postTilt.objectToOneCornerPerKeyDic.keys)
         
        // print(names)
         

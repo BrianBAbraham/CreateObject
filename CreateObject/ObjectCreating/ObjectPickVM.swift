@@ -32,7 +32,7 @@ struct ObjectPickModel {
         self.userEditedDic = userEditedDic
         self.defaultMinMaxDictionaries = defaultMinMaxDictionaries
         self.currentObjectName = currentObjectName
-        self.preTiltFourCornerPerKeyDic = objectImageData.preTiltObjectToPartFourCornerPerKeyDic
+        self.preTiltFourCornerPerKeyDic = objectImageData.preTilt.objectToPartFourCornerPerKeyDic
       
         angleUserEditedDic = userEditedDic?.angleUserEditedDic ?? [:]
         
@@ -192,7 +192,7 @@ extension ObjectPickViewModel {
 
     func getPostTiltOneCornerPerKeyDic()
     -> PositionDictionary {
-        objectPickModel.objectImageData.postTiltObjectToOneCornerPerKeyDic
+        objectPickModel.objectImageData.postTilt.objectToOneCornerPerKeyDic
     }
        
     func getObjectDictionaryFromSaved(_ entity: LocationEntity) -> [String]{

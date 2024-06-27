@@ -32,7 +32,7 @@ import PhotosUI
 
 
 struct Photo: View {
-    @StateObject private var viewModel = PhotoPickerViewModel()
+    @StateObject private var photoPickerVM = PhotoPickerViewModel()
     @State private var imageFrame: CGRect = .zero
     @State var frameSize = CGSize.zero
     @State var currentZoom: CGFloat = 0.0
@@ -56,10 +56,10 @@ struct Photo: View {
     }
     var body: some View {
         VStack {
-            if viewModel.isLoading {
+            if photoPickerVM.isLoading {
                 ProgressView()
                     .frame(width: 200, height: 200)
-            } else if let image = viewModel.selectedImage {
+            } else if let image = photoPickerVM.selectedImage {
                 ZStack{
                     
                     
@@ -93,7 +93,7 @@ struct Photo: View {
                 }
             }
             
-            PhotosPicker(selection: $viewModel.imageSelection, matching: .images) {
+            PhotosPicker(selection: $photoPickerVM.imageSelection, matching: .images) {
                 Text("Select Plan")
             }
         }

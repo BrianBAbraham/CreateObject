@@ -192,12 +192,12 @@ struct EnsureObjectZeroOriginAtMovementCenter {
     
     
     func getPostTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
-        movementImageData.objectImageData.postTiltObjectToPartFourCornerPerKeyDic
+        movementImageData.objectImageData.postTilt.objectToPartFourCornerPerKeyDic
     }
 
     
     func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
-        movementImageData.objectImageData.preTiltObjectToPartFourCornerPerKeyDic
+        movementImageData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
     }
 
     

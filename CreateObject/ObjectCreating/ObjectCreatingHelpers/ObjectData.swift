@@ -26,8 +26,6 @@ struct ObjectData {
     
     var oneOfEachPartInAllPartChainAccountingForEdit: [Part] = []
     
-   // let linkedPartsDictionary = LinkedParts().dictionary
-    
     init(
         _ objectType: ObjectTypes,
         _ userEditedDic: UserEditedDictionaries?,
