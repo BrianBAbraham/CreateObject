@@ -99,6 +99,45 @@ class ObjectImageService {
 }
 
 
+class MovementDataService {
+    
+    
+    @Published var uniquePartNames: [String] = []
+    @Published var preTiltObjectToPartFourCornerDictionary: CornerDictionary = [:]
+    @Published var dictionaryForScreen: CornerDictionary = [:]
+    @Published var maximumnDimensionOfMotion = 0.0
+    @Published var objectFrameSize: Dimension = ZeroValue.dimension
+    
+    static let shared = MovementDataService()
+    
+    func setDictionaryForScreen(_ value: CornerDictionary) {
+        dictionaryForScreen = value
+    }
+    
+    
+    func setMaximumDimensionOfMotion(_ value: Double) {
+        maximumnDimensionOfMotion = value
+    }
+        
+    
+    func setObjectFrameSize(_ value: Dimension) {
+        objectFrameSize = value
+    }
+    
+    
+    func setPreTiltObjectToPartFourCornerDictionary( _ value: CornerDictionary) {
+        preTiltObjectToPartFourCornerDictionary = value
+    }
+    
+    
+    func setUniquePartNames(_ value: [String]) {
+        uniquePartNames = value
+    }
+    
+    
+    
+}
+
 
 class MovementDictionaryForScreenService {
     @Published var movementDictionaryForScreen: CornerDictionary = [:]
@@ -113,15 +152,30 @@ class MovementDictionaryForScreenService {
 }
 
 
+//
+//class ObjectTypeService {
+//    @Published var objectType: ObjectTypes = .fixedWheelRearDrive
+//    
+//    static let shared = ObjectTypeService()
+//    
+//    
+//    func setObjectType(_ value: ObjectTypes) {
+//        objectType = value
+//    }
+//    
+//}
 
-class BilateralPartWithOnePropertyToChangeService {
+
+
+class ObjectEditService {
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var choiceOfEditForSide: SidesAffected = .both
     @Published var dimensionPropertyToEdit: PartTag = .length
     @Published var originPropertyToEdit: PartTag = .xOrigin
+    @Published var partToEdit: Part = .mainSupport
     
     
-    static let shared = BilateralPartWithOnePropertyToChangeService()
+    static let shared = ObjectEditService()
     
     
     func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
@@ -142,6 +196,11 @@ class BilateralPartWithOnePropertyToChangeService {
     
     func setOriginPropertyToEdit(_ propertyToEdit: PartTag) {
         originPropertyToEdit = propertyToEdit
+    }
+    
+    
+    func setPartToEdit(_ partToEdit: Part) {
+        self.partToEdit = partToEdit
     }
 }
 
@@ -214,12 +273,8 @@ class DictionaryService {
         userEditedSharedDics.partIdsUserEditedDic = [:]
     }
     
-//    func getScreenDictionary() -> CornerDictionary {
-//        screenDictionary
-//    }
-//    
+
     func setScreenDictionary(_ dictionary: CornerDictionary) {
-        //print("data service sets screen dic")
         screenDictionary = dictionary
     }
 }

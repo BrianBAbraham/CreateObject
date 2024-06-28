@@ -8,7 +8,7 @@ import SwiftUI
 
 struct ObjectAndRulerView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var movementDataGetterVM: MovementDataGetterViewModel
+    @EnvironmentObject var movementDataGetterVM: MovementDataMediator
     @EnvironmentObject var rulerVM: RulerViewModel
     
    // @EnvironmentObject var movementPickVM: MovementDataViewModel
@@ -27,17 +27,17 @@ struct ObjectAndRulerView: View {
     
     var defaultScale: Double {
         Screen.smallestDimension /
-        movementDataGetterVM.getMaximumDimensionOfMotion()
+        movementDataGetterVM.maximumnDimensionOfMotion
         
     }
     
     var measurementScale: Double {
         Screen.smallestDimension /
-        movementDataGetterVM.getMaximumDimensionOfMotion()
+        movementDataGetterVM.maximumnDimensionOfMotion
        
     }
     
-    let uniquePartNames: [String]
+  //  let uniquePartNames: [String]
     
     var objectName: String {
         objectPickVM.getCurrentObjectName()
@@ -55,14 +55,14 @@ struct ObjectAndRulerView: View {
     
     
     init(
-        _ partNames: [String],
+     //   _ partNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
         _ movement: Movement,
         _ displayStyle: DisplayStyle
     ) {
-        uniquePartNames = partNames
+      //  uniquePartNames = partNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
@@ -85,7 +85,7 @@ struct ObjectAndRulerView: View {
     var body: some View {
         ZStack {
             ObjectView(
-                uniquePartNames,
+            //    uniquePartNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,

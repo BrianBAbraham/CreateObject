@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct OriginSetter: View {
-    @EnvironmentObject var movementPickVM: MovementDataGetterViewModel
     var setValue: (Double) -> Void  // Closure to set the stepper
     var label: String
     var body: some View {

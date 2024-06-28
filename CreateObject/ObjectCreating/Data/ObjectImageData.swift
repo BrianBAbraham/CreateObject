@@ -19,6 +19,7 @@ struct ObjectImageData {
         fileprivate var objectToPartEightCornerPerKeyDic: CornerDictionary = [:]
     }
     var preTilt = PreTilt()
+    
     struct PostTilt {
         fileprivate var objectToRotatedPartOriginDic: PositionDictionary = [:]
         var objectToPartFourCornerPerKeyDic: CornerDictionary = [:]
@@ -43,8 +44,6 @@ struct ObjectImageData {
         _ objectType: ObjectTypes,
         _ userEditedDic: UserEditedDictionaries?) {
             let objectType = objectType
-            
-            let partIdDicIn = userEditedDic?.partIdsUserEditedDic ?? [:]
             
             let objectChainLabelsUserEditedDic = userEditedDic?.objectChainLabelsUserEditDic ?? [:]
             
@@ -72,7 +71,7 @@ struct ObjectImageData {
             addArcPointsToDictionary()
             
             getSize()
-        }
+    }
     
     
     mutating func addOriginToDictionary() {
@@ -116,7 +115,6 @@ struct ObjectImageData {
                 let corners = Array(repeating: arcPoints[index], count: 4)
                 postTilt.objectToPartFourCornerPerKeyDic += [arcNames[index]: corners]
             }
-            
         }
     }
     
@@ -371,9 +369,8 @@ extension ObjectImageData {
                 getDisplayedGlobalCornerPositionForOneRotatedPartAfterRotationByOneRotator(
                     allLocalCornerPositionsAfterRotationAccountingForPriorRotation, i)
                 
-                originNames[i].mapPairOfOneOrTwoWithFunc(displayedGlobalCornerPosition){addPartsToFourCornerDic($0, $1)}
-                originNames[i].mapPairOfOneOrTwoWithFunc(allGlobalCornerPosition){addPartsToEightCornerDic($0, $1)}
-                
+                let _ = originNames[i].mapPairOfOneOrTwoWithFunc(displayedGlobalCornerPosition){addPartsToFourCornerDic($0, $1)}
+                let _ = originNames[i].mapPairOfOneOrTwoWithFunc(allGlobalCornerPosition){addPartsToEightCornerDic($0, $1)}
             }
             
             
@@ -395,7 +392,6 @@ extension ObjectImageData {
                 let partData = partDataForAllPartsToBeRotated[i]
                 originNames.append(partData.originName)
             }
-           
             return originNames
         }
             

@@ -27,15 +27,15 @@ class ObjectEditViewModel: ObservableObject {
     
  
     
-    var scopeOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
+    var scopeOfEditForSide: SidesAffected = ObjectEditService.shared.scopeOfEditForSide
     
-    @Published var sideToEdit: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
+    @Published var sideToEdit: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
    
-    @Published var partToEdit = Part.mainSupport
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
    
-    @Published var dimensionPropertyToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.dimensionPropertyToEdit
+    @Published var dimensionPropertyToEdit: PartTag = ObjectEditService.shared.dimensionPropertyToEdit
     
-    @Published var originPropertiesToEdit: PartTag = BilateralPartWithOnePropertyToChangeService.shared.originPropertyToEdit
+    @Published var originPropertiesToEdit: PartTag = ObjectEditService.shared.originPropertyToEdit
     
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     
@@ -58,13 +58,13 @@ class ObjectEditViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-        BilateralPartWithOnePropertyToChangeService.shared.$dimensionPropertyToEdit
+        ObjectEditService.shared.$dimensionPropertyToEdit
             .sink { [weak self] newData in
                 self?.dimensionPropertyToEdit = newData
             }
             .store(in: &self.cancellables)
         
-        BilateralPartWithOnePropertyToChangeService.shared.$originPropertyToEdit
+        ObjectEditService.shared.$originPropertyToEdit
             .sink { [weak self] newData in
                 self?.originPropertiesToEdit = newData
             }
@@ -78,13 +78,13 @@ class ObjectEditViewModel: ObservableObject {
             .store(in: &self.cancellables)
 
         
-        BilateralPartWithOnePropertyToChangeService.shared.$scopeOfEditForSide
+        ObjectEditService.shared.$scopeOfEditForSide
             .sink { [weak self] newData in
                 self?.scopeOfEditForSide = newData
             }
             .store(in: &self.cancellables)
         
-        BilateralPartWithOnePropertyToChangeService.shared.$choiceOfEditForSide
+        ObjectEditService.shared.$choiceOfEditForSide
             .sink { [weak self] newData in
                 self?.sideToEdit = newData
             }
@@ -105,7 +105,8 @@ extension ObjectEditViewModel {
         guard let part = Part(rawValue: partName) else {
             fatalError("no part for that part name")
         }
-      
+        ObjectEditService.shared.setPartToEdit(part)
+        
         partToEdit = part
     }
     
@@ -116,7 +117,7 @@ extension ObjectEditViewModel {
     
     
     func setDimensionPropertyToEdit(_ propertyToEdit: PartTag) {
-        BilateralPartWithOnePropertyToChangeService.shared.setDimensionPropertyToEdit(propertyToEdit)
+        ObjectEditService.shared.setDimensionPropertyToEdit(propertyToEdit)
     }
     
     
@@ -126,7 +127,7 @@ extension ObjectEditViewModel {
     
     
     func setOriginPropertiesToEdit(_ propertyToEdit: PartTag) {
-        BilateralPartWithOnePropertyToChangeService.shared.setOriginPropertyToEdit(propertyToEdit)
+        ObjectEditService.shared.setOriginPropertyToEdit(propertyToEdit)
     }
     
     
@@ -212,7 +213,7 @@ extension ObjectEditViewModel {
     func setBothOrLeftOrRightAsEditible(
         _ sideChoice: SidesAffected
     ) {
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(
+        ObjectEditService.shared.setBothOrLeftOrRightAsEditible(
             sideChoice)
     }
     
@@ -221,7 +222,7 @@ extension ObjectEditViewModel {
     func setSideToEdit(
         _ sideChoice: SidesAffected
     ) {
-        BilateralPartWithOnePropertyToChangeService.shared.setSideToEdit(
+        ObjectEditService.shared.setSideToEdit(
             sideChoice
         )
     }
@@ -281,7 +282,7 @@ extension ObjectEditViewModel {
             
         let oldScope = scopeOfEditForSide
       
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(side)
+        ObjectEditService.shared.setBothOrLeftOrRightAsEditible(side)
             
         switch side {
             //if left xor right selected
@@ -338,7 +339,7 @@ extension ObjectEditViewModel {
                    oldScope == .none && isLeftSelected {
                     newChoice = side
                 }
-                BilateralPartWithOnePropertyToChangeService.shared.setSideToEdit(newChoice)
+                ObjectEditService.shared.setSideToEdit(newChoice)
             }
     }
     

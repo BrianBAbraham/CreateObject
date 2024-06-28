@@ -103,22 +103,7 @@ class ObjectPickViewModel: ObservableObject {
 //MARK: RESET/MODIFY
 extension ObjectPickViewModel {
     
-    func resetObjectByCreatingFromName() {
-        //DIMENSIONCHANGE
-    
-        DictionaryService.shared.dimensionUserEditedDicReseter()
-        
-        //ANGLECHANGE
-        
-        DictionaryService.shared.angleUserEditedDicReseter()
-        
-        
-        DictionaryService.shared.partIdsUserEditedDicReseter()
-        
-        modifyObjectByCreatingFromName()
-       
-        ObjectImageService.shared.setObjectImage(objectImageData)
-    }
+
     
     
     func modifyObjectByCreatingFromName(){
@@ -188,32 +173,42 @@ extension ObjectPickViewModel {
         -> ObjectTypes {
         currentObjectType
     }
+     
+
+    func onChangeOfPicker(_ objectName: String) {
+        setCurrentObjectName(objectName)
+       resetObjectByCreatingFromName()
+        
+        func setCurrentObjectName(_ objectName: String){
+            objectPickModel.currentObjectName = objectName
+            guard let objectType = ObjectTypes(rawValue: objectName) else {
+                fatalError()
+             }
+            DictionaryService.shared.currentObjectType = objectType
+            
+            //ObjectTypeService.shared.setObjectType(objectType)
+        }
+        
+        
+        func resetObjectByCreatingFromName() {
+            //DIMENSIONCHANGE
+        
+            DictionaryService.shared.dimensionUserEditedDicReseter()
+            
+            //ANGLECHANGE
+            
+            DictionaryService.shared.angleUserEditedDicReseter()
+            
+            DictionaryService.shared.partIdsUserEditedDicReseter()
+            
+            modifyObjectByCreatingFromName()
+           
+            ObjectImageService.shared.setObjectImage(objectImageData)
+        }
+    }
+    
     
 
-    func getPostTiltOneCornerPerKeyDic()
-    -> PositionDictionary {
-        objectPickModel.objectImageData.postTilt.objectToOneCornerPerKeyDic
-    }
-       
-    func getObjectDictionaryFromSaved(_ entity: LocationEntity) -> [String]{
-        let allOriginNames = entity.interOriginNames ?? ""
-        let allOriginValues = entity.interOriginValues ?? ""
-
-        let array =
-            DictionaryInArrayOut().getNameValue(
-                OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary.filter({$0.key.contains(PartTag.corner.rawValue)})//, sender
-                )
-        return array
-    }
-    
-    
-    func setCurrentObjectName(_ objectName: String){
-        objectPickModel.currentObjectName = objectName
-        guard let objectType = ObjectTypes(rawValue: objectName) else {
-            fatalError()
-         }
-        DictionaryService.shared.currentObjectType = objectType
-    }
 }
 
 
@@ -224,4 +219,13 @@ extension ObjectPickViewModel {
 
 
 
-    
+//    func getObjectDictionaryFromSaved(_ entity: LocationEntity) -> [String]{
+//        let allOriginNames = entity.interOriginNames ?? ""
+//        let allOriginValues = entity.interOriginValues ?? ""
+//
+//        let array =
+//            DictionaryInArrayOut().getNameValue(
+//                OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary.filter({$0.key.contains(PartTag.corner.rawValue)})//, sender
+//                )
+//        return array
+//    }

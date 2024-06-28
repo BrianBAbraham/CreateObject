@@ -24,6 +24,11 @@ struct RulerModel {
 
 class RulerViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
+    
+    
+    var movementImageData: MovementImageData =
+        MovementImageService.shared.movementImageData
+    @Published var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
     var unitSystem: UnitSystem = MeasurementSystemService.shared.unitSystem
     let lengthBefore = 170.0
     let lengthAfter = 30.0
@@ -72,6 +77,18 @@ class RulerViewModel: ObservableObject {
                 self?.unitSystem = newData
             }
             .store(in: &self.cancellables)
+        
+        
+        MovementImageService.shared.$movementImageData
+            .receive(on: DispatchQueue.main) // Ensure UI updates are on the main thread
+            .sink { [weak self] newData in
+                guard let self = self else { return }
+                self.movementImageData = newData
+                self.preTiltObjectToPartFourCornerPerKeyDic = newData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
+               
+            }
+            .store(in: &cancellables)
+        
         
         updateDependentProperties()
     }

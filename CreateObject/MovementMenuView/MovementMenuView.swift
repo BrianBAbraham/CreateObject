@@ -11,7 +11,7 @@ import SwiftUI
 
 struct MovementMenuView: View {
     @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var movementDataGetterVM: MovementDataGetterViewModel
+    @EnvironmentObject var movementDataGetterVM: MovementDataMediator
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
@@ -44,7 +44,7 @@ struct MovementMenuView: View {
                 ObjectRulerRecenter()
                 
                 ObjectAndRulerView(
-                    movementDataGetterVM.uniquePartNames,
+                  //  movementDataGetterVM.uniquePartNames,
                     preTiltFourCornerPerKeyDic,
                     movementDataProcessorVM.movementDictionaryForScreen,
                     objectFrameSize,

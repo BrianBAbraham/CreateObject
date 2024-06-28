@@ -62,7 +62,7 @@ struct ListView: View {
 //All data is passed to view models to set model
 struct ContentView: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var movementDataVM: MovementDataGetterViewModel
+    @EnvironmentObject var movementDataVM: MovementDataMediator
     @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     init(){
         
@@ -94,7 +94,7 @@ struct ContentView: View {
                 
                 NavigationLink(destination:
                     EditEquipmentView(
-                        movementDataVM.uniquePartNames,
+                   //     movementDataVM.uniquePartNames,
                         preTiltFourCornerPerKeyDic,
                         movementDataProcessorVM.movementDictionaryForScreen,
                         movementDataProcessorVM.onScreenMovementFrameSize,
@@ -143,7 +143,7 @@ struct EditEquipmentView: View {
     var recenterPosition: CGPoint = CGPoint(x:100, y:400)
     @State private var uniqueKey = 0
     
-    let uniquePartNames: [String]
+    //let uniquePartNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
@@ -151,13 +151,13 @@ struct EditEquipmentView: View {
     
     
     init(
-        _ partNames: [String],
+       // _ partNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
         _ movement: Movement
     ) {
-            uniquePartNames = partNames
+        //    uniquePartNames = partNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
@@ -172,7 +172,7 @@ struct EditEquipmentView: View {
         let movementName = movementPickVM.movementName
         ZStack{
             ObjectAndRulerView(
-                uniquePartNames,
+          //      uniquePartNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,

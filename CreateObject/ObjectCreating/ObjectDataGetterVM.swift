@@ -12,9 +12,9 @@ import Combine
 class ObjectDataGetterViewModel: ObservableObject {
     var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     
-    var choiceOfEditForSide: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.choiceOfEditForSide
+    var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
     
-    var sidesAffected: SidesAffected = BilateralPartWithOnePropertyToChangeService.shared.scopeOfEditForSide
+    var sidesAffected: SidesAffected = ObjectEditService.shared.scopeOfEditForSide
     
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
 
@@ -45,13 +45,13 @@ class ObjectDataGetterViewModel: ObservableObject {
             .store(in: &self.cancellables)
         
         
-        BilateralPartWithOnePropertyToChangeService.shared.$scopeOfEditForSide
+        ObjectEditService.shared.$scopeOfEditForSide
             .sink { [weak self] newData in
                 self?.sidesAffected = newData
             }
             .store(in: &self.cancellables)
         
-        BilateralPartWithOnePropertyToChangeService.shared.$choiceOfEditForSide
+        ObjectEditService.shared.$choiceOfEditForSide
             .sink { [weak self] newData in
                 self?.choiceOfEditForSide = newData
             }
@@ -145,7 +145,7 @@ class ObjectDataGetterViewModel: ObservableObject {
         let firstSidesPresentGivesSidesAffected = 0
         
 
-        BilateralPartWithOnePropertyToChangeService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
+        ObjectEditService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
 
         return sidesPresent
     }

@@ -18,7 +18,10 @@ import Combine
 
 //gets the picked movement
 //provides the raw data from movmentImageData
-class MovementDataGetterViewModel: ObservableObject {
+//commits to the service
+class MovementDataMediator: ObservableObject {
+    
+    @Published var maximumnDimensionOfMotion = 0.0
     
    var movementDictionaryForScreen: CornerDictionary =
         MovementDictionaryForScreenService.shared.movementDictionaryForScreen
@@ -41,6 +44,7 @@ class MovementDataGetterViewModel: ObservableObject {
                 self.movementImageData = newData
                 // Call methods to update related data
                 self.updateData()
+                self.maximumnDimensionOfMotion = getMaximumDimensionOfMotion()
             }
             .store(in: &cancellables)
         
@@ -52,10 +56,12 @@ class MovementDataGetterViewModel: ObservableObject {
                 self.movementDictionaryForScreen = newData
                 // Call methods to update related data
                 self.updateData()
+                self.maximumnDimensionOfMotion = getMaximumDimensionOfMotion()
             }
             .store(in: &cancellables)
 
         updateData()
+        
     }
     
     
@@ -94,18 +100,20 @@ class MovementDataGetterViewModel: ObservableObject {
     
     
     func getMaximumDimensionOfMotion() -> Double {
-        let dic =  ConvertFourCornerPerKeyToOne(
-            fourCornerPerElement: movementDictionaryForScreen).oneCornerPerKey
-        
-        
-        
-        let minMax = CreateIosPosition.minMaxPosition(dic)
-        
-        let motionDimension =
-        CreateIosPosition.convertMinMaxToDimension(minMax)
-        
-        
-        return motionDimension.width > motionDimension.length ? motionDimension.width: motionDimension.length
+        if movementDictionaryForScreen .isEmpty {
+            return 0.0
+            
+        } else {
+            let dic =  ConvertFourCornerPerKeyToOne(
+                fourCornerPerElement: movementDictionaryForScreen).oneCornerPerKey
+            
+            let minMax = CreateIosPosition.minMaxPosition(dic)
+            
+            let motionDimension =
+            CreateIosPosition.convertMinMaxToDimension(minMax)
+            
+            return motionDimension.width > motionDimension.length ? motionDimension.width: motionDimension.length
+        }
     }
     
 }

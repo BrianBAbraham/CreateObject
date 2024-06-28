@@ -86,55 +86,6 @@ struct LocalOutlineRectangle: View {
     }
 }
 
-struct LocalOutlineRectangleXX {
-    static func path(
-        corners: [CGPoint],
-        _ color: Color,
-        _ cornerRadius: Double,
-        _ opacity: Double,
-        _ lineWidth: Double
-    ) -> some View {
-    
-    return
-        ZStack {
-            RoundedRectangle(
-                cornerRadius: cornerRadius
-            ) // Adjust the cornerRadius as needed
-            .path(
-                in: CGRect(
-                    x: corners[0].x,
-                    y: corners[0].y,
-                    width: corners[2].x - corners[0].x,
-                    height: corners[2].y - corners[0].y
-                )
-            )
-            .fill(
-                color
-            )
-            .opacity(
-                opacity
-            )
-            
-            RoundedRectangle(
-                cornerRadius: cornerRadius
-            ) // Adjust the cornerRadius as needed
-            .path(
-                in: CGRect(
-                    x: corners[0].x,
-                    y: corners[0].y,
-                    width: corners[2].x - corners[0].x,
-                    height: corners[2].y - corners[0].y
-                )
-            )
-            .stroke(
-                Color.black,
-                lineWidth: lineWidth
-            )
-                    
-        }
-    }
-}
-
 
 
 struct ArcPointView: View {
@@ -248,49 +199,38 @@ struct PartView: View {
 
 
 struct ObjectView: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var movementDataVM: MovementDataGetterViewModel
-    @EnvironmentObject var arcVM: ArcViewModel
-  
-    let uniquePartNames: [String]
-    let preTiltFourCornerPerKeyDic: CornerDictionary
+    @EnvironmentObject var objectVM: ObjectViewModel
+    //let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
-   
     let displayStyle: DisplayStyle
-  
+    let movement: Movement
+    
     init(
-        _ partNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
         _ movement: Movement,
         _ displayStyle: DisplayStyle
     ) {
-        uniquePartNames = partNames
-
-        self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
+       // uniquePartNames = objectVM.unqiquePartNames//partNames
+        self.movement = movement
+        //self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
-            self.displayStyle = displayStyle
-
+        self.displayStyle = displayStyle
     }
     
     var body: some View {
-        let movement = movementPickVM.getMovementType()
-        let staticPointDictionary = movement == .turn ? arcVM.staticPointDictionary: [:]
-       
-        let uniqueStaticPointNames = arcVM.uniqueStaticPointNames
-        let anglesRadiae: [AnglesRadius] = arcVM.angles
-            ZStack{
+        let uniquePartNames = objectVM.uniquePartNames
+        let preTiltObjectToPartFourCornerDictionary = objectVM.preTiltObjectToPartFourCornerDictionary
+        ZStack{
                 ForEach(uniquePartNames, id: \.self) { name in
                     PartView(
                         uniquePartName: name,
-                        preTiltFourCornerPerKeyDic: preTiltFourCornerPerKeyDic,
+                        preTiltFourCornerPerKeyDic: preTiltObjectToPartFourCornerDictionary,
                         dictionaryForScreen: dictionaryForScreen,
-                        objectEditVM.partToEdit,
+                        objectVM.partToEdit,
                         movement,
                         displayStyle
                     )
@@ -302,24 +242,8 @@ struct ObjectView: View {
 //                    )
 //                }
                 
+            AllArcView(movement, dictionaryForScreen)
 
-                if movement == .turn {
-                    
-                    ForEach(uniqueStaticPointNames, id: \.self) { staticPointName in
-                        StaticPointView(
-                            position: staticPointDictionary[staticPointName] ?? [ZeroValue.iosLocation]
-                        )
-                        .zIndex(5000)
-                        
-                        ForEach(anglesRadiae, id: \.id) { anglesRadius in
-                                ArcView(
-                                    anglesRadius,
-                                    dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
-                                )
-                        }
-                    }
-                    
-                }
             }
             .modifier(
                 ForObjectDrag (
@@ -330,8 +254,46 @@ struct ObjectView: View {
 
 
 
+struct AllArcView: View {
+    @EnvironmentObject var arcVM: ArcViewModel
+    let movement: Movement
+    let dictionaryForScreen: CornerDictionary
+    
+    init(_ movement: Movement, _ dictionaryForScreen: CornerDictionary ) {
+        self.movement = movement
+        self.dictionaryForScreen = dictionaryForScreen
+    }
+    
+    var body: some View {
+        let staticPointDictionary = movement == .turn ? arcVM.staticPointDictionary: [:]
+       
+        let uniqueStaticPointNames = arcVM.uniqueStaticPointNames
+        
+        let anglesRadiae: [AnglesRadius] = arcVM.angles
+        
+        
+        if movement == .turn {
+            
+            ForEach(uniqueStaticPointNames, id: \.self) { staticPointName in
+                StaticPointView(
+                    position: staticPointDictionary[staticPointName] ?? [ZeroValue.iosLocation]
+                )
+                .zIndex(5000)
+                
+                ForEach(anglesRadiae, id: \.id) { anglesRadius in
+                        ArcView(
+                            anglesRadius,
+                            dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
+                        )
+                }
+            }
+            
+        }
+    }
+}
+
+
 struct ArcView: View {
-   // @EnvironmentObject var movementPickVM: MovementPickViewModel
     let origin: CGPoint
     let radius: CGFloat
     let startAngle: Angle

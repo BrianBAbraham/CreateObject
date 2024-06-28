@@ -69,10 +69,8 @@ struct MovementImageData {
     mutating func updateDicForStaticPoint(_ objectIndex: Int, _ staticPoint: PositionAsIosAxes){
         let name = PartTag.staticPoint.rawValue + "_id" + String(objectIndex) + PartTag.stringLink.rawValue
         
-        
         let p = staticPoint
         
-        //print("\(name) \(p)")
         objectImageData.postTilt.objectToPartFourCornerPerKeyDic[name] = [p,p,p,p]
     }
     
@@ -95,6 +93,7 @@ struct MovementImageData {
                 )]
         }
     }
+    
     
     mutating func rotateObject(
         _ objectIndex: Int,
@@ -177,8 +176,6 @@ struct MovementImageData {
         let names =
         Array(objectImageData.postTilt.objectToOneCornerPerKeyDic.keys)
         
-       // print(names)
-        
     return names
     }
     
@@ -186,15 +183,6 @@ struct MovementImageData {
     
 }
 
-//struct IdentifiableDictionary: Identifiable {
-//    let id: UUID // Provides a unique identifier for each instance
-//    var dictionary: CornerDictionary // Example dictionary, can be of any type
-//
-//    init(dictionary: CornerDictionary) {
-//        self.id = UUID() // Generate a new UUID for each new instance
-//        self.dictionary = dictionary
-//    }
-//}
 
 
 enum Movement: String, CaseIterable {
@@ -205,3 +193,14 @@ enum Movement: String, CaseIterable {
     //case t = "T-turn"
     //case incremental = "off wall"
 }
+
+
+//struct IdentifiableDictionary: Identifiable {
+//    let id: UUID // Provides a unique identifier for each instance
+//    var dictionary: CornerDictionary // Example dictionary, can be of any type
+//
+//    init(dictionary: CornerDictionary) {
+//        self.id = UUID() // Generate a new UUID for each new instance
+//        self.dictionary = dictionary
+//    }
+//}
