@@ -32,7 +32,7 @@ struct UserEditedDictionaries {
     
     //relating to ObjectImage
     var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>]
-    var objectChainLabelsUserEditDic: ObjectChainLabelDictionary
+    var objectChainLabelsUserEditDic: ObjectChainLabelsDictionary
    
     static var shared = UserEditedDictionaries()
     
@@ -52,7 +52,7 @@ struct UserEditedDictionaries {
             [:],
         partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] =
             [:],
-        objectChainLabelsUserEditDic: ObjectChainLabelDictionary =
+        objectChainLabelsUserEditDic: ObjectChainLabelsDictionary =
             [:]) {
         
         self.dimensionUserEditedDic = dimension

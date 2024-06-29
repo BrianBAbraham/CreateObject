@@ -99,6 +99,66 @@ class ObjectImageService {
 }
 
 
+class ObjectDataService {
+
+    @Published var angleMinMaxDic: AngleMinMaxDictionary = [:]
+    @Published var objectDimension: Dimension = ZeroValue.dimension
+    @Published var objectChainLabelsDefaultDic: ObjectChainLabelsDictionary = [:]
+    @Published var postTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
+    @Published var preTiltObjectToPartFourCornerPerKeyDic:
+        CornerDictionary = [:]
+    @Published var postTiltObjectToPartOneCornerPerKeyDic:
+        PositionDictionary = [:]
+    @Published var partDataDic: [Part: PartData] = [:]
+    @Published var objectType = ObjectTypes.fixedWheelRearDrive
+    
+    static let shared = ObjectDataService()
+    
+    func setMinMaxDic(_ value: AngleMinMaxDictionary) {
+        angleMinMaxDic = value
+    }
+    
+    
+    func setObjectDimension(_ value: Dimension) {
+        objectDimension = value
+    }
+        
+    
+    func setObjectChainLabelsDefaultDic(_ value: ObjectChainLabelsDictionary) {
+
+        objectChainLabelsDefaultDic = value
+    }
+    
+    
+    func setObjectType(_ value: ObjectTypes) {
+        objectType = value
+    }
+    
+    
+    func setPartDataDic(_ value: [Part: PartData] = [:]) {
+        partDataDic = value
+    }
+    
+    
+    func setPostTiltObjectToPartFourCornerPerKeyDic( _ value: CornerDictionary) {
+        postTiltObjectToPartFourCornerPerKeyDic = value
+    }
+    
+    
+    func setPreTiltObjectToPartFourCornerPerKeyDic(_ value: CornerDictionary) {
+        preTiltObjectToPartFourCornerPerKeyDic = value
+    }
+    
+    
+    func setPostTiltObjectToPartOneCornerPerKeyDic(_ value: PositionDictionary) {
+        postTiltObjectToPartOneCornerPerKeyDic = value
+    }
+    
+    
+   
+}
+
+
 class MovementDataService {
     
     
@@ -168,14 +228,20 @@ class MovementDictionaryForScreenService {
 
 
 class ObjectEditService {
+    static let defaultPart = Part.mainSupport
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var choiceOfEditForSide: SidesAffected = .both
     @Published var dimensionPropertyToEdit: PartTag = .length
     @Published var originPropertyToEdit: PartTag = .xOrigin
-    @Published var partToEdit: Part = .mainSupport
+    @Published var partToEdit = ObjectEditService.defaultPart
     
     
     static let shared = ObjectEditService()
+    
+    
+    func resetPartToEdit() {
+        self.partToEdit = ObjectEditService.defaultPart
+    }
     
     
     func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
@@ -217,8 +283,8 @@ class ObjectEditService {
 
 class DictionaryService {
     @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
-    @Published var partDataSharedDic: [Part: PartData] = [:]
-    @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
+
+//    @Published var currentObjectType: ObjectTypes = .fixedWheelRearDrive
     @Published var screenDictionary: CornerDictionary = [:]
 
     static let shared = DictionaryService()
@@ -253,11 +319,7 @@ class DictionaryService {
         userEditedSharedDics.parentToPartOriginUserEditedDic += entry
     }
     
-    
-    func partDataSharedDicModifier(_ initialised: [Part: PartData] ) {
-        partDataSharedDic = initialised
-    }
-    
+
     
     func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
         userEditedSharedDics.partIdsUserEditedDic += entry

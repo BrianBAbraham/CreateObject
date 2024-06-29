@@ -15,7 +15,7 @@ import SwiftUI
 @main
 struct CreateObjectApp: App {
    
-    @StateObject var objectPickVM = ObjectPickViewModel()
+    @StateObject var objectPickVM = ObjectPickerViewModel()
     @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
     @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
     @StateObject var objectEditVM = ObjectEditViewModel()
@@ -23,7 +23,7 @@ struct CreateObjectApp: App {
     @StateObject var sceneVM = SceneViewModel()
     @StateObject var unitsVM = UnitSystemViewModel()
    
-    @StateObject var movementDataGetter = MovementDataMediator()
+    @StateObject var movementDataGetter = MovementDataViewModel()
     @StateObject var movementPickVM = MovementPickViewModel()
     @StateObject var movementDataProcessorVM = MovementDataProcessorViewModel()
     
@@ -32,6 +32,8 @@ struct CreateObjectApp: App {
     @StateObject var rulerVM = RulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
     @StateObject var arcViewModel = ArcViewModel()
+    
+    @StateObject var tiltEditVM = TiltEditViewModel()
 
 
     var body: some Scene {
@@ -51,6 +53,7 @@ struct CreateObjectApp: App {
                 .environmentObject(recenterVM)
                .environmentObject(arcViewModel)
                .environmentObject(objectViewModel)
+               .environmentObject(tiltEditVM)
         }
     }
 }

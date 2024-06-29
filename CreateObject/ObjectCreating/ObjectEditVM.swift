@@ -37,8 +37,8 @@ class ObjectEditViewModel: ObservableObject {
     
     @Published var originPropertiesToEdit: PartTag = ObjectEditService.shared.originPropertyToEdit
     
-    var partDataSharedDic = DictionaryService.shared.partDataSharedDic
     
+    var partDataDic = ObjectDataService.shared.partDataDic
     
     
    
@@ -52,7 +52,7 @@ class ObjectEditViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        DictionaryService.shared.$currentObjectType
+        ObjectDataService.shared.$objectType
             .sink { [weak self] newData in
                 self?.objectType = newData
             }
@@ -69,14 +69,12 @@ class ObjectEditViewModel: ObservableObject {
                 self?.originPropertiesToEdit = newData
             }
             .store(in: &self.cancellables)
-        
-        
-        DictionaryService.shared.$partDataSharedDic
-            .sink { [weak self] newData in
-                self?.partDataSharedDic = newData
-            }
-            .store(in: &self.cancellables)
 
+                ObjectDataService.shared.$partDataDic
+                    .sink { [weak self] newData in
+                        self?.partDataDic = newData
+                    }
+                    .store(in: &self.cancellables)
         
         ObjectEditService.shared.$scopeOfEditForSide
             .sink { [weak self] newData in
@@ -156,7 +154,7 @@ extension ObjectEditViewModel {
         _ id: PartTag)
         -> Dimension3d {
 
-            guard let partData = partDataSharedDic[part] else {
+            guard let partData = partDataDic[part] else {
                 fatalError()
             }
         return
@@ -179,7 +177,7 @@ extension ObjectEditViewModel {
         _ part: Part,
         _ id: PartTag)
         -> PositionAsIosAxes {
-            guard let partData = partDataSharedDic[part] else {
+            guard let partData = partDataDic[part] else {
                 fatalError()
             }
         return

@@ -30,7 +30,7 @@ struct ConditionalBilateralPartPresence: View {
 
 struct BilateralPartPresence: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
     let part: Part

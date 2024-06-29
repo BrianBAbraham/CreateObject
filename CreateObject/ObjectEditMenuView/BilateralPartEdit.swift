@@ -46,7 +46,7 @@ struct PartMenu: View {
  
 
 struct DimensionPicker: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
@@ -106,7 +106,7 @@ struct DimensionPicker: View {
 
 
 struct DimensionStepper: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
 
@@ -156,7 +156,7 @@ struct DimensionStepper: View {
 
 
 struct OriginPicker: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
@@ -236,7 +236,7 @@ struct OriginPicker: View {
 
 
 struct OriginPickerX: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
@@ -308,7 +308,7 @@ struct OriginPickerX: View {
 
 
 struct BilateralDimensionSlider: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
     let part: Part

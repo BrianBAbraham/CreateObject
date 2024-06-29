@@ -24,7 +24,7 @@ struct ConditionaUniPartPresence: View {
 }
 
 struct UniDimensionSlider: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
@@ -70,7 +70,7 @@ struct UniDimensionSlider: View {
 
 struct UniPartPresence: View {
     @State private var optionToggle = true
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
    
     let part: Part
@@ -106,7 +106,7 @@ struct UniPartPresence: View {
 
 struct ConditionalTiltMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objecPickVM: ObjectPickViewModel
+    @EnvironmentObject var objecPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     
     var body: some View {
@@ -121,10 +121,11 @@ struct ConditionalTiltMenu: View {
 
 
 struct TiltEdit: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objecShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
+    @EnvironmentObject var tiltEditVM: TiltEditViewModel
     let description: String = "tilt"
     let joint:  Part
   
@@ -137,7 +138,8 @@ struct TiltEdit: View {
     var body: some View {
         
         let angleMinMax =
-            objectPickVM.getAngleMinMaxDic(joint)
+          //  objectPickVM.getAngleMinMaxDic(joint)
+        tiltEditVM.getAngleMinMaxDic(joint)
         let max = angleMinMax.max.value
         let min = angleMinMax.min.value
         let boundSliderValue = Binding(

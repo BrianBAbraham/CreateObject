@@ -62,7 +62,7 @@ struct ListView: View {
 //All data is passed to view models to set model
 struct ContentView: View {
     @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var movementDataVM: MovementDataMediator
+    @EnvironmentObject var movementDataVM: MovementDataViewModel
     @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     init(){
         
@@ -136,7 +136,7 @@ enum DisplayStyle {
 
 
 struct EditEquipmentView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
    
@@ -168,7 +168,7 @@ struct EditEquipmentView: View {
 //                                        ).forEach{print($0)}
         }
     var body: some View {
-        let objectType = objectPickVM.getCurrentObjectType()
+        let objectType = objectPickVM.objectType
         let movementName = movementPickVM.movementName
         ZStack{
             ObjectAndRulerView(
@@ -195,7 +195,7 @@ struct EditEquipmentView: View {
                         
                         HStack{
                             MovementPickerView(movementName)
-                            PickInitialObjectView()
+                            ObjectPickerView()
                             PickPartEdit(objectType)
                         }
                         

@@ -7,8 +7,8 @@
 import SwiftUI
 
 struct ObjectAndRulerView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var movementDataGetterVM: MovementDataMediator
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
+    @EnvironmentObject var movementDataGetterVM: MovementDataViewModel
     @EnvironmentObject var rulerVM: RulerViewModel
     
    // @EnvironmentObject var movementPickVM: MovementDataViewModel
@@ -40,7 +40,7 @@ struct ObjectAndRulerView: View {
   //  let uniquePartNames: [String]
     
     var objectName: String {
-        objectPickVM.getCurrentObjectName()
+        objectPickVM.objectName
     }
     
     let objectFrameSize: Dimension

@@ -10,7 +10,10 @@ import Combine
 
 
 class ObjectDataGetterViewModel: ObservableObject {
-    var partDataSharedDic = DictionaryService.shared.partDataSharedDic
+    var partDataSharedDic = ObjectDataService.shared.partDataDic
+    //DictionaryService.shared.partDataSharedDic
+    
+    var partDataDic = ObjectDataService.shared.partDataDic
     
     var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
     
@@ -18,9 +21,10 @@ class ObjectDataGetterViewModel: ObservableObject {
     
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
 
-    var objectImageData: ObjectImageData = ObjectImageService.shared.objectImageData
     
     @Published var userEditedSharedDics: UserEditedDictionaries = DictionaryService.shared.userEditedSharedDics
+    
+    var objectChainLabelsDefaultDic: ObjectChainLabelsDictionary = [:]
     
     let defaultMinMaxDimensionDic =
         DefaultMinMaxDimensionDictionary.shared
@@ -38,9 +42,17 @@ class ObjectDataGetterViewModel: ObservableObject {
             .store(in: &self.cancellables)
         
         
-        DictionaryService.shared.$partDataSharedDic
+//        DictionaryService.shared.$partDataSharedDic
+//            .sink { [weak self] newData in
+//                self?.partDataSharedDic = newData
+//            }
+//            .store(in: &self.cancellables)
+//        
+  
+        
+        ObjectDataService.shared.$partDataDic
             .sink { [weak self] newData in
-                self?.partDataSharedDic = newData
+                self?.partDataDic = newData
             }
             .store(in: &self.cancellables)
         
@@ -57,17 +69,24 @@ class ObjectDataGetterViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
         
-        DictionaryService.shared.$currentObjectType
+        ObjectDataService.shared.$objectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
             }
             .store(in: &self.cancellables)
+//        
+//        ObjectImageService.shared.$objectImageData
+//            .sink { [weak self] newData in
+//                self?.objectImageData = newData
+//            }
+//            .store(in: &self.cancellables)
         
-        ObjectImageService.shared.$objectImageData
+        ObjectDataService.shared.$objectChainLabelsDefaultDic
             .sink { [weak self] newData in
-                self?.objectImageData = newData
+                self?.objectChainLabelsDefaultDic = newData
             }
             .store(in: &self.cancellables)
+        
         
     }
     
@@ -80,7 +99,7 @@ class ObjectDataGetterViewModel: ObservableObject {
     ) -> Double {
 
         var value: Double? = nil
-        if let partData = partDataSharedDic[part] {//parts edited out do not exist
+        if let partData = partDataDic[part] {//parts edited out do not exist
             let idForLeftOrRight = choiceOfEditForSide == .right ? PartTag.id1: PartTag.id0
         
             var id: PartTag
@@ -130,7 +149,7 @@ class ObjectDataGetterViewModel: ObservableObject {
         let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(currentObjectType, partOrAssociatedPart).forPart
         
 
-        guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] ?? objectImageData.objectChainLabelsDefaultDic[currentObjectType] else {
+        guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[currentObjectType] ?? objectChainLabelsDefaultDic[currentObjectType] else {
             fatalError()
         }
     

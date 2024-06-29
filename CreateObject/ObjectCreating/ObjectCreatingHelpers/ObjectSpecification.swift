@@ -104,7 +104,7 @@ struct ObjectChainLabel {
     static let chairSupportWithFixedRearWheel: [Part] =
     chairSupport + [.fixedWheelAtRear]
     
-   static let dictionary: ObjectChainLabelDictionary =
+   static let dictionary: ObjectChainLabelsDictionary =
         [
         .allCasterBed:
             [.mainSupport, .sideSupport ],
@@ -145,6 +145,11 @@ struct ObjectChainLabel {
         .showerTray: [.mainSupport],
     
     ]
+    
+    static let unsortedNames = dictionary.keys.map{$0.rawValue}
+    
+    static let sortedNames = unsortedNames.sorted()
+    
 }
 
 

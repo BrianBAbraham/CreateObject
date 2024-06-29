@@ -110,7 +110,7 @@ struct ArcPointView: View {
 
 
 struct PartView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
     let partToEdit: Part
     let uniquePartName: String

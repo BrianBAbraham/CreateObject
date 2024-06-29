@@ -27,12 +27,19 @@ class ObjectShowMenuViewModel: ObservableObject {
         .steeredJoint,
     ]
     
-    var currentObjectType: ObjectTypes = DictionaryService.shared.currentObjectType
+    var currentObjectType: ObjectTypes = //DictionaryService.shared.currentObjectType
+    ObjectDataService.shared.objectType
     
     private var cancellables: Set<AnyCancellable> = []
 
     init () {
-        DictionaryService.shared.$currentObjectType
+//        DictionaryService.shared.$currentObjectType
+//            .sink { [weak self] newData in
+//                self?.currentObjectType = newData
+//            }
+//            .store(in: &self.cancellables)
+        
+        ObjectDataService.shared.$objectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
             }

@@ -28,7 +28,7 @@ struct ObjectImageData {
     }
     var postTilt = PostTilt()
     
-    let objectChainLabelsDefaultDic: ObjectChainLabelDictionary = ObjectChainLabel.dictionary
+    let objectChainLabelsDefaultDic: ObjectChainLabelsDictionary = ObjectChainLabel.dictionary
     
     var partDataDic: [Part: PartData] = [:]
    
@@ -60,7 +60,8 @@ struct ObjectImageData {
             partDataDic =
                 objectData.partDataDic
             
-            DictionaryService.shared.partDataSharedDic = partDataDic//provide intial values
+//            DictionaryService.shared.partDataSharedDic = partDataDic
+           
             
             createPreTiltDictionaryFromStructFactory()
             

@@ -8,21 +8,17 @@
 import SwiftUI
 
 
-struct PickInitialObjectView: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+struct ObjectPickerView: View {
+    @EnvironmentObject var objectPickerVM: ObjectPickerViewModel
 
-    var objectNames: [String] {
-        let unsortedObjectNames =
-        ObjectChainLabel.dictionary.keys.map{$0.rawValue}
-        
-        return unsortedObjectNames.sorted()
-    }
-    @State private var objectName = DictionaryService.shared.currentObjectType.rawValue
+    let objectNames: [String]  =
+            ObjectChainLabel.sortedNames
+    
+    @State private var objectName: String =     ObjectDataService.shared.objectType.rawValue
     
     var body: some View {
         let boundObjectType = Binding(
-            get: {objectPickVM.getCurrentObjectName()},
+            get: {objectPickerVM.objectName},
             set: {self.objectName = $0}
         )
      
@@ -35,8 +31,8 @@ struct PickInitialObjectView: View {
             }
             .onChange(of: objectName) {oldTag, newTag in
                 self.objectName = newTag
-                objectEditVM.setPartToEdit(Part.mainSupport.rawValue)
-                objectPickVM.onChangeOfPicker(newTag)
+               
+                objectPickerVM.onChangeOfPicker(newTag)
             }
             //Start work around: removes grey background from iPhone 13 mini
             //physical device

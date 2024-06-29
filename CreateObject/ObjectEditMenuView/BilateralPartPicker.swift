@@ -20,7 +20,7 @@ struct ConditionalBilateralPartSidePicker: View {
     }
 }
 struct BilateralPartSidePicker: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
    

@@ -19,7 +19,7 @@ import Combine
 //gets the picked movement
 //provides the raw data from movmentImageData
 //commits to the service
-class MovementDataMediator: ObservableObject {
+class MovementDataViewModel: ObservableObject {
     
     @Published var maximumnDimensionOfMotion = 0.0
     

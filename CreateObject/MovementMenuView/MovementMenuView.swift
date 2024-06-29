@@ -10,8 +10,8 @@ import SwiftUI
 
 
 struct MovementMenuView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
-    @EnvironmentObject var movementDataGetterVM: MovementDataMediator
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
+    @EnvironmentObject var movementDataGetterVM: MovementDataViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
     @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel

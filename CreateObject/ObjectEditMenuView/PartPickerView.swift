@@ -10,7 +10,7 @@ import SwiftUI
 struct PickPartEdit: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickViewModel
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @State private var selectedMenuNameItem: String
     let useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp = 0
     var objectType: ObjectTypes
@@ -37,6 +37,7 @@ struct PickPartEdit: View {
         HStack{
     
             ZStack {
+                
                 Picker("", selection: $selectedMenuNameItem) {
                     ForEach(menuItemsUsingDisplayName, id: \.self) { item in
                         Text(item)
@@ -51,7 +52,7 @@ struct PickPartEdit: View {
                     
                     resetForNewPartEdit()
                 }
-                .onChange(of: objectPickVM.getCurrentObjectType()) { oldValue, newValue in
+                .onChange(of: objectPickVM.objectType) { oldValue, newValue in
                     //reset if new object
                     selectedMenuNameItem = PartToDisplayInMenu([Part.mainSupport], newValue).name
                 }
@@ -63,9 +64,9 @@ struct PickPartEdit: View {
                 DuplicatePickerText(name: selectedMenuNameItem)
                 //End work around
             }
-            
-            Text(Image(systemName: "scissors"))
-                .colorScheme(.light)
+//            
+//            Text(Image(systemName: "scissors"))
+//                .colorScheme(.light)
         }
     }
     
