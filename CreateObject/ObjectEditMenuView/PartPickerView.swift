@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct PickPartEdit: View {
+struct PartPickerView: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
+    @EnvironmentObject var partPickerVM: PartPickerViewModel
     @State private var selectedMenuNameItem: String
     let useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp = 0
     var objectType: ObjectTypes
@@ -52,7 +52,7 @@ struct PickPartEdit: View {
                     
                     resetForNewPartEdit()
                 }
-                .onChange(of: objectPickVM.objectType) { oldValue, newValue in
+                .onChange(of: partPickerVM.objectType) { oldValue, newValue in
                     //reset if new object
                     selectedMenuNameItem = PartToDisplayInMenu([Part.mainSupport], newValue).name
                 }
@@ -73,9 +73,11 @@ struct PickPartEdit: View {
     
     func resetForNewPartEdit(){
         //what to edit
-        objectEditVM.setSideToEdit(.both)
+        //objectEditVM.setSideToEdit(.both)
+        
+        partPickerVM.setSideToEdit(.both)
         
         //what can be edited
-        objectEditVM.setBothOrLeftOrRightAsEditible(.both)
+        partPickerVM.setBothOrLeftOrRightAsEditible(.both)
     }
 }

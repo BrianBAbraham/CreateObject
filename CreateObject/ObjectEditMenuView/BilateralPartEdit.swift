@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct ConditionalPartMenu: View {
+struct ConditionalUniPartMenu: View {
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     

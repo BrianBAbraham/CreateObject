@@ -93,7 +93,7 @@ struct ContentView: View {
                 
                 
                 NavigationLink(destination:
-                    EditEquipmentView(
+                    EditObjectView(
                    //     movementDataVM.uniquePartNames,
                         preTiltFourCornerPerKeyDic,
                         movementDataProcessorVM.movementDictionaryForScreen,
@@ -135,7 +135,7 @@ enum DisplayStyle {
 
 
 
-struct EditEquipmentView: View {
+struct EditObjectView: View {
     @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
@@ -196,7 +196,7 @@ struct EditEquipmentView: View {
                         HStack{
                             MovementPickerView(movementName)
                             ObjectPickerView()
-                            PickPartEdit(objectType)
+                            PartPickerView(objectType)
                         }
                         
                         HStack{
@@ -205,7 +205,7 @@ struct EditEquipmentView: View {
                             ConditionaUniPartPresence()
                         }
                         
-                        ConditionalPartMenu()
+                        ConditionalUniPartMenu()
                         
                         ConditionalTiltMenu()
                         

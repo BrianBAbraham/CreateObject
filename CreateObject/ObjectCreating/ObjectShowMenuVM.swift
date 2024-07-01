@@ -33,12 +33,7 @@ class ObjectShowMenuViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     init () {
-//        DictionaryService.shared.$currentObjectType
-//            .sink { [weak self] newData in
-//                self?.currentObjectType = newData
-//            }
-//            .store(in: &self.cancellables)
-        
+
         ObjectDataService.shared.$objectType
             .sink { [weak self] newData in
                 self?.currentObjectType = newData
