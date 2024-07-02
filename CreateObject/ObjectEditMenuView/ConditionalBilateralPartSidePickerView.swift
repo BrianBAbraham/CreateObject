@@ -7,47 +7,48 @@
 
 import SwiftUI
 
-struct ConditionalBilateralPartSidePicker: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+struct ConditionalBilateralPartSidePickerView: View {
+    @EnvironmentObject var conditionalBilateralPartSidePickerVM: ConditionalBilateralPartSidePickerViewModel
+    
     var body: some View {
-        let partToEdit = objectEditVM.getPartToEdit()
-        if objectShowMenuVM.getSidePickerMenuStatus(partToEdit)  {
-            BilateralPartSidePicker()
+        if conditionalBilateralPartSidePickerVM.showMenu {
+            BilateralPartSidePickerView(
+            )
         } else {
             EmptyView()
         }
     }
 }
-struct BilateralPartSidePicker: View {
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+
+
+
+struct BilateralPartSidePickerView: View {
+    @EnvironmentObject var bilateralPartSidePickerVM: BilateralPartSidePickerViewModel
    
     var body: some View {
-        var allCurrentOptionsForSidesAffected: [SidesAffected]{
-            objectEditVM.getScopeOfEditForSide()
-        }
+
         let boundSideValue = Binding(
             get: {
-                objectEditVM.getChoiceOfEditForSide()},
+                bilateralPartSidePickerVM.choiceOfEditForSide},
             set: {
                 newValue in
-                objectEditVM.setSideToEdit(newValue)
+                bilateralPartSidePickerVM.setSideToEdit(newValue)
             } )
         
         Picker("", selection: boundSideValue
         ) {
-            ForEach(allCurrentOptionsForSidesAffected, id: \.self) { side in
+            ForEach(bilateralPartSidePickerVM.scopeOfEditForSide.asArray(), id: \.self) { side in
                 Text(side.rawValue)
             }
         }
         .pickerStyle(.segmented)
-        .colorScheme(.light) 
+        .colorScheme(.light)
         .fixedSize()
         //.padding(.top)
     }
 }
+
+
 enum SidesAffected: String, CaseIterable, Equatable {
     case both = "L&R"
     case left = "L"
@@ -65,6 +66,19 @@ enum SidesAffected: String, CaseIterable, Equatable {
             return .id1
         case .none:
             fatalError("sides required but none exists")
+        }
+    }
+    
+    func asArray() -> [SidesAffected] {
+        switch self {
+        case .both:
+            return [.both, .left, .right]
+        case .left:
+            return [.left]
+        case .right:
+            return [.right]
+        case .none:
+            return [.none]
         }
     }
 }

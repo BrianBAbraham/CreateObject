@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct PartPickerView: View {
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+
     @EnvironmentObject var partPickerVM: PartPickerViewModel
     @State private var selectedMenuNameItem: String
+   
     let useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp = 0
     var objectType: ObjectTypes
 
@@ -22,7 +22,9 @@ struct PartPickerView: View {
         // objectType must be accessed to determine displayed part name
         // it is injected in
         self.objectType = objectType
+        
         let menuDisplayDefaultName = PartToDisplayInMenu([Part.mainSupport], objectType).name
+        
         _selectedMenuNameItem = State(initialValue: menuDisplayDefaultName )
     }
     var body: some View {
@@ -31,8 +33,9 @@ struct PartPickerView: View {
         //MenuName are friendly and as only subsets are present
         //Names can such as front wheel can represent caster or fixed
         //also names can be object sensitive
-        let menuItemsUsingPart = objectShowMenuVM.getOneOfAllEditablePartForObjectBeforeEdit()
-        let menuItemsUsingDisplayName: [String] = objectShowMenuVM.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit()
+        let menuItemsUsingPart = partPickerVM.getOneOfAllEditablePartForObjectBeforeEdit()
+        
+        let menuItemsUsingDisplayName: [String] = partPickerVM.oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit
         
         HStack{
     
@@ -48,7 +51,7 @@ struct PartPickerView: View {
                     let index = menuItemsUsingDisplayName.firstIndex(where: { $0 == selectedMenuNameItem }) ??
                     useIndexZeroForInitialSelectedMenuNameItemToAvoidDisplayLookUp
                     
-                    objectEditVM.setPartToEdit(menuItemsUsingPart[index])
+                    partPickerVM.setPartToEdit(menuItemsUsingPart[index])
                     
                     resetForNewPartEdit()
                 }
@@ -64,9 +67,6 @@ struct PartPickerView: View {
                 DuplicatePickerText(name: selectedMenuNameItem)
                 //End work around
             }
-//            
-//            Text(Image(systemName: "scissors"))
-//                .colorScheme(.light)
         }
     }
     

@@ -70,11 +70,11 @@ class ObjectEditViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
 
-                ObjectDataService.shared.$partDataDic
-                    .sink { [weak self] newData in
-                        self?.partDataDic = newData
-                    }
-                    .store(in: &self.cancellables)
+        ObjectDataService.shared.$partDataDic
+            .sink { [weak self] newData in
+                self?.partDataDic = newData
+            }
+            .store(in: &self.cancellables)
         
         ObjectEditService.shared.$scopeOfEditForSide
             .sink { [weak self] newData in

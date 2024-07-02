@@ -12,17 +12,56 @@ class PartPickerViewModel: ObservableObject {
     
     @Published var objectType = ObjectDataService.shared.objectType
     
+    @Published var oneOfAllEditablePartForObjectBeforeEdit: [String] = []
+    
+    @Published var oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit: [String] = []
+    
     private var cancellables: Set<AnyCancellable> = []
+    
+    static let partsNotToAppearOnEditMenu: [PartGroup] = [
+        .tilt,
+        .backJointAndLink,
+        .casterJoint,
+        .fixedWheelJoint,
+        .footJointAndLink,
+        .stabiliser,
+        .steeredJoint,
+    ]
     
     init() {
         
         ObjectDataService.shared.$objectType
             .sink { [weak self] newData in
                 self?.objectType = newData
+                self?.oneOfAllEditablePartForObjectBeforeEdit = self?.getOneOfAllEditablePartForObjectBeforeEdit() ?? []
+                self?.oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit = self?.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit() ?? []
              
             }
             .store(in: &self.cancellables)
     }
+    
+    
+    func getOneOfAllPartForObjectBeforeEdit() -> [Part] {
+            AllPartInObject.getOneOfAllPartInObjectBeforeEdit(objectType)
+      }
+    
+    
+    func getOneOfAllEditablePartForObjectBeforeEdit() -> [String] {
+        let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
+        let parts =
+        oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains( $0.transformPartToPartGroup())}
+        return parts.map{$0.rawValue}
+    }
+    
+    
+    func getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit() -> [String] {
+        let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
+        let parts =
+        oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains($0.transformPartToPartGroup())}
+
+        return PartToDisplayInMenu(parts, objectType).names
+    }
+    
     
     func setSideToEdit(
         _ sideChoice: SidesAffected
@@ -46,7 +85,5 @@ class PartPickerViewModel: ObservableObject {
             fatalError("no part for that part name")
         }
         ObjectEditService.shared.setPartToEdit(part)
-        
-        //partToEdit = part
     }
 }
