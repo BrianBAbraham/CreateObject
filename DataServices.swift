@@ -244,7 +244,7 @@ class ObjectEditService {
     }
     
     
-    func setBothOrLeftOrRightAsEditible(_ sideChoice: SidesAffected) {
+    func setScopeOfEditForSide(_ sideChoice: SidesAffected) {
         scopeOfEditForSide = sideChoice
     }
     

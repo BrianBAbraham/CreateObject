@@ -53,7 +53,8 @@ struct PartPickerView: View {
                     
                     partPickerVM.setPartToEdit(menuItemsUsingPart[index])
                     
-                    resetForNewPartEdit()
+                    partPickerVM.resetForNewPartEdit()
+                    
                 }
                 .onChange(of: partPickerVM.objectType) { oldValue, newValue in
                     //reset if new object
@@ -71,13 +72,5 @@ struct PartPickerView: View {
     }
     
     
-    func resetForNewPartEdit(){
-        //what to edit
-        //objectEditVM.setSideToEdit(.both)
-        
-        partPickerVM.setSideToEdit(.both)
-        
-        //what can be edited
-        partPickerVM.setBothOrLeftOrRightAsEditible(.both)
-    }
+
 }

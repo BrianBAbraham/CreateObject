@@ -37,6 +37,10 @@
 		FD57A7BC2C307797006ABC2F /* TiltEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD57A7BB2C307797006ABC2F /* TiltEditViewModel.swift */; };
 		FD5C57B92BAF5260007B9159 /* RulerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5C57B82BAF5260007B9159 /* RulerVM.swift */; };
 		FD6BA10D2BE13D5A0047B139 /* ArcVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */; };
+		FD6FC9A12C37E8B600B9FA4E /* PartOriginAndDimensionEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6FC9A02C37E8B600B9FA4E /* PartOriginAndDimensionEditViewModel.swift */; };
+		FD6FC9A42C38594D00B9FA4E /* DimensionPickerAndStepperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6FC9A32C38594D00B9FA4E /* DimensionPickerAndStepperView.swift */; };
+		FD6FC9A62C3859BA00B9FA4E /* DimensionStepperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6FC9A52C3859BA00B9FA4E /* DimensionStepperViewModel.swift */; };
+		FD6FC9A82C385A0400B9FA4E /* DimensionPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6FC9A72C385A0400B9FA4E /* DimensionPickerViewModel.swift */; };
 		FD84594B29B38B6B00417084 /* ObjectPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD84594A29B38B6B00417084 /* ObjectPickerViewModel.swift */; };
 		FD8853DD2C33135D00ABEC7D /* PartPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8853DC2C33135D00ABEC7D /* PartPickerViewModel.swift */; };
 		FD8FFC902B73E13F00AAA055 /* ObjectNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8FFC8F2B73E13F00AAA055 /* ObjectNames.swift */; };
@@ -112,6 +116,10 @@
 		FD57A7BB2C307797006ABC2F /* TiltEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltEditViewModel.swift; sourceTree = "<group>"; };
 		FD5C57B82BAF5260007B9159 /* RulerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulerVM.swift; sourceTree = "<group>"; };
 		FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcVM.swift; sourceTree = "<group>"; };
+		FD6FC9A02C37E8B600B9FA4E /* PartOriginAndDimensionEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOriginAndDimensionEditViewModel.swift; sourceTree = "<group>"; };
+		FD6FC9A32C38594D00B9FA4E /* DimensionPickerAndStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionPickerAndStepperView.swift; sourceTree = "<group>"; };
+		FD6FC9A52C3859BA00B9FA4E /* DimensionStepperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionStepperViewModel.swift; sourceTree = "<group>"; };
+		FD6FC9A72C385A0400B9FA4E /* DimensionPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionPickerViewModel.swift; sourceTree = "<group>"; };
 		FD84594A29B38B6B00417084 /* ObjectPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPickerViewModel.swift; sourceTree = "<group>"; };
 		FD8853DC2C33135D00ABEC7D /* PartPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartPickerViewModel.swift; sourceTree = "<group>"; };
 		FD8FFC8F2B73E13F00AAA055 /* ObjectNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectNames.swift; sourceTree = "<group>"; };
@@ -168,6 +176,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FD6FC9A22C3858FB00B9FA4E /* Dimension */ = {
+			isa = PBXGroup;
+			children = (
+				FDDEA3C82C342D19008C2097 /* DimensionStepperView.swift */,
+				FD6FC9A32C38594D00B9FA4E /* DimensionPickerAndStepperView.swift */,
+				FD6FC9A52C3859BA00B9FA4E /* DimensionStepperViewModel.swift */,
+				FD6FC9A72C385A0400B9FA4E /* DimensionPickerViewModel.swift */,
+				FDDEA3C42C342C2E008C2097 /* DimensionPickerView.swift */,
+			);
+			path = Dimension;
+			sourceTree = "<group>";
+		};
 		FDC71EF4296C911200B68427 = {
 			isa = PBXGroup;
 			children = (
@@ -309,13 +329,13 @@
 		FDF7D5192C2DA03B001A9A5E /* ObjectEditMenuView */ = {
 			isa = PBXGroup;
 			children = (
+				FD6FC9A22C3858FB00B9FA4E /* Dimension */,
 				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
+				FD6FC9A02C37E8B600B9FA4E /* PartOriginAndDimensionEditViewModel.swift */,
 				FD271A512B9C932300444BD2 /* PartOriginAndDimensionEditView.swift */,
 				FDDEA3C62C342C8B008C2097 /* OriginPickerAndStepperView.swift */,
 				FDD422E72B9F1D19005B7950 /* ConditionalBilateralPartSidePickerView.swift */,
 				FDDEA3CC2C34338C008C2097 /* ConditionalBilateralPartSidePickerViewModel.swift */,
-				FDDEA3C42C342C2E008C2097 /* DimensionPickerView.swift */,
-				FDDEA3C82C342D19008C2097 /* DimensionStepperView.swift */,
 				FDD422E52B9F1C04005B7950 /* BilateraPartPresence.swift */,
 				FDF17DDA2BF1FCBF0074B392 /* PartPickerView.swift */,
 				FD8853DC2C33135D00ABEC7D /* PartPickerViewModel.swift */,
@@ -424,9 +444,11 @@
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
 				FDE0D9132BF26C4D00FF3A43 /* MovementPickViewModel.swift in Sources */,
 				FD271A522B9C932300444BD2 /* PartOriginAndDimensionEditView.swift in Sources */,
+				FD6FC9A12C37E8B600B9FA4E /* PartOriginAndDimensionEditViewModel.swift in Sources */,
 				FDF17DDB2BF1FCBF0074B392 /* PartPickerView.swift in Sources */,
 				FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */,
 				FD8853DD2C33135D00ABEC7D /* PartPickerViewModel.swift in Sources */,
+				FD6FC9A42C38594D00B9FA4E /* DimensionPickerAndStepperView.swift in Sources */,
 				FDDEA3C92C342D19008C2097 /* DimensionStepperView.swift in Sources */,
 				FDBD6EFA29C4A81A00144603 /* PositionTransformation.swift in Sources */,
 				FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */,
@@ -436,6 +458,7 @@
 				FD3E65372BE68797007DFAA0 /* PartOneOrTwo.swift in Sources */,
 				FD9B4B4429A1265600E408AA /* ObjectDictionaryTransformation.swift in Sources */,
 				FD12A8F42BCAC62A00C2C30D /* MovementPicker.swift in Sources */,
+				FD6FC9A62C3859BA00B9FA4E /* DimensionStepperViewModel.swift in Sources */,
 				FD10BB5B2BBC46B7000C13A4 /* RulerAndObjectRecenterVM.swift in Sources */,
 				FDB931D42A01504D00F86B4F /* SceneView.swift in Sources */,
 				FDD316642BA0B93400BF4E9E /* ObjectSpecification.swift in Sources */,
@@ -449,6 +472,7 @@
 				FD400C5D2BF7BE6C004242D4 /* PhotoPickerViewModel.swift in Sources */,
 				FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */,
 				FDB931D22A014DDF00F86B4F /* SceneVM.swift in Sources */,
+				FD6FC9A82C385A0400B9FA4E /* DimensionPickerViewModel.swift in Sources */,
 				FD57A7BC2C307797006ABC2F /* TiltEditViewModel.swift in Sources */,
 				FD1CB1972B90D91300A27657 /* MeasurementView.swift in Sources */,
 				FDC71F03296C911200B68427 /* ContentView.swift in Sources */,

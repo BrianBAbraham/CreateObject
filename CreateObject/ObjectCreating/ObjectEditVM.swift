@@ -211,7 +211,7 @@ extension ObjectEditViewModel {
     func setBothOrLeftOrRightAsEditible(
         _ sideChoice: SidesAffected
     ) {
-        ObjectEditService.shared.setBothOrLeftOrRightAsEditible(
+        ObjectEditService.shared.setScopeOfEditForSide(
             sideChoice)
     }
     
@@ -280,7 +280,7 @@ extension ObjectEditViewModel {
             
         let oldScope = scopeOfEditForSide
       
-        ObjectEditService.shared.setBothOrLeftOrRightAsEditible(side)
+        ObjectEditService.shared.setScopeOfEditForSide(side)
             
         switch side {
             //if left xor right selected

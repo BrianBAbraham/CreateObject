@@ -18,6 +18,9 @@ struct CreateObjectApp: App {
     @StateObject var conditionalBilateralPartSidePickerVM = ConditionalBilateralPartSidePickerViewModel()
     @StateObject var objectPickerVM = ObjectPickerViewModel()
     @StateObject var partPickerVM = PartPickerViewModel()
+    @StateObject var partOriginAndDimensionEditViewModel = PartOriginAndDimensionEditViewModel()
+    @StateObject var dimensionPickerViewModel = DimensionPickerViewModel()
+    @StateObject var dimensionStepperViewModel = DimensionStepperViewModel()
     
     
     @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
@@ -47,7 +50,9 @@ struct CreateObjectApp: App {
                 .environmentObject(conditionalBilateralPartSidePickerVM)
                 .environmentObject(objectPickerVM)
                 .environmentObject(partPickerVM)
-                
+                .environmentObject(partOriginAndDimensionEditViewModel)
+                .environmentObject(dimensionPickerViewModel)
+                .environmentObject(dimensionStepperViewModel)
             
             
                 .environmentObject(movementDataGetter)

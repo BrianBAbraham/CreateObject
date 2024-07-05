@@ -9,23 +9,18 @@ import SwiftUI
 
 
 struct PartOriginAndDimensionEditView: View {
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+    @EnvironmentObject var partOriginAndDimensionEditViewModel: PartOriginAndDimensionEditViewModel
     
     var body: some View {
-        let part = objectEditVM.getPartToEdit()
-        if objectShowMenuVM.getBilateralPartMenuStatus(part)  {
-            //PartMenu(partToEdit)
+        let part = partOriginAndDimensionEditViewModel.partToEdit
             VStack {
-                DimensionPickerView(
-                    part)
+//                DimensionPickerView(
+//                   )
+                DimensionPickerAndStepperView()
                     
                 OriginPickerAndStepperView(
                     part)
             }
-        } else {
-            EmptyView()
-        }
     }
 }
 

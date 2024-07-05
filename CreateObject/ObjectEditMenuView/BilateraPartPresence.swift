@@ -11,11 +11,13 @@ import SwiftUI
 struct ConditionalBilateralPartPresence: View {
     @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
     @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    var part: Part {
-        objectEditVM.getPartToEdit()
-    }
+    @EnvironmentObject var partOriginAndDimensionEditViewModel: PartOriginAndDimensionEditViewModel
+//    var part: Part {
+//        objectEditVM.getPartToEdit()
+//    }
     
     var body: some View {
+        let part = partOriginAndDimensionEditViewModel.partToEdit
         let showMenuStatus = objectShowMenuVM.getBilateralPresenceMenuStatus(part)
         if  showMenuStatus {
             BilateralPartPresence(part

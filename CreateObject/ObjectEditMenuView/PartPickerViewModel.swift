@@ -63,6 +63,17 @@ class PartPickerViewModel: ObservableObject {
     }
     
     
+    func resetForNewPartEdit(){
+        //what to edit
+        //objectEditVM.setSideToEdit(.both)
+        
+        setSideToEdit(.both)
+        
+        //what can be edited
+        setBothOrLeftOrRightAsEditible(.both)
+    }
+    
+    
     func setSideToEdit(
         _ sideChoice: SidesAffected
     ) {
@@ -75,7 +86,7 @@ class PartPickerViewModel: ObservableObject {
     func setBothOrLeftOrRightAsEditible(
         _ sideChoice: SidesAffected
     ) {
-        ObjectEditService.shared.setBothOrLeftOrRightAsEditible(
+        ObjectEditService.shared.setScopeOfEditForSide(
             sideChoice)
     }
     

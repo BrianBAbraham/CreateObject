@@ -164,7 +164,7 @@ class ObjectDataGetterViewModel: ObservableObject {
         let firstSidesPresentGivesSidesAffected = 0
         
 
-        ObjectEditService.shared.setBothOrLeftOrRightAsEditible(sidesPresent[firstSidesPresentGivesSidesAffected])
+        ObjectEditService.shared.setScopeOfEditForSide(sidesPresent[firstSidesPresentGivesSidesAffected])
 
         return sidesPresent
     }
