@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		FD060BD52A0BB2F6005F31A0 /* UniPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD060BD42A0BB2F6005F31A0 /* UniPart.swift */; };
+		FD07EA842C396E0F00A0CD6A /* OriginPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD07EA832C396E0F00A0CD6A /* OriginPickerViewModel.swift */; };
+		FD07EA862C3979BF00A0CD6A /* OriginPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD07EA852C3979BF00A0CD6A /* OriginPickerView.swift */; };
 		FD08DB1F2BAEDBCE00F116AD /* RulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD08DB1E2BAEDBCE00F116AD /* RulerView.swift */; };
 		FD08DB212BAEDE8200F116AD /* Object&RulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD08DB202BAEDE8200F116AD /* Object&RulerView.swift */; };
 		FD0AA8B12BF6527600198E33 /* MovementDataProcessorVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0AA8B02BF6527600198E33 /* MovementDataProcessorVM.swift */; };
@@ -87,6 +89,8 @@
 
 /* Begin PBXFileReference section */
 		FD060BD42A0BB2F6005F31A0 /* UniPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniPart.swift; sourceTree = "<group>"; };
+		FD07EA832C396E0F00A0CD6A /* OriginPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginPickerViewModel.swift; sourceTree = "<group>"; };
+		FD07EA852C3979BF00A0CD6A /* OriginPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginPickerView.swift; sourceTree = "<group>"; };
 		FD08DB1E2BAEDBCE00F116AD /* RulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulerView.swift; sourceTree = "<group>"; };
 		FD08DB202BAEDE8200F116AD /* Object&RulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Object&RulerView.swift"; sourceTree = "<group>"; };
 		FD0AA8B02BF6527600198E33 /* MovementDataProcessorVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementDataProcessorVM.swift; sourceTree = "<group>"; };
@@ -176,16 +180,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		FD6FC9A22C3858FB00B9FA4E /* Dimension */ = {
+		FD6FC9A22C3858FB00B9FA4E /* Properties */ = {
 			isa = PBXGroup;
 			children = (
 				FDDEA3C82C342D19008C2097 /* DimensionStepperView.swift */,
 				FD6FC9A32C38594D00B9FA4E /* DimensionPickerAndStepperView.swift */,
 				FD6FC9A52C3859BA00B9FA4E /* DimensionStepperViewModel.swift */,
 				FD6FC9A72C385A0400B9FA4E /* DimensionPickerViewModel.swift */,
+				FD07EA832C396E0F00A0CD6A /* OriginPickerViewModel.swift */,
 				FDDEA3C42C342C2E008C2097 /* DimensionPickerView.swift */,
+				FD07EA852C3979BF00A0CD6A /* OriginPickerView.swift */,
 			);
-			path = Dimension;
+			path = Properties;
 			sourceTree = "<group>";
 		};
 		FDC71EF4296C911200B68427 = {
@@ -329,7 +335,7 @@
 		FDF7D5192C2DA03B001A9A5E /* ObjectEditMenuView */ = {
 			isa = PBXGroup;
 			children = (
-				FD6FC9A22C3858FB00B9FA4E /* Dimension */,
+				FD6FC9A22C3858FB00B9FA4E /* Properties */,
 				FD95DA2929E40E20009A9500 /* ObjectPickerView.swift */,
 				FD6FC9A02C37E8B600B9FA4E /* PartOriginAndDimensionEditViewModel.swift */,
 				FD271A512B9C932300444BD2 /* PartOriginAndDimensionEditView.swift */,
@@ -435,6 +441,7 @@
 			files = (
 				FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */,
 				FD4BB15A2BC96EDD00DE8875 /* MovementDataViewModel.swift in Sources */,
+				FD07EA842C396E0F00A0CD6A /* OriginPickerViewModel.swift in Sources */,
 				FDF17DD92BF1FB960074B392 /* OriginSetter.swift in Sources */,
 				FD400C4F2BF785E6004242D4 /* PartDisplayName.swift in Sources */,
 				FDF17DD72BF1FB230074B392 /* AngleSetter.swift in Sources */,
@@ -442,6 +449,7 @@
 				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
 				FDDEA3CB2C34305B008C2097 /* Retired.swift in Sources */,
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
+				FD07EA862C3979BF00A0CD6A /* OriginPickerView.swift in Sources */,
 				FDE0D9132BF26C4D00FF3A43 /* MovementPickViewModel.swift in Sources */,
 				FD271A522B9C932300444BD2 /* PartOriginAndDimensionEditView.swift in Sources */,
 				FD6FC9A12C37E8B600B9FA4E /* PartOriginAndDimensionEditViewModel.swift in Sources */,

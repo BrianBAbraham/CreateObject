@@ -21,6 +21,7 @@ struct CreateObjectApp: App {
     @StateObject var partOriginAndDimensionEditViewModel = PartOriginAndDimensionEditViewModel()
     @StateObject var dimensionPickerViewModel = DimensionPickerViewModel()
     @StateObject var dimensionStepperViewModel = DimensionStepperViewModel()
+    @StateObject var originPickerViewModel = OriginPickerViewModel()
     
     
     @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
@@ -53,6 +54,7 @@ struct CreateObjectApp: App {
                 .environmentObject(partOriginAndDimensionEditViewModel)
                 .environmentObject(dimensionPickerViewModel)
                 .environmentObject(dimensionStepperViewModel)
+                .environmentObject(originPickerViewModel)
             
             
                 .environmentObject(movementDataGetter)

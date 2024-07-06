@@ -7,24 +7,40 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 
-class DimensionStepperViewModel: ObservableObject {
-    @Published var partToEdit = ObjectEditService.shared.partToEdit
-    @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
+class DimensionStepperViewModel: DimensionBaseViewModel {
+    var partToEdit = ObjectEditService.shared.partToEdit
+    var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
+    
+    var stepperValueBinding: Binding<Double> {
+        Binding<Double>(
+            get: { self.getInitialSliderValue() },
+            set: {                     newValue in
+                self.setValueForBilateralPartInUserEditedDic(
+                            newValue
+                            )
+                self.modifyObjectByCreatingFromName() }
+        )
+    }
+    
     var partDataDic = ObjectDataService.shared.partDataDic
-    var userEditedSharedDics = DictionaryService.shared.userEditedSharedDics
+  
     var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
-    var objectType = ObjectDataService.shared.objectType
+   
     var objectChainLabelsDefaultDic = ObjectDataService.shared.objectChainLabelsDefaultDic
   
     private var cancellables: Set<AnyCancellable> = []
     
-    init() {
+    override init() {
+            super.init()
+        
         ObjectEditService.shared.$partToEdit
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.partToEdit,on: self)
-            .store(in: &cancellables)
+            .sink { [weak self] newData in
+                self?.partToEdit = newData
+            }
+            .store(in: &self.cancellables)
         
         ObjectEditService.shared.$choiceOfEditForSide
             .receive(on: DispatchQueue.main)
@@ -36,10 +52,7 @@ class DimensionStepperViewModel: ObservableObject {
             .assign(to: \.dimensionPropertyToEdit,on: self)
             .store(in: &cancellables)
         
-        ObjectDataService.shared.$objectType
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.objectType,on: self)
-            .store(in: &cancellables)
+        
         
         ObjectDataService.shared.$partDataDic
             .receive(on: DispatchQueue.main)
@@ -49,11 +62,6 @@ class DimensionStepperViewModel: ObservableObject {
         ObjectDataService.shared.$objectChainLabelsDefaultDic
             .receive(on: DispatchQueue.main)
             .assign(to: \.objectChainLabelsDefaultDic,on: self)
-            .store(in: &cancellables)
-        
-        DictionaryService.shared.$userEditedSharedDics
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.userEditedSharedDics,on: self)
             .store(in: &cancellables)
     }
     
@@ -75,41 +83,7 @@ class DimensionStepperViewModel: ObservableObject {
         ObjectEditService.shared.setDimensionPropertyToEdit(propertyToEdit)
     }
     
-    
-    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected] {
-        
-        let oneOrTwoId = userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(objectType, partOrAssociatedPart).forPart
-        
 
-        guard let chainLabels = userEditedSharedDics.objectChainLabelsUserEditDic[objectType] ?? objectChainLabelsDefaultDic[objectType] else {
-            fatalError()
-        }
-    
-        var sidesPresent: [SidesAffected] = []
-        //the part may be removed from both sides by user edit
-        if chainLabels.contains(partOrAssociatedPart) {
-            sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
-        } else {
-            sidesPresent = [.none]
-        }
-
-        let firstSidesPresentGivesSidesAffected = 0
-        
-
-        ObjectEditService.shared.setScopeOfEditForSide(sidesPresent[firstSidesPresentGivesSidesAffected])
-
-        return sidesPresent
-    }
-    
-    
-    func getPartNotPresent() ->Bool {
-        let partOrAssociatedPart =
-        PartsRequiringLinkedPartUse(partToEdit).partForEditableOrigin
-       let first = getSidesPresentGivenPossibleUserEdit(partOrAssociatedPart)[0]
-        
-        return
-            first == .none ? true: false
-    }
     
     
     func getInitialSliderValue(

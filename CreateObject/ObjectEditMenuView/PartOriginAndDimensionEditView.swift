@@ -9,17 +9,14 @@ import SwiftUI
 
 
 struct PartOriginAndDimensionEditView: View {
-    @EnvironmentObject var partOriginAndDimensionEditViewModel: PartOriginAndDimensionEditViewModel
-    
+
     var body: some View {
-        let part = partOriginAndDimensionEditViewModel.partToEdit
+   
             VStack {
-//                DimensionPickerView(
-//                   )
+
                 DimensionPickerAndStepperView()
                     
-                OriginPickerAndStepperView(
-                    part)
+                OriginPickerAndStepperView()
             }
     }
 }
