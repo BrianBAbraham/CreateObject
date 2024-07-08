@@ -136,7 +136,7 @@ enum DisplayStyle {
 
 
 struct EditObjectView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
+    //@EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     @EnvironmentObject var movementPickVM: MovementPickViewModel
    
@@ -168,11 +168,10 @@ struct EditObjectView: View {
 //                                        ).forEach{print($0)}
         }
     var body: some View {
-        let objectType = objectPickVM.objectType
+        //let objectType = objectPickVM.objectType
         let movementName = movementPickVM.movementName
         ZStack{
             ObjectAndRulerView(
-          //      uniquePartNames,
                 preTiltFourCornerPerKeyDic,
                 dictionaryForScreen,
                 objectFrameSize,
@@ -187,7 +186,7 @@ struct EditObjectView: View {
             
      
             VStack {
-                ObjectRulerRecenter()
+//                ObjectRulerRecenter()
                 Spacer()
                 
                 ZStack{
@@ -196,12 +195,12 @@ struct EditObjectView: View {
                         HStack{
                             MovementPickerView(movementName)
                             ObjectPickerView()
-                            PartPickerView(objectType)
+                            PartPickerView()
                         }
                         
                         HStack{
                             ConditionalBilateralPartSidePickerView()
-                            ConditionalBilateralPartPresence()
+                           //ConditionalBilateralPartPresence()
                             ConditionaUniPartPresence()
                         }
                         

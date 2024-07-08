@@ -20,8 +20,7 @@ struct ConditionalBilateralPartPresence: View {
         let part = partOriginAndDimensionEditViewModel.partToEdit
         let showMenuStatus = objectShowMenuVM.getBilateralPresenceMenuStatus(part)
         if  showMenuStatus {
-            BilateralPartPresence(part
-        //                          , showMenuStatus
+            BilateralPartPresenceView(
             )
         } else {
             EmptyView()
@@ -30,73 +29,21 @@ struct ConditionalBilateralPartPresence: View {
 }
 
 
-struct BilateralPartPresence: View {
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
-    let part: Part
- 
-    init (_ part: Part
-    ) {
-        self.part = part
-       // print("\n BilateralPartPresence \(part.rawValue)\n")
-    }
-    
+
+struct BilateralPartPresenceView: View {
+
+    @EnvironmentObject var bilateralPartPresenceVM: BilateralPartPresenceViewModel
+
     var body: some View {
-
-        let boundIsLeftSelected = Binding (
-            get: {objectDataGetterVM.getSidesPresentGivenUserEditContainsLeft(part)},
-            set: {   newvalue in
-                   updateViewModelForLeftToggle(newvalue
-                   )
-            }
-         )
-        
-        let boundIsRightSelected = Binding (
-           get: {objectDataGetterVM.getSidesPresentGivenUserEditContainsRight(part)},
-           set: {newvalue in
-                   updateViewModelForLRightToggle(newvalue
-
-                   )
-           }
-        )
         
         HStack {
-            Toggle("", isOn: boundIsLeftSelected)
+            Toggle("", isOn: bilateralPartPresenceVM.leftBinding)
 
             Text("L")
          
-            Toggle("", isOn: boundIsRightSelected)
+            Toggle("", isOn: bilateralPartPresenceVM.rightBinding)
 
             Text("R")
         }
-    }
-        
-
-    private func updateViewModelForLeftToggle(_  left: Bool
-    ) {
-
-            objectEditVM
-                .changeOneOrTwoStatusOfPart(
-                    left,
-                    objectDataGetterVM.getSidesPresentGivenUserEditContainsRight(part),
-                    part)
-        
-            objectPickVM.modifyObjectByCreatingFromName()
-    }
-    
-    
-    private func updateViewModelForLRightToggle(_  right: Bool
-                                              
-    ) {
-            objectEditVM
-                .changeOneOrTwoStatusOfPart(
-                    objectDataGetterVM.getSidesPresentGivenUserEditContainsLeft(part),
-                    right,
-                    part)
-        
-            objectPickVM.modifyObjectByCreatingFromName()
-
     }
 }

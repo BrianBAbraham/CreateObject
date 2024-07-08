@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DimensionPickerAndStepperView: View {
+struct DimensionPickerAndStepperContainerView: View {
     var body: some View {
         ZStack{
             HStack {

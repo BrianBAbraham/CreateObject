@@ -22,7 +22,8 @@ struct CreateObjectApp: App {
     @StateObject var dimensionPickerViewModel = DimensionPickerViewModel()
     @StateObject var dimensionStepperViewModel = DimensionStepperViewModel()
     @StateObject var originPickerViewModel = OriginPickerViewModel()
-    
+    @StateObject var originStepperViewModel = OriginStepperViewModel()
+    @StateObject var bilateralPartPresenceViewModel = BilateralPartPresenceViewModel()
     
     @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
     @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
@@ -55,7 +56,8 @@ struct CreateObjectApp: App {
                 .environmentObject(dimensionPickerViewModel)
                 .environmentObject(dimensionStepperViewModel)
                 .environmentObject(originPickerViewModel)
-            
+                .environmentObject(originStepperViewModel)
+                .environmentObject(bilateralPartPresenceViewModel)
             
                 .environmentObject(movementDataGetter)
                

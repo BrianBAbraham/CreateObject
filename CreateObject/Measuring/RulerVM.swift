@@ -38,6 +38,7 @@ class RulerViewModel: ObservableObject {
     let rulerDataBackGround: RulerDataBackground
     var rulerMarks: RulerDataMarks
   
+    @Published var objectName: String = ObjectDataService.shared.objectType.rawValue
     init(
         _ numberSpan: Double = 3000.0,
         _ width: Double = 170.0
@@ -70,6 +71,14 @@ class RulerViewModel: ObservableObject {
             rulerMarks: rulerMarks.getMarksDictionary(),
             rulerNumbers: [:]
         )
+        
+        ObjectDataService.shared.$objectType
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newData in
+               // self?.objectType = newData
+                self?.objectName = newData.rawValue
+            }
+            .store(in: &self.cancellables)
         
         
         MeasurementSystemService.shared.$unitSystem

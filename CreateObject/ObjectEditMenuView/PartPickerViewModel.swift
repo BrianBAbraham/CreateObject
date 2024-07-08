@@ -7,14 +7,28 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class PartPickerViewModel: ObservableObject {
     
+    var partBinding: Binding<String> {
+        Binding<String>(
+            get: { self.getObjectSensitiveNameForPart()  },
+            set: { self.setPartToEdit($0) }
+        )
+    }
+    
     @Published var objectType = ObjectDataService.shared.objectType
     
-    @Published var oneOfAllEditablePartForObjectBeforeEdit: [String] = []
+    //@Published
+    var oneOfAllEditablePartForObjectBeforeEdit: [String] = []
     
-    @Published var oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit: [String] = []
+    //@Published
+    var oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit: [String] = []
+    
+    
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
+    
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -29,11 +43,16 @@ class PartPickerViewModel: ObservableObject {
     ]
     
     init() {
+        ObjectEditService.shared.$partToEdit
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.partToEdit,on: self)
+            .store(in: &cancellables)
         
         ObjectDataService.shared.$objectType
             .sink { [weak self] newData in
                 self?.objectType = newData
                 self?.oneOfAllEditablePartForObjectBeforeEdit = self?.getOneOfAllEditablePartForObjectBeforeEdit() ?? []
+                
                 self?.oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit = self?.getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit() ?? []
              
             }
@@ -41,6 +60,10 @@ class PartPickerViewModel: ObservableObject {
     }
     
     
+    func getObjectSensitiveNameForPart() -> String {
+        PartToDisplayInMenu([partToEdit], objectType).name
+    }
+   
     func getOneOfAllPartForObjectBeforeEdit() -> [Part] {
             AllPartInObject.getOneOfAllPartInObjectBeforeEdit(objectType)
       }
@@ -91,10 +114,24 @@ class PartPickerViewModel: ObservableObject {
     }
     
     
-    func setPartToEdit(_ partName: String) {
+    func setPartToEdit(_ menuPartName: String) {
+       
+        let index = oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit.firstIndex(where: { $0 == menuPartName }) ?? 0
+        
+        let partName =
+        oneOfAllEditablePartForObjectBeforeEdit[index]
+        
+        
         guard let part = Part(rawValue: partName) else {
             fatalError("no part for that part name")
         }
+        
+        print(part.rawValue)
+        
         ObjectEditService.shared.setPartToEdit(part)
+        
+        resetForNewPartEdit()
     }
 }
+
+

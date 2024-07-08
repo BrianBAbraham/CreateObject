@@ -6,8 +6,26 @@
 //
 
 import SwiftUI
-
 struct PartPickerView: View {
+
+    @EnvironmentObject var partPickerVM: PartPickerViewModel
+  
+    var body: some View {
+        ZStack {
+            Picker("", selection: partPickerVM.partBinding
+            ) {
+                ForEach(partPickerVM.oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit, id: \.self) { item in
+                    Text(item)
+                }
+            }
+
+        }
+    }
+}
+
+
+
+struct PartPickerViewX: View {
 
     @EnvironmentObject var partPickerVM: PartPickerViewModel
     @State private var selectedMenuNameItem: String
@@ -53,8 +71,6 @@ struct PartPickerView: View {
                     
                     partPickerVM.setPartToEdit(menuItemsUsingPart[index])
                     
-                    partPickerVM.resetForNewPartEdit()
-                    
                 }
                 .onChange(of: partPickerVM.objectType) { oldValue, newValue in
                     //reset if new object
@@ -70,7 +86,4 @@ struct PartPickerView: View {
             }
         }
     }
-    
-    
-
 }

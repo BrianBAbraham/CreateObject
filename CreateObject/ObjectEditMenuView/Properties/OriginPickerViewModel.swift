@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-class OriginPickerViewModel: DimensionBaseViewModel {
+class OriginPickerViewModel: PropertyEditBaseViewModel {
     var originPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
             get: { self.originPropertyToEdit },
@@ -18,7 +18,9 @@ class OriginPickerViewModel: DimensionBaseViewModel {
     }
     
     @Published var originPropertyToEdit = ObjectEditService.shared.originPropertyToEdit
+    
     @Published var editableOriginExist = false
+    
     @Published var editableOrigin: [PartTag] = []
     
    @Published var partToEdit = ObjectEditService.shared.partToEdit
@@ -47,8 +49,7 @@ class OriginPickerViewModel: DimensionBaseViewModel {
     
     
     func setOriginPropertyToEdit(_ value: PartTag){
-        print("DETECT")
-        print(value)
+        
         ObjectEditService.shared.setOriginPropertyToEdit(value)
     }
     
@@ -69,6 +70,7 @@ class OriginPickerViewModel: DimensionBaseViewModel {
                 switch displayPart {
                 case .seat:
                     if objectType == .showerTray {
+                        
                         return []
                     } else {
                         return [.xOrigin, .yOrigin]
@@ -92,6 +94,8 @@ class OriginPickerViewModel: DimensionBaseViewModel {
         editableOrigin = getPropertiesForOriginPicker(partToEdit)
         editableOriginExist =
             editableOrigin == [] ? false: true
-       
+//        print(objectType)
+//       print (editableOriginExist)
+//        print("\n")
     }
 }

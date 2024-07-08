@@ -14,9 +14,9 @@ struct PartOriginAndDimensionEditView: View {
    
             VStack {
 
-                DimensionPickerAndStepperView()
+                DimensionPickerAndStepperContainerView()
                     
-                OriginPickerAndStepperView()
+                OriginPickerAndStepperContainerView()
             }
     }
 }

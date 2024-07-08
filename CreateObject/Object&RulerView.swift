@@ -40,7 +40,7 @@ struct ObjectAndRulerView: View {
   //  let uniquePartNames: [String]
     
     var objectName: String {
-        objectPickVM.objectName
+        rulerVM.objectName
     }
     
     let objectFrameSize: Dimension

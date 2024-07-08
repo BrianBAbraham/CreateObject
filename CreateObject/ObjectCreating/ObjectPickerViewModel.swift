@@ -7,42 +7,71 @@
 
 import Foundation
 import Combine
-  
+import SwiftUI
 
 class ObjectPickerViewModel: ObservableObject {
+    
+    var objectPickerBinding: Binding<String> {
+        Binding<String> (
+            get: { self.objectType.rawValue },
+            set: { self.onChangeOfPicker($0) }
+        )
+    }
    
-    @Published var objectName: String = ObjectDataService.shared.objectType.rawValue
-
+    @Published var allObjectsName: [String] = ObjectChainLabel.sortedNames
+    
     var userEditedSharedDics: UserEditedDictionaries = DictionaryService.shared.userEditedSharedDics
 
-    var objectType: ObjectTypes = ObjectDataService.shared.objectType
+    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
     
     private var cancellables: Set<AnyCancellable> = []
     
     init() {
-
+        
         let _ = ObjectDataMediator.shared
         
+        ObjectDataService.shared.$objectType
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newData in
+                self?.objectType = newData
+            }
+            .store(in: &cancellables)
+        
         DictionaryService.shared.$userEditedSharedDics
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] newData in
                 self?.userEditedSharedDics = newData
             }
             .store(in: &self.cancellables)
-        
-        ObjectDataService.shared.$objectType
-            .sink { [weak self] newData in
-                self?.objectType = newData
-                self?.objectName = newData.rawValue
-            }
-            .store(in: &self.cancellables)
     }
-}
-
-
-//MARK: RESET/MODIFY
-extension ObjectPickerViewModel {
     
-    func modifyObjectByCreatingFromName(){
+    func onChangeOfPicker(_ objectName: String) {
+        guard let newObjectType = ObjectTypes(rawValue: objectName) else {
+            fatalError("Invalid object type")
+        }
+
+        ObjectDataService.shared.setObjectType(newObjectType)
+
+        // Delay the following code to ensure objectType is updated
+        DispatchQueue.main.async { [weak self] in
+            self?.resetObjectByCreatingFromName()
+            ObjectEditService.shared.resetPartToEdit()
+        }
+    }
+    
+    func resetObjectByCreatingFromName() {
+        // DIMENSIONCHANGE
+        DictionaryService.shared.dimensionUserEditedDicReseter()
+        
+        // ANGLECHANGE
+        DictionaryService.shared.angleUserEditedDicReseter()
+        
+        DictionaryService.shared.partIdsUserEditedDicReseter()
+        
+        modifyObjectByCreatingFromName()
+    }
+    
+    func modifyObjectByCreatingFromName() {
         let objectImageData = ObjectImageData(
             objectType,
             userEditedSharedDics
@@ -52,44 +81,7 @@ extension ObjectPickerViewModel {
             objectImageData
         )
     }
-
-    
-    func onChangeOfPicker(_ objectName: String) {
-        setCurrentObjectName(objectName)
-        
-        resetObjectByCreatingFromName()
-        
-        ObjectEditService.shared.resetPartToEdit()
-        
-        func setCurrentObjectName(_ objectName: String){
-            guard let objectType = ObjectTypes(rawValue: objectName) else {
-                fatalError()
-             }
-
-            ObjectDataService.shared.setObjectType(objectType)
-            
-        }
-        
-        
-        func resetObjectByCreatingFromName() {
-            //DIMENSIONCHANGE
-            DictionaryService.shared.dimensionUserEditedDicReseter()
-            
-            //ANGLECHANGE
-            DictionaryService.shared.angleUserEditedDicReseter()
-            
-            DictionaryService.shared.partIdsUserEditedDicReseter()
-            
-            modifyObjectByCreatingFromName()
-        }
-    }
-    
-
 }
-
-
-
-
 
 
 
