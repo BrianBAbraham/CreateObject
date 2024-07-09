@@ -15,7 +15,7 @@ import Foundation
 ///where extant, instead of default values
 ///during intitialisation
 ///partChainId  are wrapped in OneOrTwo
-struct UserEditedDictionaries {
+class UserEditedDictionaries {
     //relating to Part
     var dimensionUserEditedDic: Part3DimensionDictionary
     
@@ -23,7 +23,6 @@ struct UserEditedDictionaries {
     var angleMinMaxDic: AngleMinMaxDictionary
     
     //relating to Object
-//    var parentToPartOriginUserEditedDicNew: [PartId: PositionAsIosAxes]
     var originOffsetUserEditedDic: PositionDictionary
     var parentToPartOriginUserEditedDic: PositionDictionary
     var parentToPartOriginOffsetUserEditedDic: PositionDictionary
@@ -43,7 +42,7 @@ struct UserEditedDictionaries {
             [:] ,
         parentToPartOriginUserEditedDic: PositionDictionary = [:],
         parentToPartOriginOffsetUserEditedDic: PositionDictionary = [:],
-//        parentToPartOriginUserEditedDicNew: [PartId: PositionAsIosAxes] = [:],
+
         objectToParOrigintUserEditedDic: PositionDictionary = [:],
         originOffsetUserEditedDic: PositionDictionary = [:],
         anglesDic: AnglesDictionary =
@@ -59,7 +58,7 @@ struct UserEditedDictionaries {
    
         self.parentToPartOriginUserEditedDic = parentToPartOriginUserEditedDic
         self.parentToPartOriginOffsetUserEditedDic = parentToPartOriginUserEditedDic
-//        self.parentToPartOriginUserEditedDicNew = parentToPartOriginUserEditedDicNew
+
         self.objectToPartOrigintUserEditedDic = objectToParOrigintUserEditedDic
         self.originOffsetUserEditedDic = originOffsetUserEditedDic
         self.angleUserEditedDic =

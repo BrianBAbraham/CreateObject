@@ -182,11 +182,12 @@ struct EditObjectView: View {
             .onChange(of: recenterVM.getRecenterState()) {
                 uniqueKey += 1
             }
+           
             .id(uniqueKey)//ensures redraw
             
      
             VStack {
-//                ObjectRulerRecenter()
+                ObjectRulerRecenter()
                 Spacer()
                 
                 ZStack{
@@ -199,8 +200,8 @@ struct EditObjectView: View {
                         }
                         
                         HStack{
-                            ConditionalBilateralPartSidePickerView()
-                           //ConditionalBilateralPartPresence()
+                        ConditionalBilateralPartSidePickerView()
+                     //      ConditionalBilateralPartPresence()
                             ConditionaUniPartPresence()
                         }
                         

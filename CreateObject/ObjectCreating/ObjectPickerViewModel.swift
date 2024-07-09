@@ -45,6 +45,7 @@ class ObjectPickerViewModel: ObservableObject {
             .store(in: &self.cancellables)
     }
     
+    
     func onChangeOfPicker(_ objectName: String) {
         guard let newObjectType = ObjectTypes(rawValue: objectName) else {
             fatalError("Invalid object type")
@@ -55,9 +56,11 @@ class ObjectPickerViewModel: ObservableObject {
         // Delay the following code to ensure objectType is updated
         DispatchQueue.main.async { [weak self] in
             self?.resetObjectByCreatingFromName()
+            
             ObjectEditService.shared.resetPartToEdit()
         }
     }
+    
     
     func resetObjectByCreatingFromName() {
         // DIMENSIONCHANGE
@@ -70,6 +73,7 @@ class ObjectPickerViewModel: ObservableObject {
         
         modifyObjectByCreatingFromName()
     }
+    
     
     func modifyObjectByCreatingFromName() {
         let objectImageData = ObjectImageData(

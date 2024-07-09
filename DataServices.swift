@@ -228,7 +228,7 @@ class MovementDictionaryForScreenService {
 
 
 
-class ObjectEditService {
+class ObjectEditService: ObservableObject {
     static let defaultPart = Part.mainSupport
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var choiceOfEditForSide: SidesAffected = .both
@@ -282,7 +282,7 @@ class ObjectEditService {
 //}
 
 
-class DictionaryService {
+class DictionaryService: ObservableObject {
     @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
 
     @Published var screenDictionary: CornerDictionary = [:]
@@ -315,7 +315,7 @@ class DictionaryService {
     
 
     func objectChainLabelsUserEditDicReseter(_ objectType: ObjectTypes) {
-        objectChainLabelsUserEditDic.removeValue(forKey: objectType)
+        userEditedSharedDics.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
        // userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
     
@@ -333,20 +333,19 @@ class DictionaryService {
     
 
     func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
-        print(entry)
-       partIdsUserEditedDic += entry
-       // userEditedSharedDics = userEditedSharedDics // Manually trigger update
+        userEditedSharedDics.partIdsUserEditedDic += entry
+
     }
     
     
     func partIdsUserEditedDicReseter(_ part: Part) {
-        partIdsUserEditedDic.removeValue(forKey: part)
+        userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
       //  userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
     
     
     func partIdsUserEditedDicReseter() {
-        partIdsUserEditedDic = [:]
+        userEditedSharedDics.partIdsUserEditedDic = [:]
        // userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
     

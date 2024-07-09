@@ -23,7 +23,7 @@ class MovementDataViewModel: ObservableObject {
     
     @Published var maximumnDimensionOfMotion = 0.0
     
-   var movementDictionaryForScreen: CornerDictionary =
+   @Published var movementDictionaryForScreen: CornerDictionary =
         MovementDictionaryForScreenService.shared.movementDictionaryForScreen
     
     var movementImageData: MovementImageData =
@@ -31,7 +31,7 @@ class MovementDataViewModel: ObservableObject {
 
     var uniquePartNames: [String] = []
     
-    var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
+   @Published var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
     
     private var cancellables: Set<AnyCancellable> = []
     

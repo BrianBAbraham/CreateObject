@@ -47,3 +47,55 @@ struct BilateralPartPresenceView: View {
         }
     }
 }
+
+
+//import Combine
+//
+//struct MyStruct {
+//    static let shared = MyStruct()
+//    var firstProperty: Int = 0
+//    var secondProperty: Int = 0
+//}
+//
+//class MyStructService {
+//    @Published var myStruct: MyStruct = MyStruct.shared
+//    @Published var myStruct.first
+//
+//    static let shared = MyStructService()
+//    
+//    func setFirstProperty(_ value: Int){
+//        myStruct.firstProperty = value
+//    }
+//    
+//    func setSecondProperty(_ value: Int) {
+//        myStruct.secondProperty = value
+//    }
+//}
+//
+//class MyStructViewModel {
+//    var firstProperty: Int = MyStructService.shared.myStruct.firstProperty
+//    var secondProperty: Int =
+//        MyStructService.shared.myStruct.secondProperty
+//    private var cancellables: Set<AnyCancellable> = []
+//    
+//    init() {
+//        MyStructService.shared.$firstProperty
+//            .receive(on: DispatchQueue.main)
+//            .assign(to: \.firstProperty,on: self)
+//            .store(in: &cancellables)
+//        
+//    }
+//}
+
+class MyDictionaryService: ObservableObject {
+    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
+    
+    
+    
+    static let shared = DictionaryService()
+    
+    func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
+        userEditedSharedDics.partIdsUserEditedDic += entry
+
+    }
+}
