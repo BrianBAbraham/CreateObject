@@ -22,7 +22,7 @@ class ObjectDataGetterViewModel: ObservableObject {
     var currentObjectType: ObjectTypes = .fixedWheelRearDrive
 
     
-    @Published var userEditedSharedDics: UserEditedDictionaries = DictionaryService.shared.userEditedSharedDics
+    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
     
     var objectChainLabelsDefaultDic: ObjectChainLabelsDictionary = [:]
     
@@ -35,7 +35,7 @@ class ObjectDataGetterViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     
     init () {
-        DictionaryService.shared.$userEditedSharedDics
+        UserEditedDictionariesService.shared.$userEditedSharedDics
             .sink { [weak self] newData in
                 self?.userEditedSharedDics = newData
             }

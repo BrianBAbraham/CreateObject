@@ -71,7 +71,7 @@
 		FDCE3F0E299A8F9600C19F2A /* ObjectContainer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */; };
 		FDD0CAEF29DB393600203BE5 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD0CAEE29DB393600203BE5 /* Screen.swift */; };
 		FDD316642BA0B93400BF4E9E /* ObjectSpecification.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD316632BA0B93400BF4E9E /* ObjectSpecification.swift */; };
-		FDD422E62B9F1C04005B7950 /* BilateraPartPresence.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD422E52B9F1C04005B7950 /* BilateraPartPresence.swift */; };
+		FDD422E62B9F1C04005B7950 /* BilateraPartPresenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD422E52B9F1C04005B7950 /* BilateraPartPresenceView.swift */; };
 		FDD422E82B9F1D19005B7950 /* ConditionalBilateralPartSidePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD422E72B9F1D19005B7950 /* ConditionalBilateralPartSidePickerView.swift */; };
 		FDD7247D29B0DD1000B50259 /* Development.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD7247C29B0DD1000B50259 /* Development.swift */; };
 		FDDEA3C52C342C2E008C2097 /* DimensionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA3C42C342C2E008C2097 /* DimensionPickerView.swift */; };
@@ -157,7 +157,7 @@
 		FDCE3F0D299A8F9600C19F2A /* ObjectContainer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ObjectContainer.xcdatamodel; sourceTree = "<group>"; };
 		FDD0CAEE29DB393600203BE5 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		FDD316632BA0B93400BF4E9E /* ObjectSpecification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSpecification.swift; sourceTree = "<group>"; };
-		FDD422E52B9F1C04005B7950 /* BilateraPartPresence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilateraPartPresence.swift; sourceTree = "<group>"; };
+		FDD422E52B9F1C04005B7950 /* BilateraPartPresenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilateraPartPresenceView.swift; sourceTree = "<group>"; };
 		FDD422E72B9F1D19005B7950 /* ConditionalBilateralPartSidePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalBilateralPartSidePickerView.swift; sourceTree = "<group>"; };
 		FDD7247C29B0DD1000B50259 /* Development.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Development.swift; sourceTree = "<group>"; };
 		FDDEA3C42C342C2E008C2097 /* DimensionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionPickerView.swift; sourceTree = "<group>"; };
@@ -354,7 +354,7 @@
 				FD271A512B9C932300444BD2 /* PartOriginAndDimensionEditView.swift */,
 				FDD422E72B9F1D19005B7950 /* ConditionalBilateralPartSidePickerView.swift */,
 				FDDEA3CC2C34338C008C2097 /* ConditionalBilateralPartSidePickerViewModel.swift */,
-				FDD422E52B9F1C04005B7950 /* BilateraPartPresence.swift */,
+				FDD422E52B9F1C04005B7950 /* BilateraPartPresenceView.swift */,
 				FDF17DDA2BF1FCBF0074B392 /* PartPickerView.swift */,
 				FD8853DC2C33135D00ABEC7D /* PartPickerViewModel.swift */,
 			);
@@ -487,7 +487,7 @@
 				FDD316642BA0B93400BF4E9E /* ObjectSpecification.swift in Sources */,
 				FD93EFBC29DC7EB900456380 /* ObjectShowMenuVM.swift in Sources */,
 				FDCE3F0E299A8F9600C19F2A /* ObjectContainer.xcdatamodeld in Sources */,
-				FDD422E62B9F1C04005B7950 /* BilateraPartPresence.swift in Sources */,
+				FDD422E62B9F1C04005B7950 /* BilateraPartPresenceView.swift in Sources */,
 				FD400C5F2BF7BF3A004242D4 /* PhotoView.swift in Sources */,
 				FD400C4D2BF78593004242D4 /* PartNames.swift in Sources */,
 				FD84594B29B38B6B00417084 /* ObjectPickerViewModel.swift in Sources */,

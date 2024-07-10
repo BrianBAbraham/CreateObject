@@ -15,7 +15,7 @@ import Foundation
 ///where extant, instead of default values
 ///during intitialisation
 ///partChainId  are wrapped in OneOrTwo
-class UserEditedDictionaries {
+class UserEditedDictionaries: ObservableObject {
     //relating to Part
     var dimensionUserEditedDic: Part3DimensionDictionary
     
@@ -30,8 +30,8 @@ class UserEditedDictionaries {
 
     
     //relating to ObjectImage
-    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>]
-    var objectChainLabelsUserEditDic: ObjectChainLabelsDictionary
+   @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>]
+    @Published var objectChainLabelsUserEditDic: ObjectChainLabelsDictionary
    
     static var shared = UserEditedDictionaries()
     

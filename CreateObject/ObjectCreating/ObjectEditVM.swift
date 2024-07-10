@@ -46,7 +46,7 @@ class ObjectEditViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     
     init () {
-        DictionaryService.shared.$userEditedSharedDics
+        UserEditedDictionariesService.shared.$userEditedSharedDics
             .sink { [weak self] newData in
                 self?.userEditedSharedDics = newData
             }
@@ -246,7 +246,7 @@ extension ObjectEditViewModel {
                 z: ZeroValue.angle
             )]
         
-        DictionaryService.shared.angleUserEditedDicModifier(
+        UserEditedDictionariesService.shared.angleUserEditedDicModifier(
             angleUserEditedDicEntry
         )
     }
@@ -255,7 +255,7 @@ extension ObjectEditViewModel {
     func setPartIdDicInKeyToNilRestoringDefault (_ partChainWithoutRoot: [Part]) {
         //PARTIDUSEREDITEDICCHANGE
         for part in partChainWithoutRoot {
-            DictionaryService.shared.partIdsUserEditedDicReseter(part)
+            UserEditedDictionariesService.shared.partIdsUserEditedDicReseter(part)
         }
     }
     
@@ -307,13 +307,13 @@ extension ObjectEditViewModel {
             //provide id for the parts of the chain being edited
             //as not all the chain may be removed
             for index in firstIndex..<partChain.count {
-                DictionaryService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
+                UserEditedDictionariesService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
             }
         case .none:
             removeChainLabelFromObject(part)
         case .both:
             setPartIdDicInKeyToNilRestoringDefault(partChain)
-            DictionaryService.shared.objectChainLabelsUserEditDicReseter(objectType)
+            UserEditedDictionariesService.shared.objectChainLabelsUserEditDicReseter(objectType)
         }
             
         setNewValueForChoice()
@@ -405,7 +405,7 @@ extension ObjectEditViewModel {
                     currentDimension,
                     propertyToEdit
                 )
-                DictionaryService.shared.dimensionUserEditedDicModifier(
+                UserEditedDictionariesService.shared.dimensionUserEditedDicModifier(
                     [name: newDimension]
                 )
             case .xOrigin, .yOrigin:
@@ -419,7 +419,7 @@ extension ObjectEditViewModel {
                     currentOrigin,
                     id
                 )
-                DictionaryService.shared.originOffsetUserEdtiedDicModifier(
+                UserEditedDictionariesService.shared.originOffsetUserEdtiedDicModifier(
                     [name: newOriginOffset]
                 )
             default: break
@@ -556,7 +556,7 @@ extension ObjectEditViewModel {
             dimensionPropertyToEdit
         )
         
-        DictionaryService.shared.dimensionUserEditedDicModifier(
+        UserEditedDictionariesService.shared.dimensionUserEditedDicModifier(
             [name: newDimension]
         )
     }
@@ -572,13 +572,13 @@ extension ObjectEditViewModel {
     func removeChainLabelFromObject(
         _ chainLabel: Part) {
         guard let currentObjectChainLabels =
-                DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] ??
+                UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] ??
                     ObjectChainLabel.dictionary[objectType] else {
                           fatalError()
                         }
         let newChainLabels =
             currentObjectChainLabels.filter { $0 != chainLabel}
-        DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] = newChainLabels
+        UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] = newChainLabels
     }
     
     
@@ -593,7 +593,7 @@ extension ObjectEditViewModel {
         }
         curentObjectChainLabels += [removalThenReplacment[1]]
 
-        DictionaryService.shared.userEditedSharedDics
+        UserEditedDictionariesService.shared.userEditedSharedDics
             .objectChainLabelsUserEditDic[objectType] =
                 curentObjectChainLabels
     }
@@ -610,7 +610,7 @@ extension ObjectEditViewModel {
         }
         let newChainLabels = currentObjectChainLabels + [chainLabel]
         
-        DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] =
+        UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[objectType] =
             newChainLabels
     }
 }

@@ -17,7 +17,7 @@ class PropertyEditBaseViewModel: ObservableObject {
     
     var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
     
-    var userEditedSharedDics = DictionaryService.shared.userEditedSharedDics
+    var userEditedSharedDics = UserEditedDictionariesService.shared.userEditedSharedDics
     
     var partDataDic = ObjectDataService.shared.partDataDic
   
@@ -42,7 +42,7 @@ class PropertyEditBaseViewModel: ObservableObject {
             .assign(to: \.objectType,on: self)
             .store(in: &cancellables)
         
-        DictionaryService.shared.$userEditedSharedDics
+        UserEditedDictionariesService.shared.$userEditedSharedDics
             .receive(on: DispatchQueue.main)
             .assign(to: \.userEditedSharedDics,on: self)
             .store(in: &cancellables)
@@ -125,13 +125,13 @@ class PropertyEditBaseViewModel: ObservableObject {
 
     
     func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected] {
-        guard let chainLabels = DictionaryService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[ObjectDataService.shared.objectType] ?? ObjectDataService.shared.objectChainLabelsDefaultDic[ObjectDataService.shared.objectType] else {
+        guard let chainLabels = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[ObjectDataService.shared.objectType] ?? ObjectDataService.shared.objectChainLabelsDefaultDic[ObjectDataService.shared.objectType] else {
             fatalError()
         }
 
         var sidesPresent: [SidesAffected] = []
         if chainLabels.contains(partOrAssociatedPart) {
-            let oneOrTwoId: OneOrTwo<PartTag> = DictionaryService.shared.userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(ObjectDataService.shared.objectType, partOrAssociatedPart).forPart
+            let oneOrTwoId: OneOrTwo<PartTag> = UserEditedDictionariesService.shared.userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(ObjectDataService.shared.objectType, partOrAssociatedPart).forPart
             sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
         } else {
             sidesPresent = [.none]
@@ -265,7 +265,7 @@ class PropertyEditBaseViewModel: ObservableObject {
                     currentDimension,
                     propertyToEdit
                 )
-                DictionaryService.shared.dimensionUserEditedDicModifier(
+                UserEditedDictionariesService.shared.dimensionUserEditedDicModifier(
                     [name: newDimension]
                 )
             case .xOrigin, .yOrigin:
@@ -279,7 +279,7 @@ class PropertyEditBaseViewModel: ObservableObject {
                     currentOrigin,
                     id
                 )
-                DictionaryService.shared.originOffsetUserEdtiedDicModifier(
+                UserEditedDictionariesService.shared.originOffsetUserEdtiedDicModifier(
                     [name: newOriginOffset]
                 )
             default: break

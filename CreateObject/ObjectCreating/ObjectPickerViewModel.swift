@@ -20,7 +20,7 @@ class ObjectPickerViewModel: ObservableObject {
    
     @Published var allObjectsName: [String] = ObjectChainLabel.sortedNames
     
-    var userEditedSharedDics: UserEditedDictionaries = DictionaryService.shared.userEditedSharedDics
+    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
 
     @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
     
@@ -37,7 +37,7 @@ class ObjectPickerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        DictionaryService.shared.$userEditedSharedDics
+        UserEditedDictionariesService.shared.$userEditedSharedDics
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newData in
                 self?.userEditedSharedDics = newData
@@ -64,12 +64,12 @@ class ObjectPickerViewModel: ObservableObject {
     
     func resetObjectByCreatingFromName() {
         // DIMENSIONCHANGE
-        DictionaryService.shared.dimensionUserEditedDicReseter()
+        UserEditedDictionariesService.shared.dimensionUserEditedDicReseter()
         
         // ANGLECHANGE
-        DictionaryService.shared.angleUserEditedDicReseter()
+        UserEditedDictionariesService.shared.angleUserEditedDicReseter()
         
-        DictionaryService.shared.partIdsUserEditedDicReseter()
+        UserEditedDictionariesService.shared.partIdsUserEditedDicReseter()
         
         modifyObjectByCreatingFromName()
     }

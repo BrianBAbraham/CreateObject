@@ -228,7 +228,7 @@ class MovementDictionaryForScreenService {
 
 
 
-class ObjectEditService: ObservableObject {
+class ObjectEditService {
     static let defaultPart = Part.mainSupport
     @Published var scopeOfEditForSide: SidesAffected = .both
     @Published var choiceOfEditForSide: SidesAffected = .both
@@ -280,78 +280,105 @@ class ObjectEditService: ObservableObject {
 //    }
 //    
 //}
+//class ScreenDictionaryService {
+//    static let shared = ScreenDictionaryService()
+//    
+//    @Published var screenDictionary: CornerDictionary = [:]
+//    
+//    func setScreenDictionary(_ dictionary: CornerDictionary) {
+//        screenDictionary = dictionary
+//    }
+//}
 
 
-class DictionaryService: ObservableObject {
-    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared
 
-    @Published var screenDictionary: CornerDictionary = [:]
-    
+
+
+class UserEditedDictionariesService: ObservableObject {
+    @Published var  userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared 
+//    {
+//        didSet{
+//            objectWillChange.send()
+//        }
+//    }
     @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = [:]
     
     @Published var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] = [:]
 
-    static let shared = DictionaryService()
+    static let shared = UserEditedDictionariesService()
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        userEditedSharedDics.$partIdsUserEditedDic
+            .assign(to: \.partIdsUserEditedDic, on: self)
+            .store(in: &cancellables)
+        
+        userEditedSharedDics.$objectChainLabelsUserEditDic
+            .assign(to: \.objectChainLabelsUserEditDic, on: self)
+            .store(in: &cancellables)
+    }
+    
     
     func angleUserEditedDicModifier(_ entry: AnglesDictionary){
         userEditedSharedDics.angleUserEditedDic += entry
-        //userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
+    
     
     func angleUserEditedDicReseter(){
         userEditedSharedDics.angleUserEditedDic = [:]
-       // userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
+    
     
     func dimensionUserEditedDicModifier(_ entry: Part3DimensionDictionary){
         userEditedSharedDics.dimensionUserEditedDic += entry
-       // userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
+    
     
     func dimensionUserEditedDicReseter(){
         userEditedSharedDics.dimensionUserEditedDic = [:]
-       // userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
     
 
     func objectChainLabelsUserEditDicReseter(_ objectType: ObjectTypes) {
         userEditedSharedDics.objectChainLabelsUserEditDic.removeValue(forKey: objectType)
-       // userEditedSharedDics = userEditedSharedDics // Manually trigger update
+        
+        userEditedSharedDics = UserEditedDictionaries.shared
+    }
+    
+    
+    func objectChainLabelsUserEditDicModifier(_ objectType: ObjectTypes, _ chainLabels: [Part]) {
+        userEditedSharedDics.objectChainLabelsUserEditDic += [objectType: chainLabels]
+        
+        userEditedSharedDics = UserEditedDictionaries.shared
     }
     
     
     func originOffsetUserEdtiedDicModifier(_ entry: PositionDictionary) {
         userEditedSharedDics.parentToPartOriginOffsetUserEditedDic += entry
-      //  userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
     
     
     func originUserEdtiedDicModifier(_ entry: PositionDictionary) {
         userEditedSharedDics.parentToPartOriginUserEditedDic += entry
-     //   userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
     
 
     func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
         userEditedSharedDics.partIdsUserEditedDic += entry
-
+        userEditedSharedDics = UserEditedDictionaries.shared
     }
     
     
     func partIdsUserEditedDicReseter(_ part: Part) {
         userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
-      //  userEditedSharedDics = userEditedSharedDics // Manually trigger update
+        userEditedSharedDics = UserEditedDictionaries.shared
     }
     
     
     func partIdsUserEditedDicReseter() {
         userEditedSharedDics.partIdsUserEditedDic = [:]
-       // userEditedSharedDics = userEditedSharedDics // Manually trigger update
     }
     
 
-    func setScreenDictionary(_ dictionary: CornerDictionary) {
-        screenDictionary = dictionary
-//        userEditedSharedDics = userEditedSharedDics // Manually trigger update
-    }
 }
