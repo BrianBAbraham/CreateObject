@@ -9,28 +9,25 @@ import Foundation
 import Combine
 import SwiftUI
 
-class BilateralPartPresenceViewModel: ObservableObject {
-    
-    @Published var partToEdit = ObjectEditService.shared.partToEdit
-    
-    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
-    
-    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
-    
-    @Published var objectChainLabelsDefaultDic: ObjectChainLabelsDictionary = [:]
-    
-    @Published var scopeOfEditForSide: SidesAffected = ObjectEditService.shared.scopeOfEditForSide
-    
-    @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
-    
-    @Published var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
-    
+class BilateralPartSidePresenceViewModel: ObservableObject {
+
+    var partToEdit = ObjectEditService.shared.partToEdit
+
+    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
+
+    var objectType: ObjectTypes = ObjectDataService.shared.objectType
+
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+
+    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
+
     @Published var showMenu = false
-    
+
+    var leftPresent = true
+    var rightPresent = true
+
     private var cancellables: Set<AnyCancellable> = []
-    
-    @Published var leftPresent = true
-    @Published var rightPresent = true
+
     
     
      var leftBinding: Binding<Bool> {
@@ -55,10 +52,25 @@ class BilateralPartPresenceViewModel: ObservableObject {
             .assign(to: \.userEditedSharedDics,on: self)
             .store(in: &cancellables)
         
-        
         UserEditedDictionariesService.shared.$partIdsUserEditedDic
             .receive(on: DispatchQueue.main)
             .assign(to: \.partIdsUserEditedDic,on: self)
+            .store(in: &cancellables)
+        
+        ObjectEditService.shared.$partToEdit
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newData in
+                self?.partToEdit = newData
+                self?.getBilateralPresenceMenuStatus(newData)
+                //update new part with its prior presence
+                self?.leftPresent = self?.getIfSideIsPresentFromUserEditedDic(.left) ?? true
+                self?.rightPresent = self?.getIfSideIsPresentFromUserEditedDic(.right) ?? true
+            }
+            .store(in: &self.cancellables)
+        
+        ObjectDataService.shared.$objectType
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.objectType,on: self)
             .store(in: &cancellables)
         
         UserEditedDictionariesService.shared.$objectChainLabelsUserEditDic
@@ -66,108 +78,69 @@ class BilateralPartPresenceViewModel: ObservableObject {
             .assign(to: \.objectChainLabelsUserEditDic,on: self)
             .store(in: &cancellables)
         
-        ObjectEditService.shared.$partToEdit
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.partToEdit = newData
-                self?.resetPartPresenceForNewPart()
-            }
-            .store(in: &self.cancellables)
+        getBilateralPresenceMenuStatus(partToEdit)
         
-        ObjectEditService.shared.$scopeOfEditForSide
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.scopeOfEditForSide,on: self)
-            .store(in: &cancellables)
-        
-        ObjectDataService.shared.$objectType
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.objectType,on: self)
-            .store(in: &cancellables)
-        
-        ObjectDataService.shared.$objectChainLabelsDefaultDic
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.objectChainLabelsDefaultDic,on: self)
-            .store(in: &cancellables)
-        
-        showMenu = getBilateralPresenceMenuStatus(partToEdit)
     }
     
     
-    func resetPartPresenceForNewPart(){
-        showMenu = getBilateralPresenceMenuStatus(partToEdit)
+    func getIfSideIsPresentFromUserEditedDic(_ side: SidesAffected) -> Bool{
         
-        if let ids = partIdsUserEditedDic[partToEdit] {
-            if ids.one == .id0 {
-                leftPresent = true
-                rightPresent = false
-            }
-            
-            if ids.one == .id1 {
-                rightPresent = true
-                leftPresent = false
+        var present: Bool
+        // it the object has an entry in objectChainLabelsUserEditDic
+        // chain labels have been modified
+        if let chainLabels = objectChainLabelsUserEditDic[objectType] {
+            //if the partToEdit is not present no part present either side
+            if !chainLabels.contains(partToEdit) {
+                present = false
+            } else {
+               //if there is a chain label has that side been removed
+              present = whichSidePresent()
             }
         } else {
-            //if no edites then both sides present
-            leftPresent = true
-            rightPresent = true
-        }
-    }
-    
-    
-    func getSidesPresentGivenPossibleUserEdit() -> [SidesAffected] {
-        //source of truth is the dic or the default struct
-        let oneOrTwoId = partIdsUserEditedDic[partToEdit] ?? OneOrTwoId(
-            objectType,
-            partToEdit
-        ).forPart
-        
-        guard let chainLabels = objectChainLabelsUserEditDic[objectType] ?? objectChainLabelsDefaultDic[objectType] else {
-            fatalError()
+            //if no chain label modifications still need to check for presence on side
+            present = whichSidePresent()
         }
         
-        var sidesPresent: [SidesAffected] = []
-        //the part may be removed from both sides by user edit
-        if chainLabels.contains(
-            partToEdit
-        ) {
-            sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
+        func whichSidePresent() -> Bool {
+            let oneOrTwoId: OneOrTwo = partIdsUserEditedDic[partToEdit] ?? OneOrTwoId(
+                objectType,
+                partToEdit
+            ).forPart
             
-        } else {
-            sidesPresent = [.none]
+            let sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
+        
+            return
+                sidesPresent.contains(side)
         }
-
-        return sidesPresent
+        return present
     }
-    
-
 
     
-    
-    func convertLeftRightSelectionToSideSelection(
-        _ isLeftSelected: Bool,
-        _ isRightSelected: Bool) -> SidesAffected {
-       
-        if isLeftSelected && isRightSelected {
+    func getSidesAffected() ->SidesAffected {
+        let left = getIfSideIsPresentFromUserEditedDic(.left)
+        let right = getIfSideIsPresentFromUserEditedDic(.right)
+        
+        switch (left, right) {
+        case (true, true):
             return .both
-        } else if isLeftSelected {
+        case (true, false):
             return .left
-        } else if isRightSelected {
+        case (false, true):
             return .right
-        } else {
+        case (false, false):
             return .none
         }
     }
     
-    
-    
-
+    //called if UI toggle changes
     func changeOneOrTwoStatusOfPart() {
+        
         switch (leftPresent, rightPresent) {
         case (true, true):
             //chain label must exist as one was previously true
-            //and only one change at at time possible
+            //asonly one change at at time possible
             //if both present return to default
-            setPartIdDicInKeyToNilRestoringDefault()
+            setPartIdDicInKeyToNilRestoringDefaultForPart()
             
         //one added from none or one removed from two
         case(true, false), (false, true):
@@ -176,38 +149,21 @@ class BilateralPartPresenceViewModel: ObservableObject {
                 .one(one: .id1)  //if right requires .i1 for x >= 0
          
             //one removed from two
-            if scopeOfEditForSide == .both {
+            if getSidesAffected() == .both {
                 modifyPartIdsUserEditedDic(newId)
             }
             
             //one added from none
-            if scopeOfEditForSide == .none {
-    
+            if getSidesAffected() == .none {
                 //the chain label will have been removed
                 restoreChainLabelToObject(partToEdit)
-
                 modifyPartIdsUserEditedDic(newId)
             }
             
         case(false, false):
-            
             //remove chainLabel so part does not exist
             removeChainLabelFromObject(partToEdit)
         }
-            
-        updateScopeOfEdit()
-        
-            func updateScopeOfEdit() {
-                let sidesPresent = //.both/.left/.right/.none
-                    convertLeftRightSelectionToSideSelection(
-                        leftPresent,
-                        rightPresent)
-                    
-                let partChain = LabelInPartChainOut(partToEdit).partChain
-                
-                ObjectEditService.shared.setScopeOfEditForSide(sidesPresent)
-            }
-
         
         //finally create a new object with the new specification
        modifyObjectByCreatingFromName()
@@ -258,42 +214,39 @@ class BilateralPartPresenceViewModel: ObservableObject {
                 
                 UserEditedDictionariesService.shared.objectChainLabelsUserEditDicModifier(objectType, newChainLabels)
         }
-            
     }
     
     
     func restoreChainLabelToObject(
         _ chainLabel: Part
     ) {
-        guard let currentObjectChainLabels =
+        guard let currentObjectChainLabels = objectChainLabelsUserEditDic[objectType] ??
                 ObjectChainLabel.dictionary[objectType] else {
             fatalError(
                 "no chain labels for object \(objectType)"
             )
         }
         let newChainLabels = currentObjectChainLabels + [chainLabel]
-        
+       
         UserEditedDictionariesService.shared.objectChainLabelsUserEditDicModifier(objectType, newChainLabels)
     }
     
     
-    func setPartIdDicInKeyToNilRestoringDefault () {
+    func setPartIdDicInKeyToNilRestoringDefaultForPart () {
         let partChain = LabelInPartChainOut(partToEdit).partChain
         for part in partChain {
-            UserEditedDictionariesService.shared.partIdsUserEditedDicReseter(part)
+            UserEditedDictionariesService.shared.partIdsUserEditedDicReseterForBilateralPart(part)
         }
     }
     
     
-    func getBilateralPresenceMenuStatus(_ part: Part) -> Bool {
+    func getBilateralPresenceMenuStatus(_ part: Part) {
         let neverBilateral =
             OneOrTwoId.partWhichAreAlwaysUnilateral.contains(part)
         let rigidlyBilateral =
             (part.transformPartToPartGroup() == PartGroup.none ? false: true)
     
-        let showMenu = (!neverBilateral && !rigidlyBilateral)
-        
-        return showMenu
+        showMenu = (!neverBilateral && !rigidlyBilateral)
         
         //nb T rB T: nil
         //nb F rb F: nil

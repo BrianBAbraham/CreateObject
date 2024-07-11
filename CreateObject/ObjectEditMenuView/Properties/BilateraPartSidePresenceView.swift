@@ -11,9 +11,9 @@ import SwiftUI
 
 
 
-struct BilateralPartPresenceView: View {
+struct BilateralPartSidePresenceView: View {
 
-    @EnvironmentObject var bilateralPartPresenceVM: BilateralPartPresenceViewModel
+    @EnvironmentObject var bilateralPartPresenceVM: BilateralPartSidePresenceViewModel
 
     var body: some View {
         if bilateralPartPresenceVM.showMenu {
