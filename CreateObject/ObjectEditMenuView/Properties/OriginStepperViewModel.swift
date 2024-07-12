@@ -10,7 +10,7 @@ import Combine
 import SwiftUI
 
 
-class OriginStepperViewModel: PropertyEditBaseViewModel {
+class OriginStepperViewModel: PropertyEditBase, SharedOriginPropertyToEdit {
     var stepperValueBinding: Binding<Double> {
         Binding<Double>(
             get: { self.getInitialSliderValue(self.partToEdit,self.originPropertyToEdit) },
@@ -23,29 +23,32 @@ class OriginStepperViewModel: PropertyEditBaseViewModel {
                 self.modifyObjectByCreatingFromName() }
         )
     }
+    
     var originPropertyToEdit = ObjectEditService.shared.originPropertyToEdit
     
-    var partToEdit = ObjectEditService.shared.partToEdit
-    
-    
-    private var cancellables: Set<AnyCancellable> = []
+
+internal var cancellables: Set<AnyCancellable> = []
     
     override init() {
             super.init()
-
-        ObjectEditService.shared.$partToEdit
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.partToEdit = newData
-              
-            }
-            .store(in: &self.cancellables)
-        
-        ObjectEditService.shared.$originPropertyToEdit
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.originPropertyToEdit,on: self)
-            .store(in: &cancellables)
+        subscribeToDataService()
 
     }
-    
 }
+
+
+protocol SharedOriginPropertyToEdit: AnyObject {
+    var cancellables: Set<AnyCancellable> { get set }
+    var originPropertyToEdit: PartTag { get set }
+       
+       func subscribeToDataService()
+   }
+
+   extension SharedOriginPropertyToEdit {
+       func subscribeToDataService() {
+           ObjectEditService.shared.$originPropertyToEdit
+               .receive(on: DispatchQueue.main)
+               .assign(to: \.originPropertyToEdit,on: self)
+               .store(in: &cancellables)
+       }
+   }

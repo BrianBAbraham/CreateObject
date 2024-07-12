@@ -296,11 +296,7 @@ class ObjectEditService {
 
 class UserEditedDictionariesService: ObservableObject {
     @Published var  userEditedSharedDics: UserEditedDictionaries = UserEditedDictionaries.shared 
-//    {
-//        didSet{
-//            objectWillChange.send()
-//        }
-//    }
+
     @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = [:]
     
     @Published var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] = [:]
@@ -366,6 +362,12 @@ class UserEditedDictionariesService: ObservableObject {
 
     func partIdsUserEditedDicModifier(_ entry: [Part: OneOrTwo<PartTag>]) {
         userEditedSharedDics.partIdsUserEditedDic += entry
+        userEditedSharedDics = UserEditedDictionaries.shared
+    }
+    
+    
+    func partIdsUserEditedDicReseterForBilateralPart(_ part: Part) {
+        userEditedSharedDics.partIdsUserEditedDic += [part: .two(left: .id0, right: .id1)]
         userEditedSharedDics = UserEditedDictionaries.shared
     }
     

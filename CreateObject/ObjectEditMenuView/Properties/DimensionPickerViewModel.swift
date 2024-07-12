@@ -11,9 +11,7 @@ import SwiftUI
 
 
 
-class DimensionPickerViewModel: PropertyEditBaseViewModel {
-    
-    @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
+class DimensionPickerViewModel: PropertyEditBase {
 
     @Published var editableDimension: [PartTag] = []
     
@@ -24,30 +22,19 @@ class DimensionPickerViewModel: PropertyEditBaseViewModel {
         )
     }
     
-    var partToEdit = ObjectEditService.shared.partToEdit
   
     private var cancellables: Set<AnyCancellable> = []
     
     override init() {
             super.init()
 
-        ObjectEditService.shared.$partToEdit
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.partToEdit = newData
-                self?.setFirstAvailableDimensionPropertyActive()
-                self?.editableDimension = self?.getPropertiesForDimensionPicker() ?? []
-            }
-            .store(in: &self.cancellables)
-        
-        ObjectEditService.shared.$dimensionPropertyToEdit
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.dimensionPropertyToEdit,on: self)
-            .store(in: &cancellables)
-
     }
     
-
+    override func handlePartToEditChange(_ newData: Part) {
+       
+        setFirstAvailableDimensionPropertyActive()
+        editableDimension = getPropertiesForDimensionPicker()
+    }
     
     
     func getPropertiesForDimensionPicker() -> [PartTag] {

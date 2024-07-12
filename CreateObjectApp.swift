@@ -15,15 +15,15 @@ import SwiftUI
 @main
 struct CreateObjectApp: App {
     @StateObject var bilateralPartSidePickerVM = BilateralPartSidePickerViewModel()
-    @StateObject var conditionalBilateralPartSidePickerVM = ConditionalBilateralPartSidePickerViewModel()
+//    @StateObject var conditionalBilateralPartSidePickerVM = ConditionalBilateralPartSidePickerViewModel()
     @StateObject var objectPickerVM = ObjectPickerViewModel()
     @StateObject var partPickerVM = PartPickerViewModel()
-    @StateObject var partOriginAndDimensionEditViewModel = PartOriginAndDimensionEditViewModel()
+//    @StateObject var partOriginAndDimensionEditViewModel = PartOriginAndDimensionEditViewModel()
     @StateObject var dimensionPickerViewModel = DimensionPickerViewModel()
     @StateObject var dimensionStepperViewModel = DimensionStepperViewModel()
     @StateObject var originPickerViewModel = OriginPickerViewModel()
     @StateObject var originStepperViewModel = OriginStepperViewModel()
-    @StateObject var bilateralPartPresenceViewModel = BilateralPartPresenceViewModel()
+    @StateObject var bilateralPartPresenceViewModel = BilateralPartSidePresenceViewModel()
     
     @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
     @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
@@ -49,10 +49,10 @@ struct CreateObjectApp: App {
         WindowGroup {
                 ContentView()
                 .environmentObject(bilateralPartSidePickerVM)
-                .environmentObject(conditionalBilateralPartSidePickerVM)
+//                .environmentObject(conditionalBilateralPartSidePickerVM)
                 .environmentObject(objectPickerVM)
                 .environmentObject(partPickerVM)
-                .environmentObject(partOriginAndDimensionEditViewModel)
+//                .environmentObject(partOriginAndDimensionEditViewModel)
                 .environmentObject(dimensionPickerViewModel)
                 .environmentObject(dimensionStepperViewModel)
                 .environmentObject(originPickerViewModel)

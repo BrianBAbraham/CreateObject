@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-class OriginPickerViewModel: PropertyEditBaseViewModel {
+class OriginPickerViewModel: PropertyEditBase, SharedOriginPropertyToEdit {
     var originPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
             get: { self.originPropertyToEdit },
@@ -23,33 +23,23 @@ class OriginPickerViewModel: PropertyEditBaseViewModel {
     
     @Published var editableOrigin: [PartTag] = []
     
-   @Published var partToEdit = ObjectEditService.shared.partToEdit
-
-
-    private var cancellables: Set<AnyCancellable> = []
+   internal var cancellables: Set<AnyCancellable> = []
     
     override init() {
             super.init()
-
-        ObjectEditService.shared.$partToEdit
-            .sink { [weak self] newData in
-                self?.partToEdit = newData
-                
-                //ensure that the previous option not applied to new part
-                self?.setDefaultPropertyToEditOnPartChange()
-                self?.getIfAnyEditableOrigin()
-            }
-            .store(in: &self.cancellables)
-        
-        ObjectEditService.shared.$originPropertyToEdit
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.originPropertyToEdit,on: self)
-            .store(in: &cancellables)
+        subscribeToDataService()
     }
     
     
+    override func handlePartToEditChange(_ newData: Part) {
+        //ensure that the previous option not applied to new part
+        setDefaultPropertyToEditOnPartChange()
+        getIfAnyEditableOrigin()
+    }
+    
+    
+    
     func setOriginPropertyToEdit(_ value: PartTag){
-        
         ObjectEditService.shared.setOriginPropertyToEdit(value)
     }
     

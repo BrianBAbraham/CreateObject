@@ -10,7 +10,7 @@ import Combine
 
 
 
-class PropertyEditBaseViewModel: ObservableObject {
+class PropertyEditBase: ObservableObject {
     @Published var doNotShow = true
   
     var objectType = ObjectDataService.shared.objectType
@@ -21,6 +21,9 @@ class PropertyEditBaseViewModel: ObservableObject {
     
     var partDataDic = ObjectDataService.shared.partDataDic
   
+    var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
+    
+   @Published var partToEdit = ObjectEditService.shared.partToEdit
     
     private var cancellables: Set<AnyCancellable> = []
 
@@ -51,8 +54,27 @@ class PropertyEditBaseViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: \.partDataDic,on: self)
             .store(in: &cancellables)
+        
+        ObjectEditService.shared.$dimensionPropertyToEdit
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.dimensionPropertyToEdit,on: self)
+            .store(in: &cancellables)
+        
+        
+        ObjectEditService.shared.$partToEdit
+            .sink { [weak self] newData in
+                self?.partToEdit = newData
+                self?.handlePartToEditChange(newData)
+            }
+            .store(in: &self.cancellables)
     }
 
+    
+    func handlePartToEditChange(_ newData: Part) {
+
+    }
+    
+    
     
     func modifyObjectByCreatingFromName(){
         let objectImageData = ObjectImageData(

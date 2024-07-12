@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct PartOriginAndDimensionEditView: View {
+struct PartOriginAndDimensionContainerView: View {
 
     var body: some View {
    

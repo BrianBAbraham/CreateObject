@@ -200,12 +200,12 @@ struct EditObjectView: View {
                         }
                         
                         HStack{
-                            ConditionalBilateralPartSidePickerView()
-                          BilateralPartPresenceView()
+                            BilateralPartSidePickerView()
+                            BilateralPartSidePresenceView()
                             ConditionaUniPartPresence()
                         }
                         
-                        PartOriginAndDimensionEditView()
+                        PartOriginAndDimensionContainerView()
                         
                         ConditionalTiltMenu()
                         

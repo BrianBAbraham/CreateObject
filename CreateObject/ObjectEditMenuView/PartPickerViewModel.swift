@@ -126,7 +126,7 @@ class PartPickerViewModel: ObservableObject {
             fatalError("no part for that part name")
         }
         
-        print(part.rawValue)
+        //print(part.rawValue)
         
         ObjectEditService.shared.setPartToEdit(part)
         

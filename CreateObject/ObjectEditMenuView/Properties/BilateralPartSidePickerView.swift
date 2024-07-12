@@ -7,18 +7,6 @@
 
 import SwiftUI
 
-struct ConditionalBilateralPartSidePickerView: View {
-    @EnvironmentObject var conditionalBilateralPartSidePickerVM: ConditionalBilateralPartSidePickerViewModel
-    
-    var body: some View {
-        if conditionalBilateralPartSidePickerVM.showMenu {
-            BilateralPartSidePickerView(
-            )
-        } else {
-            EmptyView()
-        }
-    }
-}
 
 
 
@@ -27,24 +15,21 @@ struct BilateralPartSidePickerView: View {
    
     var body: some View {
 
-        let boundSideValue = Binding(
-            get: {
-                bilateralPartSidePickerVM.choiceOfEditForSide},
-            set: {
-                newValue in
-                bilateralPartSidePickerVM.setSideToEdit(newValue)
-            } )
-        
-        Picker("", selection: boundSideValue
-        ) {
-            ForEach(bilateralPartSidePickerVM.scopeOfEditForSide.asArray(), id: \.self) { side in
-                Text(side.rawValue)
+        if bilateralPartSidePickerVM.showMenu {
+            Picker("", selection: bilateralPartSidePickerVM.binding//boundSideValue
+            ) {
+                ForEach(bilateralPartSidePickerVM.scopeOfEditForSide.asArray(), id: \.self) { side in
+                    Text(side.rawValue)
+                }
             }
+            .pickerStyle(.segmented)
+            .colorScheme(.light)
+            .fixedSize()
+            //.padding(.top)
+        } else {
+            EmptyView()
         }
-        .pickerStyle(.segmented)
-        .colorScheme(.light)
-        .fixedSize()
-        //.padding(.top)
+
     }
 }
 
