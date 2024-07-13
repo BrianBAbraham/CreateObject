@@ -203,11 +203,12 @@ struct EditObjectView: View {
                             BilateralPartSidePickerView()
                             BilateralPartSidePresenceView()
                             ConditionaUniPartPresence()
+                            
                         }
                         
                         PartOriginAndDimensionContainerView()
                         
-                        ConditionalTiltMenu()
+                       // ConditionalTiltMenu()
                         
                         }
                     }

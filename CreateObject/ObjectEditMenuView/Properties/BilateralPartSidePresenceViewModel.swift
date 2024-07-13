@@ -10,7 +10,7 @@ import Combine
 import SwiftUI
 
 
-class BilateralPartSidePresenceViewModel: BilateralPArtSidePresencePickerBase {
+class BilateralPartSidePresenceViewModel: BilateralPartSidePresencePickerBase {
 
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
 

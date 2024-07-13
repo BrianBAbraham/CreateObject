@@ -11,32 +11,43 @@ import SwiftUI
 
 
 
-class DimensionPickerViewModel: PropertyEditBase {
+class DimensionPickerViewModel: 
+    PropertyEditBase,
+    SharedDimensionPropertyToEdit {
 
     @Published var editableDimension: [PartTag] = []
     
+
+    //inconistant without Published
+    @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
+
+    
     var dimensionPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
-            get: { self.dimensionPropertyToEdit },
-            set: { self.setDimensionPropertyToEdit($0) }
+            get: { self.dimensionPropertyToEdit
+                },
+            set: {
+                self.setDimensionPropertyToEdit($0) }
         )
     }
     
   
-    private var cancellables: Set<AnyCancellable> = []
+   internal var cancellables: Set<AnyCancellable> = []
     
     override init() {
             super.init()
-
+        
+        subscribeToDimensionPropertyToEditDataService()
+                           
     }
     
     override func handlePartToEditChange(_ newData: Part) {
-       
         setFirstAvailableDimensionPropertyActive()
         editableDimension = getPropertiesForDimensionPicker()
     }
     
     
+    //set these to extend or reduce UI
     func getPropertiesForDimensionPicker() -> [PartTag] {
 
         switch partToEdit{
@@ -64,10 +75,11 @@ class DimensionPickerViewModel: PropertyEditBase {
     }
     
     ///most parts have length and wdith, but for those that do not have length
-    ///the default length cannot be use
+    ///the default length cannot be used
     ///so set the first available dimension prroperty as the default
-    ///otherwise no dimension property is highlighted and stepper have no effect
+    ///otherwise no dimension property is highlighted and steppers have no effect
     func setFirstAvailableDimensionPropertyActive() {
+    
         let editableDimension = getPropertiesForDimensionPicker()
         if let firstDimension = editableDimension.first {
             setDimensionPropertyToEdit(
@@ -75,7 +87,6 @@ class DimensionPickerViewModel: PropertyEditBase {
             )
         }
     }
-    
 }
 
 

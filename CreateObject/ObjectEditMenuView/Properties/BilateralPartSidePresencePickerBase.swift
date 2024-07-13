@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class BilateralPArtSidePresencePickerBase: ObservableObject {
+class BilateralPartSidePresencePickerBase: ObservableObject {
     //on first use toggle flips back to true without this
     @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
     

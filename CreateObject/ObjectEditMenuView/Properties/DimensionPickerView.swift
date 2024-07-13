@@ -31,7 +31,7 @@ struct DimensionPickerView: View {
             .light
         )
         .disabled(
-            dimensionPickerVM.doNotShow
+            dimensionPickerVM.disabled
         )
     }
 }

@@ -17,7 +17,7 @@ struct DimensionStepperView: View {
         Stepper("", value: dimensionStepperVM.stepperValueBinding, step: 10.0)
                 .colorScheme(.light)
                 .fixedSize()
-                .disabled(dimensionStepperVM.doNotShow)
+                .disabled(dimensionStepperVM.disabled)
     }
 }
 

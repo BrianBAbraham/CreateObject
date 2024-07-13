@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-class BilateralPartSidePickerViewModel: BilateralPArtSidePresencePickerBase {
+class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase {
     @Published var choiceOfEditForSide = objectEditService.choiceOfEditForSide
     
     @Published var scopeOfEditForSide = objectEditService.scopeOfEditForSide

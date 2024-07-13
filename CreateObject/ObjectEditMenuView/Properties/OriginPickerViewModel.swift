@@ -9,7 +9,11 @@ import Foundation
 import Combine
 import SwiftUI
 
-class OriginPickerViewModel: PropertyEditBase, SharedOriginPropertyToEdit {
+class OriginPickerViewModel: 
+    PropertyEditBase,
+    SharedOriginPropertyToEdit,
+    SharedEditableOrignExist {
+    
     var originPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
             get: { self.originPropertyToEdit },
@@ -27,7 +31,7 @@ class OriginPickerViewModel: PropertyEditBase, SharedOriginPropertyToEdit {
     
     override init() {
             super.init()
-        subscribeToDataService()
+        subscribeToOriginPropertyToEditDataService()
     }
     
     
@@ -54,38 +58,4 @@ class OriginPickerViewModel: PropertyEditBase, SharedOriginPropertyToEdit {
         }
     }
     
-    
-    func getPropertiesForOriginPicker(_ part: Part) -> [PartTag] {
-        if  let displayPart = PartToDisplayInMenu.dictionary[part] {
-                switch displayPart {
-                case .seat:
-                    if objectType == .showerTray {
-                        
-                        return []
-                    } else {
-                        return [.xOrigin, .yOrigin]
-                    }
-                case .propeller, .footLever, .headrest:
-                    return [.xOrigin]
-                case .casterForkAtFront, .casterForkAtMid, .casterForkAtRear:
-                    return [.yOrigin]
-                case .backrest:
-                   return []
-                default:
-                    return [.xOrigin, .yOrigin]
-                }
-        } else {
-            return [.xOrigin, .yOrigin]
-        }
-    }
-    
-    
-    func getIfAnyEditableOrigin(){
-        editableOrigin = getPropertiesForOriginPicker(partToEdit)
-        editableOriginExist =
-            editableOrigin == [] ? false: true
-//        print(objectType)
-//       print (editableOriginExist)
-//        print("\n")
-    }
 }

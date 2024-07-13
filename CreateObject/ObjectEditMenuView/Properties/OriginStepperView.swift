@@ -13,9 +13,13 @@ struct OriginStepperView: View {
     @EnvironmentObject var originStepperVM: OriginStepperViewModel
  
     var body: some View {
-        Stepper("", value: originStepperVM.stepperValueBinding, step: 10.0)
+        if originStepperVM.editableOriginExist {
+            Stepper("", value: originStepperVM.stepperValueBinding, step: 10.0)
                 .colorScheme(.light)
                 .fixedSize()
-                .disabled(originStepperVM.doNotShow)
+                .disabled(originStepperVM.disabled)
+        } else  {
+            EmptyView()
+        }
     }
 }

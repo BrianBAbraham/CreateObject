@@ -10,10 +10,31 @@ import Combine
 import SwiftUI
 
 
-class OriginStepperViewModel: PropertyEditBase, SharedOriginPropertyToEdit {
+class OriginStepperViewModel: 
+    PropertyEditBase, 
+    SharedOriginPropertyToEdit,
+    SharedEditableOrignExist, 
+    SharedInitialSliderValue,
+    SharedSetValueForBilateralPart,
+    SharedModifyObjectByCreatingFromName{
+    
+    
+    @Published var editableOriginExist = false
+    
+    @Published var editableOrigin: [PartTag] = []
+    
+    //var objectType = ObjectDataService.shared.objectType
+    
+    var userEditedSharedDics = UserEditedDictionariesService.shared.userEditedSharedDics
+    
     var stepperValueBinding: Binding<Double> {
         Binding<Double>(
-            get: { self.getInitialSliderValue(self.partToEdit,self.originPropertyToEdit) },
+            get: {
+                self.getInitialSliderValue(
+                    self.partToEdit,
+                    self.originPropertyToEdit
+                )
+            },
             set: {                     newValue in
                 self.setValueForBilateralPartInUserEditedDic(
                     self.partToEdit,
@@ -26,29 +47,23 @@ class OriginStepperViewModel: PropertyEditBase, SharedOriginPropertyToEdit {
     
     var originPropertyToEdit = ObjectEditService.shared.originPropertyToEdit
     
-
-internal var cancellables: Set<AnyCancellable> = []
+    internal var cancellables: Set<AnyCancellable> = []
     
     override init() {
             super.init()
-        subscribeToDataService()
+        subscribeTServices()
+        subscribeToOriginPropertyToEditDataService()
 
+    }
+    
+    override func handlePartToEditChange(
+        _ newData: Part
+    ) {
+        //ensure that the previous option not applied to new part
+        getIfAnyEditableOrigin()
     }
 }
 
 
-protocol SharedOriginPropertyToEdit: AnyObject {
-    var cancellables: Set<AnyCancellable> { get set }
-    var originPropertyToEdit: PartTag { get set }
-       
-       func subscribeToDataService()
-   }
 
-   extension SharedOriginPropertyToEdit {
-       func subscribeToDataService() {
-           ObjectEditService.shared.$originPropertyToEdit
-               .receive(on: DispatchQueue.main)
-               .assign(to: \.originPropertyToEdit,on: self)
-               .store(in: &cancellables)
-       }
-   }
+

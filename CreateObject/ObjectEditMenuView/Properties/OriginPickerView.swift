@@ -14,12 +14,7 @@ struct OriginPickerView: View {
 
     @EnvironmentObject var originPickerVM: OriginPickerViewModel
 
-//    var partOrLinkedPartForOrigin: Part {
-//        PartsRequiringLinkedPartUse(originPickerVM.partToEdit).partForOriginEdit
-//    }
-//    var partOrLinkedPartForShow: Part {
-//        PartsRequiringLinkedPartUse(originPickerVM.partToEdit).partForEditableOrigin
-//    }
+
    
     var body: some View {
         
@@ -33,7 +28,7 @@ struct OriginPickerView: View {
                     }
                     .pickerStyle(.segmented)
                     .colorScheme(.light)
-                    .disabled(originPickerVM.doNotShow)
+                    .disabled(originPickerVM.disabled)
         } else {
             EmptyView()
         }
