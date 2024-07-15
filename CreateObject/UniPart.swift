@@ -66,7 +66,18 @@ struct UniDimensionSlider: View {
     }
 }
 
-
+struct  UnilateralPartPresenceView: View {
+    @EnvironmentObject var  unilateralPartPresenceViewModel: UnilateralPartPresenceViewModel
+    
+    var body: some View {
+        if unilateralPartPresenceViewModel.showMenu {
+            Toggle("", isOn:  unilateralPartPresenceViewModel.partBinding)
+        } else {
+            EmptyView()
+        }
+    }
+    
+}
 
 struct UniPartPresence: View {
     @State private var optionToggle = true

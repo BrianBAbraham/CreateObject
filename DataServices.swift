@@ -366,11 +366,19 @@ class UserEditedDictionariesService: ObservableObject {
     }
     
     
-    func partIdsUserEditedDicReseterForBilateralPart(_ part: Part) {
-        userEditedSharedDics.partIdsUserEditedDic += [part: .two(left: .id0, right: .id1)]
+    func partIdsUserEditedDicReseterForBilateralPart(_ part: Part, _ oneOrTwo: OneOrTwo<PartTag>) {
+        
+        userEditedSharedDics.partIdsUserEditedDic += [part: oneOrTwo]
         userEditedSharedDics = UserEditedDictionaries.shared
     }
     
+    
+//    func partIdsUserEditedDicReseterForUnilateralPart(_ part: Part) {
+//        print(part)
+//        userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)
+//        userEditedSharedDics = UserEditedDictionaries.shared
+//    }
+//    
     
     func partIdsUserEditedDicReseter(_ part: Part) {
         userEditedSharedDics.partIdsUserEditedDic.removeValue(forKey: part)

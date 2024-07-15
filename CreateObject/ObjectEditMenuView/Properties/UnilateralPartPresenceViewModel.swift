@@ -10,8 +10,11 @@ import Combine
 import SwiftUI
 
 
-class UnilateralPartPresence: ObservableObject,
-                              SharedModifyObjectByCreatingFromName {
+class UnilateralPartPresenceViewModel: 
+    BilateralPartSidePresencePickerBase,
+    SharedModifyObjectByCreatingFromNameFuncOnly,
+    SharedObectTypeAndUserEditedDictionaries
+{
 
     
     var partBinding: Binding<Bool> {
@@ -24,79 +27,54 @@ class UnilateralPartPresence: ObservableObject,
     
     var partPresent = true
     
-    var partToEdit = ObjectEditService.shared.partToEdit
-    
-    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
+  @Published  var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
     
     var objectType: ObjectTypes = ObjectDataService.shared.objectType
     
-    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
-    
     @Published var showMenu = false
-    
-    
-    
-    var preent = true
-    
     
     var cancellables: Set<AnyCancellable> = []
     
-    init() {
-        ObjectDataService.shared.$objectType
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.objectType,on: self)
-            .store(in: &cancellables)
-        
-        
-        ObjectEditService.shared.$partToEdit
-            .sink { [weak self] newData in
-                self?.partToEdit = newData
-                //self?.handlePartToEditChange(newData)
-            }
-            .store(in: &self.cancellables)
-        
-        
-        UserEditedDictionariesService.shared.$objectChainLabelsUserEditDic
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] newData in
-            self?.objectChainLabelsUserEditDic = newData
+    override init() {
+            super.init()
+
+            (self as SharedObectTypeAndUserEditedDictionaries).subscribeToServices()
+    }
+    
+    
+    override func handlePartToEditChange(_ newData: Part) {
+          partToEdit = newData
+          showMenu = setShowMenuStatus()
+      }
+    
+    
+    func setShowMenuStatus() -> Bool{
+        switch partToEdit {
+        case .backSupportHeadSupport:
+            return true
+        default :
+            return false
         }
-        .store(in: &self.cancellables)
-        
-        subscribeTServices()
     }
     
     //called if UI toggle changes
     func changeStatusOfPart() {
-       
+
         switch partPresent {
         case true:
-            //chain label must exist as one was previously true
-            //asonly one change at at time possible
-            //if both present return to default
+            //chain label must not exist as one was previously true
+            //as only one change at at time possible
+            restoreChainLabelToObject(partToEdit)
             setPartIdDicInKeyToNilRestoringDefaultForPart()
         case false:
             //remove chainLabel so part does not exist
             removeChainLabelFromObject(partToEdit)
-            
         }
             
-
         
         //finally create a new object with the new specification
        modifyObjectByCreatingFromName()
-        
-        func modifyObjectByCreatingFromName() {
-            let objectImageData = ObjectImageData(
-                objectType,
-                userEditedSharedDics
-            )
-            
-            ObjectImageService.shared.setObjectImage(
-                objectImageData
-            )
-        }
-        
+    
         
         func modifyPartIdsUserEditedDic(_ newId: OneOrTwo<PartTag> ) {
             
@@ -132,14 +110,57 @@ class UnilateralPartPresence: ObservableObject,
                 
                 UserEditedDictionariesService.shared.objectChainLabelsUserEditDicModifier(objectType, newChainLabels)
         }
+        
+        
+        func replaceChainLabelForObject(
+            _ removalThenReplacment: [Part]) {
+                     
+            removeChainLabelFromObject(removalThenReplacment[0])
+
+            guard var curentObjectChainLabels = userEditedSharedDics
+                    .objectChainLabelsUserEditDic[objectType]  else {
+             fatalError()
+            }
+            curentObjectChainLabels += [removalThenReplacment[1]]
+
+            UserEditedDictionariesService.shared.userEditedSharedDics
+                .objectChainLabelsUserEditDic[objectType] =
+                    curentObjectChainLabels
+        }
     }
     
     
+    func restoreChainLabelToObject(
+        _ chainLabel: Part
+    ) {
+        guard let currentObjectChainLabels = objectChainLabelsUserEditDic[objectType] ??
+                ObjectChainLabel.dictionary[objectType] else {
+            fatalError(
+                "no chain labels for object \(objectType)"
+            )
+        }
+        let newChainLabels = currentObjectChainLabels + [chainLabel]
+       
+        UserEditedDictionariesService.shared.objectChainLabelsUserEditDicModifier(objectType, newChainLabels)
+    }
+    
+  
     func setPartIdDicInKeyToNilRestoringDefaultForPart () {
         let partChain = LabelInPartChainOut(partToEdit).partChain
         for part in partChain {
-            UserEditedDictionariesService.shared.partIdsUserEditedDicReseterForBilateralPart(part)
+            let oneOrTwo = OneOrTwoId(objectType, part).forPart
+            UserEditedDictionariesService.shared.partIdsUserEditedDicReseterForBilateralPart(part, oneOrTwo)
         }
     }
+    
+    
+
+    
+//    func setPartIdDicInKeyToNilRestoringDefaultForPart () {
+//        let partChain = LabelInPartChainOut(partToEdit).partChain
+//        for part in partChain {
+//            UserEditedDictionariesService.shared.partIdsUserEditedDicReseterForUnilateralPart(part)
+//        }
+//    }
     
 }

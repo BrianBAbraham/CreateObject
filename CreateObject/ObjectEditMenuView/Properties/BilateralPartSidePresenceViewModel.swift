@@ -10,7 +10,15 @@ import Combine
 import SwiftUI
 
 
-class BilateralPartSidePresenceViewModel: BilateralPartSidePresencePickerBase {
+class BilateralPartSidePresenceViewModel:  BilateralPartSidePresencePickerBase,
+    SharedGetSidesAffectedFunc,
+    SharedObectTypeAndUserEditedDictionaries,
+    SharedModifyObjectByCreatingFromNameFuncOnly {
+
+    //on first use toggle flips back to true without this
+    @Published var partIdsUserEditedDic: [Part : OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+            
+    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
 
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
 
@@ -19,7 +27,7 @@ class BilateralPartSidePresenceViewModel: BilateralPartSidePresencePickerBase {
     var leftPresent = true
     var rightPresent = true
 
-    private var cancellables: Set<AnyCancellable> = []
+    internal var cancellables: Set<AnyCancellable> = []
     
      var leftBinding: Binding<Bool> {
         Binding<Bool> (
@@ -40,12 +48,14 @@ class BilateralPartSidePresenceViewModel: BilateralPartSidePresencePickerBase {
 
     override init() {
             super.init()
-        UserEditedDictionariesService.shared.$userEditedSharedDics
+        
+        UserEditedDictionariesService.shared.$partIdsUserEditedDic
             .receive(on: DispatchQueue.main)
-            .assign(to: \.userEditedSharedDics,on: self)
+            .assign(to: \.partIdsUserEditedDic,on: self)
             .store(in: &cancellables)
     
-
+        (self as SharedObectTypeAndUserEditedDictionaries).subscribeToServices()
+        
         getBilateralPresenceMenuStatus(partToEdit)
         
     }
@@ -94,18 +104,6 @@ class BilateralPartSidePresenceViewModel: BilateralPartSidePresencePickerBase {
         
         //finally create a new object with the new specification
        modifyObjectByCreatingFromName()
-        
-        func modifyObjectByCreatingFromName() {
-            let objectImageData = ObjectImageData(
-                objectType,
-                userEditedSharedDics
-            )
-            
-            ObjectImageService.shared.setObjectImage(
-                objectImageData
-            )
-        }
-        
         
         func modifyPartIdsUserEditedDic(_ newId: OneOrTwo<PartTag> ) {
             
@@ -162,7 +160,8 @@ class BilateralPartSidePresenceViewModel: BilateralPartSidePresencePickerBase {
     func setPartIdDicInKeyToNilRestoringDefaultForPart () {
         let partChain = LabelInPartChainOut(partToEdit).partChain
         for part in partChain {
-            UserEditedDictionariesService.shared.partIdsUserEditedDicReseterForBilateralPart(part)
+            let oneOrTwo = OneOrTwoId(objectType, part).forPart
+            UserEditedDictionariesService.shared.partIdsUserEditedDicReseterForBilateralPart(part, oneOrTwo)
         }
     }
     
@@ -180,6 +179,9 @@ class BilateralPartSidePresenceViewModel: BilateralPartSidePresencePickerBase {
         //nb T rB F: show
         //nb F rB T: no show
     }
+    
+    
+
     
 }
 

@@ -9,30 +9,14 @@ import Foundation
 import Combine
 
 class BilateralPartSidePresencePickerBase: ObservableObject {
-    //on first use toggle flips back to true without this
-    @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+
+    @Published var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
     
-    var objectType: ObjectTypes = ObjectDataService.shared.objectType
-    
-    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
-    
-    var partToEdit = ObjectEditService.shared.partToEdit
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
     
     private var cancellables: Set<AnyCancellable> = []
     
     init() {
-
-        UserEditedDictionariesService.shared.$partIdsUserEditedDic
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] newData in
-            self?.handlePartIdsUserEditedDicChange(newData)
-        }
-        .store(in: &self.cancellables)
-        
-        ObjectDataService.shared.$objectType
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.objectType,on: self)
-            .store(in: &cancellables)
         
         UserEditedDictionariesService.shared.$objectChainLabelsUserEditDic
         .receive(on: DispatchQueue.main)
@@ -59,11 +43,18 @@ class BilateralPartSidePresencePickerBase: ObservableObject {
     }
     
     
-    func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]){
-        partIdsUserEditedDic = newData
-    }
-    
-    
+}
+
+
+
+
+protocol SharedGetSidesAffectedFunc: AnyObject {
+    var cancellables: Set<AnyCancellable> { get set }
+    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] {get}
+    var objectType: ObjectTypes {get}
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] {get}
+}
+extension SharedGetSidesAffectedFunc {
     func getIfSideIsPresentFromUserEditedDic(_ side: SidesAffected, _ partToEdit: Part) -> Bool{
         
         var present: Bool
@@ -112,6 +103,5 @@ class BilateralPartSidePresencePickerBase: ObservableObject {
             return .none
         }
     }
-    
     
 }

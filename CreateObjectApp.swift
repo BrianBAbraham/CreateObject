@@ -15,6 +15,7 @@ import SwiftUI
 @main
 struct CreateObjectApp: App {
     @StateObject var bilateralPartSidePickerVM = BilateralPartSidePickerViewModel()
+    @StateObject var  unilateralPartPresenceViewModel =  UnilateralPartPresenceViewModel()
 //    @StateObject var conditionalBilateralPartSidePickerVM = ConditionalBilateralPartSidePickerViewModel()
     @StateObject var objectPickerVM = ObjectPickerViewModel()
     @StateObject var partPickerVM = PartPickerViewModel()
@@ -49,6 +50,7 @@ struct CreateObjectApp: App {
         WindowGroup {
                 ContentView()
                 .environmentObject(bilateralPartSidePickerVM)
+            
 //                .environmentObject(conditionalBilateralPartSidePickerVM)
                 .environmentObject(objectPickerVM)
                 .environmentObject(partPickerVM)
@@ -58,6 +60,8 @@ struct CreateObjectApp: App {
                 .environmentObject(originPickerViewModel)
                 .environmentObject(originStepperViewModel)
                 .environmentObject(bilateralPartPresenceViewModel)
+                .environmentObject( unilateralPartPresenceViewModel)
+            
             
                 .environmentObject(movementDataGetter)
                

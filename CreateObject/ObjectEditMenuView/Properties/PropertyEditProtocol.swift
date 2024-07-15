@@ -8,17 +8,15 @@
 import Foundation
 import Combine
 
-protocol SharedModifyObjectByCreatingFromName: AnyObject {
+protocol  SharedObectTypeAndUserEditedDictionaries: AnyObject {
     var cancellables: Set<AnyCancellable> { get set }
     
     var userEditedSharedDics: UserEditedDictionaries {get set}
     
     var objectType: ObjectTypes {get set}
-    
 }
-extension SharedModifyObjectByCreatingFromName{
-    
-    func subscribeTServices() {
+extension SharedObectTypeAndUserEditedDictionaries {
+    func subscribeToServices() {
         UserEditedDictionariesService.shared.$userEditedSharedDics
             .receive(on: DispatchQueue.main)
             .assign(to: \.userEditedSharedDics,on: self)
@@ -29,6 +27,27 @@ extension SharedModifyObjectByCreatingFromName{
             .assign(to: \.objectType,on: self)
             .store(in: &cancellables)
     }
+}
+
+
+
+protocol SharedChoiceAnbScopeOfEditForSide: AnyObject{
+    var cancellables: Set<AnyCancellable> { get set }
+}
+
+
+
+protocol SharedModifyObjectByCreatingFromNameFuncOnly: AnyObject {
+    var cancellables: Set<AnyCancellable> { get set }
+    
+    var userEditedSharedDics: UserEditedDictionaries {get set}
+    
+    var objectType: ObjectTypes {get set}
+    
+}
+extension SharedModifyObjectByCreatingFromNameFuncOnly{
+    
+
     
     func modifyObjectByCreatingFromName(){
         let objectImageData = ObjectImageData(
@@ -44,14 +63,14 @@ extension SharedModifyObjectByCreatingFromName{
 
 
 
-protocol SharedInitialSliderValue: AnyObject {
+protocol SharedInitialSliderValueFuncOnly: AnyObject {
     var partDataDic: [Part: PartData]  {get}
     
     var userEditedSharedDics: UserEditedDictionaries {get}
     
     var choiceOfEditForSide: SidesAffected {get}
 }
-extension SharedInitialSliderValue {
+extension SharedInitialSliderValueFuncOnly {
     func getInitialSliderValue(
         _ partToEdit: Part,
         _ propertyToEdit: PartTag,
@@ -113,10 +132,10 @@ protocol SharedOriginPropertyToEdit: AnyObject {
     
     var originPropertyToEdit: PartTag { get set }
        
-    func subscribeToOriginPropertyToEditDataService()
+    func subscribeToService()
 }
 extension SharedOriginPropertyToEdit {
-   func subscribeToOriginPropertyToEditDataService() {
+   func subscribeToService() {
        ObjectEditService.shared.$originPropertyToEdit
            .receive(on: DispatchQueue.main)
            .assign(to: \.originPropertyToEdit,on: self)
@@ -145,14 +164,14 @@ extension SharedDimensionPropertyToEdit {
 
 
 
-protocol SharedEditableOrignExist: AnyObject {
+protocol SharedEditableOrignExistFuncOnly: AnyObject {
     var editableOriginExist: Bool {get set}
     var editableOrigin: [PartTag] {get set}
     var partToEdit: Part {get}
     var objectType: ObjectTypes {get}
     
 }
-extension SharedEditableOrignExist {
+extension SharedEditableOrignExistFuncOnly {
     func getPropertiesForOriginPicker(_ part: Part) -> [PartTag] {
         if  let displayPart = PartToDisplayInMenu.dictionary[part] {
             switch displayPart {
@@ -190,14 +209,14 @@ extension SharedEditableOrignExist {
 
 
 
-protocol SharedSetValueForBilateralPart: AnyObject {
+protocol SharedSetValueForBilateralPartFuncOnly: AnyObject {
     var choiceOfEditForSide: SidesAffected {get}
     
     var partDataDic: [Part: PartData]  {get}
     
     var userEditedSharedDics: UserEditedDictionaries {get}
 }
-extension SharedSetValueForBilateralPart {
+extension SharedSetValueForBilateralPartFuncOnly {
     
     func getEditedOrDefaultOriginOffset(
         _ name: String

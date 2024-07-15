@@ -9,7 +9,22 @@ import Foundation
 import Combine
 import SwiftUI
 
-class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase {
+class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase, 
+    SharedGetSidesAffectedFunc,
+    SharedObectTypeAndUserEditedDictionaries,
+    SharedChoieAndScopeOfEditForSideFunc {
+    
+    @Published var disabled: Bool = true
+    
+   //@Published
+    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
+    
+    var objectType: ObjectTypes = ObjectDataService.shared.objectType
+    
+    //@Published
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+        
+        
     @Published var choiceOfEditForSide = objectEditService.choiceOfEditForSide
     
     @Published var scopeOfEditForSide = objectEditService.scopeOfEditForSide
@@ -26,10 +41,23 @@ class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase {
         )
     }
     
-    private var cancellables: Set<AnyCancellable> = []
+    internal var cancellables: Set<AnyCancellable> = []
     
     override init() {
             super.init()
+        
+        UserEditedDictionariesService.shared.$partIdsUserEditedDic
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] newData in
+            self?.handlePartIdsUserEditedDicChange(newData)
+        }
+        .store(in: &self.cancellables)
+        
+        
+        
+        (self as SharedObectTypeAndUserEditedDictionaries).subscribeToServices()
+        
+        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
         
         Self.objectEditService.$scopeOfEditForSide
             .receive(on: DispatchQueue.main)
@@ -62,13 +90,17 @@ class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase {
     }
     
     
-    override func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]){
+    //override
+        func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]){
         //detect if part has presence only one side
         partIdsUserEditedDic = newData
         scopeOfEditForSide = getSidesAffected(partToEdit )
         setScopeOfEditForSide()
     }
     
+//        func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]){
+//            partIdsUserEditedDic = newData
+//        }
     
     func setSideToEdit(
         _ sideChoice: SidesAffected

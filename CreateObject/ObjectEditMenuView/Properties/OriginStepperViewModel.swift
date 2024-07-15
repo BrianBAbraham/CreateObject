@@ -13,17 +13,26 @@ import SwiftUI
 class OriginStepperViewModel: 
     PropertyEditBase, 
     SharedOriginPropertyToEdit,
-    SharedEditableOrignExist, 
-    SharedInitialSliderValue,
-    SharedSetValueForBilateralPart,
-    SharedModifyObjectByCreatingFromName{
+    SharedEditableOrignExistFuncOnly, 
+    SharedInitialSliderValueFuncOnly,
+    SharedSetValueForBilateralPartFuncOnly,
+    SharedModifyObjectByCreatingFromNameFuncOnly,
+    SharedObectTypeAndUserEditedDictionaries,
+    SharedChoieAndScopeOfEditForSideFunc,
+    SharedPartDataDic{
     
+    var objectType = ObjectDataService.shared.objectType
+
+    
+    var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
+    
+    var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    
+    var disabled: Bool = true
     
     @Published var editableOriginExist = false
     
     @Published var editableOrigin: [PartTag] = []
-    
-    //var objectType = ObjectDataService.shared.objectType
     
     var userEditedSharedDics = UserEditedDictionariesService.shared.userEditedSharedDics
     
@@ -51,8 +60,10 @@ class OriginStepperViewModel:
     
     override init() {
             super.init()
-        subscribeTServices()
-        subscribeToOriginPropertyToEditDataService()
+        subscribeToServices()
+        (self as SharedOriginPropertyToEdit).subscribeToService()
+        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
+        (self as SharedPartDataDic).subScribeToService()
 
     }
     

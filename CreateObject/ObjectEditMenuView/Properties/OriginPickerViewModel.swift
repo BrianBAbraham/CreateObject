@@ -12,7 +12,14 @@ import SwiftUI
 class OriginPickerViewModel: 
     PropertyEditBase,
     SharedOriginPropertyToEdit,
-    SharedEditableOrignExist {
+    SharedEditableOrignExistFuncOnly,SharedChoieAndScopeOfEditForSideFunc  {
+    var objectType = ObjectDataService.shared.objectType
+
+    
+    var disabled: Bool = true
+    
+    @Published var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    
     
     var originPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
@@ -31,7 +38,9 @@ class OriginPickerViewModel:
     
     override init() {
             super.init()
-        subscribeToOriginPropertyToEditDataService()
+        (self as SharedOriginPropertyToEdit).subscribeToService()
+        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
+        
     }
     
     

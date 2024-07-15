@@ -13,7 +13,13 @@ import SwiftUI
 
 class DimensionPickerViewModel: 
     PropertyEditBase,
-    SharedDimensionPropertyToEdit {
+    SharedDimensionPropertyToEdit,
+    SharedChoieAndScopeOfEditForSideFunc  {
+    
+    var disabled: Bool = true
+    
+    @Published var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    
 
     @Published var editableDimension: [PartTag] = []
     
@@ -38,7 +44,7 @@ class DimensionPickerViewModel:
             super.init()
         
         subscribeToDimensionPropertyToEditDataService()
-                           
+        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
     }
     
     override func handlePartToEditChange(_ newData: Part) {

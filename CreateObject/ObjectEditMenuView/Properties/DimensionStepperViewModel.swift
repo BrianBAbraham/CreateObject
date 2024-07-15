@@ -12,15 +12,23 @@ import SwiftUI
 
 class DimensionStepperViewModel:
     PropertyEditBase,
-    SharedInitialSliderValue,
+    SharedInitialSliderValueFuncOnly,
     SharedDimensionPropertyToEdit,
-    SharedSetValueForBilateralPart,
-    SharedModifyObjectByCreatingFromName
-{
+    SharedSetValueForBilateralPartFuncOnly,
+    SharedModifyObjectByCreatingFromNameFuncOnly,
+    SharedObectTypeAndUserEditedDictionaries,
+    SharedChoieAndScopeOfEditForSideFunc,
+    SharedPartDataDic {
+    
+    var objectType = ObjectDataService.shared.objectType
+    
+    var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
+    
+    var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    
+    var disabled: Bool = true
+    
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
-    
-    //var objectType: ObjectTypes = ObjectDataService.shared.objectType
-    
     
     var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
     
@@ -48,8 +56,11 @@ class DimensionStepperViewModel:
     
     override init() {
             super.init()
-        subscribeTServices()
+        subscribeToServices()
         subscribeToDimensionPropertyToEditDataService()
+        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
+        (self as SharedPartDataDic).subScribeToService()
+
     }
 
 }
