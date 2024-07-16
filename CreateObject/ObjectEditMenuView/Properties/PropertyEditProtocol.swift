@@ -8,416 +8,181 @@
 import Foundation
 import Combine
 
-protocol  SharedObectTypeAndUserEditedDictionaries: AnyObject {
+
+
+
+
+protocol SharedGetSidesAffectedFunc: AnyObject {
     var cancellables: Set<AnyCancellable> { get set }
-    
-    var userEditedSharedDics: UserEditedDictionaries {get set}
-    
-    var objectType: ObjectTypes {get set}
-}
-extension SharedObectTypeAndUserEditedDictionaries {
-    func subscribeToServices() {
-        UserEditedDictionariesService.shared.$userEditedSharedDics
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.userEditedSharedDics,on: self)
-            .store(in: &cancellables)
-        
-        ObjectDataService.shared.$objectType
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.objectType,on: self)
-            .store(in: &cancellables)
-    }
-}
-
-
-
-protocol SharedChoiceAnbScopeOfEditForSide: AnyObject{
-    var cancellables: Set<AnyCancellable> { get set }
-}
-
-
-
-protocol SharedModifyObjectByCreatingFromNameFuncOnly: AnyObject {
-    var cancellables: Set<AnyCancellable> { get set }
-    
-    var userEditedSharedDics: UserEditedDictionaries {get set}
-    
-    var objectType: ObjectTypes {get set}
-    
-}
-extension SharedModifyObjectByCreatingFromNameFuncOnly{
-    
-
-    
-    func modifyObjectByCreatingFromName(){
-        let objectImageData = ObjectImageData(
-            objectType,
-            userEditedSharedDics
-        )
-        
-        ObjectImageService.shared.setObjectImage(
-            objectImageData
-        )
-    }
-}
-
-
-
-protocol SharedInitialSliderValueFuncOnly: AnyObject {
-    var partDataDic: [Part: PartData]  {get}
-    
-    var userEditedSharedDics: UserEditedDictionaries {get}
-    
-    var choiceOfEditForSide: SidesAffected {get}
-}
-extension SharedInitialSliderValueFuncOnly {
-    func getInitialSliderValue(
-        _ partToEdit: Part,
-        _ propertyToEdit: PartTag,
-        _ sidesAffected: SidesAffected? = nil
-    ) -> Double {
-        //sometimes the UI selection is adjusted by another part eg footlength for footplate
-        let part = PartsRequiringLinkedPartUse(partToEdit).partForDimensionEdit
-        let propertyToEdit = propertyToEdit
-        var value: Double? = nil
-        if let partData = partDataDic[part] {//parts edited out do not exist
-            let idForLeftOrRight = choiceOfEditForSide == .right ? PartTag.id1: PartTag.id0
-        
-            var id: PartTag
-            if let sideAsId = sidesAffected?.getOneId() {
-                id = sideAsId
-            } else {
-                id =  partData.id.one ?? idForLeftOrRight//two sources for id
-            }
-           
-            switch propertyToEdit {
-            case .height:
-                let dimension = partData.dimension.returnValue(id)
-                
-                value = dimension.height
-            case .width:
-                let dimension = partData.dimension.returnValue(id)
-                value = dimension.width
-            case.length:
-                let dimension = partData.dimension.returnValue(id)
-                value = dimension.length
-            case .xOrigin, .yOrigin:
-                let name = CreateNameFromIdAndPart(id, part).name
-                let offsetToOrigin = userEditedSharedDics.originOffsetUserEditedDic[name] ?? ZeroValue.iosLocation
-
-                value = propertyToEdit == .xOrigin ?
-                offsetToOrigin.x: offsetToOrigin.y
-                
-            case .angle:
-                value =
-                    partData.angles.returnValue(id).x.converted(to: .degrees).value
-            
-            default:
-                break
-            }
-        }
-            let whenPartHasBeenRemovedAndValueNotUsed = 0.0
-          
-            return value ?? whenPartHasBeenRemovedAndValueNotUsed
-    }
-}
-
-
-
-
-
-
-protocol SharedOriginPropertyToEdit: AnyObject {
-    var cancellables: Set<AnyCancellable> { get set }
-    
-    var originPropertyToEdit: PartTag { get set }
-       
-    func subscribeToService()
-}
-extension SharedOriginPropertyToEdit {
-   func subscribeToService() {
-       ObjectEditService.shared.$originPropertyToEdit
-           .receive(on: DispatchQueue.main)
-           .assign(to: \.originPropertyToEdit,on: self)
-           .store(in: &cancellables)
-   }
-}
-
-
-
-protocol SharedDimensionPropertyToEdit: AnyObject {
-    var cancellables: Set<AnyCancellable> { get set }
-    
-    var dimensionPropertyToEdit: PartTag { get set }
-    
-    func subscribeToDimensionPropertyToEditDataService()
-    
-}
-extension SharedDimensionPropertyToEdit {
-   func subscribeToDimensionPropertyToEditDataService() {
-       ObjectEditService.shared.$dimensionPropertyToEdit
-           .receive(on: DispatchQueue.main)
-           .assign(to: \.dimensionPropertyToEdit,on: self)
-           .store(in: &cancellables)
-   }
-}
-
-
-
-protocol SharedEditableOrignExistFuncOnly: AnyObject {
-    var editableOriginExist: Bool {get set}
-    var editableOrigin: [PartTag] {get set}
-    var partToEdit: Part {get}
+    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] {get}
     var objectType: ObjectTypes {get}
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] {get}
     
+    func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>] )
 }
-extension SharedEditableOrignExistFuncOnly {
-    func getPropertiesForOriginPicker(_ part: Part) -> [PartTag] {
-        if  let displayPart = PartToDisplayInMenu.dictionary[part] {
-            switch displayPart {
-            case .seat:
-                if objectType == .showerTray {
-                    return []
-                } else {
-                    return [.xOrigin, .yOrigin]
-                }
-                
-            case .propeller, .footLever, .headrest:
-                return [.xOrigin]
-                
-            case .casterForkAtFront, .casterForkAtMid, .casterForkAtRear:
-                return [.yOrigin]
-                
-            case .backrest:
-               return []
-                
-            default:
-                return [.xOrigin, .yOrigin]
-                }
+extension SharedGetSidesAffectedFunc {
+    func subscribeToService(){
+        UserEditedDictionariesService.shared.$partIdsUserEditedDic
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] newData in
+            self?.handlePartIdsUserEditedDicChange(newData)
+        }
+        .store(in: &self.cancellables)
+    }
+    
+    func getIfSideIsPresentFromUserEditedDic(_ side: SidesAffected, _ partToEdit: Part) -> Bool{
+        
+        var present: Bool
+        // it the object has an entry in objectChainLabelsUserEditDic
+        // chain labels have been modified
+        if let chainLabels = objectChainLabelsUserEditDic[objectType] {
+            //if the partToEdit is not present no part present either side
+            if !chainLabels.contains(partToEdit) {
+                present = false
+            } else {
+               //if there is a chain label has that side been removed
+              present = whichSidePresent()
+            }
         } else {
-            return [.xOrigin, .yOrigin]
+            //if no chain label modifications still need to check for presence on side
+            present = whichSidePresent()
+        }
+        
+        func whichSidePresent() -> Bool {
+            let oneOrTwoId: OneOrTwo = partIdsUserEditedDic[partToEdit] ?? OneOrTwoId(
+                objectType,
+                partToEdit
+            ).forPart
+            
+            let sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
+        
+            return
+                sidesPresent.contains(side)
+        }
+        return present
+    }
+
+    
+    func getSidesAffected(_ partToEdit: Part) ->SidesAffected {
+        let left = getIfSideIsPresentFromUserEditedDic(.left, partToEdit)
+        let right = getIfSideIsPresentFromUserEditedDic(.right, partToEdit)
+        
+        switch (left, right) {
+        case (true, true):
+            return .both
+        case (true, false):
+            return .left
+        case (false, true):
+            return .right
+        case (false, false):
+            return .none
         }
     }
     
-    
-    func getIfAnyEditableOrigin(){
-       editableOrigin = getPropertiesForOriginPicker(partToEdit)
-        editableOriginExist =
-            editableOrigin == [] ? false: true
-    }
 }
 
 
 
-protocol SharedSetValueForBilateralPartFuncOnly: AnyObject {
-    var choiceOfEditForSide: SidesAffected {get}
+
+
+
+protocol SharedObjectChainLabelUserEditedDic: AnyObject{
+    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] { get set }
+    var cancellables: Set<AnyCancellable> { get set }
     
-    var partDataDic: [Part: PartData]  {get}
+    func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]])
     
-    var userEditedSharedDics: UserEditedDictionaries {get}
+    //func subscribeToService()
 }
-extension SharedSetValueForBilateralPartFuncOnly {
-    
-    func getEditedOrDefaultOriginOffset(
-        _ name: String
-    )
-        -> PositionAsIosAxes {
-
-        return
-            userEditedSharedDics.parentToPartOriginOffsetUserEditedDic[name] ?? ZeroValue.iosLocation
-    }
-    
-    
-    func dimensionWithModifiedProperty(
-        _ value: Double,
-        _ dimension: Dimension3d,
-        _ property: PartTag
-    ) -> Dimension3d {
-        switch property {
-        case .height:
-            return
-                (
-                    width: dimension.width,
-                    length: dimension.length,
-                    height: value
-                )
-        case .length:
-            return
-                (
-                    width: dimension.width,
-                    length: value,
-                    height:dimension.height
-                )
-        case.width:
-            return
-                (
-                    width: value,
-                    length: dimension.length,
-                    height:dimension.height
-                )
-        default: return dimension
-        }
-    }
-    
-    
-    func getEditedOrDefaultDimension(
-        _ name: String,
-        _ part: Part,
-        _ id: PartTag)
-        -> Dimension3d {
-
-            guard let partData = partDataDic[part] else {
-                fatalError()
+extension SharedObjectChainLabelUserEditedDic {
+    func subscribeToService() {
+        UserEditedDictionariesService.shared.$objectChainLabelsUserEditDic
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newData in
+                self?.handleObjectChainLabelsUserEditedDicChange(newData)
             }
-        return
-            partData.dimension.returnValue(id)
+            .store(in: &self.cancellables)
+    }
+}
+
+
+
+protocol SharedPartToEditFunc: AnyObject{
+    var partToEdit: Part { get set }
+    var cancellables: Set<AnyCancellable> { get set }
+    func handlePartToEditChange(_ newData: Part)
+
+}
+extension SharedPartToEditFunc {
+    func subscribeToService() {
+        
+        ObjectEditService.shared.$partToEdit
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newData in
+                
+                self?.handlePartToEditChange(newData)
+            }
+            .store(in: &self.cancellables)
+    }
+}
+
+
+
+
+
+
+protocol SharedChoiceAndScopeOfEditForSideFunc: AnyObject {
+    var disabled: Bool {get set}
+    
+    var choiceOfEditForSide: SidesAffected {get set}
+    
+    var cancellables: Set<AnyCancellable> {get set}
+}
+extension SharedChoiceAndScopeOfEditForSideFunc {
+    func subscribeToService() {
+        ObjectEditService.shared.$scopeOfEditForSide
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newData in
+                self?.disabled = self?.getPartNotPresent() ?? true
+                self?.handleScopeOfEditForSideChange()
+            }
+            .store(in: &self.cancellables)
+        
+        ObjectEditService.shared.$choiceOfEditForSide
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.choiceOfEditForSide,on: self)
+            .store(in: &cancellables)
     }
     
     
-    ///the value may be for origin or dimension
-    ///origin may be x or y
-    ///dimension may be width or length
-    func setValueForBilateralPartInUserEditedDic(
-        _ partToEdit: Part,
-        _ propertyToEdit: PartTag,
-        _ value: Double,
-        _ sidesAffected: SidesAffected? = nil) {
+    func getPartNotPresent() -> Bool {
+        let partOrAssociatedPart = PartsRequiringLinkedPartUse(ObjectEditService.shared.partToEdit).partForEditableOrigin
+        let first = getSidesPresentGivenPossibleUserEdit(partOrAssociatedPart)[0]
+        return first == .none
+    }
+
+    func handleScopeOfEditForSideChange() {
+        //only one VM has additional code
+    }
     
-            //sometimes the UI part is not the part that is edtied
-        let part = PartsRequiringLinkedPartUse(partToEdit).partForDimensionEdit
-        var partOrLinkedPart: Part = .notFound
-        let allDimensionProperties: [PartTag] = [.width, .length, .height]
-        if value == 0.0 && allDimensionProperties.contains(propertyToEdit) {
-           //do not let dimensions cross zer0
+    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected] {
+        guard let chainLabels = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[ObjectDataService.shared.objectType] ?? ObjectDataService.shared.objectChainLabelsDefaultDic[ObjectDataService.shared.objectType] else {
+            fatalError()
+        }
+
+        var sidesPresent: [SidesAffected] = []
+        if chainLabels.contains(partOrAssociatedPart) {
+            let oneOrTwoId: OneOrTwo<PartTag> = UserEditedDictionariesService.shared.userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(ObjectDataService.shared.objectType, partOrAssociatedPart).forPart
+            sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
         } else {
-            
-            transformToStabiliserForDriveWheelModForOriginY ()
-
-            var sidesToEdit: SidesAffected
-            
-            if let unwrapped = sidesAffected {
-               sidesToEdit = unwrapped
-            } else {
-                sidesToEdit = choiceOfEditForSide
-            }
-            switch sidesToEdit {
-            case .both:
-                process(.id0)
-                process(.id1)
-            case.left:
-                process(.id0)
-            case.right:
-                process(.id1)
-            default:
-                break
-            }
+            sidesPresent = [.none]
         }
 
-     
-        func process(
-            _ id: PartTag
-        ) {
-            let name = CreateNameFromIdAndPart(
-                id,
-                partOrLinkedPart
-            ).name
-            switch propertyToEdit {
-            case .length, .width, .height:
-                let currentDimension =
-                getEditedOrDefaultDimension(
-                    name,
-                    partOrLinkedPart,
-                    id
-                )
-                let newDimension =
-                dimensionWithModifiedProperty(
-                    value,
-                    currentDimension,
-                    propertyToEdit
-                )
-                UserEditedDictionariesService.shared.dimensionUserEditedDicModifier(
-                    [name: newDimension]
-                )
-            case .xOrigin, .yOrigin:
-                let currentOrigin = getEditedOrDefaultOriginOffset(
-                    name
-                )
-                let newOriginOffset = propertyToEdit == .xOrigin ? xOriginModified(
-                    currentOrigin,
-                    id
-                ) : yOriginModified(
-                    currentOrigin,
-                    id
-                )
-                UserEditedDictionariesService.shared.originOffsetUserEdtiedDicModifier(
-                    [name: newOriginOffset]
-                )
-            default: break
-            }
-        }
-            
-        func transformToStabiliserForDriveWheelModForOriginY () {
-            ///the static point is on the  common turn axis of the fixed wheels
-            ///increasing the stability of the main support by increasing the distance
-            ///between the main support and the drive wheels for a rear drive  wheelchair
-            ///therefore is an increase in stability rather than solely a motion of the drive wheels
-            ///however, it is cleaner to include y origin control of the drive wheelchair position
-            ///in the rear wheel menu rather than create a new stability menu
-            ///the code to do that is also conistant with the mid and front drive
-            let dic: [Part: Part] = [
-                .fixedWheelAtRear: .stabiliser,
-                .fixedWheelAtFront: .stabiliser,
-                .fixedWheelAtMid: .stabiliser,
-            ]
-            if let unwrapped = dic[part],  propertyToEdit == .yOrigin {
-                partOrLinkedPart = unwrapped
-        
-            } else {
-                partOrLinkedPart = part
-            }
-        }
-            
-            
-        func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
-            var mod: Double//eg armRest xMove '-' brings closer, but headRest moves left
-            
-            if getNoModRequiredX(part) {
-                mod = 1.0
-            } else {
-                mod = makeLeftAndRightMoveCloserWithNegAndApartWithPos()
-            }
-            let newOrigin =
-                (x: origin.x + value * mod,
-                 y: origin.y,
-                 z: 0.0)
-            return newOrigin
-            
-            func makeLeftAndRightMoveCloserWithNegAndApartWithPos() -> Double {
-                var reverseDirection = 1.0
-                if choiceOfEditForSide == .both {
-                    reverseDirection = id == .id1 ? 1.00: -1.00
-                }
-                return reverseDirection
-            }
-        }
-            
-            
-        func getNoModRequiredX(_ part: Part) -> Bool{
-            let exclusionsForAlwaysUniPart: [Part] = [
-                .mainSupport,
-                .backSupport,
-                .backSupportHeadSupport
-            ]
-            return
-                exclusionsForAlwaysUniPart.contains(part) ? true: false
-        }
-        
-        
-        func yOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -> PositionAsIosAxes {
-            return
-                (x: origin.x,
-                y: origin.y + value,
-                z: 0.0)
-        }
+        return sidesPresent
     }
 }
+
+
+
+
+

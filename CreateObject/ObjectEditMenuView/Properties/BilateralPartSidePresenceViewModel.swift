@@ -10,12 +10,22 @@ import Combine
 import SwiftUI
 
 
-class BilateralPartSidePresenceViewModel:  BilateralPartSidePresencePickerBase,
+class BilateralPartSidePresenceViewModel: ObservableObject,
     SharedGetSidesAffectedFunc,
-    SharedObectTypeAndUserEditedDictionaries,
-    SharedModifyObjectByCreatingFromNameFuncOnly {
+    SharedObjectTypeAndUserEditedDictionaries,
+    SharedModifyObjectByCreatingFromNameFuncOnly,
+    SharedPartRemovalFuncOnly,
+    SharedPartToEditFunc,
+                                          SharedObjectChainLabelUserEditedDic{
+    
+    
 
+    
+    @Published var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
+    
     //on first use toggle flips back to true without this
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
+    
     @Published var partIdsUserEditedDic: [Part : OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
             
     @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
@@ -45,22 +55,38 @@ class BilateralPartSidePresenceViewModel:  BilateralPartSidePresencePickerBase,
         )
     }
 
-
-    override init() {
-            super.init()
+    init() {
         
-        UserEditedDictionariesService.shared.$partIdsUserEditedDic
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.partIdsUserEditedDic,on: self)
-            .store(in: &cancellables)
-    
-        (self as SharedObectTypeAndUserEditedDictionaries).subscribeToServices()
+        (self as SharedGetSidesAffectedFunc).subscribeToService()
+        
+        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
+        
+        (self as SharedPartToEditFunc).subscribeToService()
+        
+        (self as SharedObjectTypeAndUserEditedDictionaries).subscribeToServices()
         
         getBilateralPresenceMenuStatus(partToEdit)
         
     }
     
-   override func handlePartToEditChange(_ newData: Part) {
+    func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]) {
+        //required for protocol conformity
+            //used in another VM
+    }
+    
+    
+    func handleScopeOfEditForSideChange(_ newData: SidesAffected) {
+    //required for protocol conformity
+        //used in another VM
+    }
+    
+    
+    func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]] ) {
+          objectChainLabelsUserEditDic = newData
+      }
+    
+
+    func handlePartToEditChange(_ newData: Part) {
         partToEdit = newData
         getBilateralPresenceMenuStatus(newData)
         //update new part with its prior presence
@@ -105,66 +131,9 @@ class BilateralPartSidePresenceViewModel:  BilateralPartSidePresencePickerBase,
         //finally create a new object with the new specification
        modifyObjectByCreatingFromName()
         
-        func modifyPartIdsUserEditedDic(_ newId: OneOrTwo<PartTag> ) {
-            
-            let partChain = LabelInPartChainOut(partToEdit).partChain
-            
-            let linkedPartDic: [Part: Part] = [
-                .footSupport: .footSupportHangerLink,
-            ]
-             
-            let partOrLinkedPart = linkedPartDic[partToEdit] ?? partToEdit
-            
-            guard let firstIndex = partChain.firstIndex(of: partOrLinkedPart) else {
-                fatalError("\(partChain)")
-            }
-            //provide id for the parts of the chain being edited
-            //as not all the chain may be removed
-            //if there were two then if on the right the id must be id0 as only one
-            for index in firstIndex..<partChain.count {
-                UserEditedDictionariesService.shared.partIdsUserEditedDicModifier([partChain[index]: newId])
-            }
-        }
-        
-        
-        func removeChainLabelFromObject(
-            _ chainLabel: Part) {
-            guard let currentObjectChainLabels =
-                    objectChainLabelsUserEditDic[objectType] ??
-                        ObjectChainLabel.dictionary[objectType] else {
-                              fatalError()
-                            }
-            let newChainLabels =
-                currentObjectChainLabels.filter { $0 != chainLabel}
-                
-                UserEditedDictionariesService.shared.objectChainLabelsUserEditDicModifier(objectType, newChainLabels)
-        }
+
     }
-    
-    
-    func restoreChainLabelToObject(
-        _ chainLabel: Part
-    ) {
-        guard let currentObjectChainLabels = objectChainLabelsUserEditDic[objectType] ??
-                ObjectChainLabel.dictionary[objectType] else {
-            fatalError(
-                "no chain labels for object \(objectType)"
-            )
-        }
-        let newChainLabels = currentObjectChainLabels + [chainLabel]
-       
-        UserEditedDictionariesService.shared.objectChainLabelsUserEditDicModifier(objectType, newChainLabels)
-    }
-    
-    
-    func setPartIdDicInKeyToNilRestoringDefaultForPart () {
-        let partChain = LabelInPartChainOut(partToEdit).partChain
-        for part in partChain {
-            let oneOrTwo = OneOrTwoId(objectType, part).forPart
-            UserEditedDictionariesService.shared.partIdsUserEditedDicReseterForBilateralPart(part, oneOrTwo)
-        }
-    }
-    
+//    
     
     func getBilateralPresenceMenuStatus(_ part: Part) {
         let neverBilateral =

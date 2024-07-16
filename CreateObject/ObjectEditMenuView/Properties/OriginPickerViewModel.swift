@@ -9,16 +9,11 @@ import Foundation
 import Combine
 import SwiftUI
 
-class OriginPickerViewModel: 
-    PropertyEditBase,
+class OriginPickerViewModel: ObservableObject,
     SharedOriginPropertyToEdit,
-    SharedEditableOrignExistFuncOnly,SharedChoieAndScopeOfEditForSideFunc  {
-    var objectType = ObjectDataService.shared.objectType
-
-    
-    var disabled: Bool = true
-    
-    @Published var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    SharedEditableOrignExistFuncOnly,
+    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedPartToEditFunc {
     
     
     var originPropertyBinding: Binding<PartTag> {
@@ -28,28 +23,39 @@ class OriginPickerViewModel:
         )
     }
     
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
+    
     @Published var originPropertyToEdit = ObjectEditService.shared.originPropertyToEdit
     
     @Published var editableOriginExist = false
     
     @Published var editableOrigin: [PartTag] = []
     
+    @Published var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    
+    
+    var objectType = ObjectDataService.shared.objectType
+    
+    var disabled: Bool = true
+    
    internal var cancellables: Set<AnyCancellable> = []
     
-    override init() {
-            super.init()
+ 
+    init() {
+        (self as SharedPartToEditFunc).subscribeToService()
+    
         (self as SharedOriginPropertyToEdit).subscribeToService()
-        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
+        
+        (self as SharedChoiceAndScopeOfEditForSideFunc).subscribeToService()
         
     }
     
-    
-    override func handlePartToEditChange(_ newData: Part) {
+
+    func handlePartToEditChange(_ newData: Part) {
         //ensure that the previous option not applied to new part
         setDefaultPropertyToEditOnPartChange()
         getIfAnyEditableOrigin()
     }
-    
     
     
     func setOriginPropertyToEdit(_ value: PartTag){
@@ -68,3 +74,6 @@ class OriginPickerViewModel:
     }
     
 }
+
+
+

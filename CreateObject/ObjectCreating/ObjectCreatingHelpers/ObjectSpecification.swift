@@ -86,6 +86,7 @@ struct ObjectChainLabel {
     static let chairSupport: [Part] =
         [.mainSupport,
          .backSupportTiltJoint,
+         .backSupport,
         .backSupportHeadSupport,
         .footSupport,
         .armSupport,

@@ -10,16 +10,37 @@ import Combine
 import SwiftUI
 
 
-class DimensionStepperViewModel:
-    PropertyEditBase,
+class DimensionStepperViewModel: ObservableObject,
     SharedInitialSliderValueFuncOnly,
     SharedDimensionPropertyToEdit,
     SharedSetValueForBilateralPartFuncOnly,
     SharedModifyObjectByCreatingFromNameFuncOnly,
-    SharedObectTypeAndUserEditedDictionaries,
-    SharedChoieAndScopeOfEditForSideFunc,
-    SharedPartDataDic {
+    SharedObjectTypeAndUserEditedDictionaries,
+    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedPartDataDic,
+    SharedPartToEditFunc{
     
+    var stepperValueBinding: Binding<Double> {
+        Binding<Double>(
+            get: {
+                self.getInitialSliderValue(
+                    self.partToEdit,
+                    self.dimensionPropertyToEdit
+                )
+            },
+            set: { newValue in
+                self.setValueForBilateralPartInUserEditedDic(
+                    self.partToEdit,
+                    self.dimensionPropertyToEdit,
+                    newValue
+                )
+                
+                self.modifyObjectByCreatingFromName() }
+        )
+    }
+    
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
+
     var objectType = ObjectDataService.shared.objectType
     
     var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
@@ -34,34 +55,23 @@ class DimensionStepperViewModel:
     
     internal var cancellables: Set<AnyCancellable> = []
   
-    var stepperValueBinding: Binding<Double> {
-        Binding<Double>(
-            get: {
-                self.getInitialSliderValue(
-                    self.partToEdit,
-                    self.dimensionPropertyToEdit
-                )
-            },
-            set: {                     newValue in
-                self.setValueForBilateralPartInUserEditedDic(
-                    self.partToEdit,
-                    self.dimensionPropertyToEdit,
-                    newValue
-                )
-                
-                self.modifyObjectByCreatingFromName() }
-        )
-    }
     
+    init() {
+    (self as SharedObjectTypeAndUserEditedDictionaries).subscribeToServices()
+        
+    (self as SharedPartToEditFunc).subscribeToService()
+     
+    (self as SharedDimensionPropertyToEdit).subscribeToService()
     
-    override init() {
-            super.init()
-        subscribeToServices()
-        subscribeToDimensionPropertyToEditDataService()
-        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
-        (self as SharedPartDataDic).subScribeToService()
-
-    }
+    (self as SharedChoiceAndScopeOfEditForSideFunc) .subscribeToService()
+        
+    (self as SharedPartDataDic).subScribeToService()
 
 }
 
+    
+    func handlePartToEditChange(_ newData: Part) {
+        partToEdit = newData
+
+    }
+}

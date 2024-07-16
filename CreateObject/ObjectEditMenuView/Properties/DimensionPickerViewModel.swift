@@ -11,22 +11,10 @@ import SwiftUI
 
 
 
-class DimensionPickerViewModel: 
-    PropertyEditBase,
+class DimensionPickerViewModel: ObservableObject,
     SharedDimensionPropertyToEdit,
-    SharedChoieAndScopeOfEditForSideFunc  {
-    
-    var disabled: Bool = true
-    
-    @Published var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
-    
-
-    @Published var editableDimension: [PartTag] = []
-    
-
-    //inconistant without Published
-    @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
-
+    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedPartToEditFunc{
     
     var dimensionPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
@@ -36,18 +24,31 @@ class DimensionPickerViewModel:
                 self.setDimensionPropertyToEdit($0) }
         )
     }
+   
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
     
-  
+    @Published var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    
+    @Published var editableDimension: [PartTag] = []
+    
+    //inconistant without Published
+    @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
+
+    var disabled: Bool = true
+    
    internal var cancellables: Set<AnyCancellable> = []
-    
-    override init() {
-            super.init()
+
+    init() {
+        (self as SharedDimensionPropertyToEdit).subscribeToService()
         
-        subscribeToDimensionPropertyToEditDataService()
-        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
+        (self as SharedPartToEditFunc).subscribeToService()
+        
+        (self as SharedChoiceAndScopeOfEditForSideFunc) .subscribeToService()
     }
     
-    override func handlePartToEditChange(_ newData: Part) {
+    
+    func handlePartToEditChange(_ newData: Part) {
+       partToEdit = newData
         setFirstAvailableDimensionPropertyActive()
         editableDimension = getPropertiesForDimensionPicker()
     }
@@ -68,6 +69,7 @@ class DimensionPickerViewModel:
             return [.width]
         
         case .footSupport, .assistantFootLever:
+
             return [.length]
         
         default:

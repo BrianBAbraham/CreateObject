@@ -7,64 +7,64 @@
 
 import SwiftUI
 
-struct ConditionaUniPartPresence: View {
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    var part: Part {
-        objectEditVM.getPartToEdit()
-    }
-    
-    var body: some View {
-        if objectShowMenuVM.getUniPresenceMenuStatus(part) {
-            UniPartPresence(part)
-        } else {
-            EmptyView()
-        }
-    }
-}
+//struct ConditionaUniPartPresence: View {
+//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//    var part: Part {
+//        objectEditVM.getPartToEdit()
+//    }
+//    
+//    var body: some View {
+//        if objectShowMenuVM.getUniPresenceMenuStatus(part) {
+//            UniPartPresence(part)
+//        } else {
+//            EmptyView()
+//        }
+//    }
+//}
 
-struct UniDimensionSlider: View {
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
-    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
-
-   
-    var propertyToEdit: PartTag
-    var minMaxValue : (min: Double, max: Double){
-        objectDataGetterVM.geMinMax(part, propertyToEdit)
-    }
-    let part: Part
-  
-    
-    init(
-        _ part: Part,
-        _ property: PartTag) {
-        self.part = part
-        propertyToEdit = property
-    }
-    var body: some View {
-
-        let boundSliderValue = Binding(
-            get: {
-                objectDataGetterVM.getInitialSliderValue (
-                    part, propertyToEdit)
-            },
-            set: { newValue in
-                objectEditVM
-                    .setDimensionPropertyValueForOnePartInUserEditedDic(
-                        newValue,
-                        part)
-                
-                objectPickVM.modifyObjectByCreatingFromName()
-           
-                }
-        )
-                Slider(value: boundSliderValue,
-                       in: minMaxValue.min...minMaxValue.max,
-                       step: 10.0)
-    }
-}
+//struct UniDimensionSlider: View {
+//    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
+//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//    @EnvironmentObject var objectShowMenuVM: ObjectShowMenuViewModel
+//    @EnvironmentObject var objectDataGetterVM: ObjectDataGetterViewModel
+//
+//   
+//    var propertyToEdit: PartTag
+//    var minMaxValue : (min: Double, max: Double){
+//        objectDataGetterVM.geMinMax(part, propertyToEdit)
+//    }
+//    let part: Part
+//  
+//    
+//    init(
+//        _ part: Part,
+//        _ property: PartTag) {
+//        self.part = part
+//        propertyToEdit = property
+//    }
+//    var body: some View {
+//
+//        let boundSliderValue = Binding(
+//            get: {
+//                objectDataGetterVM.getInitialSliderValue (
+//                    part, propertyToEdit)
+//            },
+//            set: { newValue in
+//                objectEditVM
+//                    .setDimensionPropertyValueForOnePartInUserEditedDic(
+//                        newValue,
+//                        part)
+//                
+//                objectPickVM.modifyObjectByCreatingFromName()
+//           
+//                }
+//        )
+//                Slider(value: boundSliderValue,
+//                       in: minMaxValue.min...minMaxValue.max,
+//                       step: 10.0)
+//    }
+//}
 
 struct  UnilateralPartPresenceView: View {
     @EnvironmentObject var  unilateralPartPresenceViewModel: UnilateralPartPresenceViewModel
@@ -79,39 +79,39 @@ struct  UnilateralPartPresenceView: View {
     
 }
 
-struct UniPartPresence: View {
-    @State private var optionToggle = true
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-    @EnvironmentObject var objectEditVM: ObjectEditViewModel
-   
-    let part: Part
-    var pair : [Part] {
-        PartSwapLabel(part).pair    }
-    var swappedPair: [Part] {
-        PartSwapLabel(part).swappedPair
-    }
-    
-    init (_ part: Part) {
-        self.part = part
-    }
-    
-    var body: some View {
-            Toggle(part.rawValue, isOn: $optionToggle)
-                .onChange(of: optionToggle) { oldValue, newValue in
-                    if !newValue {
-                        objectEditVM.replaceChainLabelForObject(
-                            pair
-                        )
-                    } else {
-                        objectEditVM.replaceChainLabelForObject(
-                          swappedPair
-                        )
-                    }
-                    objectPickVM.modifyObjectByCreatingFromName()
-                }
-                .colorScheme(.light)
-    }
-}
+//struct UniPartPresence: View {
+//    @State private var optionToggle = true
+//    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
+//    @EnvironmentObject var objectEditVM: ObjectEditViewModel
+//   
+//    let part: Part
+//    var pair : [Part] {
+//        PartSwapLabel(part).pair    }
+//    var swappedPair: [Part] {
+//        PartSwapLabel(part).swappedPair
+//    }
+//    
+//    init (_ part: Part) {
+//        self.part = part
+//    }
+//    
+//    var body: some View {
+//            Toggle(part.rawValue, isOn: $optionToggle)
+//                .onChange(of: optionToggle) { oldValue, newValue in
+//                    if !newValue {
+//                        objectEditVM.replaceChainLabelForObject(
+//                            pair
+//                        )
+//                    } else {
+//                        objectEditVM.replaceChainLabelForObject(
+//                          swappedPair
+//                        )
+//                    }
+//                    objectPickVM.modifyObjectByCreatingFromName()
+//                }
+//                .colorScheme(.light)
+//    }
+//}
 
 
 
@@ -181,5 +181,23 @@ struct TiltEdit: View {
                         
                 }
             }
+    }
+}
+
+struct AngleEditView: View {
+    @EnvironmentObject var propertyAngleVM: PropertyAngleViewModel
+    var body: some View {
+        ZStack{
+            HStack{
+                Text("angle")
+                    .colorScheme(.light)
+                
+                Slider(value: propertyAngleVM.sliderValueBinding, in: propertyAngleVM.min...propertyAngleVM.max, step: 1.0)
+
+                Text(" deg: \( Int(propertyAngleVM.max - propertyAngleVM.sliderValueBinding.wrappedValue))")
+                    .colorScheme(.light)
+                    
+            }
+        }
     }
 }

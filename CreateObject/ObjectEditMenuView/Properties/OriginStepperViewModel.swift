@@ -10,31 +10,16 @@ import Combine
 import SwiftUI
 
 
-class OriginStepperViewModel: 
-    PropertyEditBase, 
+class OriginStepperViewModel: ObservableObject,
     SharedOriginPropertyToEdit,
     SharedEditableOrignExistFuncOnly, 
     SharedInitialSliderValueFuncOnly,
     SharedSetValueForBilateralPartFuncOnly,
     SharedModifyObjectByCreatingFromNameFuncOnly,
-    SharedObectTypeAndUserEditedDictionaries,
-    SharedChoieAndScopeOfEditForSideFunc,
-    SharedPartDataDic{
-    
-    var objectType = ObjectDataService.shared.objectType
-
-    
-    var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
-    
-    var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
-    
-    var disabled: Bool = true
-    
-    @Published var editableOriginExist = false
-    
-    @Published var editableOrigin: [PartTag] = []
-    
-    var userEditedSharedDics = UserEditedDictionariesService.shared.userEditedSharedDics
+    SharedObjectTypeAndUserEditedDictionaries,
+    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedPartDataDic,
+    SharedPartToEditFunc{
     
     var stepperValueBinding: Binding<Double> {
         Binding<Double>(
@@ -54,27 +39,46 @@ class OriginStepperViewModel:
         )
     }
     
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
+    
+    @Published var editableOriginExist = false
+    
+    @Published var editableOrigin: [PartTag] = []
+    
+    
+    var objectType = ObjectDataService.shared.objectType
+
+    var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
+    
+    var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
+    
+    var disabled: Bool = true
+    
+    var userEditedSharedDics = UserEditedDictionariesService.shared.userEditedSharedDics
+    
     var originPropertyToEdit = ObjectEditService.shared.originPropertyToEdit
     
     internal var cancellables: Set<AnyCancellable> = []
-    
-    override init() {
-            super.init()
+
+        init() {
+
+        (self as SharedPartToEditFunc).subscribeToService()
         subscribeToServices()
+        
         (self as SharedOriginPropertyToEdit).subscribeToService()
-        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
+       
+        (self as SharedChoiceAndScopeOfEditForSideFunc) .subscribeToService()
+        
         (self as SharedPartDataDic).subScribeToService()
 
     }
+
     
-    override func handlePartToEditChange(
-        _ newData: Part
+    func handlePartToEditChange(
+    _ newData: Part
     ) {
         //ensure that the previous option not applied to new part
+        partToEdit = newData
         getIfAnyEditableOrigin()
     }
 }
-
-
-
-

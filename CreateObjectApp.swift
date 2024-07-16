@@ -16,15 +16,16 @@ import SwiftUI
 struct CreateObjectApp: App {
     @StateObject var bilateralPartSidePickerVM = BilateralPartSidePickerViewModel()
     @StateObject var  unilateralPartPresenceViewModel =  UnilateralPartPresenceViewModel()
-//    @StateObject var conditionalBilateralPartSidePickerVM = ConditionalBilateralPartSidePickerViewModel()
+
     @StateObject var objectPickerVM = ObjectPickerViewModel()
     @StateObject var partPickerVM = PartPickerViewModel()
-//    @StateObject var partOriginAndDimensionEditViewModel = PartOriginAndDimensionEditViewModel()
+
     @StateObject var dimensionPickerViewModel = DimensionPickerViewModel()
     @StateObject var dimensionStepperViewModel = DimensionStepperViewModel()
     @StateObject var originPickerViewModel = OriginPickerViewModel()
     @StateObject var originStepperViewModel = OriginStepperViewModel()
     @StateObject var bilateralPartPresenceViewModel = BilateralPartSidePresenceViewModel()
+    @StateObject var propertyAngleViewModel =  PropertyAngleViewModel()
     
     @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
     @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
@@ -51,7 +52,7 @@ struct CreateObjectApp: App {
                 ContentView()
                 .environmentObject(bilateralPartSidePickerVM)
             
-//                .environmentObject(conditionalBilateralPartSidePickerVM)
+
                 .environmentObject(objectPickerVM)
                 .environmentObject(partPickerVM)
 //                .environmentObject(partOriginAndDimensionEditViewModel)
@@ -61,6 +62,7 @@ struct CreateObjectApp: App {
                 .environmentObject(originStepperViewModel)
                 .environmentObject(bilateralPartPresenceViewModel)
                 .environmentObject( unilateralPartPresenceViewModel)
+                .environmentObject(propertyAngleViewModel)
             
             
                 .environmentObject(movementDataGetter)

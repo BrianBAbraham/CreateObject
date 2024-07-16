@@ -9,30 +9,12 @@ import Foundation
 import Combine
 import SwiftUI
 
-class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase, 
+class BilateralPartSidePickerViewModel: ObservableObject,
     SharedGetSidesAffectedFunc,
-    SharedObectTypeAndUserEditedDictionaries,
-    SharedChoieAndScopeOfEditForSideFunc {
-    
-    @Published var disabled: Bool = true
-    
-   //@Published
-    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
-    
-    var objectType: ObjectTypes = ObjectDataService.shared.objectType
-    
-    //@Published
-    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
-        
-        
-    @Published var choiceOfEditForSide = objectEditService.choiceOfEditForSide
-    
-    @Published var scopeOfEditForSide = objectEditService.scopeOfEditForSide
-    
-    @Published var showMenu = false
-   
-    static let objectEditService = ObjectEditService.shared
-
+    SharedObjectTypeAndUserEditedDictionaries,
+    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedPartToEditFunc,
+    SharedObjectChainLabelUserEditedDic{
     var binding: Binding<SidesAffected> {
         Binding<SidesAffected> (
             get: {self.choiceOfEditForSide},
@@ -41,40 +23,45 @@ class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase,
         )
     }
     
+    @Published var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
+    @Published var disabled: Bool = true
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
+    @Published var choiceOfEditForSide = objectEditService.choiceOfEditForSide
+    @Published var scopeOfEditForSide = objectEditService.scopeOfEditForSide
+    @Published var showMenu = false
+    
+    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
+    
+    var objectType: ObjectTypes = ObjectDataService.shared.objectType
+    
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+        
+    static let objectEditService = ObjectEditService.shared
+
     internal var cancellables: Set<AnyCancellable> = []
     
-    override init() {
-            super.init()
+    
+        init() {
+            
+        (self as SharedGetSidesAffectedFunc).subscribeToService()
+            
+        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
         
-        UserEditedDictionariesService.shared.$partIdsUserEditedDic
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] newData in
-            self?.handlePartIdsUserEditedDicChange(newData)
-        }
-        .store(in: &self.cancellables)
+        (self as SharedPartToEditFunc).subscribeToService()
         
+        (self as SharedObjectTypeAndUserEditedDictionaries).subscribeToServices()
         
-        
-        (self as SharedObectTypeAndUserEditedDictionaries).subscribeToServices()
-        
-        (self as SharedChoieAndScopeOfEditForSideFunc) .subscribeToServie()
-        
-        Self.objectEditService.$scopeOfEditForSide
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.scopeOfEditForSide = newData
-                Self.objectEditService.setSideToEdit(newData)
-            }
-            .store(in: &self.cancellables)
-        
-        
-        Self.objectEditService.$choiceOfEditForSide
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$choiceOfEditForSide)
+        (self as SharedChoiceAndScopeOfEditForSideFunc).subscribeToService()
     }
     
     
-  override func handlePartToEditChange(_ newData: Part) {
+    func handleScopeOfEditForSideChange(_ newData: SidesAffected) {
+        scopeOfEditForSide = newData
+        Self.objectEditService.setSideToEdit(newData)
+    }
+    
+    
+    func handlePartToEditChange(_ newData: Part) {
         partToEdit = newData
         scopeOfEditForSide = getSidesAffected(newData)
         setScopeOfEditForSide()
@@ -82,25 +69,21 @@ class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase,
     }
     
     
-    override func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]]) {
-       objectChainLabelsUserEditDic = newData
-        //deteect if no part has no presence on either side
-        scopeOfEditForSide = getSidesAffected(partToEdit)
-        setScopeOfEditForSide()
+    func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]]) {
+   objectChainLabelsUserEditDic = newData
+    //deteect if no part has no presence on either side
+    scopeOfEditForSide = getSidesAffected(partToEdit)
+    setScopeOfEditForSide()
     }
     
     
-    //override
-        func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]){
-        //detect if part has presence only one side
-        partIdsUserEditedDic = newData
-        scopeOfEditForSide = getSidesAffected(partToEdit )
-        setScopeOfEditForSide()
+    func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]){
+    //detect if part has presence only one side
+    partIdsUserEditedDic = newData
+    scopeOfEditForSide = getSidesAffected(partToEdit )
+    setScopeOfEditForSide()
     }
     
-//        func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>]){
-//            partIdsUserEditedDic = newData
-//        }
     
     func setSideToEdit(
         _ sideChoice: SidesAffected
@@ -116,7 +99,6 @@ class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase,
     }
 
     
-    
     func getSidePickerMenuStatus() -> Bool {
         let alwaysUnilateral =
             OneOrTwoId.partWhichAreAlwaysUnilateral.contains(partToEdit)
@@ -128,3 +110,5 @@ class BilateralPartSidePickerViewModel: BilateralPartSidePresencePickerBase,
         return showMenu
     }
 }
+
+
