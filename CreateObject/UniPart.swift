@@ -199,5 +199,6 @@ struct AngleEditView: View {
                     
             }
         }
+        .opacity(propertyAngleVM.showMenu ? 1 : 0)
     }
 }

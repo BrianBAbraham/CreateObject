@@ -50,7 +50,7 @@ class PropertyAngleViewModel: ObservableObject,
     
     @Published var partToEdit = ObjectEditService.shared.partToEdit
     
-   
+   @Published var showMenu = false
     
     var objectType = ObjectDataService.shared.objectType
     
@@ -74,10 +74,11 @@ class PropertyAngleViewModel: ObservableObject,
             get: {
                 self.getInitialSliderValue(
                     self.partToEdit,
-                    self.dimensionPropertyToEdit
+                    PartTag.angle
                 )
             },
             set: { newValue in
+                print(self.max)
                     self.setCurrentRotation(
                         self.max - newValue,
                         self.partToEdit
@@ -105,7 +106,7 @@ class PropertyAngleViewModel: ObservableObject,
             }
             .store(in: &self.cancellables)
         
-        
+        handlePartToEditChange(partToEdit)
         
     }
     
@@ -121,6 +122,14 @@ class PropertyAngleViewModel: ObservableObject,
     
     
     func handlePartToEditChange(_ newData: Part) {
+
+        
+        if let tilter = TiltingAbility(newData, objectType).tilter {
+            showMenu = true
+           partToEdit = tilter
+        } else {
+            showMenu = false
+        }
         
     }
     
@@ -148,5 +157,10 @@ class PropertyAngleViewModel: ObservableObject,
         UserEditedDictionariesService.shared.angleUserEditedDicModifier(
             angleUserEditedDicEntry
         )
+    }
+    
+    func getTiltMenuPart(_ part: Part) -> Part? {
+        TiltingAbility(part, objectType).tilter
+        
     }
 }
