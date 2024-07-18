@@ -100,6 +100,7 @@ class ObjectDataGetterViewModel: ObservableObject {
 
         var value: Double? = nil
         if let partData = partDataDic[part] {//parts edited out do not exist
+            //print(partData)
             let idForLeftOrRight = choiceOfEditForSide == .right ? PartTag.id1: PartTag.id0
         
             var id: PartTag
@@ -131,6 +132,8 @@ class ObjectDataGetterViewModel: ObservableObject {
             case .angle:
                 value =
                     partData.angles.returnValue(id).x.converted(to: .degrees).value
+               
+                print("OLD: \(propertyToEdit) \(part.rawValue) \(partData.angles) \(value)")
             
             default:
                 break

@@ -208,7 +208,8 @@ struct EditObjectView: View {
                         
                         PartOriginAndDimensionContainerView()
                         
-                       AngleEditView()
+                   AngleEditView()
+                   //ConditionalTiltMenu()
                         
                         }
                     }

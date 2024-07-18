@@ -42,6 +42,7 @@ class TiltEditViewModel: ObservableObject {
 }
 
 class PropertyAngleViewModel: ObservableObject,
+    SharedPartDataDic,
     SharedPartToEditFunc,
     SharedInitialSliderValueFuncOnly,
     SharedDimensionPropertyToEdit,
@@ -52,15 +53,15 @@ class PropertyAngleViewModel: ObservableObject,
     
    @Published var showMenu = false
     
-    var objectType = ObjectDataService.shared.objectType
+   @Published var objectType = ObjectDataService.shared.objectType
     
-    var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
+    @Published  var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
     
     var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
     
-    var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
+    @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
     
-    var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
+    @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
     
     @Published var min: Double = 0.0
     
@@ -71,14 +72,17 @@ class PropertyAngleViewModel: ObservableObject,
     
     var sliderValueBinding: Binding<Double> {
         Binding<Double>(
-            get: {
+            get: {let new =
+                self.max -
                 self.getInitialSliderValue(
                     self.partToEdit,
-                    PartTag.angle
-                )
+                    PartTag.angle)
+                  print(new)
+                    return new
+            
             },
             set: { newValue in
-                print(self.max)
+               // print(self.max)
                     self.setCurrentRotation(
                         self.max - newValue,
                         self.partToEdit
@@ -90,7 +94,7 @@ class PropertyAngleViewModel: ObservableObject,
     }
 
     init() {
-        let angleMinMax = getAngleMinMaxDic(partToEdit)
+        let angleMinMax = getAngleMinMaxDic(getTiltMenuPart(partToEdit) ?? partToEdit)
         max = angleMinMax.max.value
         min = angleMinMax.min.value
 
@@ -123,7 +127,8 @@ class PropertyAngleViewModel: ObservableObject,
     
     func handlePartToEditChange(_ newData: Part) {
 
-        
+       // print(min)
+              //  print(max)
         if let tilter = TiltingAbility(newData, objectType).tilter {
             showMenu = true
            partToEdit = tilter
@@ -138,6 +143,8 @@ class PropertyAngleViewModel: ObservableObject,
         _ maxMinusSliderValue: Double,
         _ part: Part
     ) {
+        
+        print("NEW set \(part) to \(maxMinusSliderValue)")
         var partName: String {
             CreateNameFromIdAndPart(.id0, part).name
         }

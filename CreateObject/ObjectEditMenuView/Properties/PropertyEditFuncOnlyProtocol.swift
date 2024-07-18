@@ -167,9 +167,13 @@ extension SharedInitialSliderValueFuncOnly {
     ) -> Double {
         //sometimes the UI selection is adjusted by another part eg footlength for footplate
         let part = PartsRequiringLinkedPartUse(partToEdit).partForDimensionEdit
-        let propertyToEdit = propertyToEdit
+        
+      //  print("NEW: \(part.rawValue) \(partToEdit.rawValue)")
+
+        //let propertyToEdit = propertyToEdit
         var value: Double? = nil
         if let partData = partDataDic[part] {//parts edited out do not exist
+         //   print(partData)
             let idForLeftOrRight = choiceOfEditForSide == .right ? PartTag.id1: PartTag.id0
         
             var id: PartTag
@@ -198,8 +202,12 @@ extension SharedInitialSliderValueFuncOnly {
                 offsetToOrigin.x: offsetToOrigin.y
                 
             case .angle:
+             //   print("detect")
                 value =
                     partData.angles.returnValue(id).x.converted(to: .degrees).value
+                
+                print("NEW: \(propertyToEdit) \(part.rawValue) \(partData.angles) \(value)")
+
             
             default:
                 break

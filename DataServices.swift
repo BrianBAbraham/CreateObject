@@ -317,6 +317,7 @@ class UserEditedDictionariesService: ObservableObject {
     
     
     func angleUserEditedDicModifier(_ entry: AnglesDictionary){
+        print(entry)
         userEditedSharedDics.angleUserEditedDic += entry
     }
     

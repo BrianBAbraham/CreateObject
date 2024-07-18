@@ -50,7 +50,7 @@ struct PartDefaultAngle {
                 .sitOnTiltJoint:
                     (min: (x: Measurement(value: zPlus, unit: UnitAngle.degrees), y: z , z: z),
                      max: (x: Measurement(value: 30.0, unit: UnitAngle.degrees), y: z , z: z),
-                    initial: (x: Measurement(value: 0.0, unit: UnitAngle.degrees), y: z , z: z) ),
+                    initial: (x: Measurement(value: 15.0, unit: UnitAngle.degrees), y: z , z: z) ),
                 .backSupportTiltJoint:
                     (min: (x: Measurement(value: zPlus, unit: UnitAngle.degrees), y: z , z: z),
                      max: (x: Measurement(value: 90.0, unit: UnitAngle.degrees), y: z , z: z),

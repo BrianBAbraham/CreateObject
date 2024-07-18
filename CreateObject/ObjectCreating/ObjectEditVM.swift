@@ -233,7 +233,7 @@ extension ObjectEditViewModel {
         var partName: String {
             CreateNameFromIdAndPart(.id0, part).name
         }
-        
+        print("OLD set \(part) to \(maxMinusSliderValue)")
      
         let angleUserEditedDicEntry =
         [partName:
