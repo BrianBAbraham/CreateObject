@@ -27,9 +27,7 @@ struct CreateObjectApp: App {
     @StateObject var bilateralPartPresenceViewModel = BilateralPartSidePresenceViewModel()
     @StateObject var propertyAngleViewModel =  PropertyAngleViewModel()
     
-    @StateObject var objectDataGetterVM = ObjectDataGetterViewModel()
-    @StateObject var objectShowMenuVM = ObjectShowMenuViewModel()
-    @StateObject var objectEditVM = ObjectEditViewModel()
+
     @StateObject var coreDataVM = CoreDataViewModel()
     @StateObject var sceneVM = SceneViewModel()
     @StateObject var unitsVM = UnitSystemViewModel()
@@ -55,7 +53,7 @@ struct CreateObjectApp: App {
 
                 .environmentObject(objectPickerVM)
                 .environmentObject(partPickerVM)
-//                .environmentObject(partOriginAndDimensionEditViewModel)
+
                 .environmentObject(dimensionPickerViewModel)
                 .environmentObject(dimensionStepperViewModel)
                 .environmentObject(originPickerViewModel)
@@ -67,11 +65,10 @@ struct CreateObjectApp: App {
             
                 .environmentObject(movementDataGetter)
                
-                .environmentObject(objectDataGetterVM)
+
                 .environmentObject(movementPickVM)
                 .environmentObject(movementDataProcessorVM)
-                .environmentObject(objectShowMenuVM)
-                .environmentObject(objectEditVM)
+
                 .environmentObject(coreDataVM)
                 .environmentObject(sceneVM)
                 .environmentObject(unitsVM)

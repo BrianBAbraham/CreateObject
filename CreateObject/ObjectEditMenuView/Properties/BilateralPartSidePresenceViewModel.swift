@@ -11,20 +11,23 @@ import SwiftUI
 
 
 class BilateralPartSidePresenceViewModel: ObservableObject,
-    SharedGetSidesAffectedFunc,
-    SharedObjectTypeAndUserEditedDictionaries,
+    SharedPartIdUSerEditedDicFunc,
+    SharedGetSidesAffectedFuncOnly,
     SharedModifyObjectByCreatingFromNameFuncOnly,
     SharedPartRemovalFuncOnly,
+    SharedObjectType,
+    SharedUserEditedDictionaries,
     SharedPartToEditFunc,
-                                          SharedObjectChainLabelUserEditedDic{
+    SharedObjectChainLabelUserEditedDicFunc{
     
     
 
     
     @Published var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
     
-    //on first use toggle flips back to true without this
-    @Published var partToEdit = ObjectEditService.shared.partToEdit
+
+  
+    var partToEdit = ObjectEditService.shared.partToEdit
     
     @Published var partIdsUserEditedDic: [Part : OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
             
@@ -34,8 +37,9 @@ class BilateralPartSidePresenceViewModel: ObservableObject,
 
     @Published var showMenu = false
 
-    var leftPresent = true
-    var rightPresent = true
+    //on first use toggle flips back to true without this
+    @Published var leftPresent = true
+    @Published var rightPresent = true
 
     internal var cancellables: Set<AnyCancellable> = []
     
@@ -56,14 +60,15 @@ class BilateralPartSidePresenceViewModel: ObservableObject,
     }
 
     init() {
+        (self as SharedPartIdUSerEditedDicFunc).subscribeToService()
         
-        (self as SharedGetSidesAffectedFunc).subscribeToService()
-        
-        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
+        (self as SharedObjectChainLabelUserEditedDicFunc).subscribeToService()
         
         (self as SharedPartToEditFunc).subscribeToService()
         
-        (self as SharedObjectTypeAndUserEditedDictionaries).subscribeToServices()
+        (self as SharedObjectType).subscribeToService()
+            
+        (self as SharedUserEditedDictionaries).subscribeToService()
         
         getBilateralPresenceMenuStatus(partToEdit)
         

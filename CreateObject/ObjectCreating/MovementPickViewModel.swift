@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 
 class MovementPickViewModel: ObservableObject {
@@ -39,6 +40,23 @@ class MovementPickViewModel: ObservableObject {
             setObjectAngleType()
         }
     }
+    
+    let menuItems = Movement.allCases.map {
+        $0.rawValue
+    }
+    
+    
+    var binding: Binding<String> {
+        Binding<String> (
+            get: {self.movementName},
+            set: { newValue in
+                self.updateMovementImageData(
+                    to: newValue)
+                self.movementName = newValue
+            }
+        )
+    }
+    
     
     //intialise object data
     //static single object

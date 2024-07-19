@@ -13,8 +13,12 @@ import SwiftUI
 
 class DimensionPickerViewModel: ObservableObject,
     SharedDimensionPropertyToEdit,
-    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedNoSidesPresentFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedScopeOfEditForSideFunc,
+    SharedChoiceOfEditForSide,
     SharedPartToEditFunc{
+
     
     var dimensionPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
@@ -34,7 +38,7 @@ class DimensionPickerViewModel: ObservableObject,
     //inconistant without Published
     @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
 
-    var disabled: Bool = true
+   @Published var disabled: Bool = true
     
    internal var cancellables: Set<AnyCancellable> = []
 
@@ -42,8 +46,10 @@ class DimensionPickerViewModel: ObservableObject,
         (self as SharedDimensionPropertyToEdit).subscribeToService()
         
         (self as SharedPartToEditFunc).subscribeToService()
+
+        (self as SharedScopeOfEditForSideFunc).subscribeToService()
         
-        (self as SharedChoiceAndScopeOfEditForSideFunc) .subscribeToService()
+        (self as SharedChoiceOfEditForSide).subscribeToService()
     }
     
     

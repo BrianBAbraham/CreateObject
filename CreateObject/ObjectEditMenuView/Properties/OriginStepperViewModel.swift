@@ -16,11 +16,17 @@ class OriginStepperViewModel: ObservableObject,
     SharedInitialSliderValueFuncOnly,
     SharedSetValueForBilateralPartFuncOnly,
     SharedModifyObjectByCreatingFromNameFuncOnly,
-    SharedObjectTypeAndUserEditedDictionaries,
-    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedUserEditedDictionaries,
+    SharedObjectType,
+
+    SharedNoSidesPresentFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedScopeOfEditForSideFunc,
+    SharedChoiceOfEditForSide,
+
     SharedPartDataDic,
     SharedPartToEditFunc{
-    
+
     var stepperValueBinding: Binding<Double> {
         Binding<Double>(
             get: {
@@ -45,7 +51,6 @@ class OriginStepperViewModel: ObservableObject,
     
     @Published var editableOrigin: [PartTag] = []
     
-    
     var objectType = ObjectDataService.shared.objectType
 
     var partDataDic: [Part : PartData] = ObjectDataService.shared.partDataDic
@@ -63,14 +68,17 @@ class OriginStepperViewModel: ObservableObject,
         init() {
 
         (self as SharedPartToEditFunc).subscribeToService()
-        subscribeToServices()
-        
+
         (self as SharedOriginPropertyToEdit).subscribeToService()
-       
-        (self as SharedChoiceAndScopeOfEditForSideFunc) .subscribeToService()
-        
+
+        (self as SharedScopeOfEditForSideFunc).subscribeToService()
+
+        (self as SharedChoiceOfEditForSide).subscribeToService()
+
         (self as SharedPartDataDic).subScribeToService()
 
+        (self as SharedObjectType).subscribeToService()
+        (self as SharedUserEditedDictionaries).subscribeToService()
     }
 
     

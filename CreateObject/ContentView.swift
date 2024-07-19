@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import UIKit
+//import UIKit
 
 struct EnterTextView: View {
     @State private var name: String = ""
@@ -93,7 +93,7 @@ struct ContentView: View {
                 
                 
                 NavigationLink(destination:
-                    EditObjectView(
+                    ObjectEditScreenView(
                    //     movementDataVM.uniquePartNames,
                         preTiltFourCornerPerKeyDic,
                         movementDataProcessorVM.movementDictionaryForScreen,
@@ -135,15 +135,12 @@ enum DisplayStyle {
 
 
 
-struct EditObjectView: View {
-    //@EnvironmentObject var objectPickVM: ObjectPickerViewModel
+struct ObjectEditScreenView: View {
     @EnvironmentObject var recenterVM: RecenterViewModel
-    @EnvironmentObject var movementPickVM: MovementPickViewModel
    
     var recenterPosition: CGPoint = CGPoint(x:100, y:400)
     @State private var uniqueKey = 0
     
-    //let uniquePartNames: [String]
     let preTiltFourCornerPerKeyDic: CornerDictionary
     let dictionaryForScreen: CornerDictionary
     let objectFrameSize: Dimension
@@ -151,25 +148,18 @@ struct EditObjectView: View {
     
     
     init(
-       // _ partNames: [String],
         _ preTiltFourCornerPerKeyDic: CornerDictionary,
         _ dictionaryForScreen: CornerDictionary,
         _ objectFrameSize: Dimension,
         _ movement: Movement
     ) {
-        //    uniquePartNames = partNames
         self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.movement = movement
-        
-        
-// DictionaryInArrayOut().getNameValue(preTiltFourCornerPerKeyDic
-//                                        ).forEach{print($0)}
         }
     var body: some View {
-        //let objectType = objectPickVM.objectType
-        let movementName = movementPickVM.movementName
+        //let movementName = movementPickVM.movementName
         ZStack{
             ObjectAndRulerView(
                 preTiltFourCornerPerKeyDic,
@@ -187,35 +177,10 @@ struct EditObjectView: View {
             
      
             VStack {
-                ObjectRulerRecenter()
+                ObjectRulerRecenterView()
                 Spacer()
                 
-                ZStack{
-                        VStack (alignment: .leading) {
-                        
-                        HStack{
-                            MovementPickerView(movementName)
-                            ObjectPickerView()
-                            PartPickerView()
-                        }
-                        
-                        HStack{
-                            BilateralPartSidePickerView()
-                            BilateralPartSidePresenceView()
-                            //ConditionaUniPartPresence()
-                            UnilateralPartPresenceView()
-                        }
-                        
-                        PartOriginAndDimensionContainerView()
-                        
-                   AngleEditView()
-                   //ConditionalTiltMenu()
-                        
-                        }
-                    }
-                    .padding(.horizontal)
-                    .backgroundModifier()
-                    .transition(.move(edge: .bottom))
+                ObjectAndPartEditMenuContainerView()
             }
         }
     }

@@ -111,7 +111,7 @@ struct ArcPointView: View {
 
 struct PartView: View {
     @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-    @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
+   // @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
     let partToEdit: Part
     let uniquePartName: String
     var preTiltFourCornerPerKeyDic: CornerDictionary
@@ -213,9 +213,9 @@ struct ObjectView: View {
         _ movement: Movement,
         _ displayStyle: DisplayStyle
     ) {
-       // uniquePartNames = objectVM.unqiquePartNames//partNames
+
         self.movement = movement
-        //self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
+
         self.dictionaryForScreen = dictionaryForScreen
         self.objectFrameSize = objectFrameSize
         self.displayStyle = displayStyle

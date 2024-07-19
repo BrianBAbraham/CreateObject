@@ -12,9 +12,12 @@ import SwiftUI
 class OriginPickerViewModel: ObservableObject,
     SharedOriginPropertyToEdit,
     SharedEditableOrignExistFuncOnly,
-    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedNoSidesPresentFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedScopeOfEditForSideFunc,
+    SharedChoiceOfEditForSide,
+    SharedObjectType,
     SharedPartToEditFunc {
-    
     
     var originPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
@@ -36,18 +39,23 @@ class OriginPickerViewModel: ObservableObject,
     
     var objectType = ObjectDataService.shared.objectType
     
-    var disabled: Bool = true
+   @Published var disabled: Bool = true
     
    internal var cancellables: Set<AnyCancellable> = []
     
  
     init() {
+        (self as SharedObjectType).subscribeToService()
+        
         (self as SharedPartToEditFunc).subscribeToService()
     
         (self as SharedOriginPropertyToEdit).subscribeToService()
         
-        (self as SharedChoiceAndScopeOfEditForSideFunc).subscribeToService()
+        (self as SharedScopeOfEditForSideFunc).subscribeToService()
         
+        (self as SharedChoiceOfEditForSide).subscribeToService()
+        
+
     }
     
 

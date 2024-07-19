@@ -1,5 +1,5 @@
 //
-//  TiltEditViewModel.swift
+//  PropertyAngleViewModel.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 29/06/2024.
@@ -9,44 +9,16 @@ import Foundation
 import Combine
 import SwiftUI
 
-class TiltEditViewModel: ObservableObject {
-    @Published var angleMinMaxDic = ObjectDataService.shared.angleMinMaxDic
-    private var cancellables: Set<AnyCancellable> = []
-    
 
-    init() {
-
-        let _ = ObjectDataMediator.shared
-        
-       
-        
-        ObjectDataService.shared.$angleMinMaxDic
-            .sink { [weak self] newData in
-                self?.angleMinMaxDic = newData
-            }
-            .store(in: &self.cancellables)
-        
-        
-        
-    }
-    
-    func getAngleMinMaxDic(_ part: Part)
-    -> AngleMinMax {
-        let partName =
-            CreateNameFromIdAndPart(.id0, part).name
-
-        return
-            angleMinMaxDic[partName] ?? ZeroValue.angleMinMax
-    }
-    
-}
 
 class PropertyAngleViewModel: ObservableObject,
     SharedPartDataDic,
     SharedPartToEditFunc,
     SharedInitialSliderValueFuncOnly,
     SharedDimensionPropertyToEdit,
-    SharedModifyObjectByCreatingFromNameFuncOnly{
+    SharedModifyObjectByCreatingFromNameFuncOnly,
+    SharedObjectType{
+        
     @Published var angleMinMaxDic = ObjectDataService.shared.angleMinMaxDic
     
     @Published var partToEdit = ObjectEditService.shared.partToEdit
@@ -60,7 +32,7 @@ class PropertyAngleViewModel: ObservableObject,
     var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
     
     @Published var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
-    
+        
     @Published var dimensionPropertyToEdit = ObjectEditService.shared.dimensionPropertyToEdit
     
     @Published var min: Double = 0.0
@@ -77,12 +49,10 @@ class PropertyAngleViewModel: ObservableObject,
                 self.getInitialSliderValue(
                     self.partToEdit,
                     PartTag.angle)
-                  print(new)
                     return new
             
             },
             set: { newValue in
-               // print(self.max)
                     self.setCurrentRotation(
                         self.max - newValue,
                         self.partToEdit
@@ -100,6 +70,10 @@ class PropertyAngleViewModel: ObservableObject,
 
         let _ = ObjectDataMediator.shared
         
+        (self as SharedObjectType).subscribeToService()
+        
+        (self as SharedPartDataDic).subScribeToService()
+        
         (self as SharedPartToEditFunc).subscribeToService()
         
         (self as SharedDimensionPropertyToEdit).subscribeToService()
@@ -109,10 +83,10 @@ class PropertyAngleViewModel: ObservableObject,
                 self?.angleMinMaxDic = newData
             }
             .store(in: &self.cancellables)
-        
-        handlePartToEditChange(partToEdit)
-        
     }
+    
+
+    
     
     func getAngleMinMaxDic(_ part: Part)
     -> AngleMinMax {
@@ -126,9 +100,6 @@ class PropertyAngleViewModel: ObservableObject,
     
     
     func handlePartToEditChange(_ newData: Part) {
-
-       // print(min)
-              //  print(max)
         if let tilter = TiltingAbility(newData, objectType).tilter {
             showMenu = true
            partToEdit = tilter
@@ -143,13 +114,9 @@ class PropertyAngleViewModel: ObservableObject,
         _ maxMinusSliderValue: Double,
         _ part: Part
     ) {
-        
-        print("NEW set \(part) to \(maxMinusSliderValue)")
         var partName: String {
             CreateNameFromIdAndPart(.id0, part).name
         }
-        
-     
         let angleUserEditedDicEntry =
         [partName:
             (
@@ -166,8 +133,39 @@ class PropertyAngleViewModel: ObservableObject,
         )
     }
     
+        
     func getTiltMenuPart(_ part: Part) -> Part? {
         TiltingAbility(part, objectType).tilter
+    }
+}
+
+
+class TiltEditViewModel: ObservableObject {
+    @Published var angleMinMaxDic = ObjectDataService.shared.angleMinMaxDic
+    private var cancellables: Set<AnyCancellable> = []
+    
+
+    init() {
+
+        let _ = ObjectDataMediator.shared
+        
+        ObjectDataService.shared.$angleMinMaxDic
+            .sink { [weak self] newData in
+                self?.angleMinMaxDic = newData
+            }
+            .store(in: &self.cancellables)
+        
+        
         
     }
+    
+    func getAngleMinMaxDic(_ part: Part)
+    -> AngleMinMax {
+        let partName =
+            CreateNameFromIdAndPart(.id0, part).name
+
+        return
+            angleMinMaxDic[partName] ?? ZeroValue.angleMinMax
+    }
+    
 }

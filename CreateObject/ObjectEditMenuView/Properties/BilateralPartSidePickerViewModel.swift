@@ -10,11 +10,18 @@ import Combine
 import SwiftUI
 
 class BilateralPartSidePickerViewModel: ObservableObject,
-    SharedGetSidesAffectedFunc,
-    SharedObjectTypeAndUserEditedDictionaries,
-    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedPartIdUSerEditedDicFunc,
+    SharedGetSidesAffectedFuncOnly,
+    SharedNoSidesPresentFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedScopeOfEditForSideFunc,
+    SharedChoiceOfEditForSide,
     SharedPartToEditFunc,
-    SharedObjectChainLabelUserEditedDic{
+    SharedObjectType,
+    SharedUserEditedDictionaries,
+    SharedObjectChainLabelUserEditedDicFunc {
+    
+    
     var binding: Binding<SidesAffected> {
         Binding<SidesAffected> (
             get: {self.choiceOfEditForSide},
@@ -40,18 +47,20 @@ class BilateralPartSidePickerViewModel: ObservableObject,
 
     internal var cancellables: Set<AnyCancellable> = []
     
-    
         init() {
+        (self as SharedPartIdUSerEditedDicFunc).subscribeToService()
             
-        (self as SharedGetSidesAffectedFunc).subscribeToService()
-            
-        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
+        (self as SharedObjectChainLabelUserEditedDicFunc).subscribeToService()
         
         (self as SharedPartToEditFunc).subscribeToService()
+            
+        (self as SharedObjectType).subscribeToService()
+            
+        (self as SharedUserEditedDictionaries).subscribeToService()
         
-        (self as SharedObjectTypeAndUserEditedDictionaries).subscribeToServices()
+        (self as SharedScopeOfEditForSideFunc).subscribeToService()
         
-        (self as SharedChoiceAndScopeOfEditForSideFunc).subscribeToService()
+        (self as SharedChoiceOfEditForSide).subscribeToService()
     }
     
     

@@ -19,8 +19,6 @@ struct MovementMenuView: View {
     @State private var uniqueKey = 0
     
     var body: some View {
-        let movementName = movementPickVM.getMovementType().rawValue
-        
         var preTiltFourCornerPerKeyDic: CornerDictionary {
             //provides height (z) info of equipment before tilt
             movementDataGetterVM.preTiltObjectToPartFourCornerPerKeyDic
@@ -37,14 +35,13 @@ struct MovementMenuView: View {
             movementPickVM.startAngle
         }
         
-        
         VStack {
             //Object Menu
             VStack{
-                ObjectRulerRecenter()
+                ObjectRulerRecenterView()
                 
                 ObjectAndRulerView(
-                  //  movementDataGetterVM.uniquePartNames,
+
                     preTiltFourCornerPerKeyDic,
                     movementDataProcessorVM.movementDictionaryForScreen,
                     objectFrameSize,
@@ -58,10 +55,10 @@ struct MovementMenuView: View {
                 .id(uniqueKey)//ensures redraw
             }
            
-            
             //Edit Menu
             VStack(spacing: 5 ){
-                MovementPickerView(movementName)
+
+                MovementPickerView()
                 
                 HStack {
                     AnglePickerView()

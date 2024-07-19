@@ -24,7 +24,6 @@ protocol SharedModifyObjectByCreatingFromNameFuncOnly: AnyObject {
 extension SharedModifyObjectByCreatingFromNameFuncOnly{
     
 
-    
     func modifyObjectByCreatingFromName(){
         let objectImageData = ObjectImageData(
             objectType,
@@ -81,6 +80,7 @@ extension SharedEditableOrignExistFuncOnly {
             editableOrigin == [] ? false: true
     }
 }
+
 
 
 protocol SharedPartRemovalFuncOnly: AnyObject{
@@ -168,12 +168,8 @@ extension SharedInitialSliderValueFuncOnly {
         //sometimes the UI selection is adjusted by another part eg footlength for footplate
         let part = PartsRequiringLinkedPartUse(partToEdit).partForDimensionEdit
         
-      //  print("NEW: \(part.rawValue) \(partToEdit.rawValue)")
-
-        //let propertyToEdit = propertyToEdit
         var value: Double? = nil
         if let partData = partDataDic[part] {//parts edited out do not exist
-         //   print(partData)
             let idForLeftOrRight = choiceOfEditForSide == .right ? PartTag.id1: PartTag.id0
         
             var id: PartTag
@@ -202,12 +198,8 @@ extension SharedInitialSliderValueFuncOnly {
                 offsetToOrigin.x: offsetToOrigin.y
                 
             case .angle:
-             //   print("detect")
                 value =
                     partData.angles.returnValue(id).x.converted(to: .degrees).value
-                
-                print("NEW: \(propertyToEdit) \(part.rawValue) \(partData.angles) \(value)")
-
             
             default:
                 break
@@ -434,5 +426,107 @@ extension SharedSetValueForBilateralPartFuncOnly {
                 y: origin.y + value,
                 z: 0.0)
         }
+    }
+}
+
+
+
+
+protocol SharedGetSidesAffectedFuncOnly: AnyObject {
+    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] {get}
+    var objectType: ObjectTypes {get}
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] {get}
+    var cancellables: Set<AnyCancellable> { get set }
+   
+    func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>] )
+}
+extension SharedGetSidesAffectedFuncOnly {
+
+    
+    func getIfSideIsPresentFromUserEditedDic(_ side: SidesAffected, _ partToEdit: Part) -> Bool{
+        
+        var present: Bool
+        // it the object has an entry in objectChainLabelsUserEditDic
+        // chain labels have been modified
+        if let chainLabels = objectChainLabelsUserEditDic[objectType] {
+            //if the partToEdit is not present no part present either side
+            if !chainLabels.contains(partToEdit) {
+                present = false
+            } else {
+               //if there is a chain label has that side been removed
+              present = whichSidePresent()
+            }
+        } else {
+            //if no chain label modifications still need to check for presence on side
+            present = whichSidePresent()
+        }
+        
+        func whichSidePresent() -> Bool {
+            let oneOrTwoId: OneOrTwo = partIdsUserEditedDic[partToEdit] ?? OneOrTwoId(
+                objectType,
+                partToEdit
+            ).forPart
+            
+            let sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
+        
+            return
+                sidesPresent.contains(side)
+        }
+        return present
+    }
+
+    
+    func getSidesAffected(_ partToEdit: Part) ->SidesAffected {
+        let left = getIfSideIsPresentFromUserEditedDic(.left, partToEdit)
+        let right = getIfSideIsPresentFromUserEditedDic(.right, partToEdit)
+        
+        switch (left, right) {
+        case (true, true):
+            return .both
+        case (true, false):
+            return .left
+        case (false, true):
+            return .right
+        case (false, false):
+            return .none
+        }
+    }
+}
+
+
+
+
+protocol SharedSidesPresentGivenPossibleUserEditFuncOnly: AnyObject {
+}
+extension SharedSidesPresentGivenPossibleUserEditFuncOnly {
+    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected] {
+        guard let chainLabels = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[ObjectDataService.shared.objectType] ?? ObjectDataService.shared.objectChainLabelsDefaultDic[ObjectDataService.shared.objectType] else {
+            fatalError()
+        }
+
+        var sidesPresent: [SidesAffected] = []
+        if chainLabels.contains(partOrAssociatedPart) {
+            let oneOrTwoId: OneOrTwo<PartTag> = UserEditedDictionariesService.shared.userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(ObjectDataService.shared.objectType, partOrAssociatedPart).forPart
+            sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
+        } else {
+            sidesPresent = [.none]
+        }
+
+        return sidesPresent
+    }
+}
+
+
+
+
+
+protocol SharedNoSidesPresentFuncOnly: AnyObject {
+    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected]
+}
+extension SharedNoSidesPresentFuncOnly {
+    func getPartNotPresent() -> Bool {
+        let partOrAssociatedPart = PartsRequiringLinkedPartUse(ObjectEditService.shared.partToEdit).partForEditableOrigin
+        let first = getSidesPresentGivenPossibleUserEdit(partOrAssociatedPart)[0]
+        return first == .none
     }
 }

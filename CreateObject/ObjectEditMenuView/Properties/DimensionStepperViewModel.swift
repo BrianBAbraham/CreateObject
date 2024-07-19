@@ -15,8 +15,12 @@ class DimensionStepperViewModel: ObservableObject,
     SharedDimensionPropertyToEdit,
     SharedSetValueForBilateralPartFuncOnly,
     SharedModifyObjectByCreatingFromNameFuncOnly,
-    SharedObjectTypeAndUserEditedDictionaries,
-    SharedChoiceAndScopeOfEditForSideFunc,
+    SharedObjectType,
+    SharedUserEditedDictionaries,
+    SharedNoSidesPresentFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedScopeOfEditForSideFunc,
+    SharedChoiceOfEditForSide,
     SharedPartDataDic,
     SharedPartToEditFunc{
     
@@ -57,13 +61,18 @@ class DimensionStepperViewModel: ObservableObject,
   
     
     init() {
-    (self as SharedObjectTypeAndUserEditedDictionaries).subscribeToServices()
+
+    (self as SharedObjectType).subscribeToService()
+        
+    (self as SharedUserEditedDictionaries).subscribeToService()
         
     (self as SharedPartToEditFunc).subscribeToService()
      
     (self as SharedDimensionPropertyToEdit).subscribeToService()
+
+    (self as SharedScopeOfEditForSideFunc).subscribeToService()
     
-    (self as SharedChoiceAndScopeOfEditForSideFunc) .subscribeToService()
+    (self as SharedChoiceOfEditForSide).subscribeToService()
         
     (self as SharedPartDataDic).subScribeToService()
 

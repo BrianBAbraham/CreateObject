@@ -10,7 +10,6 @@ import Combine
 
 protocol SharedPartDataDic: AnyObject {
     var partDataDic: [Part: PartData] {get set}
-    
     var cancellables: Set<AnyCancellable> {get set}
 }
 extension SharedPartDataDic {
@@ -23,24 +22,30 @@ extension SharedPartDataDic {
 }
 
 
-
-protocol  SharedObjectTypeAndUserEditedDictionaries: AnyObject {
-    var cancellables: Set<AnyCancellable> { get set }
-    
-    var userEditedSharedDics: UserEditedDictionaries {get set}
-    
+protocol  SharedObjectType: AnyObject {
     var objectType: ObjectTypes {get set}
+    var cancellables: Set<AnyCancellable> { get set }
 }
-extension SharedObjectTypeAndUserEditedDictionaries {
-    func subscribeToServices() {
-        UserEditedDictionariesService.shared.$userEditedSharedDics
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.userEditedSharedDics,on: self)
-            .store(in: &cancellables)
-        
+extension SharedObjectType {
+    func subscribeToService() {
         ObjectDataService.shared.$objectType
             .receive(on: DispatchQueue.main)
             .assign(to: \.objectType,on: self)
+            .store(in: &cancellables)
+    }
+}
+
+
+
+protocol  SharedUserEditedDictionaries: AnyObject {
+    var userEditedSharedDics: UserEditedDictionaries {get set}
+    var cancellables: Set<AnyCancellable> { get set }
+}
+extension SharedUserEditedDictionaries {
+    func subscribeToService() {
+        UserEditedDictionariesService.shared.$userEditedSharedDics
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.userEditedSharedDics,on: self)
             .store(in: &cancellables)
     }
 }
@@ -81,7 +86,18 @@ extension SharedOriginPropertyToEdit {
 
 
 
-
+protocol SharedChoiceOfEditForSide: AnyObject {
+    var choiceOfEditForSide: SidesAffected {get set}
+    var cancellables: Set<AnyCancellable> {get set}
+}
+extension SharedChoiceOfEditForSide {
+    func subscribeToService() {
+        ObjectEditService.shared.$choiceOfEditForSide
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.choiceOfEditForSide,on: self)
+            .store(in: &cancellables)
+    }
+}
 
 
 

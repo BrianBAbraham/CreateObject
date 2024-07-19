@@ -94,7 +94,7 @@ class ObjectImageService {
     
    
     func setObjectImage(_ objectImageData: ObjectImageData) {
-        //print("new object created")
+
         self.objectImageData = objectImageData
     }
 }
@@ -317,7 +317,7 @@ class UserEditedDictionariesService: ObservableObject {
     
     
     func angleUserEditedDicModifier(_ entry: AnglesDictionary){
-        print(entry)
+       
         userEditedSharedDics.angleUserEditedDic += entry
     }
     
