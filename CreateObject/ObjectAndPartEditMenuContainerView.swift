@@ -10,7 +10,7 @@ import SwiftUI
 struct ObjectAndPartEditMenuContainerView: View {
     var body: some View {
         ZStack{
-                VStack (alignment: .leading) {
+            VStack (alignment: .leading) {
                 
                 HStack{
                     MovementPickerView()
@@ -20,22 +20,12 @@ struct ObjectAndPartEditMenuContainerView: View {
                     PartPickerView()
                 }
                 
-                HStack{
-                    BilateralPartSidePickerView()
-                    
-                    BilateralPartSidePresenceView()
-                    
-                    UnilateralPartPresenceView()
-                }
+                PartOriginAndDimensionEditContainerView()
                 
-                PartOriginAndDimensionContainerView()
-                
-                PropertyAngleEditView()
-
-                }
             }
-            .padding(.horizontal)
-            .backgroundModifier()
-            .transition(.move(edge: .bottom))
+        }
+        .padding(.horizontal)
+        .backgroundModifier()
+        .transition(.move(edge: .bottom))
     }
 }

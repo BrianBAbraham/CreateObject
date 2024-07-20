@@ -61,11 +61,8 @@ struct ListView: View {
 //All data is requested from view models
 //All data is passed to view models to set model
 struct ContentView: View {
-    @EnvironmentObject var movementPickVM: MovementPickViewModel
-    @EnvironmentObject var movementDataVM: MovementDataViewModel
-    @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
+
     init(){
-        
         //make segemented picker buttons brigher green when picked
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.green.withAlphaComponent(0.2)
         
@@ -81,25 +78,13 @@ struct ContentView: View {
     }
   
     var body: some View {
-        var preTiltFourCornerPerKeyDic: CornerDictionary {
-            //provides the hieght information (z) before tilt
-            //display follows pretilt height data as
-            //the basis for .zIndex setting
-            movementDataVM.preTiltObjectToPartFourCornerPerKeyDic
-        }
         
         NavigationView {
             VStack {
                 
                 
                 NavigationLink(destination:
-                    ObjectEditScreenView(
-                   //     movementDataVM.uniquePartNames,
-                        preTiltFourCornerPerKeyDic,
-                        movementDataProcessorVM.movementDictionaryForScreen,
-                        movementDataProcessorVM.onScreenMovementFrameSize,
-                        movementPickVM.movementType
-                    )
+                    ObjectEditScreenView()
                 )
                 {Text("select-edit equipment")
                 }
@@ -107,13 +92,15 @@ struct ContentView: View {
                   
                 
                 
-                NavigationLink(destination:  MovementMenuView() ) {
+                NavigationLink(destination:  
+                    MovementMenuView() ) {
                     Text("edit movements")
                 }
                 
                 
  
-                NavigationLink(destination: Photo() ) {
+                NavigationLink(destination: 
+                    Photo() ) {
                     Text("import plan from photos")}
                     .padding()
                 
@@ -128,10 +115,7 @@ struct ContentView: View {
 }
 
 
-enum DisplayStyle {
-    case movement
-    case edit
-}
+
 
 
 
@@ -141,32 +125,11 @@ struct ObjectEditScreenView: View {
     var recenterPosition: CGPoint = CGPoint(x:100, y:400)
     @State private var uniqueKey = 0
     
-    let preTiltFourCornerPerKeyDic: CornerDictionary
-    let dictionaryForScreen: CornerDictionary
-    let objectFrameSize: Dimension
-    let movement: Movement
-    
-    
-    init(
-        _ preTiltFourCornerPerKeyDic: CornerDictionary,
-        _ dictionaryForScreen: CornerDictionary,
-        _ objectFrameSize: Dimension,
-        _ movement: Movement
-    ) {
-        self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
-        self.dictionaryForScreen = dictionaryForScreen
-        self.objectFrameSize = objectFrameSize
-        self.movement = movement
-        }
+
     var body: some View {
-        //let movementName = movementPickVM.movementName
         ZStack{
             ObjectAndRulerView(
-                preTiltFourCornerPerKeyDic,
-                dictionaryForScreen,
-                objectFrameSize,
-                movement,
-                DisplayStyle.edit
+                ObjectDisplayStyle.edit
             )
             .position(recenterPosition)
             .onChange(of: recenterVM.getRecenterState()) {

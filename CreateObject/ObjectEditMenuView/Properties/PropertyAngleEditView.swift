@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-
-
-
-
-
-
-
-
-
-
-
 struct PropertyAngleEditView: View {
     @EnvironmentObject var propertyAngleVM: PropertyAngleViewModel
     var body: some View {

@@ -137,7 +137,7 @@ struct PartView: View {
         dictionaryElementIn.maximumHeightOut()
     }
     let movement: Movement
-    let displayStyle: DisplayStyle
+    let displayStyle: ObjectDisplayStyle
     
     init(
         uniquePartName: String,
@@ -149,7 +149,7 @@ struct PartView: View {
         lineWidth: Double = 5.0,
         _ partToEdit: Part,
         _ movement: Movement,
-        _ displayStyle: DisplayStyle
+        _ displayStyle: ObjectDisplayStyle
  
     ){
         self.partToEdit = partToEdit
@@ -196,42 +196,39 @@ struct PartView: View {
 
 
 
-
-
+enum ObjectDisplayStyle {
+    case movement
+    case edit
+}
 struct ObjectView: View {
     @EnvironmentObject var objectVM: ObjectViewModel
-    //let preTiltFourCornerPerKeyDic: CornerDictionary
-    let dictionaryForScreen: CornerDictionary
-    let objectFrameSize: Dimension
-    let displayStyle: DisplayStyle
-    let movement: Movement
+    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
+    @EnvironmentObject var movementDataGetterVM: MovementDataViewModel
+    @EnvironmentObject var rulerVM: RulerViewModel
+    @EnvironmentObject var movementDataVM: MovementDataViewModel
+    @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
+    @EnvironmentObject var movementPickVM: MovementPickerViewModel
     
+    let displayStyle: ObjectDisplayStyle
+
     init(
-        _ preTiltFourCornerPerKeyDic: CornerDictionary,
-        _ dictionaryForScreen: CornerDictionary,
-        _ objectFrameSize: Dimension,
-        _ movement: Movement,
-        _ displayStyle: DisplayStyle
+        _ displayStyle: ObjectDisplayStyle
     ) {
 
-        self.movement = movement
-
-        self.dictionaryForScreen = dictionaryForScreen
-        self.objectFrameSize = objectFrameSize
         self.displayStyle = displayStyle
     }
     
     var body: some View {
-        let uniquePartNames = objectVM.uniquePartNames
-        let preTiltObjectToPartFourCornerDictionary = objectVM.preTiltObjectToPartFourCornerDictionary
+       
+
         ZStack{
-                ForEach(uniquePartNames, id: \.self) { name in
+                ForEach(objectVM.uniquePartNames, id: \.self) { name in
                     PartView(
                         uniquePartName: name,
-                        preTiltFourCornerPerKeyDic: preTiltObjectToPartFourCornerDictionary,
-                        dictionaryForScreen: dictionaryForScreen,
+                        preTiltFourCornerPerKeyDic: objectVM.preTiltObjectToPartFourCornerDictionary,
+                        dictionaryForScreen: movementDataProcessorVM.movementDictionaryForScreen,
                         objectVM.partToEdit,
-                        movement,
+                        movementPickVM.movementType,
                         displayStyle
                     )
                 }
@@ -242,12 +239,12 @@ struct ObjectView: View {
 //                    )
 //                }
                 
-            AllArcView(movement, dictionaryForScreen)
+            AllArcView(movementPickVM.movementType, movementDataProcessorVM.movementDictionaryForScreen)
 
             }
             .modifier(
                 ForObjectDrag (
-                    frameSize: objectFrameSize, active: true)
+                    frameSize: movementDataProcessorVM.onScreenMovementFrameSize, active: true)
             )
         }
 }

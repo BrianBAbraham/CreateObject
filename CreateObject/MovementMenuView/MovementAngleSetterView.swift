@@ -1,5 +1,5 @@
 //
-//  OriginSetter.swift
+//  AngleSetter.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 13/05/2024.
@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct OriginSetter: View {
-    var setValue: (Double) -> Void  // Closure to set the stepper
-    var label: String
+
+
+struct MovementAngleSetterView: View {
+    @EnvironmentObject var movementPickerVM: MovementPickerViewModel
+    var setAngle: (Double) -> Void  // Closure to set the angle
     var body: some View {
         let boundStepperValue =
         Binding(
@@ -17,7 +19,7 @@ struct OriginSetter: View {
             ,
             set: {
                 newValue in
-                self.setValue(newValue)
+                self.setAngle(newValue)
             }
         )
         HStack{
@@ -27,3 +29,13 @@ struct OriginSetter: View {
     }
 }
 
+
+
+
+
+
+enum WhichAngle: String, CaseIterable {
+    case end  = "end"
+    case start = "start"
+    case startAndEnd = "both"
+}

@@ -35,7 +35,7 @@ struct Line: View {
 
 
 
-struct RightAngleRuler: View {
+struct RightAngleRulerView: View {
     @EnvironmentObject var rulerVM: RulerViewModel
     @EnvironmentObject var unitSystemVM: UnitSystemViewModel
    
@@ -87,7 +87,7 @@ struct Ruler: View {
                 lineWidth: 0.5,
                 Part.joint,
                 Movement.none,      
-                DisplayStyle.edit
+                ObjectDisplayStyle.edit
             )
             
             ForEach(rulerMarksDictionary.map { key, value in (key, value) }, id: \.0) { key, value in

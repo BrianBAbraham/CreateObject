@@ -12,27 +12,19 @@ import SwiftUI
 struct MovementMenuView: View {
     @EnvironmentObject var objectPickVM: ObjectPickerViewModel
     @EnvironmentObject var movementDataGetterVM: MovementDataViewModel
-    @EnvironmentObject var movementPickVM: MovementPickViewModel
+    @EnvironmentObject var movementPickerVM: MovementPickerViewModel
     @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
     var recenterPosition: CGPoint = CGPoint(x: 100, y: 350)
     @State private var uniqueKey = 0
     
     var body: some View {
-        var preTiltFourCornerPerKeyDic: CornerDictionary {
-            //provides height (z) info of equipment before tilt
-            movementDataGetterVM.preTiltObjectToPartFourCornerPerKeyDic
-        }
-
-        var objectFrameSize: Dimension {
-            movementDataProcessorVM.onScreenMovementFrameSize
-        }
         
         var movement: Movement {
-            movementPickVM.getMovementType()
+            movementPickerVM.getMovementType()
         }
         var startAngle: Double {
-            movementPickVM.startAngle
+            movementPickerVM.startAngle
         }
         
         VStack {
@@ -41,12 +33,7 @@ struct MovementMenuView: View {
                 ObjectRulerRecenterView()
                 
                 ObjectAndRulerView(
-
-                    preTiltFourCornerPerKeyDic,
-                    movementDataProcessorVM.movementDictionaryForScreen,
-                    objectFrameSize,
-                    movement,
-                    DisplayStyle.movement
+                    ObjectDisplayStyle.movement
                 )
                 .position(recenterPosition)
                 .onChange(of: recenterVM.getRecenterState()) {
@@ -61,13 +48,13 @@ struct MovementMenuView: View {
                 MovementPickerView()
                 
                 HStack {
-                    AnglePickerView()
+                    MovementAnglePickerView()
                        
-                    AngleSetter(setAngle: movementPickVM.setObjectAngle)
+                    MovementAngleSetterView(setAngle: movementPickerVM.setObjectAngle)
                     Spacer()
                 }
-                .opacity(!movementPickVM.getObjectIsTurning() ? 0.3: 1.0)
-                .disabled(!movementPickVM.getObjectIsTurning())
+                .opacity(!movementPickerVM.getObjectIsTurning() ? 0.3: 1.0)
+                .disabled(!movementPickerVM.getObjectIsTurning())
                 
                 HStack{
                     Spacer()
@@ -76,14 +63,13 @@ struct MovementMenuView: View {
                         .foregroundColor(movement == .turn ? .primary : .gray)
                         .colorScheme(.light)
                     
-                    OriginSetter(
-                        setValue: movementPickVM.modifyStaticPointUpdateInX,
-                        label: "origin X"
+                    MovementOriginStepperView(
+//                        setValue: movementPickerVM.modifyStaticPointUpdateInX
                     )
                     
                     Spacer()
                 }
-                .disabled(!movementPickVM.getObjectIsTurning())
+                .disabled(!movementPickerVM.getObjectIsTurning())
             }
             .backgroundModifier()
             .transition(.move(edge: .bottom))

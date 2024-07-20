@@ -61,7 +61,6 @@ class MovementImageService {
     static let shared = MovementImageService()
     
 
-    
     func setAndGetMovementImageData(
         _ objectImageData: ObjectImageData,
         _ movementType: Movement,
@@ -160,9 +159,45 @@ class ObjectDataService {
 }
 
 
+//enum ObjectDisplayStyle {
+//    case movement
+//    case edit
+//}
+//class ObjectDisplayStyleService {
+//    @Published var objectDisplayStyle: ObjectDisplayStyle = .movement
+//    
+//    static let shared = ObjectDisplayStyleService()
+//    
+//    func setObjectDisplayStyleToEdit() {
+//        objectDisplayStyle = .edit
+//    }
+//    
+//    
+//    func setObjectDisplayStyleToMovement() {
+//        objectDisplayStyle = .movement
+//    }
+//}
+//
+//
+//
+//protocol  SharedObjectDisplayStyle: AnyObject {
+//    var objectDisplayStyle: ObjectDisplayStyle {get set}
+//    var cancellables: Set<AnyCancellable> { get set }
+//}
+//extension SharedObjectDisplayStyle {
+//    func subscribeToService() {
+//        ObjectDisplayStyleService.shared.$objectDisplayStyle
+//            .receive(on: DispatchQueue.main)
+//            .assign(to: \.objectDisplayStyle,on: self)
+//            .store(in: &cancellables)
+//    }
+//}
+
+
+
+
+
 class MovementDataService {
-    
-    
     @Published var uniquePartNames: [String] = []
     @Published var preTiltObjectToPartFourCornerDictionary: CornerDictionary = [:]
     @Published var dictionaryForScreen: CornerDictionary = [:]
@@ -207,7 +242,6 @@ class MovementDictionaryForScreenService {
     
     
     func setMovementDictionaryForScreen(_ dic: CornerDictionary) {
-       // print("SET")
         movementDictionaryForScreen = dic
     }
 }
