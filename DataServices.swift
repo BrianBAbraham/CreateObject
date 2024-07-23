@@ -48,41 +48,6 @@ class CenteredObjectZeroOriginService {
 
 
 
-class MovementImageService {
-    @Published var movementImageData: MovementImageData = MovementImageData (
-        ObjectImageService.shared.objectImageData,//object data
-        movementType: .turn, //transform data
-        staticPoint: ZeroValue.iosLocation, //transform data
-        startAngle: 0.0, //transform data
-        endAngle: 0.0, //transform data
-        forward: 0.0 //transform data
-    )
-    
-    static let shared = MovementImageService()
-    
-
-    func setAndGetMovementImageData(
-        _ objectImageData: ObjectImageData,
-        _ movementType: Movement,
-        _ staticPoint: PositionAsIosAxes,
-        _ startAngle: Double,
-        _ endAngle: Double,
-        _ forward: Double ) -> MovementImageData{
-          //  print("set MovementImageService")
-        movementImageData =
-            MovementImageData (
-                objectImageData,//object data
-                movementType: movementType, //transform data
-                staticPoint: staticPoint, //transform data
-                startAngle: startAngle, //transform data
-                endAngle: endAngle, //transform data
-                forward: forward //transform data
-                )
-            return movementImageData
-    }
-}
-
-
 
 class ObjectImageService {
     @Published var objectImageData: ObjectImageData = ObjectImageData(
@@ -193,7 +158,103 @@ class ObjectDataService {
 //    }
 //}
 
+class MovementEditService {
+    @Published var movementType: Movement = .none
+    @Published var staticPoint = ZeroValue.iosLocation
+    @Published var endAngle = 30.0
+    @Published var startAngle = 0.0
+    @Published var objectAngleType: WhichAngle = .end
+    @Published var forward = 0.0
+    static let shared = MovementEditService()
+    
+    func setMovmentTypeToNone(){
+        movementType = .none
+    }
+    
+    func setMovmentTypeToTurn(){
+        movementType = .turn
+    }
+    
+    func setMovementTypeToForward(){
+        movementType = .linear
+    }
+    
+    func setMovementType(_ value: Movement) {
+        movementType = value
+    }
+    
+    func setStaticPoint(_ value: PositionAsIosAxes) {
+        staticPoint = value
+    }
+    
+    func setEndAngle(_ value: Double) {
+        
+        endAngle = value
+    }
+    
+    
+    func setStartAngle(_ value: Double) {
+        startAngle = value
+    }
+    
+    func setObjectAngleType(_ value: WhichAngle) {
+        objectAngleType = value
+    }
+}
 
+
+
+
+
+
+class MovementImageService {
+    @Published var movementImageData: MovementImageData = MovementImageData (
+        ObjectImageService.shared.objectImageData,//object data
+        movementType: .turn, //transform data
+        staticPoint: ZeroValue.iosLocation, //transform data
+        startAngle: 0.0, //transform data
+        endAngle: 0.0, //transform data
+        forward: 0.0 //transform data
+    )
+    
+    
+    static let shared = MovementImageService()
+//    private var cancellables = Set<AnyCancellable>()
+//    init() {
+//        movementImageData.$staticPoint
+//            .assign(to: \.staticPoint, on: self)
+//            .store(in: &cancellables)
+//    }
+//    
+
+    func setAndGetMovementImageData(
+        _ objectImageData: ObjectImageData,
+        _ movementType: Movement,
+        _ staticPoint: PositionAsIosAxes,
+        _ startAngle: Double,
+        _ endAngle: Double,
+        _ forward: Double ) -> MovementImageData{
+          //  print("set MovementImageService")
+            
+        
+        movementImageData =
+            MovementImageData (
+                objectImageData,//object data
+                movementType: movementType, //transform data
+                staticPoint: staticPoint, //transform data
+                startAngle: startAngle, //transform data
+                endAngle: endAngle, //transform data
+                forward: forward //transform data
+                )
+            return movementImageData
+    }
+    
+//    func setStaticPoint(_ value: PositionAsIosAxes) {
+//        staticPoint = value
+//        movementImageData = MovementImageData.shared
+//        
+//    }
+}
 
 
 

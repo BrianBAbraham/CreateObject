@@ -1,5 +1,5 @@
 //
-//  MovementDataGetterVM.swift
+//  ObjectAndRulerViewModel.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 12/04/2024.

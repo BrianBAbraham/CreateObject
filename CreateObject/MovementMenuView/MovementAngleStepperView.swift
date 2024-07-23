@@ -11,24 +11,12 @@ import SwiftUI
 
 
 struct MovementAngleStepperView: View {
-    @EnvironmentObject var movementPickerVM: MovementPickerViewModel
-    @EnvironmentObject var movementAngleStepperVM: MovementAngleStpperViewModel
-    var setAngle: (Double) -> Void  // Closure to set the angle
+
+ @EnvironmentObject var movementAngleStepperVM: MovementAngleStepperViewModel
+
     var body: some View {
-        let boundStepperValue =
-        Binding(
-            get: {0.0}
-            ,
-            set: {
-                newValue in
-                //self.setAngle(newValue)
-                movementPickerVM.setObjectAngle(newValue)
-            }
-        )
-        HStack{
-            Stepper("", value: boundStepperValue, step: 10.0)
+      Stepper("", value: movementAngleStepperVM.binding, step: 10.0)
                 .colorScheme(.light)
-        }
     }
 }
 
@@ -45,80 +33,43 @@ enum WhichAngle: String, CaseIterable {
 
 
 
-class MovementAngleStpperViewModel: ObservableObject {
+class MovementAngleStepperViewModel: ObservableObject, SharedMovementType, SharedStaticPoint, SharedObjectAngles, SharedObjectAngleType {
     
-    @Published var staticPoint: PositionAsIosAxes = ZeroValue.iosLocation
-
-    @Published var movementType: Movement = .none
-    
-    //@Published var isTurning = false
-  
-    var staticPointUpdate: PositionAsIosAxes = ZeroValue.iosLocation {
-        didSet {
-            movementImageData = setAndGetMovementImageData()
-        }
-    }
-    var startAngle: Double = 0.0 {//of turn
-        didSet {
-            movementImageData = setAndGetMovementImageData()
-        }
-    }
-    var endAngle: Double = 30.0 {//of turn
-        didSet {
-            movementImageData = setAndGetMovementImageData()
-        }
-    }
-    var forward: Double = 0.0//in direction facing
-    
-    var objectAngleType: WhichAngle = .end
-    
-    @Published var objectAngleName: String {
-        didSet {
-            setObjectAngleType()
-        }
-    }
-    
-    let menuItems = Movement.allCases.map {
-        $0.rawValue
-    }
-    
-    
-    var binding: Binding<String> {
-        Binding<String> (
-            get: {self.movementName},
+    var binding: Binding<Double> {
+        Binding<Double> (
+            get: {0.0},
             set: { newValue in
-                self.updateMovementImageData(
-                    to: newValue)
-                self.movementName = newValue
+                self.setObjectAngle(newValue)
             }
         )
     }
-    
-    
+    //these properties required to create dictionary of positions for motion
+    //these sink through the protocols
+    var staticPoint: PositionAsIosAxes = MovementEditService.shared.staticPoint
+    var movementType: Movement = MovementEditService.shared.movementType
+    var startAngle: Double = MovementEditService.shared.startAngle
+    var endAngle: Double = MovementEditService.shared.endAngle
+    var forward: Double = MovementEditService.shared.forward//in direction facing
+    //start, end or both angles may be modified
+    var objectAngleType: WhichAngle = MovementEditService.shared.objectAngleType
+
     //intialise object data
     //static single object
     var objectImageData: ObjectImageData =
         ObjectImageService.shared.objectImageData
     
-    @Published var movementName: String = Movement.none.rawValue{
-        didSet {
-            setMovementType()
-        }
-    }
     //EXTRACTIONS FROM DATA LAYER
     //intialise movement data
     //movement are single object data plus transformed object data
     //showing movment or movments
     //@Published private
     var movementImageData =
-    MovementImageService.shared.movementImageData
+        MovementImageService.shared.movementImageData
     
-    private var cancellables: Set<AnyCancellable> = []
+    internal var cancellables: Set<AnyCancellable> = []
     
     
     init(){
-        objectAngleName = objectAngleType.rawValue
-        
         //Initial build of movement data for image using a static image and default movement parameters
         ObjectImageService.shared.$objectImageData
             .sink { [weak self] newData in
@@ -128,49 +79,35 @@ class MovementAngleStpperViewModel: ObservableObject {
                 self?.movementImageData = self?.setAndGetMovementImageData() ??
                 
                 MovementImageService.shared.setAndGetMovementImageData(            newData,//original
-                    self?.movementType ?? .none,//transform original with following param
-                    self?.staticPointUpdate ?? ZeroValue.iosLocation,
-                    self?.startAngle ?? 0.0,
-                    self?.endAngle ?? 0.0,
-                    self?.forward ?? 0.0
-                )
+                        self?.movementType ?? .none,//transform original with following param
+                        self?.staticPoint ?? ZeroValue.iosLocation,
+                        self?.startAngle ?? 0.0,
+                        self?.endAngle ?? 0.0,
+                        self?.forward ?? 0.0
+                    )
             }
             .store(
                 in: &cancellables
             )
+        (self as SharedObjectAngles).subscribeToService()
+        (self as SharedObjectAngleType).subscribeToService()
+        (self as SharedMovementType).subscribeToService()
+        (self as SharedStaticPoint).subscribeToService()
     }
 }
 
 
-extension MovementAngleStpperViewModel {
+extension MovementAngleStepperViewModel {
     func setAndGetMovementImageData() -> MovementImageData{
+
         MovementImageService.shared.setAndGetMovementImageData(
             objectImageData,
             movementType,
-            staticPointUpdate,
+            staticPoint,
             startAngle,
             endAngle,
             forward
         )
-    }
-    
-    func setMovementType() {
-        movementType = Movement(rawValue: movementName) ?? .none
-        
-        MovementEditService.shared.setMovementType(movementType)
-    }
-    
-    
-    func updateMovementImageData(
-        to newMovement: String
-    ) {
-        movementName = newMovement
-        movementImageData = setAndGetMovementImageData()
-    }
-    
-    
-    func setEndAngle(_ angleIncrement: Double) {
-        endAngle += angleIncrement
     }
     
     
@@ -186,54 +123,18 @@ extension MovementAngleStpperViewModel {
         }
     }
     
+
     
-    
-        func setObjectAngleType(){
-            objectAngleType = WhichAngle(rawValue: objectAngleName) ?? .end
-        }
-    
-    func setStartAngle(_ angle: Double) {
-        startAngle += angle
+    func setStartAngle(_ angleIncrement: Double) {
+        startAngle += angleIncrement
+        MovementEditService.shared.setStartAngle(startAngle)
+        movementImageData = setAndGetMovementImageData()
     }
     
-    
-    func getMovementType() -> Movement {
-        movementType
-    }
-    
-    func getObjectIsTurning() -> Bool{
-        movementType == .turn ? true: false
-    }
-    
-    
-    func modifyStaticPoint(
-        _ increment: Double
-    ) {
-        staticPoint = CreateIosPosition.addTwoTouples(
-            (
-                x: increment,
-                y: 0.0,
-                z: 0.0
-            ),
-            staticPoint
-        )
-    }
-    
-    
-    func modifyStaticPointUpdateInX(
-        _ increment: Double
-    ) {
-        staticPointUpdate = CreateIosPosition.addTwoTouples(
-            staticPointUpdate,
-            (
-                x: increment,
-                y: 0.0,
-                z: 0.0
-            )
-        )
-        
-        modifyStaticPoint(
-            increment
-        )
+
+    func setEndAngle(_ angleIncrement: Double) {
+        endAngle += angleIncrement
+        MovementEditService.shared.setEndAngle(endAngle)
+        movementImageData = setAndGetMovementImageData()
     }
 }

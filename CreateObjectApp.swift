@@ -32,10 +32,13 @@ struct CreateObjectApp: App {
     @StateObject var sceneVM = SceneViewModel()
     @StateObject var unitsVM = UnitSystemViewModel()
    
-    @StateObject var movementOriginStepperViewModel = MovementOriginStepperViewModel()
-    @StateObject var movementDataGetter = MovementDataViewModel()
+//    @StateObject var movementOriginStepperViewModel = MovementOriginStepperViewModel()
+    @StateObject var objectAndRulerVM = ObjectAndRulerViewModel()
     @StateObject var movementPickVM = MovementPickerViewModel()
-    @StateObject var movementDataProcessorVM = MovementDataProcessorViewModel()
+    @StateObject var movementAngleStepperVM = MovementAngleStepperViewModel()
+    @StateObject var movementOriginStepperVM = MovementOriginStepperViewModel()
+    @StateObject var movementMenuViewModel = MovementMenuViewModel()
+    @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
     
     @StateObject var objectViewModel = ObjectViewModel()
  
@@ -64,10 +67,13 @@ struct CreateObjectApp: App {
                 .environmentObject(propertyAngleViewModel)
             
             
-                .environmentObject(movementOriginStepperViewModel)
-                .environmentObject(movementDataGetter)
+//                .environmentObject(movementOriginStepperViewModel)
+                .environmentObject(objectAndRulerVM)
                 .environmentObject(movementPickVM)
-                .environmentObject(movementDataProcessorVM)
+                .environmentObject( movementAngleStepperVM)
+                .environmentObject(movementOriginStepperVM)
+                .environmentObject(movementMenuViewModel)
+                .environmentObject(movementAnglePickerVM)
 
                 .environmentObject(coreDataVM)
                 .environmentObject(sceneVM)

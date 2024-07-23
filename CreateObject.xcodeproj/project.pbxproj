@@ -13,7 +13,7 @@
 		FD07EA862C3979BF00A0CD6A /* OriginPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD07EA852C3979BF00A0CD6A /* OriginPickerView.swift */; };
 		FD08DB1F2BAEDBCE00F116AD /* RulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD08DB1E2BAEDBCE00F116AD /* RulerView.swift */; };
 		FD08DB212BAEDE8200F116AD /* Object&RulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD08DB202BAEDE8200F116AD /* Object&RulerView.swift */; };
-		FD0AA8B12BF6527600198E33 /* MovementDataProcessorVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0AA8B02BF6527600198E33 /* MovementDataProcessorVM.swift */; };
+		FD0AA8B12BF6527600198E33 /* MovementDataProcessorVMRetired.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0AA8B02BF6527600198E33 /* MovementDataProcessorVMRetired.swift */; };
 		FD10BB5B2BBC46B7000C13A4 /* ObjectRulerRecenterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD10BB5A2BBC46B7000C13A4 /* ObjectRulerRecenterViewModel.swift */; };
 		FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */; };
 		FD12A8F42BCAC62A00C2C30D /* MovementPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */; };
@@ -37,7 +37,8 @@
 		FD400C5B2BF78ABC004242D4 /* ObjectData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD400C5A2BF78ABC004242D4 /* ObjectData.swift */; };
 		FD400C5D2BF7BE6C004242D4 /* PhotoPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD400C5C2BF7BE6C004242D4 /* PhotoPickerViewModel.swift */; };
 		FD400C5F2BF7BF3A004242D4 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD400C5E2BF7BF3A004242D4 /* PhotoView.swift */; };
-		FD4BB15A2BC96EDD00DE8875 /* MovementDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4BB1592BC96EDD00DE8875 /* MovementDataViewModel.swift */; };
+		FD4BB15A2BC96EDD00DE8875 /* ObjectAndRulerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4BB1592BC96EDD00DE8875 /* ObjectAndRulerViewModel.swift */; };
+		FD5520C22C4E666900D9329B /* MovementMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5520C12C4E666900D9329B /* MovementMenuViewModel.swift */; };
 		FD57A7BA2C3032F7006ABC2F /* ObjectDataMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD57A7B92C3032F7006ABC2F /* ObjectDataMediator.swift */; };
 		FD57A7BC2C307797006ABC2F /* PropertyAngleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD57A7BB2C307797006ABC2F /* PropertyAngleViewModel.swift */; };
 		FD5C57B92BAF5260007B9159 /* RulerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5C57B82BAF5260007B9159 /* RulerVM.swift */; };
@@ -77,13 +78,13 @@
 		FDDEA3C52C342C2E008C2097 /* DimensionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA3C42C342C2E008C2097 /* DimensionPickerView.swift */; };
 		FDDEA3C92C342D19008C2097 /* DimensionStepperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA3C82C342D19008C2097 /* DimensionStepperView.swift */; };
 		FDDEA3CB2C34305B008C2097 /* Retired.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDEA3CA2C34305B008C2097 /* Retired.swift */; };
-		FDE0D9132BF26C4D00FF3A43 /* MovementPickViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDE0D9122BF26C4D00FF3A43 /* MovementPickViewModel.swift */; };
+		FDE0D9132BF26C4D00FF3A43 /* MovementPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDE0D9122BF26C4D00FF3A43 /* MovementPickerViewModel.swift */; };
 		FDEA615F2A2484D000A50ACC /* Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEA615E2A2484D000A50ACC /* Calculate.swift */; };
 		FDEEB2BD2BB5DBD700000199 /* UnitSystemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */; };
 		FDF1178F2C4AA34C00FCFD19 /* UnilateralPartPresenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF1178E2C4AA34C00FCFD19 /* UnilateralPartPresenceView.swift */; };
 		FDF117912C4AEE8200FCFD19 /* ObjectAndPartEditMenuContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF117902C4AEE8200FCFD19 /* ObjectAndPartEditMenuContainerView.swift */; };
 		FDF117932C4AEF6A00FCFD19 /* ObjectRulerRecenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF117922C4AEF6A00FCFD19 /* ObjectRulerRecenterView.swift */; };
-		FDF17DD72BF1FB230074B392 /* MovementAngleSetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF17DD62BF1FB230074B392 /* MovementAngleSetterView.swift */; };
+		FDF17DD72BF1FB230074B392 /* MovementAngleStepperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF17DD62BF1FB230074B392 /* MovementAngleStepperView.swift */; };
 		FDF17DD92BF1FB960074B392 /* MovementOriginStepperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF17DD82BF1FB960074B392 /* MovementOriginStepperView.swift */; };
 		FDF17DDB2BF1FCBF0074B392 /* PartPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF17DDA2BF1FCBF0074B392 /* PartPickerView.swift */; };
 		FDF17DE02BF1FEFE0074B392 /* PickerLabelWorkAround.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF17DDF2BF1FEFE0074B392 /* PickerLabelWorkAround.swift */; };
@@ -99,7 +100,7 @@
 		FD07EA852C3979BF00A0CD6A /* OriginPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginPickerView.swift; sourceTree = "<group>"; };
 		FD08DB1E2BAEDBCE00F116AD /* RulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulerView.swift; sourceTree = "<group>"; };
 		FD08DB202BAEDE8200F116AD /* Object&RulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Object&RulerView.swift"; sourceTree = "<group>"; };
-		FD0AA8B02BF6527600198E33 /* MovementDataProcessorVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementDataProcessorVM.swift; sourceTree = "<group>"; };
+		FD0AA8B02BF6527600198E33 /* MovementDataProcessorVMRetired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementDataProcessorVMRetired.swift; sourceTree = "<group>"; };
 		FD10BB5A2BBC46B7000C13A4 /* ObjectRulerRecenterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRulerRecenterViewModel.swift; sourceTree = "<group>"; };
 		FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifier.swift; sourceTree = "<group>"; };
 		FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPickerView.swift; sourceTree = "<group>"; };
@@ -123,7 +124,8 @@
 		FD400C5A2BF78ABC004242D4 /* ObjectData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectData.swift; sourceTree = "<group>"; };
 		FD400C5C2BF7BE6C004242D4 /* PhotoPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerViewModel.swift; sourceTree = "<group>"; };
 		FD400C5E2BF7BF3A004242D4 /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
-		FD4BB1592BC96EDD00DE8875 /* MovementDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementDataViewModel.swift; sourceTree = "<group>"; };
+		FD4BB1592BC96EDD00DE8875 /* ObjectAndRulerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectAndRulerViewModel.swift; sourceTree = "<group>"; };
+		FD5520C12C4E666900D9329B /* MovementMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementMenuViewModel.swift; sourceTree = "<group>"; };
 		FD57A7B92C3032F7006ABC2F /* ObjectDataMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDataMediator.swift; sourceTree = "<group>"; };
 		FD57A7BB2C307797006ABC2F /* PropertyAngleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyAngleViewModel.swift; sourceTree = "<group>"; };
 		FD5C57B82BAF5260007B9159 /* RulerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulerVM.swift; sourceTree = "<group>"; };
@@ -164,13 +166,13 @@
 		FDDEA3C42C342C2E008C2097 /* DimensionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionPickerView.swift; sourceTree = "<group>"; };
 		FDDEA3C82C342D19008C2097 /* DimensionStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionStepperView.swift; sourceTree = "<group>"; };
 		FDDEA3CA2C34305B008C2097 /* Retired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Retired.swift; sourceTree = "<group>"; };
-		FDE0D9122BF26C4D00FF3A43 /* MovementPickViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPickViewModel.swift; sourceTree = "<group>"; };
+		FDE0D9122BF26C4D00FF3A43 /* MovementPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPickerViewModel.swift; sourceTree = "<group>"; };
 		FDEA615E2A2484D000A50ACC /* Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculate.swift; sourceTree = "<group>"; };
 		FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystemVM.swift; sourceTree = "<group>"; };
 		FDF1178E2C4AA34C00FCFD19 /* UnilateralPartPresenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnilateralPartPresenceView.swift; sourceTree = "<group>"; };
 		FDF117902C4AEE8200FCFD19 /* ObjectAndPartEditMenuContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectAndPartEditMenuContainerView.swift; sourceTree = "<group>"; };
 		FDF117922C4AEF6A00FCFD19 /* ObjectRulerRecenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRulerRecenterView.swift; sourceTree = "<group>"; };
-		FDF17DD62BF1FB230074B392 /* MovementAngleSetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementAngleSetterView.swift; sourceTree = "<group>"; };
+		FDF17DD62BF1FB230074B392 /* MovementAngleStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementAngleStepperView.swift; sourceTree = "<group>"; };
 		FDF17DD82BF1FB960074B392 /* MovementOriginStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementOriginStepperView.swift; sourceTree = "<group>"; };
 		FDF17DDA2BF1FCBF0074B392 /* PartPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartPickerView.swift; sourceTree = "<group>"; };
 		FDF17DDF2BF1FEFE0074B392 /* PickerLabelWorkAround.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerLabelWorkAround.swift; sourceTree = "<group>"; };
@@ -280,7 +282,7 @@
 			children = (
 				FDF7D5132C2D9A75001A9A5E /* MovementMenuView.swift */,
 				FD6539962C4C0BF2001EBF98 /* MovementAnglePickerView.swift */,
-				FDF17DD62BF1FB230074B392 /* MovementAngleSetterView.swift */,
+				FDF17DD62BF1FB230074B392 /* MovementAngleStepperView.swift */,
 				FDF17DD82BF1FB960074B392 /* MovementOriginStepperView.swift */,
 				FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */,
 			);
@@ -343,9 +345,10 @@
 				FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */,
 				FDAFEFF12BC44F5D004BC602 /* MovementImageData.swift */,
 				FD57A7B92C3032F7006ABC2F /* ObjectDataMediator.swift */,
-				FD4BB1592BC96EDD00DE8875 /* MovementDataViewModel.swift */,
-				FD0AA8B02BF6527600198E33 /* MovementDataProcessorVM.swift */,
-				FDE0D9122BF26C4D00FF3A43 /* MovementPickViewModel.swift */,
+				FD4BB1592BC96EDD00DE8875 /* ObjectAndRulerViewModel.swift */,
+				FD0AA8B02BF6527600198E33 /* MovementDataProcessorVMRetired.swift */,
+				FDE0D9122BF26C4D00FF3A43 /* MovementPickerViewModel.swift */,
+				FD5520C12C4E666900D9329B /* MovementMenuViewModel.swift */,
 				FDB931D12A014DDF00F86B4F /* SceneVM.swift */,
 				FD6BA10C2BE13D5A0047B139 /* ArcVM.swift */,
 			);
@@ -455,12 +458,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */,
-				FD4BB15A2BC96EDD00DE8875 /* MovementDataViewModel.swift in Sources */,
+				FD4BB15A2BC96EDD00DE8875 /* ObjectAndRulerViewModel.swift in Sources */,
 				FD3343F72C3BCFEE00BAE4EB /* PropertyEditSinkOnlyProtocol.swift in Sources */,
 				FD07EA842C396E0F00A0CD6A /* OriginPickerViewModel.swift in Sources */,
 				FDF17DD92BF1FB960074B392 /* MovementOriginStepperView.swift in Sources */,
 				FD400C4F2BF785E6004242D4 /* PartDisplayName.swift in Sources */,
-				FDF17DD72BF1FB230074B392 /* MovementAngleSetterView.swift in Sources */,
+				FDF17DD72BF1FB230074B392 /* MovementAngleStepperView.swift in Sources */,
 				FD1CB1952B90A58600A27657 /* DataServices.swift in Sources */,
 				FD3343F52C3BCED400BAE4EB /* OriginStepperViewModel.swift in Sources */,
 				FD95DA2A29E40E20009A9500 /* ObjectPickerView.swift in Sources */,
@@ -468,7 +471,7 @@
 				FD6539972C4C0BF2001EBF98 /* MovementAnglePickerView.swift in Sources */,
 				FDB931D02A0134AE00F86B4F /* CircleView.swift in Sources */,
 				FD07EA862C3979BF00A0CD6A /* OriginPickerView.swift in Sources */,
-				FDE0D9132BF26C4D00FF3A43 /* MovementPickViewModel.swift in Sources */,
+				FDE0D9132BF26C4D00FF3A43 /* MovementPickerViewModel.swift in Sources */,
 				FD271A522B9C932300444BD2 /* PartOriginAndDimensionEditContainerView.swift in Sources */,
 				FDF17DDB2BF1FCBF0074B392 /* PartPickerView.swift in Sources */,
 				FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */,
@@ -512,8 +515,9 @@
 				FD6BA10D2BE13D5A0047B139 /* ArcVM.swift in Sources */,
 				FD03B92E2C41524E00FBC0A6 /* PropertyEditFuncOnlyProtocol.swift in Sources */,
 				FDC71F19296C936600B68427 /* CreateName.swift in Sources */,
+				FD5520C22C4E666900D9329B /* MovementMenuViewModel.swift in Sources */,
 				FD060BD52A0BB2F6005F31A0 /* PropertyAngleEditView.swift in Sources */,
-				FD0AA8B12BF6527600198E33 /* MovementDataProcessorVM.swift in Sources */,
+				FD0AA8B12BF6527600198E33 /* MovementDataProcessorVMRetired.swift in Sources */,
 				FDF17DE02BF1FEFE0074B392 /* PickerLabelWorkAround.swift in Sources */,
 				FDAFEFF22BC44F5D004BC602 /* MovementImageData.swift in Sources */,
 				FDA4743D29E46925003F1202 /* ObjectView.swift in Sources */,

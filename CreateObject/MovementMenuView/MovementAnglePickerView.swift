@@ -6,24 +6,21 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MovementAnglePickerView: View {
-    @EnvironmentObject var movementPickerVM: MovementPickerViewModel
-    
-    let menuItems = WhichAngle.allCases.map {
-        $0.rawValue
-    }
-    
+
+    @EnvironmentObject var movementAnglePickerVM: MovementAnglePickerViewModel
     
     var body: some View {
         HStack {
             ZStack {
                 Picker(
                     "",
-                    selection: $movementPickerVM.objectAngleName
+                    selection: movementAnglePickerVM.binding
                 ) {
                     ForEach(
-                        menuItems,
+                        movementAnglePickerVM.menuItems,
                         id: \.self
                     ) { item in
                         Text(
@@ -35,7 +32,7 @@ struct MovementAnglePickerView: View {
                 //physical device
                 .opacityAndScaleToHidePickerLabel()
                 
-                DuplicatePickerText(name: movementPickerVM.objectAngleName)
+                DuplicatePickerText(name: movementAnglePickerVM.objectAngleName)
             }
             //End work around
 
@@ -43,4 +40,53 @@ struct MovementAnglePickerView: View {
                 .colorScheme(.light)
         }
     }
+}
+
+
+class MovementAnglePickerViewModel: ObservableObject,                           SharedObjectAngleType {
+    
+    @Published var objectAngleName: String {
+        didSet {
+            setObjectAngleType()
+        }
+    }
+    var binding: Binding<String> {
+        Binding<String> (
+            get: {self.objectAngleName},
+            set: { newValue in
+                self.objectAngleName = newValue
+            }
+        )
+    }
+    var objectAngleType: WhichAngle = MovementEditService.shared.objectAngleType
+    
+    let menuItems: [String] = WhichAngle.allCases.map {
+        $0.rawValue
+    }
+
+
+    //EXTRACTIONS FROM DATA LAYER
+    //intialise movement data
+    //movement are single object data plus transformed object data
+    //showing movment or movments
+    
+    internal var cancellables: Set<AnyCancellable> = []
+    
+    
+    init(){
+        objectAngleName = objectAngleType.rawValue
+
+        (self as SharedObjectAngleType).subscribeToService()
+
+    }
+}
+
+
+extension MovementAnglePickerViewModel {
+
+    func setObjectAngleType(){
+        objectAngleType = WhichAngle(rawValue: objectAngleName) ?? .end
+        MovementEditService.shared.setObjectAngleType(objectAngleType)
+    }
+
 }

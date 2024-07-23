@@ -202,13 +202,7 @@ enum ObjectDisplayStyle {
 }
 struct ObjectView: View {
     @EnvironmentObject var objectVM: ObjectViewModel
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-    @EnvironmentObject var movementDataGetterVM: MovementDataViewModel
-    @EnvironmentObject var rulerVM: RulerViewModel
-    @EnvironmentObject var movementDataVM: MovementDataViewModel
-    @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
-    @EnvironmentObject var movementPickVM: MovementPickerViewModel
-    
+
     let displayStyle: ObjectDisplayStyle
 
     init(
@@ -220,15 +214,14 @@ struct ObjectView: View {
     
     var body: some View {
        
-
         ZStack{
                 ForEach(objectVM.uniquePartNames, id: \.self) { name in
                     PartView(
                         uniquePartName: name,
                         preTiltFourCornerPerKeyDic: objectVM.preTiltObjectToPartFourCornerDictionary,
-                        dictionaryForScreen: movementDataProcessorVM.movementDictionaryForScreen,
+                        dictionaryForScreen: objectVM.movementDictionaryForScreen,
                         objectVM.partToEdit,
-                        movementPickVM.movementType,
+                        objectVM.movementType,
                         displayStyle
                     )
                 }
@@ -239,12 +232,12 @@ struct ObjectView: View {
 //                    )
 //                }
                 
-            AllArcView(movementPickVM.movementType, movementDataProcessorVM.movementDictionaryForScreen)
+            AllArcView(objectVM.movementType, objectVM.movementDictionaryForScreen)
 
             }
             .modifier(
                 ForObjectDrag (
-                    frameSize: movementDataProcessorVM.onScreenMovementFrameSize, active: true)
+                    frameSize: objectVM.onScreenMovementFrameSize, active: true)
             )
         }
 }

@@ -10,22 +10,13 @@ import SwiftUI
 
 
 struct MovementMenuView: View {
-    @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-    @EnvironmentObject var movementDataGetterVM: MovementDataViewModel
-    @EnvironmentObject var movementPickerVM: MovementPickerViewModel
-    @EnvironmentObject var movementDataProcessorVM: MovementDataProcessorViewModel
     @EnvironmentObject var recenterVM: RecenterViewModel
+    @EnvironmentObject var movementMenuVM: MovementMenuViewModel
+
     var recenterPosition: CGPoint = CGPoint(x: 100, y: 350)
     @State private var uniqueKey = 0
     
     var body: some View {
-        
-        var movement: Movement {
-            movementPickerVM.getMovementType()
-        }
-        var startAngle: Double {
-            movementPickerVM.startAngle
-        }
         
         VStack {
             //Object Menu
@@ -50,26 +41,24 @@ struct MovementMenuView: View {
                 HStack {
                     MovementAnglePickerView()
                        
-                    MovementAngleSetterView(setAngle: movementPickerVM.setObjectAngle)
+                    MovementAngleStepperView()
                     Spacer()
                 }
-                .opacity(!movementPickerVM.getObjectIsTurning() ? 0.3: 1.0)
-                .disabled(!movementPickerVM.getObjectIsTurning())
+                .opacity(movementMenuVM.isNotTurning ? 0.3: 1.0)
+                .disabled(movementMenuVM.isNotTurning)
                 
                 HStack{
                     Spacer()
                 
                     Text("turn tightness")
-                        .foregroundColor(movement == .turn ? .primary : .gray)
+                        .foregroundColor(movementMenuVM.movementType == .turn ? .primary : .gray)
                         .colorScheme(.light)
                     
-                    MovementOriginStepperView(
-//                        setValue: movementPickerVM.modifyStaticPointUpdateInX
-                    )
+                    MovementOriginStepperView()
                     
                     Spacer()
                 }
-                .disabled(!movementPickerVM.getObjectIsTurning())
+                .disabled(movementMenuVM.isNotTurning)
             }
             .backgroundModifier()
             .transition(.move(edge: .bottom))

@@ -8,7 +8,7 @@ import SwiftUI
 
 struct ObjectAndRulerView: View {
 
-    @EnvironmentObject var movementDataGetterVM: MovementDataViewModel
+    @EnvironmentObject var movementDataVM: ObjectAndRulerViewModel
 
     @GestureState private var fingerLocation: CGPoint? = nil
     @State private var location = CGPoint (x: 100, y: 500)
@@ -20,12 +20,12 @@ struct ObjectAndRulerView: View {
     
     var defaultScale: Double {
         Screen.smallestDimension /
-        movementDataGetterVM.maximumnDimensionOfMotion
+        movementDataVM.maximumnDimensionOfMotion
     }
     
     var measurementScale: Double {
         Screen.smallestDimension /
-        movementDataGetterVM.maximumnDimensionOfMotion
+        movementDataVM.maximumnDimensionOfMotion
     }
     
     var zoom: CGFloat {
