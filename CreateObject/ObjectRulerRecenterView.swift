@@ -16,6 +16,7 @@ struct ObjectRulerRecenterView: View {
             // Start the button press animation
             withAnimation(.easeInOut(duration: 0.2)) {
                 isPressed = true
+              //  print("DETECT")
             }
 
             // Schedule the recenter action and the reset of the button state after the animation completes

@@ -9,8 +9,49 @@ import Foundation
 import Combine
 import SwiftUI
 
+protocol SharedObjectImageDataFunc: AnyObject {
+    var objectImageData: ObjectImageData { get set}
+    func setMovementImageData()
+    var cancellables: Set<AnyCancellable> { get set }
+}
+extension SharedObjectImageDataFunc {
+    func subscribeToService() {
+        ObjectImageService.shared.$objectImageData
+            .sink { [weak self] newData in
+                self?.objectImageData = newData
+                //update movement if objectData changes
+                self?.setMovementImageData()
+            }
+            .store(
+                in: &cancellables
+            )
+    }
+}
 
 
+protocol SharedSetMovementImageDataFuncOnly {
+    var objectImageData: ObjectImageData { get }
+    var movementType: Movement { get }
+    var staticPoint: PositionAsIosAxes { get }
+    var startAngle: Double { get }
+    var endAngle: Double { get }
+    var forward: Double { get }
+
+    func setMovementImageData()
+}
+
+extension SharedSetMovementImageDataFuncOnly {
+    func setMovementImageData() {
+        MovementImageService.shared.setMovementImageData(
+            objectImageData,
+            movementType,
+            staticPoint,
+            startAngle,
+            endAngle,
+            forward
+        )
+    }
+}
 
 
 
@@ -77,24 +118,36 @@ extension SharedObjectAngleType {
 }
 
 
+protocol SharedMovementImageData: AnyObject {
+    var movementImageData: MovementImageData {get set}
+    var cancellables: Set<AnyCancellable> { get set }
+}
+extension SharedMovementImageData {
+    func subscribeToService() {
+        MovementImageService.shared.$movementImageData
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.movementImageData,on: self)
+            .store(in: &cancellables)
+    }
+}
 
-class MovementPickerViewModel: ObservableObject, 
-    SharedMovementType, SharedObjectAngles, SharedStaticPoint {
+
+
+
+class MovementPickerViewModel: ObservableObject,
+    SharedMovementType, 
+    SharedObjectAngles,
+    SharedStaticPoint,
+    SharedMovementImageData,
+    SharedSetMovementImageDataFuncOnly, 
+    SharedObjectImageDataFunc {
     
     @Published var movementType: Movement = MovementEditService.shared.movementType
-  
-    var staticPoint: PositionAsIosAxes = ZeroValue.iosLocation
-    
-    var startAngle: Double =  MovementEditService.shared.startAngle
-
-    var endAngle: Double =  MovementEditService.shared.endAngle
-
-    var forward: Double =  MovementEditService.shared.forward//in direction facing
-    
-    let menuItems: [String] = Movement.allCases.map {
-        $0.rawValue
+    @Published var movementName: String = Movement.none.rawValue{
+        didSet {
+            setMovementType()
+        }
     }
-    
     var binding: Binding<String> {
         Binding<String> (
             get: {self.movementName},
@@ -106,69 +159,41 @@ class MovementPickerViewModel: ObservableObject,
         )
     }
 
+    var staticPoint: PositionAsIosAxes = ZeroValue.iosLocation
+    var startAngle: Double =  MovementEditService.shared.startAngle
+    var endAngle: Double =  MovementEditService.shared.endAngle
+    var forward: Double =  MovementEditService.shared.forward//in direction facing
+    let menuItems: [String] = Movement.allCases.map {
+        $0.rawValue
+    }
+    
+
     //intialise object data
     //static single object
     var objectImageData: ObjectImageData =
         ObjectImageService.shared.objectImageData
     
-    @Published var movementName: String = Movement.none.rawValue{
-        didSet {
-            setMovementType()
-        }
-    }
     //EXTRACTIONS FROM DATA LAYER
     //intialise movement data
     //movement are single object data plus transformed object data
     //showing movment or movments
-
     var movementImageData =
         MovementImageService.shared.movementImageData
     
     internal var cancellables: Set<AnyCancellable> = []
     
-    
     init(){
-        
-        //Initial build of movement data for image using a static image and default movement parameters
-        ObjectImageService.shared.$objectImageData
-            .sink { [weak self] newData in
-                self?.objectImageData = newData
-             
-                //update movement if objectData changes
-                self?.movementImageData = self?.setAndGetMovementImageData() ??
-                    MovementImageService.shared.setAndGetMovementImageData(
-                        newData,//original object
-                        self?.movementType ?? .none,//transform original with following param
-                        self?.staticPoint ?? ZeroValue.iosLocation,
-                        self?.startAngle ?? 0.0,
-                        self?.endAngle ?? 0.0,
-                        self?.forward ?? 0.0
-                    )
-            }
-            .store(
-                in: &cancellables
-            )
-        
         (self as SharedObjectAngles).subscribeToService()
         (self as SharedMovementType).subscribeToService()
         (self as SharedStaticPoint).subscribeToService()
+        (self as SharedMovementImageData).subscribeToService()
+        (self as SharedSetMovementImageDataFuncOnly).setMovementImageData()
+        (self as SharedObjectImageDataFunc).subscribeToService()
     }
 }
 
 
 extension MovementPickerViewModel {
-    func setAndGetMovementImageData() -> MovementImageData{
-        
-        MovementImageService.shared.setAndGetMovementImageData(
-            objectImageData,
-            movementType,
-            staticPoint,
-            startAngle,
-            endAngle,
-            forward
-        )
-    }
-    
     
     func setMovementType() {
         movementType = Movement(rawValue: movementName) ?? .none
@@ -181,7 +206,7 @@ extension MovementPickerViewModel {
         to newMovement: String
     ) {
         movementName = newMovement
-        movementImageData = setAndGetMovementImageData()
+        setMovementImageData()
     }
  
 }

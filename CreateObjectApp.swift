@@ -37,7 +37,7 @@ struct CreateObjectApp: App {
     @StateObject var movementPickVM = MovementPickerViewModel()
     @StateObject var movementAngleStepperVM = MovementAngleStepperViewModel()
     @StateObject var movementOriginStepperVM = MovementOriginStepperViewModel()
-    @StateObject var movementMenuViewModel = MovementMenuViewModel()
+    @StateObject var movementEditScreenVM = EditScreenViewModel()
     @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
     
     @StateObject var objectViewModel = ObjectViewModel()
@@ -70,9 +70,9 @@ struct CreateObjectApp: App {
 //                .environmentObject(movementOriginStepperViewModel)
                 .environmentObject(objectAndRulerVM)
                 .environmentObject(movementPickVM)
-                .environmentObject( movementAngleStepperVM)
+                .environmentObject(movementAngleStepperVM)
                 .environmentObject(movementOriginStepperVM)
-                .environmentObject(movementMenuViewModel)
+                .environmentObject(movementEditScreenVM)
                 .environmentObject(movementAnglePickerVM)
 
                 .environmentObject(coreDataVM)

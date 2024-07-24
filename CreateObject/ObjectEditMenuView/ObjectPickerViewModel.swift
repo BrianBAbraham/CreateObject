@@ -10,24 +10,20 @@ import Combine
 import SwiftUI
 
 class ObjectPickerViewModel: ObservableObject {
-    
     var objectPickerBinding: Binding<String> {
         Binding<String> (
             get: { self.objectType.rawValue },
             set: { self.onChangeOfPicker($0) }
         )
     }
-   
     @Published var allObjectsName: [String] = ObjectChainLabel.sortedNames
+    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
     
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
-
-    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
     
     private var cancellables: Set<AnyCancellable> = []
     
     init() {
-        
         let _ = ObjectDataMediator.shared
         
         ObjectDataService.shared.$objectType
@@ -52,7 +48,6 @@ class ObjectPickerViewModel: ObservableObject {
         }
 
         ObjectDataService.shared.setObjectType(newObjectType)
-
         // Delay the following code to ensure objectType is updated
         DispatchQueue.main.async { [weak self] in
             self?.resetObjectByCreatingFromName()

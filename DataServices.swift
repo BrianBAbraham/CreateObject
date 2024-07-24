@@ -20,7 +20,6 @@ import Combine
 //}
 
 
-
 class MeasurementSystemService {
     @Published var unitSystem: UnitSystem = .cm
     static let shared = MeasurementSystemService()
@@ -31,7 +30,17 @@ class MeasurementSystemService {
     }
 }
 
-
+class RecenterObjectsOnScreenService {
+    @Published var recenter = false
+    
+    static let initialRulerPosition = CGPoint(x:100, y: 350)
+    static let shared = RecenterObjectsOnScreenService()
+    
+    func setRecenterTrue() {
+        print(recenter)
+        recenter.toggle()
+    }
+}
 
 class CenteredObjectZeroOriginService {
     @Published var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter = EnsureObjectZeroOriginAtMovementCenter(MovementImageService.shared.movementImageData)//?
@@ -227,17 +236,15 @@ class MovementImageService {
 //    }
 //    
 
-    func setAndGetMovementImageData(
+    func setMovementImageData(
         _ objectImageData: ObjectImageData,
         _ movementType: Movement,
         _ staticPoint: PositionAsIosAxes,
         _ startAngle: Double,
         _ endAngle: Double,
-        _ forward: Double ) -> MovementImageData{
+        _ forward: Double ) {
           //  print("set MovementImageService")
-            
-        
-        movementImageData =
+            movementImageData =
             MovementImageData (
                 objectImageData,//object data
                 movementType: movementType, //transform data
@@ -246,7 +253,7 @@ class MovementImageService {
                 endAngle: endAngle, //transform data
                 forward: forward //transform data
                 )
-            return movementImageData
+           
     }
     
 //    func setStaticPoint(_ value: PositionAsIosAxes) {

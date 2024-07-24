@@ -33,9 +33,16 @@ class ObjectAndRulerViewModel: ObservableObject {
     
    @Published var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
     
+    
+    @Published var recenter = RecenterObjectsOnScreenService.shared.recenter
+    
     private var cancellables: Set<AnyCancellable> = []
     
     init(){
+        RecenterObjectsOnScreenService.shared.$recenter
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.recenter,on: self)
+            .store(in: &cancellables)
         
         MovementImageService.shared.$movementImageData
             .receive(on: DispatchQueue.main) // Ensure UI updates are on the main thread

@@ -10,26 +10,16 @@ import Combine
 import SwiftUI
 
 class PartPickerViewModel: ObservableObject {
-    
     var partBinding: Binding<String> {
         Binding<String>(
             get: { self.getObjectSensitiveNameForPart()  },
             set: { self.setPartToEdit($0) }
         )
     }
-    
     @Published var objectType = ObjectDataService.shared.objectType
-    
-    //@Published
-    var oneOfAllEditablePartForObjectBeforeEdit: [String] = []
-    
-    //@Published
-    var oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit: [String] = []
-    
-    
     @Published var partToEdit = ObjectEditService.shared.partToEdit
-    
-    
+    var oneOfAllEditablePartForObjectBeforeEdit: [String] = []
+    var oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit: [String] = []
     private var cancellables: Set<AnyCancellable> = []
     
     static let partsNotToAppearOnEditMenu: [PartGroup] = [
@@ -88,8 +78,6 @@ class PartPickerViewModel: ObservableObject {
     
     func resetForNewPartEdit(){
         //what to edit
-        //objectEditVM.setSideToEdit(.both)
-        
         setSideToEdit(.both)
         
         //what can be edited
@@ -125,8 +113,6 @@ class PartPickerViewModel: ObservableObject {
         guard let part = Part(rawValue: partName) else {
             fatalError("no part for that part name")
         }
-        
-        //print(part.rawValue)
         
         ObjectEditService.shared.setPartToEdit(part)
         

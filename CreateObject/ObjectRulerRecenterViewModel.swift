@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 struct RecenterModel {
    
     var recenterState = false
@@ -19,8 +20,6 @@ class RecenterViewModel: ObservableObject {
     @Published var recenterModel: RecenterModel
     
     init() {
-     
-        
         self.recenterModel = RecenterModel()
     }
     
@@ -30,6 +29,7 @@ class RecenterViewModel: ObservableObject {
     
    
     func setRecenterState() {
+        RecenterObjectsOnScreenService.shared.setRecenterTrue()
         recenterModel.resetState()
     }
 }

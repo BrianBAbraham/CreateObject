@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 
-class MovementMenuViewModel: ObservableObject, SharedMovementType {
+class EditScreenViewModel: ObservableObject, SharedMovementType {
     @Published var movementType = MovementEditService.shared.movementType {
         
             didSet {
@@ -17,13 +17,23 @@ class MovementMenuViewModel: ObservableObject, SharedMovementType {
             }
         
     }
+    @Published var recenter = RecenterObjectsOnScreenService.shared.recenter
     
     @Published var isNotTurning = false
+    
+  
     
     internal var cancellables: Set<AnyCancellable> = []
     
     init() {
+        RecenterObjectsOnScreenService.shared.$recenter
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.recenter,on: self)
+            .store(in: &cancellables)
+        
         (self as SharedMovementType).subscribeToService()
     }
     
 }
+
+

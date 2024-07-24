@@ -17,7 +17,12 @@ struct MovementOriginStepperView: View {
     }
 }
 
-class MovementOriginStepperViewModel: ObservableObject, SharedMovementType, SharedStaticPoint, SharedObjectAngles {
+class MovementOriginStepperViewModel: ObservableObject, SharedMovementType, 
+    SharedStaticPoint,
+    SharedObjectAngles,
+    SharedMovementImageData,
+    SharedSetMovementImageDataFuncOnly,
+    SharedObjectImageDataFunc {
     
     var binding: Binding<Double> {
         Binding<Double> (
@@ -33,7 +38,8 @@ class MovementOriginStepperViewModel: ObservableObject, SharedMovementType, Shar
     var movementType: Movement = MovementEditService.shared.movementType
     var staticPointUpdate: PositionAsIosAxes = ZeroValue.iosLocation {
         didSet {
-            movementImageData = setAndGetMovementImageData()
+            //movementImageData =
+            setMovementImageData()
             MovementEditService.shared.setStaticPoint(staticPointUpdate)
         }
     }
@@ -51,57 +57,26 @@ class MovementOriginStepperViewModel: ObservableObject, SharedMovementType, Shar
     //intialise movement data
     //movement are single object data plus transformed object data
     //showing movment or movments
-    //@Published private
+    
     var movementImageData =
-    MovementImageService.shared.movementImageData
+        MovementImageService.shared.movementImageData
     
     internal var cancellables: Set<AnyCancellable> = []
     
     
     init(){
-
-        
-        //Initial build of movement data for image using a static image and default movement parameters
-        ObjectImageService.shared.$objectImageData
-            .sink { [weak self] newData in
-                self?.objectImageData = newData
-             
-                //update movement if objectData changes
-                self?.movementImageData = self?.setAndGetMovementImageData() ??
-                    MovementImageService.shared.setAndGetMovementImageData(
-                        newData,//original object
-                        self?.movementType ?? .none,//transform original with following param
-                        self?.staticPointUpdate ?? ZeroValue.iosLocation,
-                        self?.startAngle ?? 0.0,
-                        self?.endAngle ?? 0.0,
-                        self?.forward ?? 0.0
-                    )
-            }
-            .store(
-                in: &cancellables
-            )
-        
         (self as SharedObjectAngles).subscribeToService()
         (self as SharedMovementType).subscribeToService()
         (self as SharedStaticPoint).subscribeToService()
+        (self as SharedMovementImageData).subscribeToService()
+        (self as SharedObjectImageDataFunc).subscribeToService()
+        
     }
 }
 
 
 extension MovementOriginStepperViewModel {
-    func setAndGetMovementImageData() -> MovementImageData{
-        
-        MovementImageService.shared.setAndGetMovementImageData(
-            objectImageData,
-            movementType,
-            staticPointUpdate,
-            startAngle,
-            endAngle,
-            forward
-        )
-    }
-
-    
+  
     func modifyStaticPoint(
         _ increment: Double
     ) {
@@ -132,6 +107,6 @@ extension MovementOriginStepperViewModel {
             increment
         )
         MovementEditService.shared.setStaticPoint(staticPoint)
-        movementImageData = setAndGetMovementImageData()
+        setMovementImageData()
     }
 }

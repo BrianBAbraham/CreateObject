@@ -82,23 +82,25 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 
-                
                 NavigationLink(destination:
-                    ObjectEditScreenView()
+                             EditScreenView(
+                                injectedView: ObjectAndPartEditMenuContainerView(),
+                                objectDisplayStyle: .edit)
                 )
                 {Text("select-edit equipment")
                 }
                 .padding()
                   
                 
-                
                 NavigationLink(destination:  
-                    MovementMenuView() ) {
+                                EditScreenView(
+                                    injectedView: MovementEditMenuContainerView(),
+                                    objectDisplayStyle: .movement)
+                    .environmentObject(EditScreenViewModel()) ) {
                     Text("edit movements")
                 }
                 
                 
- 
                 NavigationLink(destination: 
                     Photo() ) {
                     Text("import plan from photos")}
@@ -119,35 +121,7 @@ struct ContentView: View {
 
 
 
-struct ObjectEditScreenView: View {
-    @EnvironmentObject var recenterVM: RecenterViewModel
-   
-    var recenterPosition: CGPoint = CGPoint(x:100, y:400)
-    @State private var uniqueKey = 0
-    
 
-    var body: some View {
-        ZStack{
-            ObjectAndRulerView(
-                ObjectDisplayStyle.edit
-            )
-            .position(recenterPosition)
-            .onChange(of: recenterVM.getRecenterState()) {
-                uniqueKey += 1
-            }
-           
-            .id(uniqueKey)//ensures redraw
-            
-     
-            VStack {
-                ObjectRulerRecenterView()
-                Spacer()
-                
-                ObjectAndPartEditMenuContainerView()
-            }
-        }
-    }
-}
 
 
 

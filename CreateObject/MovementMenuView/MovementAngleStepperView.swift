@@ -33,7 +33,13 @@ enum WhichAngle: String, CaseIterable {
 
 
 
-class MovementAngleStepperViewModel: ObservableObject, SharedMovementType, SharedStaticPoint, SharedObjectAngles, SharedObjectAngleType {
+class MovementAngleStepperViewModel: ObservableObject, SharedMovementType, 
+    SharedStaticPoint,
+    SharedObjectAngles,
+    SharedObjectAngleType,
+    SharedMovementImageData,
+    SharedSetMovementImageDataFuncOnly,
+    SharedObjectImageDataFunc {
     
     var binding: Binding<Double> {
         Binding<Double> (
@@ -68,49 +74,20 @@ class MovementAngleStepperViewModel: ObservableObject, SharedMovementType, Share
     
     internal var cancellables: Set<AnyCancellable> = []
     
-    
     init(){
-        //Initial build of movement data for image using a static image and default movement parameters
-        ObjectImageService.shared.$objectImageData
-            .sink { [weak self] newData in
-                self?.objectImageData = newData
-                
-                //update movement if objectData changes
-                self?.movementImageData = self?.setAndGetMovementImageData() ??
-                
-                MovementImageService.shared.setAndGetMovementImageData(            newData,//original
-                        self?.movementType ?? .none,//transform original with following param
-                        self?.staticPoint ?? ZeroValue.iosLocation,
-                        self?.startAngle ?? 0.0,
-                        self?.endAngle ?? 0.0,
-                        self?.forward ?? 0.0
-                    )
-            }
-            .store(
-                in: &cancellables
-            )
         (self as SharedObjectAngles).subscribeToService()
         (self as SharedObjectAngleType).subscribeToService()
         (self as SharedMovementType).subscribeToService()
         (self as SharedStaticPoint).subscribeToService()
+        (self as SharedMovementImageData).subscribeToService()
+        (self as SharedSetMovementImageDataFuncOnly).setMovementImageData()
+        (self as SharedObjectImageDataFunc).subscribeToService()
     }
 }
 
 
 extension MovementAngleStepperViewModel {
-    func setAndGetMovementImageData() -> MovementImageData{
-
-        MovementImageService.shared.setAndGetMovementImageData(
-            objectImageData,
-            movementType,
-            staticPoint,
-            startAngle,
-            endAngle,
-            forward
-        )
-    }
-    
-    
+        
     func setObjectAngle(_ angleIncrement: Double) {
         switch objectAngleType {
         case .start:
@@ -124,17 +101,16 @@ extension MovementAngleStepperViewModel {
     }
     
 
-    
     func setStartAngle(_ angleIncrement: Double) {
         startAngle += angleIncrement
         MovementEditService.shared.setStartAngle(startAngle)
-        movementImageData = setAndGetMovementImageData()
+        setMovementImageData()
     }
     
 
     func setEndAngle(_ angleIncrement: Double) {
         endAngle += angleIncrement
         MovementEditService.shared.setEndAngle(endAngle)
-        movementImageData = setAndGetMovementImageData()
+        setMovementImageData()
     }
 }

@@ -65,9 +65,6 @@ class MovementAnglePickerViewModel: ObservableObject,                           
     }
 
 
-    //EXTRACTIONS FROM DATA LAYER
-    //intialise movement data
-    //movement are single object data plus transformed object data
     //showing movment or movments
     
     internal var cancellables: Set<AnyCancellable> = []
