@@ -67,9 +67,6 @@ struct DictionaryElementIn {
         for corner in corners {
             points.append(CGPoint(x: corner.x , y: corner.y))
         }
-        
-     
-        
         return points
     }
     

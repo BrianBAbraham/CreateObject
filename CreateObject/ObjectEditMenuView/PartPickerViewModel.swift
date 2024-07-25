@@ -9,34 +9,35 @@ import Foundation
 import Combine
 import SwiftUI
 
-class PartPickerViewModel: ObservableObject {
+class PartPickerViewModel: ObservableObject,
+   SharedPartToEdit{
     var partBinding: Binding<String> {
         Binding<String>(
             get: { self.getObjectSensitiveNameForPart()  },
             set: { self.setPartToEdit($0) }
         )
     }
-    @Published var objectType = ObjectDataService.shared.objectType
-    @Published var partToEdit = ObjectEditService.shared.partToEdit
-    var oneOfAllEditablePartForObjectBeforeEdit: [String] = []
-    var oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit: [String] = []
-    private var cancellables: Set<AnyCancellable> = []
     
+    @Published var oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit: [String] = []
+    @Published var partToEdit = ObjectEditService.shared.partToEdit
+
+    var objectType = ObjectDataService.shared.objectType
+
+    var oneOfAllEditablePartForObjectBeforeEdit: [String] = []
+
+    internal var cancellables: Set<AnyCancellable> = []
+
     static let partsNotToAppearOnEditMenu: [PartGroup] = [
-        .tilt,
-        .backJointAndLink,
-        .casterJoint,
-        .fixedWheelJoint,
-        .footJointAndLink,
-        .stabiliser,
-        .steeredJoint,
+    .tilt,
+    .backJointAndLink,
+    .casterJoint,
+    .fixedWheelJoint,
+    .footJointAndLink,
+    .stabiliser,
+    .steeredJoint,
     ]
     
     init() {
-        ObjectEditService.shared.$partToEdit
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.partToEdit,on: self)
-            .store(in: &cancellables)
         
         ObjectDataService.shared.$objectType
             .sink { [weak self] newData in
@@ -47,6 +48,8 @@ class PartPickerViewModel: ObservableObject {
              
             }
             .store(in: &self.cancellables)
+        
+        (self as SharedPartToEdit ).subscribeToService()
     }
     
     
@@ -70,36 +73,13 @@ class PartPickerViewModel: ObservableObject {
     func getOneOfAllEditablePartWithMenuNamesForObjectBeforeEdit() -> [String] {
         let oneOfAllPartForObjectBeforeEdit = getOneOfAllPartForObjectBeforeEdit()
         let parts =
-        oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains($0.transformPartToPartGroup())}
+            oneOfAllPartForObjectBeforeEdit.filter {!Self.partsNotToAppearOnEditMenu.contains($0.transformPartToPartGroup())}
 
         return PartToDisplayInMenu(parts, objectType).names
     }
     
     
-    func resetForNewPartEdit(){
-        //what to edit
-        setSideToEdit(.both)
-        
-        //what can be edited
-        setBothOrLeftOrRightAsEditible(.both)
-    }
-    
-    
-    func setSideToEdit(
-        _ sideChoice: SidesAffected
-    ) {
-        ObjectEditService.shared.setSideToEdit(
-            sideChoice
-        )
-    }
-    
-    
-    func setBothOrLeftOrRightAsEditible(
-        _ sideChoice: SidesAffected
-    ) {
-        ObjectEditService.shared.setScopeOfEditForSide(
-            sideChoice)
-    }
+
     
     
     func setPartToEdit(_ menuPartName: String) {
@@ -107,7 +87,7 @@ class PartPickerViewModel: ObservableObject {
         let index = oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit.firstIndex(where: { $0 == menuPartName }) ?? 0
         
         let partName =
-        oneOfAllEditablePartForObjectBeforeEdit[index]
+            oneOfAllEditablePartForObjectBeforeEdit[index]
         
         
         guard let part = Part(rawValue: partName) else {
@@ -117,6 +97,13 @@ class PartPickerViewModel: ObservableObject {
         ObjectEditService.shared.setPartToEdit(part)
         
         resetForNewPartEdit()
+        
+        func resetForNewPartEdit(){
+            //if part has one side the property is disregarded
+            ObjectEditService.shared.setSideToEdit(
+                .both)
+            
+        }
     }
 }
 

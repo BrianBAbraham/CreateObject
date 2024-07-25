@@ -86,6 +86,20 @@ struct LocalOutlineRectangle: View {
     }
 }
 
+//struct LocalOutlineRectangle: View {
+//    @ObservedObject var viewModel: LocalOutlineRectangleViewModel
+//
+//    var body: some View {
+//        ZStack {
+//            viewModel.path()
+//                .fill(viewModel.color)
+//                .opacity(viewModel.opacity)
+//            
+//            viewModel.path()
+//                .stroke(Color.black, lineWidth: viewModel.lineWidth)
+//        }
+//    }
+//}
 
 
 struct ArcPointView: View {
@@ -107,11 +121,97 @@ struct ArcPointView: View {
     }
 }
 
-
-
 struct PartView: View {
+
+  @EnvironmentObject var partVM: PartViewModel
+    var partToEdit: Part {
+        partVM.partToEdit
+    }
+    let uniquePartName: String
+    let fillColor: Color
+    let cornerRadius: Double
+    let opacity: Double
+    let lineWidth: Double
+
+//    var partCorners: [CGPoint] {
+//        partVM.getCGPoints(uniquePartName)
+//    }
+    var dictionaryElementIn: DictionaryElementIn {
+        DictionaryElementIn(
+            partVM.movementDictionaryForScreen,
+            //postTiltObjectToFourCornerPerKeyDic,
+            uniquePartName
+        )
+    }
+    
+    var partCorners: [CGPoint] {
+        dictionaryElementIn.cgPointsOut()
+    }
+    var zPosition: Double {
+        partVM.getZHeight(uniquePartName)
+        //ensures objects drawn in order of height
+    }
+    
+   var movement: Movement
+    let displayStyle: ObjectDisplayStyle
+    
+    init(
+        uniquePartName: String,
+        color: Color = .white,
+        cornerRadius: Double = 30.0,
+        opacity: Double = 0.9,
+        lineWidth: Double = 5.0,
+        _ partToEdit: Part,
+        _ movement: Movement,
+        _ displayStyle: ObjectDisplayStyle
+ 
+    ){
+
+        self.uniquePartName = uniquePartName
+
+        
+        
+        fillColor = getColor()
+        self.cornerRadius = cornerRadius
+        self.opacity = opacity
+        self.lineWidth = lineWidth
+      self.movement = movement
+        self.displayStyle = displayStyle
+        
+        func getColor() -> Color {
+            if color == .white { // only change undefined colors, let ruler color remain
+                if UniqueToGeneralName(uniquePartName).generalName.contains(partToEdit.rawValue) {
+                    return Color(displayStyle == .movement ? "movement" :"selectedPart")
+                } else {
+                    return Color(displayStyle == .movement ? "movement" :"unselectedPart")}
+            } else {
+                return color
+            }
+        }
+    }
+    
+    
+    var body: some View {
+
+        LocalOutlineRectangle(
+            corners: partCorners,
+            color: fillColor,
+            
+            opacity: opacity,
+            lineWidth: lineWidth,
+            cornerRadius: 0        )
+        .zIndex(
+            zPosition
+        )
+//        .onTapGesture {
+//            partEditVM.setCurrentPartToEditName(uniquePartName)
+//        }
+    }
+}
+
+struct PartViewX: View {
     @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-   // @EnvironmentObject var partEditVM: ObjectShowMenuViewModel
+  @EnvironmentObject var partVM: PartViewModel
     let partToEdit: Part
     let uniquePartName: String
     var preTiltFourCornerPerKeyDic: CornerDictionary
@@ -218,10 +318,11 @@ struct ObjectView: View {
                 ForEach(objectVM.uniquePartNames, id: \.self) { name in
                     PartView(
                         uniquePartName: name,
-                        preTiltFourCornerPerKeyDic: objectVM.preTiltObjectToPartFourCornerDictionary,
-                        dictionaryForScreen: objectVM.movementDictionaryForScreen,
+                      
                         objectVM.partToEdit,
+                        
                         objectVM.movementType,
+                        
                         displayStyle
                     )
                 }

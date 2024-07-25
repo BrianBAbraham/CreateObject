@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FD026B832C52919E0059FA21 /* ObjectEditService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD026B822C52919E0059FA21 /* ObjectEditService.swift */; };
+		FD026B852C5291F40059FA21 /* ObjectDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD026B842C5291F40059FA21 /* ObjectDataService.swift */; };
+		FD026B872C52984D0059FA21 /* LocalOutlineRectangleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD026B862C52984D0059FA21 /* LocalOutlineRectangleViewModel.swift */; };
 		FD03B92E2C41524E00FBC0A6 /* PropertyEditFuncOnlyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD03B92D2C41524E00FBC0A6 /* PropertyEditFuncOnlyProtocol.swift */; };
 		FD060BD52A0BB2F6005F31A0 /* PropertyAngleEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD060BD42A0BB2F6005F31A0 /* PropertyAngleEditView.swift */; };
 		FD07EA842C396E0F00A0CD6A /* OriginPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD07EA832C396E0F00A0CD6A /* OriginPickerViewModel.swift */; };
@@ -21,7 +24,6 @@
 		FD2713832BC55F9E00703F06 /* KeepImageInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */; };
 		FD271A522B9C932300444BD2 /* PartOriginAndDimensionEditContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD271A512B9C932300444BD2 /* PartOriginAndDimensionEditContainerView.swift */; };
 		FD3343F52C3BCED400BAE4EB /* OriginStepperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3343F42C3BCED400BAE4EB /* OriginStepperViewModel.swift */; };
-		FD3343F72C3BCFEE00BAE4EB /* PropertyEditSinkOnlyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3343F62C3BCFEE00BAE4EB /* PropertyEditSinkOnlyProtocol.swift */; };
 		FD3343F92C3BE12B00BAE4EB /* OriginStepperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3343F82C3BE12B00BAE4EB /* OriginStepperView.swift */; };
 		FD3343FB2C3C337600BAE4EB /* BilateralPartSidePresenceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3343FA2C3C337600BAE4EB /* BilateralPartSidePresenceViewModel.swift */; };
 		FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */; };
@@ -93,6 +95,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FD026B822C52919E0059FA21 /* ObjectEditService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectEditService.swift; sourceTree = "<group>"; };
+		FD026B842C5291F40059FA21 /* ObjectDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDataService.swift; sourceTree = "<group>"; };
+		FD026B862C52984D0059FA21 /* LocalOutlineRectangleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalOutlineRectangleViewModel.swift; sourceTree = "<group>"; };
 		FD03B92D2C41524E00FBC0A6 /* PropertyEditFuncOnlyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyEditFuncOnlyProtocol.swift; sourceTree = "<group>"; };
 		FD060BD42A0BB2F6005F31A0 /* PropertyAngleEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyAngleEditView.swift; sourceTree = "<group>"; };
 		FD07EA832C396E0F00A0CD6A /* OriginPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginPickerViewModel.swift; sourceTree = "<group>"; };
@@ -107,7 +112,6 @@
 		FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepImageInScreen.swift; sourceTree = "<group>"; };
 		FD271A512B9C932300444BD2 /* PartOriginAndDimensionEditContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOriginAndDimensionEditContainerView.swift; sourceTree = "<group>"; };
 		FD3343F42C3BCED400BAE4EB /* OriginStepperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginStepperViewModel.swift; sourceTree = "<group>"; };
-		FD3343F62C3BCFEE00BAE4EB /* PropertyEditSinkOnlyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyEditSinkOnlyProtocol.swift; sourceTree = "<group>"; };
 		FD3343F82C3BE12B00BAE4EB /* OriginStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginStepperView.swift; sourceTree = "<group>"; };
 		FD3343FA2C3C337600BAE4EB /* BilateralPartSidePresenceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilateralPartSidePresenceViewModel.swift; sourceTree = "<group>"; };
 		FD3AD0C92A040E8000D2D8B1 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
@@ -190,11 +194,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FD026B812C5290A90059FA21 /* DataServices */ = {
+			isa = PBXGroup;
+			children = (
+				FD1CB1942B90A58600A27657 /* DataServices.swift */,
+				FD026B822C52919E0059FA21 /* ObjectEditService.swift */,
+				FD026B842C5291F40059FA21 /* ObjectDataService.swift */,
+			);
+			path = DataServices;
+			sourceTree = "<group>";
+		};
 		FD6FC9A22C3858FB00B9FA4E /* Properties */ = {
 			isa = PBXGroup;
 			children = (
 				FDD28BAF2C4280EC0079A84C /* PropertyEditProtocol.swift */,
-				FD3343F62C3BCFEE00BAE4EB /* PropertyEditSinkOnlyProtocol.swift */,
 				FD03B92D2C41524E00FBC0A6 /* PropertyEditFuncOnlyProtocol.swift */,
 				FDA933BF2C41402700A9896B /* BilateralPartSidePickerViewModel.swift */,
 				FDD422E72B9F1D19005B7950 /* BilateralPartSidePickerView.swift */,
@@ -221,7 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				FDC71F00296C911200B68427 /* CreateObjectApp.swift */,
-				FD1CB1942B90A58600A27657 /* DataServices.swift */,
+				FD026B812C5290A90059FA21 /* DataServices */,
 				FDC71EFF296C911200B68427 /* CreateObject */,
 				FDC71EFE296C911200B68427 /* Products */,
 			);
@@ -297,6 +310,7 @@
 				FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */,
 				FDF17DDF2BF1FEFE0074B392 /* PickerLabelWorkAround.swift */,
 				FDF7D5172C2D9E7C001A9A5E /* Measuring */,
+				FD026B862C52984D0059FA21 /* LocalOutlineRectangleViewModel.swift */,
 			);
 			path = HelperViews;
 			sourceTree = "<group>";
@@ -456,7 +470,6 @@
 			files = (
 				FDCE3F0B299A8B5B00C19F2A /* Save.swift in Sources */,
 				FD4BB15A2BC96EDD00DE8875 /* ObjectAndRulerViewModel.swift in Sources */,
-				FD3343F72C3BCFEE00BAE4EB /* PropertyEditSinkOnlyProtocol.swift in Sources */,
 				FD07EA842C396E0F00A0CD6A /* OriginPickerViewModel.swift in Sources */,
 				FDF17DD92BF1FB960074B392 /* MovementOriginStepperView.swift in Sources */,
 				FD400C4F2BF785E6004242D4 /* PartDisplayName.swift in Sources */,
@@ -504,6 +517,7 @@
 				FD400C512BF78651004242D4 /* PartLinking.swift in Sources */,
 				FD400C532BF78688004242D4 /* PartAngles.swift in Sources */,
 				FDC71F01296C911200B68427 /* CreateObjectApp.swift in Sources */,
+				FD026B872C52984D0059FA21 /* LocalOutlineRectangleViewModel.swift in Sources */,
 				FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */,
 				FDEEB2BD2BB5DBD700000199 /* UnitSystemVM.swift in Sources */,
 				FDD28BB22C42D4300079A84C /* UnilateralPartPresenceViewModel.swift in Sources */,
@@ -520,6 +534,8 @@
 				FD3AD0CA2A040E8000D2D8B1 /* ViewModifiers.swift in Sources */,
 				FD08DB1F2BAEDBCE00F116AD /* RulerView.swift in Sources */,
 				FD08DB212BAEDE8200F116AD /* Object&RulerView.swift in Sources */,
+				FD026B832C52919E0059FA21 /* ObjectEditService.swift in Sources */,
+				FD026B852C5291F40059FA21 /* ObjectDataService.swift in Sources */,
 				FD400C552BF786AA004242D4 /* PartDimensions.swift in Sources */,
 				FDF117932C4AEF6A00FCFD19 /* ObjectRulerRecenterView.swift in Sources */,
 				FD400C572BF789F5004242D4 /* UserEditedDictionary.swift in Sources */,

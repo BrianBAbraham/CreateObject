@@ -9,7 +9,10 @@ import Foundation
 import Combine
 import SwiftUI
 
-class ObjectPickerViewModel: ObservableObject {
+class ObjectPickerViewModel: ObservableObject,
+    SharedObjectType,
+    SharedUserEditedDictionaries{
+    
     var objectPickerBinding: Binding<String> {
         Binding<String> (
             get: { self.objectType.rawValue },
@@ -17,28 +20,17 @@ class ObjectPickerViewModel: ObservableObject {
         )
     }
     @Published var allObjectsName: [String] = ObjectChainLabel.sortedNames
-    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType
-    
+
+    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType    
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
     
-    private var cancellables: Set<AnyCancellable> = []
+    internal var cancellables: Set<AnyCancellable> = []
     
     init() {
         let _ = ObjectDataMediator.shared
         
-        ObjectDataService.shared.$objectType
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.objectType = newData
-            }
-            .store(in: &cancellables)
-        
-        UserEditedDictionariesService.shared.$userEditedSharedDics
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.userEditedSharedDics = newData
-            }
-            .store(in: &self.cancellables)
+        (self as SharedObjectType).subscribeToService()
+        (self as SharedUserEditedDictionaries).subscribeToService()
     }
     
     
@@ -82,17 +74,3 @@ class ObjectPickerViewModel: ObservableObject {
     }
 }
 
-
-
-
-
-//    func getObjectDictionaryFromSaved(_ entity: LocationEntity) -> [String]{
-//        let allOriginNames = entity.interOriginNames ?? ""
-//        let allOriginValues = entity.interOriginValues ?? ""
-//
-//        let array =
-//            DictionaryInArrayOut().getNameValue(
-//                OriginStringInDictionaryOut(allOriginNames,allOriginValues).dictionary.filter({$0.key.contains(PartTag.corner.rawValue)})//, sender
-//                )
-//        return array
-//    }

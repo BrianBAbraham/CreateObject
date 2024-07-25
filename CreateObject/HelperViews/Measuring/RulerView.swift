@@ -77,7 +77,7 @@ struct Ruler: View {
         
         ZStack{
            
-            PartView(
+            PartViewX(
                 uniquePartName: "",
                 preTiltFourCornerPerKeyDic: rulerDictionary,
                 dictionaryForScreen:  rulerDictionary,

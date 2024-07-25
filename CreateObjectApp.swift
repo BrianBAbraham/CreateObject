@@ -41,6 +41,7 @@ struct CreateObjectApp: App {
     @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
     
     @StateObject var objectViewModel = ObjectViewModel()
+    @StateObject var partViewModel = PartViewModel()
  
     @StateObject var rulerVM = RulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
@@ -81,7 +82,10 @@ struct CreateObjectApp: App {
                 .environmentObject(rulerVM)
                 .environmentObject(recenterVM)
                .environmentObject(arcViewModel)
+            
                .environmentObject(objectViewModel)
+               .environmentObject(partViewModel)
+            
                .environmentObject(tiltEditVM)
         }
     }

@@ -8,7 +8,9 @@
 import Foundation
 import Combine
 
-class ObjectViewModel: ObservableObject, SharedMovementType {
+class ObjectViewModel: ObservableObject, 
+    SharedMovementType,
+    SharedPartToEdit {
     @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
     
     @Published var partToEdit: Part = ObjectEditService.shared.partToEdit
@@ -30,13 +32,6 @@ class ObjectViewModel: ObservableObject, SharedMovementType {
     internal var cancellables: Set<AnyCancellable> = []
     
     init(){ 
-        //view is different for current partToEdit
-        ObjectEditService.shared.$partToEdit
-        .sink { [weak self] newData in
-            self?.partToEdit = newData
-        }
-        .store(in: &cancellables)
-        
         
         MovementImageService.shared.$movementImageData
             .sink { [weak self] newData in
@@ -45,15 +40,13 @@ class ObjectViewModel: ObservableObject, SharedMovementType {
                 self.uniquePartNames = getUniquePartNamesFromObjectDictionary()
                 self.preTiltObjectToPartFourCornerDictionary = getPreTiltObjectToPartFourCornerPerKeyDic()
                 // Call methods to update related data
-                
-                // Call methods to update related data
                 self.updateData()
-
             }
             .store(in: &cancellables)
         
         
         (self as SharedMovementType).subscribeToService()
+        (self as SharedPartToEdit).subscribeToService()
         
         updateData()
 
@@ -106,68 +99,4 @@ class ObjectViewModel: ObservableObject, SharedMovementType {
 }
 
 
-class ObjectViewModelX: ObservableObject, SharedMovementType {
-    
-    @Published var partToEdit: Part = ObjectEditService.shared.partToEdit
-    @Published var uniquePartNames: [String] = []
-    @Published var preTiltObjectToPartFourCornerDictionary: CornerDictionary = [:]
-    @Published var dictionaryForScreen: CornerDictionary = [:]
-    
-    @Published var movementType = MovementEditService.shared.movementType
-    
-    var movementImageData: MovementImageData =
-        MovementImageService.shared.movementImageData
-    
-    internal var cancellables: Set<AnyCancellable> = []
-    
-    init(){
-        ObjectEditService.shared.$partToEdit
-        .sink { [weak self] newData in
-            self?.partToEdit = newData
-          
-        }
-        .store(in: &cancellables)
-        
-        
-        MovementImageService.shared.$movementImageData
-            .sink { [weak self] newData in
-                guard let self = self else { return }
-                self.movementImageData = newData
-                self.uniquePartNames = getUniquePartNamesFromObjectDictionary()
-                self.preTiltObjectToPartFourCornerDictionary = getPreTiltObjectToPartFourCornerPerKeyDic()
-                // Call methods to update related data
-            }
-            .store(in: &cancellables)
-        
-        
-        (self as SharedMovementType).subscribeToService()
-        
 
-    }
-    
-    func getUniquePartNamesFromObjectDictionary() -> [String] {
-        let dic = movementImageData.objectImageData.postTilt.objectToPartFourCornerPerKeyDic
-        let names =
-        Array(
-            dic.keys
-        ).filter {
-            !(
-                $0.contains(
-                    PartTag.arcPoint.rawValue //UI manages differently from parts
-                )  || $0.contains(
-                    PartTag.origin.rawValue// ditto
-                )  || $0.contains(
-                    PartTag.staticPoint.rawValue// ditto
-                ) //|| $0.contains(
-                    //Part.stabiliser.rawValue// fixed wheel edits this
-               // )
-            ) }
-      
-        return names
-    }
-    
-    func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
-        movementImageData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
-    }
-    
-}
