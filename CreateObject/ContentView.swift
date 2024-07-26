@@ -83,9 +83,9 @@ struct ContentView: View {
             VStack {
                 
                 NavigationLink(destination:
-                             EditScreenView(
-                                injectedView: ObjectAndPartEditMenuContainerView(),
-                                objectDisplayStyle: .edit)
+                     EditScreenView(
+                        injectedView: ObjectAndPartEditMenuContainerView(),
+                        objectDisplayStyle: .edit)
                 )
                 {Text("select-edit equipment")
                 }
@@ -93,9 +93,9 @@ struct ContentView: View {
                   
                 
                 NavigationLink(destination:  
-                                EditScreenView(
-                                    injectedView: MovementEditMenuContainerView(),
-                                    objectDisplayStyle: .movement)
+                    EditScreenView(
+                        injectedView: MovementEditMenuContainerView(),
+                        objectDisplayStyle: .movement)
                     .environmentObject(EditScreenViewModel()) ) {
                     Text("edit movements")
                 }

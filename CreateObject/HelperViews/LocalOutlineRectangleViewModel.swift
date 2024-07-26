@@ -49,10 +49,20 @@ class AllArcViewModel: ObservableObject {
       }
 }
 
+struct PartModel: Identifiable {
+    let id: String
+    let points: [CGPoint]
+    let screenDepth: Double
+    let color: Color
+    let cornerRadius: Double
+    let lineWidth: Double
+    let opacity: Double
+}
+
 class PartViewModel: ObservableObject ,
                         SharedMovementType,
                         SharedPartToEdit {
-    
+    @Published var partModels: [PartModel] = []
     @Published var preTiltObjectToPartFourCornerDictionary: CornerDictionary = [:]
     @Published var movementDictionaryForScreen: CornerDictionary =
        MovementDictionaryForScreenService.shared.movementDictionaryForScreen
@@ -60,7 +70,7 @@ class PartViewModel: ObservableObject ,
     @Published var movementType = MovementEditService.shared.movementType
    var movementDictionaryInCGPointsForScreen: [String: [CGPoint]] = [:]
     var movementDictionaryZHeightForScreen: [String: Double] = [:]
-
+    @Published var uniquePartNames: [String] = []
     
     var movementImageData: MovementImageData =
         MovementImageService.shared.movementImageData
@@ -78,10 +88,10 @@ class PartViewModel: ObservableObject ,
                 // Call methods to update related data
                 self.movementDictionaryInCGPointsForScreen = CreateIosPosition.cornerToCGPointDic(movementDictionaryForScreen)
                 self.movementDictionaryZHeightForScreen = CreateIosPosition.cornerToZHeightDic(movementDictionaryForScreen)
-                
+                self.uniquePartNames = getUniquePartNamesFromObjectDictionary()
                 self.updateData()
-                
-               
+                self.updatePartModels()
+            
             }
             .store(in: &cancellables)
      
@@ -90,18 +100,38 @@ class PartViewModel: ObservableObject ,
         (self as SharedPartToEdit).subscribeToService()
         
         updateData()
+        updatePartModels()
 
     }
     
-    func getCGPoints(_ uniqueName: String) -> [CGPoint]{
-        movementDictionaryInCGPointsForScreen[uniqueName] ?? Array( repeating: CGPoint.zero, count: 4)
-    }
+    func updatePartModels(){
+        // Create a new array of PointsModel from the dictionary
+        partModels = []
+        
+        for name in uniquePartNames {
+            
+            let dictionaryElementsIn =  DictionaryElementIn(
+                movementDictionaryForScreen,
+                name
+            )
+          
+            let value =  movementDictionaryForScreen[name]!
+            var points: [CGPoint] = []
+            for corner in value {
+                points.append(CGPoint(x: corner.x , y: corner.y))
+            }
+            
+            let screenDepth = value[0].z// all four heights are equal
 
-    
-    func getZHeight(_ uniqueName: String) -> Double {
-        movementDictionaryZHeightForScreen[uniqueName] ?? 0.0
-    }
-    
+            let partModel =
+                PartModel(id: name, points: points
+                          ,screenDepth: screenDepth, color: .white, cornerRadius: 10.0, lineWidth: 5.0, opacity: 0.9)
+            partModels.append(partModel)
+            
+            
+        }
+     }
+        
     
     func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
         movementImageData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
@@ -125,7 +155,26 @@ class PartViewModel: ObservableObject ,
 
       }
     
-    
+    func getUniquePartNamesFromObjectDictionary() -> [String] {
+        let dic = movementImageData.objectImageData.postTilt.objectToPartFourCornerPerKeyDic
+        let names =
+        Array(
+            dic.keys
+        ).filter {
+            !(
+                $0.contains(
+                    PartTag.arcPoint.rawValue //UI manages differently from parts
+                )  || $0.contains(
+                    PartTag.origin.rawValue// ditto
+                )  || $0.contains(
+                    PartTag.staticPoint.rawValue// ditto
+                ) //|| $0.contains(
+                    //Part.stabiliser.rawValue// fixed wheel edits this
+               // )
+            ) }
+      
+        return names
+    }
 //    func cgPointsOut(_ uniqueName: String) -> [CGPoint] {
 //        var points: [CGPoint] = []
 //        for corner in corners {

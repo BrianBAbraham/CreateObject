@@ -6,6 +6,100 @@
 //
 
 import SwiftUI
+import SwiftUI
+import Combine
+
+class LocalOutlineRectangleViewModel2: ObservableObject {
+    @Published var corners: [CGPoint]
+    @Published var color: Color
+    @Published var opacity: Double
+    @Published var lineWidth: Double
+    @Published var cornerRadius: CGFloat
+    
+    init(corners: [CGPoint], color: Color, opacity: Double, lineWidth: Double, cornerRadius: CGFloat) {
+        self.corners = corners
+        self.color = color
+        self.opacity = opacity
+        self.lineWidth = lineWidth
+        self.cornerRadius = cornerRadius
+    }
+    
+    func path() -> Path {
+        var path = Path()
+        
+        guard corners.count >= 3 else { return path }
+        
+        let distances = corners.indices.map { index -> CGFloat in
+            let nextIndex = (index + 1) % corners.count
+            return distance(corners[index], corners[nextIndex])
+        }
+        
+        var adjustedPoints: [CGPoint] = []
+        
+        for i in corners.indices {
+            let prevIndex = (i - 1 + corners.count) % corners.count
+            let nextIndex = (i + 1) % corners.count
+            
+            let prevSegmentLength = min(cornerRadius, distances[prevIndex] / 2)
+            let nextSegmentLength = min(cornerRadius, distances[i] / 2)
+            
+            let prevPoint = pointAlongLine(from: corners[prevIndex], to: corners[i], distance: prevSegmentLength)
+            let nextPoint = pointAlongLine(from: corners[nextIndex], to: corners[i], distance: nextSegmentLength)
+            
+            adjustedPoints.append(prevPoint)
+            adjustedPoints.append(corners[i])
+            adjustedPoints.append(nextPoint)
+        }
+        
+        for (i, point) in adjustedPoints.enumerated() where i % 3 == 0 {
+            let nextI = (i + 2) % adjustedPoints.count
+            let midI = (i + 1) % adjustedPoints.count
+            
+            if i == 0 {
+                path.move(to: point)
+            } else {
+                path.addLine(to: point)
+            }
+            
+            path.addArc(tangent1End: adjustedPoints[midI], tangent2End: adjustedPoints[nextI], radius: cornerRadius)
+        }
+        
+        path.closeSubpath()
+        
+        return path
+    }
+    
+    private func distance(_ a: CGPoint, _ b: CGPoint) -> CGFloat {
+        sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2))
+    }
+    
+    private func pointAlongLine(from: CGPoint, to: CGPoint, distance: CGFloat) -> CGPoint {
+        let fullDistance = self.distance(from, to)
+        let ratio = distance / fullDistance
+        
+        let newX = from.x + ratio * (to.x - from.x)
+        let newY = from.y + ratio * (to.y - from.y)
+        
+        return CGPoint(x: newX, y: newY)
+    }
+}
+
+import SwiftUI
+
+struct PartView2: View {
+    @ObservedObject var viewModel: LocalOutlineRectangleViewModel2
+
+    var body: some View {
+        ZStack {
+            viewModel.path()
+                .fill(viewModel.color)
+                .opacity(viewModel.opacity)
+            
+            viewModel.path()
+                .stroke(Color.black, lineWidth: viewModel.lineWidth)
+        }
+    }
+}
 
 
 struct LocalOutlineRectangle: View {
@@ -121,93 +215,69 @@ struct ArcPointView: View {
     }
 }
 
+
+import SwiftUI
+
+import SwiftUI
+
 struct PartView: View {
-
-  @EnvironmentObject var partVM: PartViewModel
-    var partToEdit: Part {
-        partVM.partToEdit
-    }
-    let uniquePartName: String
-    let fillColor: Color
-    let cornerRadius: Double
-    let opacity: Double
-    let lineWidth: Double
-
-//    var partCorners: [CGPoint] {
-//        partVM.getCGPoints(uniquePartName)
-//    }
-    var dictionaryElementIn: DictionaryElementIn {
-        DictionaryElementIn(
-            partVM.movementDictionaryForScreen,
-            //postTiltObjectToFourCornerPerKeyDic,
-            uniquePartName
-        )
-    }
-    
-    var partCorners: [CGPoint] {
-        dictionaryElementIn.cgPointsOut()
-    }
-    var zPosition: Double {
-        partVM.getZHeight(uniquePartName)
-        //ensures objects drawn in order of height
-    }
-    
-   var movement: Movement
+    @EnvironmentObject var partVM: PartViewModel
     let displayStyle: ObjectDisplayStyle
     
-    init(
-        uniquePartName: String,
-        color: Color = .white,
-        cornerRadius: Double = 30.0,
-        opacity: Double = 0.9,
-        lineWidth: Double = 5.0,
-        _ partToEdit: Part,
-        _ movement: Movement,
-        _ displayStyle: ObjectDisplayStyle
- 
-    ){
-
-        self.uniquePartName = uniquePartName
-
-        
-        
-        fillColor = getColor()
-        self.cornerRadius = cornerRadius
-        self.opacity = opacity
-        self.lineWidth = lineWidth
-      self.movement = movement
-        self.displayStyle = displayStyle
-        
-        func getColor() -> Color {
-            if color == .white { // only change undefined colors, let ruler color remain
-                if UniqueToGeneralName(uniquePartName).generalName.contains(partToEdit.rawValue) {
-                    return Color(displayStyle == .movement ? "movement" :"selectedPart")
-                } else {
-                    return Color(displayStyle == .movement ? "movement" :"unselectedPart")}
-            } else {
-                return color
-            }
+    var body: some View {
+        ForEach(partVM.partModels) { partModel in
+            let viewModel = LocalOutlineRectangleViewModel2(
+                corners: partModel.points,
+                color: getColor(partModel.id),
+                opacity: partModel.opacity,
+                lineWidth: partModel.lineWidth,
+                cornerRadius: partModel.cornerRadius
+            )
+            
+            PartView2(viewModel: viewModel)
+                .zIndex(partModel.screenDepth)
         }
     }
     
-    
-    var body: some View {
-
-        LocalOutlineRectangle(
-            corners: partCorners,
-            color: fillColor,
-            
-            opacity: opacity,
-            lineWidth: lineWidth,
-            cornerRadius: 0        )
-        .zIndex(
-            zPosition
-        )
-//        .onTapGesture {
-//            partEditVM.setCurrentPartToEditName(uniquePartName)
-//        }
+    func getColor(_ uniquePartName: String) -> Color {
+        if UniqueToGeneralName(uniquePartName).generalName.contains(partVM.partToEdit.rawValue) {
+            return Color(displayStyle == .movement ? "movement" : "selectedPart")
+        } else {
+            return .white
+        }
     }
 }
+
+
+//struct PartView: View {
+//  @EnvironmentObject var partVM: PartViewModel
+//    let displayStyle: ObjectDisplayStyle
+//    
+//    var body: some View {
+//        ForEach(partVM.partModels) {partModel in
+//            LocalOutlineRectangle(
+//                corners: partModel.points,
+//                color: getColor(partModel.id),
+//                opacity: partModel.opacity,
+//                lineWidth: partModel.lineWidth,
+//                cornerRadius: partModel.cornerRadius)
+//            .zIndex(
+//                partModel.screenDepth
+//            )
+//        }
+//    }
+//    func getColor(_ uniquePartName: String) -> Color {
+//            if UniqueToGeneralName(uniquePartName).generalName.contains(partVM.partToEdit.rawValue) {
+//                return Color(displayStyle == .movement ? "movement" :"selectedPart")
+//            } else {
+//                return .white
+//
+//        }
+//    }
+//}
+
+
+
 
 struct PartViewX: View {
     @EnvironmentObject var objectPickVM: ObjectPickerViewModel
@@ -304,29 +374,11 @@ struct ObjectView: View {
     @EnvironmentObject var objectVM: ObjectViewModel
 
     let displayStyle: ObjectDisplayStyle
-
-    init(
-        _ displayStyle: ObjectDisplayStyle
-    ) {
-
-        self.displayStyle = displayStyle
-    }
     
     var body: some View {
-       
         ZStack{
-                ForEach(objectVM.uniquePartNames, id: \.self) { name in
-                    PartView(
-                        uniquePartName: name,
-                      
-                        objectVM.partToEdit,
-                        
-                        objectVM.movementType,
-                        
-                        displayStyle
-                    )
-                }
-         
+            PartView(displayStyle: displayStyle)
+            
 //                ForEach(uniqueArcPointNames, id: \.self) { name in
 //                    ArcPointView(
 //                        position: dictionaryForScreen[name]
@@ -340,8 +392,10 @@ struct ObjectView: View {
                 ForObjectDrag (
                     frameSize: objectVM.onScreenMovementFrameSize, active: true)
             )
-        }
+    }
 }
+
+
 
 
 

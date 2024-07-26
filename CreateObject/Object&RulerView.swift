@@ -55,7 +55,7 @@ struct ObjectAndRulerView: View {
        
         ZStack {
             ObjectView(
-                displayStyle
+                displayStyle: displayStyle
             )
             .position(x: 1000.0, y: 0.0)
             
