@@ -7,47 +7,51 @@
 
 import SwiftUI
 import Combine
-class AllArcViewModel: ObservableObject {
-    
-    @Published var movementDictionaryForScreen: CornerDictionary =
-       MovementDictionaryForScreenService.shared.movementDictionaryForScreen
-    @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
-    
-    var movementImageData: MovementImageData =
-        MovementImageService.shared.movementImageData
-        
-    var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter = CenteredObjectZeroOriginService.shared.centeredObjectZeroOriginData
-    
-    init() {
-        MovementImageService.shared.$movementImageData
-            .sink { [weak self] newData in
-                guard let self = self else { return }
-                self.movementImageData = newData
-//                self.preTiltObjectToPartFourCornerDictionary = getPreTiltObjectToPartFourCornerPerKeyDic()
-                // Call methods to update related data
-                self.updateData()
-            }
-    }
-    
-    private  func updateData() {
-          
-          let ensureObjectZeroOriginAtMovementCenter =
-              EnsureObjectZeroOriginAtMovementCenter(
-                  movementImageData
-              )
-              
-          CenteredObjectZeroOriginService.shared.setCenteredObjectZeroOriginData(ensureObjectZeroOriginAtMovementCenter)
-      
-          movementDictionaryForScreen = ensureObjectZeroOriginAtMovementCenter.movementDictionaryForScreen
-          
-          // Ensure the service is updated
-          MovementDictionaryForScreenService.shared.setMovementDictionaryForScreen(
-             movementDictionaryForScreen
-          )
-          
-          onScreenMovementFrameSize = ensureObjectZeroOriginAtMovementCenter.onScreenMovementFrameSize
-      }
-}
+
+
+
+
+
+//class AllArcViewModel: ObservableObject {
+//    
+//    @Published var movementDictionaryForScreen: CornerDictionary =
+//       MovementDictionaryForScreenService.shared.movementDictionaryForScreen
+//    @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
+//    
+//    var movementImageData: MovementImageData =
+//        MovementImageService.shared.movementImageData
+//        
+//    var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter = CenteredObjectZeroOriginService.shared.centeredObjectZeroOriginData
+//    
+//    init() {
+//        MovementImageService.shared.$movementImageData
+//            .sink { [weak self] newData in
+//                guard let self = self else { return }
+//                self.movementImageData = newData
+//
+//                self.updateData()
+//            }
+//    }
+//    
+//    private  func updateData() {
+//          
+//          let ensureObjectZeroOriginAtMovementCenter =
+//              EnsureObjectZeroOriginAtMovementCenter(
+//                  movementImageData
+//              )
+//              
+//          CenteredObjectZeroOriginService.shared.setCenteredObjectZeroOriginData(ensureObjectZeroOriginAtMovementCenter)
+//      
+//          movementDictionaryForScreen = ensureObjectZeroOriginAtMovementCenter.movementDictionaryForScreen
+//          
+//          // Ensure the service is updated
+//          MovementDictionaryForScreenService.shared.setMovementDictionaryForScreen(
+//             movementDictionaryForScreen
+//          )
+//          
+//          onScreenMovementFrameSize = ensureObjectZeroOriginAtMovementCenter.onScreenMovementFrameSize
+//      }
+//}
 
 struct PartModel: Identifiable {
     let id: String
@@ -59,23 +63,21 @@ struct PartModel: Identifiable {
     let opacity: Double
 }
 
-class PartViewModel: ObservableObject ,
-                        SharedMovementType,
+class AllPartViewModel: ObservableObject ,
                         SharedPartToEdit {
+    
     @Published var partModels: [PartModel] = []
-    @Published var preTiltObjectToPartFourCornerDictionary: CornerDictionary = [:]
+  
     @Published var movementDictionaryForScreen: CornerDictionary =
        MovementDictionaryForScreenService.shared.movementDictionaryForScreen
+    
     @Published var partToEdit: Part = ObjectEditService.shared.partToEdit
-    @Published var movementType = MovementEditService.shared.movementType
-   var movementDictionaryInCGPointsForScreen: [String: [CGPoint]] = [:]
-    var movementDictionaryZHeightForScreen: [String: Double] = [:]
+    
     @Published var uniquePartNames: [String] = []
     
     var movementImageData: MovementImageData =
         MovementImageService.shared.movementImageData
-    var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter = CenteredObjectZeroOriginService.shared.centeredObjectZeroOriginData
-
+    
     internal var cancellables: Set<AnyCancellable> = []
     
     init(){
@@ -84,19 +86,13 @@ class PartViewModel: ObservableObject ,
             .sink { [weak self] newData in
                 guard let self = self else { return }
                 self.movementImageData = newData
-                self.preTiltObjectToPartFourCornerDictionary = getPreTiltObjectToPartFourCornerPerKeyDic()
-                // Call methods to update related data
-                self.movementDictionaryInCGPointsForScreen = CreateIosPosition.cornerToCGPointDic(movementDictionaryForScreen)
-                self.movementDictionaryZHeightForScreen = CreateIosPosition.cornerToZHeightDic(movementDictionaryForScreen)
                 self.uniquePartNames = getUniquePartNamesFromObjectDictionary()
                 self.updateData()
                 self.updatePartModels()
             
             }
             .store(in: &cancellables)
-     
-        
-        (self as SharedMovementType).subscribeToService()
+
         (self as SharedPartToEdit).subscribeToService()
         
         updateData()
@@ -110,7 +106,7 @@ class PartViewModel: ObservableObject ,
         
         for name in uniquePartNames {
             
-            let dictionaryElementsIn =  DictionaryElementIn(
+            _ =  DictionaryElementIn(
                 movementDictionaryForScreen,
                 name
             )
@@ -123,19 +119,30 @@ class PartViewModel: ObservableObject ,
             
             let screenDepth = value[0].z// all four heights are equal
 
+           // let color = getColor(name)
+            
             let partModel =
                 PartModel(id: name, points: points
-                          ,screenDepth: screenDepth, color: .white, cornerRadius: 10.0, lineWidth: 5.0, opacity: 0.9)
+                          ,screenDepth: screenDepth, color:Color("selectedPart"), cornerRadius: 10.0, lineWidth: 5.0, opacity: 0.9)
+            
             partModels.append(partModel)
-            
-            
         }
      }
+    
+    
+//    func getColor(_ uniquePartName: String) -> Color {
+//        if UniqueToGeneralName(uniquePartName).generalName.contains(partToEdit.rawValue) {
+//            return Color(false ? "movement" : "selectedPart")
+//        } else {
+//            return .white
+//        }
+//    }
         
     
     func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
         movementImageData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
     }
+    
     
     private  func updateData() {
           

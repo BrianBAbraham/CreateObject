@@ -9,19 +9,28 @@ import SwiftUI
 import SwiftUI
 import Combine
 
-class LocalOutlineRectangleViewModel2: ObservableObject {
+class PartViewModel: ObservableObject {
     @Published var corners: [CGPoint]
     @Published var color: Color
     @Published var opacity: Double
     @Published var lineWidth: Double
     @Published var cornerRadius: CGFloat
+    var displayStyle: ObjectDisplayStyle
     
-    init(corners: [CGPoint], color: Color, opacity: Double, lineWidth: Double, cornerRadius: CGFloat) {
+    init(
+        corners: [CGPoint],
+        color: Color,
+        opacity: Double,
+        lineWidth: Double,
+        cornerRadius: CGFloat,
+        displayStyle: ObjectDisplayStyle
+    ) {
         self.corners = corners
-        self.color = color
+        self.color = displayStyle == .edit ? color: .white
         self.opacity = opacity
         self.lineWidth = lineWidth
         self.cornerRadius = cornerRadius
+        self.displayStyle = displayStyle
     }
     
     func path() -> Path {
@@ -84,22 +93,9 @@ class LocalOutlineRectangleViewModel2: ObservableObject {
     }
 }
 
-import SwiftUI
 
-struct PartView2: View {
-    @ObservedObject var viewModel: LocalOutlineRectangleViewModel2
 
-    var body: some View {
-        ZStack {
-            viewModel.path()
-                .fill(viewModel.color)
-                .opacity(viewModel.opacity)
-            
-            viewModel.path()
-                .stroke(Color.black, lineWidth: viewModel.lineWidth)
-        }
-    }
-}
+
 
 
 struct LocalOutlineRectangle: View {
@@ -220,34 +216,43 @@ import SwiftUI
 
 import SwiftUI
 
-struct PartView: View {
-    @EnvironmentObject var partVM: PartViewModel
+struct AllPartView: View {
+    @EnvironmentObject var allPartVM: AllPartViewModel
     let displayStyle: ObjectDisplayStyle
     
     var body: some View {
-        ForEach(partVM.partModels) { partModel in
-            let viewModel = LocalOutlineRectangleViewModel2(
+        ForEach(allPartVM.partModels) { partModel in
+            let partVM = PartViewModel(
                 corners: partModel.points,
-                color: getColor(partModel.id),
+                color: partModel.color,//getColor(partModel.id),
                 opacity: partModel.opacity,
                 lineWidth: partModel.lineWidth,
-                cornerRadius: partModel.cornerRadius
+                cornerRadius: partModel.cornerRadius, 
+                displayStyle: displayStyle
             )
             
-            PartView2(viewModel: viewModel)
+            PartView(vm: partVM)
                 .zIndex(partModel.screenDepth)
         }
     }
     
-    func getColor(_ uniquePartName: String) -> Color {
-        if UniqueToGeneralName(uniquePartName).generalName.contains(partVM.partToEdit.rawValue) {
-            return Color(displayStyle == .movement ? "movement" : "selectedPart")
-        } else {
-            return .white
+
+}
+
+
+struct PartView: View {
+    @ObservedObject var vm: PartViewModel
+    var body: some View {
+        ZStack {
+            vm.path()
+                .fill(vm.color)
+                .opacity(vm.opacity)
+            
+            vm.path()
+                .stroke(Color.black, lineWidth: vm.lineWidth)
         }
     }
 }
-
 
 //struct PartView: View {
 //  @EnvironmentObject var partVM: PartViewModel
@@ -281,7 +286,7 @@ struct PartView: View {
 
 struct PartViewX: View {
     @EnvironmentObject var objectPickVM: ObjectPickerViewModel
-  @EnvironmentObject var partVM: PartViewModel
+  @EnvironmentObject var partVM: AllPartViewModel
     let partToEdit: Part
     let uniquePartName: String
     var preTiltFourCornerPerKeyDic: CornerDictionary
@@ -370,14 +375,16 @@ enum ObjectDisplayStyle {
     case movement
     case edit
 }
-struct ObjectView: View {
-    @EnvironmentObject var objectVM: ObjectViewModel
+
+
+struct ObjectWithArcView: View {
+    @EnvironmentObject var vm: ObjectWithArcViewModel
 
     let displayStyle: ObjectDisplayStyle
     
     var body: some View {
         ZStack{
-            PartView(displayStyle: displayStyle)
+            AllPartView(displayStyle: displayStyle)
             
 //                ForEach(uniqueArcPointNames, id: \.self) { name in
 //                    ArcPointView(
@@ -385,12 +392,12 @@ struct ObjectView: View {
 //                    )
 //                }
                 
-            AllArcView(objectVM.movementType, objectVM.movementDictionaryForScreen)
+            AllArcWithStaticPointView()
 
             }
             .modifier(
                 ForObjectDrag (
-                    frameSize: objectVM.onScreenMovementFrameSize, active: true)
+                    frameSize: vm.onScreenMovementFrameSize, active: true)
             )
     }
 }
@@ -399,37 +406,27 @@ struct ObjectView: View {
 
 
 
-struct AllArcView: View {
-    @EnvironmentObject var arcVM: ArcViewModel
-    let movement: Movement
-    let dictionaryForScreen: CornerDictionary
-    
-    init(_ movement: Movement, _ dictionaryForScreen: CornerDictionary ) {
-        self.movement = movement
-        self.dictionaryForScreen = dictionaryForScreen
+
+struct AllArcWithStaticPointView: View {
+    @EnvironmentObject var vm: AllArcWithStaticPointViewModel
+    var dictionaryForScreen: CornerDictionary {
+        vm.movementDictionaryForScreen
     }
-    
     var body: some View {
-        let staticPointDictionary = movement == .turn ? arcVM.staticPointDictionary: [:]
-       
-        let uniqueStaticPointNames = arcVM.uniqueStaticPointNames
         
-        let anglesRadiae: [AnglesRadius] = arcVM.angles
-        
-        
-        if movement == .turn {
-            
-            ForEach(uniqueStaticPointNames, id: \.self) { staticPointName in
+        if vm.movementType == .turn {
+                
+            ForEach(vm.staticPointModel) {staticPointModel in
                 StaticPointView(
-                    position: staticPointDictionary[staticPointName] ?? [ZeroValue.iosLocation]
+                    position: vm.staticPointDictionary[staticPointModel.name] ?? [ZeroValue.iosLocation]
                 )
                 .zIndex(5000)
-                
-                ForEach(anglesRadiae, id: \.id) { anglesRadius in
-                        ArcView(
-                            anglesRadius,
-                            dictionaryForScreen[staticPointName] ?? [ZeroValue.iosLocation]
-                        )
+                               
+                ForEach(vm.arcDataModels) {arcDataModel in
+                    ArcView(
+                        arcDataModel.arcData,
+                        dictionaryForScreen[staticPointModel.name] ?? [ZeroValue.iosLocation]
+                    )
                 }
             }
             
@@ -445,7 +442,7 @@ struct ArcView: View {
     let endAngle: Angle
     let clockwise: Bool
     init(
-        _ anglesRadius: AnglesRadius,
+        _ anglesRadius: ArcData,
         _ staticPoint: [PositionAsIosAxes]
     ){
         

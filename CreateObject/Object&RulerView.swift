@@ -54,7 +54,7 @@ struct ObjectAndRulerView: View {
     var body: some View {
        
         ZStack {
-            ObjectView(
+            ObjectWithArcView(
                 displayStyle: displayStyle
             )
             .position(x: 1000.0, y: 0.0)

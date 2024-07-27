@@ -40,12 +40,12 @@ struct CreateObjectApp: App {
     @StateObject var movementEditScreenVM = EditScreenViewModel()
     @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
     
-    @StateObject var objectViewModel = ObjectViewModel()
-    @StateObject var partViewModel = PartViewModel()
+    @StateObject var objectViewModel = ObjectWithArcViewModel()
+    @StateObject var partViewModel = AllPartViewModel()
  
     @StateObject var rulerVM = RulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
-    @StateObject var arcViewModel = ArcViewModel()
+    @StateObject var allArcWithStaticPointVM = AllArcWithStaticPointViewModel()
     
     @StateObject var tiltEditVM = TiltEditViewModel()
 
@@ -81,7 +81,7 @@ struct CreateObjectApp: App {
                 .environmentObject(unitsVM)
                 .environmentObject(rulerVM)
                 .environmentObject(recenterVM)
-               .environmentObject(arcViewModel)
+               .environmentObject(allArcWithStaticPointVM)
             
                .environmentObject(objectViewModel)
                .environmentObject(partViewModel)

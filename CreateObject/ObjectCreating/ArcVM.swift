@@ -8,43 +8,101 @@
 import Foundation
 import Combine
 
-class ArcViewModel: ObservableObject {
+
+struct ArcDataModel: Identifiable {
+    let id = UUID()
+    let arcData: ArcData
+}
+
+struct StaticPointModel: Identifiable {
+    let id = UUID()
+    let name: String
+    let position: CGPoint
+}
+
+
+class AllArcWithStaticPointViewModel: ObservableObject,
+                    SharedMovementType {
+    @Published var movementType: Movement = MovementEditService.shared.movementType
+    
 
     @Published var movementDictionaryForScreen: CornerDictionary = MovementDictionaryForScreenService.shared.movementDictionaryForScreen
     @Published var uniqueArcPointNames: [String] = []
     @Published var uniqueArcNames: [String] = []
-    @Published var uniqueStaticPointNames: [String] = []
+         var uniqueStaticPointNames: [String] = []
     @Published var arcDictionary: CornerDictionary = [:]
     @Published var staticPointDictionary: CornerDictionary = [:]
+    @Published var staticPointModel: [StaticPointModel] = []
+    @Published var arcDataModels: [ArcDataModel] = []
     
     ///each element is the angle to an arc point on a  lower integer object and then a higher integer object
-    @Published var angles: [AnglesRadius] = []
-    private var cancellables: Set<AnyCancellable> = []
+    //var arcData: [ArcData] = []
+    
+    internal var cancellables: Set<AnyCancellable> = []
     var lastShortestDifference = 0.0
     var clockwise = true
     
     init(){
-       //print("init ArcViewModel")
+      
         MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
             .sink { [weak self] newData in
                 self?.movementDictionaryForScreen = newData
-                
-                self?.arcDictionary = self?.createArcDictionary() ?? [:]
-                self?.staticPointDictionary = self?.createStaticPointDictionary() ?? [:]
-                self?.uniqueStaticPointNames = self?.getUniqueStaticPointNames() ?? []
-                self?.uniqueArcPointNames = self?.getUniqueArcPointNames() ?? []
-                self?.angles = self?.getArcViewData() ?? []
+                self?.update()
             }
             .store(
                 in: &cancellables
             )
         
+        (self as SharedMovementType).subscribeToService()
+       // updateStaticPointDictionary()
         uniqueArcNames = getUniqueArcNames()
         uniqueArcPointNames = getUniqueArcPointNames()
         uniqueStaticPointNames = getUniqueStaticPointNames()
-        //print(movementDictionaryForScreen)
         arcDictionary = createArcDictionary()
-        angles = getArcViewData()
+       // arcData = getArcData()
+    }
+    
+    func update() {
+        arcDictionary = createArcDictionary()
+        staticPointDictionary = createStaticPointDictionary()
+        uniqueStaticPointNames = getUniqueStaticPointNames()
+        uniqueArcPointNames = getUniqueArcPointNames()
+       // arcData = getArcData()
+        createAllArcStaticPointModel()
+        createAllArcDataModel()
+    }
+//    func updateStaticPointDictionary() {
+//        if movementType != .turn {
+//            staticPointDictionary = [:]
+//        }
+//    }
+    
+    
+    func createAllArcStaticPointModel() {
+        staticPointModel = []
+        let names = getUniqueStaticPointNames()
+        let dic = createStaticPointDictionary()
+        
+        for index in stride(from: 0, to: names.count, by:  2) {
+            let name = names[index]
+            let useAnyOfFourIdenticalPositions = 0
+            let u = useAnyOfFourIdenticalPositions
+            if let staticPoint = dic[name] {
+                let point = CGPoint(x: staticPoint[u].x, y: staticPoint[u].y)
+                staticPointModel.append(StaticPointModel(name: name , position: point) )
+            }
+        }
+    }
+    
+    
+    func createAllArcDataModel() {
+        arcDataModels = []
+        let names = getUniqueArcNames()
+        let dic = createArcDictionary()
+        let arcData = getArcData()
+        for arcDatum in arcData {
+            arcDataModels.append(ArcDataModel(arcData: arcDatum))
+        }
     }
     
     
@@ -68,7 +126,6 @@ class ArcViewModel: ObservableObject {
         ).filter {
             $0.contains(
                 PartTag.staticPoint.rawValue) }
-        
         return names
     }
     
@@ -104,14 +161,17 @@ class ArcViewModel: ObservableObject {
         return arcDictionary
     }
     
-    
+    ///static point are in pairs, one for first object position and one for second object position
+    ///nevertheless, the static point is common to both positions
+    ///to conform to CornerDictionary these are in an array
+    ///for conformance to corner creation there are four identical values
     func createStaticPointDictionary() -> CornerDictionary {
         movementDictionaryForScreen.filter{$0.key.contains(PartTag.staticPoint.rawValue)}
     }
     
     
-    func getArcViewData() -> [AnglesRadius] {
-        var angles: [AnglesRadius] = []
+    func getArcData() -> [ArcData] {
+        var arcData: [ArcData] = []
     
         if uniqueStaticPointNames.count > 0 { //ignore when empty
             guard let staticPoint = staticPointDictionary[uniqueStaticPointNames[0]]?[0] else {
@@ -136,8 +196,8 @@ class ArcViewModel: ObservableObject {
                 }
               
                 // input for view
-                let anglesRadius = (id: index, start: firstAngle, end: secondAngle, radius: radius, clockwise: clockwise)
-                angles += [anglesRadius]
+                let arcDatum = (id: index, start: firstAngle, end: secondAngle, radius: radius, clockwise: clockwise)
+                arcData += [arcDatum]
             }
 
             
@@ -230,7 +290,7 @@ class ArcViewModel: ObservableObject {
 
             
         }
-        return angles
+        return arcData
     }
     
 }
