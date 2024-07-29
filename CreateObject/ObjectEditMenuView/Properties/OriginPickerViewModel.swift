@@ -10,14 +10,19 @@ import Combine
 import SwiftUI
 
 class OriginPickerViewModel: ObservableObject,
+ SharedPartIdUSerEditedDic,
+ SharedObjectChainLabelUserEditedDic,
     SharedOriginPropertyToEdit,
     SharedEditableOrignExistFuncOnly,
     SharedNoSidesPresentFuncOnly,
-    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFunc,
     SharedScopeOfEditForSideFunc,
     SharedChoiceOfEditForSide,
     SharedObjectType,
-    SharedPartToEditFunc {
+                             SharedPartToEditFunc {
+    var partIdsUserEditedDic: [Part : OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+    var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.objectChainLabelsUserEditDic
+    
     
     var originPropertyBinding: Binding<PartTag> {
         Binding<PartTag>(
@@ -54,7 +59,8 @@ class OriginPickerViewModel: ObservableObject,
         (self as SharedScopeOfEditForSideFunc).subscribeToService()
         
         (self as SharedChoiceOfEditForSide).subscribeToService()
-        
+        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
+        (self as SharedPartIdUSerEditedDic).subscribeToService()
 
     }
     

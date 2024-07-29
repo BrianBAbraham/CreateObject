@@ -1,8 +1,8 @@
 //
-//  ArcViewModel.swift
+//  AllArcWithStaticPointViewModel.swift
 //  CreateObject
 //
-//  Created by Brian Abraham on 30/04/2024.
+//  Created by Brian Abraham on 29/07/2024.
 //
 
 import Foundation
@@ -67,15 +67,11 @@ class AllArcWithStaticPointViewModel: ObservableObject,
         staticPointDictionary = createStaticPointDictionary()
         uniqueStaticPointNames = getUniqueStaticPointNames()
         uniqueArcPointNames = getUniqueArcPointNames()
-       // arcData = getArcData()
+      
         createAllArcStaticPointModel()
         createAllArcDataModel()
     }
-//    func updateStaticPointDictionary() {
-//        if movementType != .turn {
-//            staticPointDictionary = [:]
-//        }
-//    }
+
     
     
     func createAllArcStaticPointModel() {

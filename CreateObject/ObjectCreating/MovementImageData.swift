@@ -33,12 +33,9 @@ struct MovementImageData {
         switch movementType {
         case .none:
             return
-            
         case .linear:
             translateObject(1,
                             (x: 0.0, y: 1000.0, z: 0.0))
-           
-            
         case .turn:
             for index in 0...1 {
                 let newObjectId = index

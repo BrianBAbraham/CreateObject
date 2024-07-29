@@ -30,7 +30,7 @@ class UserEditedDictionaries: ObservableObject {
 
     
     //relating to ObjectImage
-   @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>]
+    @Published var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>]
     @Published var objectChainLabelsUserEditDic: ObjectChainLabelsDictionary
    
     static var shared = UserEditedDictionaries()

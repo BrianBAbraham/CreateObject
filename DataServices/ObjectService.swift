@@ -1,5 +1,5 @@
 //
-//  ObjectDataService.swift
+//  ObjectService.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 25/07/2024.
@@ -91,7 +91,21 @@ class ObjectDataService {
     func setPostTiltObjectToPartOneCornerPerKeyDic(_ value: PositionDictionary) {
         postTiltObjectToPartOneCornerPerKeyDic = value
     }
-    
+}
+
+
+
+class ObjectImageService {
+    @Published var objectImageData: ObjectImageData = ObjectImageData(
+        .fixedWheelRearDrive,
+        nil
+    )
+    static let shared = ObjectImageService()
     
    
+    func setObjectImage(_ objectImageData: ObjectImageData) {
+
+        self.objectImageData = objectImageData
+    }
 }
+

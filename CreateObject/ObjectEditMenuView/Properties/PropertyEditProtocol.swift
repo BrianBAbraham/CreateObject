@@ -9,71 +9,16 @@ import Foundation
 import Combine
 
 
-protocol SharedPartIdUSerEditedDicFunc: AnyObject {
-    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] {get}
-    var cancellables: Set<AnyCancellable> { get set }
-
-    
-    func handlePartIdsUserEditedDicChange(_ newData: [Part: OneOrTwo<PartTag>] )
-    
-}
-extension SharedPartIdUSerEditedDicFunc {
-    func subscribeToService(){
-        UserEditedDictionariesService.shared.$partIdsUserEditedDic
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.handlePartIdsUserEditedDicChange(newData)
-            }
-            .store(in: &self.cancellables)
-    }
-}
 
 
 
 
 
-
-
-protocol SharedObjectChainLabelUserEditedDicFunc: AnyObject{
-    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] { get set }
-    var cancellables: Set<AnyCancellable> { get set }
-    
-    func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]])
-
-}
-extension SharedObjectChainLabelUserEditedDicFunc {
-    func subscribeToService() {
-        UserEditedDictionariesService.shared.$objectChainLabelsUserEditDic
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.handleObjectChainLabelsUserEditedDicChange(newData)
-            }
-            .store(in: &self.cancellables)
-    }
-}
-
-
-
-protocol SharedPartToEditFunc: AnyObject{
-    var partToEdit: Part { get set }
-    var cancellables: Set<AnyCancellable> { get set }
-    func handlePartToEditChange(_ newData: Part)
-
-}
-extension SharedPartToEditFunc {
-    func subscribeToService() {
-        
-        ObjectEditService.shared.$partToEdit
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newData in
-                self?.handlePartToEditChange(newData)
-            }
-            .store(in: &self.cancellables)
-    }
-}
 
 
 protocol SharedScopeOfEditForSideFunc: AnyObject {
+    //when scope of edit for edit side is .none
+    // set disabled true
     var disabled: Bool {get set}
     func getPartNotPresent() -> Bool
     var cancellables: Set<AnyCancellable> {get set}
@@ -84,10 +29,50 @@ extension SharedScopeOfEditForSideFunc {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newData in
                 self?.disabled = self?.getPartNotPresent() ?? true
+              
             }
             .store(in: &self.cancellables)
     }
 }
 
 
+protocol SharedNoSidesPresentFuncOnly: AnyObject {
+    var partToEdit: Part {get}
+    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected]
+}
+extension SharedNoSidesPresentFuncOnly {
+    func getPartNotPresent() -> Bool {
+        let partOrAssociatedPart = PartsRequiringLinkedPartUse(partToEdit).partForEditableOrigin
+        let first = getSidesPresentGivenPossibleUserEdit(partOrAssociatedPart)[0]
 
+        return first == .none
+    }
+}
+
+
+protocol SharedSidesPresentGivenPossibleUserEditFunc: AnyObject {
+    var objectType: ObjectTypes {get}
+    var partIdsUserEditedDic: [Part: OneOrTwo<PartTag>] {get}
+    var objectChainLabelsUserEditDic: [ObjectTypes: [Part]] {get}
+}
+extension SharedSidesPresentGivenPossibleUserEditFunc {
+    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected] {
+        guard let chainLabels =
+                objectChainLabelsUserEditDic[objectType]
+                ?? ObjectDataService.shared.objectChainLabelsDefaultDic[objectType] else {
+            fatalError()
+        }
+
+        var sidesPresent: [SidesAffected] = []
+        if chainLabels.contains(partOrAssociatedPart) {
+            let oneOrTwoId: OneOrTwo<PartTag> =
+            partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(objectType, partOrAssociatedPart).forPart
+            sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
+        } else {
+            sidesPresent = [.none]
+        }
+
+//print("\(partOrAssociatedPart) \(sidesPresent) \n")
+        return sidesPresent
+    }
+}

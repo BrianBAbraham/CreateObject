@@ -410,7 +410,7 @@
 </string>
 				<key>trailing</key>
 				<string>                Movement.none,      
-                DisplayStyle.edit
+                ObjectDisplayStyle.edit
             )
 </string>
 			</dict>

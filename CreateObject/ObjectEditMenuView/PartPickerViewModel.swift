@@ -14,7 +14,8 @@ class PartPickerViewModel: ObservableObject,
     var partBinding: Binding<String> {
         Binding<String>(
             get: { self.getObjectSensitiveNameForPart()  },
-            set: { self.setPartToEdit($0) }
+            set: {// print("reset part")
+                return self.setPartToEdit($0) }
         )
     }
     
@@ -57,6 +58,7 @@ class PartPickerViewModel: ObservableObject,
         PartToDisplayInMenu([partToEdit], objectType).name
     }
    
+    
     func getOneOfAllPartForObjectBeforeEdit() -> [Part] {
             AllPartInObject.getOneOfAllPartInObjectBeforeEdit(objectType)
       }
@@ -79,16 +81,11 @@ class PartPickerViewModel: ObservableObject,
     }
     
     
-
-    
-    
     func setPartToEdit(_ menuPartName: String) {
-       
         let index = oneOfAllEditablePartWithMenuNamesForObjectBeforeEdit.firstIndex(where: { $0 == menuPartName }) ?? 0
         
         let partName =
             oneOfAllEditablePartForObjectBeforeEdit[index]
-        
         
         guard let part = Part(rawValue: partName) else {
             fatalError("no part for that part name")
@@ -97,10 +94,12 @@ class PartPickerViewModel: ObservableObject,
         ObjectEditService.shared.setPartToEdit(part)
         
         resetForNewPartEdit()
-        
+        //print("DETECT")
         func resetForNewPartEdit(){
             //if part has one side the property is disregarded
             ObjectEditService.shared.setSideToEdit(
+                .both)
+            ObjectEditService.shared.setScopeOfEditForSide(
                 .both)
             
         }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 //MAARK: PARTDATA
 struct PartData {
@@ -35,7 +36,7 @@ struct PartData {
     
     var partsToBeRotated: [Part]
     
-  //  var color: Color = .black
+    var color: Color = .white
     
     init (
         part: Part,

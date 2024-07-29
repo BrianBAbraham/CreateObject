@@ -43,7 +43,7 @@ class ObjectPickerViewModel: ObservableObject,
         // Delay the following code to ensure objectType is updated
         DispatchQueue.main.async { [weak self] in
             self?.resetObjectByCreatingFromName()
-            
+         print("OBJECT RESET")
             ObjectEditService.shared.resetPartToEdit()
         }
     }

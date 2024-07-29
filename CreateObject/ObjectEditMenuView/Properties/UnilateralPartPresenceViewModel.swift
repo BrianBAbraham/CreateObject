@@ -16,7 +16,7 @@ class UnilateralPartPresenceViewModel: ObservableObject,
     SharedPartToEditFunc,
     SharedObjectType,
     SharedUserEditedDictionaries,
-    SharedObjectChainLabelUserEditedDicFunc{
+    SharedObjectChainLabelUserEditedDic{
     
     @Published var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic
 
@@ -41,7 +41,7 @@ class UnilateralPartPresenceViewModel: ObservableObject,
     var cancellables: Set<AnyCancellable> = []
     
         init() {
-        (self as SharedObjectChainLabelUserEditedDicFunc).subscribeToService()
+        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
         
         (self as SharedPartToEditFunc).subscribeToService()
         
@@ -50,9 +50,6 @@ class UnilateralPartPresenceViewModel: ObservableObject,
         (self as SharedUserEditedDictionaries).subscribeToService()
     }
     
-  func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]] ) {
-        objectChainLabelsUserEditDic = newData
-    }
     
     func handlePartToEditChange(_ newData: Part) {
           partToEdit = newData

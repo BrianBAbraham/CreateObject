@@ -9,6 +9,8 @@ import Foundation
 import Combine
 
 
+
+
 protocol SharedChoiceOfEditForSide: AnyObject {
     var choiceOfEditForSide: SidesAffected {get set}
     var cancellables: Set<AnyCancellable> {get set}
@@ -51,6 +53,24 @@ extension SharedOriginPropertyToEdit {
 }
 
 
+protocol SharedPartToEditFunc: AnyObject{
+    var partToEdit: Part { get set }
+    var cancellables: Set<AnyCancellable> { get set }
+    func handlePartToEditChange(_ newData: Part)
+
+}
+extension SharedPartToEditFunc {
+    func subscribeToService() {
+        ObjectEditService.shared.$partToEdit
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newData in
+                self?.partToEdit = newData
+                self?.handlePartToEditChange(newData)
+            }
+            .store(in: &self.cancellables)
+    }
+}
+
 
 protocol  SharedPartToEdit: AnyObject {
     var partToEdit: Part {get set}
@@ -78,6 +98,7 @@ class ObjectEditService {
     
     
     func resetPartToEdit() {
+      //  print("RESET PART")
         self.partToEdit = ObjectEditService.defaultPart
     }
     
@@ -103,6 +124,7 @@ class ObjectEditService {
     
     
     func setPartToEdit(_ partToEdit: Part) {
+       // print("SET PART")
         self.partToEdit = partToEdit
     }
 }

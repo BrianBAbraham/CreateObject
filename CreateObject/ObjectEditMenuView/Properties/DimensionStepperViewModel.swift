@@ -11,6 +11,8 @@ import SwiftUI
 
 
 class DimensionStepperViewModel: ObservableObject,
+    SharedPartIdUSerEditedDic,
+    SharedObjectChainLabelUserEditedDic,
     SharedInitialSliderValueFuncOnly,
     SharedDimensionPropertyToEdit,
     SharedSetValueForBilateralPartFuncOnly,
@@ -18,11 +20,13 @@ class DimensionStepperViewModel: ObservableObject,
     SharedObjectType,
     SharedUserEditedDictionaries,
     SharedNoSidesPresentFuncOnly,
-    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFunc,
     SharedScopeOfEditForSideFunc,
     SharedChoiceOfEditForSide,
     SharedPartDataDic,
     SharedPartToEditFunc{
+    @Published var partIdsUserEditedDic: [Part : OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+    @Published var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.objectChainLabelsUserEditDic
     
     var stepperValueBinding: Binding<Double> {
         Binding<Double>(
@@ -38,7 +42,6 @@ class DimensionStepperViewModel: ObservableObject,
                     self.dimensionPropertyToEdit,
                     newValue
                 )
-                
                 self.modifyObjectByCreatingFromName() }
         )
     }
@@ -51,7 +54,7 @@ class DimensionStepperViewModel: ObservableObject,
     
     var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
     
-    var disabled: Bool = true
+   @Published var disabled: Bool = true
     
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
     
@@ -75,6 +78,8 @@ class DimensionStepperViewModel: ObservableObject,
     (self as SharedChoiceOfEditForSide).subscribeToService()
         
     (self as SharedPartDataDic).subScribeToService()
+    (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
+    (self as SharedPartIdUSerEditedDic).subscribeToService()
 
 }
 

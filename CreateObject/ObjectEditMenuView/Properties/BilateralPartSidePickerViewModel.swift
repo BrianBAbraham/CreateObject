@@ -13,14 +13,13 @@ class BilateralPartSidePickerViewModel: ObservableObject,
     SharedPartIdUSerEditedDicFunc,
     SharedGetSidesAffectedFuncOnly,
     SharedNoSidesPresentFuncOnly,
-    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFunc,
     SharedScopeOfEditForSideFunc,
     SharedChoiceOfEditForSide,
     SharedPartToEditFunc,
     SharedObjectType,
     SharedUserEditedDictionaries,
     SharedObjectChainLabelUserEditedDicFunc {
-    
     
     var binding: Binding<SidesAffected> {
         Binding<SidesAffected> (
@@ -79,10 +78,10 @@ class BilateralPartSidePickerViewModel: ObservableObject,
     
     
     func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]]) {
-   objectChainLabelsUserEditDic = newData
-    //deteect if no part has no presence on either side
-    scopeOfEditForSide = getSidesAffected(partToEdit)
-    setScopeOfEditForSide()
+       objectChainLabelsUserEditDic = newData
+        //deteect if no part has no presence on either side
+        scopeOfEditForSide = getSidesAffected(partToEdit)
+        setScopeOfEditForSide()
     }
     
     

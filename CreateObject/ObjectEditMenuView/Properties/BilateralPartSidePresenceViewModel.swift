@@ -18,7 +18,7 @@ class BilateralPartSidePresenceViewModel: ObservableObject,
     SharedObjectType,
     SharedUserEditedDictionaries,
     SharedPartToEditFunc,
-    SharedObjectChainLabelUserEditedDicFunc{
+    SharedObjectChainLabelUserEditedDic{
     
     
 
@@ -62,7 +62,7 @@ class BilateralPartSidePresenceViewModel: ObservableObject,
     init() {
         (self as SharedPartIdUSerEditedDicFunc).subscribeToService()
         
-        (self as SharedObjectChainLabelUserEditedDicFunc).subscribeToService()
+        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
         
         (self as SharedPartToEditFunc).subscribeToService()
         
@@ -86,11 +86,6 @@ class BilateralPartSidePresenceViewModel: ObservableObject,
     }
     
     
-    func handleObjectChainLabelsUserEditedDicChange(_ newData: [ObjectTypes: [Part]] ) {
-          objectChainLabelsUserEditDic = newData
-      }
-    
-
     func handlePartToEditChange(_ newData: Part) {
         partToEdit = newData
         getBilateralPresenceMenuStatus(newData)

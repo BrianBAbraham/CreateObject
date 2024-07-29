@@ -12,12 +12,21 @@ import SwiftUI
 
 
 class DimensionPickerViewModel: ObservableObject,
+    SharedPartIdUSerEditedDic,
+    SharedObjectChainLabelUserEditedDic,
     SharedDimensionPropertyToEdit,
     SharedNoSidesPresentFuncOnly,
-    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFunc,
     SharedScopeOfEditForSideFunc,
     SharedChoiceOfEditForSide,
-    SharedPartToEditFunc{
+    SharedPartToEditFunc,
+    SharedObjectType {
+    var partIdsUserEditedDic: [Part : OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+    
+    var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.objectChainLabelsUserEditDic
+    
+    var objectType: ObjectTypes = ObjectDataService.shared.objectType
+    
 
     
     var dimensionPropertyBinding: Binding<PartTag> {
@@ -50,6 +59,11 @@ class DimensionPickerViewModel: ObservableObject,
         (self as SharedScopeOfEditForSideFunc).subscribeToService()
         
         (self as SharedChoiceOfEditForSide).subscribeToService()
+        
+        (self as SharedObjectType).subscribeToService()
+        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
+        
+        (self as SharedPartIdUSerEditedDic).subscribeToService()
     }
     
     

@@ -11,6 +11,8 @@ import SwiftUI
 
 
 class OriginStepperViewModel: ObservableObject,
+    SharedPartIdUSerEditedDic,
+    SharedObjectChainLabelUserEditedDic,
     SharedOriginPropertyToEdit,
     SharedEditableOrignExistFuncOnly, 
     SharedInitialSliderValueFuncOnly,
@@ -18,14 +20,17 @@ class OriginStepperViewModel: ObservableObject,
     SharedModifyObjectByCreatingFromNameFuncOnly,
     SharedUserEditedDictionaries,
     SharedObjectType,
-
     SharedNoSidesPresentFuncOnly,
-    SharedSidesPresentGivenPossibleUserEditFuncOnly,
+    SharedSidesPresentGivenPossibleUserEditFunc,
     SharedScopeOfEditForSideFunc,
     SharedChoiceOfEditForSide,
-
     SharedPartDataDic,
     SharedPartToEditFunc{
+    @Published var partIdsUserEditedDic: [Part : OneOrTwo<PartTag>] = UserEditedDictionariesService.shared.partIdsUserEditedDic
+    
+    
+    @Published var objectChainLabelsUserEditDic: [ObjectTypes : [Part]] = UserEditedDictionariesService.shared.objectChainLabelsUserEditDic
+    
 
     var stepperValueBinding: Binding<Double> {
         Binding<Double>(
@@ -57,7 +62,7 @@ class OriginStepperViewModel: ObservableObject,
     
     var choiceOfEditForSide: SidesAffected = ObjectEditService.shared.choiceOfEditForSide
     
-    var disabled: Bool = true
+    @Published var disabled: Bool = true
     
     var userEditedSharedDics = UserEditedDictionariesService.shared.userEditedSharedDics
     
@@ -68,17 +73,14 @@ class OriginStepperViewModel: ObservableObject,
         init() {
 
         (self as SharedPartToEditFunc).subscribeToService()
-
         (self as SharedOriginPropertyToEdit).subscribeToService()
-
         (self as SharedScopeOfEditForSideFunc).subscribeToService()
-
         (self as SharedChoiceOfEditForSide).subscribeToService()
-
         (self as SharedPartDataDic).subScribeToService()
-
         (self as SharedObjectType).subscribeToService()
         (self as SharedUserEditedDictionaries).subscribeToService()
+        (self as SharedObjectChainLabelUserEditedDic).subscribeToService()
+        (self as SharedPartIdUSerEditedDic).subscribeToService()
     }
 
     

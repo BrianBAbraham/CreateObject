@@ -496,37 +496,9 @@ extension SharedGetSidesAffectedFuncOnly {
 
 
 
-protocol SharedSidesPresentGivenPossibleUserEditFuncOnly: AnyObject {
-}
-extension SharedSidesPresentGivenPossibleUserEditFuncOnly {
-    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected] {
-        guard let chainLabels = UserEditedDictionariesService.shared.userEditedSharedDics.objectChainLabelsUserEditDic[ObjectDataService.shared.objectType] ?? ObjectDataService.shared.objectChainLabelsDefaultDic[ObjectDataService.shared.objectType] else {
-            fatalError()
-        }
-
-        var sidesPresent: [SidesAffected] = []
-        if chainLabels.contains(partOrAssociatedPart) {
-            let oneOrTwoId: OneOrTwo<PartTag> = UserEditedDictionariesService.shared.userEditedSharedDics.partIdsUserEditedDic[partOrAssociatedPart] ?? OneOrTwoId(ObjectDataService.shared.objectType, partOrAssociatedPart).forPart
-            sidesPresent = oneOrTwoId.mapOneOrTwoToSide()
-        } else {
-            sidesPresent = [.none]
-        }
-
-        return sidesPresent
-    }
-}
 
 
 
 
 
-protocol SharedNoSidesPresentFuncOnly: AnyObject {
-    func getSidesPresentGivenPossibleUserEdit(_ partOrAssociatedPart: Part) -> [SidesAffected]
-}
-extension SharedNoSidesPresentFuncOnly {
-    func getPartNotPresent() -> Bool {
-        let partOrAssociatedPart = PartsRequiringLinkedPartUse(ObjectEditService.shared.partToEdit).partForEditableOrigin
-        let first = getSidesPresentGivenPossibleUserEdit(partOrAssociatedPart)[0]
-        return first == .none
-    }
-}
+

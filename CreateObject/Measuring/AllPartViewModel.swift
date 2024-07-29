@@ -64,7 +64,9 @@ struct PartModel: Identifiable {
 }
 
 class AllPartViewModel: ObservableObject ,
-                        SharedPartToEdit {
+                        SharedPartToEditFunc
+{
+   
     
     @Published var partModels: [PartModel] = []
   
@@ -78,6 +80,13 @@ class AllPartViewModel: ObservableObject ,
     var movementImageData: MovementImageData =
         MovementImageService.shared.movementImageData
     
+    func handlePartToEditChange( _ newData: Part){
+        // newData is not passed in this use of func
+        
+        updatePartModels()
+    }
+    
+    
     internal var cancellables: Set<AnyCancellable> = []
     
     init(){
@@ -89,15 +98,12 @@ class AllPartViewModel: ObservableObject ,
                 self.uniquePartNames = getUniquePartNamesFromObjectDictionary()
                 self.updateData()
                 self.updatePartModels()
-            
             }
             .store(in: &cancellables)
-
-        (self as SharedPartToEdit).subscribeToService()
+        
+        (self as SharedPartToEditFunc).subscribeToService()
         
         updateData()
-        updatePartModels()
-
     }
     
     func updatePartModels(){
@@ -118,26 +124,34 @@ class AllPartViewModel: ObservableObject ,
             }
             
             let screenDepth = value[0].z// all four heights are equal
-
-           // let color = getColor(name)
+            let color = isPartToEdit(name, partToEdit) ? Color("selectedPart"): .white
             
             let partModel =
-                PartModel(id: name, points: points
-                          ,screenDepth: screenDepth, color:Color("selectedPart"), cornerRadius: 10.0, lineWidth: 5.0, opacity: 0.9)
+            PartModel(
+                id: name,
+                points: points
+                ,
+                screenDepth: screenDepth,
+                color:Color(
+                    color
+                ),
+                cornerRadius: 10.0,
+                lineWidth: 5.0,
+                opacity: 0.9
+            )
             
             partModels.append(partModel)
         }
      }
     
     
-//    func getColor(_ uniquePartName: String) -> Color {
-//        if UniqueToGeneralName(uniquePartName).generalName.contains(partToEdit.rawValue) {
-//            return Color(false ? "movement" : "selectedPart")
-//        } else {
-//            return .white
-//        }
-//    }
-        
+    func isPartToEdit(_ uniquePartName: String, _ partToEdit: Part) -> Bool {
+        let partName = partToEdit.rawValue
+        let generalName = UniqueToGeneralName(uniquePartName).generalName
+        return partName == generalName
+    }
+    
+
     
     func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
         movementImageData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
@@ -182,14 +196,6 @@ class AllPartViewModel: ObservableObject ,
       
         return names
     }
-//    func cgPointsOut(_ uniqueName: String) -> [CGPoint] {
-//        var points: [CGPoint] = []
-//        for corner in corners {
-//            points.append(CGPoint(x: corner.x , y: corner.y))
-//        }
-//        return points
-//    }
-    
 }
 
 
