@@ -13,20 +13,21 @@ import SwiftUI
 
 
 struct RightAngleRulerView: View {
-    @EnvironmentObject var rulerVM: RulerViewModel
-    @EnvironmentObject var unitSystemVM: UnitSystemViewModel
+    @EnvironmentObject var vm: RightAngleRulerViewModel
    
     var body: some View {
-        let rulerFrameSize = rulerVM.getRulerFrameSize()
-        let width = rulerVM.width
-        var unitSystem: UnitSystem {unitSystemVM.unitSystem}
+        let rulerFrameSize = vm.getRulerFrameSize()
+        let width = vm.width
+    
+        
         ZStack(alignment: .topLeading ){
-            Text(unitSystem.rawValue)
+            Text(vm.unitSystem.rawValue)
                 .font(.system(size: 60))
                 .padding()
             
-            RulerView()
-            RulerView()
+            RulerAllPartView(vm: vm)
+            
+            RulerAllPartView(vm: vm)
                 .rotationEffect(Angle(degrees: -90))
                 .offset(CGSize(
                     width: (rulerFrameSize.length - width) / 2.0 , 
@@ -39,121 +40,78 @@ struct RightAngleRulerView: View {
 
 
 
-struct RulerView: View {
-    @EnvironmentObject var rulerVM: RulerViewModel
+struct RulerAllPartView: View {
+    var vm: RightAngleRulerViewModel
+    var rulerMarksDictionary: CornerDictionary{ vm.getRulerMarks()}
+    var rulerNumberDictionary: PositionDictionary{ vm.getNumberDictionary()}
+    var rulerCorners: [CGPoint]{
+        vm.getCorners()
+    }
+    
     var body: some View {
-        let rulerDictionary = rulerVM.getDictionaryForScreen()
-        let rulerMarksDictionary = rulerVM.getRulerMarks()
-        let rulerNumberDictionary = rulerVM.getNumberDictionary()
-
-        
         ZStack{
-           
-            RulerAllPartView(
-               // uniquePartName: "",
-                preTiltFourCornerPerKeyDic: rulerDictionary,
-                dictionaryForScreen:  rulerDictionary//,
+            RulerPartView(
+                corners: rulerCorners
             )
-            
             ForEach(rulerMarksDictionary.map { key, value in (key, value) }, id: \.0) { key, value in
                 Line(tertiaryMarkElement: [key: value])
-                
             }
-            
             ForEach(rulerNumberDictionary.map { key, value in (key, value) }, id: \.0) { key, value in
                 Text(key)
                     .font(.system(size: 50))
                     .position(x: value.x, y: value.y)
-                
             }
-
         }
+        .zIndex(1000)
     }
 }
 
-
-struct RulerAllPartView: View {
-    
-//    let partToEdit: Part
-    //let uniquePartName: String
-    var preTiltFourCornerPerKeyDic: CornerDictionary
-    var postTiltObjectToFourCornerPerKeyDic: CornerDictionary
-    
-    var dictionaryElementIn: DictionaryElementIn {
-        DictionaryElementIn(
-            postTiltObjectToFourCornerPerKeyDic,
-            ""//uniquePartName
-        )
-    }
-    
-    var partCorners: [CGPoint] {
-        dictionaryElementIn.cgPointsOut()
-    }
-    
-//    var zPosition: Double {
-//        //ensures objects drawn in order of height
-//        dictionaryElementIn.maximumHeightOut()
-//    }
-
-    let color: Color = Color("rulerEdges")
-    init(
-      //  uniquePartName: String,
-        preTiltFourCornerPerKeyDic: CornerDictionary,
-        dictionaryForScreen: CornerDictionary//,
- 
-    ){
-        //self.uniquePartName = uniquePartName
-        self.preTiltFourCornerPerKeyDic = preTiltFourCornerPerKeyDic
-        self.postTiltObjectToFourCornerPerKeyDic = dictionaryForScreen
-    }
-    
-
-    
-    var body: some View {
-
-        RulerPartView(
-            corners: partCorners,
-            color: color
-        )
-        .zIndex(
-            
-            1000
-        )
-//        .onTapGesture {
-//            partEditVM.setCurrentPartToEditName(uniquePartName)
-//        }
-    }
-}
 
 
 struct RulerPartView: View {
     let corners: [CGPoint]
-    let color: Color
+    static let color: Color = Color("rulerEdges")
     static let opacity: Double = 0.08
     static let lineWidth: Double = 5.0
+    
     @StateObject var vm: RulerPartViewModel
-    init (corners: [CGPoint], color: Color
+    
+    init(
+        corners: [CGPoint]
     ) {
-        self.corners = corners
-        self.color = color
-      
-        _vm = StateObject(wrappedValue: RulerPartViewModel(corners: corners, color: color, opacity: Self.opacity, lineWidth: Self.lineWidth))
-    }
 
+        self.corners = corners
+
+        _vm = StateObject(
+            wrappedValue: RulerPartViewModel(
+                corners: corners,
+                color: Self.color,
+                opacity: Self.opacity,
+                lineWidth: Self.lineWidth
+            )
+        )
+    }
+    
     var body: some View {
         ZStack {
             vm.path()
-                .fill(color)
+                .fill(Self.color)
                 .opacity(Self.opacity)
             
             vm.path()
-                .stroke(Color.black, lineWidth: Self.lineWidth)
+                .stroke(
+                    Color.black,
+                    lineWidth: Self.lineWidth
+                )
         }
     }
 }
 
 
+
+
 class RulerPartViewModel: ObservableObject, 
+//form the rectangles which make up the ruler
     PartRectangle {
     var corners: [CGPoint]
     var color: Color

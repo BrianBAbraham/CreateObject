@@ -20,7 +20,7 @@ struct MeasurementUnitView: View {
 
 struct UnitSystemSelectionView: View {
     @EnvironmentObject var unitSystemVM: UnitSystemViewModel
-    @EnvironmentObject var rulerVM: RulerViewModel
+    @EnvironmentObject var rulerVM: RightAngleRulerViewModel
     @State private var selectMenuNameItem: String = "cm"
 
     var body: some View {

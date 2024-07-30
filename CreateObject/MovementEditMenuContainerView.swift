@@ -1,5 +1,5 @@
 //
-//  MovementMenuView.swift
+//  MovementEditMenuContainerView.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 27/06/2024.
@@ -9,33 +9,7 @@ import Foundation
 import SwiftUI
 
 
-struct EditScreenView<EditableView:View>: View {
- 
-    @EnvironmentObject var editScreenVM: EditScreenViewModel
-    @State private var uniqueKey = 0
-    
-    var injectedView: EditableView
-    var objectDisplayStyle: ObjectDisplayStyle
-    var body: some View {
-        
-        VStack {
-            VStack{
-                ObjectRulerRecenterView()
-                
-                ObjectAndRulerView(
-                    objectDisplayStyle
-                )
-                .position(RecenterObjectsOnScreenService.initialRulerPosition)
-                .onChange(of: editScreenVM.recenter) {
-                    uniqueKey += 1
-                }
-                .id(uniqueKey)//ensures redraw
-            }
-            
-           injectedView
-        }
-    }
-}
+
 
 
 struct MovementEditMenuContainerView: View {

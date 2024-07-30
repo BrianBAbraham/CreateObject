@@ -9,8 +9,7 @@ import Foundation
 import Combine
 
 class ObjectWithArcViewModel: ObservableObject, 
-    SharedMovementType//,
-    //SharedPartToEdit
+    SharedMovementType
 {
     @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
     

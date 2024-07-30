@@ -43,7 +43,7 @@ struct CreateObjectApp: App {
     @StateObject var objectViewModel = ObjectWithArcViewModel()
     @StateObject var partViewModel = AllPartViewModel()
  
-    @StateObject var rulerVM = RulerViewModel()
+    @StateObject var rulerVM = RightAngleRulerViewModel()
     @StateObject var recenterVM = RecenterViewModel()
     @StateObject var allArcWithStaticPointVM = AllArcWithStaticPointViewModel()
     

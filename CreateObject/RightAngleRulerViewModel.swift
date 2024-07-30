@@ -1,5 +1,5 @@
 //
-//  RulerVM.swift
+//  RulerViewModel.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 23/03/2024.
@@ -22,23 +22,29 @@ struct RulerModel {
 
 
 
-class RulerViewModel: ObservableObject {
-    private var cancellables: Set<AnyCancellable> = []
+class RightAngleRulerViewModel: ObservableObject {
+   
+    @Published var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
     
+    @Published private var rulerModel: RulerModel
+    
+    @Published var objectName: String = ObjectDataService.shared.objectType.rawValue
     
     var movementImageData: MovementImageData =
         MovementImageService.shared.movementImageData
-    @Published var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
+   
     var unitSystem: UnitSystem = MeasurementSystemService.shared.unitSystem
-    let lengthBefore = 170.0
-    let lengthAfter = 30.0
+    let lengthBefore = 170.0//measurement lines
+    let lengthAfter = 30.0// measurment lines
     let numberSpan: Double
     let width: Double
-    @Published private var rulerModel: RulerModel
+  
     let rulerDataBackGround: RulerDataBackground
     var rulerMarks: RulerDataMarks
   
-    @Published var objectName: String = ObjectDataService.shared.objectType.rawValue
+
+    private var cancellables: Set<AnyCancellable> = []
+    
     init(
         _ numberSpan: Double = 3000.0,
         _ width: Double = 170.0
@@ -65,7 +71,6 @@ class RulerViewModel: ObservableObject {
         rulerModel = RulerModel(
             ensureInitialRulerIsOnScreen: EnsureNoNegativePositions(
                 fourCornerDic: rulerDataBackGround.fourCornerDic,
-                //oneCornerDic: rulerDataBackGround.oneCornerDic,
                 objectDimension: rulerDataBackGround.dimension
             ),
             rulerMarks: rulerMarks.getMarksDictionary(),
@@ -133,6 +138,16 @@ class RulerViewModel: ObservableObject {
     
     func getDictionaryForScreen() -> CornerDictionary {
         rulerModel.ensureInitialRulerIsOnScreen.fourCornerDic
+    }
+    
+    
+    func getCorners() -> [CGPoint] {
+        let dic = getDictionaryForScreen()
+        let dictionaryElementIn = DictionaryElementIn(
+            dic,
+            ""
+        )
+        return dictionaryElementIn.cgPointsOut()
     }
     
     

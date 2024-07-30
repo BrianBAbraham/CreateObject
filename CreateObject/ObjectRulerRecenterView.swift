@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ObjectRulerRecenterView: View {
-    @EnvironmentObject var recenterVM: RecenterViewModel
+    @EnvironmentObject var vm: RecenterViewModel
     @State private var isPressed = false
 
     var body: some View {
@@ -16,13 +16,12 @@ struct ObjectRulerRecenterView: View {
             // Start the button press animation
             withAnimation(.easeInOut(duration: 0.2)) {
                 isPressed = true
-              //  print("DETECT")
             }
 
             // Schedule the recenter action and the reset of the button state after the animation completes
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 // Execute the recenter function after the initial animation
-                recenterVM.setRecenterState()
+                vm.setRecenterState()
 
                 // Then, with a slight delay, reset the button state with another animation
                 withAnimation(.easeInOut(duration: 0.4)) {
@@ -30,10 +29,10 @@ struct ObjectRulerRecenterView: View {
                 }
             }
         }) {
-            Text("Center Ruler & Object")
+            Text("Reposition Ruler & Object")
                 .font(.system(size: 10))
                 .foregroundColor(.blue)
-                .scaleEffect(isPressed ? 2.0 : 1) // Apply scale effect based on the isPressed state
+                .scaleEffect(isPressed ? 1.5 : 1) // Apply scale effect based on the isPressed state
         }
         .buttonStyle(.plain)
         .padding()

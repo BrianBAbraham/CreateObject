@@ -37,7 +37,7 @@ struct ArcView: View {
                             clockwise: !clockwise
                 )
             }
-            .stroke(Color.blue, lineWidth: 2)
+            .stroke(Color.black, lineWidth: 4)
         }
     }
 }

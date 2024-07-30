@@ -34,6 +34,7 @@ class AllArcWithStaticPointViewModel: ObservableObject,
     @Published var staticPointDictionary: CornerDictionary = [:]
     @Published var staticPointModel: [StaticPointModel] = []
     @Published var arcDataModels: [ArcDataModel] = []
+    @Published var show: Bool = false
     
     ///each element is the angle to an arc point on a  lower integer object and then a higher integer object
     //var arcData: [ArcData] = []
@@ -43,8 +44,9 @@ class AllArcWithStaticPointViewModel: ObservableObject,
     var clockwise = true
     
     init(){
-      
-        MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
+        
+        //setShow()
+              MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
             .sink { [weak self] newData in
                 self?.movementDictionaryForScreen = newData
                 self?.update()
@@ -54,15 +56,22 @@ class AllArcWithStaticPointViewModel: ObservableObject,
             )
         
         (self as SharedMovementType).subscribeToService()
-       // updateStaticPointDictionary()
+
         uniqueArcNames = getUniqueArcNames()
         uniqueArcPointNames = getUniqueArcPointNames()
         uniqueStaticPointNames = getUniqueStaticPointNames()
         arcDictionary = createArcDictionary()
-       // arcData = getArcData()
+
     }
     
+    
+    func setShow()  {
+        show = movementType == .turn
+    }
+    
+    
     func update() {
+        setShow()
         arcDictionary = createArcDictionary()
         staticPointDictionary = createStaticPointDictionary()
         uniqueStaticPointNames = getUniqueStaticPointNames()

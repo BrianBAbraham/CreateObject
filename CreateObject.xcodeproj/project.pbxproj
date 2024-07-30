@@ -19,6 +19,7 @@
 		FD10BB5B2BBC46B7000C13A4 /* ObjectRulerRecenterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD10BB5A2BBC46B7000C13A4 /* ObjectRulerRecenterViewModel.swift */; };
 		FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */; };
 		FD12A8F42BCAC62A00C2C30D /* MovementPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */; };
+		FD1BFB082C592B1B001368C8 /* EditScreenViewFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1BFB072C592B1B001368C8 /* EditScreenViewFile.swift */; };
 		FD1CB1952B90A58600A27657 /* DataServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1CB1942B90A58600A27657 /* DataServices.swift */; };
 		FD1CB1972B90D91300A27657 /* MeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1CB1962B90D91300A27657 /* MeasurementView.swift */; };
 		FD2713832BC55F9E00703F06 /* KeepImageInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */; };
@@ -51,7 +52,7 @@
 		FD5520C22C4E666900D9329B /* EditScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5520C12C4E666900D9329B /* EditScreenViewModel.swift */; };
 		FD57A7BA2C3032F7006ABC2F /* ObjectDataMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD57A7B92C3032F7006ABC2F /* ObjectDataMediator.swift */; };
 		FD57A7BC2C307797006ABC2F /* PropertyAngleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD57A7BB2C307797006ABC2F /* PropertyAngleViewModel.swift */; };
-		FD5C57B92BAF5260007B9159 /* RulerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5C57B82BAF5260007B9159 /* RulerVM.swift */; };
+		FD5C57B92BAF5260007B9159 /* RightAngleRulerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5C57B82BAF5260007B9159 /* RightAngleRulerViewModel.swift */; };
 		FD6539972C4C0BF2001EBF98 /* MovementAnglePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6539962C4C0BF2001EBF98 /* MovementAnglePickerView.swift */; };
 		FD6BA10D2BE13D5A0047B139 /* AllArcWithStaticPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6BA10C2BE13D5A0047B139 /* AllArcWithStaticPointView.swift */; };
 		FD6FC9A62C3859BA00B9FA4E /* DimensionStepperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6FC9A52C3859BA00B9FA4E /* DimensionStepperViewModel.swift */; };
@@ -99,7 +100,7 @@
 		FDF17DDB2BF1FCBF0074B392 /* PartPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF17DDA2BF1FCBF0074B392 /* PartPickerView.swift */; };
 		FDF17DE02BF1FEFE0074B392 /* PickerLabelWorkAround.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF17DDF2BF1FEFE0074B392 /* PickerLabelWorkAround.swift */; };
 		FDF2EA3D2C2F1249004941DE /* ObjectWithArcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF2EA3C2C2F1249004941DE /* ObjectWithArcViewModel.swift */; };
-		FDF7D5142C2D9A75001A9A5E /* EditScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF7D5132C2D9A75001A9A5E /* EditScreenView.swift */; };
+		FDF7D5142C2D9A75001A9A5E /* MovementEditMenuContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF7D5132C2D9A75001A9A5E /* MovementEditMenuContainerView.swift */; };
 		FDFC68762A2A3EBF0027E219 /* ObjectImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */; };
 /* End PBXBuildFile section */
 
@@ -116,6 +117,7 @@
 		FD10BB5A2BBC46B7000C13A4 /* ObjectRulerRecenterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRulerRecenterViewModel.swift; sourceTree = "<group>"; };
 		FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifier.swift; sourceTree = "<group>"; };
 		FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPickerView.swift; sourceTree = "<group>"; };
+		FD1BFB072C592B1B001368C8 /* EditScreenViewFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenViewFile.swift; sourceTree = "<group>"; };
 		FD1CB1942B90A58600A27657 /* DataServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataServices.swift; sourceTree = "<group>"; };
 		FD1CB1962B90D91300A27657 /* MeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementView.swift; sourceTree = "<group>"; };
 		FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepImageInScreen.swift; sourceTree = "<group>"; };
@@ -148,7 +150,7 @@
 		FD5520C12C4E666900D9329B /* EditScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenViewModel.swift; sourceTree = "<group>"; };
 		FD57A7B92C3032F7006ABC2F /* ObjectDataMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDataMediator.swift; sourceTree = "<group>"; };
 		FD57A7BB2C307797006ABC2F /* PropertyAngleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyAngleViewModel.swift; sourceTree = "<group>"; };
-		FD5C57B82BAF5260007B9159 /* RulerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulerVM.swift; sourceTree = "<group>"; };
+		FD5C57B82BAF5260007B9159 /* RightAngleRulerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightAngleRulerViewModel.swift; sourceTree = "<group>"; };
 		FD6539962C4C0BF2001EBF98 /* MovementAnglePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementAnglePickerView.swift; sourceTree = "<group>"; };
 		FD6BA10C2BE13D5A0047B139 /* AllArcWithStaticPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllArcWithStaticPointView.swift; sourceTree = "<group>"; };
 		FD6FC9A52C3859BA00B9FA4E /* DimensionStepperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionStepperViewModel.swift; sourceTree = "<group>"; };
@@ -197,7 +199,7 @@
 		FDF17DDA2BF1FCBF0074B392 /* PartPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartPickerView.swift; sourceTree = "<group>"; };
 		FDF17DDF2BF1FEFE0074B392 /* PickerLabelWorkAround.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerLabelWorkAround.swift; sourceTree = "<group>"; };
 		FDF2EA3C2C2F1249004941DE /* ObjectWithArcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWithArcViewModel.swift; sourceTree = "<group>"; };
-		FDF7D5132C2D9A75001A9A5E /* EditScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenView.swift; sourceTree = "<group>"; };
+		FDF7D5132C2D9A75001A9A5E /* MovementEditMenuContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementEditMenuContainerView.swift; sourceTree = "<group>"; };
 		FDFC68752A2A3EBF0027E219 /* ObjectImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectImageData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -284,7 +286,9 @@
 				FDF17DDC2BF1FD310074B392 /* HelperViews */,
 				FDF7D5172C2D9E7C001A9A5E /* Measuring */,
 				FD2726062C57F1FD007859B2 /* AllPartView.swift */,
+				FD026B862C52984D0059FA21 /* AllPartViewModel.swift */,
 				FD27260A2C57F2D5007859B2 /* AllArcWithStaticPointViewModel.swift */,
+				FD5C57B82BAF5260007B9159 /* RightAngleRulerViewModel.swift */,
 				FD6BA10C2BE13D5A0047B139 /* AllArcWithStaticPointView.swift */,
 				FD2726042C57F184007859B2 /* PartViewModel.swift */,
 				FD08DB1E2BAEDBCE00F116AD /* RightAngleRulerView.swift */,
@@ -298,6 +302,9 @@
 				FDB931D32A01504D00F86B4F /* SceneView.swift */,
 				FDF7D5192C2DA03B001A9A5E /* ObjectEditMenuView */,
 				FDF17DD52BF1FAC90074B392 /* MovementMenuView */,
+				FDF7D5132C2D9A75001A9A5E /* MovementEditMenuContainerView.swift */,
+				FDF117902C4AEE8200FCFD19 /* ObjectAndPartEditMenuContainerView.swift */,
+				FD1BFB072C592B1B001368C8 /* EditScreenViewFile.swift */,
 				FDC71F02296C911200B68427 /* ContentView.swift */,
 				FDDEA3CA2C34305B008C2097 /* Retired.swift */,
 				FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */,
@@ -318,14 +325,12 @@
 		FDF17DD52BF1FAC90074B392 /* MovementMenuView */ = {
 			isa = PBXGroup;
 			children = (
-				FDF7D5132C2D9A75001A9A5E /* EditScreenView.swift */,
 				FD5520C12C4E666900D9329B /* EditScreenViewModel.swift */,
 				FDE0D9122BF26C4D00FF3A43 /* MovementPickerViewModel.swift */,
 				FD6539962C4C0BF2001EBF98 /* MovementAnglePickerView.swift */,
 				FDF17DD62BF1FB230074B392 /* MovementAngleStepperView.swift */,
 				FDF17DD82BF1FB960074B392 /* MovementOriginStepperView.swift */,
 				FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */,
-				FDF117902C4AEE8200FCFD19 /* ObjectAndPartEditMenuContainerView.swift */,
 			);
 			path = MovementMenuView;
 			sourceTree = "<group>";
@@ -372,8 +377,6 @@
 		FDF7D5172C2D9E7C001A9A5E /* Measuring */ = {
 			isa = PBXGroup;
 			children = (
-				FD026B862C52984D0059FA21 /* AllPartViewModel.swift */,
-				FD5C57B82BAF5260007B9159 /* RulerVM.swift */,
 				FD1CB1962B90D91300A27657 /* MeasurementView.swift */,
 				FDEEB2BC2BB5DBD700000199 /* UnitSystemVM.swift */,
 			);
@@ -554,7 +557,7 @@
 				FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */,
 				FDEEB2BD2BB5DBD700000199 /* UnitSystemVM.swift in Sources */,
 				FDD28BB22C42D4300079A84C /* UnilateralPartPresenceViewModel.swift in Sources */,
-				FDF7D5142C2D9A75001A9A5E /* EditScreenView.swift in Sources */,
+				FDF7D5142C2D9A75001A9A5E /* MovementEditMenuContainerView.swift in Sources */,
 				FDD422E82B9F1D19005B7950 /* BilateralPartSidePickerView.swift in Sources */,
 				FD6BA10D2BE13D5A0047B139 /* AllArcWithStaticPointView.swift in Sources */,
 				FD03B92E2C41524E00FBC0A6 /* PropertyEditFuncOnlyProtocol.swift in Sources */,
@@ -583,10 +586,11 @@
 				FD3343F92C3BE12B00BAE4EB /* OriginStepperView.swift in Sources */,
 				FDD28BB02C4280EC0079A84C /* PropertyEditProtocol.swift in Sources */,
 				FD2726012C57DEC1007859B2 /* UserEditedDictionariesService.swift in Sources */,
-				FD5C57B92BAF5260007B9159 /* RulerVM.swift in Sources */,
+				FD5C57B92BAF5260007B9159 /* RightAngleRulerViewModel.swift in Sources */,
 				FDF2EA3D2C2F1249004941DE /* ObjectWithArcViewModel.swift in Sources */,
 				FD8FFC922B73E20E00AAA055 /* PartOrigins.swift in Sources */,
 				FDD7247D29B0DD1000B50259 /* Development.swift in Sources */,
+				FD1BFB082C592B1B001368C8 /* EditScreenViewFile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
