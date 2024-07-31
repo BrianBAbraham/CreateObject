@@ -10,11 +10,11 @@ import SwiftUI
 
 
 struct AllPartView: View {
-    @EnvironmentObject var allPartVM: AllPartViewModel
+    @EnvironmentObject var vm: AllPartViewModel
     let displayStyle: ObjectDisplayStyle
     
     var body: some View {
-        ForEach(allPartVM.partModels) { partModel in
+        ForEach(vm.partModels) { partModel in
             let partVM = PartViewModel(
                 corners: partModel.points,
                 color: partModel.color,//getColor(partModel.id),

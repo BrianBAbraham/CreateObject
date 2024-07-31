@@ -68,13 +68,14 @@ class RightAngleRulerViewModel: ObservableObject {
             unitSystem: unitSystemInitial
         )
         
-        rulerModel = RulerModel(
-            ensureInitialRulerIsOnScreen: EnsureNoNegativePositions(
+        rulerModel = 
+            RulerModel(
+                ensureInitialRulerIsOnScreen: EnsureNoNegativePositions(
                 fourCornerDic: rulerDataBackGround.fourCornerDic,
                 objectDimension: rulerDataBackGround.dimension
-            ),
-            rulerMarks: rulerMarks.getMarksDictionary(),
-            rulerNumbers: [:]
+                ),
+                rulerMarks: rulerMarks.getMarksDictionary(),
+                rulerNumbers: [:]
         )
         
         ObjectDataService.shared.$objectType

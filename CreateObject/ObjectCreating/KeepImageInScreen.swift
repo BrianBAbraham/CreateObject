@@ -76,8 +76,7 @@ struct EnsureNoNegativePositions {
             CreateIosPosition.negative(minThenMax[0])
     }
     
-    
-    
+
     func getObjectOnScreenFrameSize ()
         -> Dimension {
         let objectDimension = objectDimension
@@ -146,8 +145,7 @@ struct EnsureObjectZeroOriginAtMovementCenter {
     ) {
        
             self.movementImageData = movementImageData
-            //self.objectZeroOrigin = objectZeroOrigin
-            
+                       
             ensureInitialObjectAllOnScreen = getMakeWholeObjectOnScreen()
             movementDictionaryForScreen = getMovementDictionaryForScreen()
             
@@ -167,9 +165,8 @@ struct EnsureObjectZeroOriginAtMovementCenter {
             staticPoint = translateStaticPointForCentreObjectZeroOrigin(dataToCentreObjectZeroOrigin)
             
             onScreenMovementFrameSize = getObjectOnScreenFrameSize(movementDictionaryForScreen)
-        
-        
     }
+    
     
     func getMakeWholeObjectOnScreen()
         -> EnsureNoNegativePositions {

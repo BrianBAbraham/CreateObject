@@ -9,64 +9,10 @@ import Foundation
 import Combine
 import SwiftUI
 
-protocol SharedObjectImageDataFunc: AnyObject {
-    var objectImageData: ObjectImageData { get set}
-    func setMovementImageData()
-    var cancellables: Set<AnyCancellable> { get set }
-}
-extension SharedObjectImageDataFunc {
-    func subscribeToService() {
-        ObjectImageService.shared.$objectImageData
-            .sink { [weak self] newData in
-                self?.objectImageData = newData
-                //update movement if objectData changes
-                self?.setMovementImageData()
-            }
-            .store(
-                in: &cancellables
-            )
-    }
-}
-
-
-protocol SharedSetMovementImageDataFuncOnly {
-    var objectImageData: ObjectImageData { get }
-    var movementType: Movement { get }
-    var staticPoint: PositionAsIosAxes { get }
-    var startAngle: Double { get }
-    var endAngle: Double { get }
-    var forward: Double { get }
-
-    func setMovementImageData()
-}
-
-extension SharedSetMovementImageDataFuncOnly {
-    func setMovementImageData() {
-        MovementImageService.shared.setMovementImageData(
-            objectImageData,
-            movementType,
-            staticPoint,
-            startAngle,
-            endAngle,
-            forward
-        )
-    }
-}
 
 
 
-protocol  SharedMovementType: AnyObject {
-    var movementType: Movement {get set}
-    var cancellables: Set<AnyCancellable> { get set }
-}
-extension SharedMovementType {
-    func subscribeToService() {
-        MovementEditService.shared.$movementType
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.movementType,on: self)
-            .store(in: &cancellables)
-    }
-}
+
 
 
 protocol  SharedStaticPoint: AnyObject {
@@ -113,20 +59,6 @@ extension SharedObjectAngleType {
         MovementEditService.shared.$objectAngleType
             .receive(on: DispatchQueue.main)
             .assign(to: \.objectAngleType,on: self)
-            .store(in: &cancellables)
-    }
-}
-
-
-protocol SharedMovementImageData: AnyObject {
-    var movementImageData: MovementImageData {get set}
-    var cancellables: Set<AnyCancellable> { get set }
-}
-extension SharedMovementImageData {
-    func subscribeToService() {
-        MovementImageService.shared.$movementImageData
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.movementImageData,on: self)
             .store(in: &cancellables)
     }
 }

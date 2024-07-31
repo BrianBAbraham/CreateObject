@@ -21,8 +21,10 @@ struct StaticPointModel: Identifiable {
 }
 
 
-class AllArcWithStaticPointViewModel: ObservableObject,
-                    SharedMovementType {
+class AllArcWithStaticPointViewModel: ObservableObject
+//,
+//    SharedMovementType
+{
     @Published var movementType: Movement = MovementEditService.shared.movementType
     
 
@@ -37,7 +39,7 @@ class AllArcWithStaticPointViewModel: ObservableObject,
     @Published var show: Bool = false
     
     ///each element is the angle to an arc point on a  lower integer object and then a higher integer object
-    //var arcData: [ArcData] = []
+  
     
     internal var cancellables: Set<AnyCancellable> = []
     var lastShortestDifference = 0.0
@@ -46,21 +48,29 @@ class AllArcWithStaticPointViewModel: ObservableObject,
     init(){
         
         //setShow()
-              MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
-            .sink { [weak self] newData in
-                self?.movementDictionaryForScreen = newData
-                self?.update()
-            }
-            .store(
-                in: &cancellables
-            )
+          
+        MovementEditService.shared.$movementType
+              .sink { [weak self] newMovementType in
+                  self?.movementType = newMovementType
+                  self?.setShow()
+              }
+              .store(in: &cancellables)
         
-        (self as SharedMovementType).subscribeToService()
+        MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
+        .sink { [weak self] newData in
+        self?.movementDictionaryForScreen = newData
+        self?.update()
+        }
+        .store(
+        in: &cancellables
+        )
+            
+//            (self as SharedMovementType).subscribeToService()
 
-        uniqueArcNames = getUniqueArcNames()
-        uniqueArcPointNames = getUniqueArcPointNames()
-        uniqueStaticPointNames = getUniqueStaticPointNames()
-        arcDictionary = createArcDictionary()
+            uniqueArcNames = getUniqueArcNames()
+            uniqueArcPointNames = getUniqueArcPointNames()
+            uniqueStaticPointNames = getUniqueStaticPointNames()
+            arcDictionary = createArcDictionary()
 
     }
     

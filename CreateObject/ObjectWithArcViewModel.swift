@@ -9,15 +9,16 @@ import Foundation
 import Combine
 
 class ObjectWithArcViewModel: ObservableObject, 
-    SharedMovementType
-{
+    SharedMovementType,
+    SharedMovementDictionaryForScreen,
+  SharedCenteredObjectZeroOriginData {
+
     @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
     
-    //@Published
     var movementDictionaryForScreen: CornerDictionary =
        MovementDictionaryForScreenService.shared.movementDictionaryForScreen
     
-    @Published var movementType = MovementEditService.shared.movementType
+    var movementType = MovementEditService.shared.movementType
     
     var movementImageData: MovementImageData =
         MovementImageService.shared.movementImageData
@@ -28,26 +29,31 @@ class ObjectWithArcViewModel: ObservableObject,
     
     init(){ 
         
+//        
+//        MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
+//                    .sink { [weak self] newDictionary in
+//                        self?.movementDictionaryForScreen = newDictionary
+//                      // self?.updatePartModels()
+//                    }
+//                    .store(in: &cancellables)
+        
         MovementImageService.shared.$movementImageData
             .sink { [weak self] newData in
                 guard let self = self else { return }
                 self.movementImageData = newData
-
                 self.updateData()
             }
             .store(in: &cancellables)
         
-        
+                (self as SharedMovementDictionaryForScreen).subscribeToService()
+                //updateData()
+            
         (self as SharedMovementType).subscribeToService()
- 
+        (self as SharedCenteredObjectZeroOriginData).subscribeToService()
         updateData()
 
     }
 
-    
-    func getPreTiltObjectToPartFourCornerPerKeyDic() -> CornerDictionary {
-        movementImageData.objectImageData.preTilt.objectToPartFourCornerPerKeyDic
-    }
     
     private  func updateData() {
           
@@ -58,7 +64,7 @@ class ObjectWithArcViewModel: ObservableObject,
               
           CenteredObjectZeroOriginService.shared.setCenteredObjectZeroOriginData(ensureObjectZeroOriginAtMovementCenter)
       
-          movementDictionaryForScreen = ensureObjectZeroOriginAtMovementCenter.movementDictionaryForScreen
+          let movementDictionaryForScreen = ensureObjectZeroOriginAtMovementCenter.movementDictionaryForScreen
           
           // Ensure the service is updated
           MovementDictionaryForScreenService.shared.setMovementDictionaryForScreen(

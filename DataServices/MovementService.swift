@@ -8,6 +8,66 @@
 import Foundation
 import Combine
 
+//protocol
+
+protocol SharedObjectImageDataFunc: AnyObject {
+    var objectImageData: ObjectImageData { get set}
+    func setMovementImageData()
+    var cancellables: Set<AnyCancellable> { get set }
+}
+extension SharedObjectImageDataFunc {
+    func subscribeToService() {
+        ObjectImageService.shared.$objectImageData
+            .sink { [weak self] newData in
+                self?.objectImageData = newData
+                //update movement if objectData changes
+                self?.setMovementImageData()
+            }
+            .store(
+                in: &cancellables
+            )
+    }
+}
+
+
+protocol SharedSetMovementImageDataFuncOnly {
+    var objectImageData: ObjectImageData { get }
+    var movementType: Movement { get }
+    var staticPoint: PositionAsIosAxes { get }
+    var startAngle: Double { get }
+    var endAngle: Double { get }
+    var forward: Double { get }
+
+    func setMovementImageData()
+}
+
+extension SharedSetMovementImageDataFuncOnly {
+    func setMovementImageData() {
+        MovementImageService.shared.setMovementImageData(
+            objectImageData,
+            movementType,
+            staticPoint,
+            startAngle,
+            endAngle,
+            forward
+        )
+    }
+}
+
+protocol SharedMovementImageData: AnyObject {
+    var movementImageData: MovementImageData {get set}
+    var cancellables: Set<AnyCancellable> { get set }
+}
+extension SharedMovementImageData {
+    func subscribeToService() {
+        MovementImageService.shared.$movementImageData
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.movementImageData,on: self)
+            .store(in: &cancellables)
+    }
+}
+
+
 class MovementImageService {
     @Published var movementImageData: MovementImageData = MovementImageData (
         ObjectImageService.shared.objectImageData,//object data
@@ -41,6 +101,19 @@ class MovementImageService {
 }
 
 
+
+protocol  SharedMovementType: AnyObject {
+    var movementType: Movement {get set}
+    var cancellables: Set<AnyCancellable> { get set }
+}
+extension SharedMovementType {
+    func subscribeToService() {
+        MovementEditService.shared.$movementType
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.movementType,on: self)
+            .store(in: &cancellables)
+    }
+}
 
 class MovementEditService {
     @Published var movementType: Movement = .none
@@ -126,9 +199,22 @@ class MovementDataService {
 }
 
 
+
+
+protocol SharedMovementDictionaryForScreen: AnyObject {
+    var movementDictionaryForScreen: CornerDictionary {get set}
+    var cancellables: Set<AnyCancellable> { get set }
+}
+extension SharedMovementDictionaryForScreen {
+    func subscribeToService() {
+        MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.movementDictionaryForScreen, on: self)
+            .store(in: &cancellables)
+    }
+}
 class MovementDictionaryForScreenService {
     @Published var movementDictionaryForScreen: CornerDictionary = [:]
-    
     static let shared = MovementDictionaryForScreenService()
     
     
@@ -138,6 +224,20 @@ class MovementDictionaryForScreenService {
 }
 
 
+
+
+protocol SharedCenteredObjectZeroOriginData: AnyObject {
+    var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter {get set}
+    var cancellables: Set<AnyCancellable> {get set}
+}
+extension SharedCenteredObjectZeroOriginData {
+    func subscribeToService() {
+        CenteredObjectZeroOriginService.shared.$centeredObjectZeroOriginData
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.centeredObjectZeroOriginData, on: self)
+            .store(in: &cancellables)
+    }
+}
 class CenteredObjectZeroOriginService {
     @Published var centeredObjectZeroOriginData: EnsureObjectZeroOriginAtMovementCenter = EnsureObjectZeroOriginAtMovementCenter(MovementImageService.shared.movementImageData)//?
     
