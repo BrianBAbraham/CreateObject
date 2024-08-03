@@ -8,34 +8,52 @@
 import Foundation
 import Combine
 
-//struct MovementPickModel {
-//
-//    let forward: Double
-//
-//    
-//
-//}
 
+
+class ObjectAndRulerViewModel: ObservableObject {
+    @Published var defaultScale = 0.0
+    @Published var measurementScale = 0.0
+
+    var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
+    var objectZeroStaticPointAtMovementFrameCenter: ObjectZeroStaticPointAtMovementFrameCenter = ObjectZeroStaticPointAtMovementFrameCenterService.shared.objectZeroStaticPointAtMovementFrameCenter
+    private var cancellables: Set<AnyCancellable> = []
+    
+    init(){
+        
+        ObjectZeroStaticPointAtMovementFrameCenterService.shared.$objectZeroStaticPointAtMovementFrameCenter
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] new in
+                self?.objectZeroStaticPointAtMovementFrameCenter = new
+                self?.onScreenMovementFrameSize = new.onScreenMovementFrameSize
+                self?.updateScales()
+            }
+            .store(in: &cancellables)
+    }
+    
+    
+    func updateScales(){
+        let maximumnDimensionOfMotion  = getMaximumDimensionOfMotion()
+        defaultScale = Screen.smallestDimension/maximumnDimensionOfMotion
+        measurementScale = Screen.smallestDimension/maximumnDimensionOfMotion
+        
+        func getMaximumDimensionOfMotion() -> Double {
+            onScreenMovementFrameSize.length > onScreenMovementFrameSize.width ?         onScreenMovementFrameSize.length :         onScreenMovementFrameSize.width
+        }
+    }
+}
 //gets the picked movement
 //provides the raw data from movmentImageData
 //commits to the service
-class ObjectAndRulerViewModel: ObservableObject {
-    
+class ObjectAndRulerViewModel2: ObservableObject {
     @Published var maximumnDimensionOfMotion = 0.0
-    
-   @Published var movementDictionaryForScreen: CornerDictionary =
+    @Published var movementDictionaryForScreen: CornerDictionary =
         MovementDictionaryForScreenService.shared.movementDictionaryForScreen
-    
+    @Published var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
+    @Published var recenter = RecenterObjectsOnScreenService.shared.recenter
     var movementImageData: MovementImageData =
         MovementImageService.shared.movementImageData
-
     var uniquePartNames: [String] = []
-    
-   @Published var preTiltObjectToPartFourCornerPerKeyDic: CornerDictionary = [:]
-    
-    
-    @Published var recenter = RecenterObjectsOnScreenService.shared.recenter
-    
+
     private var cancellables: Set<AnyCancellable> = []
     
     init(){
@@ -54,7 +72,6 @@ class ObjectAndRulerViewModel: ObservableObject {
                 self.maximumnDimensionOfMotion = getMaximumDimensionOfMotion()
             }
             .store(in: &cancellables)
-        
         
         MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
             .receive(on: DispatchQueue.main) // Ensure UI updates are on the main thread
@@ -122,7 +139,6 @@ class ObjectAndRulerViewModel: ObservableObject {
             return motionDimension.width > motionDimension.length ? motionDimension.width: motionDimension.length
         }
     }
-    
 }
     
 

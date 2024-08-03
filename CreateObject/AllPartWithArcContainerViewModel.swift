@@ -10,12 +10,10 @@ import Combine
 
 ///determine the frame size of movement
 ///excluding the space required by the arcs
-class AllPartWithArcViewModel: ObservableObject {
+class AllPartWithArcContainerViewModel: ObservableObject {
 
     @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
     
-      
-    //  @Published
     var objectZeroStaticPointAtMovementFrameCenter: ObjectZeroStaticPointAtMovementFrameCenter = ObjectZeroStaticPointAtMovementFrameCenterService.shared.objectZeroStaticPointAtMovementFrameCenter
 
     internal var cancellables: Set<AnyCancellable> = []

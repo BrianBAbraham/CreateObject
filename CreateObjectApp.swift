@@ -40,7 +40,7 @@ struct CreateObjectApp: App {
     @StateObject var movementEditScreenVM = EditScreenViewModel()
     @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
     
-    @StateObject var objectViewModel = AllPartWithArcViewModel()
+    @StateObject var objectViewModel = AllPartWithArcContainerViewModel()
     @StateObject var partViewModel = AllPartViewModel()
  
     @StateObject var rulerVM = RightAngleRulerViewModel()

@@ -17,7 +17,7 @@ enum ObjectDisplayStyle {
 
 
 struct AllPartWithArcContainerView: View {
-    @EnvironmentObject var vm: AllPartWithArcViewModel
+    @EnvironmentObject var vm: AllPartWithArcContainerViewModel
 
     let displayStyle: ObjectDisplayStyle
     

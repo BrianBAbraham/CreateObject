@@ -21,34 +21,28 @@ struct StaticPointModel: Identifiable {
 }
 
 
-class AllArcWithStaticPointViewModel: ObservableObject
-//,
-//    SharedMovementType
-{
-    @Published var movementType: Movement = MovementEditService.shared.movementType
+class AllArcWithStaticPointViewModel: ObservableObject {
     
-
-    @Published var movementDictionaryForScreen: CornerDictionary = MovementDictionaryForScreenService.shared.movementDictionaryForScreen
-    @Published var uniqueArcPointNames: [String] = []
-    @Published var uniqueArcNames: [String] = []
-         var uniqueStaticPointNames: [String] = []
-    @Published var arcDictionary: CornerDictionary = [:]
-    @Published var staticPointDictionary: CornerDictionary = [:]
+    @Published var movementDictionaryForScreen: CornerDictionary =
+        MovementDictionaryForScreenService.shared.movementDictionaryForScreen
     @Published var staticPointModel: [StaticPointModel] = []
+    @Published var staticPointDictionary: CornerDictionary = [:]
     @Published var arcDataModels: [ArcDataModel] = []
     @Published var show: Bool = false
+  
+    var movementType: Movement = MovementEditService.shared.movementType
+    var uniqueArcPointNames: [String] = []
+    var uniqueArcNames: [String] = []
+    var uniqueStaticPointNames: [String] = []
     
     ///each element is the angle to an arc point on a  lower integer object and then a higher integer object
-  
-    
-    internal var cancellables: Set<AnyCancellable> = []
+    var arcDictionary: CornerDictionary = [:]
     var lastShortestDifference = 0.0
     var clockwise = true
-    
+  
+    internal var cancellables: Set<AnyCancellable> = []
     init(){
         
-        //setShow()
-          
         MovementEditService.shared.$movementType
               .sink { [weak self] newMovementType in
                   self?.movementType = newMovementType
@@ -57,15 +51,11 @@ class AllArcWithStaticPointViewModel: ObservableObject
               .store(in: &cancellables)
         
         MovementDictionaryForScreenService.shared.$movementDictionaryForScreen
-        .sink { [weak self] newData in
-        self?.movementDictionaryForScreen = newData
-        self?.update()
-        }
-        .store(
-        in: &cancellables
-        )
-            
-//            (self as SharedMovementType).subscribeToService()
+            .sink { [weak self] newData in
+            self?.movementDictionaryForScreen = newData
+            self?.update()
+            }
+            .store( in: &cancellables)
 
             uniqueArcNames = getUniqueArcNames()
             uniqueArcPointNames = getUniqueArcPointNames()
@@ -112,8 +102,6 @@ class AllArcWithStaticPointViewModel: ObservableObject
     
     func createAllArcDataModel() {
         arcDataModels = []
-//        let names = getUniqueArcNames()
-//        let dic = createArcDictionary()
         let arcData = getArcData()
         for arcDatum in arcData {
             arcDataModels.append(ArcDataModel(arcData: arcDatum))
