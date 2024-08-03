@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "65D297EF-1E4F-43E4-8F47-8A90EDDA7D34"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
+         <BreakpointContent
+            uuid = "CF6A847A-4E9A-4A79-B634-CB9DC87CB107"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            symbolName = ""
+            moduleName = "">
+            <Locations>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9BEDC492-6176-495A-84D9-CD8135C3CB50"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CreateObject/ObjectPickerOptionsView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
+            landmarkName = "BiLateralPartWithOneValueChange1"
+            landmarkType = "14">
+            <Actions>
+               <BreakpointActionProxy
+                  ActionExtensionID = "Xcode.BreakpointAction.DebuggerCommand">
+                  <ActionContent
+                     consoleCommand = "">
+                  </ActionContent>
+               </BreakpointActionProxy>
+            </Actions>
+            <Locations>
+               <Location
+                  uuid = "9BEDC492-6176-495A-84D9-CD8135C3CB50 - c2e014095855952c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "CreateObject.BiLateralPartWithOneValueChange1.objectPickVM.getter : CreateObject.ObjectPickViewModel"
+                  moduleName = "CreateObject"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/brianabraham/Desktop/CreateObject/CreateObject/ObjectPickerOptionsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "32">
+               </Location>
+               <Location
+                  uuid = "9BEDC492-6176-495A-84D9-CD8135C3CB50 - db55cb71f6564047"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "CreateObject.BiLateralPartWithOneValueChange1.$objectPickVM.getter : SwiftUI.EnvironmentObject&lt;CreateObject.ObjectPickViewModel&gt;.Wrapper"
+                  moduleName = "CreateObject"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/brianabraham/Desktop/CreateObject/CreateObject/ObjectPickerOptionsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

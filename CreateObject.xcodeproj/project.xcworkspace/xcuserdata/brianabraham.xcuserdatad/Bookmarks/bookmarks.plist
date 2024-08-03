@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>top-level-items</key>
+	<array>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>147</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>146</string>
+					<key>Timestamp</key>
+					<string>732723516.35229</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectDefaults.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>struct DefaultMinMaxOriginDictionary {
+</string>
+				<key>leading</key>
+				<string>
+
+</string>
+				<key>trailing</key>
+				<string>    let originDic: PositionDictionary = [:]
+    
+    let fineOriginMinMaxDic: [PartObject: (min: PositionAsIosAxes, max: PositionAsIosAxes)] = [
+</string>
+			</dict>
+			<key>title</key>
+			<string>Development determine values from default dimensions</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectCreator.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>454</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>453</string>
+					<key>Timestamp</key>
+					<string>736962274.207714</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectEditVM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        func xOriginModified(_ origin: PositionAsIosAxes, _ id: PartTag) -&gt; PositionAsIosAxes {
+</string>
+				<key>leading</key>
+				<string>            
+            
+</string>
+				<key>trailing</key>
+				<string>        
+            var mod: Double//eg armRest xMove '-' brings closer, but headRest moves left
+            
+</string>
+			</dict>
+			<key>title</key>
+			<string>requires min max</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>116</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>115</string>
+					<key>Timestamp</key>
+					<string>737641716.88478</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectPickVM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        DictionaryService.shared.partIdsUserEditedDicReseter()
+</string>
+				<key>leading</key>
+				<string>        
+        
+</string>
+				<key>trailing</key>
+				<string>        
+        modifyObjectByCreatingFromName()
+       
+</string>
+			</dict>
+			<key>title</key>
+			<string>Development use this to not carry forward values to new objects </string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectPickVM.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>326</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>325</string>
+					<key>Timestamp</key>
+					<string>737644012.2990381</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>            let rotatorOrder: [Part] = [.sitOnTiltJoint, .backSupportTiltJoint]
+</string>
+				<key>leading</key>
+				<string>        
+        func orderRotatorsForMultipleRotations(_ unorderedRotators: [Part]) -&gt; [Part] {
+</string>
+				<key>trailing</key>
+				<string>            var correctedRotatorOrder: [Part] = []
+            for rotator in rotatorOrder {
+                if unorderedRotators.contains(rotator) {
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT requires are more general approach</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>58</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>57</string>
+					<key>Timestamp</key>
+					<string>737279366.652308</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ObjectPickerView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>
+
+</string>
+				<key>trailing</key>
+				<string>
+
+
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT is there a problem if the part has one side?</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/BilateralPartEdit.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>88</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>87</string>
+					<key>Timestamp</key>
+					<string>737281259.416041</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/RulerView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                Part.joint,
+</string>
+				<key>leading</key>
+				<string>                opacity: 0.08,
+                lineWidth: 0.5,
+</string>
+				<key>trailing</key>
+				<string>                Movement.none,      
+                ObjectDisplayStyle.edit
+            )
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT convenience part</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>628</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>627</string>
+					<key>Timestamp</key>
+					<string>737644012.299058</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                rotationAxis: .yAxis //
+</string>
+				<key>leading</key>
+				<string>                movingPoint: positionRelativeToRotator,
+                angleChange: angle.x,
+</string>
+				<key>trailing</key>
+				<string>            ).fromObjectOriginToPointWhichHasMoved + rotatorOrigin
+
+        return   rotatedPosition
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT NEEDS TO BE ROTATOR DEPENDENT</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>672</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>671</string>
+					<key>Timestamp</key>
+					<string>737644012.2990659</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/ObjectImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                rotationAxis: .yAxis
+</string>
+				<key>leading</key>
+				<string>                movingPoint: cornerPositions[index],
+                angleChange: angle.x,
+</string>
+				<key>trailing</key>
+				<string>            ).fromObjectOriginToPointWhichHasMoved
+            rotatedCorners.append(
+             newCornerPosition)
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT needs to be rotator dependant</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>115</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>114</string>
+					<key>Timestamp</key>
+					<string>736519875.395723</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/MovementImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>            newValues = CreateIosPosition.addToupleToArrayOfTouples(
+</string>
+				<key>leading</key>
+				<string>            )
+            
+</string>
+				<key>trailing</key>
+				<string>                (
+                    x: 0.0,
+                    y: 0.0,
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT control on top or below</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>81</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>80</string>
+					<key>Timestamp</key>
+					<string>737376446.8127249</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/KeepImageInScreen.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    func getObjectOnScreenFrameSize ()
+</string>
+				<key>leading</key>
+				<string>    
+    
+</string>
+				<key>trailing</key>
+				<string>        -&gt; Dimension {
+        let objectDimension = objectDimension
+        var frameSize: Dimension =
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELPMENT this was written to allow screen rotation is it necessary?</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>35</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>34</string>
+					<key>Timestamp</key>
+					<string>735757638.297768</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/KeepImageInScreen.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                let scaleFactor = 1.0
+</string>
+				<key>leading</key>
+				<string>                _ offset: PositionAsIosAxes)
+            -&gt; CornerDictionary {
+</string>
+				<key>trailing</key>
+				<string>                var postTiltObjectToPartFourCornerAllPositivePerKeyDic: CornerDictionary = [:]
+                for item in actualSizeDic {
+                    var positivePositions: [PositionAsIosAxes] = []
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT no scale applied</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>70</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>69</string>
+					<key>Timestamp</key>
+					<string>736517153.775153</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/MovementImageData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        let name = PartTag.staticPoint.rawValue + "_id" + String(objectIndex) + PartTag.stringLink.rawValue
+</string>
+				<key>leading</key>
+				<string>    
+    mutating func updateDicForStaticPoint(_ objectIndex: Int, _ staticPoint: PositionAsIosAxes){
+</string>
+				<key>trailing</key>
+				<string>        
+        
+        let p = staticPoint
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT make name automatic</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>88</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>87</string>
+					<key>Timestamp</key>
+					<string>736516393.418758</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/ArcViM.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                let firstPointName = orderedPrefixNames[0] + name
+</string>
+				<key>leading</key>
+				<string>            for name in namesWithoutPrefix {
+                
+</string>
+				<key>trailing</key>
+				<string>                let secondPointName = orderedPrefixNames[1] + name
+                guard let firstPointValue = movementDictionaryForScreen[firstPointName] else {
+                    fatalError("\(names)")
+</string>
+			</dict>
+			<key>title</key>
+			<string>DEVELOPMENT change for slalom</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>291</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>290</string>
+					<key>Timestamp</key>
+					<string>737642235.703279</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/CreateObject/PartDefaults.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        let fixedWheelHeight = PartDefaultDimension.fixedWheelDimension.height / 2.0
+</string>
+				<key>leading</key>
+				<string>        let casterHeight =
+            PartDefaultDimension.casterForkDimension.height + PartDefaultDimension.casterWheelDimension.height
+</string>
+				<key>trailing</key>
+				<string>        var origin = ZeroValue.iosLocation
+        let linkedOrParentWidth = linkedOrParentDimensionUsingOneValue.width
+        let linkedOrParentLength = linkedOrParentDimensionUsingOneValue.length
+</string>
+			</dict>
+			<key>title</key>
+			<string>Static caster joint and fixed wheel height</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>215</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>214</string>
+					<key>Timestamp</key>
+					<string>737569168.250963</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>CreateObject/BilateralPartEdit.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                        if let firstOrigin = editableOrigin.first {
+</string>
+				<key>leading</key>
+				<string>                    .onChange(of: objectEditVM.partToEdit) {
+                       //always make the first origin the intial active choice
+</string>
+				<key>trailing</key>
+				<string>                            objectEditVM.setOriginPropertiesToEdit(
+                                firstOrigin
+                            )
+</string>
+			</dict>
+			<key>title</key>
+			<string>first object dispalyed will not highlight y-move if there is no x-move so I left x-move in</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+	</array>
+</dict>
+</plist>
