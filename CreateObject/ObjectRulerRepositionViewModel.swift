@@ -16,7 +16,7 @@ struct RecenterModel {
     }
 }
 
-class RecenterViewModel: ObservableObject {
+class ObjectRulerRepositionViewModel: ObservableObject {
     @Published var recenterModel: RecenterModel
     
     init() {
