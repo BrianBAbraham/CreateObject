@@ -218,11 +218,11 @@ extension SharedMovementDictionaryForScreen {
 
 
 
-protocol SharedCenteredObjectZeroOriginData: AnyObject {
+protocol SharedObjectZeroStaticPointAtMovementFrameCenter: AnyObject {
     var objectZeroStaticPointAtMovementFrameCenter: ObjectZeroStaticPointAtMovementFrameCenter {get set}
     var cancellables: Set<AnyCancellable> {get set}
 }
-extension SharedCenteredObjectZeroOriginData {
+extension SharedObjectZeroStaticPointAtMovementFrameCenter {
     func subscribeToService() {
         ObjectZeroStaticPointAtMovementFrameCenterService.shared.$objectZeroStaticPointAtMovementFrameCenter
             .receive(on: DispatchQueue.main)

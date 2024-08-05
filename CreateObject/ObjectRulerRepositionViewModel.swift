@@ -7,29 +7,29 @@
 
 import Foundation
 
-struct RecenterModel {
+struct RepositionModel {
    
-    var recenterState = false
+    var repositionState = false
     
     mutating func resetState(){
-       recenterState.toggle()
+       repositionState.toggle()
     }
 }
 
 class ObjectRulerRepositionViewModel: ObservableObject {
-    @Published var recenterModel: RecenterModel
+    @Published var repositionModel: RepositionModel
     
     init() {
-        self.recenterModel = RecenterModel()
+        self.repositionModel = RepositionModel()
     }
     
     func getRecenterState() -> Bool {
-        recenterModel.recenterState
+        repositionModel.repositionState
     }
     
    
-    func setRecenterState() {
+    func setRepositionState() {
         RecenterObjectsOnScreenService.shared.setRecenterTrue()
-        recenterModel.resetState()
+        repositionModel.resetState()
     }
 }

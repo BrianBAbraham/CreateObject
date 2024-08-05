@@ -18,7 +18,7 @@ struct EditScreenView<EditableView:View>: View {
         
         VStack {
             VStack{
-                ObjectRulerRecenterView()
+                ObjectRulerRepositionView()
                 
                 ObjectAndRulerView(
                     objectDisplayStyle

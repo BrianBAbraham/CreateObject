@@ -59,10 +59,7 @@ struct ObjectImageData {
             
             partDataDic =
                 objectData.partDataDic
-            
-//            DictionaryService.shared.partDataSharedDic = partDataDic
-           
-            
+              
             createPreTiltDictionaryFromStructFactory()
             
             createPostTiltDictionaries()

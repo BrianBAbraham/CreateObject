@@ -13,7 +13,7 @@ import SwiftUI
 
 
 struct MovementEditMenuContainerView: View {
-    @EnvironmentObject var movementEditScreenVM: EditScreenViewModel
+    @EnvironmentObject var vm: MovementEditMenuContainerViewModel
     var body: some View {
         //Edit Menu
         VStack(spacing: 5 ){
@@ -26,23 +26,25 @@ struct MovementEditMenuContainerView: View {
                 MovementAngleStepperView()
                 Spacer()
             }
-            .opacity(movementEditScreenVM.isNotTurning ? 0.3: 1.0)
-            .disabled(movementEditScreenVM.isNotTurning)
+            .opacity(vm.isNotTurning ? 0.3: 1.0)
+            .disabled(vm.isNotTurning)
             
             HStack{
                 Spacer()
             
                 Text("turn tightness")
-                    .foregroundColor(movementEditScreenVM.isNotTurning ? .gray: .primary)
+                    .foregroundColor(vm.isNotTurning ? .gray: .primary)
                     .colorScheme(.light)
                 
                 MovementOriginStepperView()
                 
                 Spacer()
             }
-            .disabled(movementEditScreenVM.isNotTurning)
+            .disabled(vm.isNotTurning)
         }
         .backgroundModifier()
         .transition(.move(edge: .bottom))
     }
 }
+
+

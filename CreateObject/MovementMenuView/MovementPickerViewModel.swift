@@ -10,11 +10,6 @@ import Combine
 import SwiftUI
 
 
-
-
-
-
-
 protocol  SharedStaticPoint: AnyObject {
     var staticPoint: PositionAsIosAxes {get set}
     var cancellables: Set<AnyCancellable> { get set }
@@ -27,6 +22,7 @@ extension SharedStaticPoint {
             .store(in: &cancellables)
     }
 }
+
 
 protocol  SharedObjectAngles: AnyObject {
     var endAngle: Double {get set}
@@ -47,7 +43,6 @@ extension SharedObjectAngles {
             .store(in: &cancellables)
     }
 }
-
 
 
 protocol SharedObjectAngleType: AnyObject {
@@ -74,7 +69,8 @@ class MovementPickerViewModel: ObservableObject,
     SharedSetMovementImageDataFuncOnly, 
     SharedObjectImageDataFunc {
     
-    @Published var movementType: Movement = MovementEditService.shared.movementType
+    //@Published 
+    var movementType: Movement = MovementEditService.shared.movementType
     @Published var movementName: String = Movement.none.rawValue{
         didSet {
             setMovementType()

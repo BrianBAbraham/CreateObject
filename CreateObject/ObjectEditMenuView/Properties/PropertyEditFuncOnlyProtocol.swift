@@ -166,6 +166,9 @@ extension SharedInitialSliderValueFuncOnly {
         _ sidesAffected: SidesAffected? = nil
     ) -> Double {
         //sometimes the UI selection is adjusted by another part eg footlength for footplate
+        print("Getting initial slider value for part: \(partToEdit), tag: \(propertyToEdit)")
+        
+        
         let part = PartsRequiringLinkedPartUse(partToEdit).partForDimensionEdit
         
         var value: Double? = nil

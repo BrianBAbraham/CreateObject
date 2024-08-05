@@ -9,8 +9,11 @@ import Foundation
 import Combine
 
 
-class EditScreenViewModel: ObservableObject, SharedMovementType {
-    @Published var movementType = MovementEditService.shared.movementType {
+class EditScreenViewModel: ObservableObject, 
+    SharedMovementType {
+    
+    var movementType =
+    MovementEditService.shared.movementType {
         
             didSet {
                 isNotTurning = movementType != .turn

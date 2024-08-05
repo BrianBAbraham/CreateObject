@@ -9,13 +9,13 @@ import SwiftUI
 
 
 struct ObjectPickerView: View {
-    @EnvironmentObject var objectPickerVM: ObjectPickerViewModel
+    @EnvironmentObject var vm: ObjectPickerViewModel
 
     var body: some View {
         ZStack{
-            Picker("Equipment",selection: objectPickerVM.objectPickerBinding
+            Picker("Equipment",selection: vm.objectPickerBinding
             ) {
-                ForEach(objectPickerVM.allObjectsName, id:  \.self)
+                ForEach(vm.allObjectsName, id:  \.self)
                 { equipment in
                     Text(equipment)
                 }

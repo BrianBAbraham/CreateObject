@@ -8,8 +8,6 @@
 import Foundation
 
 
-
-
 enum ObjectTypes: String, CaseIterable, Hashable {
     
     case allCasterBed = "bed"
@@ -59,7 +57,6 @@ enum ObjectGroup {
     case hoist
     case lieOn
     case object
-   
     case seat
 }
 

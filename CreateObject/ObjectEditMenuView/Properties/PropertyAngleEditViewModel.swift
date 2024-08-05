@@ -10,16 +10,35 @@ import Combine
 import SwiftUI
 
 
+struct PropertyAngleEditView: View {
+    @EnvironmentObject var vm: PropertyAngleEditViewModel
+    var body: some View {
+        ZStack{
+            HStack{
+                Text("angle")
+                    .colorScheme(.light)
 
-class PropertyAngleViewModel: ObservableObject,
+                Slider(value: vm.sliderValueBinding, in: vm.min...vm.max, step: 1.0)
+
+                Text(" deg: \( Int(vm.max - vm.sliderValueBinding.wrappedValue))")
+                    .colorScheme(.light)
+
+            }
+        }
+        .opacity(vm.showMenu ? 1 : 0)
+    }
+}
+
+class PropertyAngleEditViewModel: ObservableObject,
     SharedPartDataDic,
     SharedPartToEditFunc,
     SharedInitialSliderValueFuncOnly,
     SharedDimensionPropertyToEdit,
     SharedModifyObjectByCreatingFromNameFuncOnly,
-    SharedObjectType{
-        
-    @Published var angleMinMaxDic = ObjectDataService.shared.angleMinMaxDic
+    SharedObjectType,
+      SharedUserEditedDictionaries {
+//        
+//    @Published var angleMinMaxDic = ObjectDataService.shared.angleMinMaxDic
     
     @Published var partToEdit = ObjectEditService.shared.partToEdit
     
@@ -49,24 +68,29 @@ class PropertyAngleViewModel: ObservableObject,
                 self.getInitialSliderValue(
                     self.partToEdit,
                     PartTag.angle)
+                print("Getter: \(new)")
                     return new
             
             },
             set: { newValue in
+                print("Setter newValue: \(newValue) \(self.max)")
                     self.setCurrentRotation(
                         self.max - newValue,
                         self.partToEdit
                     )
                 self.modifyObjectByCreatingFromName()
-                
+                print("Updated rotation with: \(self.max - newValue)")
             }
         )
     }
 
     init() {
+    
         let angleMinMax = getAngleMinMaxDic(getTiltMenuPart(partToEdit) ?? partToEdit)
         max = angleMinMax.max.value
         min = angleMinMax.min.value
+        
+        //print(max)
 
         let _ = ObjectDataMediator.shared
         
@@ -78,11 +102,13 @@ class PropertyAngleViewModel: ObservableObject,
         
         (self as SharedDimensionPropertyToEdit).subscribeToService()
         
-        ObjectDataService.shared.$angleMinMaxDic
-            .sink { [weak self] newData in
-                self?.angleMinMaxDic = newData
-            }
-            .store(in: &self.cancellables)
+        (self as SharedUserEditedDictionaries).subscribeToService()
+        
+//        ObjectDataService.shared.$angleMinMaxDic
+//            .sink { [weak self] newData in
+//                self?.angleMinMaxDic = newData
+//            }
+//            .store(in: &self.cancellables)
     }
     
 
@@ -91,10 +117,13 @@ class PropertyAngleViewModel: ObservableObject,
     func getAngleMinMaxDic(_ part: Part)
     -> AngleMinMax {
         let partName =
-            CreateNameFromIdAndPart(.id0, part).name
-
+            CreateNameFromIdAndPart(.id0, part)
+        print(partName)
+//print(angleMinMaxDic[partName])
+        let tiltMenuPart = getTiltMenuPart(part) ?? part
+        
         return
-            angleMinMaxDic[partName] ?? ZeroValue.angleMinMax
+        partDataDic[tiltMenuPart]?.minMaxAngle.returnValue(.id0) ?? ZeroValue.angleMinMax
     }
     
     
@@ -114,6 +143,8 @@ class PropertyAngleViewModel: ObservableObject,
         _ maxMinusSliderValue: Double,
         _ part: Part
     ) {
+        
+        print("Setting current rotation to: \(maxMinusSliderValue) for part: \(part)")
         var partName: String {
             CreateNameFromIdAndPart(.id0, part).name
         }
@@ -140,6 +171,10 @@ class PropertyAngleViewModel: ObservableObject,
 }
 
 
+
+
+
+
 class TiltEditViewModel: ObservableObject {
     @Published var angleMinMaxDic = ObjectDataService.shared.angleMinMaxDic
     private var cancellables: Set<AnyCancellable> = []
@@ -161,9 +196,10 @@ class TiltEditViewModel: ObservableObject {
     
     func getAngleMinMaxDic(_ part: Part)
     -> AngleMinMax {
+        print("DETECT")
         let partName =
             CreateNameFromIdAndPart(.id0, part).name
-
+print(angleMinMaxDic[partName])
         return
             angleMinMaxDic[partName] ?? ZeroValue.angleMinMax
     }

@@ -14,37 +14,49 @@ import SwiftUI
 
 @main
 struct CreateObjectApp: App {
+    
+    
+    //ObjectEditMenuView
+        //Properties
     @StateObject var bilateralPartSidePickerVM = BilateralPartSidePickerViewModel()
-    @StateObject var  unilateralPartPresenceViewModel =  UnilateralPartPresenceViewModel()
-
+    @StateObject var bilateralPartPresenceVM = BilateralPartSidePresenceViewModel()
+    @StateObject var dimensionPickerVM = DimensionPickerViewModel()
+    @StateObject var dimensionStepperVM = DimensionStepperViewModel()
+    @StateObject var originPickerVM = OriginPickerViewModel()
+    @StateObject var originStepperVM = OriginStepperViewModel()
+    @StateObject var propertyAngleEditVM =  PropertyAngleEditViewModel()
+    @StateObject var unilateralPartPresenceVM =  UnilateralPartPresenceViewModel()
+    
+        //Selections
     @StateObject var objectPickerVM = ObjectPickerViewModel()
     @StateObject var partPickerVM = PartPickerViewModel()
+    
 
-    @StateObject var dimensionPickerViewModel = DimensionPickerViewModel()
-    @StateObject var dimensionStepperViewModel = DimensionStepperViewModel()
-    @StateObject var originPickerViewModel = OriginPickerViewModel()
-    @StateObject var originStepperViewModel = OriginStepperViewModel()
-    @StateObject var bilateralPartPresenceViewModel = BilateralPartSidePresenceViewModel()
-    @StateObject var propertyAngleViewModel =  PropertyAngleViewModel()
+//MovementMenuView
+    @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
+    @StateObject var movementAngleStepperVM = MovementAngleStepperViewModel()
+    @StateObject var movementOriginStepperVM = MovementOriginStepperViewModel()
+    @StateObject var movementPickerVM = MovementPickerViewModel()
+
+    
     
 
     @StateObject var coreDataVM = CoreDataViewModel()
-    @StateObject var sceneVM = SceneViewModel()
+
     @StateObject var unitsVM = UnitSystemViewModel()
-   
-//    @StateObject var movementOriginStepperViewModel = MovementOriginStepperViewModel()
+
     @StateObject var objectAndRulerVM = ObjectAndRulerViewModel()
-    @StateObject var movementPickVM = MovementPickerViewModel()
-    @StateObject var movementAngleStepperVM = MovementAngleStepperViewModel()
-    @StateObject var movementOriginStepperVM = MovementOriginStepperViewModel()
+
+
+
     @StateObject var movementEditScreenVM = EditScreenViewModel()
-    @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
-    
-    @StateObject var objectViewModel = AllPartWithArcContainerViewModel()
+    @StateObject var movementEditMenuContainerVM = MovementEditMenuContainerViewModel()
+  
+    @StateObject var allPartWithArcContainerVM = AllPartWithArcContainerViewModel()
     @StateObject var partViewModel = AllPartViewModel()
  
     @StateObject var rulerVM = RightAngleRulerViewModel()
-    @StateObject var recenterVM = RecenterViewModel()
+    @StateObject var recenterVM = ObjectRulerRepositionViewModel()
     @StateObject var allArcWithStaticPointVM = AllArcWithStaticPointViewModel()
     
     @StateObject var tiltEditVM = TiltEditViewModel()
@@ -59,31 +71,32 @@ struct CreateObjectApp: App {
                 .environmentObject(objectPickerVM)
                 .environmentObject(partPickerVM)
 
-                .environmentObject(dimensionPickerViewModel)
-                .environmentObject(dimensionStepperViewModel)
-                .environmentObject(originPickerViewModel)
-                .environmentObject(originStepperViewModel)
-                .environmentObject(bilateralPartPresenceViewModel)
-                .environmentObject( unilateralPartPresenceViewModel)
-                .environmentObject(propertyAngleViewModel)
+                .environmentObject(dimensionPickerVM)
+                .environmentObject(dimensionStepperVM)
+                .environmentObject(originPickerVM)
+                .environmentObject(originStepperVM)
+                .environmentObject(bilateralPartPresenceVM)
+                .environmentObject( unilateralPartPresenceVM)
+                .environmentObject(propertyAngleEditVM)
             
             
-//                .environmentObject(movementOriginStepperViewModel)
+
                 .environmentObject(objectAndRulerVM)
-                .environmentObject(movementPickVM)
+                .environmentObject(movementPickerVM)
                 .environmentObject(movementAngleStepperVM)
                 .environmentObject(movementOriginStepperVM)
                 .environmentObject(movementEditScreenVM)
+                .environmentObject(movementEditMenuContainerVM)
                 .environmentObject(movementAnglePickerVM)
 
                 .environmentObject(coreDataVM)
-                .environmentObject(sceneVM)
+
                 .environmentObject(unitsVM)
                 .environmentObject(rulerVM)
                 .environmentObject(recenterVM)
                .environmentObject(allArcWithStaticPointVM)
             
-               .environmentObject(objectViewModel)
+               .environmentObject(allPartWithArcContainerVM)
                .environmentObject(partViewModel)
             
                .environmentObject(tiltEditVM)

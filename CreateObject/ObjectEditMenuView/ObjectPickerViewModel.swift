@@ -1,5 +1,5 @@
 //
-//  ObjectPickVM.swift
+//  ObjectPickrtViewModel.swift
 //  CreateObject
 //
 //  Created by Brian Abraham on 04/03/2023.
@@ -21,7 +21,7 @@ class ObjectPickerViewModel: ObservableObject,
     }
     @Published var allObjectsName: [String] = ObjectChainLabel.sortedNames
 
-    @Published var objectType: ObjectTypes = ObjectDataService.shared.objectType    
+    var objectType: ObjectTypes = ObjectDataService.shared.objectType
     var userEditedSharedDics: UserEditedDictionaries = UserEditedDictionariesService.shared.userEditedSharedDics
     
     internal var cancellables: Set<AnyCancellable> = []
@@ -43,7 +43,7 @@ class ObjectPickerViewModel: ObservableObject,
         // Delay the following code to ensure objectType is updated
         DispatchQueue.main.async { [weak self] in
             self?.resetObjectByCreatingFromName()
-         print("OBJECT RESET")
+  
             ObjectEditService.shared.resetPartToEdit()
         }
     }

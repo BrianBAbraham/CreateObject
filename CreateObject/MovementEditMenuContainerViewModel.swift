@@ -6,3 +6,25 @@
 //
 
 import Foundation
+import Combine
+
+
+class MovementEditMenuContainerViewModel: ObservableObject, SharedMovementType {
+    
+    var movementType = MovementEditService.shared.movementType {
+            didSet {
+                isNotTurning = movementType != .turn
+            }
+    }
+  
+    @Published var isNotTurning = false
+    
+    internal var cancellables: Set<AnyCancellable> = []
+    
+    init() {
+    
+        
+        (self as SharedMovementType).subscribeToService()
+    }
+    
+}

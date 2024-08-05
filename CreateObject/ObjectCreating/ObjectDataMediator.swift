@@ -22,7 +22,7 @@ class ObjectDataMediator: ObservableObject {
     static let shared = ObjectDataMediator()
     
     init(){
-       
+ 
        ObjectImageService.shared.$objectImageData
             .sink { [weak self] newData in
                 self?.objectImageData = newData
@@ -33,6 +33,7 @@ class ObjectDataMediator: ObservableObject {
     }
     
     func updateObjectDataService() {
+  
         objectDataService.setMinMaxDic(objectImageData.angleMinMaxDic)
         
         objectDataService.setObjectDimension(objectImageData.objectDimension)

@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct MovementPickerView: View {
-    @EnvironmentObject var movementPickerVM: MovementPickerViewModel
+    @EnvironmentObject var vm: MovementPickerViewModel
   
     var body: some View {
       
         ZStack{
             Picker(
                 "",
-                selection: movementPickerVM.binding
+                selection: vm.binding
             ) {
                 ForEach(
-                    movementPickerVM.menuItems,
+                    vm.menuItems,
                     id: \.self
                 ) { item in
                     Text(
@@ -30,7 +30,7 @@ struct MovementPickerView: View {
             //Start work around: removes grey background from iPhone 13 mini
             //physical device
             .opacityAndScaleToHidePickerLabel()
-            DuplicatePickerText(name: movementPickerVM.movementName )
+            DuplicatePickerText(name: vm.movementName )
             //End work around
         }
     }

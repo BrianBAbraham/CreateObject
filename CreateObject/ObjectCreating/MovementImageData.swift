@@ -175,9 +175,6 @@ struct MovementImageData {
         
     return names
     }
-    
-
-    
 }
 
 
@@ -186,7 +183,7 @@ enum Movement: String, CaseIterable {
     case none = "static"
     case linear = "forward"
     case turn = "turn"
-    //case slalom = "slalom"
+    case slalom = "slalom"
     //case t = "T-turn"
     //case incremental = "off wall"
 }
