@@ -19,7 +19,7 @@
 		FD10BB5B2BBC46B7000C13A4 /* ObjectRulerRepositionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD10BB5A2BBC46B7000C13A4 /* ObjectRulerRepositionViewModel.swift */; };
 		FD120D4C2B9B4C6300F23BE8 /* ViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */; };
 		FD12A8F42BCAC62A00C2C30D /* MovementPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */; };
-		FD1BFB082C592B1B001368C8 /* EditScreenViewFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1BFB072C592B1B001368C8 /* EditScreenViewFile.swift */; };
+		FD1BFB082C592B1B001368C8 /* EditScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1BFB072C592B1B001368C8 /* EditScreenView.swift */; };
 		FD1CB1952B90A58600A27657 /* DataServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1CB1942B90A58600A27657 /* DataServices.swift */; };
 		FD1CB1972B90D91300A27657 /* MeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1CB1962B90D91300A27657 /* MeasurementView.swift */; };
 		FD2713832BC55F9E00703F06 /* KeepImageInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */; };
@@ -120,7 +120,7 @@
 		FD10BB5A2BBC46B7000C13A4 /* ObjectRulerRepositionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRulerRepositionViewModel.swift; sourceTree = "<group>"; };
 		FD120D4B2B9B4C6300F23BE8 /* ViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifier.swift; sourceTree = "<group>"; };
 		FD12A8F32BCAC62A00C2C30D /* MovementPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementPickerView.swift; sourceTree = "<group>"; };
-		FD1BFB072C592B1B001368C8 /* EditScreenViewFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenViewFile.swift; sourceTree = "<group>"; };
+		FD1BFB072C592B1B001368C8 /* EditScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenView.swift; sourceTree = "<group>"; };
 		FD1CB1942B90A58600A27657 /* DataServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataServices.swift; sourceTree = "<group>"; };
 		FD1CB1962B90D91300A27657 /* MeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementView.swift; sourceTree = "<group>"; };
 		FD2713822BC55F9E00703F06 /* KeepImageInScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepImageInScreen.swift; sourceTree = "<group>"; };
@@ -312,13 +312,13 @@
 				FD4F87872C610AE300EC2715 /* Object */,
 				FDF7D5192C2DA03B001A9A5E /* ObjectEditMenuView */,
 				FDF17DD52BF1FAC90074B392 /* MovementMenuView */,
-				FDF7D5132C2D9A75001A9A5E /* MovementEditMenuContainerView.swift */,
 				FD5520C12C4E666900D9329B /* EditScreenViewModel.swift */,
+				FD1BFB072C592B1B001368C8 /* EditScreenView.swift */,
+				FD85E7032C60C29B00AB06F6 /* MovementEditMenuContainerViewModel.swift */,
+				FDF7D5132C2D9A75001A9A5E /* MovementEditMenuContainerView.swift */,
 				FD10BB5A2BBC46B7000C13A4 /* ObjectRulerRepositionViewModel.swift */,
 				FDF117922C4AEF6A00FCFD19 /* ObjectRulerRepositionView.swift */,
 				FDF117902C4AEE8200FCFD19 /* ObjectAndPartEditMenuContainerView.swift */,
-				FD1BFB072C592B1B001368C8 /* EditScreenViewFile.swift */,
-				FD85E7032C60C29B00AB06F6 /* MovementEditMenuContainerViewModel.swift */,
 				FDC71F02296C911200B68427 /* ContentView.swift */,
 				FDDEA3CA2C34305B008C2097 /* Retired.swift */,
 				FDCE3F0C299A8F9600C19F2A /* ObjectContainer.xcdatamodeld */,
@@ -602,7 +602,7 @@
 				FDF2EA3D2C2F1249004941DE /* AllPartWithArcContainerViewModel.swift in Sources */,
 				FD8FFC922B73E20E00AAA055 /* PartOrigins.swift in Sources */,
 				FDD7247D29B0DD1000B50259 /* Development.swift in Sources */,
-				FD1BFB082C592B1B001368C8 /* EditScreenViewFile.swift in Sources */,
+				FD1BFB082C592B1B001368C8 /* EditScreenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

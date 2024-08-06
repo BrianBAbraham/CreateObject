@@ -15,7 +15,6 @@ import SwiftUI
 @main
 struct CreateObjectApp: App {
     
-    
     //ObjectEditMenuView
         //Properties
     @StateObject var bilateralPartSidePickerVM = BilateralPartSidePickerViewModel()
@@ -32,74 +31,90 @@ struct CreateObjectApp: App {
     @StateObject var partPickerVM = PartPickerViewModel()
     
 
-//MovementMenuView
+//MovementEditMenuView
     @StateObject var movementAnglePickerVM = MovementAnglePickerViewModel()
     @StateObject var movementAngleStepperVM = MovementAngleStepperViewModel()
     @StateObject var movementOriginStepperVM = MovementOriginStepperViewModel()
     @StateObject var movementPickerVM = MovementPickerViewModel()
-
-    
-    
-
-    @StateObject var coreDataVM = CoreDataViewModel()
-
-    @StateObject var unitsVM = UnitSystemViewModel()
-
-    @StateObject var objectAndRulerVM = ObjectAndRulerViewModel()
-
-
-
-    @StateObject var movementEditScreenVM = EditScreenViewModel()
     @StateObject var movementEditMenuContainerVM = MovementEditMenuContainerViewModel()
-  
-    @StateObject var allPartWithArcContainerVM = AllPartWithArcContainerViewModel()
+    
+    
+//Movement
+    @StateObject var movementEditScreenVM = EditScreenViewModel()
+    
+    
+
+//ObjectView
     @StateObject var partViewModel = AllPartViewModel()
+    @StateObject var allArcWithStaticPointVM = AllArcWithStaticPointViewModel()
+    @StateObject var allPartWithArcContainerVM = AllPartWithArcContainerViewModel()
+
  
     @StateObject var rulerVM = RightAngleRulerViewModel()
-    @StateObject var recenterVM = ObjectRulerRepositionViewModel()
-    @StateObject var allArcWithStaticPointVM = AllArcWithStaticPointViewModel()
-    
-    @StateObject var tiltEditVM = TiltEditViewModel()
 
+    @StateObject var objectAndRulerVM = ObjectAndRulerViewModel()
+  
+    @StateObject var recenterVM = ObjectRulerRepositionViewModel()
+    
+//Miscellanious
+    @StateObject var coreDataVM = CoreDataViewModel()
+    @StateObject var unitsVM = UnitSystemViewModel()
 
     var body: some Scene {
         WindowGroup {
                 ContentView()
+            //ObjectEditMenuView
+                //Properties
                 .environmentObject(bilateralPartSidePickerVM)
-            
-
-                .environmentObject(objectPickerVM)
-                .environmentObject(partPickerVM)
-
+                .environmentObject(bilateralPartPresenceVM)
                 .environmentObject(dimensionPickerVM)
                 .environmentObject(dimensionStepperVM)
                 .environmentObject(originPickerVM)
                 .environmentObject(originStepperVM)
-                .environmentObject(bilateralPartPresenceVM)
-                .environmentObject( unilateralPartPresenceVM)
                 .environmentObject(propertyAngleEditVM)
+                .environmentObject(unilateralPartPresenceVM)
+                
+                //Selection
+                .environmentObject(objectPickerVM)
+                .environmentObject(partPickerVM)
             
             
-
-                .environmentObject(objectAndRulerVM)
-                .environmentObject(movementPickerVM)
+            //MovementEditMenuView
+                .environmentObject(movementAnglePickerVM)
                 .environmentObject(movementAngleStepperVM)
                 .environmentObject(movementOriginStepperVM)
-                .environmentObject(movementEditScreenVM)
+                .environmentObject(movementPickerVM)
                 .environmentObject(movementEditMenuContainerVM)
-                .environmentObject(movementAnglePickerVM)
 
+
+            //Movement
+                .environmentObject(movementEditScreenVM)
+
+
+            //ObjectView
+                .environmentObject(partViewModel)
+                .environmentObject(allArcWithStaticPointVM)
+                .environmentObject(allPartWithArcContainerVM)
+            
+                .environmentObject(rulerVM)
+            
+               .environmentObject(objectAndRulerVM)
+                
+                .environmentObject(recenterVM)
+            
+            
+            //Miscellaneous
+            
                 .environmentObject(coreDataVM)
 
                 .environmentObject(unitsVM)
-                .environmentObject(rulerVM)
-                .environmentObject(recenterVM)
-               .environmentObject(allArcWithStaticPointVM)
+  
+
             
-               .environmentObject(allPartWithArcContainerVM)
-               .environmentObject(partViewModel)
-            
-               .environmentObject(tiltEditVM)
+        
+
+
+
         }
     }
 }
