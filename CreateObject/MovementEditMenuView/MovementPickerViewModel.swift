@@ -10,53 +10,7 @@ import Combine
 import SwiftUI
 
 
-protocol  SharedStaticPoint: AnyObject {
-    var staticPoint: PositionAsIosAxes {get set}
-    var cancellables: Set<AnyCancellable> { get set }
-}
-extension SharedStaticPoint {
-    func subscribeToService() {
-        MovementEditService.shared.$staticPoint
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.staticPoint,on: self)
-            .store(in: &cancellables)
-    }
-}
 
-
-protocol  SharedObjectAngles: AnyObject {
-    var endAngle: Double {get set}
-    var startAngle: Double {get set}
-  
-    var cancellables: Set<AnyCancellable> { get set }
-}
-extension SharedObjectAngles {
-    func subscribeToService() {
-        MovementEditService.shared.$endAngle
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.endAngle,on: self)
-            .store(in: &cancellables)
- 
-        MovementEditService.shared.$startAngle
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.startAngle,on: self)
-            .store(in: &cancellables)
-    }
-}
-
-
-protocol SharedObjectAngleType: AnyObject {
-         var objectAngleType: WhichAngle {get set}
-         var cancellables: Set<AnyCancellable> { get set }
-    }
-extension SharedObjectAngleType {
-    func subscribeToService() {
-        MovementEditService.shared.$objectAngleType
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.objectAngleType,on: self)
-            .store(in: &cancellables)
-    }
-}
 
 
 

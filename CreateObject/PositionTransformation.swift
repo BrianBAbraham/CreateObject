@@ -108,25 +108,7 @@ struct CreateIosPosition {
             return
                 initialCorners
     }
-    
-//    static func dimensionFromIosPositions(_ positions: [PositionAsIosAxes])
-//    -> Dimension {
-//        
-//        let arrayTouple = getArrayFromPositions(positions)
-//        let xArray = arrayTouple.x
-//        let yArray = arrayTouple.z
-//        
-//        func getDimension(_ measurements :[Double]) -> Double {
-//            let defaultMeasurement = measurements[0]
-//            let maxMeasurement = measurements.max() ?? defaultMeasurement
-//            let minMeasurement = measurements.min() ?? defaultMeasurement
-//            return maxMeasurement - minMeasurement
-//        }
-//        return
-//            (
-//            width: getDimension(xArray),
-//            length: getDimension(yArray))
-//    }
+
     
     static func convertMinMaxToDimension(_ minMax: [PositionAsIosAxes]) -> Dimension {
         return (

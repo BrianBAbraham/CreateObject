@@ -54,7 +54,7 @@ struct RulerAllPartView: View {
                 corners: rulerCorners
             )
             ForEach(rulerMarksDictionary.map { key, value in (key, value) }, id: \.0) { key, value in
-                Line(tertiaryMarkElement: [key: value])
+                ObjectLine(tertiaryMarkElement: [key: value])
             }
             ForEach(rulerNumberDictionary.map { key, value in (key, value) }, id: \.0) { key, value in
                 Text(key)

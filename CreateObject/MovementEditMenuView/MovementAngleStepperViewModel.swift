@@ -10,11 +10,7 @@ import SwiftUI
 import Combine
 
 
-enum WhichAngle: String, CaseIterable {
-    case end  = "end"
-    case start = "start"
-    case startAndEnd = "both"
-}
+
 
 
 

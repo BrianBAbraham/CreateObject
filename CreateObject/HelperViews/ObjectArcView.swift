@@ -57,7 +57,7 @@ struct ArcPointView: View {
         self.position = position
     }
     var body: some View {
-        MyCircle(fillColor: .red, strokeColor: .black, dimension
+        MyObjectCircle(fillColor: .red, strokeColor: .black, dimension
                  :20, position: screenPosition)
     }
 }

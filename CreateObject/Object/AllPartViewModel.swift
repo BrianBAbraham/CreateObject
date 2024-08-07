@@ -8,15 +8,7 @@
 import SwiftUI
 import Combine
 
-class MovementDictionaryForScreenService {
-    @Published var movementDictionaryForScreen: CornerDictionary = [:]
-    static let shared = MovementDictionaryForScreenService()
-    
-    
-    func setMovementDictionaryForScreen(_ dic: CornerDictionary) {
-        movementDictionaryForScreen = dic
-    }
-}
+
 
 
 struct PartModel: Identifiable {

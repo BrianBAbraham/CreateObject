@@ -11,7 +11,7 @@ import SwiftUI
 
 
 
-struct Line: View {
+struct ObjectLine: View {
     
    let tertiaryMarkElement: CornerDictionary
    var dictionaryElementIn: DictionaryElementIn {

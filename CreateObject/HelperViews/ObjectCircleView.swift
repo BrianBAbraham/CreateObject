@@ -9,7 +9,7 @@ import SwiftUI
 
 
 
-struct CircleModifier: ViewModifier {
+struct ObjectCircleModifier: ViewModifier {
     let dimension: Double
     let position: CGPoint
     
@@ -23,7 +23,7 @@ struct CircleModifier: ViewModifier {
 
 
 
-struct MyCircle: View {
+struct MyObjectCircle: View {
     let fillColor: Color?
     let strokeColor: Color
     let dimension: Double
