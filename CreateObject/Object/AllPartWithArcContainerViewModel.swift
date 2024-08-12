@@ -14,7 +14,7 @@ class AllPartWithArcContainerViewModel: ObservableObject {
 
     @Published var onScreenMovementFrameSize: Dimension = ZeroValue.dimension
     
-    var objectZeroStaticPointAtMovementFrameCenter: ObjectZeroStaticPointAtMovementFrameCenter = ObjectZeroStaticPointAtMovementFrameCenterService.shared.objectZeroStaticPointAtMovementFrameCenter
+    var objectZeroStaticPointAtMovementFrameCenter = ObjectZeroStaticPointAtMovementFrameCenterService.shared.objectZeroStaticPointAtMovementFrameCenter
 
     internal var cancellables: Set<AnyCancellable> = []
     
